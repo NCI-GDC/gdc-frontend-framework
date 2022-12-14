@@ -3,7 +3,7 @@ import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
-import { BsList, BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
+import { BsList, BsCaretDownFill, BsCaretUpFill, BsX } from "react-icons/bs";
 import { MdClose, MdSearch } from "react-icons/md";
 import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
@@ -43,7 +43,7 @@ export interface PaginationOptions {
   label?: string;
 }
 
-interface VerticalTableColumn {
+export interface Columns {
   /**
    * Id that matches tableData
    */
@@ -70,7 +70,10 @@ interface VerticalTableColumn {
    * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
    */
   Cell?: (value: any) => JSX.Element;
-  columns?: VerticalTableColumn[];
+  /**
+   * Allows creating nested table columns
+   */
+  columns?: Columns[];
   width?: number;
 }
 
@@ -82,7 +85,7 @@ interface VerticalTableProps {
   /**
    * list of columns in default order they appear and a number of properties
    */
-  columns: VerticalTableColumn[];
+  columns: Columns[];
   /**
    * ???
    */
@@ -180,7 +183,7 @@ export interface HandleChangeInput {
   /**
    * headings change
    */
-  newHeadings?: Column[];
+  newHeadings?: Columns[];
 }
 
 export interface Column {
@@ -197,7 +200,7 @@ interface TableProps {
   data: any[];
 }
 
-const mapColumn = (obj: VerticalTableColumn): Column => {
+const mapColumn = (obj: Columns): Column => {
   const colObj: Column = {
     Header: obj.columnName,
     accessor: obj.id,
@@ -211,6 +214,20 @@ const mapColumn = (obj: VerticalTableColumn): Column => {
     colObj.width = obj.width;
   }
   return colObj;
+};
+
+export const filterColumnCells = (newList: Columns[]): Column[] => {
+  return newList.reduce((filtered, obj) => {
+    if (obj.visible) {
+      const colObj = mapColumn(obj);
+
+      if (obj.columns) {
+        colObj.columns = obj.columns.map((col) => mapColumn(col));
+      }
+      filtered.push(colObj);
+    }
+    return filtered;
+  }, []);
 };
 
 /**
@@ -244,24 +261,15 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   search,
   initialSort = [],
 }: VerticalTableProps) => {
-  const filterColumnCells = (newList) =>
-    newList.reduce((filtered, obj: VerticalTableColumn) => {
-      if (obj.visible) {
-        const colObj = mapColumn(obj);
-
-        if (obj.columns) {
-          colObj.columns = obj.columns.map((col) => mapColumn(col));
-        }
-        filtered.push(colObj);
-      }
-      return filtered;
-    }, []);
-
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    setHeadings(filterColumnCells(columns));
+  }, [columns]);
 
   useEffect(() => {
     if (status === "fulfilled") {
@@ -270,12 +278,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     setShowLoading(status === "pending" || status === "uninitialized");
   }, [status, tableData]);
 
-  useEffect(() => {
-    handleChange({ newHeadings: headings });
-  }, [headings, handleChange]);
-
-  const handleColumnChange = (update) => {
-    setHeadings(filterColumnCells(update));
+  const handleColumnChange = (update: Columns[]) => {
+    handleChange({ newHeadings: update });
   };
 
   const tableAction = (action) => {
@@ -337,14 +341,17 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }, [sortBy]);
     //TODO have focus stay on selection, also only reload table data not headers
     return (
-      <table {...getTableProps()} className="w-full text-left font-content ">
+      <table
+        {...getTableProps()}
+        className="w-full text-left font-content border-1 shadow-xs"
+      >
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="bg-primary-darker py-4 leading-5  "
+              className="font-heading text-xs font-bold bg-base-max text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md"
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -352,7 +359,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className="px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md"
+                    className="px-2 pt-3 pb-1 font-heading"
                     key={`hcolumn-${key}`}
                   >
                     {column.render("Header")}
@@ -360,9 +367,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-3 pb-1 font-heading text-primary-contrast-darker font-medium text-md whitespace-nowrap ${
+                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold bg-base-max text-base-contrast-max whitespace-nowrap ${
                       column.canSort &&
-                      "hover:bg-primary-darkest focus:bg-primary-darkest focus:outline focus:outline-white outline-offset-[-3px] outline-1"
+                      "hover:bg-primary-lightest focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5"
                     }`}
                     key={`hcolumn-${key}`}
                     aria-sort={
@@ -386,19 +393,19 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     {column.canSort && (
                       <div
                         key={`span-${key}`}
-                        className="inline-block text-xs pl-3 align-middle text-base-content-light"
+                        className="inline-block text-xs pl-3 align-middle text-base-light"
                       >
                         <BsCaretUpFill
                           className={
                             column.isSorted && !column.isSortedDesc
-                              ? "text-white"
+                              ? "text-primary-darker"
                               : ""
                           }
                         />
                         <BsCaretDownFill
                           className={`${
                             column.isSorted && column.isSortedDesc
-                              ? "text-white"
+                              ? "text-primary-darker"
                               : ""
                           } relative top-[-2px]`}
                         />
@@ -425,7 +432,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   <tr
                     {...row.getRowProps()}
                     className={
-                      index % 2 === 1 ? "bg-base-lighter" : "bg-base-lightest"
+                      index % 2 === 1
+                        ? "bg-base-max border-1"
+                        : "bg-slate-50 border-1"
                     }
                   >
                     {row.cells.map((cell, key) => {
@@ -433,7 +442,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-1 text-sm text-content"
+                          className="px-2 py-1 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -488,7 +497,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     let outputString = " --";
     if (!isNaN(pagination.from) && status === "fulfilled") {
       outputString = ` ${
-        pagination?.from !== undefined ? pagination.from + 1 : 0
+        pagination.from >= 0 && tableData.length > 0 ? pagination.from + 1 : 0
       } - `;
 
       const paginationTo = pagination.from + pageSize;
@@ -530,7 +539,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {additionalControls && (
           <div className={"flex-auto h-10"}>{additionalControls}</div>
         )}
-        <div className="flex flex-row">
+        <div className="flex flex-row items-center">
           {search?.enabled && (
             <div className="flex flex-row w-max">
               <TextInput
@@ -539,7 +548,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 aria-label="Table Search Input"
                 classNames={{
                   input: "focus:border-2 cus:drop-shadow-xl",
-                  wrapper: "w-72 mr-2",
+                  wrapper: "w-72 mr-1",
                 }}
                 size="sm"
                 rightSection={
@@ -574,20 +583,25 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               withArrow
             >
               <Popover.Target>
-                <Box
-                  className={`mr-0 ml-auto border-1 border-base-lighter p-3`}
-                  onClick={() => setShowColumnMenu(!showColumnMenu)}
+                <button
+                  onClick={() => {
+                    setShowColumnMenu(!showColumnMenu);
+                  }}
                 >
-                  <BsList />
-                </Box>
+                  <Box
+                    className={`border-1 border-base p-2 rounded-md mx-1 hover:cursor-pointer`}
+                  >
+                    {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
+                  </Box>
+                </button>
               </Popover.Target>
               <Popover.Dropdown>
                 <div className={`w-fit`}>
                   {columns.length > 0 && showColumnMenu && (
-                    <div className={`mr-0 ml-auto`}>
+                    <div className="mr-0 ml-2">
                       <DndProvider backend={HTML5Backend}>
                         <DragDrop
-                          listOptions={columns}
+                          listOptions={columns} // here....
                           handleColumnChange={handleColumnChange}
                           columnSearchTerm={""}
                         />
@@ -600,39 +614,43 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           )}
         </div>
       </div>
-      <div className="overflow-y-scroll w-full relative">
+      <div className="overflow-y-auto w-full relative">
         <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-start border-t border-base-light pt-2">
-          <p className="px-2 font-heading text-md">Page Size:</p>
-          <Select
-            size="xs"
-            radius="md"
-            onChange={handlePageSizeChange}
-            value={pageSize?.toString()}
-            data={[
-              { value: "10", label: "10" },
-              { value: "20", label: "20" },
-              { value: "40", label: "40" },
-              { value: "100", label: "100" },
-            ]}
-            classNames={{
-              root: "w-20 pb-2",
-            }}
-          />
+        <div className="flex flex-row items-center text-content justify-start border-base-light pt-2 mx-4">
+          <div className="flex flex-row items-center m-auto ml-0">
+            <span className="my-auto mx-1 text-xs">Show</span>
+            <Select
+              size="xs"
+              radius="md"
+              onChange={handlePageSizeChange}
+              value={pageSize?.toString()}
+              data={[
+                { value: "10", label: "10" },
+                { value: "20", label: "20" },
+                { value: "40", label: "40" },
+                { value: "100", label: "100" },
+              ]}
+              classNames={{
+                root: "w-16 font-heading",
+              }}
+            />
+            <span className="my-auto mx-1 text-xs">Entries</span>
+          </div>
           <div className="m-auto">
             <ShowingCount />
           </div>
           <Pagination
-            size="sm"
-            radius="md"
             color="accent"
             className="ml-auto"
             page={pageOn}
             onChange={handlePageChange}
             total={pageTotal}
+            size="sm"
+            radius="xs"
+            withEdges
           />
         </div>
       )}

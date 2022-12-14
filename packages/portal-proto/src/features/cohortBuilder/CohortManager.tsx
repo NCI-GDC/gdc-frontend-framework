@@ -24,6 +24,7 @@ import {
   DEFAULT_COHORT_ID,
   addNewCohort,
   removeCohort,
+  copyCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
   useCoreDispatch,
@@ -31,7 +32,6 @@ import {
   discardCohortChanges,
   useDeleteCohortMutation,
   selectCurrentCohortId,
-  setCurrentCohortId,
   selectCurrentCohort,
   useUpdateCohortMutation,
   setCohortMessage,
@@ -40,10 +40,12 @@ import {
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
   useAddCohortMutation,
+  resetSelectedCases,
   //TODO uncomment to show set modals menu
   // showModal,
   Modals,
   selectCurrentModal,
+  setCurrentCohortId,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -108,6 +110,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   // Cohort specific actions
   const newCohort = useCallback(() => {
+    coreDispatch(resetSelectedCases());
     coreDispatch(addNewCohort());
   }, [coreDispatch]);
 
@@ -119,6 +122,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   );
 
   const deleteCohort = () => {
+    coreDispatch(resetSelectedCases());
     coreDispatch(removeCohort({ shouldShowMessage: true }));
   };
 
@@ -263,6 +267,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           await addCohort(addBody)
             .unwrap()
             .then((payload) => {
+              coreDispatch(
+                copyCohort({ sourceId: prevCohort, destId: payload.id }),
+              );
+              // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+              // which does not exist will cause this
+              // Therefore, copy the unsaved cohort to the new cohort id received from
+              // the BE.
               coreDispatch(setCurrentCohortId(payload.id));
               coreDispatch(
                 setCohortMessage(`savedCohort|${newName}|${payload.id}`),
@@ -319,7 +330,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-base-light w-80 p-0 z-10 pt-5",
+                  root: "border-base-light w-80 p-0 z-[1050] pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-10",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",

@@ -1,44 +1,36 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
-import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
-import EnumFacet from "@/features/facets/EnumFacet";
-import ToggleFacet from "@/features/facets/ToggleFacet";
-import FilterFacets from "./filters.json";
 import dynamic from "next/dynamic";
+import partial from "lodash/partial";
+import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
 import {
+  FilterSet,
   GqlOperation,
-  useCoreDispatch,
   selectCurrentCohortFilters,
   joinFilters,
   useCoreSelector,
-  clearGenomicFilters,
   useGetSurvivalPlotQuery,
-  selectGenomicFilters,
   buildCohortGqlOperator,
   useTopGene,
   Modals,
   selectCurrentModal,
+  useCoreDispatch,
+  removeCohortFilter,
+  updateActiveCohortFilter,
 } from "@gff/core";
-
+import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
+import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
+import { useSelectFilterContent } from "./hooks";
 import {
-  useTotalCounts,
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-} from "@/features/facets/hooks";
-import partial from "lodash/partial";
-
-import {
-  useClearGenomicFilters,
-  useGenesFacet,
-  useUpdateGenomicEnumFacetFilter,
-  useGenomicFilterByName,
-} from "./hooks";
-import SetFacet from "../facets/SetFacet";
+  selectGeneAndSSMFilters,
+  clearGeneAndSSMFilters,
+} from "@/features/genomic/geneAndSSMFiltersSlice";
+import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
+import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -91,16 +83,23 @@ type AppModeState = "genes" | "ssms";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
+  const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
 
-  const genomicFilters = useCoreSelector((state) =>
-    selectGenomicFilters(state),
+  const genomicFilters: FilterSet = useAppSelector((state) =>
+    selectGeneAndSSMFilters(state),
   );
   const modal = useCoreSelector((state) => selectCurrentModal(state));
+
+  /**
+   * Get genes in cohort
+   */
+  const currentGenes = useSelectFilterContent("genes.gene_id");
+  const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
   const filters = useMemo(
     () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
@@ -124,7 +123,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     survivalData: [],
   };
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene(); // get the default top gene/ssms to show by default
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } =
+    useTopGene(genomicFilters); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -135,39 +135,67 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * @param name used as the label for the symbol in the Survival Plot
    * @param field  which gene or ssms field the symbol applied to
    */
-  const handleSurvivalPlotToggled = (
-    symbol: string,
-    name: string,
-    field: string,
-  ) => {
-    if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
-      // remove toggle
-      setComparativeSurvival(undefined);
-    } else {
-      setComparativeSurvival({ symbol: symbol, name: name, field: field });
-    }
-  };
+  const handleSurvivalPlotToggled = useCallback(
+    (symbol: string, name: string, field: string) => {
+      if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
+        // remove toggle
+        setComparativeSurvival(undefined);
+      } else {
+        setComparativeSurvival({ symbol: symbol, name: name, field: field });
+      }
+    },
+    [comparativeSurvival],
+  );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleGeneToggled = (_: Record<string, any>) => null;
+  const handleGeneAndSSmToggled = useCallback(
+    (
+      cohortStatus: string[],
+      field: string,
+      idField: string,
+      payload: Record<string, any>,
+    ) => {
+      if (cohortStatus.includes(payload[idField])) {
+        // remove the id from the cohort
+        const update = cohortStatus.filter((x) => x != payload[idField]);
+        if (update.length > 0)
+          coreDispatch(
+            updateActiveCohortFilter({
+              field: field,
+              operation: {
+                field: field,
+                operator: "includes",
+                operands: update,
+              },
+            }),
+          );
+        else coreDispatch(removeCohortFilter(field));
+      } else
+        coreDispatch(
+          updateActiveCohortFilter({
+            field: field,
+            operation: {
+              field: field,
+              operator: "includes",
+              operands: [...cohortStatus, payload[idField]],
+            },
+          }),
+        );
+    },
+    [coreDispatch],
+  );
 
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = (tabKey: string) => {
+  const handleTabChanged = useCallback((tabKey: string) => {
     setAppMode(tabKey as AppModeState);
     setComparativeSurvival(undefined);
-  };
+  }, []);
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
-    coreDispatch(clearGenomicFilters());
-  }, [cohortFilters, coreDispatch]);
-
-  // clear local filters when cohort changes or tabs change
-  useEffect(() => {
-    coreDispatch(clearGenomicFilters());
-  }, [cohortFilters, coreDispatch]);
+    appDispatch(clearGeneAndSSMFilters());
+  }, [cohortFilters, appDispatch]);
 
   /**
    * Clear comparative when local filters change
@@ -191,7 +219,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-100">
       {modal === Modals.GeneSetModal && (
         <GeneSetModal
           modalTitle="Filter Mutation Frequency by Genes"
@@ -208,113 +236,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           useUpdateFilters={useUpdateGenomicEnumFacetFilter}
         />
       )}
-      <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">
-        {FilterFacets.genes.map((x, index) => {
-          if (x.type == "toggle") {
-            return (
-              <ToggleFacet
-                key={`${x.facet_filter}-${index}`}
-                field={`${x.facet_filter}`}
-                hooks={{
-                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useTotalCounts: partial(
-                    useTotalCounts,
-                    FacetDocTypeToCountsIndexMap["genes"],
-                  ),
-                }}
-                facetName={x.name}
-                valueLabel={FacetDocTypeToLabelsMap["genes"]}
-                showPercent={false}
-                hideIfEmpty={false}
-                description={x.description}
-                width="w-64"
-              />
-            );
-          } else if (x.type === "set") {
-            return (
-              <SetFacet
-                facetName={x.name}
-                field={x.facet_filter}
-                width="w-64"
-                hooks={{
-                  useGetFacetData: partial(useGenesFacet, "genes", "explore"),
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useGetFacetFilters: useGenomicFilterByName,
-                }}
-              />
-            );
-          }
-          return (
-            <EnumFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              field={`${x.facet_filter}`}
-              hooks={{
-                useGetFacetData: partial(useGenesFacet, "genes", "explore"),
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap["genes"],
-                ),
-              }}
-              facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["genes"]}
-              showPercent={false}
-              hideIfEmpty={false}
-              description={x.description}
-              width="w-64"
-            />
-          );
-        })}
-        {FilterFacets.ssms.map((x, index) => {
-          if (x.type === "set") {
-            return (
-              <SetFacet
-                facetName={x.name}
-                field={x.facet_filter}
-                width="w-64"
-                hooks={{
-                  useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useGetFacetFilters: useGenomicFilterByName,
-                }}
-              />
-            );
-          }
-
-          return (
-            <EnumFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              field={`${x.facet_filter}`}
-              facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["ssms"]}
-              hooks={{
-                useGetFacetData: partial(useGenesFacet, "ssms", "explore"),
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap["ssms"],
-                ),
-              }}
-              showPercent={false}
-              hideIfEmpty={false}
-              width="w-64"
-            />
-          );
-        })}
-      </div>
+      <GeneAndSSMFilterPanel />
       <Tabs
         value={appMode}
         defaultValue="genes"
         classNames={{
           tab: SecondaryTabStyle,
           tabsList: "px-2 mt-2 border-0",
-          root: "bg-base-max border-0",
+          root: "bg-base-max border-0 w-full",
         }}
         onTabChange={handleTabChanged}
       >
@@ -323,71 +252,83 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="genes" pt="xs">
-          <div className="flex flex-row mt-3">
-            <div className="flex flex-col w-screen">
-              <Grid className="mx-2  bg-base-max w-9/12">
-                <Grid.Col span={6}>
-                  <GeneFrequencyChart marginBottom={95} />
-                </Grid.Col>
-                <Grid.Col span={6} className="relative">
-                  <LoadingOverlay
-                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
-                  />
-                  <SurvivalPlot
-                    data={
-                      survivalPlotReady &&
-                      survivalPlotData.survivalData.length > 1
-                        ? survivalPlotData
-                        : emptySurvivalPlot
-                    }
-                    names={
-                      survivalPlotReady && comparativeSurvival
-                        ? [comparativeSurvival.symbol]
-                        : []
-                    }
-                  />
-                </Grid.Col>
-              </Grid>
-            </div>
-          </div>
-          <div className={`flex flex-col w-screen`}>
-            <GTableContainer
-              selectedSurvivalPlot={comparativeSurvival}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              handleGeneToggled={handleGeneToggled}
-            />
-          </div>
-        </Tabs.Panel>
-        <Tabs.Panel value="ssms" pt="xs">
-          <div className="flex flex-row">
-            <div className="flex flex-col w-screen">
-              <div className="bg-base-max  w-2/5">
+          <div className="flex flex-col w-100 mx-6">
+            <Grid className="mx-2 bg-base-max">
+              <Grid.Col span={6}>
+                <GeneFrequencyChart
+                  marginBottom={95}
+                  genomicFilters={genomicFilters}
+                />
+              </Grid.Col>
+              <Grid.Col span={6} className="relative">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
                 <SurvivalPlot
+                  plotType={SurvivalPlotTypes.overall}
                   data={
                     survivalPlotReady &&
-                    comparativeSurvival &&
                     survivalPlotData.survivalData.length > 1
                       ? survivalPlotData
                       : emptySurvivalPlot
                   }
                   names={
                     survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.name]
+                      ? [comparativeSurvival.symbol]
                       : []
                   }
                 />
-              </div>
-            </div>
-          </div>
-          <div className={`flex flex-col w-screen`}>
-            <SMTableContainer
+              </Grid.Col>
+            </Grid>
+            <GTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneToggled={partial(
+                handleGeneAndSSmToggled,
+                currentGenes,
+                "genes.gene_id",
+                "geneID",
+              )}
+              toggledGenes={currentGenes}
+              genomicFilters={genomicFilters}
             />
           </div>
+        </Tabs.Panel>
+        <Tabs.Panel value="ssms" pt="xs">
+          <div className="flex flex-col w-100 mx-6">
+            <div className="bg-base-max">
+              <LoadingOverlay
+                visible={!survivalPlotReady && !topGeneSSMSSuccess}
+              />
+              <SurvivalPlot
+                plotType={SurvivalPlotTypes.overall}
+                data={
+                  survivalPlotReady &&
+                  comparativeSurvival &&
+                  survivalPlotData.survivalData.length > 1
+                    ? survivalPlotData
+                    : emptySurvivalPlot
+                }
+                names={
+                  survivalPlotReady && comparativeSurvival
+                    ? [comparativeSurvival.name]
+                    : []
+                }
+              />
+            </div>
+          </div>
+          <SMTableContainer
+            selectedSurvivalPlot={comparativeSurvival}
+            handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+            genomicFilters={genomicFilters}
+            handleSsmToggled={partial(
+              handleGeneAndSSmToggled,
+              currentMutations,
+              "ssms.ssm_id",
+              "mutationID",
+            )}
+            toggledSsms={currentMutations}
+          />
         </Tabs.Panel>
       </Tabs>
     </div>

@@ -6,6 +6,7 @@ import { fileCaseGenesMutationsFacetReducers } from "./features/facets/facetSlic
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
+import { filesAllReducer } from "./features/files/allFilesSlice";
 import { historyReducer } from "./features/history/historySlice";
 import { projectsReducer } from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
@@ -46,6 +47,7 @@ import {
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
+import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -56,6 +58,7 @@ export const reducers = combineReducers({
   gdcApps: gdcAppReducer,
   files: filesReducer,
   filesSize: filesSizeReducer,
+  filesAll: filesAllReducer,
   history: historyReducer,
   projects: projectsReducer,
   annotations: annotationsReducer,
@@ -83,6 +86,7 @@ export const reducers = combineReducers({
   [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
+  selectedCases: selectedCasesReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

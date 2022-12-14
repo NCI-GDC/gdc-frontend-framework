@@ -1,4 +1,4 @@
-import { GDCGenesTable, useGenesTable } from "@gff/core";
+import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -26,17 +26,21 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  genomicFilters?: FilterSet;
+  toggledGenes?: ReadonlyArray<string>;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   handleGeneToggled,
+  genomicFilters,
+  toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [deboucedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(DEFAULT_GTABLE_ORDER);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -115,7 +119,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data } = useGenesTable({
     pageSize: pageSize,
     offset: page * pageSize,
-    searchTerm: deboucedSearchTern.length > 0 ? deboucedSearchTern : undefined,
+    searchTerm:
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+    genomicFilters: genomicFilters,
   });
 
   useEffect(() => {
@@ -133,7 +139,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        <div className="flex flex-row justify-between items-center flex-nowrap w-[80%]">
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
               total={gTotal}
@@ -147,7 +153,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">
-                  <ButtonTooltip label="Export All Except #Cases and #Mutations">
+                  <ButtonTooltip
+                    label="Export All Except #Cases and #Mutations"
+                    comingSoon={true}
+                  >
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -156,7 +165,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       JSON
                     </Button>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
                     <Button
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -182,7 +191,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             />
           </div>
         </div>
-        <div className="h-full w-[90%]">
+        <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
               cellWidth="w-24"
@@ -192,7 +201,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               content={<span>No columns selected</span>}
             />
           ) : (
-            <div ref={ref} className="h-full w-[90%]">
+            <div ref={ref}>
               <GenesTable
                 status={status}
                 initialData={tableData}
@@ -202,6 +211,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 width={width}
                 pageSize={pageSize}
                 page={page}
+                toggledGenes={toggledGenes}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
                 handleGTotal={setGTotal}
@@ -213,13 +223,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className="flex flex-row w-9/12 ml-2 mt-0 m-auto">
-            <div className="flex flex-row items-center m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
-              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+          <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
+            <div className={"grow-0"}>
+              <div className="flex flex-row items-center text-sm  ml-0">
+                <span className="my-auto mx-1 ">Show</span>
+                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                <span className="my-auto mx-1 ">Entries</span>
+              </div>
             </div>
-            <div className={`m-auto text-sm`}>
+            <div className="flex flex-row items-center justify-center grow text-sm">
               <span>
                 Showing
                 <span className="font-bold">{` ${(
@@ -240,7 +252,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 genes
               </span>
             </div>
-            <div className="m-auto mr-0">
+            <div className="grow-0 mr-0">
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(gTotal / pageSize)}

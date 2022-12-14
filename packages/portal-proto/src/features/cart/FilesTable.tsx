@@ -12,6 +12,8 @@ import {
 import {
   VerticalTable,
   HandleChangeInput,
+  Columns,
+  filterColumnCells,
 } from "@/features/shared/VerticalTable";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
@@ -20,7 +22,7 @@ import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 
-const initialVisibleColumns = [
+const initialVisibleColumns: Columns[] = [
   { id: "remove", columnName: "Remove", visible: true },
   { id: "uuid", columnName: "File UUID", visible: false },
   { id: "access", columnName: "Access", visible: true },
@@ -48,7 +50,10 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   const [tableData, setTableData] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
-  const [visibleColumns, setVisibleColumns] = useState([]);
+  const [visibleColumns, setVisibleColumns] = useState(
+    filterColumnCells(initialVisibleColumns),
+  );
+  const [columns, setColumns] = useState(initialVisibleColumns);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -59,7 +64,8 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         setActivePage(obj.newPageNumber);
         break;
       case "newHeadings":
-        setVisibleColumns(obj.newHeadings);
+        setVisibleColumns(filterColumnCells(obj.newHeadings));
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -208,7 +214,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   return (
     <VerticalTable
       tableData={tableData}
-      columns={initialVisibleColumns}
+      columns={columns}
       selectableRow={false}
       tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
         activePage * pageSize < pagination?.total

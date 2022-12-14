@@ -189,6 +189,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             withArrow
             transition="fade"
             transitionDuration={200}
+            disabled={!description}
           >
             <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}

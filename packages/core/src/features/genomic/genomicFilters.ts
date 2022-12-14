@@ -67,20 +67,33 @@ export const selectGenomicGqlFilters = (
   return buildCohortGqlOperator(state.genomic.filters);
 };
 
-export const selectGenomicAndCohortFilters = (state: CoreState): FilterSet =>
-  joinFilters(selectCurrentCohortFilterOrCaseSet(state), state.genomic.filters);
+/**
+ * merges the current cohort with genomic filters (really ANY FilterSet)
+ * @param state - CoreState
+ * @param genomicFilters - FilterSet to merge
+ */
+export const mergeGenomicAndCohortFilters = (
+  state: CoreState,
+  genomicFilters: FilterSet,
+): FilterSet =>
+  joinFilters(selectCurrentCohortFilterOrCaseSet(state), genomicFilters);
 
+/**
+ * Deprecated
+ */
+export const selectGenomicAndCohortFilters = (state: CoreState): FilterSet =>
+  mergeGenomicAndCohortFilters(state, state.genomic.filters);
+/**
+ * Deprecated
+ */
 export const selectGenomicAndCohortGqlFilters = (
   state: CoreState,
 ): GqlOperation | undefined => {
-  return buildCohortGqlOperator(
-    joinFilters(
-      selectCurrentCohortFilterOrCaseSet(state),
-      state.genomic.filters,
-    ),
-  );
+  return buildCohortGqlOperator(selectGenomicAndCohortFilters(state));
 };
-
+/**
+ * Deprecated
+ */
 export const selectGenomicFiltersByName = (
   state: CoreState,
   name: string,

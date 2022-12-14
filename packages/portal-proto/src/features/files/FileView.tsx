@@ -58,15 +58,15 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-base-lighter w-full text-base-contrast-lighter rounded-t-md mt-4
+bg-base-lightest w-full text-base-contrast-lighter mt-4
 `;
 
 const TitleText = tw.h2`
-text-lg font-semibold font-heading mx-4 ml-2
+text-lg text-accent uppercase tracking-wide font-medium mx-4 ml-2
 `;
 
 const TitleHeader = tw.div`
-bg-base-lighter text-base-contrast-lighter rounded-t-md
+bg-base-lightest text-base-contrast-lighter
 `;
 
 const getAnnotationsLinkParams = (
@@ -98,14 +98,14 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
     <Table
       striped
       data-testid="tempTable"
-      className="drop-shadow-sm rounded-md border-2 border-base-lightest"
+      className="drop-shadow-sm border-1 border-base-lighter"
     >
       <thead>
         <tr>
           {tableData.headers.map((text, index) => (
             <th
               key={index}
-              className="bg-base-max font-heading font-semibold border-b-1 border-base"
+              className="bg-base-max font-heading font-semibold border-b-2 border-base-lighter"
             >
               {text}
             </th>
@@ -116,9 +116,9 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
         {tableData.tableRows.map((row, index) => (
           <tr
             key={index}
-            className={
-              index % 2 ? "bg-base-lightest" : "bg-accent-cool-lighter"
-            }
+            className={`${
+              index % 2 ? "bg-base-lightest" : "bg-base-max "
+            } border-base-lighter`}
           >
             {Object.values(row).map((item, index) => (
               <td key={index} className="text-sm p-1 pl-2.5">

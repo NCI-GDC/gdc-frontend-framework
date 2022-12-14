@@ -7,6 +7,7 @@ export const COHORTS = [
     filters: { mode: "and", root: {} },
     caseSet: {
       caseSetId: { mode: "and", root: {} },
+      caseSetIds: undefined,
       status: "uninitialized" as DataStatus,
     },
     modified: false,
