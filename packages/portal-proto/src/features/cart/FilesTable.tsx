@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import fileSize from "filesize";
-import { Button, Menu } from "@mantine/core";
-import { MdArrowDropDown as DropdownIcon } from "react-icons/md";
-import { VscTrash as TrashIcon } from "react-icons/vsc";
 import { capitalize } from "lodash";
 import {
   useCoreSelector,
@@ -15,15 +12,17 @@ import {
 import {
   VerticalTable,
   HandleChangeInput,
+  Columns,
+  filterColumnCells,
 } from "@/features/shared/VerticalTable";
-import { removeFromCart, RemoveFromCartButton } from "./updateCart";
+import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 
-const initialVisibleColumns = [
+const initialVisibleColumns: Columns[] = [
   { id: "remove", columnName: "Remove", visible: true },
   { id: "uuid", columnName: "File UUID", visible: false },
   { id: "access", columnName: "Access", visible: true },
@@ -47,13 +46,14 @@ interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
 
-const FilesTable: React.FC<FilesTableProps> = ({
-  filesByCanAccess,
-}: FilesTableProps) => {
+const FilesTable: React.FC<FilesTableProps> = () => {
   const [tableData, setTableData] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
-  const [visibleColumns, setVisibleColumns] = useState([]);
+  const [visibleColumns, setVisibleColumns] = useState(
+    filterColumnCells(initialVisibleColumns),
+  );
+  const [columns, setColumns] = useState(initialVisibleColumns);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -64,7 +64,8 @@ const FilesTable: React.FC<FilesTableProps> = ({
         setActivePage(obj.newPageNumber);
         break;
       case "newHeadings":
-        setVisibleColumns(obj.newHeadings);
+        setVisibleColumns(filterColumnCells(obj.newHeadings));
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -213,7 +214,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
   return (
     <VerticalTable
       tableData={tableData}
-      columns={initialVisibleColumns}
+      columns={columns}
       selectableRow={false}
       tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
         activePage * pageSize < pagination?.total
@@ -224,32 +225,6 @@ const FilesTable: React.FC<FilesTableProps> = ({
         <div className="flex gap-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
-          <Menu>
-            <Menu.Target>
-              <Button
-                leftIcon={<TrashIcon />}
-                rightIcon={<DropdownIcon size={20} />}
-                classNames={{
-                  root: "bg-nci-red-darker", //TODO: find good color theme for this
-                  rightIcon: "border-l pl-1 -mr-2",
-                }}
-              >
-                Remove From Cart
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => removeFromCart(data, cart, dispatch)}>
-                All Files ({cart.length})
-              </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  removeFromCart(filesByCanAccess?.false || [], cart, dispatch)
-                }
-              >
-                Unauthorized Files ({(filesByCanAccess?.false || []).length})
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
         </div>
       }
       pagination={{

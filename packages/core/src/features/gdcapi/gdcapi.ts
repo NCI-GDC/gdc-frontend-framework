@@ -2,6 +2,7 @@ import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
 import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
+import { caseSummaryDefaults } from "../cases/types";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -189,7 +190,7 @@ export interface CaseDefaults {
 
 export const fetchGdcCases = async (
   request?: GdcApiRequest,
-): Promise<GdcApiResponse<CaseDefaults>> => {
+): Promise<GdcApiResponse<caseSummaryDefaults>> => {
   return fetchGdcEntities("cases", request);
 };
 
@@ -425,6 +426,25 @@ export interface FileDefaults {
   }>;
 }
 
+export interface GenesDefaults {
+  readonly biotype: string;
+  readonly symbol: string;
+  readonly cytoband: ReadonlyArray<string>;
+  readonly synonyms: ReadonlyArray<string>;
+  readonly description: string;
+  readonly canonical_transcript_id: string;
+  readonly canonical_transcript_length: number;
+  readonly canonical_transcript_length_cds: number;
+  readonly canonical_transcript_length_genomic: string;
+  readonly gene_chromosome: string;
+  readonly gene_end: string;
+  readonly gene_id: string;
+  readonly gene_start: number;
+  readonly gene_strand: string;
+  readonly is_cancer_gene_census: boolean;
+  readonly name: string;
+}
+
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
@@ -442,6 +462,7 @@ export const fetchGdcSsms = async (
 ): Promise<GdcApiResponse<SSMSDefaults>> => {
   return fetchGdcEntities("ssms", request);
 };
+
 export const fetchGdcFiles = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<FileDefaults>> => {

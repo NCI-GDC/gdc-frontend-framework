@@ -45,7 +45,7 @@ export const HorizontalTable = ({
   customContainerStyles,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
-    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm rounded-md border-2 border-base-lightest";
+    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter";
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;
@@ -57,9 +57,7 @@ export const HorizontalTable = ({
           return (
             <tr
               key={`row-${obj.headerName}`}
-              className={
-                rowIndex % 2 ? "bg-base-lightest" : "bg-accent-cool-lighter"
-              }
+              className={rowIndex % 2 ? "bg-base-lightest" : "bg-base-max"}
             >
               <th
                 className="w-4/12 text-sm align-top pl-1 pr-8 whitespace-nowrap font-semibold"

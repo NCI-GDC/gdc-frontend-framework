@@ -16,7 +16,7 @@ export const SummaryCard = ({
 }: SummaryCardProps): JSX.Element => {
   return (
     <div>
-      <div className="flex gap-2 bg-base-lighter text-base-contrast-lighter rounded-t-md p-2">
+      <div className="flex gap-2 bg-base-lightest text-accent  p-2">
         {Icon && (
           <Icon
             className="inline-block mt-1 align-baseline"
@@ -24,7 +24,7 @@ export const SummaryCard = ({
             size="1.25rem"
           />
         )}
-        <h2 className="text-lg font-medium">{title}</h2>
+        <h2 className="text-lg tracking-wide uppercase font-medium">{title}</h2>
       </div>
 
       {message && <div className="mt-2 text-sm">{message}</div>}

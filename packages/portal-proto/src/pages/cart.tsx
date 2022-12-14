@@ -5,9 +5,7 @@ import Cart from "@/features/cart/Cart";
 
 const CartPage: NextPage = () => {
   return (
-    <UserFlowVariedPages
-      {...{ indexPath: "/user-flow/workbench", headerElements }}
-    >
+    <UserFlowVariedPages {...{ indexPath: "/", headerElements }}>
       <Cart />
     </UserFlowVariedPages>
   );

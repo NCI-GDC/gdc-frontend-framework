@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, useState, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
@@ -8,6 +8,7 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
 } from "@gff/core";
+import { isEqual } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
@@ -27,32 +28,34 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   const { data: userDetails } = useUserDetails();
+  const [alertDisplay, setAlertDisplay] = useState("none");
+  const [rootDisplay, setRootDisplay] = useState("none");
 
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
+  const prevArg = useRef<any>();
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      if (props.track == "bam") {
-        if (!userDetails.username) {
-          rootElem.innerHTML = `<div style='margin: 32px'><b>Access alert</b><hr><p>Please login to access the Sequence Read visualization tool.</p></div>`;
-          return;
-        } else if (!ppRef.current) {
-          rootElem.innerHTML = "";
-        }
-      }
+      const isAuthorized = props.track != "bam" || userDetails.username;
+      setAlertDisplay(isAuthorized ? "none" : "block");
+      setRootDisplay(isAuthorized ? "block" : "none");
+      if (!isAuthorized) return;
 
       const data =
-        props.track == "lolliplot"
-          ? getLolliplotTrack(props, filter0)
-          : props.track == "bam"
+        props.track == "lollipop"
+          ? getLollipopTrack(props, filter0)
+          : props.track == "bam" && userDetails?.username
           ? getBamTrack(props, filter0)
           : props.track == "matrix"
           ? getMatrixTrack(props, filter0)
           : null;
 
       if (!data) return;
+      console.log(55, isEqual(prevArg.current, data), prevArg.current, data);
+      if (isEqual(prevArg.current, data)) return;
+      prevArg.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
@@ -83,8 +86,26 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     ],
   );
 
+  const alertRef = useRef();
   const divRef = useRef();
-  return <div ref={divRef} />;
+  return (
+    <div>
+      <div
+        ref={alertRef}
+        style={{ margin: "32px", display: `${alertDisplay}` }}
+        className="sjpp-wrapper-alert-div"
+      >
+        <b>Access alert</b>
+        <hr />
+        <p>Please login to access the Sequence Read visualization tool.</p>
+      </div>
+      <div
+        ref={divRef}
+        style={{ margin: "32px", display: `${rootDisplay}` }}
+        className="sjpp-wrapper-root-div"
+      ></div>
+    </div>
+  );
 };
 
 interface Mds3Arg {
@@ -113,7 +134,7 @@ interface PpApi {
   update(arg: any): null;
 }
 
-function getLolliplotTrack(props: PpProps, filter0: any) {
+function getLollipopTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
