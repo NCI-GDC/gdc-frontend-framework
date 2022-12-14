@@ -147,19 +147,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   useEffect(() => {
     const columnGQLMap = {
-      SSMSAffectedCasesInCohort: "gene.numCases",
-      SSMSAffectedCasesAcrossTheGDC: "gene.ssm_case",
-      CNVGain: "gene.case_cnv_gain",
-      CNVLoss: "gene.case_cnv_loss",
+      SSMSAffectedCasesInCohort: "genes.numCases",
+      SSMSAffectedCasesAcrossTheGDC: "genes.ssm_case",
+      CNVGain: "genes.case_cnv_gain",
+      CNVLoss: "genes.case_cnv_loss",
     };
     setActiveSorts(() => {
       // todo: add an initial/default sort ?
       const sortables = Object.entries(sort)
         .filter((entry) => entry.at(-1).length)
-        .map(([field, direction]) => {
+        .map(([field, value]) => {
           return {
             field: columnGQLMap[field],
-            direction,
+            value,
           };
         });
       return sortables ?? [];
