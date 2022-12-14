@@ -119,7 +119,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             } color-transition duration-500`}
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
-              <NotificationsProvider position="top-center" zIndex={1200}>
+              <NotificationsProvider position="top-center" zIndex={400}>
                 {/* TODO: uncomment during PEAR-845 */}
                 {/* <TourProvider steps={[]} components={{ Badge }}> */}
                 <Component {...pageProps} />
