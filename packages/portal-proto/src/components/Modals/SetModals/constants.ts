@@ -8,4 +8,5 @@ export const modalStyles = {
 export const tabStyles = {
   tab: "text-base-content-lighter font-heading data-[active]:font-bold data-[active]:border-4 data-[active]:border-primary-darkest data-[active]:text-base-content-darkest",
   tabsList: "border-b-1",
+  tabLabel: "flex items-center",
 };

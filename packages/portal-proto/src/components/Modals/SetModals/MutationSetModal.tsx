@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Modal, Tabs } from "@mantine/core";
-import { useCoreDispatch, hideModal } from "@gff/core";
+import { useCoreDispatch, hideModal, useGetSsmsQuery } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
 import { modalStyles, tabStyles } from "./constants";
@@ -38,7 +38,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-            identifier="mutation"
+            entity="mutation"
             identifierToolTip={
               <div>
                 <p>
@@ -51,6 +51,14 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
                 <p>- File formats accepted: .txt, .csv, .tsv</p>
               </div>
             }
+            dataHook={useGetSsmsQuery}
+            searchField={"ssm_autocomplete.lowercase"}
+            mappedToFields={["ssm_id"]}
+            matchAgainstIdentifiers={["ssm_id", "genomic_dna_change"]}
+            fieldDisplay={{
+              ssm_id: "Mutation UUID",
+              genomic_dna_change: "DNA Change",
+            }}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
