@@ -81,8 +81,8 @@ export const ContextualCasesView: React.FC<ContextualCasesViewProps> = ({
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
 
-  console.log("appLocalFilters", appFilters ? appFilters : cohortFilters);
-
+  console.log("appLocalFilters", appFilters);
+  console.log("cohortFilters", cohortFilters);
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
       "case_id",

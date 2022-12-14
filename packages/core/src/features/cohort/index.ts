@@ -48,6 +48,13 @@ import {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  divideFilterSetByPrefix,
+  REQUIRES_CASE_SET_FILTERS,
+  buildCaseSetGQLQueryAndVariables,
+  buildCaseSetMutationQuery,
+  cohortSelectors,
+  processCaseSetResponse,
+  buildCaseSetFilters,
 } from "./availableCohortsSlice";
 
 import {
@@ -136,4 +143,11 @@ export {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  divideFilterSetByPrefix,
+  REQUIRES_CASE_SET_FILTERS,
+  buildCaseSetGQLQueryAndVariables,
+  buildCaseSetMutationQuery,
+  cohortSelectors,
+  processCaseSetResponse,
+  buildCaseSetFilters,
 };

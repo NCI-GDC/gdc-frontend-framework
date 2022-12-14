@@ -167,7 +167,7 @@ const willRequireCaseSet = (
   );
 };
 
-const buildCaseSetFilters = (
+export const buildCaseSetFilters = (
   data: Record<string, string>,
 ): Record<string, Operation> => {
   if (Object.values(data).length == 1) {

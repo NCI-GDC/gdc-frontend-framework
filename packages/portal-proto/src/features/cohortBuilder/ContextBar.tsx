@@ -259,6 +259,7 @@ const ContextBar: React.FC = () => {
               }}
               data-tour="cohort_summary"
               defaultValue="summary"
+              keepMounted={false}
             >
               <Tabs.List position="right">
                 <Tabs.Tab

@@ -28,6 +28,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import { ContextualCasesView } from "@/features/cases/CasesView/CasesView";
+import { useGenomicCaseSet } from "@/features/genomic/genomicCaseSet";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -120,6 +121,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
     [cohortFilters, genomicFilters],
   );
+
+  const appLocalFilters = useMemo(
+    () => joinFilters(cohortFilters, genomicFilters),
+    [cohortFilters, genomicFilters],
+  );
+
+  const { data: caseSetInfo, isSuccess: isCaseSetSuccess } = useGenomicCaseSet({
+    caseSetId: "MFAppLocalFilter",
+    filters: appLocalFilters,
+  });
 
   const f = buildGeneHaveAndHaveNotFilters(
     filters,
@@ -338,7 +349,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         <Tabs.Panel value="cases" pt="xs">
           <div className="flex flex-col w-100 mx-6">
             <div className="bg-base-max">
-              <ContextualCasesView appFilters={filters} />
+              <LoadingOverlay visible={!isCaseSetSuccess} />
+              <ContextualCasesView
+                appFilters={
+                  caseSetInfo ? (caseSetInfo as FilterSet) : undefined
+                }
+              />
             </div>
           </div>
         </Tabs.Panel>

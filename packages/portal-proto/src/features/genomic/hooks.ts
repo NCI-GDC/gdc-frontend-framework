@@ -25,7 +25,14 @@ import {
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
-import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
+import {
+  AppDataSelector,
+  FetchDataActionCreator,
+  UseAppDataResponse,
+  useAppDispatch,
+  useAppSelector,
+  UserAppDataHook,
+} from "@/features/genomic/appApi";
 import {
   updateGeneAndSSMFilter,
   selectGeneAndSSMFiltersByName,
@@ -167,5 +174,35 @@ export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
 
   return (field: string, operation: Operation) => {
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
+  };
+};
+
+export const createUseAppDataHook = <P, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+  dataSelector: AppDataSelector<T>,
+): UserAppDataHook<P, T> => {
+  return (...params: P[]): UseAppDataResponse<T> => {
+    const appDispatch = useAppDispatch();
+    const { data, status, error } = useAppSelector(dataSelector);
+    const action = fetchDataActionCreator(...params);
+    const prevParams = usePrevious<P[]>(params);
+
+    useEffect(() => {
+      if (status === "uninitialized" || !isEqual(prevParams, params)) {
+        // createDispatchHook types forces the input to AnyAction, which is
+        // not compatible with thunk actions. hence, the `as any` cast. ;(
+        appDispatch(action as any); // eslint-disable-line
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, appDispatch, action, params, prevParams]);
+
+    return {
+      data,
+      error,
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
+    };
   };
 };
