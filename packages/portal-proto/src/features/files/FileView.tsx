@@ -195,10 +195,10 @@ const AssociatedCB = ({
         entityQuery = { bioId: entity.entity_id };
       }
 
-      const url = getAnnotationsLinkParams(
-        caseData?.annotations,
-        caseData.case_id,
-      );
+      const url =
+        caseData !== undefined
+          ? getAnnotationsLinkParams(caseData?.annotations, caseData.case_id)
+          : undefined;
 
       const annotationsLink = url ? (
         <Link href={url} passHref>
@@ -229,7 +229,7 @@ const AssociatedCB = ({
           ),
           entity_type: entity.entity_type,
           sample_type: sample_type,
-          case_id: (
+          case_id: () => (
             <GenericLink
               path={`/cases/${entity.case_id}`}
               text={caseData.submitter_id}
