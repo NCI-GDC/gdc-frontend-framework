@@ -247,7 +247,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
-  console.log("render");
   return (
     <div className="flex flex-row w-100">
       <GeneAndSSMFilterPanel />

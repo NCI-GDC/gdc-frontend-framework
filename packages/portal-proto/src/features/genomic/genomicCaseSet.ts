@@ -11,6 +11,7 @@ import {
   FilterSet,
   AppDataSelectorResponse,
   buildCohortGqlOperator,
+  Operation,
 } from "@gff/core";
 import { AppDispatch, AppState } from "./appApi";
 import { createUseAppDataHook } from "./hooks";
@@ -27,14 +28,13 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
   const prefix = Object.keys(filters.root)
     .map((x) => x.split(".")[0])
     .filter((v, i, a) => a.indexOf(v) == i);
-  console.log("prefix", prefix);
   const sorted = Object.keys(filters.root).reduce(
     (obj, filterName) => {
       const filterPrefix = filterName.split(".")[0];
       return {
         ...obj,
-        [`input${filterPrefix}`]: {
-          ...obj[`input${filterPrefix}`].filters.root,
+        [filterPrefix]: {
+          ...obj[filterPrefix],
           [filterName]: filters.root[filterName],
         },
       };
@@ -42,21 +42,12 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
     prefix.reduce(
       (obj, pfx) => ({
         ...obj,
-        [`input${pfx}`]: {},
+        [pfx]: {},
       }),
       {},
     ),
   );
 
-  console.log("sorted", sorted);
-  const converted = Object.entries(sorted).reduce((obj, [key, value]) => {
-    console.log("key", key, value);
-    return {
-      ...obj,
-      [key]: { filters: buildCohortGqlOperator(value) },
-    };
-  }, {});
-  console.log("converted", converted);
   return {
     query: prefix
       .map(
@@ -68,12 +59,18 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
       .map((name) => ` $input${name}: CreateSetInput`)
       .join(","),
 
-    variables: converted,
-
-    // variables: Object.entries(sorted).reduce((obj, [key,value]) => ({
-    //   ...obj,
-    //   [key]: buildCohortGqlOperator(value as FilterSet)
-    // }), {})
+    variables: Object.entries(sorted).reduce((obj, [key, value]) => {
+      return {
+        ...obj,
+        [`input${key}`]: {
+          filters: buildCohortGqlOperator({
+            mode: "and",
+            root: value as Record<string, Operation>,
+          }),
+          set_id: `${key}-${id}`,
+        },
+      };
+    }, {}),
   };
 };
 
@@ -85,7 +82,7 @@ export const createGenomicCaseSet = createAsyncThunk<
   "mutationFrequencyApp/createCaseSet",
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async ({ caseSetId, filters = undefined }, thunkAPI) => {
+  async ({ caseSetId, filters = undefined }) => {
     const dividedFilters = divideFilterSetByPrefix(
       filters,
       REQUIRES_CASE_SET_FILTERS,
@@ -96,11 +93,6 @@ export const createGenomicCaseSet = createAsyncThunk<
         dividedFilters.withPrefix,
         caseSetId,
       );
-
-    console.log("query", query);
-    console.log("dividedFilters", dividedFilters);
-    console.log("parameters", parameters);
-    console.log("variables", variables);
 
     const graphQL = buildCaseSetMutationQuery(parameters, query);
     return graphqlAPI(graphQL, variables);
