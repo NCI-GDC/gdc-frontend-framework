@@ -9,14 +9,11 @@ import { modalStyles } from "./styles";
 import InputSet from "./InputSet";
 
 interface CaseSetModalProps {
-  readonly useUpdateFilters: () => (
-    field: string,
-    operation: Operation,
-  ) => void;
+  readonly updateFilters: (field: string, operation: Operation) => void;
 }
 
 const CaseSetModal: React.FC<CaseSetModalProps> = ({
-  useUpdateFilters,
+  updateFilters,
 }: CaseSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -54,7 +51,7 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         }
         setType="case"
         setTypeLabel="case"
-        mappedToFields={["submitter_id", "project.project_id"]}
+        mappedToFields={["submitter_id", "project.project_id", "case_id"]}
         matchAgainstIdentifiers={[
           "case_id",
           "submitter_id",
@@ -87,9 +84,10 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         }}
         hooks={{
           query: useGetCasesQuery,
-          updateFilters: useUpdateFilters,
+          updateFilters: updateFilters,
         }}
         facetField="case.case_id"
+        createSetField="case_id"
       />
     </Modal>
   );

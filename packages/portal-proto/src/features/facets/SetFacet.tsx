@@ -1,5 +1,4 @@
 import React from "react";
-import { partition } from "lodash";
 import { Badge, Group, Tooltip, Button, ActionIcon } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
@@ -18,12 +17,12 @@ import {
   FacetText,
   FacetHeader,
 } from "@/features/facets/components";
-import { FacetCardProps, FacetRequiredHooks } from "./types";
+import { FacetCardProps, SetFacetHooks } from "./types";
 
 const FACET_TO_MODAL = {
-  "genes.gene_id": Modals.GeneSetModal,
-  "cases.case_id": Modals.CaseSetModal,
-  "ssms.ssm_id": Modals.MutationSetModal,
+  "genes.gene_id": Modals.LocalGeneSetModal,
+  "cases.case_id": Modals.LocalCaseSetModal,
+  "ssms.ssm_id": Modals.LocalMutationSetModal,
 };
 
 const FACET_TO_SET_TYPE = {
@@ -32,9 +31,7 @@ const FACET_TO_SET_TYPE = {
   "ssms.ssm_id": "ssm",
 };
 
-const SetFacet: React.FC<
-  FacetCardProps<FacetRequiredHooks> & { modal: Modals }
-> = ({
+const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   field,
   description,
   facetName = undefined,
@@ -48,12 +45,13 @@ const SetFacet: React.FC<
     ? facetName
     : trimFirstFieldNameToTitle(field, true);
   const dispatch = useCoreDispatch();
-  const facetValues = (hooks.useGetFacetFilters(field) || []) as string[];
+  const facetValues = (hooks.useGetFacetValues(field) ||
+    []) as EnumOperandValue;
   const sets = useCoreSelector((state) =>
     selectSets(state, FACET_TO_SET_TYPE[field]),
   );
-  const displayValues = facetValues.every((v) => v.includes("set_id"))
-    ? facetValues.map((v) => sets[v.split("set_id:")[1]])
+  const displayValues = facetValues.every((v: string) => v.includes("set_id"))
+    ? facetValues.map((v: string) => sets[v.split("set_id:")[1]])
     : facetValues.length === 1
     ? [facetValues[0]]
     : [
@@ -136,6 +134,7 @@ const SetFacet: React.FC<
       <div className="p-2">
         <Button
           onClick={() => dispatch(showModal({ modal: FACET_TO_MODAL[field] }))}
+          color="accent"
         >
           + Add {facetTitle}
         </Button>

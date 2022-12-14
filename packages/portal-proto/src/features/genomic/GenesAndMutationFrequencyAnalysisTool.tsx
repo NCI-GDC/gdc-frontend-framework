@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
-import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import dynamic from "next/dynamic";
 import partial from "lodash/partial";
 import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
@@ -13,8 +11,6 @@ import {
   useGetSurvivalPlotQuery,
   buildCohortGqlOperator,
   useTopGene,
-  Modals,
-  selectCurrentModal,
   useCoreDispatch,
   removeCohortFilter,
   updateActiveCohortFilter,
@@ -93,7 +89,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
-  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   /**
    * Get genes in cohort
@@ -220,22 +215,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   return (
     <div className="flex flex-row w-100">
-      {modal === Modals.GeneSetModal && (
-        <GeneSetModal
-          modalTitle="Filter Mutation Frequency by Genes"
-          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          useUpdateFilters={useUpdateGenomicEnumFacetFilter}
-        />
-      )}
-      {modal === Modals.MutationSetModal && (
-        <MutationSetModal
-          modalTitle="Filter Mutation Frequency by Mutations"
-          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          useUpdateFilters={useUpdateGenomicEnumFacetFilter}
-        />
-      )}
       <GeneAndSSMFilterPanel />
       <Tabs
         value={appMode}

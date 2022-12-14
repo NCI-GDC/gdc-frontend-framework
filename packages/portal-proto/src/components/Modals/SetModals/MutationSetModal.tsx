@@ -17,17 +17,14 @@ interface MutationSetModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
-  readonly useUpdateFilters: () => (
-    field: string,
-    operation: Operation,
-  ) => void;
+  readonly updateFilters: (field: string, operation: Operation) => void;
 }
 
 const MutationSetModal: React.FC<MutationSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
-  useUpdateFilters,
+  updateFilters,
 }) => {
   const dispatch = useCoreDispatch();
 
@@ -76,7 +73,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             hooks={{
               query: useGetSsmsQuery,
               createSet: useCreateSsmsSetMutation,
-              updateFilters: useUpdateFilters,
+              updateFilters: updateFilters,
             }}
           />
         </Tabs.Panel>
@@ -103,7 +100,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             selectSetInstructions={selectSetInstructions}
             facetField="ssms.ssm_id"
             countHook={useSsmSetCountQuery}
-            updateFilters={useUpdateFilters}
+            updateFilters={updateFilters}
           />
         </Tabs.Panel>
       </Tabs>

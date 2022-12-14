@@ -17,17 +17,14 @@ interface GeneSetModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
-  readonly useUpdateFilters: () => (
-    field: string,
-    operation: Operation,
-  ) => void;
+  readonly updateFilters: (field: string, operation: Operation) => void;
 }
 
 const GeneSetModal: React.FC<GeneSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
-  useUpdateFilters,
+  updateFilters,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -88,7 +85,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             hooks={{
               query: useGetGenesQuery,
               createSet: useCreateGeneSetMutation,
-              updateFilters: useUpdateFilters,
+              updateFilters: updateFilters,
             }}
           />
         </Tabs.Panel>
@@ -114,7 +111,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             }
             selectSetInstructions={selectSetInstructions}
             countHook={useGeneSetCountQuery}
-            updateFilters={useUpdateFilters}
+            updateFilters={updateFilters}
             facetField={"genes.gene_id"}
           />
         </Tabs.Panel>

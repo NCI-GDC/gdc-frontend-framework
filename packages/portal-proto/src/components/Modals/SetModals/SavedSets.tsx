@@ -32,7 +32,7 @@ interface SavedSetsProps {
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  readonly updateFilters: () => (field: string, op: Operation) => void;
+  readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
 }
 
@@ -48,7 +48,6 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
-  const applyFilters = updateFilters();
 
   const tableData = useMemo(() => {
     return Object.entries(sets).map(([setId, name]) => ({
@@ -141,7 +140,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         <DarkFunctionButton
           disabled={selectedSets.length === 0}
           onClick={() => {
-            applyFilters(facetField, {
+            updateFilters(facetField, {
               field: facetField,
               operator: "includes",
               operands: selectedSets.map((id) => `set_id:${id}`),

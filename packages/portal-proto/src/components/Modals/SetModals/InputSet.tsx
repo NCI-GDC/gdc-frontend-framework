@@ -37,7 +37,7 @@ interface InputSetProps {
   readonly facetField: string;
   readonly hooks: {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
-    readonly updateFilters: () => (field: string, op: Operation) => void;
+    readonly updateFilters: (field: string, op: Operation) => void;
     readonly createSet?: UseMutation<any>;
   };
   readonly createSetField?: string;
@@ -64,7 +64,6 @@ const InputSet: React.FC<InputSetProps> = ({
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
-  const applyFilters = hooks.updateFilters();
 
   const { data, isSuccess } = hooks.query({
     filters: {
@@ -95,10 +94,10 @@ const InputSet: React.FC<InputSetProps> = ({
     matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
   ).map((id) => id.toLowerCase());
   const unmatched = tokens
-    .filter((t) => !matchedIds.includes(t.toLowerCase()))
+    .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
   const createSetIds = matched.map(
-    (match) => match.mappedTo.find((m) => m.field === createSetField).value,
+    (match) => match.mappedTo.find((m) => m.field === createSetField)?.value,
   );
 
   useEffect(() => {
@@ -216,7 +215,7 @@ const InputSet: React.FC<InputSetProps> = ({
         <DarkFunctionButton
           disabled={matched.length === 0}
           onClick={() => {
-            applyFilters(facetField, {
+            hooks.updateFilters(facetField, {
               field: facetField,
               operator: "includes",
               operands: createSetIds,

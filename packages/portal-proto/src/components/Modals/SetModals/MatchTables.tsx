@@ -67,7 +67,12 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         })),
       },
     ];
-  }, [matched, fieldDisplay, setTypeLabel]);
+  }, [
+    fieldDisplay,
+    setTypeLabel,
+    uniqueMappedToFields,
+    uniqueGivenIdentifierFields,
+  ]);
 
   const matchedTableData = useMemo(() => {
     return matched.map((d) => ({
