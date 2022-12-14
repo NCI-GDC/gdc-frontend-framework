@@ -44,7 +44,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^27.0.3",
-    "typescript": "~4.6.4"
+    "typescript": "~4.9.3"
   },
   "dependencies": {
     "uuid": "^8.3.2"
