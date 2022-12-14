@@ -23,6 +23,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   columnListOrder,
   visibleColumns,
   searchTerm,
+  sort,
+  handleSortChange,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -55,12 +57,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     },
     [selectedSurvivalPlot],
   );
-  const [test, setTest] = useState({
-    SSMSAffectedCasesInCohort: "",
-    SSMSAffectedCasesAcrossTheGDC: "",
-    CNVGain: "",
-    CNVLoss: "",
-  });
 
   const transformResponse = useGeneTableFormat(initialData);
 
@@ -135,20 +131,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpandedProxy({});
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
-  const handleSortChange = (col: string, parity: "asc" | "desc" | "") => {
-    console.table([col, parity]);
-    setTest((test) => {
-      return {
-        ...test,
-        [col]: test[col] === parity ? "" : parity,
-      };
-    });
-  };
-
-  useEffect(() => {
-    console.log("success?", test);
-  }, [test]);
-
   return (
     <>
       <ExpTable
@@ -168,7 +150,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             subrowTitle={`# SSMS Affected Cases Across The GDC`}
           />
         }
-        sorts={test}
+        sort={sort}
         handleSortChange={handleSortChange}
       />
     </>

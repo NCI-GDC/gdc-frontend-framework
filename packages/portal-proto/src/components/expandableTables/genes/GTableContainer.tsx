@@ -46,6 +46,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [visibleColumns, setVisibleColumns] = useState(
     DEFAULT_GTABLE_ORDER.filter((col) => col.visible),
   );
+  const [sort, setSort] = useState({
+    SSMSAffectedCasesInCohort: "",
+    SSMSAffectedCasesAcrossTheGDC: "",
+    CNVGain: "",
+    CNVLoss: "",
+  });
+  const [activeSorts, setActiveSorts] = useState([]);
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [tableData, setTableData] = useState<GDCGenesTable>({
     cases: 0,
@@ -70,6 +77,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
+  };
+
+  const handleSortChange = (col: string, parity: "asc" | "desc" | "") => {
+    setSort((s) => {
+      return {
+        ...s,
+        [col]: sort[col] === parity ? "" : parity,
+      };
+    });
   };
 
   const gReducer = (
@@ -122,11 +138,33 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     genomicFilters: genomicFilters,
+    sorts: activeSorts,
   });
 
   useEffect(() => {
     setPage(0);
   }, [pageSize]);
+
+  useEffect(() => {
+    const columnGQLMap = {
+      SSMSAffectedCasesInCohort: "gene.numCases",
+      SSMSAffectedCasesAcrossTheGDC: "gene.ssm_case",
+      CNVGain: "gene.case_cnv_gain",
+      CNVLoss: "gene.case_cnv_loss",
+    };
+    setActiveSorts(() => {
+      // todo: add an initial/default sort ?
+      const sortables = Object.entries(sort)
+        .filter((entry) => entry.at(-1).length)
+        .map(([field, direction]) => {
+          return {
+            field: columnGQLMap[field],
+            direction,
+          };
+        });
+      return sortables ?? [];
+    });
+  }, [sort]);
 
   const { status, genes: initialData } = data;
 
@@ -218,6 +256,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
+                sort={sort}
+                handleSortChange={handleSortChange}
               />
             </div>
           )}

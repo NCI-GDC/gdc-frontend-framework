@@ -164,7 +164,7 @@ export const fetchGenesTable = createAsyncThunk<
   "genes/genesTable",
   async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
+    { pageSize, offset, searchTerm, genomicFilters, sortBy }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
@@ -300,6 +300,7 @@ export const fetchGenesTable = createAsyncThunk<
           ...cohortFiltersContent,
         ],
       },
+      sort: sortBy,
     };
 
     // get the TableData

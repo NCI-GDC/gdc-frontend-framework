@@ -26,8 +26,8 @@ export interface ExpTableProps<TData> {
   allSelected: any;
   firstColumn: string;
   subrow: React.FC;
-  sorts: any;
-  handleSortChange: any;
+  sort: Record<string, string>;
+  handleSortChange: (col: string, parity: string) => void;
 }
 
 export const ExpTable: React.FC<ExpTableProps> = ({
@@ -40,7 +40,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   allSelected,
   firstColumn,
   subrow,
-  sorts,
+  sort,
   handleSortChange,
 }: ExpTableProps) => {
   const table = useReactTable({
@@ -85,7 +85,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                             multi={true}
                           />
                         ) : null}
-                        {[...Object.keys(sorts)].includes(header.id) ? (
+                        {[...Object.keys(sort)].includes(header.id) ? (
                           <div className="flex flex-col inline-block text-xs pl-3 align-middle text-base-content-light">
                             <button
                               className={`border border-green-500`}
@@ -94,7 +94,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                             >
                               <span
                                 className={
-                                  sorts[header.id] === "asc" ? "text-white" : ""
+                                  sort[header.id] === "asc" ? "text-white" : ""
                                 }
                               >
                                 up caret
@@ -109,9 +109,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                             >
                               <span
                                 className={
-                                  sorts[header.id] === "desc"
-                                    ? "text-white"
-                                    : ""
+                                  sort[header.id] === "desc" ? "text-white" : ""
                                 }
                               >
                                 down caret
