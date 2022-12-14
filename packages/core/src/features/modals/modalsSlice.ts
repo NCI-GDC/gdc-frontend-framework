@@ -15,6 +15,7 @@ export enum Modals {
   "CaseSetModal" = "CaseSetModal",
   "GeneSetModal" = "GeneSetModal",
   "MutationSetModal" = "MutationSetModal",
+  "SelectCohortsModal" = "SelectCohortsModal",
 }
 
 export interface ModalState {
