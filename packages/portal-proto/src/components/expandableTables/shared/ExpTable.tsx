@@ -1,7 +1,7 @@
 // tanstack/react-table v8 functions trigger typescript linter
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ExpandedState,
   useReactTable,
@@ -26,6 +26,8 @@ export interface ExpTableProps<TData> {
   allSelected: any;
   firstColumn: string;
   subrow: React.FC;
+  sorts: any;
+  handleSortChange: any;
 }
 
 export const ExpTable: React.FC<ExpTableProps> = ({
@@ -38,6 +40,8 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   allSelected,
   firstColumn,
   subrow,
+  sorts,
+  handleSortChange,
 }: ExpTableProps) => {
   const table = useReactTable({
     data,
@@ -59,6 +63,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .getRowModel()
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
+
   return (
     <div className="relative">
       <LoadingOverlay visible={status === "pending"} />
@@ -79,6 +84,40 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                             select={table.getRowModel().rows ?? []}
                             multi={true}
                           />
+                        ) : null}
+                        {[...Object.keys(sorts)].includes(header.id) ? (
+                          <div className="flex flex-col inline-block text-xs pl-3 align-middle text-base-content-light">
+                            <button
+                              className={`border border-green-500`}
+                              onClick={() => handleSortChange(header.id, "asc")}
+                              aria-sort={"ascending"}
+                            >
+                              <span
+                                className={
+                                  sorts[header.id] === "asc" ? "text-white" : ""
+                                }
+                              >
+                                up caret
+                              </span>
+                            </button>
+                            <button
+                              className={`border border-red-500`}
+                              onClick={() =>
+                                handleSortChange(header.id, "desc")
+                              }
+                              aria-sort={"descending"}
+                            >
+                              <span
+                                className={
+                                  sorts[header.id] === "desc"
+                                    ? "text-white"
+                                    : ""
+                                }
+                              >
+                                down caret
+                              </span>
+                            </button>
+                          </div>
                         ) : null}
                         <div>
                           {header.id !== "select" &&
