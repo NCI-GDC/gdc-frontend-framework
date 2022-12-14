@@ -120,7 +120,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   return (
     <>
-      <ExpTable
+      {/* <ExpTable
         status={status}
         data={transformResponse}
         columns={columns}
@@ -137,7 +137,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
             subrowTitle={`Affected Cases Across The GDC`}
           />
         }
-      />
+      /> */}
     </>
   );
 };
