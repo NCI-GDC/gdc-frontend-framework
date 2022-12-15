@@ -1,3 +1,5 @@
+import tw from "tailwind-styled-components";
+
 export const modalStyles = {
   modal: "p-0",
   title:
@@ -8,4 +10,7 @@ export const modalStyles = {
 export const tabStyles = {
   tab: "text-base-content-lighter font-heading data-[active]:font-bold data-[active]:border-4 data-[active]:border-primary-darkest data-[active]:text-base-content-darkest",
   tabsList: "border-b-1",
+  tabLabel: "flex items-center",
 };
+
+export const ButtonContainer = tw.div`bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky`;

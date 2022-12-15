@@ -42,6 +42,11 @@ import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
 } from "./features/gdcapi/gdcgraphql";
+import {
+  endpointReducer,
+  endpointSliceReducerPath,
+} from "./features/gdcapi/gdcapi";
+import { setsReducer } from "./features/sets";
 import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 
 export const reducers = combineReducers({
@@ -78,7 +83,9 @@ export const reducers = combineReducers({
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
+  [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
+  sets: setsReducer,
   selectedCases: selectedCasesReducer,
 });
 

@@ -63,15 +63,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     <div className="relative">
       <LoadingOverlay visible={status === "pending"} />
       <table className="w-full">
-        <thead
-          className={`
-            ${
-              selectAllActive
-                ? `border-l-4 border-t-4 border-r-4 border-activeColor`
-                : `border-2`
-            }
-            shadow-md`}
-        >
+        <thead className="border-2 shadow-md">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {

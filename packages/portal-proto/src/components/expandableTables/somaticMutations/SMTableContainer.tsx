@@ -40,8 +40,9 @@ export interface SMTableContainerProps {
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot,
-  handleSurvivalPlotToggled,
+  selectedSurvivalPlot = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   genomicFilters = { mode: "and", root: {} },
@@ -233,14 +234,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
+          <div
+            className={`flex flex-row w-100 ml-2 mt-0 font-heading items-center`}
+          >
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <span className=" mx-1 text-xs">Show</span>
-              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+              <div className={"grow-0"}>
+                <span className=" mx-1 text-xs">Show</span>
+                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                <span className="my-auto mx-1 text-xs">Entries</span>
+              </div>
             </div>
             <div
-              className={`flex flex-row justify-between items-center  text-sm`}
+              className={`flex flex-row justify-between items-center text-sm`}
             >
               <span>
                 Showing

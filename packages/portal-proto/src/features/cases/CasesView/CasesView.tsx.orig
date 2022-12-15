@@ -1,13 +1,11 @@
 import {
+  selectCurrentCohortFilterSet,
   useCoreSelector,
   selectCart,
   useCoreDispatch,
   selectSelectedCases,
   useAllCases,
   SortBy,
-  selectCurrentModal,
-  Modals,
-  selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
 import React, { useMemo, useState } from "react";
@@ -15,7 +13,7 @@ import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
+import { CasesCohortButton, CountsIcon } from "../CasesCohortButton";
 import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
@@ -26,14 +24,17 @@ import {
   getCasesTableAnnotationsLinkParams,
   SlideCountsIcon,
 } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+<<<<<<< HEAD
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { SelectCohortsModal } from "./SelectCohortsModal";
+=======
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+>>>>>>> develop
 
 const useStyles = createStyles((theme) => ({
   item: {
     "&[data-hovered]": {
-      backgroundColor: theme.colors.blue[3],
+      backgroundColor:
+        theme.colors[theme.primaryColor][theme.fn.primaryShade()],
       color: theme.white,
     },
   },
@@ -70,7 +71,7 @@ export const ContextualCasesView: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
+    selectCurrentCohortFilterSet(state),
   );
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -318,10 +319,6 @@ export const ContextualCasesView: React.FC = () => {
     }
   };
 
-  const showSelectCohortsModal = useCoreSelector((state) =>
-    selectCurrentModal(state),
-  );
-
   return (
     <div className="flex flex-col w-full ml-2 mr-8">
       <VerticalTable
@@ -372,23 +369,23 @@ export const ContextualCasesView: React.FC = () => {
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
-                <Menu.Item>TSV (Coming soon) </Menu.Item>
+                <Menu.Item>JSON (Coming Soon)</Menu.Item>
+                <Menu.Item>TSV (Coming Soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <ButtonTooltip label=" " comingSoon={true}>
+            <ButtonTooltip label="" comingSoon={true}>
               <Button variant="outline" color="primary">
                 JSON
               </Button>
             </ButtonTooltip>
-            <ButtonTooltip label=" " comingSoon={true}>
+            <ButtonTooltip label="" comingSoon={true}>
               <Button variant="outline" color="primary">
                 TSV
               </Button>
             </ButtonTooltip>
           </div>
         }
-        tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
+        tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${
           pagination?.total > 1 ? "Cases" : "Case"
         }`}
         showControls={true}
@@ -407,9 +404,6 @@ export const ContextualCasesView: React.FC = () => {
             : "uninitialized"
         }
       />
-      {showSelectCohortsModal === Modals.SelectCohortsModal && (
-        <SelectCohortsModal opened />
-      )}
     </div>
   );
 };

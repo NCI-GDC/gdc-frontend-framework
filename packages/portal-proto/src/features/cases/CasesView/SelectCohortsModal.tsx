@@ -1,5 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
-import { modalStyles } from "@/components/Modals/SetModals/constants";
+import { modalStyles } from "@/components/Modals/SetModals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   Columns,
@@ -85,6 +85,7 @@ export const SelectCohortsModal = ({ opened }: { opened: boolean }) => {
       withinPortal={false}
       classNames={modalStyles}
       size="xl"
+      zIndex={400}
     >
       <div>
         <span>
