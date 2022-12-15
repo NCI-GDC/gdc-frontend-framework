@@ -136,6 +136,21 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const downloadEverything = (
+    extension: string,
+    query: any,
+    ...params: Array<any>
+  ) => {
+    console.table([extension, params, query]);
+    // todo
+    // const { data: download } = query({ params })
+    // formatting download data
+    // const date = new Date() -> YYYY, MM, and DD: current date
+    // const blob = new Blob(download, extension)
+    // ...
+    // ...
+  };
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -158,6 +173,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
+                      onClick={() =>
+                        downloadEverything("json", "getAllTheGenes", [gTotal])
+                      }
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
