@@ -60,6 +60,7 @@ export const SaveModal = ({
       opened={opened}
       padding={0}
       radius="md"
+      zIndex={400}
       onClose={onClose}
       styles={(theme) => ({
         header: {
