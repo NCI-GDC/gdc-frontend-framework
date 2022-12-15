@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
-import { upperFirst } from "lodash";
+import { upperFirst, flatten } from "lodash";
 import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
@@ -21,19 +21,15 @@ import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { ButtonContainer } from "./styles";
 
-const CountCell = ({ countHook, setId }) => {
-  const { data, isSuccess } = countHook({ setId });
-  return isSuccess ? data : "";
-};
-
 interface SavedSetsProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
-  readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
+  readonly getSetInfo: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
+  readonly global?: boolean;
 }
 
 const SavedSets: React.FC<SavedSetsProps> = ({
@@ -41,13 +37,16 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   setTypeLabel,
   createSetsInstructions,
   selectSetInstructions,
-  countHook,
+  getSetInfo,
   updateFilters,
   facetField,
+  global,
 }: SavedSetsProps) => {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
+
+  const { data } = getSetInfo({ setIds: Object.keys(sets) });
 
   const tableData = useMemo(() => {
     return Object.entries(sets).map(([setId, name]) => ({
@@ -63,9 +62,9 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         />
       ),
       name,
-      count: <CountCell countHook={countHook} setId={setId} />,
+      count: data?.[setId]?.count,
     }));
-  }, [sets, countHook, selectedSets]);
+  }, [sets, selectedSets]);
 
   const columns = useMemo(() => {
     return [
@@ -140,11 +139,19 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         <DarkFunctionButton
           disabled={selectedSets.length === 0}
           onClick={() => {
-            updateFilters(facetField, {
-              field: facetField,
-              operator: "includes",
-              operands: selectedSets.map((id) => `set_id:${id}`),
-            });
+            if (global) {
+              updateFilters(facetField, {
+                field: facetField,
+                operator: "includes",
+                operands: flatten(selectedSets.map((id) => data[id].ids)),
+              });
+            } else {
+              updateFilters(facetField, {
+                field: facetField,
+                operator: "includes",
+                operands: selectedSets.map((id) => `set_id:${id}`),
+              });
+            }
             dispatch(hideModal());
           }}
         >

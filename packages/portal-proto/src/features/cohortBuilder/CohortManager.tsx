@@ -305,6 +305,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
+          global
         />
       )}
       {modal === Modals.GlobalMutationSetModal && (

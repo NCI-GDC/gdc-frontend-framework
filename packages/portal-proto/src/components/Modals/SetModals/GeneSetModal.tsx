@@ -6,7 +6,7 @@ import {
   hideModal,
   useGetGenesQuery,
   useCreateGeneSetMutation,
-  useGeneSetCountQuery,
+  useGeneSetInfoQuery,
   Operation,
 } from "@gff/core";
 import InputSet from "./InputSet";
@@ -18,6 +18,7 @@ interface GeneSetModalProps {
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
   readonly updateFilters: (field: string, operation: Operation) => void;
+  readonly global?: boolean;
 }
 
 const GeneSetModal: React.FC<GeneSetModalProps> = ({
@@ -25,6 +26,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
   inputInstructions,
   selectSetInstructions,
   updateFilters,
+  global = false,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -110,9 +112,10 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               </p>
             }
             selectSetInstructions={selectSetInstructions}
-            countHook={useGeneSetCountQuery}
+            getSetInfo={useGeneSetInfoQuery}
             updateFilters={updateFilters}
             facetField={"genes.gene_id"}
+            global={global}
           />
         </Tabs.Panel>
       </Tabs>

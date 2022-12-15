@@ -6,7 +6,7 @@ import {
   hideModal,
   useGetSsmsQuery,
   useCreateSsmsSetMutation,
-  useSsmSetCountQuery,
+  useSsmSetInfoQuery,
   Operation,
 } from "@gff/core";
 import InputSet from "./InputSet";
@@ -99,7 +99,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             }
             selectSetInstructions={selectSetInstructions}
             facetField="ssms.ssm_id"
-            countHook={useSsmSetCountQuery}
+            getSetInfo={useSsmSetInfoQuery}
             updateFilters={updateFilters}
           />
         </Tabs.Panel>
