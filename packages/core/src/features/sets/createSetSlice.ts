@@ -18,7 +18,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
             }
           }
         }
-        
+
         `,
         graphQLFilters: {
           input: {
@@ -56,7 +56,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
             }
           }
         }
-        
+
         `,
         graphQLFilters: {
           input: {
