@@ -247,12 +247,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         file_count: (
           <div className="flex">
             <div className="basis-1/4 text-right">
-              {/* <span className="min-w-[25%] "> */}
               {data_c.file_count.toLocaleString()}
-              {/* </span> */}
             </div>
             <div className="basis-3/4 pl-1">
-              {/* <div className="max-w-[75%]"> */}
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
@@ -261,7 +258,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   style={{ width: `${fileCountPercentage}%` }}
                 />
               </PercentBar>
-              {/* </div> */}
             </div>
           </div>
         ),
