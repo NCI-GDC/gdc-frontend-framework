@@ -164,7 +164,12 @@ export const FileFacetPanel = (): JSX.Element => {
         </Text>
       </Button>
       <div className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll">
-        <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+        <Modal
+          size="lg"
+          opened={opened}
+          onClose={() => setOpened(false)}
+          zIndex={400}
+        >
           <FacetSelection
             title={"Add a File Filter"}
             facetType="files"

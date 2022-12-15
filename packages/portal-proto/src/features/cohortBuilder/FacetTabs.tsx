@@ -155,7 +155,12 @@ const CustomFacetGroup = (): JSX.Element => {
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
       <LoadingOverlay visible={!isDictionaryReady} />
-      <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+      <Modal
+        size="lg"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        zIndex={400}
+      >
         <FacetSelection
           title={"Add a Case Filter"}
           facetType="cases"
