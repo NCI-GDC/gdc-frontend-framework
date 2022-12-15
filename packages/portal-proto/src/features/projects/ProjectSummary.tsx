@@ -358,10 +358,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV
+                  TSV (Coming soon)
                 </Menu.Item>
                 <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON
+                  JSON (Coming soon)
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -376,10 +376,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV
+                  TSV (Coming soon)
                 </Menu.Item>
                 <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON
+                  JSON (Coming soon)
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

@@ -6,6 +6,7 @@ import { Statistics } from "@gff/core";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -42,18 +43,24 @@ const CardControls: React.FC<CardControlsProps> = ({
                 rightIcon={<DownIcon size={20} />}
                 className="bg-base-max text-base-content-darker border-base border-base-lighter"
               >
-                Select Action
+                Create New Cohort
               </Button>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item disabled>Save as a new cohort</Menu.Item>
-              <Menu.Item disabled>Add to cohort</Menu.Item>
-              <Menu.Item disabled>Remove from cohort</Menu.Item>
+              <Menu.Item disabled>Only Selected Cases</Menu.Item>
+              <Menu.Item disabled>
+                Existing Cohort With Selected Cases
+              </Menu.Item>
+              <Menu.Item disabled>
+                Existing Cohort Without Selected Cases
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
-            TSV
-          </Button>
+          <ButtonTooltip label=" " comingSoon={true}>
+            <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
+              TSV
+            </Button>
+          </ButtonTooltip>
         </div>
         <Menu
           classNames={{

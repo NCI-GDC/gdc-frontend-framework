@@ -49,6 +49,7 @@ export const DragDrop: FC<DragDropProps> = ({
       index: number,
     ) => {
       return (
+        column["columnName"] &&
         typeof column["columnName"] === "string" &&
         column["columnName"]
           .toLowerCase()

@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+  Columns,
+} from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
 import Link from "next/link";
@@ -7,6 +11,7 @@ import {
   useProjects,
   buildCohortGqlOperator,
   ProjectDefaults,
+  useCoreDispatch,
   joinFilters,
   SortBy,
 } from "@gff/core";
@@ -19,12 +24,10 @@ import {
   SelectAllProjectsButton,
 } from "@/features/projectsCenter/SelectProjectButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
+import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-
-const extractToArray = (
-  data: ReadonlyArray<Record<string, number | string>>,
-  nodeKey: string,
-) => data.map((x) => x[nodeKey]);
+import { extractToArray } from "src/utils";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CellProps {
   value: string[];
@@ -36,6 +39,7 @@ interface SelectColumnProps {
 }
 
 const ProjectsTable: React.FC = () => {
+  const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -71,7 +75,7 @@ const ProjectsTable: React.FC = () => {
     sortBy: sortBy,
   });
 
-  const columnListOrder = [
+  const columnListOrder: Columns[] = [
     {
       id: "selected",
       visible: true,
@@ -157,7 +161,7 @@ const ProjectsTable: React.FC = () => {
       },
     },
   ];
-
+  const [columns, setColumns] = useState(columnListOrder);
   useEffect(() => setActivePage(1), [projectFilters]);
 
   const sortByActions = (sortByObj) => {
@@ -246,24 +250,65 @@ const ProjectsTable: React.FC = () => {
         setActivePage(obj.newPageNumber);
         break;
       case "newSearch":
-        setSearchTerm(obj.newSearch.toLowerCase());
+        setSearchTerm(obj.newSearch);
         setActivePage(1);
+        break;
+      case "newHeadings":
+        setColumns(obj.newHeadings);
         break;
     }
   };
 
+  const handleDownloadJSON = async () => {
+    await download({
+      endpoint: "projects",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: buildCohortGqlOperator(projectFilters) ?? {},
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "project_id",
+          "disease_type",
+          "primary_site",
+          "program.name",
+          "summary.case_count",
+          "summary.data_categories.data_category",
+          "summary.data_categories.case_count",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.experimental_strategies.case_count",
+          "summary.file_count",
+        ].join(","),
+      },
+      dispatch: coreDispatch,
+    });
+  };
+
+  //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} projects`}
+      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} ${
+        tempPagination?.total > 1 ? "Projects" : "Project"
+      }`}
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
+          <ButtonTooltip label="Save as TSX" comingSoon={true}>
+            <FunctionButton>TSV</FunctionButton>
+          </ButtonTooltip>
         </div>
       }
       tableData={formattedTableData}
-      columns={columnListOrder}
+      columns={columns}
       columnSorting={"manual"}
       selectableRow={false}
       showControls={true}

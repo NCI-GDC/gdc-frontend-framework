@@ -47,5 +47,8 @@ module.exports = {
     react: {
       version: "detect",
     },
+    next: {
+      rootDir: "packages/portal-proto",
+    },
   },
 };

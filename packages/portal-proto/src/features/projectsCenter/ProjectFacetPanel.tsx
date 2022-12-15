@@ -51,7 +51,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
       </Group>
       <div className="flex flex-col gap-y-4  h-screen overflow-y-scroll px-4">
         {FilterFacets.project.map((x) => {
-          const facetName = fieldNameToTitle(x.full);
+          const facetName = x.title || fieldNameToTitle(x.full);
           return createFacetCard(
             x as FacetDefinition,
             "Projects",

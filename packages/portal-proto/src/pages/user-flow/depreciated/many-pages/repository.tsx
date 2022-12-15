@@ -4,11 +4,10 @@ import { CohortManager } from "@/features/user-flow/many-pages/cohort";
 import { Select } from "@/components/Select";
 import { useState } from "react";
 import { GdcFile, useFiles } from "@gff/core";
-//import { FilesView } from "@/features/files/FilesView";
 import { FileModal } from "@/features/files/FileView";
 import { CaseModal } from "@/features/cases/CaseView";
-import { Case } from "@/features/cases/CasesView";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
+import { Case } from "@/features/user-flow/all-apps/baseExploration";
 
 const RepositoryPage: NextPage = () => {
   const { data } = useFiles({ size: 20 });

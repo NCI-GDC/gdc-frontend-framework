@@ -9,17 +9,18 @@ import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-import { TourProvider } from "@reactour/tour";
-import { CustomBadge as Badge } from "../features/tour/CustomBadge";
+// TODO: uncomment during PEAR-845
+// import { TourProvider } from "@reactour/tour";
+// import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
-import "../features/demoApp1/DemoApp";
-import "../features/demoApp2/DemoApp";
 import "@/features/projectsCenter/ProjectsCenter";
 import "@/features/repositoryApp/RepositoryApp";
+import "@/features/genomic/registerApp";
+import "@/features/oncoGrid/registerApp";
 
 // import the React tab styles once
 import "react-tabs/style/react-tabs.css";
@@ -118,14 +119,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             } color-transition duration-500`}
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
-              <NotificationsProvider position="top-center">
-                <TourProvider steps={[]} components={{ Badge }}>
-                  <Component {...pageProps} />
-                  <Script
-                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                    strategy="afterInteractive"
-                  />
-                </TourProvider>
+              <NotificationsProvider position="top-center" zIndex={400}>
+                {/* TODO: uncomment during PEAR-845 */}
+                {/* <TourProvider steps={[]} components={{ Badge }}> */}
+                <Component {...pageProps} />
+                <Script
+                  src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                  strategy="afterInteractive"
+                />
+                {/* </TourProvider> */}
               </NotificationsProvider>
             </URLContext.Provider>
           </div>

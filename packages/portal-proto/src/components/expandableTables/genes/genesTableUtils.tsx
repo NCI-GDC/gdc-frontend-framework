@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -6,12 +6,15 @@ import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { SurvivalIcon, AnnotationsIcon } from "../shared/sharedTableUtils";
+import { AnnotationsIcon } from "../shared/sharedTableUtils";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
+import Link from "next/link";
+import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 
 export const createTableColumn = (
   accessor: string,
@@ -23,6 +26,7 @@ export const createTableColumn = (
     field: string,
   ) => void,
   handleGeneToggled: GeneToggledHandler,
+  toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -58,7 +62,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -77,7 +81,7 @@ export const createTableColumn = (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={row.original["cohort"].checked}
+                      isActive={toggledGenes.includes(row.original?.geneID)}
                       margin={`my-0.5 ml-0`}
                       icon={
                         <Image
@@ -87,7 +91,12 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={handleGeneToggled} // handleCohortSwitch
+                      handleSwitch={() =>
+                        handleGeneToggled({
+                          geneID: row.original?.geneID,
+                          symbol: row.original?.symbol,
+                        })
+                      }
                       tooltip={""}
                     />
                   )}
@@ -108,17 +117,17 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="mr-3"
               />
             ),
             cell: ({ row }) => {
               return (
                 <>
                   {row.getCanExpand() && (
-                    <SwitchSpring
-                      margin="mt-1 ml-0.5"
+                    <ToggledCheck
+                      margin="mt-[0.42em] ml-0.5"
                       isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon />}
+                      icon={<SurvivalIcon size={24} />}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
                       survivalProps={{ plot: "gene.symbol" }}
@@ -143,7 +152,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`w-max mx-auto`}>
+                <div>
                   {row.getCanExpand() && (
                     <Tooltip label={"Cancer Gene Census"}>
                       <div className={`block m-auto w-max`}>
@@ -168,7 +177,7 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                in Cohort`}
-                className="flex flex-row justify-start w-36 mr-2 "
+                className="flex flex-row justify-start mr-2 "
                 tooltip={`Breakdown of Affected Cases in Cohort:
                 # Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
               />
@@ -203,7 +212,7 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                  Across the GDC`}
-                className="flex flex-row justify-start mx-4 w-36"
+                className="flex flex-row justify-start mx-4"
                 tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
@@ -259,7 +268,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-8 w-20"
+                className="flex flex-row justify-start mr-8"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -292,7 +301,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-2 w-24"
+                className="flex flex-row justify-start mr-2"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -365,7 +374,7 @@ export const createTableColumn = (
                 tooltip={
                   "# Unique Simple Somatic Mutations in the Gene in Cohort"
                 }
-                className="w-20 mx-4 whitespace-nowrap"
+                className="w-20"
               />
             ),
             cell: ({ row }) => {
@@ -399,11 +408,13 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`text-xs`}>
-                  {row.original[`${accessor}`]
-                    ? row.original[`${accessor}`]
-                    : ""}
-                </div>
+                <Link href={`/genes/${row.original?.geneID}`}>
+                  <a className="text-utility-link underline text-sm">
+                    {row.original[`${accessor}`]
+                      ? row.original[`${accessor}`]
+                      : ""}
+                  </a>
+                </Link>
               );
             },
           },
@@ -420,7 +431,7 @@ export const createTableColumn = (
               <TableHeader
                 title="Name"
                 tooltip=""
-                className="flex flex-row justify-start"
+                className="flex flex-row justify-start lg:w-100 md:w-32 sm:w-16"
               />
             ),
             cell: ({ row }) => {
