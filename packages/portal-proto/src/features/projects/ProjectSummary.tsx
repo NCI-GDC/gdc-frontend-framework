@@ -228,10 +228,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
           <div className="flex">
-            <div className="basis-1/4 text-right">
+            <div className="basis-1/3 text-right">
               {data_c.case_count.toLocaleString()}
             </div>
-            <div className="basis-3/4 pl-1">
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${caseCountPercentage.toFixed(
                   2,
@@ -246,10 +246,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
           <div className="flex">
-            <div className="basis-1/4 text-right">
+            <div className="basis-1/3 text-right">
               {data_c.file_count.toLocaleString()}
             </div>
-            <div className="basis-3/4 pl-1">
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
@@ -296,10 +296,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
           <div className="flex">
-            <span className="min-w-[25%] pr-1.5 text-right">
+            <span className="basis-1/3 text-right">
               {exp_c.case_count.toLocaleString()}
             </span>
-            <div className="max-w-[75%]">
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${caseCountPercentage.toFixed(
                   2,
@@ -314,10 +314,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
           <div className="flex">
-            <span className="min-w-[25%] pr-1.5 text-right">
+            <div className="basis-1/3 text-right">
               {exp_c.file_count.toLocaleString()}
-            </span>
-            <div className="max-w-[75%]">
+            </div>
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
