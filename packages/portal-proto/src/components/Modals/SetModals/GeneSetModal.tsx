@@ -1,10 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import { Modal, Tabs } from "@mantine/core";
-import { useCoreDispatch, hideModal, useGetGenesQuery } from "@gff/core";
+import {
+  useCoreDispatch,
+  hideModal,
+  useGetGenesQuery,
+  useCreateGeneSetMutation,
+  useGeneSetCountQuery,
+} from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
-import { modalStyles, tabStyles } from "./constants";
+import { modalStyles, tabStyles } from "./styles";
 
 interface GeneSetModalProps {
   readonly modalTitle: string;
@@ -38,7 +44,8 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
-            entity="gene"
+            setType="gene"
+            setTypeLabel="gene"
             identifierToolTip={
               <div>
                 <p>
@@ -71,15 +78,17 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               "external_db_ids.uniprotkb_swissprot": "UniProtKB/Swiss-Prot",
               "external_db_ids.omim_gene": "OMIM",
             }}
+            createSetHook={useCreateGeneSetMutation}
+            createSetField={"gene_id"}
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
           <SavedSets
-            sets={{}}
-            fieldName={"gene"}
+            setType="gene"
+            setTypeLabel="gene"
             createSetsInstructions={
               <p>
-                Gene sets can be created from the <b>Enter Genes tabs</b>, or
+                Gene sets can be created from the <b>Enter Genes tab</b>, or
                 from the{" "}
                 <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                   <a>
@@ -94,6 +103,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               </p>
             }
             selectSetInstructions={selectSetInstructions}
+            countHook={useGeneSetCountQuery}
           />
         </Tabs.Panel>
       </Tabs>
