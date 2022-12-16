@@ -19,9 +19,10 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
-import { ButtonContainer } from "./styles";
 import DiscardChangesButton from "./DiscardChangesButton";
 import { UserInputContext } from "./GenericSetModal";
+import { ButtonContainer } from "./styles";
+import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
 
@@ -31,17 +32,11 @@ interface InputSetProps {
   readonly textInputPlaceholder: string;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly mappedToFields: string[];
-  readonly matchAgainstIdentifiers: string[];
-  readonly searchField: string;
-  readonly fieldDisplay: Record<string, string>;
-  readonly facetField: string;
   readonly hooks: {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
     readonly updateFilters: (field: string, op: Operation) => void;
     readonly createSet?: UseMutation<any>;
   };
-  readonly createSetField?: string;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -50,12 +45,6 @@ const InputSet: React.FC<InputSetProps> = ({
   textInputPlaceholder,
   setType,
   setTypeLabel,
-  mappedToFields,
-  matchAgainstIdentifiers,
-  searchField,
-  fieldDisplay,
-  createSetField,
-  facetField,
   hooks,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
@@ -66,6 +55,15 @@ const InputSet: React.FC<InputSetProps> = ({
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
+
+  const {
+    mappedToFields,
+    matchAgainstIdentifiers,
+    searchField,
+    createSetField,
+    fieldDisplay,
+    facetField,
+  } = fieldConfig[setType];
 
   const { data, isSuccess } = hooks.query({
     filters: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Tabs } from "@mantine/core";
 import {
@@ -29,15 +29,8 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
   global = false,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
-  const [userEnteredInput, setUserEnteredInput] = useState(false);
-
   return (
-    <GenericSetModal
-      modalTitle={modalTitle}
-      userEnteredInput={userEnteredInput}
-      tabLabel="Genes"
-      tabbed
-    >
+    <GenericSetModal modalTitle={modalTitle} tabLabel="Genes" tabbed>
       <Tabs.Panel value="input" className="pt-4">
         <InputSet
           inputInstructions={inputInstructions}
@@ -57,33 +50,11 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
               <p>- File formats accepted: .txt, .csv, .tsv</p>
             </div>
           }
-          searchField="gene_autocomplete.lowercase"
-          mappedToFields={["gene_id", "symbol"]}
-          matchAgainstIdentifiers={[
-            "gene_id",
-            "symbol",
-            "external_db_ids.entrez_gene",
-            "external_db_ids.hgnc",
-            "external_db_ids.omim_gene",
-            "external_db_ids.uniprotkb_swissprot",
-          ]}
-          fieldDisplay={{
-            symbol: "Symbol",
-            gene_id: "Ensembl",
-            "external_db_ids.entrez_gene": "Entrez",
-            "external_db_ids.hgnc": "HGNC",
-            "external_db_ids.uniprotkb_swissprot": "UniProtKB/Swiss-Prot",
-            "external_db_ids.omim_gene": "OMIM",
-          }}
-          createSetField={"gene_id"}
-          facetField={"genes.gene_id"}
           hooks={{
             query: useGetGenesQuery,
             createSet: useCreateGeneSetMutation,
             updateFilters: updateFilters,
           }}
-          setUserEnteredInput={setUserEnteredInput}
-          userEnteredInput={userEnteredInput}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -111,8 +82,6 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
           updateFilters={updateFilters}
           facetField={"genes.gene_id"}
           global={global}
-          setUserEnteredInput={setUserEnteredInput}
-          userEnteredInput={userEnteredInput}
         />
       </Tabs.Panel>
     </GenericSetModal>

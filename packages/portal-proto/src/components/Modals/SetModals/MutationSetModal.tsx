@@ -48,15 +48,6 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               <p>- File formats accepted: .txt, .csv, .tsv</p>
             </div>
           }
-          searchField={"ssm_autocomplete.lowercase"}
-          mappedToFields={["ssm_id"]}
-          matchAgainstIdentifiers={["ssm_id", "genomic_dna_change"]}
-          fieldDisplay={{
-            ssm_id: "Mutation UUID",
-            genomic_dna_change: "DNA Change",
-          }}
-          createSetField="ssm_id"
-          facetField="ssms.ssm_id"
           hooks={{
             query: useGetSsmsQuery,
             createSet: useCreateSsmsSetMutation,
