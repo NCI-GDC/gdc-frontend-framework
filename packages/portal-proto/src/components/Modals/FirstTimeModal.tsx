@@ -20,7 +20,7 @@ export const FirstTimeModal = ({
           Warning
         </Text>
       }
-      closeButtonLabel="Accepts"
+      closeButtonLabel="Accept"
       openModal={openModal}
       size="60%"
       buttons={[
