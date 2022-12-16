@@ -8,9 +8,11 @@ tags: gdc-data-portal-v2, clinical-data-analysis
 
 Test clinical data properties section
 -----------------------------------
+Tags: cdave, regression, smoke
 
-* Clinical Data Analysis - On GDC Data Portal V2 app
+* On GDC Data Portal V2 app
 * Navigate to clinical data analysis page
+* Navigate to CDAVE page
 * Expand clinical property sections
 * Check clinical properties
     |property       |   group   |

@@ -20,11 +20,17 @@ export const FirstTimeModal = ({
           Warning
         </Text>
       }
-      closeButtonLabel="Accept"
+      closeButtonLabel="Accepts"
       openModal={openModal}
       size="60%"
       buttons={[
-        { title: "Accept", onClick: handleAccept, hideModalOnClick: true },
+        {
+          title: "Accept",
+          onClick: handleAccept,
+          hideModalOnClick: true,
+          dataTestId: "intro-warning-accept",
+        },
+        // { title: "Pramod"}
       ]}
       withCloseButton={false}
       closeOnClickOutside={false}
