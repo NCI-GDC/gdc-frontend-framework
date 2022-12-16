@@ -7,8 +7,9 @@ from getgauge.python import (
     before_suite,
     after_suite,
 )
-
 from playwright.sync_api import sync_playwright
+
+from .utility import Utility
 
 
 class WebDriver:
@@ -32,7 +33,10 @@ class WebDriver:
     @before_suite
     def start_page(self):
         WebDriver.page = WebDriver.instance.new_page()
-        WebDriver.page.set_viewport_size({"width": 1920, "height": 1080})
+        screen_size = Utility.get_screen_size()
+        WebDriver.page.set_viewport_size(
+            {"width": screen_size["width"], "height": screen_size["height"]}
+        )
 
     @after_suite
     def close_and_quit(self):
