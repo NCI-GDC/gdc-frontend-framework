@@ -124,9 +124,6 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         ) : (
           <>
             <p className="text-sm mb-2">{selectSetInstructions}</p>
-            <p className="text-sm mb-2">
-              Note: the Submit button only submits information from this tab.
-            </p>
             <VerticalTable
               tableData={displayedData}
               columns={columns}
