@@ -16,11 +16,11 @@ import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import { SetTypes, useCoreDispatch, hideModal, Operation } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import FunctionButton from "@/components/FunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
 import { ButtonContainer } from "./styles";
+import DiscardChangesButton from "./DiscardChangesButton";
 
 export const MATCH_LIMIT = 50000;
 
@@ -41,6 +41,8 @@ interface InputSetProps {
     readonly createSet?: UseMutation<any>;
   };
   readonly createSetField?: string;
+  readonly setUserEnteredInput: (input: boolean) => void;
+  readonly userEnteredInput: boolean;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -56,6 +58,8 @@ const InputSet: React.FC<InputSetProps> = ({
   createSetField,
   facetField,
   hooks,
+  setUserEnteredInput,
+  userEnteredInput,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -103,6 +107,18 @@ const InputSet: React.FC<InputSetProps> = ({
   useEffect(() => {
     setTokens(input.trim().split(/[\s,]+/));
   }, [input]);
+
+  useEffect(() => {
+    setUserEnteredInput(false);
+  }, []);
+
+  useEffect(() => {
+    if (input !== "" || file !== null) {
+      setUserEnteredInput(true);
+    } else {
+      setUserEnteredInput(false);
+    }
+  }, [file, input, setUserEnteredInput]);
 
   useEffect(() => {
     if (matched.length > MATCH_LIMIT) {
@@ -198,20 +214,23 @@ const InputSet: React.FC<InputSetProps> = ({
             createSetHook={hooks.createSet}
           />
         )}
-        <FunctionButton onClick={() => dispatch(hideModal())}>
-          Cancel
-        </FunctionButton>
-        <DarkFunctionButton
+        <DiscardChangesButton
+          action={() => dispatch(hideModal())}
+          label="Cancel"
+          userEnteredInput={userEnteredInput}
+          dark={false}
+        />
+        <DiscardChangesButton
           disabled={input === ""}
-          onClick={() => {
+          action={() => {
             setInput("");
             setFile(null);
             setScreenReaderMessage("");
             setTokens([]);
           }}
-        >
-          Clear
-        </DarkFunctionButton>
+          label={"Clear"}
+          userEnteredInput={userEnteredInput}
+        />
         <DarkFunctionButton
           disabled={matched.length === 0}
           onClick={() => {

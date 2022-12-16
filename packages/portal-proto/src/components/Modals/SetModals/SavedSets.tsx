@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst, flatten } from "lodash";
@@ -17,9 +17,9 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { ButtonContainer } from "./styles";
+import DiscardChangesButton from "./DiscardChangesButton";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;
@@ -29,6 +29,8 @@ interface SavedSetsProps {
   readonly getSetInfo: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
+  readonly userEnteredInput: boolean;
+  readonly setUserEnteredInput: (entered: boolean) => void;
   readonly global?: boolean;
 }
 
@@ -40,6 +42,8 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   getSetInfo,
   updateFilters,
   facetField,
+  userEnteredInput,
+  setUserEnteredInput,
   global,
 }: SavedSetsProps) => {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
@@ -64,7 +68,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       name,
       count: data?.[setId]?.count,
     }));
-  }, [sets, selectedSets]);
+  }, [sets, selectedSets, data]);
 
   const columns = useMemo(() => {
     return [
@@ -77,6 +81,14 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       },
     ];
   }, [setTypeLabel]);
+
+  useEffect(() => {
+    if (selectedSets.length === 0) {
+      setUserEnteredInput(false);
+    } else {
+      setUserEnteredInput(true);
+    }
+  }, [selectedSets, setUserEnteredInput]);
 
   const {
     displayedData,
@@ -112,6 +124,9 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         ) : (
           <>
             <p className="text-sm mb-2">{selectSetInstructions}</p>
+            <p className="text-sm mb-2">
+              Note: the Submit button only submits information from this tab.
+            </p>
             <VerticalTable
               tableData={displayedData}
               columns={columns}
@@ -127,15 +142,18 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>
-        <FunctionButton onClick={() => dispatch(hideModal())}>
-          Cancel
-        </FunctionButton>
-        <DarkFunctionButton
+        <DiscardChangesButton
+          action={() => dispatch(hideModal())}
+          label="Cancel"
+          dark={false}
+          userEnteredInput={userEnteredInput}
+        />
+        <DiscardChangesButton
           disabled={selectedSets.length === 0}
-          onClick={() => setSelectedSets([])}
-        >
-          Clear
-        </DarkFunctionButton>
+          action={() => setSelectedSets([])}
+          label="Clear"
+          userEnteredInput={userEnteredInput}
+        />
         <DarkFunctionButton
           disabled={selectedSets.length === 0}
           onClick={() => {

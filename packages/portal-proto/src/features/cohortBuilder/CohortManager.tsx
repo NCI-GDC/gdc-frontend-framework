@@ -314,6 +314,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
+          global
         />
       )}
       {/*  Modals End   */}

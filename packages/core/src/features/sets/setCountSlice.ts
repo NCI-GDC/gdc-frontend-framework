@@ -92,7 +92,7 @@ export const setInfoSlice = graphqlAPISlice.injectEndpoints({
         return { data: results };
       },
     }),
-    ssmsSetInfo: builder.query<
+    ssmSetInfo: builder.query<
       Record<string, { count: number; ids: string[] }>,
       { setIds: string[] }
     >({
@@ -155,4 +155,4 @@ export const setInfoSlice = graphqlAPISlice.injectEndpoints({
   }),
 });
 
-export const { useGeneSetInfoQuery, useSsmsSetInfoQuery } = setInfoSlice;
+export const { useGeneSetInfoQuery, useSsmSetInfoQuery } = setInfoSlice;

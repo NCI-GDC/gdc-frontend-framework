@@ -1,12 +1,7 @@
-import {
-  useCoreDispatch,
-  hideModal,
-  useGetCasesQuery,
-  Operation,
-} from "@gff/core";
-import { Modal } from "@mantine/core";
-import { modalStyles } from "./styles";
+import React, { useState } from "react";
+import { useGetCasesQuery, Operation } from "@gff/core";
 import InputSet from "./InputSet";
+import GenericSetModal from "./GenericSetModal";
 
 interface CaseSetModalProps {
   readonly updateFilters: (field: string, operation: Operation) => void;
@@ -15,17 +10,13 @@ interface CaseSetModalProps {
 const CaseSetModal: React.FC<CaseSetModalProps> = ({
   updateFilters,
 }: CaseSetModalProps) => {
-  const dispatch = useCoreDispatch();
+  const [userEnteredInput, setUserEnteredInput] = useState(false);
 
   return (
-    <Modal
-      opened
-      title={"Filter Current Cohort by Cases"}
-      onClose={() => dispatch(hideModal())}
-      size="xl"
-      withinPortal={false}
-      classNames={modalStyles}
-      closeButtonLabel="close modal"
+    <GenericSetModal
+      modalTitle={"Filter Current Cohort by Cases"}
+      tabbed={false}
+      userEnteredInput={userEnteredInput}
     >
       <InputSet
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to filter your cohort."
@@ -88,8 +79,10 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         }}
         facetField="case.case_id"
         createSetField="case_id"
+        setUserEnteredInput={setUserEnteredInput}
+        userEnteredInput={userEnteredInput}
       />
-    </Modal>
+    </GenericSetModal>
   );
 };
 
