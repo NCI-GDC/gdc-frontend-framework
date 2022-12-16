@@ -1,4 +1,9 @@
-import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
+import {
+  GDCGenesTable,
+  useGenesTable,
+  FilterSet,
+  useGetSsmsQuery,
+} from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -12,6 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import DLTest from "./DLTest";
 
 export const SelectedRowContext =
   createContext<
@@ -54,6 +60,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -142,9 +149,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     ...params: Array<any>
   ) => {
     console.table([extension, params, query]);
-    // todo
-    // const { data: download } = query({ params })
-    // formatting download data
+    setDownloading(true);
     // const date = new Date() -> YYYY, MM, and DD: current date
     // const blob = new Blob(download, extension)
     // ...
@@ -192,6 +197,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       TSV
                     </Button>
                   </ButtonTooltip>
+                  {downloading && (
+                    <DLTest dataHook={useGetSsmsQuery} total={gTotal} />
+                  )}
                 </div>
               }
             />
