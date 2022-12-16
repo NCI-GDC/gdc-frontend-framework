@@ -30,7 +30,6 @@ export const FirstTimeModal = ({
           hideModalOnClick: true,
           dataTestId: "intro-warning-accept",
         },
-        // { title: "Pramod"}
       ]}
       withCloseButton={false}
       closeOnClickOutside={false}
