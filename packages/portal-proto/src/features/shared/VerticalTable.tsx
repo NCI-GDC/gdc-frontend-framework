@@ -70,6 +70,11 @@ export interface Columns {
    * Allows a data cell to have a custom function attached to it that will be run on the data in that cell
    */
   Cell?: (value: any) => JSX.Element;
+  /**
+   * Allows creating nested table columns
+   */
+  columns?: Columns[];
+  width?: number;
 }
 
 interface VerticalTableProps {
@@ -187,6 +192,7 @@ export interface Column {
   disableSortBy?: boolean;
   width?: number;
   Cell?: (value: any) => JSX.Element;
+  columns?: Column[];
 }
 
 interface TableProps {
@@ -194,16 +200,29 @@ interface TableProps {
   data: any[];
 }
 
+const mapColumn = (obj: Columns): Column => {
+  const colObj: Column = {
+    Header: obj.columnName,
+    accessor: obj.id,
+    disableSortBy: obj.disableSortBy || false,
+  };
+
+  if (obj.Cell) {
+    colObj.Cell = obj.Cell;
+  }
+  if (obj.width) {
+    colObj.width = obj.width;
+  }
+  return colObj;
+};
+
 export const filterColumnCells = (newList: Columns[]): Column[] => {
   return newList.reduce((filtered, obj) => {
     if (obj.visible) {
-      const colObj: Column = {
-        Header: obj.columnName,
-        accessor: obj.id,
-        disableSortBy: obj.disableSortBy || false,
-      };
-      if (obj.Cell) {
-        colObj.Cell = obj.Cell;
+      const colObj = mapColumn(obj);
+
+      if (obj.columns) {
+        colObj.columns = obj.columns.map((col) => mapColumn(col));
       }
       filtered.push(colObj);
     }
