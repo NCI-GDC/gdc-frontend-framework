@@ -504,8 +504,10 @@ describe("test adjust age range", () => {
   test("testing all age ranges", () => {
     expect(adjustAgeRange("<", 14974, "years")).toEqual(14610);
     expect(adjustAgeRange("<=", 14974, "years")).toEqual(14974);
-    expect(adjustAgeRange("<=", 7305, "years")).toEqual(7305);
-    expect(adjustAgeRange(">", 7305, "years")).toEqual(7305);
-    expect(adjustAgeRange(">=", 6940, "years")).toEqual(6940);
+    expect(adjustAgeRange("<=", 7305, "years")).toEqual(7669);
+    expect(adjustAgeRange(">", 7305, "years")).toEqual(7669);
+    expect(adjustAgeRange(">=", 6940, "years")).toEqual(6939);
+    expect(adjustAgeRange(">=", 20140, "years")).toEqual(20088);
+    expect(adjustAgeRange(">", 20140, "years")).toEqual(20453);
   });
 });

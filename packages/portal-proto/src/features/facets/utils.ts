@@ -277,20 +277,27 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
+/**
+ * Used to adjust the day values for ages to support
+ * both inclusive and exclusive ranges.
+ * @param op one of ">" , ">=" , "<" , "<="
+ * @param ageInDays
+ * @param units - years | days
+ */
 export const adjustAgeRange = (
   op: ">" | ">=" | "<" | "<=",
-  value: number,
-  units: string,
+  ageInDays: number,
+  units: "years" | "days",
 ): number => {
-  if (units !== "years") return value;
+  if (units !== "years") return ageInDays;
   switch (op) {
     case ">":
-      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+      return getUpperAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
     case ">=":
-      return Math.floor(value / DAYS_IN_YEAR) * DAYS_IN_YEAR;
+      return getLowerAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
     case "<":
-      return Math.floor(value / DAYS_IN_YEAR) * DAYS_IN_YEAR;
+      return getLowerAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
     case "<=":
-      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+      return getUpperAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
   }
 };
