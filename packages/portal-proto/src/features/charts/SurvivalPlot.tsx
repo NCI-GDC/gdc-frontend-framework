@@ -445,6 +445,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
+                closeMenuOnClick={false}
                 onClick={handleDownloadSVG}
                 icon={loadingSVG && loader}
                 disabled={loadingSVG}
@@ -452,6 +453,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 SVG
               </Menu.Item>
               <Menu.Item
+                closeMenuOnClick={false}
                 onClick={handleDownloadPNG}
                 icon={loadingPNG && loader}
                 disabled={loadingPNG}
