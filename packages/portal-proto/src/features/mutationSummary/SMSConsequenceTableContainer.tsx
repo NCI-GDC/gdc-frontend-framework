@@ -110,7 +110,7 @@ export const SMSConsequenceTableContainer: React.FC<
       <div className="flex flex-row justify-between items-center flex-nowrap w-100">
         <div className="flex flex-row ml-2 mb-4">
           <div className="flex gap-2">
-            <ButtonTooltip label="Export All Except #Cases">
+            <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
               <Button
                 className={
                   "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
@@ -119,7 +119,7 @@ export const SMSConsequenceTableContainer: React.FC<
                 JSON
               </Button>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view">
+            <ButtonTooltip label="Export current view" comingSoon={true}>
               <Button
                 className={
                   "bg-white text-activeColor border border-0.5 border-activeColor text-xs"

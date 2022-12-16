@@ -6,6 +6,7 @@ import { Statistics } from "@gff/core";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -55,9 +56,11 @@ const CardControls: React.FC<CardControlsProps> = ({
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
-            TSV
-          </Button>
+          <ButtonTooltip label=" " comingSoon={true}>
+            <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
+              TSV
+            </Button>
+          </ButtonTooltip>
         </div>
         <Menu
           classNames={{

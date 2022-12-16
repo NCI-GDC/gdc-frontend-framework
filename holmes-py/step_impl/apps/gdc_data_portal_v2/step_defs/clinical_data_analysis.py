@@ -11,13 +11,16 @@ def navigate_to_app():
     APP = GDCDataPortalV2App(WebDriver.page)
     APP.clinical_data_analysis.visit()
 
+
 @step("Navigate to clinical data analysis page")
 def navigate_to_cdave_page():
     APP.clinical_data_analysis.navigate_to_cdave_page()
 
+
 @step("Expand clinical property sections")
 def expand_clinical_property_sections():
     APP.clinical_data_analysis.expand_clinical_property_sections()
+
 
 @step("Check clinical properties <table>")
 def check_clinical_properties_in_pannel(table):

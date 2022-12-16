@@ -17,12 +17,13 @@ import { caseSetListenerMiddleware } from "./listeners";
 import storage from "./storage-persist";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
+import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart", "bannerNotification", "cohort"],
+  whitelist: ["cart", "bannerNotification", "cohort", "sets"],
 };
 
 export const coreStore = configureStore({
@@ -40,6 +41,7 @@ export const coreStore = configureStore({
         cohortApiSliceMiddleware,
         survivalApiSliceMiddleware,
         graphqlAPISliceMiddleware,
+        endpointSliceMiddleware,
       )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });

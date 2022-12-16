@@ -21,7 +21,9 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   columnListOrder,
   visibleColumns,
   searchTerm,
-  geneSymbol,
+  handleSsmToggled = () => null,
+  toggledSsms = [],
+  geneSymbol = undefined,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -95,6 +97,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           setSelectedMutations,
           handleSurvivalPlotToggled,
           setMutationID,
+          handleSsmToggled,
+          toggledSsms,
           geneSymbol,
         );
       });

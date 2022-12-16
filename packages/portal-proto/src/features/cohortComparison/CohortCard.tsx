@@ -31,8 +31,8 @@ const CohortCard: React.FC<CohortCardProps> = ({
     <Paper p="md" className="h-fit">
       <div className="flex justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Cohort</h2>
-          <p className="py-1 text-[#1F77B4] font-semibold">
+          <h2 className="font-heading text-lg font-semibold">Cohort</h2>
+          <p className="font-heading py-1 text-[#1F77B4] font-semibold">
             S<sub>1</sub> : {cohortNames[0]}
           </p>
           <p className="py-1 text-[#BD5800] font-semibold">
@@ -40,7 +40,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
           </p>
         </div>
         <div>
-          <h2 className="text-lg font-semibold"># Cases</h2>
+          <h2 className="font-heading text-lg font-semibold"># Cases</h2>
           <p className="py-1 ">{counts[0] ? counts[0].toLocaleString() : 0}</p>
           <p className="py-1">{counts[1] ? counts[1].toLocaleString() : 0}</p>
         </div>
@@ -64,7 +64,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
         <div key={value}>
           <input
             id={`cohort-comparison-${value}`}
-            className={"disabled:bg-base hover:disabled:bg-base"}
+            className="disabled:bg-base hover:disabled:bg-base"
             type="checkbox"
             value={value}
             onChange={() =>
@@ -76,7 +76,10 @@ const CohortCard: React.FC<CohortCardProps> = ({
             checked={selectedCards[value]}
             disabled={value === "survival" && !survivalPlotSelectable}
           ></input>
-          <label className="pl-1" htmlFor={`cohort-comparison-${value}`}>
+          <label
+            className="font-heading pl-1"
+            htmlFor={`cohort-comparison-${value}`}
+          >
             {value === "survival" ? field : FIELD_LABELS[field]}
           </label>
         </div>

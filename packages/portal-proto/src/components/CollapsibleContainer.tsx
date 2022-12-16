@@ -42,7 +42,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         transitionDuration={200}
         transitionTimingFunction="linear"
       >
-        {children}
+        {!isCollapsed ? children : null}
       </Collapse>
     </div>
   );

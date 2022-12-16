@@ -4,10 +4,15 @@ import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { SurvivalIcon } from "../shared/sharedTableUtils";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import { SingleSomaticMutation, SomaticMutations, Impact } from "./types";
+import {
+  SingleSomaticMutation,
+  SomaticMutations,
+  Impact,
+  SsmToggledHandler,
+} from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { TableColumnDefinition } from "../shared/types";
@@ -17,6 +22,7 @@ import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks } from "../../../utils";
 import Link from "next/link";
+import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 
 export const createTableColumn = (
   accessor: string,
@@ -28,6 +34,8 @@ export const createTableColumn = (
     field: string,
   ) => void,
   setMutationID: Dispatch<SetStateAction<string>>,
+  handleSsmToggled: SsmToggledHandler,
+  toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
 ): TableColumnDefinition => {
   switch (accessor) {
@@ -62,7 +70,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort":
+    case "cohort": // adds/removes a gene to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -81,7 +89,7 @@ export const createTableColumn = (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={row.original["cohort"].checked}
+                      isActive={toggledSsms.includes(row.original?.mutationID)}
                       margin={`my-0.5 ml-0`}
                       icon={
                         <Image
@@ -91,7 +99,12 @@ export const createTableColumn = (
                         />
                       }
                       selected={row.original["cohort"]}
-                      handleSwitch={undefined} // handleCohortSwitch
+                      handleSwitch={() =>
+                        handleSsmToggled({
+                          mutationID: row.original?.mutationID,
+                          symbol: row.original?.DNAChange,
+                        })
+                      }
                       tooltip={""}
                     />
                   )}
@@ -119,10 +132,10 @@ export const createTableColumn = (
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <SwitchSpring
-                      margin={`mt-1 ml-0.5`}
+                    <ToggledCheck
+                      margin="mt-[0.42em] ml-0.5"
                       isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon />}
+                      icon={<SurvivalIcon size={24} />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}
                       selected={row.original["survival"]}
                       handleSwitch={handleSurvivalPlotToggled}
@@ -246,7 +259,7 @@ export const createTableColumn = (
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 className="flex justify-start"
                 tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : "Cohort"
+                  geneSymbol ?? "Cohort"
                 } / # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),
