@@ -5,7 +5,7 @@ import {
   MdDownload as DownloadIcon,
   MdRestartAlt as ResetIcon,
 } from "react-icons/md";
-import { Box, Menu, Tooltip } from "@mantine/core";
+import { Box, Menu, Tooltip, Loader } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import html2canvas from "html2canvas";
@@ -281,6 +281,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     useState(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
   const downloadRef = useRef<HTMLDivElement | null>(null);
+  const [loadingSVG, setLoadingSVG] = useState(false);
+  const [loadingPNG, setLoadingPNG] = useState(false);
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -327,20 +329,24 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const handleDownloadSVG = () => {
     if (downloadRef.current) {
+      setLoadingSVG(true);
       const svg = elementToSVG(downloadRef.current);
       const svgStr = new XMLSerializer().serializeToString(svg);
       const blob = new Blob([svgStr], { type: "image/svg+xml" });
       saveAs(blob, "survival-plot.svg");
+      setLoadingSVG(false);
     }
   };
 
   const handleDownloadPNG = async () => {
     if (downloadRef.current) {
+      setLoadingPNG(true);
       const canvas = await html2canvas(downloadRef.current);
 
       canvas.toBlob((blob) => {
         saveAs(blob, "survival-plot.png");
       }, "image/png");
+      setLoadingPNG(false);
     }
   };
 
@@ -410,6 +416,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     saveAs(blob, "survival-plot.tsv");
   };
 
+  const loader = <Loader size="sm" className="p-1" />;
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap">
@@ -436,8 +444,20 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={handleDownloadSVG}>SVG</Menu.Item>
-              <Menu.Item onClick={handleDownloadPNG}>PNG</Menu.Item>
+              <Menu.Item
+                onClick={handleDownloadSVG}
+                icon={loadingSVG && loader}
+                disabled={loadingSVG}
+              >
+                SVG
+              </Menu.Item>
+              <Menu.Item
+                onClick={handleDownloadPNG}
+                icon={loadingPNG && loader}
+                disabled={loadingPNG}
+              >
+                PNG
+              </Menu.Item>
               <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
               <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
             </Menu.Dropdown>
