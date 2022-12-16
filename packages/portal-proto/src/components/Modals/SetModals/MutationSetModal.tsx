@@ -18,7 +18,7 @@ interface MutationSetModalProps {
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
   readonly updateFilters: (field: string, operation: Operation) => void;
-  readonly global: boolean;
+  readonly global?: boolean;
 }
 
 const MutationSetModal: React.FC<MutationSetModalProps> = ({
@@ -26,7 +26,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
   inputInstructions,
   selectSetInstructions,
   updateFilters,
-  global,
+  global = false,
 }) => {
   const dispatch = useCoreDispatch();
   const [userEnteredInput, setUserEnteredInput] = useState(false);

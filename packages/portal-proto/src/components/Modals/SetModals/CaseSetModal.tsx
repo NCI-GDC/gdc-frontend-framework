@@ -42,6 +42,7 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         }
         setType="case"
         setTypeLabel="case"
+        // TODO remove case_id from here
         mappedToFields={["submitter_id", "project.project_id", "case_id"]}
         matchAgainstIdentifiers={[
           "case_id",

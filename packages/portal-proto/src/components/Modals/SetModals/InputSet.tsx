@@ -110,6 +110,8 @@ const InputSet: React.FC<InputSetProps> = ({
 
   useEffect(() => {
     setUserEnteredInput(false);
+    // on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
