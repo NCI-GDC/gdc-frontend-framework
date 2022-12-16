@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Tabs } from "@mantine/core";
 import {
@@ -29,15 +29,9 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
   global = false,
 }) => {
   const dispatch = useCoreDispatch();
-  const [userEnteredInput, setUserEnteredInput] = useState(false);
 
   return (
-    <GenericSetModal
-      modalTitle={modalTitle}
-      tabbed
-      tabLabel={"Mutations"}
-      userEnteredInput={userEnteredInput}
-    >
+    <GenericSetModal modalTitle={modalTitle} tabbed tabLabel={"Mutations"}>
       <Tabs.Panel value="input" className="pt-4">
         <InputSet
           inputInstructions={inputInstructions}
@@ -68,8 +62,6 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             createSet: useCreateSsmsSetMutation,
             updateFilters: updateFilters,
           }}
-          setUserEnteredInput={setUserEnteredInput}
-          userEnteredInput={userEnteredInput}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -97,8 +89,6 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           getSetInfo={useSsmSetInfoQuery}
           updateFilters={updateFilters}
           global={global}
-          setUserEnteredInput={setUserEnteredInput}
-          userEnteredInput={userEnteredInput}
         />
       </Tabs.Panel>
     </GenericSetModal>

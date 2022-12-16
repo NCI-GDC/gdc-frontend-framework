@@ -154,6 +154,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         onKeyDown={createKeyboardAccessibleFunction(() =>
           setShowTable(!showTable),
         )}
+        aria-expanded={showTable}
       >
         {showTable ? (
           <CollapseIcon size={18} className="text-primary-darkest" />

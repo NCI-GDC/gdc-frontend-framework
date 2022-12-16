@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
 import {
   UseMutation,
   UseQuery,
@@ -21,6 +21,7 @@ import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
 import { ButtonContainer } from "./styles";
 import DiscardChangesButton from "./DiscardChangesButton";
+import { UserInputContext } from "./GenericSetModal";
 
 export const MATCH_LIMIT = 50000;
 
@@ -41,8 +42,6 @@ interface InputSetProps {
     readonly createSet?: UseMutation<any>;
   };
   readonly createSetField?: string;
-  readonly setUserEnteredInput: (input: boolean) => void;
-  readonly userEnteredInput: boolean;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -58,14 +57,13 @@ const InputSet: React.FC<InputSetProps> = ({
   createSetField,
   facetField,
   hooks,
-  setUserEnteredInput,
-  userEnteredInput,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
   const [tokens, setTokens] = useState<string[]>([]);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
+  const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
 
@@ -219,7 +217,6 @@ const InputSet: React.FC<InputSetProps> = ({
         <DiscardChangesButton
           action={() => dispatch(hideModal())}
           label="Cancel"
-          userEnteredInput={userEnteredInput}
           dark={false}
         />
         <DiscardChangesButton
@@ -231,7 +228,6 @@ const InputSet: React.FC<InputSetProps> = ({
             setTokens([]);
           }}
           label={"Clear"}
-          userEnteredInput={userEnteredInput}
         />
         <DarkFunctionButton
           disabled={matched.length === 0}

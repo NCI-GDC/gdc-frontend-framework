@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useContext } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst, flatten } from "lodash";
@@ -20,6 +20,7 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { ButtonContainer } from "./styles";
 import DiscardChangesButton from "./DiscardChangesButton";
+import { UserInputContext } from "./GenericSetModal";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;
@@ -29,8 +30,6 @@ interface SavedSetsProps {
   readonly getSetInfo: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
-  readonly userEnteredInput: boolean;
-  readonly setUserEnteredInput: (entered: boolean) => void;
   readonly global?: boolean;
 }
 
@@ -42,11 +41,10 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   getSetInfo,
   updateFilters,
   facetField,
-  userEnteredInput,
-  setUserEnteredInput,
   global,
 }: SavedSetsProps) => {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [, setUserEnteredInput] = useContext(UserInputContext);
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
 
@@ -143,13 +141,11 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           action={() => dispatch(hideModal())}
           label="Cancel"
           dark={false}
-          userEnteredInput={userEnteredInput}
         />
         <DiscardChangesButton
           disabled={selectedSets.length === 0}
           action={() => setSelectedSets([])}
           label="Clear"
-          userEnteredInput={userEnteredInput}
         />
         <DarkFunctionButton
           disabled={selectedSets.length === 0}

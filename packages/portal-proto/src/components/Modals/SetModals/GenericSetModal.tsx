@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
 import { modalStyles, tabStyles } from "./styles";
 import DiscardChangesModal from "./DiscardChangesModal";
 
+export const UserInputContext = createContext([]);
+
 interface GenericSetModalProps {
   readonly modalTitle: string;
-  readonly userEnteredInput: boolean;
   readonly tabbed: boolean;
-  readonly tabLabel?: string;
   readonly children: React.ReactNode;
+  readonly tabLabel?: string;
 }
 
 const GenericSetModal: React.FC<GenericSetModalProps> = ({
   modalTitle,
-  userEnteredInput,
   tabbed,
-  tabLabel,
   children,
+  tabLabel,
 }: GenericSetModalProps) => {
   const dispatch = useCoreDispatch();
   const [showDiscardModal, setShowDiscardModal] = useState<
@@ -27,6 +27,7 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
   const [activeTabInWaiting, setActiveTabInWaiting] = useState<string | null>(
     null,
   );
+  const [userEnteredInput, setUserEnteredInput] = useState(false);
 
   const onTabChange = (tab: string) => {
     if (userEnteredInput) {
@@ -58,22 +59,26 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
         }}
         onClose={() => setShowDiscardModal(null)}
       />
-      {tabbed ? (
-        <Tabs
-          value={activeTab}
-          classNames={tabStyles}
-          keepMounted={false}
-          onTabChange={onTabChange}
-        >
-          <Tabs.List>
-            <Tabs.Tab value="input">Enter {tabLabel}</Tabs.Tab>
-            <Tabs.Tab value="saved">Saved Sets</Tabs.Tab>
-          </Tabs.List>
-          {children}
-        </Tabs>
-      ) : (
-        children
-      )}
+      <UserInputContext.Provider
+        value={[userEnteredInput, setUserEnteredInput]}
+      >
+        {tabbed ? (
+          <Tabs
+            value={activeTab}
+            classNames={tabStyles}
+            keepMounted={false}
+            onTabChange={onTabChange}
+          >
+            <Tabs.List>
+              <Tabs.Tab value="input">Enter {tabLabel}</Tabs.Tab>
+              <Tabs.Tab value="saved">Saved Sets</Tabs.Tab>
+            </Tabs.List>
+            {children}
+          </Tabs>
+        ) : (
+          children
+        )}
+      </UserInputContext.Provider>
     </Modal>
   );
 };

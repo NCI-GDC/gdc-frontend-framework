@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import DiscardChangesModal from "./DiscardChangesModal";
+import { UserInputContext } from "./GenericSetModal";
 
 interface DiscardChangesButtonProps {
   readonly action: () => void;
   readonly label: string;
-  readonly userEnteredInput: boolean;
   readonly disabled?: boolean;
   readonly dark?: boolean;
 }
@@ -14,11 +14,11 @@ interface DiscardChangesButtonProps {
 const DiscardChangesButton: React.FC<DiscardChangesButtonProps> = ({
   action,
   label,
-  userEnteredInput,
   disabled = false,
   dark = true,
 }: DiscardChangesButtonProps) => {
   const [showModal, setShowModal] = useState(false);
+  const [userEnteredInput] = useContext(UserInputContext);
 
   return (
     <>
