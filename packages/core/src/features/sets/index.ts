@@ -3,7 +3,7 @@ import {
   useCreateSsmsSetMutation,
 } from "./createSetSlice";
 import { setsReducer, addSet, selectSets, SetTypes } from "./setsSlice";
-import { useGeneSetInfoQuery, useSsmSetInfoQuery } from "./setCountSlice";
+import { useGeneSetInfoQuery, useSsmSetInfoQuery } from "./setInfoSlice";
 
 export {
   useCreateGeneSetMutation,

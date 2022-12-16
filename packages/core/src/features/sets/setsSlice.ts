@@ -18,19 +18,20 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         setType: SetTypes;
-        newSet: { setName: string; setId: string };
+        setName: string;
+        setId: string;
       }>,
     ) => {
       state = produce(state, (draft) => {
         const existingSet = Object.entries(state[action.payload.setType]).find(
-          ([, name]) => name === action.payload.newSet.setName,
+          ([, name]) => name === action.payload.setName,
         );
         // Replace existing set with the same name
         if (existingSet) {
           delete draft[action.payload.setType][existingSet[0]];
         }
-        draft[action.payload.setType][action.payload.newSet.setId] =
-          action.payload.newSet.setName;
+        draft[action.payload.setType][action.payload.setId] =
+          action.payload.setName;
       });
       return state;
     },
