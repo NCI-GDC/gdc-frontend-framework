@@ -18,8 +18,6 @@ class GDCDataPortalV2App:
         self.url = f"{os.getenv(APP_ENDPOINT)}/"
         self.driver = webdriver
         self.init_pages()
-        self.navigate()
-        self.warning_modal.accept_warning()
 
     def navigate(self):
         self.driver.goto(self.url)

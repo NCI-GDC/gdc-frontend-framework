@@ -11,10 +11,16 @@ def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
 
 
-@step("Go to <page_name> page")
-def go_to_page(page_name):
+@step("On GDC Data Portal V2 app")
+def navigate_to_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
+    APP.navigate()
+    APP.warning_modal.accept_warning()
+
+
+@step("Go to <page_name> page")
+def go_to_page(page_name):
     pages = {"Analysis": APP.analysis_page.visit()}
     pages[page_name]
 
