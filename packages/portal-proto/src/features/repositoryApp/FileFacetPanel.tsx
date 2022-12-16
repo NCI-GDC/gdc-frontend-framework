@@ -135,7 +135,12 @@ export const FileFacetPanel = (): JSX.Element => {
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
       <Group position="apart">
-        <Text size="lg" weight={700} className="text-primary-content-darker">
+        <Text
+          size="lg"
+          weight={700}
+          className="text-primary-content-darker"
+          data-testid="filters-title"
+        >
           Filters
         </Text>
         {showReset && (
