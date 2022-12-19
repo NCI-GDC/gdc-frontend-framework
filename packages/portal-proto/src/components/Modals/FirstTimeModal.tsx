@@ -28,7 +28,7 @@ export const FirstTimeModal = ({
           title: "Accept",
           onClick: handleAccept,
           hideModalOnClick: true,
-          dataTestId: "intro-warning-accept",
+          dataTestId: "button-intro-warning-accept",
         },
       ]}
       withCloseButton={false}
