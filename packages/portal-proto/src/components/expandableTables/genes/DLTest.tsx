@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 
+export const SOME_MAX_LIMIT = 9000;
+
 interface DLTestProps {
   readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  readonly total: number;
+  setDLStatus: (dl: boolean) => void;
 }
 
-const DLTest: React.FC<DLTestProps> = ({ dataHook, total }: DLTestProps) => {
-  const { data, isLoading, isSuccess } = dataHook({
+const DLTest: React.FC<DLTestProps> = ({
+  dataHook,
+  setDLStatus,
+}: DLTestProps) => {
+  const { data, isLoading, isSuccess, isError } = dataHook({
     fields: [
       "genomic_dna_change",
       "mutation_subtype",
@@ -22,15 +27,25 @@ const DLTest: React.FC<DLTestProps> = ({ dataHook, total }: DLTestProps) => {
       "consequence.transcript.aa_change",
       "ssm_id",
     ],
-    size: total,
+    size: SOME_MAX_LIMIT,
   });
-  // pending for over minute
 
-  if (isLoading) {
-    return <>loading</>;
+  if (isError) {
+    return <span>error</span>;
   }
 
-  return <button onClick={() => console.log("data", data)}>data</button>;
+  return (
+    <button onClick={() => console.log("data", data)}>
+      {isLoading ? (
+        "download in progress"
+      ) : (
+        <>
+          <button onClick={() => console.log("data", data)}>data</button>
+          <button onClick={() => setDLStatus(false)}>X</button>
+        </>
+      )}
+    </button>
+  );
 };
 
 export default DLTest;

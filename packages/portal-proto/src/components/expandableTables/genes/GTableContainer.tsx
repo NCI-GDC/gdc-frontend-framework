@@ -60,7 +60,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
-  const [downloading, setDownloading] = useState(false);
+  const [cachedDL, setCachedDL] = useState({});
+  const [someQuery, setSomeQuery] = useState(() => undefined);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -143,13 +144,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const downloadEverything = (
-    extension: string,
-    query: any,
-    ...params: Array<any>
-  ) => {
-    console.table([extension, params, query]);
-    setDownloading(true);
+  const protoDownload = (extension: string, query: any) => {
+    setSomeQuery(() => query);
     // const date = new Date() -> YYYY, MM, and DD: current date
     // const blob = new Blob(download, extension)
     // ...
@@ -178,9 +174,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() =>
-                        downloadEverything("json", "getAllTheGenes", [gTotal])
-                      }
+                      onClick={() => protoDownload("json", useGetSsmsQuery)}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -197,8 +191,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       TSV
                     </Button>
                   </ButtonTooltip>
-                  {downloading && (
-                    <DLTest dataHook={useGetSsmsQuery} total={gTotal} />
+                  {someQuery && Object.keys(cachedDL).length === 0 && (
+                    <DLTest dataHook={someQuery} setDL={setCachedDL} />
                   )}
                 </div>
               }
