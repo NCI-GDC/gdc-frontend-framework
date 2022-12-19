@@ -11,7 +11,7 @@ class RepositoryPageLocators:
     MODAL_IDENT = lambda modal_name: f"//h3[text()='{modal_name}']/../../.."
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="section-file-filter-search"]>div>div>input'
-    MODAL_CLOSE = ".mantine-Modal-close"
+    MODAL_CLOSE = "[aria-label='button-close-modal']"
 
 
 class RepositoryPage(BasePage):
