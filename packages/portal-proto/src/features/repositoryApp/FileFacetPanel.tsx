@@ -159,7 +159,7 @@ export const FileFacetPanel = (): JSX.Element => {
       <Button
         variant="outline"
         aria-label="Add a file filter"
-        data-testid="add-a-file-filter"
+        data-testid="button-add-a-file-filter"
         className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
         onClick={() => setOpened(true)}
       >
