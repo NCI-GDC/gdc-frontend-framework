@@ -22,8 +22,7 @@ export default {
     facetField: "genes.gene_id",
   },
   case: {
-    // TODO remove case_id from here
-    mappedToFields: ["submitter_id", "project.project_id", "case_id"],
+    mappedToFields: ["submitter_id", "project.project_id"],
     matchAgainstIdentifiers: [
       "case_id",
       "submitter_id",

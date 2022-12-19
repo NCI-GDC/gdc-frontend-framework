@@ -85,9 +85,17 @@ const InputSet: React.FC<InputSetProps> = ({
             mappedToFields,
             matchAgainstIdentifiers,
             tokens,
+            createSetField,
           )
         : [],
-    [data, mappedToFields, matchAgainstIdentifiers, tokens, isSuccess],
+    [
+      data,
+      mappedToFields,
+      matchAgainstIdentifiers,
+      tokens,
+      createSetField,
+      isSuccess,
+    ],
   );
 
   const matchedIds = flatten(
@@ -97,7 +105,7 @@ const InputSet: React.FC<InputSetProps> = ({
     .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
   const createSetIds = matched.map(
-    (match) => match.mappedTo.find((m) => m.field === createSetField)?.value,
+    (match) => match.createSet.find((m) => m.field === createSetField)?.value,
   );
 
   useEffect(() => {
