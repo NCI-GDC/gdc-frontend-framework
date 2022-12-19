@@ -53,7 +53,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
           : null;
 
       if (!data) return;
-      console.log(55, isEqual(prevArg.current, data), prevArg.current, data);
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 

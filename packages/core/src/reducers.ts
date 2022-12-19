@@ -46,6 +46,7 @@ import {
   endpointReducer,
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
+import { setsReducer } from "./features/sets";
 import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 
 export const reducers = combineReducers({
@@ -84,6 +85,7 @@ export const reducers = combineReducers({
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
+  sets: setsReducer,
   selectedCases: selectedCasesReducer,
 });
 

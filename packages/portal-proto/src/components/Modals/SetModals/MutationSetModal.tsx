@@ -1,10 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import { Modal, Tabs } from "@mantine/core";
-import { useCoreDispatch, hideModal, useGetSsmsQuery } from "@gff/core";
+import {
+  useCoreDispatch,
+  hideModal,
+  useGetSsmsQuery,
+  useCreateSsmsSetMutation,
+  useSsmSetCountQuery,
+} from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
-import { modalStyles, tabStyles } from "./constants";
+import { modalStyles, tabStyles } from "./styles";
 
 interface MutationSetModalProps {
   readonly modalTitle: string;
@@ -38,7 +44,8 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           <InputSet
             inputInstructions={inputInstructions}
             textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-            entity="mutation"
+            setType="ssm"
+            setTypeLabel="mutation"
             identifierToolTip={
               <div>
                 <p>
@@ -59,16 +66,18 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               ssm_id: "Mutation UUID",
               genomic_dna_change: "DNA Change",
             }}
+            createSetHook={useCreateSsmsSetMutation}
+            createSetField="ssm_id"
           />
         </Tabs.Panel>
         <Tabs.Panel value="saved">
           <SavedSets
-            sets={{}}
-            fieldName={"mutation"}
+            setType="ssm"
+            setTypeLabel="mutation"
             createSetsInstructions={
               <p>
-                Mutation sets can be created from the <b>Enter Mutation tabs</b>
-                , or from the{" "}
+                Mutation sets can be created from the <b>Enter Mutation tab</b>,
+                or from the{" "}
                 <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                   <a>
                     <button
@@ -82,6 +91,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
               </p>
             }
             selectSetInstructions={selectSetInstructions}
+            countHook={useSsmSetCountQuery}
           />
         </Tabs.Panel>
       </Tabs>
