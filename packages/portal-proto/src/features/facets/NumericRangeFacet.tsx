@@ -501,7 +501,9 @@ const RangeInputWithPrefixedRanges: React.FC<
   const totalBuckets = Object.keys(rangeLabelsAndValues).length;
   const bucketsToShow = isGroupExpanded ? totalBuckets : DEFAULT_VISIBLE_ITEMS;
   const remainingValues = totalBuckets - bucketsToShow;
-  const numberOfBarsToDisplay = Object.keys(chartData).length;
+  const numberOfBarsToDisplay = isGroupExpanded
+    ? Math.min(16, totalBuckets)
+    : Math.min(DEFAULT_VISIBLE_ITEMS, totalBuckets);
 
   const onShowModeChanged = () => {
     setIsGroupExpanded(!isGroupExpanded);
