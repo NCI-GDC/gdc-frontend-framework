@@ -104,9 +104,11 @@ const InputSet: React.FC<InputSetProps> = ({
   const unmatched = tokens
     .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
-  const createSetIds = matched.map(
-    (match) => match.createSet.find((m) => m.field === createSetField)?.value,
-  );
+  const createSetIds = matched
+    .map(
+      (match) => match.createSet.find((m) => m.field === createSetField)?.value,
+    )
+    .filter((match) => match !== null);
 
   useEffect(() => {
     setTokens(input.trim().split(/[\s,]+/));
@@ -206,6 +208,7 @@ const InputSet: React.FC<InputSetProps> = ({
           <MatchTables
             matched={matched}
             unmatched={unmatched}
+            numberInput={tokens.length}
             setTypeLabel={setTypeLabel}
             fieldDisplay={fieldDisplay}
           />

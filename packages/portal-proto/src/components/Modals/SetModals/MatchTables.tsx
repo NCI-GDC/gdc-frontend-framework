@@ -19,6 +19,7 @@ interface MatchTablesProps {
     givenIdentifiers: { field: string; value: string }[];
   }[];
   readonly unmatched: string[];
+  readonly numberInput: number;
   readonly setTypeLabel: string;
   readonly fieldDisplay: Record<string, string>;
 }
@@ -26,6 +27,7 @@ interface MatchTablesProps {
 const MatchTables: React.FC<MatchTablesProps> = ({
   matched,
   unmatched,
+  numberInput,
   setTypeLabel,
   fieldDisplay,
 }: MatchTablesProps) => {
@@ -142,7 +144,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
     }
   };
 
-  const numMatched = flatten(matched.map((d) => d.givenIdentifiers)).length;
+  const numMatched = numberInput - unmatched.length;
 
   return (
     <>
