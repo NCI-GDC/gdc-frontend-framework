@@ -16,7 +16,12 @@ export const NoAccessModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
-      buttons={[{ title: "Close" }]}
+      buttons={[
+        {
+          title: "Close",
+          dataTestId: "button-no-access-modal-access-alert-close",
+        },
+      ]}
     >
       <div className="border-y border-y-base p-4">
         <Text size="sm"> You don&apos;t have access to this file.</Text>
