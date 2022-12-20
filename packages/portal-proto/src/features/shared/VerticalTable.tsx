@@ -116,6 +116,10 @@ interface VerticalTableProps {
    */
   showControls?: boolean;
   /**
+   * optional disable page size for pagination
+   */
+  disablePageSize?: boolean;
+  /**
    * optional pagination controls at bottom of table
    */
   pagination?: PaginationOptions;
@@ -255,6 +259,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
+  disablePageSize = false,
   handleChange = (a) => {
     console.error("handleChange was not set and called with:", a);
   },
@@ -436,6 +441,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         ? "bg-base-max border-1"
                         : "bg-slate-50 border-1"
                     }
+                    key={`row-${index}`}
                   >
                     {row.cells.map((cell, key) => {
                       return (
@@ -619,29 +625,31 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-start border-base-light pt-2 mx-4">
-          <div className="flex flex-row items-center m-auto ml-0">
-            <span className="my-auto mx-1 text-xs">Show</span>
-            <Select
-              size="xs"
-              radius="md"
-              onChange={handlePageSizeChange}
-              value={pageSize?.toString()}
-              data={[
-                { value: "10", label: "10" },
-                { value: "20", label: "20" },
-                { value: "40", label: "40" },
-                { value: "100", label: "100" },
-              ]}
-              classNames={{
-                root: "w-16 font-heading",
-              }}
-            />
-            <span className="my-auto mx-1 text-xs">Entries</span>
-          </div>
-          <div className="m-auto">
-            <ShowingCount />
-          </div>
+        <div className="flex flex-row items-center text-content justify-between	border-base-light pt-2 mx-4">
+          {!disablePageSize && (
+            <div className="flex flex-row items-center m-auto ml-0">
+              <span className="my-auto mx-1 text-xs">Show</span>
+              <Select
+                size="xs"
+                radius="md"
+                onChange={handlePageSizeChange}
+                value={pageSize?.toString()}
+                data={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "40", label: "40" },
+                  { value: "100", label: "100" },
+                ]}
+                classNames={{
+                  root: "w-16 font-heading",
+                }}
+              />
+              <span className="my-auto mx-1 text-xs">Entries</span>
+            </div>
+          )}
+
+          <ShowingCount />
+
           <Pagination
             color="accent"
             className="ml-auto"

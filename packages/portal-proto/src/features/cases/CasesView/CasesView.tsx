@@ -5,8 +5,6 @@ import {
   selectSelectedCases,
   useAllCases,
   SortBy,
-  selectCurrentModal,
-  Modals,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
@@ -28,7 +26,6 @@ import {
 } from "./utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { SelectCohortsModal } from "./SelectCohortsModal";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -318,10 +315,6 @@ export const ContextualCasesView: React.FC = () => {
     }
   };
 
-  const showSelectCohortsModal = useCoreSelector((state) =>
-    selectCurrentModal(state),
-  );
-
   return (
     <div className="flex flex-col w-full ml-2 mr-8">
       <VerticalTable
@@ -407,9 +400,6 @@ export const ContextualCasesView: React.FC = () => {
             : "uninitialized"
         }
       />
-      {showSelectCohortsModal === Modals.SelectCohortsModal && (
-        <SelectCohortsModal opened />
-      )}
     </div>
   );
 };

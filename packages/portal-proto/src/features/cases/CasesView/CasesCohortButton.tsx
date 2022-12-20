@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, createStyles, Menu } from "@mantine/core";
 import {
   useCoreSelector,
@@ -9,13 +9,15 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   clearCohortMessage,
-  showModal,
-  Modals,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { showNotification } from "@mantine/notifications";
 import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
+import {
+  SelectCohortsModal,
+  WithOrWithoutCohortType,
+} from "./SelectCohortsModal";
 
 interface CountsIconProps {
   $count?: number;
@@ -95,8 +97,11 @@ export const CasesCohortButton = (): JSX.Element => {
     }
   }, [cohortMessage, coreDispatch]);
 
-  console.log({ pickedCases });
   const { classes } = useStyles();
+  const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
+  const [withOrWithoutCohort, setWithOrWithoutCohort] =
+    useState<WithOrWithoutCohortType>(undefined);
+
   return (
     <Menu classNames={classes} position="bottom-start">
       <Menu.Target>
@@ -125,14 +130,29 @@ export const CasesCohortButton = (): JSX.Element => {
           Only Selected Cases
         </Menu.Item>
         <Menu.Item
-          onClick={() =>
-            coreDispatch(showModal({ modal: Modals.SelectCohortsModal }))
-          }
+          onClick={() => {
+            setWithOrWithoutCohort("with");
+            setOpenSelectCohorts(true);
+          }}
         >
           Existing Cohort With Selected Cases
         </Menu.Item>
-        <Menu.Item>Existing Cohort Without Selected Cases</Menu.Item>
+        <Menu.Item
+          onClick={() => {
+            setWithOrWithoutCohort("without");
+            setOpenSelectCohorts(true);
+          }}
+        >
+          Existing Cohort Without Selected Cases
+        </Menu.Item>
       </Menu.Dropdown>
+      {openSelectCohorts && (
+        <SelectCohortsModal
+          opened
+          onClose={() => setOpenSelectCohorts(false)}
+          withOrWithoutCohort={withOrWithoutCohort}
+        />
+      )}
     </Menu>
   );
 };

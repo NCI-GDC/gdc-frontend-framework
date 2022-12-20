@@ -153,14 +153,14 @@ const slice = createSlice({
           // copy the counts for explore and repository
           state.counts = {
             // TODO rename **Counts to count
-            caseCounts: response.data.viewer.explore.cases.hits.total,
-            genesCounts: response.data.viewer.explore.genes.hits.total,
-            mutationCounts: response.data.viewer.explore.ssms.hits.total,
-            fileCounts: response.data.viewer.repository.files.hits.total,
-            ssmCaseCounts: response.data.viewer.explore.ssmsCases.hits.total,
-            sequenceReadCaseCounts:
+            caseCount: response.data.viewer.explore.cases.hits.total,
+            genesCount: response.data.viewer.explore.genes.hits.total,
+            mutationCount: response.data.viewer.explore.ssms.hits.total,
+            fileCount: response.data.viewer.repository.files.hits.total,
+            ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+            sequenceReadCaseCount:
               response.data.viewer.repository.sequenceReads.hits.total,
-            repositoryCaseCounts:
+            repositoryCaseCount:
               response.data.viewer.repository.cases.hits.total,
             casesMax: Math.max(
               response.data.viewer.explore.cases.hits.total,

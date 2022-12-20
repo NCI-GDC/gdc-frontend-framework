@@ -7,18 +7,22 @@ import {
   VerticalTable,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import {
-  hideModal,
-  useCoreDispatch,
-  useCoreSelector,
-  selectAvailableCohorts,
-} from "@gff/core";
-import { Modal, Radio } from "@mantine/core";
-import { useMemo } from "react";
+import { useCoreSelector, selectAvailableCohorts } from "@gff/core";
+import { Modal, Radio, Text } from "@mantine/core";
+import { useMemo, useState } from "react";
 
-export const SelectCohortsModal = ({ opened }: { opened: boolean }) => {
-  const dispatch = useCoreDispatch();
+export type WithOrWithoutCohortType = "with" | "without" | undefined;
+export const SelectCohortsModal = ({
+  opened,
+  onClose,
+  withOrWithoutCohort,
+}: {
+  opened: boolean;
+  onClose: () => void;
+  withOrWithoutCohort: WithOrWithoutCohortType;
+}): JSX.Element => {
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const [checkedValue, setCheckedValue] = useState("");
 
   const columnListOrder: Columns[] = [
     {
@@ -26,7 +30,15 @@ export const SelectCohortsModal = ({ opened }: { opened: boolean }) => {
       visible: true,
       columnName: "Select",
       Cell: ({ value }: { value: string }): JSX.Element => {
-        return <Radio value={value} />;
+        return (
+          <Radio
+            value={value}
+            checked={checkedValue === value}
+            onChange={(event) => {
+              setCheckedValue(event.currentTarget.value);
+            }}
+          />
+        );
       },
       disableSortBy: true,
     },
@@ -49,50 +61,45 @@ export const SelectCohortsModal = ({ opened }: { opened: boolean }) => {
       cohorts?.map((cohort) => ({
         selected: cohort.id,
         name: cohort.name,
-        num_cases: "--",
+        num_cases: cohort.caseCount,
       })),
     [cohorts],
   );
 
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(info);
+  const { handlePageChange, page, pages, size, from, total, displayedData } =
+    useStandardPagination(info);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
         break;
     }
   };
 
+  const isWithCohort = withOrWithoutCohort === "with";
+  const title = `create new cohort: existing cohort ${
+    isWithCohort ? "with" : "without"
+  } selected cases`;
+
+  const description = `Select an existing cohort, then click Submit. This will create a new
+    cohort that contains all the cases from your selected cohort ${
+      isWithCohort ? "and" : "expect"
+    } the cases previously selected.`;
+
   return (
     <Modal
       opened={opened}
-      onClose={() => dispatch(hideModal())}
+      onClose={onClose}
       withCloseButton
-      title="create new cohort: existing cohort with selected cases"
+      title={title}
       withinPortal={false}
       classNames={modalStyles}
       size="xl"
       zIndex={400}
     >
-      <div>
-        <span>
-          Select an existing cohort, then click Submit. This will create a new
-          cohort that contains all the cases from your selected cohort and the
-          cases previously selected.
-        </span>
+      <div className="px-4">
+        <Text className="text-xs mb-4 block">{description}</Text>
 
         <VerticalTable
           tableData={displayedData}
@@ -108,16 +115,15 @@ export const SelectCohortsModal = ({ opened }: { opened: boolean }) => {
             total,
           }}
           handleChange={handleChange}
+          disablePageSize={true}
         />
+      </div>
 
-        <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
-          <FunctionButton onClick={() => dispatch(hideModal())}>
-            Cancel
-          </FunctionButton>
-          <DarkFunctionButton disabled={true} onClick={() => {}}>
-            Clear
-          </DarkFunctionButton>
-        </div>
+      <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
+        <FunctionButton onClick={onClose}>Cancel</FunctionButton>
+        <DarkFunctionButton disabled={true} onClick={() => {}}>
+          Submit
+        </DarkFunctionButton>
       </div>
     </Modal>
   );
