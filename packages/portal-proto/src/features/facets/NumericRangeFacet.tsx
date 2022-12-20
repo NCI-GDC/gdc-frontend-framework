@@ -52,16 +52,13 @@ interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly clearValues?: boolean;
 }
 
-type NumericFacetData = Pick<
-  NumericFacetProps,
-  | "field"
-  | "minimum"
-  | "maximum"
-  | "valueLabel"
-  | "hooks"
-  | "clearValues"
-  | "isFacetView"
->;
+interface NumericFacetData
+  extends Pick<
+    NumericFacetProps,
+    "field" | "minimum" | "maximum" | "valueLabel" | "hooks" | "clearValues"
+  > {
+  isFacetView?: boolean;
+}
 
 const RadioStyle =
   "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
@@ -591,7 +588,7 @@ const RangeInputWithPrefixedRanges: React.FC<
                 maxBins={numberOfBarsToDisplay}
                 height={
                   (numberOfBarsToDisplay == 1
-                    ? 150
+                    ? 110
                     : numberOfBarsToDisplay == 2
                     ? 220
                     : numberOfBarsToDisplay == 3
