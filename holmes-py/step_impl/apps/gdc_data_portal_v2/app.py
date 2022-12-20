@@ -10,6 +10,7 @@ from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
 from step_impl.apps.gdc_data_portal_v2.pages.warning_modal import WarningModal
 
 
+
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
         APP_ENDPOINT = f"APP_ENDPOINT{os.getenv('APP_ENVIRONMENT','')}"
