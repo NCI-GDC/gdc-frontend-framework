@@ -178,6 +178,7 @@ export const FileFacetPanel = (): JSX.Element => {
           opened={opened}
           onClose={() => setOpened(false)}
           closeButtonLabel="button-close-modal"
+          zIndex={400}
         >
           <FacetSelection
             title={"Add a File Filter"}
