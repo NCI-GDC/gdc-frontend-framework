@@ -12,13 +12,16 @@ import { DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
-  getLowerAgeFromYears,
   getLowerAgeYears,
-  getUpperAgeFromYears,
-  getUpperAgeYears,
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
+  getAgeInYearsFromDays,
+  adjustAgeInYearsToDays,
+  adjustAgeInDaysToDays,
+  ageInDaysFromDays,
+  ageInYearsAndDaysFromDays,
+  getUpperAgeYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -241,6 +244,8 @@ const FromTo: React.FC<FromToProps> = ({
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
 
+  console.log("Values", values);
+
   useEffect(() => {
     setFromOp(values?.fromOp ?? ">=");
     setFromValue(values?.from);
@@ -271,19 +276,9 @@ const FromTo: React.FC<FromToProps> = ({
   const handleApply = () => {
     const data = {
       fromOp: fromOp as RangeFromOp,
-      from:
-        units !== "years"
-          ? fromValue
-          : fromOp === ">"
-          ? getUpperAgeFromYears(Math.floor(fromValue / DAYS_IN_YEAR))
-          : Math.floor(fromValue / DAYS_IN_YEAR) * DAYS_IN_YEAR,
+      from: fromValue,
       toOp: toOp as RangeToOp,
-      to:
-        units !== "years"
-          ? toValue
-          : toOp === "<"
-          ? Math.floor(toValue / DAYS_IN_YEAR) * DAYS_IN_YEAR
-          : getUpperAgeFromYears(Math.floor(toValue / DAYS_IN_YEAR)),
+      to: toValue,
     };
     console.log("setData", data);
     const rangeFilters = buildRangeOperator(field, data);
@@ -298,6 +293,7 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? minimum : getLowerAgeYears(minimum);
   const upperUnitRange =
     units !== "years" ? maximum : getLowerAgeYears(maximum);
+  console.log("from value", fromValue, units);
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
@@ -310,25 +306,14 @@ const FromTo: React.FC<FromToProps> = ({
             onChange={(value) => {
               setFromOp(value as RangeFromOp);
               console.log(
-                "set>",
-                units === "years"
-                  ? value === ">"
-                    ? getUpperAgeFromYears(Math.floor(fromValue / DAYS_IN_YEAR))
-                    : Math.floor(fromValue / DAYS_IN_YEAR) * DAYS_IN_YEAR
-                  : null,
+                "adjust op",
+                fromValue,
+                getLowerAgeYears(fromValue),
+                getUpperAgeYears(fromValue),
+                ageInYearsAndDaysFromDays(fromValue),
+                ageInDaysFromDays(fromOp as RangeFromOp, fromValue),
               );
-
-              units === "years"
-                ? value === ">"
-                  ? setFromValue(
-                      getUpperAgeFromYears(
-                        Math.floor(fromValue / DAYS_IN_YEAR),
-                      ),
-                    )
-                  : setFromValue(
-                      Math.floor(fromValue / DAYS_IN_YEAR) * DAYS_IN_YEAR,
-                    )
-                : null;
+              setFromValue(ageInDaysFromDays(fromOp as RangeFromOp, fromValue));
               changedCallback();
             }}
             data={[
@@ -342,13 +327,15 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
-            value={units !== "years" ? fromValue : getLowerAgeYears(fromValue)}
+            value={units !== "years" ? fromValue : getUpperAgeYears(fromValue)}
             onChange={(value) => {
-              units !== "years"
-                ? setFromValue(value)
-                : fromOp === ">"
-                ? setFromValue(getUpperAgeFromYears(value))
-                : setFromValue(value * DAYS_IN_YEAR);
+              console.log(
+                "set from ",
+                adjustAgeInYearsToDays(fromOp as RangeFromOp, value, units),
+              );
+              setFromValue(
+                adjustAgeInYearsToDays(fromOp as RangeFromOp, value, units),
+              );
               changedCallback();
             }}
             hideControls
@@ -363,24 +350,9 @@ const FromTo: React.FC<FromToProps> = ({
             value={toOp}
             onChange={(value) => {
               setToOp(value as RangeToOp);
-              console.log(
-                "set<",
-                units === "years"
-                  ? value === "<"
-                    ? Math.floor(toValue / DAYS_IN_YEAR) * DAYS_IN_YEAR
-                    : getUpperAgeFromYears(Math.floor(toValue / DAYS_IN_YEAR))
-                  : null,
+              setToValue(
+                adjustAgeInDaysToDays(value as RangeToOp, toValue, units),
               );
-
-              units === "years"
-                ? value === "<"
-                  ? setToValue(
-                      Math.floor(toValue / DAYS_IN_YEAR) * DAYS_IN_YEAR,
-                    )
-                  : setToValue(
-                      getUpperAgeFromYears(Math.floor(toValue / DAYS_IN_YEAR)),
-                    )
-                : null;
               changedCallback();
             }}
             data={[
@@ -395,14 +367,10 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
-              units !== "years"
-                ? setToValue(value)
-                : toOp === "<"
-                ? setToValue(value * DAYS_IN_YEAR)
-                : setToValue(getUpperAgeFromYears(value));
+              setToValue(value);
               changedCallback();
             }}
-            value={units !== "years" ? toValue : getUpperAgeYears(toValue)}
+            value={toValue}
             hideControls
             aria-label="input to value"
           />

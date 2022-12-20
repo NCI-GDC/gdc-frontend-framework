@@ -16,6 +16,7 @@ import {
   ClearFacetFunction,
   RangeBucketElement,
 } from "@/features/facets/types";
+import { a } from "@react-spring/web";
 
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
@@ -33,6 +34,9 @@ export const getUpperAgeFromYears = (years?: number): number | undefined =>
   years !== undefined
     ? Math.floor(years * DAYS_IN_YEAR + DAYS_IN_YEAR - 1)
     : undefined;
+
+export const getAgeInYearsFromDays = (years: number) =>
+  Math.floor(years / DAYS_IN_YEAR);
 
 export const AgeDisplay = (
   ageInDays: number,
@@ -277,27 +281,62 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
+export const ageInDaysFromDays = (
+  op: ">" | ">=" | "<" | "<=",
+  ageInDays: number,
+) => {
+  switch (op) {
+    case ">":
+      return getLowerAgeFromYears(getUpperAgeYears(ageInDays));
+    case ">=":
+      return getUpperAgeFromYears(getUpperAgeYears(ageInDays));
+    case "<":
+      return getLowerAgeFromYears(getUpperAgeYears(ageInDays));
+    case "<=":
+      return getUpperAgeFromYears(getUpperAgeYears(ageInDays));
+  }
+};
+
 /**
  * Used to adjust the day values for ages to support
  * both inclusive and exclusive ranges.
  * @param op one of ">" , ">=" , "<" , "<="
- * @param ageInDays
- * @param units - years | days
+ * @param ageInYears age in years
+ * @param units - only adjust if units == "years
  */
-export const adjustAgeRange = (
+export const ageInDaysFromYears = (
   op: ">" | ">=" | "<" | "<=",
-  ageInDays: number,
-  units: "years" | "days",
+  ageInYears: number,
 ): number => {
-  if (units !== "years") return ageInDays;
   switch (op) {
     case ">":
-      return getUpperAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
+      return getUpperAgeFromYears(ageInYears);
     case ">=":
-      return getLowerAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
+      return getLowerAgeFromYears(ageInYears);
     case "<":
-      return getLowerAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
+      return getLowerAgeFromYears(ageInYears);
     case "<=":
-      return getUpperAgeFromYears(Math.floor(ageInDays / DAYS_IN_YEAR));
+      return getUpperAgeFromYears(ageInYears);
   }
 };
+
+export const adjustAgeInDaysToDays = (
+  op: ">" | ">=" | "<" | "<=",
+  value: number,
+  units: string,
+) => (units == "years" ? ageInDaysFromDays(op, value) : value);
+
+export const adjustAgeInYearsToDays = (
+  op: ">" | ">=" | "<" | "<=",
+  value: number,
+  units: string,
+) => (units == "years" ? ageInDaysFromYears(op, value) : value);
+
+export const leapThenPair = (years: number, days: number): number[] =>
+  days === 365 ? [years + 1, 0] : [years, days];
+
+export const ageInYearsAndDaysFromDays = (ageInDays: number) =>
+  leapThenPair(
+    Math.floor(ageInDays / DAYS_IN_YEAR),
+    Math.ceil(ageInDays % DAYS_IN_YEAR),
+  );
