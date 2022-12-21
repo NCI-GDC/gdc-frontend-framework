@@ -135,7 +135,12 @@ export const FileFacetPanel = (): JSX.Element => {
   return (
     <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
       <Group position="apart">
-        <Text size="lg" weight={700} className="text-primary-content-darker">
+        <Text
+          size="lg"
+          weight={700}
+          className="text-primary-content-darker"
+          data-testid="filters-title"
+        >
           Filters
         </Text>
         {showReset && (
@@ -154,6 +159,7 @@ export const FileFacetPanel = (): JSX.Element => {
       <Button
         variant="outline"
         aria-label="Add a file filter"
+        data-testid="button-add-a-file-filter"
         className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
         onClick={() => setOpened(true)}
       >
@@ -163,11 +169,15 @@ export const FileFacetPanel = (): JSX.Element => {
           Add a File Filter
         </Text>
       </Button>
-      <div className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll">
+      <div
+        className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll"
+        data-testid="filters-facets"
+      >
         <Modal
           size="lg"
           opened={opened}
           onClose={() => setOpened(false)}
+          closeButtonLabel="button-close-modal"
           zIndex={400}
         >
           <FacetSelection
