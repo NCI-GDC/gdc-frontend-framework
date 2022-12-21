@@ -225,6 +225,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           root: "bg-base-max border-0 w-full",
         }}
         onTabChange={handleTabChanged}
+        keepMounted={false}
       >
         <Tabs.List>
           <Tabs.Tab value="genes">Genes</Tabs.Tab>
