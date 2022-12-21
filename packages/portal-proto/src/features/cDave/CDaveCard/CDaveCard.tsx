@@ -56,7 +56,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   return (
     <Card shadow="sm" radius="md" ref={(ref) => (targetRef.current = ref)}>
       <div className="flex justify-between mb-1">
-        <h2>{fieldName}</h2>
+        <h2 className="font-heading font-medium">{fieldName}</h2>
         <div className="flex gap-1">
           <Tooltip
             label={"Histogram"}

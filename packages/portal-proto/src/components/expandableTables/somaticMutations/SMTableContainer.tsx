@@ -239,9 +239,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           >
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
               <div className={"grow-0"}>
-                <span className=" mx-1 text-xs">Show</span>
-                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                <span className="my-auto mx-1 text-xs">Entries</span>
+                <div className="flex flex-row items-center text-sm ml-0">
+                  <span className="my-auto mx-1 ">Show</span>
+                  <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                  <span className="my-auto mx-1 ">Entries</span>
+                </div>
               </div>
             </div>
             <div
