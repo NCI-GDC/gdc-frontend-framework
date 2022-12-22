@@ -21,6 +21,11 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
     "explore",
     FilterFacets.genes.map((x) => x.facet_filter),
   );
+  useGenesFacets(
+    "ssms",
+    "explore",
+    FilterFacets.ssms.map((x) => x.facet_filter),
+  );
 
   return (
     <div className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64">

@@ -72,7 +72,7 @@ const useGenomicFiltersByNames = (
     selectGeneAndSSMFiltersByNames(state, fields),
   );
   return Object.entries(enumFilters).reduce((obj, [key, value]) => {
-    obj[key] = extractValue(value);
+    if (value) obj[key] = extractValue(value);
     return obj;
   }, {});
 };
