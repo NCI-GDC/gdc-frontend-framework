@@ -54,7 +54,6 @@ const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );
-  console.log(enumFilters);
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
