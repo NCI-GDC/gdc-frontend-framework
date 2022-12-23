@@ -129,10 +129,7 @@ const RepositoryApp = () => {
               inactiveText="Manifest"
               title="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
               endpoint="files"
-              filename={`gdc_manifest.${new Date()
-                .toISOString()
-                .slice(0, 10)}.txt`}
-              format="tsv"
+              filename={`gdc_manifest`}
               method="POST"
               options={{
                 method: "POST",
@@ -140,7 +137,9 @@ const RepositoryApp = () => {
                   "Content-Type": "application/json",
                 },
               }}
-              fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
+              extraParams={{
+                return_type: "manifest",
+              }}
               filters={buildCohortGqlOperator(allFilters)}
               setActive={setActive}
               active={active}
