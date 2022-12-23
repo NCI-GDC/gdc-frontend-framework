@@ -2,7 +2,7 @@ import {
   GDCGenesTable,
   useGenesTable,
   FilterSet,
-  useGetSsmsQuery,
+  useMutationFreqDLQuery,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -145,7 +145,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   }, [status, initialData]);
 
   const protoDownload = (extension: string, query: any) => {
-    setSomeQuery(() => query);
+    console.log(tableData);
+    const geneIds = tableData.genes.map(({ gene_id: geneId }) => geneId);
+    setSomeQuery(() => query({ geneIds }));
     // const date = new Date() -> YYYY, MM, and DD: current date
     // const blob = new Blob(download, extension)
     // ...
@@ -174,7 +176,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() => protoDownload("json", useGetSsmsQuery)}
+                      onClick={() =>
+                        protoDownload("json", useMutationFreqDLQuery)
+                      }
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -192,7 +196,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     </Button>
                   </ButtonTooltip>
                   {someQuery && Object.keys(cachedDL).length === 0 && (
-                    <DLTest dataHook={someQuery} setDL={setCachedDL} />
+                    <DLTest dataHook={someQuery} setDLStatus={setCachedDL} />
                   )}
                 </div>
               }
