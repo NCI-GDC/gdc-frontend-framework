@@ -15,12 +15,9 @@ import {
   GqlOperation,
   FilterSet,
 } from "@gff/core";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
-import {
-  MdDownload as DownloadIcon,
-  MdShoppingCart as CartIcon,
-} from "react-icons/md";
+import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
 import {
   addToCart,
@@ -34,6 +31,7 @@ import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
+import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
 
 const useCohortCentricFiles = () => {
@@ -100,54 +98,90 @@ const RepositoryApp = () => {
     };
     return buildCohortGqlOperator(joinFilters(allFilters, cartFilterSet));
   };
+  const [active, setActive] = useState(false);
 
   return (
-    <div className="flex flex-col mt-4 ">
-      <div className="flex flex-row justify-end align-center m-2">
-        <div className="flex justify-end gap-2">
-          <FunctionButton>
-            <DownloadIcon size={"1rem"} />
-            Manifest
-          </FunctionButton>
-          <Link href="/image-viewer/MultipleImageViewerPage">
-            <FunctionButton component="a">View Images</FunctionButton>
-          </Link>
-          <FunctionButton
-            leftIcon={<CartIcon size={"1rem"} />}
-            loading={allFilesLoading}
-            onClick={() => {
-              // check number of files selected before making call
-              if (
-                pagination?.total &&
-                pagination.total + currentCart.length > CART_LIMIT
-              ) {
-                showCartOverLimitNotification(currentCart.length);
-              } else {
-                getAllSelectedFiles(
-                  addToCart,
-                  buildCohortGqlOperator(allFilters),
-                );
-              }
-            }}
-          >
-            Add All Files to Cart
-          </FunctionButton>
-          <FunctionButtonRemove
-            leftIcon={<VscTrash size={"1rem"} />}
-            loading={allFilesLoading}
-            onClick={() => {
-              getAllSelectedFiles(
-                removeFromCart,
-                buildCohortGqlOperatorWithCart(),
-              );
-            }}
-          >
-            Remove All From Cart
-          </FunctionButtonRemove>
-        </div>
-      </div>
-      <div className="flex flex-row mx-3">
+    <div className="flex flex-row mt-4 mx-3">
+      <div className="w-1/5">
         <FileFacetPanel />
+      </div>
+      <div className="w-full overflow-hidden h-full">
+        <div className="flex flex-row justify-end align-center m-2">
+          <div className="flex justify-end gap-2">
+            <DownloadButton
+              customStyle={`
+              flex
+              flex-row
+              items-center
+              bg-base-lightest
+              text-base-contrast-max
+              border
+              border-solid
+              border-primary-darker
+              hover:bg-primary-darker
+              font-heading
+              hover:text-primary-contrast-darker
+              disabled:opacity-60
+              disabled:border-opacity-60
+              disabled:text-opacity-60
+              `}
+              activeText="Processing"
+              inactiveText="Manifest"
+              title="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+              endpoint="files"
+              filename={`gdc_manifest.${new Date()
+                .toISOString()
+                .slice(0, 10)}.txt`}
+              format="tsv"
+              method="POST"
+              options={{
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }}
+              fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
+              filters={buildCohortGqlOperator(allFilters)}
+              setActive={setActive}
+              active={active}
+            />
+            <Link href="/image-viewer/MultipleImageViewerPage">
+              <FunctionButton component="a">View Images</FunctionButton>
+            </Link>
+            <FunctionButton
+              leftIcon={<CartIcon />}
+              loading={allFilesLoading}
+              onClick={() => {
+                // check number of files selected before making call
+                if (
+                  pagination?.total &&
+                  pagination.total + currentCart.length > CART_LIMIT
+                ) {
+                  showCartOverLimitNotification(currentCart.length);
+                } else {
+                  getAllSelectedFiles(
+                    addToCart,
+                    buildCohortGqlOperator(allFilters),
+                  );
+                }
+              }}
+            >
+              Add All Files to Cart
+            </FunctionButton>
+            <FunctionButtonRemove
+              leftIcon={<VscTrash />}
+              loading={allFilesLoading}
+              onClick={() => {
+                getAllSelectedFiles(
+                  removeFromCart,
+                  buildCohortGqlOperatorWithCart(),
+                );
+              }}
+            >
+              Remove All From Cart
+            </FunctionButtonRemove>
+          </div>
+        </div>
         <FilesView />
       </div>
     </div>

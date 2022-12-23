@@ -27,6 +27,7 @@ interface DownloadButtonProps {
   active?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
+  title?: string;
 }
 
 export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
@@ -52,6 +53,7 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   active,
   Modal400,
   Modal403,
+  title,
   ...buttonProps
 }: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
@@ -64,6 +66,7 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
 
   return (
     <Button
+      title={title}
       leftIcon={showIcon && inactiveText && <FaDownload />}
       disabled={disabled}
       className={

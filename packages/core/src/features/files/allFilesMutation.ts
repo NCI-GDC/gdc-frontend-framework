@@ -32,7 +32,7 @@ export const filesApiSlice = coreCreateApi({
       }),
       transformResponse: (response: GdcApiResponse<Partial<FileDefaults>>) => {
         if (response.warnings && Object.keys(response.warnings).length > 0) {
-          // TODO add better errors parsing
+          // TODO look into API endpoint to check how errors are handled
           console.error(Object.values(response.warnings));
           return [];
         } else {
