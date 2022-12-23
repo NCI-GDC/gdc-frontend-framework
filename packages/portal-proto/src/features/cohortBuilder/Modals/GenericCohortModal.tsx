@@ -24,6 +24,7 @@ export const GenericCohortModal = ({
       padding={0}
       radius="md"
       onClose={onClose}
+      zIndex={400}
       styles={(theme) => ({
         header: {
           color: theme.colors.primary[8],

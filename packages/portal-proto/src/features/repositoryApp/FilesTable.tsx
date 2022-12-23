@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
-import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+  Columns,
+  filterColumnCells,
+} from "../shared/VerticalTable";
 import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
@@ -15,6 +20,7 @@ import {
   joinFilters,
   useFilesSize,
   GdcFile,
+  Operation,
 } from "@gff/core";
 import { MdSave } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -23,9 +29,10 @@ import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
-  const columnListOrder = [
+  const columnListOrder: Columns[] = [
     {
       id: "cart",
       columnName: "Cart",
@@ -55,8 +62,10 @@ const FilesTables: React.FC = () => {
       disableSortBy: true,
     },
   ];
-
-  const [columnCells, setColumnCells] = useState([]);
+  const [columns, setColumns] = useState(columnListOrder);
+  const [columnCells, setColumnCells] = useState(
+    filterColumnCells(columnListOrder),
+  );
 
   let formattedTableData = [],
     tempPagination = {
@@ -137,11 +146,14 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const cohortGqlOperator = buildCohortGqlOperator(allFilters);
-  const coreDispatch = useCoreDispatch();
 
   const [sortBy, setSortBy] = useState([]);
+  const [pageSize, setPageSize] = useState(20);
+  const [offset, setOffset] = useState(0);
 
-  const getCohortCases = (pageSize = 20, offset = 0, sortBy = []) => {
+  const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
     coreDispatch(
       fetchFiles({
         filters: cohortGqlOperator,
@@ -154,7 +166,8 @@ const FilesTables: React.FC = () => {
         sortBy: sortBy,
       }),
     );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
     const tempSortBy = sortByObj.map((sortObj) => {
@@ -170,7 +183,31 @@ const FilesTables: React.FC = () => {
       };
     });
     setSortBy(tempSortBy);
-    getCohortCases(tempPagination.size, tempPagination.page - 1, tempSortBy);
+  };
+
+  const buildSearchFilters = (term: string): Operation => {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "=",
+          field: "file_name",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "file_id",
+          operand: `*${term}*`,
+        },
+      ],
+    };
+  };
+
+  const updateFilter = useUpdateRepositoryFacetFilter();
+  const newSearchActions = (searchTerm: string) => {
+    //TODO if lots of calls fast last call might not be displayed
+    if (searchTerm.length > 0)
+      updateFilter("files", buildSearchFilters(searchTerm));
   };
 
   const handleChange = (obj: HandleChangeInput) => {
@@ -179,13 +216,19 @@ const FilesTables: React.FC = () => {
         sortByActions(obj.sortBy);
         break;
       case "newPageSize":
-        getCohortCases(parseInt(obj.newPageSize), 0, sortBy);
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
         break;
       case "newPageNumber":
-        getCohortCases(tempPagination.size, obj.newPageNumber - 1, sortBy);
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        newSearchActions(obj.newSearch);
         break;
       case "newHeadings":
-        setColumnCells(obj.newHeadings);
+        setColumnCells(filterColumnCells(obj.newHeadings));
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -286,13 +329,13 @@ const FilesTables: React.FC = () => {
             <div className="">
               Total of{" "}
               <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              Files
+              {tempPagination?.total > 1 ? "Files" : "File"}
             </div>
           </div>
         </div>
       }
       tableData={formattedTableData}
-      columns={columnListOrder}
+      columns={columns}
       columnSorting={"manual"}
       selectableRow={false}
       pagination={{
@@ -301,6 +344,9 @@ const FilesTables: React.FC = () => {
       }}
       status={status}
       handleChange={handleChange}
+      search={{
+        enabled: true,
+      }}
     />
   );
 };

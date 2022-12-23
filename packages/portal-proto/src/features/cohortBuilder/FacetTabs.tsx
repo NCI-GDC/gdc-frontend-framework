@@ -20,7 +20,7 @@ import {
 } from "@gff/core";
 import {
   Button,
-  Center,
+  Flex,
   LoadingOverlay,
   Modal,
   Stack,
@@ -70,8 +70,8 @@ const StyledFacetTabs = (props: TabsProps) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          borderTopLeftRadius: theme.radius.md,
-          borderBottomLeftRadius: theme.radius.md,
+          borderTopLeftRadius: theme.radius.sm,
+          borderBottomLeftRadius: theme.radius.sm,
 
           "&:disabled": {
             opacity: 0.5,
@@ -155,7 +155,12 @@ const CustomFacetGroup = (): JSX.Element => {
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
       <LoadingOverlay visible={!isDictionaryReady} />
-      <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+      <Modal
+        size="lg"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        zIndex={400}
+      >
         <FacetSelection
           title={"Add a Case Filter"}
           facetType="cases"
@@ -164,7 +169,7 @@ const CustomFacetGroup = (): JSX.Element => {
         />
       </Modal>
       {customFacetDefinitions.length == 0 ? (
-        <Center>
+        <Flex>
           <CustomFacetWhenEmptyGroup align="center" justify="center">
             <AddFacetIcon
               className="text-primary-content"
@@ -186,7 +191,7 @@ const CustomFacetGroup = (): JSX.Element => {
               Add a Custom Filter
             </Button>
           </CustomFacetWhenEmptyGroup>
-        </Center>
+        </Flex>
       ) : (
         <FacetGroup>
           <Button
@@ -269,16 +274,17 @@ export const FacetTabs = (): JSX.Element => {
   }, [router?.query?.tab, activeTab, setActiveTab]);
 
   return (
-    <div className="w-100">
+    <div className="w-100 mt-2">
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}
         onTabChange={setActiveTab}
         keepMounted={false}
         classNames={{
-          tab: "data-active:text-primary-content-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-l-1 data-active:border-b-1 data-active:bg-base-max hover:bg-primary-darker",
+          tab: "first:mt-2 last:mb-2 ml-2 sm:w-32 md:w-48 lg:w-64 data-active:text-primary-content-darkest data-active:border-primary-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-t-2 data-active:border-l-2 data-active:border-b-2 data-active:bg-base-max hover:bg-primary-darker active:shadow-lg",
           tabsList:
-            "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] ",
+            "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] border-r-2 border-primary-darkest",
+          tabLabel: "text-left",
           root: "bg-base-max",
         }}
       >

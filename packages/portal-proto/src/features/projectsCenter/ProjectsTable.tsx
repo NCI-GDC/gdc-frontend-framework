@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { VerticalTable, HandleChangeInput } from "../shared/VerticalTable";
+import {
+  VerticalTable,
+  HandleChangeInput,
+  Columns,
+} from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
 import Link from "next/link";
@@ -24,11 +28,8 @@ import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
-
-const extractToArray = (
-  data: ReadonlyArray<Record<string, number | string>>,
-  nodeKey: string,
-) => data.map((x) => x[nodeKey]);
+import { extractToArray } from "src/utils";
+import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CellProps {
   value: string[];
@@ -77,7 +78,7 @@ const ProjectsTable: React.FC = () => {
     sortBy: sortBy,
   });
 
-  const columnListOrder = [
+  const columnListOrder: Columns[] = [
     {
       id: "selected",
       visible: true,
@@ -163,7 +164,7 @@ const ProjectsTable: React.FC = () => {
       },
     },
   ];
-
+  const [columns, setColumns] = useState(columnListOrder);
   useEffect(() => setActivePage(1), [projectFilters]);
 
   const sortByActions = (sortByObj) => {
@@ -252,11 +253,11 @@ const ProjectsTable: React.FC = () => {
         setActivePage(obj.newPageNumber);
         break;
       case "newSearch":
-        setSearchTerm(obj.newSearch.toLowerCase());
+        setSearchTerm(obj.newSearch);
         setActivePage(1);
         break;
       case "newHeadings":
-        setColumnCells(obj.newHeadings);
+        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -331,7 +332,9 @@ const ProjectsTable: React.FC = () => {
   //update everything that uses table component
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total} projects`}
+      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} ${
+        tempPagination?.total > 1 ? "Projects" : "Project"
+      }`}
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
@@ -340,7 +343,7 @@ const ProjectsTable: React.FC = () => {
         </div>
       }
       tableData={formattedTableData}
-      columns={columnListOrder}
+      columns={columns}
       columnSorting={"manual"}
       selectableRow={false}
       showControls={true}

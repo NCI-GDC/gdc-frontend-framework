@@ -73,7 +73,11 @@ export const ClinicalSummary = ({
   return (
     <div className="flex flex-col gap-2 mt-5 max-w-full">
       <div className="flex justify-between">
-        <Text size="xl" weight={500}>
+        <Text
+          size="lg"
+          weight={500}
+          className="font-heading text-primary uppercase tracking-wide"
+        >
           Clinical
         </Text>
         <Menu width="target">
@@ -84,8 +88,12 @@ export const ClinicalSummary = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>TSV</Menu.Item>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>JSON</Menu.Item>
+            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+              TSV (Coming soon)
+            </Menu.Item>
+            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+              JSON (Coming soon)
+            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </div>

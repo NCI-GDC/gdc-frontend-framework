@@ -36,6 +36,7 @@ export * from "./features/genomic/genesTableSlice";
 export * from "./features/genomic/genesFrequencyChartSlice";
 export * from "./features/genomic/genomicFilters";
 export * from "./features/genomic/topGenesSSMSSlice";
+export * from "./features/genomic/geneSymbolSlice";
 export * from "./features/genomic/ssmsConsequenceTableSlice";
 export * from "./features/cancerDistribution";
 export * from "./features/subrows";
@@ -57,6 +58,8 @@ export * from "./features/modals/modalsSlice";
 export * from "./features/quickSearch/quickSearch";
 export * from "./features/versionInfo/versionInfoSlice";
 export * from "./features/api/cohortApiTypes";
+export * from "./features/sets";
+export * from "./features/cases/selectedCasesSlice";
 export { CoreState } from "./reducers";
 
 import { datadogRum } from "@datadog/browser-rum";
