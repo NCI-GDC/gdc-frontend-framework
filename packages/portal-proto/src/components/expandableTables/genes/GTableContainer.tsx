@@ -61,7 +61,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
   const [cachedDL, setCachedDL] = useState({});
-  const [someQuery, setSomeQuery] = useState(() => undefined);
+  const [someQuery, setSomeQuery] = useState(undefined);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
