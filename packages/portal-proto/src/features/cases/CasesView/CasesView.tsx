@@ -1,11 +1,11 @@
 import {
-  selectCurrentCohortFilterSet,
   useCoreSelector,
   selectCart,
   useCoreDispatch,
   selectSelectedCases,
   useAllCases,
   SortBy,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
 import React, { useMemo, useState } from "react";
@@ -68,7 +68,7 @@ export const ContextualCasesView: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));

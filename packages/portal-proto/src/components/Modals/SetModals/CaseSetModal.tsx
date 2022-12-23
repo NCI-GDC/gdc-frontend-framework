@@ -1,6 +1,6 @@
-import { useCoreDispatch, hideModal } from "@gff/core";
+import { useCoreDispatch, hideModal, useGetCasesQuery } from "@gff/core";
 import { Modal } from "@mantine/core";
-import { modalStyles } from "./constants";
+import { modalStyles } from "./styles";
 import InputSet from "./InputSet";
 
 const CaseSetModal: React.FC = () => {
@@ -38,7 +38,40 @@ const CaseSetModal: React.FC = () => {
         textInputPlaceholder={
           "e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81"
         }
-        identifier="case"
+        setType="case"
+        setTypeLabel="case"
+        mappedToFields={["submitter_id", "project.project_id"]}
+        matchAgainstIdentifiers={[
+          "case_id",
+          "submitter_id",
+          "samples.sample_id",
+          "samples.submitter_id",
+          "samples.portions.portion_id",
+          "samples.portions.submitter_id",
+          "samples.portions.analytes.analyte_id",
+          "samples.portions.analytes.submitter_id",
+          "samples.portions.analytes.aliquots.aliquot_id",
+          "samples.portions.analytes.aliquots.submitter_id",
+          "samples.portions.slides.slide_id",
+          "samples.portions.slides.submitter_id",
+        ]}
+        dataHook={useGetCasesQuery}
+        searchField="case_autocomplete.lowercase"
+        fieldDisplay={{
+          case_id: "Case UUID",
+          submitter_id: "Case ID",
+          "project.project_id": "Project",
+          "samples.sample_id": "Sample UUID",
+          "samples.submitter_id": "Sample ID",
+          "samples.portions.portion_id": "Portion UUID",
+          "samples.portions.submitter_id": "Portion ID",
+          "samples.portions.slides.slide_id": "Slide UUID",
+          "samples.portions.slides.submitter_id": "Slide ID",
+          "samples.portions.analytes.analyte_id": "Analyte UUID",
+          "samples.portions.analytes.submitter_id": "Analyte ID",
+          "samples.portions.analytes.aliquots.aliquot_id": "Aliquot UUID",
+          "samples.portions.analytes.aliquots.submitter_id": "Aliquot ID",
+        }}
       />
     </Modal>
   );
