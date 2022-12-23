@@ -123,8 +123,12 @@ export const BAMSlicingModal = ({
       closeButtonLabel="Cancel"
       openModal={openModal}
       buttons={[
-        { title: "Cancel" },
-        { onClick: buttonOnClick, title: "Download" },
+        { title: "Cancel", dataTestId: "button-download-sliced-bam-cancel" },
+        {
+          onClick: buttonOnClick,
+          title: "Download",
+          dataTestId: "button-download-sliced-bam",
+        },
       ]}
     >
       <div className="border-y border-y-base py-4 px-2">

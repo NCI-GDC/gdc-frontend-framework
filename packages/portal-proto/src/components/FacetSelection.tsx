@@ -57,7 +57,10 @@ const FacetList: React.FC<FacetListProps> = ({
                     },
                   })}
                 >
-                  <button onClick={() => handleFilterSelected(x.full)}>
+                  <button
+                    data-testid={"button-" + x.field}
+                    onClick={() => handleFilterSelected(x.full)}
+                  >
                     <Highlight
                       align="left"
                       weight={700}
@@ -125,7 +128,10 @@ const FacetSelectionPanel = ({
   const facetTypeTrimmed = facetType.slice(0, -1);
 
   return (
-    <div className="flex flex-col w-1/2">
+    <div
+      className="flex flex-col w-1/2"
+      data-testid="section-file-filter-search"
+    >
       <Title order={3}>{title}</Title>
       <TextInput
         label={`Search for a ${facetTypeTrimmed} property`}
@@ -157,7 +163,7 @@ const FacetSelectionPanel = ({
           aria-label="show only properties with values"
         />
       </Group>
-      <div>
+      <div data-testid="list-file-filters">
         <LoadingOverlay visible={facets === undefined} />
         <FacetList
           data={filteredData}
