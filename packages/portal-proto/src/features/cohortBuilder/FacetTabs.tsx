@@ -45,6 +45,8 @@ import {
   useUpdateFacetFilter,
   FacetDocTypeToCountsIndexMap,
   FacetDocTypeToLabelsMap,
+  useEnumFacetValues,
+  useEnumFacets,
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
 
@@ -99,11 +101,25 @@ const StyledFacetTabs = (props: TabsProps) => {
 
 type FacetGroupProps = {
   children?: React.ReactNode;
+  facets: ReadonlyArray<FacetDefinition>;
+  indexType: GQLIndexType;
+  docType: GQLDocType;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
+  docType,
+  indexType,
+  facets,
   children,
 }: FacetGroupProps) => {
+  const enumFacets = facets.filter((x) => x.facet_type === "enum");
+
+  useEnumFacets(
+    docType,
+    indexType,
+    enumFacets.map((entry) => entry.full),
+  );
+
   return (
     <div className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
       {children}
@@ -193,7 +209,11 @@ const CustomFacetGroup = (): JSX.Element => {
           </CustomFacetWhenEmptyGroup>
         </Flex>
       ) : (
-        <FacetGroup>
+        <FacetGroup
+          indexType={customConfig.index as GQLIndexType}
+          docType={"cases"}
+          facets={customFacetDefinitions}
+        >
           <Button
             variant="outline"
             className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
@@ -216,7 +236,7 @@ const CustomFacetGroup = (): JSX.Element => {
             customFacetDefinitions,
             {
               useGetEnumFacetData: partial(
-                useEnumFacet,
+                useEnumFacetValues,
                 "cases",
                 customConfig.index as GQLIndexType,
               ),
@@ -300,42 +320,50 @@ export const FacetTabs = (): JSX.Element => {
           )}
         </Tabs.List>
         {Object.entries(tabsConfig).map(
-          ([key, tabEntry]: [string, CohortBuilderCategory]) => (
-            <Tabs.Panel key={key} value={key}>
-              {" "}
-              {key === "custom" ? (
-                <CustomFacetGroup />
-              ) : (
-                <FacetGroup>
-                  {createFacetCardsFromList(
-                    getFacetInfo(tabEntry.facets, facets),
-                    {
-                      useGetEnumFacetData: partial(
-                        useEnumFacet,
-                        tabEntry.docType as GQLDocType,
-                        tabEntry.index as GQLIndexType,
-                      ),
-                      useGetRangeFacetData: partial(
-                        useRangeFacet,
-                        tabEntry.docType as GQLDocType,
-                        tabEntry.index as GQLIndexType,
-                      ),
-                      useGetFacetFilters: useSelectFieldFilter,
-                      useUpdateFacetFilters: useUpdateFacetFilter,
-                      useClearFilter: useClearFilters,
-                      useTotalCounts: partial(
-                        useTotalCounts,
-                        FacetDocTypeToCountsIndexMap[tabEntry.docType],
-                      ),
-                    },
-                    "cohort-builder",
-                    FacetDocTypeToLabelsMap[tabEntry.docType],
-                    undefined,
-                  )}
-                </FacetGroup>
-              )}
-            </Tabs.Panel>
-          ),
+          ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+            const facetList =
+              key === "custom" ? [] : getFacetInfo(tabEntry.facets, facets);
+            return (
+              <Tabs.Panel key={key} value={key}>
+                {" "}
+                {key === "custom" ? (
+                  <CustomFacetGroup />
+                ) : (
+                  <FacetGroup
+                    indexType={tabEntry.index as GQLIndexType}
+                    docType={tabEntry.docType as GQLDocType}
+                    facets={facetList}
+                  >
+                    {createFacetCardsFromList(
+                      facetList,
+                      {
+                        useGetEnumFacetData: partial(
+                          useEnumFacetValues,
+                          tabEntry.docType as GQLDocType,
+                          tabEntry.index as GQLIndexType,
+                        ),
+                        useGetRangeFacetData: partial(
+                          useRangeFacet,
+                          tabEntry.docType as GQLDocType,
+                          tabEntry.index as GQLIndexType,
+                        ),
+                        useGetFacetFilters: useSelectFieldFilter,
+                        useUpdateFacetFilters: useUpdateFacetFilter,
+                        useClearFilter: useClearFilters,
+                        useTotalCounts: partial(
+                          useTotalCounts,
+                          FacetDocTypeToCountsIndexMap[tabEntry.docType],
+                        ),
+                      },
+                      "cohort-builder",
+                      FacetDocTypeToLabelsMap[tabEntry.docType],
+                      undefined,
+                    )}
+                  </FacetGroup>
+                )}
+              </Tabs.Panel>
+            );
+          },
         )}
       </StyledFacetTabs>
     </div>
