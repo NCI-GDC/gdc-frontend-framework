@@ -29,7 +29,6 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CellProps {
   value: string[];
@@ -48,7 +47,7 @@ const ProjectsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "summary.case_count", direction: "desc" },
   ]);
-  const [columnCells, setColumnCells] = useState([]);
+  const [columnCells] = useState([]);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
