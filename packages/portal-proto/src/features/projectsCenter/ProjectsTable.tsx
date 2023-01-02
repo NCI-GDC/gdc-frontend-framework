@@ -3,6 +3,7 @@ import {
   VerticalTable,
   HandleChangeInput,
   Columns,
+  filterColumnCells,
 } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
@@ -47,7 +48,6 @@ const ProjectsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "summary.case_count", direction: "desc" },
   ]);
-  const [columnCells] = useState([]);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
@@ -297,7 +297,7 @@ const ProjectsTable: React.FC = () => {
   const handleDownloadTSV = () => {
     downloadTSV(
       data,
-      columnCells,
+      filterColumnCells(columns),
       `projects-table.${convertDateToString(new Date())}.tsv`,
       {
         blacklist: ["selected"],
