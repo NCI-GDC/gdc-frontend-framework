@@ -1,7 +1,8 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
-import { TableSubrowItem } from "../subrows/tableSubrow";
+// import { TableSubrowItem } from "../subrows/tableSubrow";
+import { SubrowResponse } from "../subrows/tableSubrow";
 
 export interface GraphQLFetchError {
   readonly url: string;
@@ -85,206 +86,12 @@ export const graphqlAPISlice = coreCreateApi({
   endpoints: (builder) => ({
     mutationFreqDL: builder.query<
       Record<string, { geneIds: string[] }>,
-      { geneIds: string[] }
+      { geneIds: string[]; tableData: any }
     >({
-      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-        // todo: pass pageSize, offset & other filters as params to this endpt
-        const tableQuery = await fetchWithBQ({
-          graphQLQuery: `
-          query GeneTable(
-              $genesTable_filters: FiltersArgument
-              $genesTable_size: Int
-              $genesTable_offset: Int
-              $score: String
-              $ssmCase: FiltersArgument
-              $geneCaseFilter: FiltersArgument
-              $ssmTested: FiltersArgument
-              $cnvTested: FiltersArgument
-              $cnvGainFilters: FiltersArgument
-              $cnvLossFilters: FiltersArgument
-            ) {
-              genesTableViewer: viewer {
-                explore {
-                  cases {
-                    hits(first: 0, filters: $ssmTested) {
-                      total
-                    }
-                  }
-                  filteredCases: cases {
-                    hits(first: 0, filters: $geneCaseFilter) {
-                      total
-                    }
-                  }
-                  cnvCases: cases {
-                    hits(first: 0, filters: $cnvTested) {
-                      total
-                    }
-                  }
-                  genes {
-                    hits(
-                      first: $genesTable_size
-                      offset: $genesTable_offset
-                      filters: $genesTable_filters
-                      score: $score
-                      sort: $sort
-                    ) {
-                      total
-                      edges {
-                        node {
-                          id
-                          numCases: score
-                          symbol
-                          name
-                          cytoband
-                          biotype
-                          gene_id
-                          is_cancer_gene_census
-                          ssm_case: case {
-                            hits(first: 0, filters: $ssmCase) {
-                              total
-                            }
-                          }
-                          cnv_case: case {
-                            hits(first: 0, filters: $cnvTested) {
-                              total
-                            }
-                          }
-                          case_cnv_gain: case {
-                            hits(first: 0, filters: $cnvGainFilters) {
-                              total
-                            }
-                          }
-                          case_cnv_loss: case {
-                            hits(first: 0, filters: $cnvLossFilters) {
-                              total
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }`,
-          graphQLFilters: {
-            genesTable_filters: {},
-            // request.filters ? request.filters : {},
-            genesTable_size: 10,
-            // request.pageSize,
-            genesTable_offset: 0,
-            // request.offset,
-            score: "case.project.project_id",
-            ssmCase: {
-              op: "and",
-              content: [
-                {
-                  op: "in",
-                  content: {
-                    field: "cases.available_variation_data",
-                    value: ["ssm"],
-                  },
-                },
-                {
-                  op: "NOT",
-                  content: {
-                    field: "genes.case.ssm.observation.observation_id",
-                    value: "MISSING",
-                  },
-                },
-              ],
-            },
-            geneCaseFilter: {
-              content: [
-                ...[
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["ssm"],
-                    },
-                    op: "in",
-                  },
-                ],
-                // ...request.filters,
-              ],
-              op: "and",
-            },
-            ssmTested: {
-              content: [
-                {
-                  content: {
-                    field: "cases.available_variation_data",
-                    value: ["ssm"],
-                  },
-                  op: "in",
-                },
-              ],
-              op: "and",
-            },
-            cnvTested: {
-              op: "and",
-              content: [
-                ...[
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["cnv"],
-                    },
-                    op: "in",
-                  },
-                ],
-                // ...request.filters,
-              ],
-            },
-            cnvGainFilters: {
-              op: "and",
-              content: [
-                ...[
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["cnv"],
-                    },
-                    op: "in",
-                  },
-                  {
-                    content: {
-                      field: "cnvs.cnv_change",
-                      value: ["Gain"],
-                    },
-                    op: "in",
-                  },
-                ],
-                // ...request.filters,
-              ],
-            },
-            cnvLossFilters: {
-              op: "and",
-              content: [
-                ...[
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["cnv"],
-                    },
-                    op: "in",
-                  },
-                  {
-                    content: {
-                      field: "cnvs.cnv_change",
-                      value: ["Loss"],
-                    },
-                    op: "in",
-                  },
-                ],
-                // ...request.filters,
-              ],
-            },
-          },
-        });
+      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+        let results: Record<string, any> = {};
 
-        let results: Record<string, unknown> = {};
-
-        for (const geneId of _arg.geneIds) {
+        for (const geneId of arg.geneIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
                         query GeneTableSubrow(
@@ -347,19 +154,25 @@ export const graphqlAPISlice = coreCreateApi({
               },
             },
           });
+
           if (result.error) {
             return { error: result.error };
           } else {
+            console.log("td", arg.tableData);
+            console.log("result", result.data);
+            debugger;
             results = {
               ...results,
               [geneId]: {
-                denominators: result.data as unknown as TableSubrowItem,
-                numerators: result.data as unknown as TableSubrowItem,
+                numerators: (result.data as unknown as SubrowResponse).explore
+                  .cases.denominators.project__project_id,
+                denominators: (result.data as unknown as SubrowResponse).explore
+                  .cases.denominators.project__project_id,
               },
             };
           }
         }
-        console.log(tableQuery);
+
         return { data: results };
       },
     }),

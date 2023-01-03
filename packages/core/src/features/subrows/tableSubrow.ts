@@ -1,7 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
-interface SubrowResponse {
+export interface SubrowResponse {
   explore: {
     cases: {
       denominators: {

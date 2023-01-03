@@ -17,7 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-import DLTest from "./DLTest";
+// import DLTest from "./DLTest";
 
 export const SelectedRowContext =
   createContext<
@@ -61,7 +61,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
   const [cachedDL, setCachedDL] = useState({});
-  const [someQuery, setSomeQuery] = useState(undefined);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -144,10 +143,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const protoDownload = (extension: string, query: any) => {
-    console.log(tableData);
+  const protoDownload = (extension: string) => {
+    console.log(tableData, extension);
     const geneIds = tableData.genes.map(({ gene_id: geneId }) => geneId);
-    setSomeQuery(() => query({ geneIds }));
+    const test = useMutationFreqDLQuery({ geneIds, tableData });
     // const date = new Date() -> YYYY, MM, and DD: current date
     // const blob = new Blob(download, extension)
     // ...
@@ -176,9 +175,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() =>
-                        protoDownload("json", useMutationFreqDLQuery)
-                      }
+                      onClick={() => protoDownload("json")}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -195,9 +192,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       TSV
                     </Button>
                   </ButtonTooltip>
-                  {someQuery && Object.keys(cachedDL).length === 0 && (
+                  {/* {Object.keys(cachedDL).length === 0 && (
                     <DLTest dataHook={someQuery} setDLStatus={setCachedDL} />
-                  )}
+                  )} */}
                 </div>
               }
             />
