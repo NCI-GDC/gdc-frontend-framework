@@ -1,4 +1,4 @@
-import { Button, ButtonProps, Loader } from "@mantine/core";
+import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
@@ -27,7 +27,7 @@ interface DownloadButtonProps {
   active?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
-  title?: string;
+  toolTip?: string;
 }
 
 export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
@@ -53,7 +53,7 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   active,
   Modal400,
   Modal403,
-  title,
+  toolTip,
   ...buttonProps
 }: DownloadButtonProps) => {
   const text = active ? activeText : inactiveText;
@@ -65,49 +65,50 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   );
 
   return (
-    <Button
-      title={title}
-      leftIcon={showIcon && inactiveText && <FaDownload />}
-      disabled={disabled}
-      className={
-        customStyle ||
-        `text-base-lightest ${
-          disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
-        } `
-      }
-      loading={showLoading && active}
-      onClick={() => {
-        if (!preventClickEvent && onClick) {
-          onClick();
-          return;
+    <Tooltip disabled={!toolTip} label={toolTip}>
+      <Button
+        leftIcon={showIcon && inactiveText && <FaDownload />}
+        disabled={disabled}
+        className={
+          customStyle ||
+          `text-base-lightest ${
+            disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
+          } `
         }
-        dispatch(hideModal());
-        const params = {
-          size,
-          attachment: true,
-          format,
-          fields: fields.join(),
-          filters,
-          pretty: true,
-          ...(filename ? { filename } : {}),
-          ...extraParams,
-        };
-        setActive && setActive(true);
-        download({
-          params,
-          endpoint,
-          method,
-          queryParams,
-          done: () => setActive && setActive(false),
-          dispatch,
-          Modal400,
-          Modal403,
-          options,
-        });
-      }}
-      {...buttonProps}
-    >
-      {text || Icon}
-    </Button>
+        loading={showLoading && active}
+        onClick={() => {
+          if (!preventClickEvent && onClick) {
+            onClick();
+            return;
+          }
+          dispatch(hideModal());
+          const params = {
+            size,
+            attachment: true,
+            format,
+            fields: fields.join(),
+            filters,
+            pretty: true,
+            ...(filename ? { filename } : {}),
+            ...extraParams,
+          };
+          setActive && setActive(true);
+          download({
+            params,
+            endpoint,
+            method,
+            queryParams,
+            done: () => setActive && setActive(false),
+            dispatch,
+            Modal400,
+            Modal403,
+            options,
+          });
+        }}
+        {...buttonProps}
+      >
+        {text || Icon}
+      </Button>
+    </Tooltip>
   );
 };

@@ -127,9 +127,8 @@ const RepositoryApp = () => {
               `}
               activeText="Processing"
               inactiveText="Manifest"
-              title="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+              toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
               endpoint="files"
-              filename={`gdc_manifest`}
               method="POST"
               options={{
                 method: "POST",
