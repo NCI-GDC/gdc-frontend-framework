@@ -11,7 +11,7 @@ const persistConfig = {
   key: PROJECT_APP_NAME,
   version: 1,
   storage,
-  whitelist: ["projectApp", "selected"],
+  whitelist: ["projectApp"],
 };
 
 // create the store, context and selector for the ProjectsCenter
