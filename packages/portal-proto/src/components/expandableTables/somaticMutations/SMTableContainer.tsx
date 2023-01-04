@@ -1,4 +1,10 @@
-import { useSsmsTable, GDCSsmsTable, FilterSet } from "@gff/core";
+import {
+  useSsmsTable,
+  GDCSsmsTable,
+  FilterSet,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+} from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -69,6 +75,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     ssms: [],
   });
 
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   const handleSearch = (term: string) => {
     setSearchTerm(term);
   };
@@ -80,6 +90,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [cohortFilters]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
