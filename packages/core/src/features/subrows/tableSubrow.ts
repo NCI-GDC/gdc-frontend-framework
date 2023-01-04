@@ -109,6 +109,105 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         return transformedBuckets as TableSubrowData[];
       },
     }),
+    mutationFreqDL: builder.query<
+      Record<string, { numerators: string[]; denominators: string[] }>,
+      { geneIds: string[] }
+      // , tableData: any
+    >({
+      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+        let results: Record<
+          string,
+          { numerators: string[]; denominators: string[] }
+        > = {};
+        for (const geneId of arg.geneIds) {
+          const result = await fetchWithBQ({
+            graphQLQuery: `
+                        query GeneTableSubrow(
+                            $filters_case: FiltersArgument
+                            $filters_gene: FiltersArgument
+                        ) {
+                            explore {
+                                cases {
+                                  denominators: aggregations(filters: $filters_case) {
+                                    project__project_id {
+                                        buckets {
+                                            key
+                                            doc_count
+                                        }
+                                    }
+                                  }
+                                    numerators: aggregations(filters: $filters_gene) {
+                                        project__project_id {
+                                            buckets {
+                                                doc_count
+                                                key
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        `,
+            graphQLFilters: {
+              filters_case: {
+                content: [
+                  {
+                    content: {
+                      field: "cases.available_variation_data",
+                      value: ["ssm"],
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              },
+              filters_gene: {
+                op: "and",
+                content: [
+                  {
+                    content: {
+                      field: "genes.gene_id",
+                      value: [geneId],
+                    },
+                    op: "in",
+                  },
+                  {
+                    op: "NOT",
+                    content: {
+                      field: "cases.gene.ssm.observation.observation_id",
+                      value: "MISSING",
+                    },
+                  },
+                ],
+              },
+            },
+          });
+          // results["geneId"] = { numerators: [''], denominators: ['']};
+          console.table([result, results]);
+          debugger;
+
+          //   if (result.error) {
+          //     return { error: result.error };
+          //   }
+          //   else {
+          //     console.log("td", arg.tableData);
+          //     console.log("result", result.data);
+          //     debugger;
+          //     results = {
+          //       ...results,
+          //       [geneId]: {
+          //         numerators: (result.data as unknown as SubrowResponse).explore
+          //           .cases.denominators.project__project_id,
+          //         denominators: (result.data as unknown as SubrowResponse).explore
+          //           .cases.denominators.project__project_id,
+          //       },
+          //     };
+          //   }
+          // }
+        }
+        return { data: { eng12312: { numerators: [""], denominators: [""] } } };
+      },
+    }),
     getSomaticMutationTableSubrow: builder.query({
       query: (request: { id: string }) => ({
         graphQLQuery: `
@@ -199,5 +298,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
 
 export const {
   useGetGeneTableSubrowQuery,
+  useMutationFreqDLQuery,
   useGetSomaticMutationTableSubrowQuery,
 } = tableSubrowApiSlice;
