@@ -1,10 +1,4 @@
-import {
-  useSsmsTable,
-  GDCSsmsTable,
-  FilterSet,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-} from "@gff/core";
+import { useSsmsTable, GDCSsmsTable, FilterSet, usePrevious } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -22,6 +16,7 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -39,6 +34,7 @@ export interface SMTableContainerProps {
     field: string,
   ) => void;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
@@ -52,6 +48,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   genomicFilters = { mode: "and", root: {} },
+  cohortFilters = { mode: "and", root: {} },
   handleSsmToggled = () => null,
   toggledSsms = [],
 }: SMTableContainerProps) => {
@@ -75,9 +72,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     ssms: [],
   });
 
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -92,8 +88,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [columnListOrder]);
 
   useEffect(() => {
-    setPage(0);
-  }, [cohortFilters]);
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);

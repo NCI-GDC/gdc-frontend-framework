@@ -2,8 +2,7 @@ import {
   GDCGenesTable,
   useGenesTable,
   FilterSet,
-  useCoreSelector,
-  selectCurrentCohortFilters,
+  usePrevious,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -18,7 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -34,6 +33,7 @@ export interface GTableContainerProps {
   ) => void;
   handleGeneToggled: GeneToggledHandler;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
 }
 
@@ -42,6 +42,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
   handleGeneToggled,
   genomicFilters,
+  cohortFilters,
   toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
@@ -62,9 +63,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
 
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -84,8 +84,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   useEffect(() => {
-    setPage(0);
-  }, [cohortFilters]);
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const gReducer = (
     selected: SelectedReducer<Genes>,
