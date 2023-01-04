@@ -1,4 +1,10 @@
-import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
+import {
+  GDCGenesTable,
+  useGenesTable,
+  FilterSet,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+} from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -12,6 +18,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
 
 export const SelectedRowContext =
   createContext<
@@ -55,6 +62,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
 
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
@@ -71,6 +82,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
   };
+
+  useEffect(() => {
+    setPage(0);
+  }, [cohortFilters]);
 
   const gReducer = (
     selected: SelectedReducer<Genes>,
