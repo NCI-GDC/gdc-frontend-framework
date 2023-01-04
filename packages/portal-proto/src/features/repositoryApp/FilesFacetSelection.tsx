@@ -33,7 +33,12 @@ export const FilesFacetSelectionModal = (): JSX.Element => {
 
   return (
     <>
-      <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+      <Modal
+        size="lg"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        zIndex={400}
+      >
         <FacetSelection
           title={"Add Files Filter"}
           facetType="files"

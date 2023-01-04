@@ -13,7 +13,12 @@ export const CohortFacetSelectionModal = (): JSX.Element => {
 
   return (
     <>
-      <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+      <Modal
+        size="lg"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        zIndex={400}
+      >
         <FacetSelection
           title={"Add a Case Filter"}
           facetType="cases"

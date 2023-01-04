@@ -166,6 +166,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       opened
       onClose={() => setModalOpen(false)}
       size={1000}
+      zIndex={400}
       title={`Create Custom Bins: ${field}`}
       withinPortal={false}
       classNames={{
