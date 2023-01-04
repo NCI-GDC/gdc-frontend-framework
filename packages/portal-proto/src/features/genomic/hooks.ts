@@ -67,7 +67,7 @@ const useCohortOrCaseSetFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
 };
 
-const useGenomicFacetFilter = (): FilterSet => {
+export const useGenomicFacetFilter = (): FilterSet => {
   return useAppSelector((state) => selectGeneAndSSMFilters(state));
 };
 

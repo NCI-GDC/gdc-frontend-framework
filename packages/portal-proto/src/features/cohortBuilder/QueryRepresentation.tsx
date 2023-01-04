@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext, useEffect } from "react";
-import { get } from "lodash";
+import { difference, get, intersection } from "lodash";
 import {
   Equals,
   ExcludeIfAny,
@@ -24,6 +24,8 @@ import {
   selectCurrentCohortId,
   useGeneSymbol,
   updateActiveCohortFilter,
+  selectCurrentCohortSets,
+  selectAllSets,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -110,6 +112,12 @@ const IncludeExcludeQueryElement: React.FC<
     selectCurrentCohortId(state),
   );
 
+  const sets = useCoreSelector((state) =>
+    selectCurrentCohortSets(state, field),
+  );
+  const setInfo = useCoreSelector((state) => selectAllSets(state));
+  console.log(setInfo);
+
   useEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
       setQueryExpressionsExpanded({
@@ -134,12 +142,45 @@ const IncludeExcludeQueryElement: React.FC<
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
   );
-  const labels =
-    field === "genes.gene_id"
-      ? operands.map((x) =>
-          isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
-        )
-      : operands;
+  let displayOperands = [];
+
+  // Replace operands from sets with set names
+  if (sets) {
+    Object.entries(sets).forEach(([setId, set]) => {
+      const operandsInSet = intersection(set.ids, operands);
+      if (operandsInSet.length > 0) {
+        const setName = setInfo[set.type][setId];
+        displayOperands.push({ label: setName, value: setId });
+      }
+    });
+
+    const operandsNotInSets = difference(
+      operands,
+      ...Object.entries(sets).map(([, set]) => [...set.ids]),
+    );
+
+    if (operandsNotInSets.length > 0) {
+      displayOperands = [
+        ...displayOperands,
+        ...(field === "genes.gene_id"
+          ? operandsNotInSets.map((x) => ({
+              label: isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
+              value: x,
+            }))
+          : operandsNotInSets.map((o) => ({ label: o, value: o }))),
+      ];
+    }
+  } else {
+    displayOperands =
+      field === "genes.gene_id"
+        ? operands.map((x) => ({
+            label: isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
+            value: x,
+          }))
+        : operands.map((o) => ({ label: o, value: o }));
+  }
+
+  console.log("displayOperands", displayOperands);
 
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
@@ -182,46 +223,53 @@ const IncludeExcludeQueryElement: React.FC<
       />
       {!expanded ? (
         <b className="text-primary-darkest px-2 py-1 flex items-center">
-          {operands.length}
+          {displayOperands.length}
         </b>
       ) : (
         <QueryRepresentationText>
           <Group spacing="xs">
-            {operands.map((x, i) => (
-              <Badge
-                key={`query-rep-${field}-${x}-${i}`}
-                variant="filled"
-                color="primary.9"
-                size="md"
-                className="normal-case max-w-[162px] cursor-pointer"
-                rightSection={<RemoveButton value={x.toString()} />}
-                onClick={() => {
-                  const newOperands = operands.filter((o) => o !== x);
-                  if (newOperands.length === 0) {
-                    setQueryExpressionsExpanded({
-                      type: "clear",
-                      cohortId: currentCohortId,
-                      field,
-                    });
-                    dispatch(removeCohortFilter(field));
-                  } else
-                    dispatch(
-                      updateActiveCohortFilter({
+            {displayOperands.map((x, i) => {
+              const value = Array.isArray(x.value)
+                ? x.label
+                : x.value.toString();
+              return (
+                <Badge
+                  key={`query-rep-${field}-${value}-${i}`}
+                  variant="filled"
+                  color="primary.9"
+                  size="md"
+                  className="normal-case max-w-[162px] cursor-pointer"
+                  rightSection={<RemoveButton value={value} />}
+                  onClick={() => {
+                    const newOperands = Array.isArray(x)
+                      ? operands.filter((o) => !x.includes(o))
+                      : operands.filter((o) => o !== x);
+                    if (newOperands.length === 0) {
+                      setQueryExpressionsExpanded({
+                        type: "clear",
+                        cohortId: currentCohortId,
                         field,
-                        operation: {
-                          operator,
+                      });
+                      dispatch(removeCohortFilter(field));
+                    } else
+                      dispatch(
+                        updateActiveCohortFilter({
                           field,
-                          operands: newOperands,
-                        },
-                      }),
-                    );
-                }}
-              >
-                <OverflowTooltippedLabel label={x.toString()}>
-                  {labels[i]}
-                </OverflowTooltippedLabel>
-              </Badge>
-            ))}
+                          operation: {
+                            operator,
+                            field,
+                            operands: newOperands,
+                          },
+                        }),
+                      );
+                  }}
+                >
+                  <OverflowTooltippedLabel label={value}>
+                    {x.label}
+                  </OverflowTooltippedLabel>
+                </Badge>
+              );
+            })}
           </Group>
         </QueryRepresentationText>
       )}

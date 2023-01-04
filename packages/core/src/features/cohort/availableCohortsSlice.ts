@@ -10,11 +10,18 @@ import {
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
-import { GqlOperation, Operation } from "../gdcapi/filters";
+import {
+  GqlOperation,
+  Operation,
+  isIncludes,
+  Includes,
+} from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
+import { SetTypes } from "../sets";
+import { union } from "lodash";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -25,11 +32,18 @@ export interface CaseSetDataAndStatus {
   //  id for query by cohort
 }
 
+interface Set {
+  readonly ids: string[];
+  readonly type: SetTypes;
+  readonly field: string;
+}
+
 export interface Cohort {
   readonly id: string;
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
   readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
+  readonly sets?: Record<string, Set>;
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
@@ -88,10 +102,45 @@ mutation mutationsCreateRepositoryCaseSetMutation(
  }
 }`;
 
+interface SetFilterResponse {
+  viewer: {
+    explore: {
+      [docType: string]: {
+        hits: {
+          edges: {
+            node: {
+              [field: string]: string;
+            };
+          }[];
+        };
+      };
+    };
+  };
+}
+
+const buildSetFilterQuery = (docType: string, field: string) => `query setInfo(
+  $filters: FiltersArgument
+) {
+  viewer {
+    explore {
+      ${docType} {
+        hits(filters: $filters, first: 50000) {
+          edges {
+            node {
+              ${field}
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
 export interface CreateCaseSetProps {
   readonly caseSetId: string; // pass a caseSetId to use
   readonly pendingFilters?: FilterSet;
   modified?: boolean; // to control cohort modification flag
+  readonly sets?: Record<string, Set>;
 }
 
 export const createCaseSet = createAsyncThunk<
@@ -124,6 +173,71 @@ export const createCaseSet = createAsyncThunk<
     return graphqlAPI(graphQL, variables);
   },
 );
+
+const handleFiltersForSet = createAsyncThunk<
+  void,
+  { field: string; setIds: string[] },
+  { dispatch: CoreDispatch; state: CoreState }
+>("cohort/fetchFiltersForSet", async ({ field, setIds }, thunkAPI) => {
+  const [docType, fieldName] = field.split(".");
+  const query = buildSetFilterQuery(docType, fieldName);
+  let ids: string[] = [];
+  let newSets = {};
+
+  for (const setId of setIds) {
+    const filters = {
+      op: "=",
+      content: {
+        field,
+        value: `set_id:${setId}`,
+      },
+    };
+
+    const result = await graphqlAPI<SetFilterResponse>(query, { filters });
+    const setResult = result.data.viewer.explore[docType].hits.edges.map(
+      (node) => node.node[fieldName],
+    );
+
+    ids = [...ids, ...setResult];
+
+    newSets = { ...newSets, [setId]: { ids: setResult, type: docType, field } };
+  }
+
+  const currentCohort = cohortSelectors.selectById(
+    thunkAPI.getState(),
+    thunkAPI.getState().cohort.availableCohorts.currentCohort,
+  ) as Cohort;
+
+  const existingFilters = currentCohort?.filters?.root?.[field];
+
+  const currentIds =
+    existingFilters && isIncludes(existingFilters)
+      ? existingFilters.operands
+      : [];
+
+  const combinedIds = union(ids, currentIds);
+
+  const updatedFilters = {
+    mode: "and",
+    root: {
+      ...currentCohort.filters.root,
+      [field]: {
+        operator: "includes",
+        field,
+        operands: combinedIds,
+      } as Includes,
+    },
+  };
+
+  thunkAPI.dispatch(
+    createCaseSet({
+      caseSetId: currentCohort?.id,
+      pendingFilters: updatedFilters,
+      modified: true,
+      sets: { ...currentCohort.sets, ...newSets },
+    }),
+  );
+});
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
 export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
@@ -568,33 +682,50 @@ const slice = createSlice({
           // create a new cohort and add it
           // as the GDC All Cohort is immutable
           const cohort = newCohort(filters, true);
-          cohortsAdapter.addOne(state, {
-            ...cohort,
+          let changes = {
             caseSet: {
               filters: caseSetFilters,
               status: "fulfilled",
               caseSetIds: caseSetIds,
             },
+          };
+
+          if (action.meta.arg.sets) {
+            changes = { ...changes, ...{ sets: action.meta.arg.sets } };
+          }
+
+          cohortsAdapter.addOne(state, {
+            ...cohort,
+            ...changes,
           });
           state.currentCohort = cohort.id;
           state.message = `newCohort|${cohort.name}|${cohort.id}`;
         }
         // update the current cohort with the all the filters (for query expression and cohort persistence)
         // caseSet is assigned the caseSet filters + the filters not represented by the caseSets.
-        else
+        else {
+          let changes = {
+            caseSet: {
+              filters: caseSetFilters,
+              status: "fulfilled",
+              caseSetIds: caseSetIds,
+            },
+          };
+
+          if (action.meta.arg.sets) {
+            changes = { ...changes, ...{ sets: action.meta.arg.sets } };
+          }
+
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
               filters: pendingFilters,
               modified: action.meta.arg.modified,
               modified_datetime: new Date().toISOString(),
-              caseSet: {
-                filters: caseSetFilters,
-                status: "fulfilled",
-                caseSetIds: caseSetIds,
-              },
+              ...changes,
             },
           });
+        }
       })
       .addCase(createCaseSet.pending, (state) => {
         cohortsAdapter.updateOne(state, {
@@ -711,6 +842,19 @@ export const selectCurrentCohortFilterSet = (
     state.cohort.availableCohorts.currentCohort,
   );
   return cohort?.filters;
+};
+
+export const selectCurrentCohortSets = (
+  state: CoreState,
+  field: string,
+): Record<string, Set> | undefined => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+  return Object.fromEntries(
+    Object.entries(cohort?.sets || {}).filter(([, set]) => set.field === field),
+  );
 };
 
 interface SplitFilterSet {
@@ -871,12 +1015,29 @@ export const updateActiveCohortFilter =
     operation,
   }: UpdateFilterParams): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
+    const includesSet =
+      isIncludes(operation) &&
+      operation.operands.some(
+        (operand) => typeof operand === "string" && operand.includes("set_id:"),
+      );
+
     // check if we need a case set
     // case is needed if field is gene/ssm
     const requiresCaseSet = willRequireCaseSet({
       mode: "and",
       root: { [field]: operation },
     });
+
+    if (includesSet) {
+      const setIds = operation.operands
+        .filter(
+          (operand) =>
+            typeof operand === "string" && operand.includes("set_id:"),
+        )
+        .map((operand) => (operand as string).split("set_id:")[1]);
+      console.log("setIds", setIds);
+      dispatch(handleFiltersForSet({ field, setIds }));
+    }
 
     if (requiresCaseSet) {
       // need a caseset or the caseset needs updating

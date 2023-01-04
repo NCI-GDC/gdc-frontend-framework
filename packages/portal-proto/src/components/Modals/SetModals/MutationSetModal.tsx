@@ -6,8 +6,9 @@ import {
   hideModal,
   useGetSsmsQuery,
   useCreateSsmsSetMutation,
-  useSsmSetInfoQuery,
   Operation,
+  useSsmSetCountQuery,
+  FilterSet,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
@@ -18,7 +19,7 @@ interface MutationSetModalProps {
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
   readonly updateFilters: (field: string, operation: Operation) => void;
-  readonly global?: boolean;
+  readonly existingFiltersHook: () => FilterSet;
 }
 
 const MutationSetModal: React.FC<MutationSetModalProps> = ({
@@ -26,7 +27,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
   inputInstructions,
   selectSetInstructions,
   updateFilters,
-  global = false,
+  existingFiltersHook,
 }) => {
   const dispatch = useCoreDispatch();
 
@@ -36,7 +37,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
         <InputSet
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-          setType="ssm"
+          setType="ssms"
           setTypeLabel="mutation"
           identifierToolTip={
             <div>
@@ -52,12 +53,13 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             query: useGetSsmsQuery,
             createSet: useCreateSsmsSetMutation,
             updateFilters: updateFilters,
+            getExistingFilters: existingFiltersHook,
           }}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
         <SavedSets
-          setType="ssm"
+          setType="ssms"
           setTypeLabel="mutation"
           createSetsInstructions={
             <p>
@@ -77,9 +79,9 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           }
           selectSetInstructions={selectSetInstructions}
           facetField="ssms.ssm_id"
-          getSetInfo={useSsmSetInfoQuery}
+          countHook={useSsmSetCountQuery}
           updateFilters={updateFilters}
-          global={global}
+          existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
     </GenericSetModal>

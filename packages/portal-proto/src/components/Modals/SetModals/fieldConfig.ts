@@ -1,5 +1,5 @@
 export default {
-  gene: {
+  genes: {
     searchField: "gene_autocomplete.lowercase",
     mappedToFields: ["gene_id", "symbol"],
     matchAgainstIdentifiers: [
@@ -56,7 +56,7 @@ export default {
     facetField: "case.case_id",
     createSetField: "case_id",
   },
-  ssm: {
+  ssms: {
     searchField: "ssm_autocomplete.lowercase",
     mappedToFields: ["ssm_id"],
     matchAgainstIdentifiers: ["ssm_id", "genomic_dna_change"],

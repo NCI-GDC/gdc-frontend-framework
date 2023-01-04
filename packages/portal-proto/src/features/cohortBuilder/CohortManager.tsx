@@ -297,7 +297,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         onNameChange={onSaveCohort}
       />
       {modal === Modals.GlobalCaseSetModal && (
-        <CaseSetModal updateFilters={updateCohortFilters} />
+        <CaseSetModal
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+        />
       )}
       {modal === Modals.GlobalGeneSetModal && (
         <GeneSetModal
@@ -305,7 +308,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
-          global
+          existingFiltersHook={useCohortFacetFilters}
         />
       )}
       {modal === Modals.GlobalMutationSetModal && (
@@ -314,7 +317,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
-          global
+          existingFiltersHook={useCohortFacetFilters}
         />
       )}
       {/*  Modals End   */}

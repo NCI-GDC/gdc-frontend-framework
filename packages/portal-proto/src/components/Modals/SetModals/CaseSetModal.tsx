@@ -1,14 +1,16 @@
 import React from "react";
-import { useGetCasesQuery, Operation } from "@gff/core";
+import { useGetCasesQuery, Operation, FilterSet } from "@gff/core";
 import InputSet from "./InputSet";
 import GenericSetModal from "./GenericSetModal";
 
 interface CaseSetModalProps {
   readonly updateFilters: (field: string, operation: Operation) => void;
+  readonly existingFiltersHook: () => FilterSet;
 }
 
 const CaseSetModal: React.FC<CaseSetModalProps> = ({
   updateFilters,
+  existingFiltersHook,
 }: CaseSetModalProps) => {
   return (
     <GenericSetModal
@@ -42,6 +44,7 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         hooks={{
           query: useGetCasesQuery,
           updateFilters: updateFilters,
+          getExistingFilters: existingFiltersHook,
         }}
       />
     </GenericSetModal>

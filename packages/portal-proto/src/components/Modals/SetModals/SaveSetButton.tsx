@@ -59,7 +59,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
           setSetName(name);
           createSet({ values: setValues });
         }}
-        onNameChange={(name) => !Object.keys(sets).includes(name)}
+        onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton

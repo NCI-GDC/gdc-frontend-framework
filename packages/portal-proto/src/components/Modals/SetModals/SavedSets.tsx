@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
-import { upperFirst, flatten } from "lodash";
+import { upperFirst } from "lodash";
 import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
@@ -11,6 +11,7 @@ import {
   hideModal,
   SetTypes,
   Operation,
+  FilterSet,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -22,15 +23,20 @@ import { ButtonContainer } from "./styles";
 import DiscardChangesButton from "./DiscardChangesButton";
 import { UserInputContext } from "./GenericSetModal";
 
+const CountCell = ({ countHook, setId }) => {
+  const { data, isSuccess } = countHook({ setId });
+  return isSuccess ? data : "";
+};
+
 interface SavedSetsProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
-  readonly getSetInfo: UseQuery<QueryDefinition<any, any, any, any, any>>;
+  readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
-  readonly global?: boolean;
+  readonly existingFiltersHook: () => FilterSet;
 }
 
 const SavedSets: React.FC<SavedSetsProps> = ({
@@ -38,17 +44,16 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   setTypeLabel,
   createSetsInstructions,
   selectSetInstructions,
-  getSetInfo,
+  countHook,
   updateFilters,
   facetField,
-  global,
+  existingFiltersHook,
 }: SavedSetsProps) => {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
-
-  const { data } = getSetInfo({ setIds: Object.keys(sets) });
+  const existingFilters = existingFiltersHook();
 
   const tableData = useMemo(() => {
     return Object.entries(sets).map(([setId, name]) => ({
@@ -64,9 +69,9 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         />
       ),
       name,
-      count: data?.[setId]?.count,
+      count: <CountCell countHook={countHook} setId={setId} />,
     }));
-  }, [sets, selectedSets, data]);
+  }, [sets, selectedSets, countHook]);
 
   const columns = useMemo(() => {
     return [
@@ -150,19 +155,14 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         <DarkFunctionButton
           disabled={selectedSets.length === 0}
           onClick={() => {
-            if (global) {
-              updateFilters(facetField, {
-                field: facetField,
-                operator: "includes",
-                operands: flatten(selectedSets.map((id) => data[id].ids)),
-              });
-            } else {
-              updateFilters(facetField, {
-                field: facetField,
-                operator: "includes",
-                operands: selectedSets.map((id) => `set_id:${id}`),
-              });
-            }
+            updateFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: [
+                ...existingFilters.root[facetField]?.operands,
+                ...selectedSets.map((id) => `set_id:${id}`),
+              ],
+            });
             dispatch(hideModal());
           }}
         >

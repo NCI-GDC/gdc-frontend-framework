@@ -10,6 +10,7 @@ import {
   Modals,
   useCoreSelector,
   selectSets,
+  useGeneSymbol,
 } from "@gff/core";
 import {
   controlsIconStyle,
@@ -50,10 +51,18 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   const sets = useCoreSelector((state) =>
     selectSets(state, FACET_TO_SET_TYPE[field]),
   );
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
+    field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
+  );
+
   const displayValues = facetValues.every((v: string) => v.includes("set_id"))
     ? facetValues.map((v: string) => sets[v.split("set_id:")[1]])
     : facetValues.length === 1
-    ? [facetValues[0]]
+    ? [
+        field === "genes.gene_id" && isSuccess
+          ? geneSymbolDict[facetValues[0]]
+          : facetValues[0],
+      ]
     : [
         `${facetValues.length.toLocaleString()} input ${
           FACET_TO_SET_TYPE[field]

@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { produce } from "immer";
 import { CoreState } from "../../reducers";
 
-export type SetTypes = "case" | "gene" | "ssm";
+export type SetTypes = "case" | "genes" | "ssms";
 
 const initialState: Record<SetTypes, Record<string, string>> = {
   case: {},
-  gene: {},
-  ssm: {},
+  genes: {},
+  ssms: {},
 };
 
 const slice = createSlice({
@@ -46,3 +46,7 @@ export const selectSets = (
   state: CoreState,
   setType: SetTypes,
 ): Record<string, string> => state.sets[setType];
+
+export const selectAllSets = (
+  state: CoreState,
+): Record<SetTypes, Record<string, string>> => state.sets;

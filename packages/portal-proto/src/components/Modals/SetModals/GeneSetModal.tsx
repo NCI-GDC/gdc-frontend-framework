@@ -6,8 +6,9 @@ import {
   hideModal,
   useGetGenesQuery,
   useCreateGeneSetMutation,
-  useGeneSetInfoQuery,
   Operation,
+  useGeneSetCountQuery,
+  FilterSet,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
@@ -18,7 +19,7 @@ interface GeneSetModalProps {
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
   readonly updateFilters: (field: string, operation: Operation) => void;
-  readonly global?: boolean;
+  readonly existingFiltersHook: () => FilterSet;
 }
 
 const GeneSetModal: React.FC<GeneSetModalProps> = ({
@@ -26,7 +27,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
   inputInstructions,
   selectSetInstructions,
   updateFilters,
-  global = false,
+  existingFiltersHook,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -35,7 +36,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
         <InputSet
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
-          setType="gene"
+          setType="genes"
           setTypeLabel="gene"
           identifierToolTip={
             <div>
@@ -54,12 +55,13 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             query: useGetGenesQuery,
             createSet: useCreateGeneSetMutation,
             updateFilters: updateFilters,
+            getExistingFilters: existingFiltersHook,
           }}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
         <SavedSets
-          setType="gene"
+          setType="genes"
           setTypeLabel="gene"
           createSetsInstructions={
             <p>
@@ -78,10 +80,10 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             </p>
           }
           selectSetInstructions={selectSetInstructions}
-          getSetInfo={useGeneSetInfoQuery}
+          countHook={useGeneSetCountQuery}
           updateFilters={updateFilters}
           facetField={"genes.gene_id"}
-          global={global}
+          existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
     </GenericSetModal>

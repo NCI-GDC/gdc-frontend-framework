@@ -14,7 +14,13 @@ import {
 import { flatten } from "lodash";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
-import { SetTypes, useCoreDispatch, hideModal, Operation } from "@gff/core";
+import {
+  SetTypes,
+  useCoreDispatch,
+  hideModal,
+  Operation,
+  FilterSet,
+} from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
@@ -36,6 +42,7 @@ interface InputSetProps {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
     readonly updateFilters: (field: string, op: Operation) => void;
     readonly createSet?: UseMutation<any>;
+    readonly getExistingFilters: () => FilterSet;
   };
 }
 
@@ -55,6 +62,7 @@ const InputSet: React.FC<InputSetProps> = ({
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
+  const existingFilters = hooks.getExistingFilters();
 
   const {
     mappedToFields,
@@ -244,7 +252,10 @@ const InputSet: React.FC<InputSetProps> = ({
             hooks.updateFilters(facetField, {
               field: facetField,
               operator: "includes",
-              operands: createSetIds,
+              operands: [
+                ...(existingFilters?.root?.[facetField]?.operands || []),
+                ...createSetIds,
+              ],
             });
             dispatch(hideModal());
           }}

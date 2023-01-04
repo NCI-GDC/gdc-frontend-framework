@@ -8,6 +8,7 @@ import {
   useGenesFacet,
   useUpdateGenomicEnumFacetFilter,
   useGenomicFilterByName,
+  useGenomicFacetFilter,
 } from "@/features/genomic/hooks";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -31,6 +32,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
           inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
+          existingFiltersHook={useGenomicFacetFilter}
         />
       )}
       {modal === Modals.LocalMutationSetModal && (
@@ -39,6 +41,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
           inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
+          existingFiltersHook={useGenomicFacetFilter}
         />
       )}
       {FilterFacets.genes.map((x, index) => {

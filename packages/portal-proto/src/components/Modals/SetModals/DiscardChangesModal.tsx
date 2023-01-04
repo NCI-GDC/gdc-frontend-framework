@@ -36,7 +36,7 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
           onClose();
         }}
       >
-        Submit
+        Discard
       </DarkFunctionButton>
     </ButtonContainer>
   </Modal>
