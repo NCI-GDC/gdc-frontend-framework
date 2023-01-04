@@ -9,14 +9,18 @@ import {
   selectCurrentCohortFilters,
   FilterSet,
 } from "../cohort";
-import { buildGraphGLBucketQuery, processBuckets } from "./facetApiGQL";
+import {
+  buildGraphGLBucketsQuery,
+  processBuckets,
+  AliasedFieldQuery,
+} from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
 import { facetDictionaryReducer } from "./facetDictionarySlice";
 import { usefulFacetsReducer } from "./usefulFacetsSlice";
 
 export interface FetchFacetByNameGQLProps {
-  readonly field: string;
+  readonly field: string | ReadonlyArray<string>;
   readonly docType?: GQLDocType;
   readonly index?: GQLIndexType;
   readonly filterSelector?: (state: CoreState) => FilterSet;
@@ -41,11 +45,14 @@ export const fetchFacetByNameGQL = createAsyncThunk<
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
-    const adjField = field.includes(`${docType}.`)
-      ? field.replace(`${docType}.`, "")
-      : field;
+    const filtersToUpdate = typeof field === "string" ? [field] : field;
 
-    const queryGQL = buildGraphGLBucketQuery(adjField, docType, index, field);
+    const filtersToQuery = filtersToUpdate.map((f) => ({
+      facetName: f.includes(`${docType}.`) ? f.replace(`${docType}.`, "") : f,
+      alias: f,
+    })) as ReadonlyArray<AliasedFieldQuery>;
+
+    const queryGQL = buildGraphGLBucketsQuery(filtersToQuery, docType, index);
     const filtersGQL = {
       filters_0: filters ? filters : {},
     };
@@ -77,12 +84,18 @@ export const facetsGQLSlice = createSlice({
         const response = action.payload;
         const index = action.meta.arg.index ?? "explore";
         const docType = action.meta.arg.docType ?? "cases";
-        const field = action.meta.arg.field;
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
         if (response.errors && Object.keys(response.errors).length > 0) {
-          state[docType][field] = {
-            status: "rejected",
-            error: response.errors.facets,
-          };
+          fields.forEach(
+            (f) =>
+              (state[docType][f] = {
+                status: "rejected",
+                error: response.errors.facets,
+              }),
+          );
         } else {
           const aggregations =
             docType === "projects"
@@ -92,18 +105,31 @@ export const facetsGQLSlice = createSlice({
         }
       })
       .addCase(fetchFacetByNameGQL.pending, (state, action) => {
-        const field = action.meta.arg.field;
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
         const itemType = action.meta.arg.docType ?? "cases";
-        state[itemType][field] = {
-          status: "pending",
-        };
+        fields.forEach(
+          (f) =>
+            (state[itemType][f] = state[itemType][f] =
+              {
+                status: "pending",
+              }),
+        );
       })
       .addCase(fetchFacetByNameGQL.rejected, (state, action) => {
-        const field = action.meta.arg.field;
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
         const itemType = action.meta.arg.docType ?? "cases";
-        state[itemType][field] = {
-          status: "rejected",
-        };
+        fields.forEach(
+          (f) =>
+            (state[itemType][f] = {
+              status: "rejected",
+            }),
+        );
       });
   },
 });
@@ -119,6 +145,13 @@ export const selectFacetByDocTypeAndField = (
   docType: GQLDocType,
   field: string,
 ): FacetBuckets => state.facetsGQL.facetsGQL[docType][field];
+
+export const selectMultipleFacetsByDocTypeAndField = (
+  state: CoreState,
+  docType: GQLDocType,
+  fields: ReadonlyArray<string>,
+): ReadonlyArray<FacetBuckets> =>
+  fields.map((field) => state.facetsGQL.facetsGQL[docType][field]);
 
 export const selectCaseFacetByField = (
   state: CoreState,
