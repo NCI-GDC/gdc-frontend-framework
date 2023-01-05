@@ -510,7 +510,7 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
   }
 };
 
-export const stringifyJSONParam: string = (
+export const stringifyJSONParam = (
   obj?: Record<string, unknown>,
-  defaults = {},
+  defaults = "{}",
 ) => (obj ? JSON.stringify(obj) : defaults);
