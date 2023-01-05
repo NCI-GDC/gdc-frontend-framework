@@ -8,7 +8,7 @@ import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -17,7 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-// import DLTest from "./DLTest";
+import DL from "./DL";
 
 export const SelectedRowContext =
   createContext<
@@ -60,7 +60,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
-  const [cachedDL, setCachedDL] = useState({});
+  const [dl, setDl] = useState<string>("");
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -143,16 +143,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const protoDownload = (extension: string) => {
-    console.log(tableData, extension);
-    const geneIds = tableData.genes.map(({ gene_id: geneId }) => geneId);
-    const test = useMutationFreqDLQuery({ geneIds, tableData });
-    // const date = new Date() -> YYYY, MM, and DD: current date
-    // const blob = new Blob(download, extension)
-    // ...
-    // ...
-  };
-
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -175,12 +165,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() => protoDownload("json")}
+                      onClick={() => setDl("json")}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      JSON
+                      {dl === "json" ? <Loader /> : "JSON"}
                     </Button>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
@@ -189,12 +179,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      TSV
+                      {dl === "tsv" ? <Loader /> : "TSV"}
                     </Button>
                   </ButtonTooltip>
-                  {/* {Object.keys(cachedDL).length === 0 && (
-                    <DLTest dataHook={someQuery} setDLStatus={setCachedDL} />
-                  )} */}
+                  {dl && (
+                    <DL
+                      dataHook={useMutationFreqDLQuery}
+                      queryParams={{
+                        // tableData,
+                        geneIds: tableData.genes.map(
+                          ({ gene_id: geneId }) => geneId,
+                        ),
+                      }}
+                      extension={dl}
+                      setDLStatus={setDl}
+                    />
+                  )}
                 </div>
               }
             />

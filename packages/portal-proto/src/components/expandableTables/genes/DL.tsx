@@ -4,24 +4,31 @@ import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 
 export const SOME_MAX_LIMIT = 9000;
 
-interface DLTestProps {
+interface DLProps {
   readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  setDLStatus: (dl: boolean) => void;
+  queryParams: any;
+  extension: string;
+  setDLStatus: any;
 }
 
-const DLTest: React.FC<DLTestProps> = ({
+const DL: React.FC<DLProps> = ({
   dataHook,
+  queryParams,
+  extension,
   setDLStatus,
-}: DLTestProps) => {
-  const { data, isLoading, isSuccess, isError } = dataHook(
-    {
-      // pageSize,
-      // offset
-      // geneIds [ "", "", ""]
-      // filters
-    },
-    { pollingInterval: 180000 },
-  );
+}: DLProps) => {
+  const { data, isLoading, isSuccess, isError } = dataHook(queryParams, {
+    pollingInterval: 180000,
+  });
+
+  useEffect(() => {
+    // const date = new Date() -> YYYY, MM, and DD: current date
+    // data -> download
+    // const blob = new Blob(download, extension)
+    // ...
+    // ...
+    // setDLStatus(false);
+  }, [isSuccess]);
 
   if (isError) {
     return <span>error</span>;
@@ -41,4 +48,4 @@ const DLTest: React.FC<DLTestProps> = ({
   );
 };
 
-export default DLTest;
+export default DL;
