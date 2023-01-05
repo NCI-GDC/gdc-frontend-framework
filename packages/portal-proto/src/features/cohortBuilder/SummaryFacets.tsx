@@ -2,11 +2,12 @@ import EnumFacet from "../facets/EnumFacet";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 import {
   useClearFilters,
-  useEnumFacet,
   useTotalCounts,
   useUpdateFacetFilter,
   FacetDocTypeToLabelsMap,
   FacetDocTypeToCountsIndexMap,
+  useEnumFacets,
+  useEnumFacetValues,
 } from "@/features/facets/hooks";
 import partial from "lodash/partial";
 
@@ -23,6 +24,12 @@ interface SummaryFacetProps {
 export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   fields,
 }: SummaryFacetProps) => {
+  useEnumFacets(
+    fields[0].docType,
+    fields[0].indexType,
+    fields.map((entry) => entry.field),
+  );
+
   return (
     <div>
       <div className="grid grid-cols-5 gap-4">
@@ -54,7 +61,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                   ),
                   useClearFilter: useClearFilters,
                   useGetFacetData: partial(
-                    useEnumFacet,
+                    useEnumFacetValues,
                     entry.docType,
                     entry.indexType,
                   ),
