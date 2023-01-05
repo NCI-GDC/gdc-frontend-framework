@@ -56,6 +56,7 @@ import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
+import { useRouter } from "next/router";
 
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
@@ -93,6 +94,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   hide_controls = false,
 }: CohortManagerProps) => {
   const coreDispatch = useCoreDispatch();
+  // TODO - remove feature flag
+  const router = useRouter();
+  const { FEATURE_SETS } = router.query;
 
   // Info about current Cohort
   const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
@@ -406,46 +410,48 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
-            {/* Uncomment to test set modals */}
-            <Menu>
-              <Menu.Target>
-                <CohortGroupButton>
-                  <CohortFilterIcon
-                    size="1.5rem"
-                    aria-label="Custom cohort filters"
-                  />
-                </CohortGroupButton>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item
-                  onClick={() =>
-                    coreDispatch(
-                      showModal({ modal: Modals.GlobalCaseSetModal }),
-                    )
-                  }
-                >
-                  cases
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() =>
-                    coreDispatch(
-                      showModal({ modal: Modals.GlobalGeneSetModal }),
-                    )
-                  }
-                >
-                  genes
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() =>
-                    coreDispatch(
-                      showModal({ modal: Modals.GlobalMutationSetModal }),
-                    )
-                  }
-                >
-                  mutations
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+            {/* TODO: remove feature flag */}
+            {FEATURE_SETS === "true" && (
+              <Menu>
+                <Menu.Target>
+                  <CohortGroupButton>
+                    <CohortFilterIcon
+                      size="1.5rem"
+                      aria-label="Custom cohort filters"
+                    />
+                  </CohortGroupButton>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalCaseSetModal }),
+                      )
+                    }
+                  >
+                    cases
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalGeneSetModal }),
+                      )
+                    }
+                  >
+                    genes
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalMutationSetModal }),
+                      )
+                    }
+                  >
+                    mutations
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </>
         ) : (
           <div />
