@@ -8,14 +8,14 @@ interface DLProps {
   readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
   queryParams: any;
   extension: string;
-  setDLStatus: any;
+  setDl: any;
 }
 
 const DL: React.FC<DLProps> = ({
   dataHook,
   queryParams,
   extension,
-  setDLStatus,
+  setDl,
 }: DLProps) => {
   const { data, isLoading, isSuccess, isError } = dataHook(queryParams, {
     pollingInterval: 180000,
@@ -27,8 +27,8 @@ const DL: React.FC<DLProps> = ({
     // const blob = new Blob(download, extension)
     // ...
     // ...
-    // setDLStatus(false);
-  }, [isSuccess]);
+    setDl("");
+  }, [isSuccess, extension]);
 
   if (isError) {
     return <span>error</span>;
@@ -41,7 +41,7 @@ const DL: React.FC<DLProps> = ({
       ) : (
         <>
           <button onClick={() => console.log("data", data)}>data</button>
-          <button onClick={() => setDLStatus(false)}>X</button>
+          <button onClick={() => setDl("")}>X</button>
         </>
       )}
     </button>

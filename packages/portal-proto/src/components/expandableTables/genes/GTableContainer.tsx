@@ -192,7 +192,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                         ),
                       }}
                       extension={dl}
-                      setDLStatus={setDl}
+                      setDl={setDl}
                     />
                   )}
                 </div>
