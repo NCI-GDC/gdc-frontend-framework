@@ -38,7 +38,6 @@ import FacetSelection from "@/components/FacetSelection";
 import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
 import {
   useClearFilters,
-  useEnumFacet,
   useRangeFacet,
   useSelectFieldFilter,
   useTotalCounts,
