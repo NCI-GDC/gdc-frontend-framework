@@ -1,5 +1,7 @@
 import { GDC_API } from "../../constants";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection, GqlOperation, GqlUnion } from "../gdcapi/filters";
 
 export interface ImageMetadataResponse {
   readonly Format: string;
@@ -108,12 +110,13 @@ export interface queryParams {
   cases_offset: number;
   searchValues: Array<string>;
   case_id: string;
+  caseFilters?: FilterSet;
 }
 
 export const fetchImageViewerQuery = async (
   params: queryParams,
 ): Promise<GraphQLApiResponse> => {
-  const { cases_offset, searchValues, case_id } = params;
+  const { cases_offset, searchValues, case_id, caseFilters } = params;
 
   let graphQLFilters = {
     slideFilter: {
@@ -146,7 +149,7 @@ export const fetchImageViewerQuery = async (
             value: ["Tissue Slide", "Diagnostic Slide"],
           },
         },
-      ],
+      ] as GqlOperation[],
     },
   };
 
@@ -186,6 +189,22 @@ export const fetchImageViewerQuery = async (
         ],
       },
     };
+  }
+
+  if (caseFilters) {
+    const caseGQL = buildCohortGqlOperator(caseFilters) as
+      | GqlIntersection
+      | GqlUnion
+      | undefined;
+    if (caseGQL) {
+      graphQLFilters = {
+        ...graphQLFilters,
+        filters: {
+          ...graphQLFilters.filters,
+          content: [...graphQLFilters.filters.content, ...caseGQL.content],
+        },
+      };
+    }
   }
 
   const results: GraphQLApiResponse<any> = await graphqlAPI(

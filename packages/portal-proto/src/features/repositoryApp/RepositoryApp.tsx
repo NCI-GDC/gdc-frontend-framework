@@ -14,6 +14,7 @@ import {
   CART_LIMIT,
   GqlOperation,
   FilterSet,
+  stringifyJSONParam,
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import { AppStore, id, AppContext, useAppSelector } from "./appApi";
@@ -38,7 +39,9 @@ const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
   const { pagination, status } = useCoreSelector(selectFilesData);
 
-  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const repositoryFilters = useAppSelector((state) =>
+    selectFilters(state),
+  ) as FilterSet;
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
@@ -61,13 +64,13 @@ const useCohortCentricFiles = () => {
     }
   }, [status, coreDispatch, allFilters, prevFilters]);
 
-  return { allFilters, pagination };
+  return { allFilters, pagination, repositoryFilters };
 };
 
 const RepositoryApp = () => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const { allFilters, pagination } = useCohortCentricFiles();
+  const { allFilters, pagination, repositoryFilters } = useCohortCentricFiles();
 
   const [
     getFileSizeSliceData, // This is the mutation trigger
@@ -143,7 +146,11 @@ const RepositoryApp = () => {
               setActive={setActive}
               active={active}
             />
-            <Link href="/image-viewer/MultipleImageViewerPage">
+            <Link
+              href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${stringifyJSONParam(
+                repositoryFilters,
+              )}`}
+            >
               <FunctionButton component="a">View Images</FunctionButton>
             </Link>
             <FunctionButton
