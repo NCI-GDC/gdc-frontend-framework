@@ -27,8 +27,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   return (
     <div className="h-44 block overflow-auto w-full relative">
-      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2 table-auto">
-        <thead className="bg-primary-light font-semibold text-heading text-md sticky top-0 z-10">
+      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2 table-auto border-base-light border-1">
+        <thead className="bg-base-max font-semibold font-heading text-sm text-base-contrast-max border-base border-b-1  sticky top-0 z-10">
           <tr>
             <th>
               <span className="pl-2">Select</span>
@@ -59,15 +59,15 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 
               return (
                 <tr
-                  className={`text-content text-sm text-content ${
+                  className={`text-content text-sm font-content ${
                     idx % 2
-                      ? "bg-accent-cool-lighter text-accent-cool-contrast-lighter"
-                      : "bg-accent-cool-lightest text-accent-cool-contrast-lightest"
+                      ? "bg-base-lighter text-base-contrast-lighter"
+                      : "bg-base-lightest text-base-contrast-lightest"
                   }`}
                   key={`${fieldName}-${key}`}
                 >
                   <td className="pl-2 py-1">
-                    <Checkbox color={"accent"} />
+                    <Checkbox color={"accent"} size="xs" className="pt-1" />
                   </td>
                   <td>
                     <div className="pl-2">{key}</div>

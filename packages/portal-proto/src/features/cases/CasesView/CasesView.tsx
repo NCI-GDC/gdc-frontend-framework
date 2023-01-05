@@ -1,11 +1,11 @@
 import {
-  selectCurrentCohortFilterSet,
   useCoreSelector,
   selectCart,
   useCoreDispatch,
   selectSelectedCases,
   useAllCases,
   SortBy,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
 import React, { useMemo, useState } from "react";
@@ -68,7 +68,7 @@ export const ContextualCasesView: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -139,7 +139,6 @@ export const ContextualCasesView: React.FC = () => {
                     className={`mt-0.5 ${
                       slideCount === 0 && "text-base-contrast-lightest"
                     }`}
-                    size="1.25em"
                   />
                 }
                 size="xs"
@@ -166,7 +165,6 @@ export const ContextualCasesView: React.FC = () => {
                   }
                   rightIcon={
                     <Dropdown
-                      size="1.25rem"
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
@@ -338,7 +336,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Biospecimen
                 </Button>
@@ -360,7 +358,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Clinical
                 </Button>

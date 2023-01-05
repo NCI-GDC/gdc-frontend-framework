@@ -17,7 +17,7 @@ export const GeneralErrorModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
-      buttons={[{ title: "Close" }]}
+      buttons={[{ title: "Close", dataTestId: "button-general-close" }]}
     >
       <div className="border-y border-y-base p-4">
         <Text size="md"> {message}</Text>
