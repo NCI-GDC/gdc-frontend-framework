@@ -92,7 +92,7 @@ export const ContextualFilesView: React.FC = () => {
         <Menu>
           <Menu.Target>
             <Button className={buttonStyle}>
-              <CartIcon size={"1.5rem"} />
+              <CartIcon />
               Update Cart
             </Button>
           </Menu.Target>
@@ -129,7 +129,7 @@ export const ContextualFilesView: React.FC = () => {
           </Menu.Dropdown>
         </Menu>
         <Button className={buttonStyle}>
-          <DownloadIcon size={"1.5rem"} />
+          <DownloadIcon />
           Manifest
         </Button>
         <Link href="/image-viewer/MultipleImageViewerPage" passHref>

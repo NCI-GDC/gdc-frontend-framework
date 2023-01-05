@@ -133,7 +133,7 @@ export const FileFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
+    <div className="flex flex-col gap-y-4 mr-3">
       <Group position="apart">
         <Text
           size="lg"
@@ -169,10 +169,7 @@ export const FileFacetPanel = (): JSX.Element => {
           Add a File Filter
         </Text>
       </Button>
-      <div
-        className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll"
-        data-testid="filters-facets"
-      >
+      <div className="flex flex-col gap-y-4" data-testid="filters-facets">
         <Modal
           size="lg"
           opened={opened}
