@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import { reducers } from "./reducers";
+import { filesApiSliceMiddleware } from "./features/files/allFilesMutation";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 import { caseSetListenerMiddleware } from "./listeners";
 
@@ -38,6 +39,7 @@ export const coreStore = configureStore({
       },
     })
       .concat(
+        filesApiSliceMiddleware,
         cohortApiSliceMiddleware,
         survivalApiSliceMiddleware,
         graphqlAPISliceMiddleware,
