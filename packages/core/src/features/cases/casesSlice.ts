@@ -95,7 +95,7 @@ interface FetchAllCasesRequestProps {
   readonly size?: number;
   readonly from?: number;
   readonly sortBy?: ReadonlyArray<SortBy>;
-  searchTerm: string;
+  searchTerm?: string;
 }
 export const fetchAllCases = createAsyncThunk<
   CasesResponse,

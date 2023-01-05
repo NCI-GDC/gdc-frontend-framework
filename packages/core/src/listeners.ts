@@ -11,13 +11,16 @@ import {
   removeCohortFilter,
   setCurrentCohortId,
   addCaseCount,
+  addNewCohortWithFilterAndMessage,
+  selectAvailableCohorts,
 } from "./features/cohort/availableCohortsSlice";
-
 import {
   fetchCohortCaseCounts,
   selectCohortCountsByName,
 } from "./features/cohort/countSlice";
 import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
+import { fetchGdcCases } from "./features/gdcapi/gdcapi";
+import { buildCohortGqlOperator } from "./features/cohort";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -36,8 +39,6 @@ startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
     // dispatch updateCohortFilter or removeCohortFilter executed
-
-    // listen to case counts -> ask for current cohort id -> update the cases_count
     listenerApi.dispatch(resetSelectedCases());
   },
 });
@@ -49,7 +50,28 @@ startCoreListening({
       listenerApi.getState(),
       "caseCount",
     );
-    // listen to case counts -> ask for current cohort id -> update the cases_count
-    listenerApi.dispatch(addCaseCount(cohortsCount));
+
+    listenerApi.dispatch(addCaseCount({ caseCount: cohortsCount }));
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(addNewCohortWithFilterAndMessage),
+  effect: async (_, listenerApi) => {
+    const latestCohort = selectAvailableCohorts(listenerApi.getState());
+    const latestCohortFilter = latestCohort[1]?.filters;
+    const latestCohortId = latestCohort[1]?.id;
+    try {
+      const res = await fetchGdcCases({
+        filters: buildCohortGqlOperator(latestCohortFilter),
+        size: 0,
+        // maybe give size of zero so that we can only get the count
+      });
+      const caseCount = res?.data?.pagination?.total;
+
+      listenerApi.dispatch(
+        addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
+      );
+    } catch (error) {}
   },
 });

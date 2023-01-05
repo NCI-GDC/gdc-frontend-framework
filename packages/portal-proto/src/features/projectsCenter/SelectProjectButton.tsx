@@ -28,7 +28,7 @@ export const SelectProjectButton = ({
   const [checked, setChecked] = useState(pickedProjects.includes(projectId));
 
   useEffect(() => {
-    setChecked(pickedProjects.includes(projectId));
+    projectId.length > 0 && setChecked(pickedProjects.includes(projectId));
   }, [projectId, pickedProjects]);
 
   return (
@@ -36,6 +36,7 @@ export const SelectProjectButton = ({
       size="xs"
       checked={checked}
       className="ml-1"
+      disabled={projectId.length === 0}
       onChange={(event) => {
         setChecked(event.currentTarget.checked);
         if (event.currentTarget.checked)

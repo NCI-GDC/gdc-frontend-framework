@@ -33,6 +33,7 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
+  readonly case_ids?: Array<string>;
   readonly caseCount?: number; // track case count of a cohort
 }
 
@@ -314,10 +315,22 @@ const slice = createSlice({
         cohortsAdapter.addOne(state, destCohort);
       }
     },
-    addCaseCount: (state, action: PayloadAction<number>) => {
+    addCaseIds: (
+      state,
+      action: PayloadAction<{ cohortId?: string; caseIds: string[] }>,
+    ) => {
       cohortsAdapter.updateOne(state, {
-        id: state.currentCohort,
-        changes: { caseCount: action.payload },
+        id: action.payload.cohortId ?? state.currentCohort,
+        changes: { case_ids: action.payload.caseIds },
+      });
+    },
+    addCaseCount: (
+      state,
+      action: PayloadAction<{ cohortId?: string; caseCount: number }>,
+    ) => {
+      cohortsAdapter.updateOne(state, {
+        id: action.payload.cohortId ?? state.currentCohort,
+        changes: { caseCount: action.payload.caseCount },
       });
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
@@ -648,6 +661,7 @@ export const {
   discardCohortChanges,
   setCohortMessage,
   addCaseCount,
+  addCaseIds,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -719,6 +733,26 @@ export const selectCurrentCohortFilterSet = (
     state.cohort.availableCohorts.currentCohort,
   );
   return cohort?.filters;
+};
+
+/**
+ * Returns the current cohort filters as a FilterSet
+ * @param state
+ */
+export const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
+  return cohort?.filters;
+};
+
+export const selectCohortCaseIdsSetById = (
+  state: CoreState,
+  cohortId: string,
+): string[] | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
+  return cohort?.case_ids;
 };
 
 interface SplitFilterSet {

@@ -54,7 +54,7 @@ export const CasesCohortButton = (): JSX.Element => {
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
   const coreDispatch = useCoreDispatch();
 
-  const createCohortFromProjects = () => {
+  const createCohortFromCases = () => {
     const filters: FilterSet = {
       mode: "and",
       root: {
@@ -126,7 +126,7 @@ export const CasesCohortButton = (): JSX.Element => {
           {pickedCases.length}
           {pickedCases.length > 1 ? " Cases" : " Case"}
         </Menu.Label>
-        <Menu.Item onClick={() => createCohortFromProjects()}>
+        <Menu.Item onClick={() => createCohortFromCases()}>
           Only Selected Cases
         </Menu.Item>
         <Menu.Item
@@ -151,6 +151,7 @@ export const CasesCohortButton = (): JSX.Element => {
           opened
           onClose={() => setOpenSelectCohorts(false)}
           withOrWithoutCohort={withOrWithoutCohort}
+          pickedCases={pickedCases}
         />
       )}
     </Menu>

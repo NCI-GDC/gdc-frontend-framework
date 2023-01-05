@@ -28,6 +28,7 @@ import {
   buildGqlOperationToFilterSet,
   setActiveCohortList,
   DataStatus,
+  Cohort,
 } from "@gff/core";
 
 import {
@@ -61,13 +62,14 @@ const ContextBar: React.FC = () => {
     // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
 
     if (cohortsListData) {
-      const updatedList = cohortsListData.map((data) => ({
+      const updatedList: Cohort[] = cohortsListData.map((data) => ({
         ...data,
         filters: buildGqlOperationToFilterSet(data.filters),
         caseSet: {
           caseSetId: buildGqlOperationToFilterSet(data.filters),
           status: "fulfilled" as DataStatus,
         },
+        caseCount: data?.case_ids.length,
       }));
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // TODO determine if setActiveCohortList is really needed
