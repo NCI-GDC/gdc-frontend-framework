@@ -40,7 +40,10 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   return (
     <Tooltip label={`${tooltip}`} disabled={!tooltip}>
-      <animated.div className={`text-center items-center`}>
+      <animated.div
+        className={`text-center items-center`}
+        aria-disabled={disabled}
+      >
         <animated.div
           style={sliderSpring}
           className={classNames(
