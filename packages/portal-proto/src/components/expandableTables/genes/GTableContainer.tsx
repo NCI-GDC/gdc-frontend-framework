@@ -18,6 +18,8 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import DL from "./DL";
+import saveAs from "file-saver";
+import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
   createContext<
@@ -143,6 +145,30 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const handleJSON = () => {
+    // todo: pass filename and content as params to function
+    // return all entries in table, not just currently displayed
+    const fileName = `mutations.${convertDateToString(new Date())}.json`;
+    const content = tableData.genes.map(
+      ({
+        case_cnv_gain,
+        case_cnv_loss,
+        cnv_case,
+        id,
+        numCases,
+        ssm_case,
+        ...rest
+      }) => rest,
+    );
+    const blob = new Blob([JSON.stringify(content, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, fileName);
+    setDl("");
+  };
+
+  const handleTSV = () => {};
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -165,7 +191,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() => setDl("json")}
+                      onClick={() => (dl === "json" ? setDl("") : handleJSON())}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -182,7 +208,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       {dl === "tsv" ? <Loader /> : "TSV"}
                     </Button>
                   </ButtonTooltip>
-                  {dl && (
+                  {dl === "tsv" && (
                     <DL
                       dataHook={useMutationFreqDLQuery}
                       queryParams={{
