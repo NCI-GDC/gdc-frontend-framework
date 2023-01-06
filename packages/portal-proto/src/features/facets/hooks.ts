@@ -151,13 +151,15 @@ export const useEnumFacets = (
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
+  const prevFilterLength = usePrevious(facet.length);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     if (
-      !facet ||
-      !isEqual(prevCohortFilters, currentCohortFilters) ||
-      !isEqual(prevEnumValues, enumValues)
+      facet.length > 0 &&
+      (prevFilterLength != facet.length ||
+        !isEqual(prevCohortFilters, currentCohortFilters) ||
+        !isEqual(prevEnumValues, enumValues))
     ) {
       coreDispatch(
         fetchFacetByNameGQL({

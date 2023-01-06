@@ -166,6 +166,16 @@ const CustomFacetGroup = (): JSX.Element => {
     );
   };
 
+  const customEnumFacets = customFacetDefinitions.filter(
+    (x) => x.facet_type === "enum",
+  );
+
+  useEnumFacets(
+    "cases",
+    customConfig.index as GQLIndexType,
+    customEnumFacets.map((entry) => entry.full),
+  );
+
   // handle the case where there are no custom filters
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
@@ -260,8 +270,9 @@ const CustomFacetGroup = (): JSX.Element => {
 };
 
 export const FacetTabs = (): JSX.Element => {
-  const tabsConfig = useCoreSelector((state) =>
-    selectCohortBuilderConfig(state),
+  const tabsConfig = useCoreSelector(
+    (state) => selectCohortBuilderConfig(state),
+    isEqual,
   );
   const router = useRouter();
   const facets =
@@ -291,7 +302,6 @@ export const FacetTabs = (): JSX.Element => {
       setActiveTab(router.query.tab as string);
     }
   }, [router?.query?.tab, activeTab, setActiveTab]);
-
   return (
     <div className="w-100 mt-2">
       <StyledFacetTabs
