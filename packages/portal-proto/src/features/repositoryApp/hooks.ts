@@ -16,6 +16,7 @@ import {
   NumericFromTo,
   selectRangeFacetByField,
   fetchFacetContinuousAggregation,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
@@ -38,6 +39,7 @@ import {
   selectFiltersByName,
   updateRepositoryFilter,
   removeRepositoryFilter,
+  clearRepositoryFilters,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
 
 /**
@@ -250,4 +252,25 @@ export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
 //  Selector Hooks for getting repository filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectFiltersByName(state, field));
+};
+
+export const useClearLocalFilterWhenCohortChanges = () => {
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+
+  const appDispatch = useAppDispatch();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevId = usePrevious(cohortId);
+
+  useEffect(() => {
+    if (
+      (prevCohortFilters && !isEqual(prevCohortFilters, cohortFilters)) ||
+      (prevId && !isEqual(prevId, cohortId))
+    ) {
+      console.log("clearing filters");
+      appDispatch(clearRepositoryFilters());
+    }
+  }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
 };

@@ -36,6 +36,7 @@ interface MultipleImageViewerProps {
   selectedId?: string;
   isCohortCentric?: boolean;
   additionalFilters?: string;
+  backLink?: string;
 }
 
 export const MultipleImageViewer = ({
@@ -63,7 +64,7 @@ export const MultipleImageViewer = ({
   const filters = joinFilters(
     isCohortCentric ? cohortFilters : { mode: "and", root: {} },
     parseJSONParam(
-      additionalFilters,
+      decodeURIComponent(additionalFilters),
       '{ "mode": "and", "root": {}}',
     ) as FilterSet,
   );
