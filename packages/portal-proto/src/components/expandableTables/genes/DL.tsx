@@ -33,7 +33,6 @@ const DL: React.FC<DLProps> = ({
     //   "# CNV Loss",
     //   "# Mutations",
     //   "Annotations",
-    //   "Survival"
     // ]
 
     // todo: add this to transform response
@@ -66,7 +65,6 @@ const DL: React.FC<DLProps> = ({
     //       : `--`,
     //       mutationCounts[gene_id],
     //       is_cancer_genus,
-    //       "add to survival plot" ?
     //     ].join("\t"),
     //   )
     //   .join("\n");
