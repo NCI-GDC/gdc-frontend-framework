@@ -17,7 +17,13 @@ import {
   stringifyJSONParam,
 } from "@gff/core";
 import { useEffect, useState } from "react";
-import { AppStore, id, AppContext, useAppSelector } from "./appApi";
+import {
+  AppStore,
+  id,
+  AppContext,
+  useAppSelector,
+  useAppDispatch,
+} from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
 import {
@@ -29,7 +35,10 @@ import Link from "next/link";
 import { FileFacetPanel } from "./FileFacetPanel";
 import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
-import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
+import {
+  clearRepositoryFilters,
+  selectFilters,
+} from "@/features/repositoryApp/repositoryFiltersSlice";
 import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -37,6 +46,7 @@ import FunctionButtonRemove from "@/components/FunctionButtonRemove";
 
 const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
+
   const { pagination, status } = useCoreSelector(selectFilesData);
 
   const repositoryFilters = useAppSelector((state) =>
@@ -70,8 +80,11 @@ const useCohortCentricFiles = () => {
 const RepositoryApp = () => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
+  const appDispatch = useAppDispatch();
   const { allFilters, pagination, repositoryFilters } = useCohortCentricFiles();
-
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
   const [
     getFileSizeSliceData, // This is the mutation trigger
     { isLoading: allFilesLoading }, // This is the destructured mutation result
@@ -102,6 +115,10 @@ const RepositoryApp = () => {
     return buildCohortGqlOperator(joinFilters(allFilters, cartFilterSet));
   };
   const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    appDispatch(clearRepositoryFilters);
+  }, [cohortFilters, appDispatch]);
 
   return (
     <div className="flex flex-row mt-4 mx-3">

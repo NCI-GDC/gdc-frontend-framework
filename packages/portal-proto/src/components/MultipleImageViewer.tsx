@@ -64,7 +64,7 @@ export const MultipleImageViewer = ({
     isCohortCentric ? cohortFilters : { mode: "and", root: {} },
     parseJSONParam(
       additionalFilters,
-      '{ "mode": "and", "root": {}',
+      '{ "mode": "and", "root": {}}',
     ) as FilterSet,
   );
 
