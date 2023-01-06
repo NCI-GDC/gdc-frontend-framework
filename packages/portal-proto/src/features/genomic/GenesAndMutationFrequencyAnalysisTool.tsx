@@ -271,6 +271,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               )}
               toggledGenes={currentGenes}
               genomicFilters={genomicFilters}
+              cohortFilters={cohortFilters}
             />
           </div>
         </Tabs.Panel>
@@ -301,6 +302,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             selectedSurvivalPlot={comparativeSurvival}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             genomicFilters={genomicFilters}
+            cohortFilters={cohortFilters}
             handleSsmToggled={partial(
               handleGeneAndSSmToggled,
               currentMutations,
