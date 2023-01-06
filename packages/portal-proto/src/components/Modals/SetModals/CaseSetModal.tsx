@@ -1,10 +1,14 @@
 import React from "react";
-import { useGetCasesQuery, Operation, FilterSet } from "@gff/core";
+import { useGetCasesQuery, Operation, FilterSet, FilterGroup } from "@gff/core";
 import InputSet from "./InputSet";
 import GenericSetModal from "./GenericSetModal";
 
 interface CaseSetModalProps {
-  readonly updateFilters: (field: string, operation: Operation) => void;
+  readonly updateFilters: (
+    field: string,
+    operation: Operation,
+    groups?: FilterGroup[],
+  ) => void;
   readonly existingFiltersHook: () => FilterSet;
 }
 

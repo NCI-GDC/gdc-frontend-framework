@@ -9,6 +9,7 @@ import {
   Operation,
   useSsmSetCountQuery,
   FilterSet,
+  FilterGroup,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
@@ -18,7 +19,11 @@ interface MutationSetModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
-  readonly updateFilters: (field: string, operation: Operation) => void;
+  readonly updateFilters: (
+    field: string,
+    operation: Operation,
+    groups?: FilterGroup[],
+  ) => void;
   readonly existingFiltersHook: () => FilterSet;
 }
 

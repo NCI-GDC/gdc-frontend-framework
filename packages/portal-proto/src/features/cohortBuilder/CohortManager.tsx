@@ -159,8 +159,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
-  const updateCohortFilters = (field: string, operation: Operation) => {
-    coreDispatch(updateActiveCohortFilter({ field, operation }));
+  const updateCohortFilters = (field: string, operation: Operation, groups) => {
+    coreDispatch(updateActiveCohortFilter({ field, operation, groups }));
   };
 
   return (

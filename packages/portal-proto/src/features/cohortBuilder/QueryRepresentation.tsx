@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext, useEffect } from "react";
-import { difference, get, intersection } from "lodash";
+import { difference, get, intersection, isEqual } from "lodash";
 import {
   Equals,
   ExcludeIfAny,
@@ -24,7 +24,7 @@ import {
   selectCurrentCohortId,
   useGeneSymbol,
   updateActiveCohortFilter,
-  selectCurrentCohortSets,
+  selectCurrentCohortGroupsByField,
   selectAllSets,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
@@ -112,11 +112,10 @@ const IncludeExcludeQueryElement: React.FC<
     selectCurrentCohortId(state),
   );
 
-  const sets = useCoreSelector((state) =>
-    selectCurrentCohortSets(state, field),
+  const groups = useCoreSelector((state) =>
+    selectCurrentCohortGroupsByField(state, field),
   );
   const setInfo = useCoreSelector((state) => selectAllSets(state));
-  console.log(setInfo);
 
   useEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
@@ -142,45 +141,38 @@ const IncludeExcludeQueryElement: React.FC<
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
   );
-  let displayOperands = [];
+  let tempOperands = operands;
+  const displayOperands = [];
 
-  // Replace operands from sets with set names
-  if (sets) {
-    Object.entries(sets).forEach(([setId, set]) => {
-      const operandsInSet = intersection(set.ids, operands);
-      if (operandsInSet.length > 0) {
-        const setName = setInfo[set.type][setId];
-        displayOperands.push({ label: setName, value: setId });
+  if (groups) {
+    // Replace operands from groups
+    groups.forEach((group) => {
+      const operandsInGroup = intersection(group.ids, operands);
+      const setName = setInfo?.[group?.setType]?.[group?.setId];
+      if (setName) {
+        displayOperands.push({ label: setName, value: operandsInGroup });
+      } else {
+        displayOperands.push({
+          label: `${group.ids.length} input ${fieldName.toLowerCase()}s`,
+          value: operandsInGroup,
+        });
       }
+
+      // TODO - don't absorb duplicates into group
+      tempOperands = difference(tempOperands, operandsInGroup);
     });
-
-    const operandsNotInSets = difference(
-      operands,
-      ...Object.entries(sets).map(([, set]) => [...set.ids]),
-    );
-
-    if (operandsNotInSets.length > 0) {
-      displayOperands = [
-        ...displayOperands,
-        ...(field === "genes.gene_id"
-          ? operandsNotInSets.map((x) => ({
-              label: isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
-              value: x,
-            }))
-          : operandsNotInSets.map((o) => ({ label: o, value: o }))),
-      ];
-    }
-  } else {
-    displayOperands =
-      field === "genes.gene_id"
-        ? operands.map((x) => ({
-            label: isSuccess ? geneSymbolDict[x.toString()] ?? "..." : "...",
-            value: x,
-          }))
-        : operands.map((o) => ({ label: o, value: o }));
   }
 
-  console.log("displayOperands", displayOperands);
+  tempOperands.forEach((operand) => {
+    if (field === "genes.gene_id") {
+      displayOperands.push({
+        label: isSuccess ? geneSymbolDict[operand.toString()] ?? "..." : "...",
+        value: operand,
+      });
+    } else {
+      displayOperands.push({ label: operand, value: operand });
+    }
+  });
 
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
@@ -241,9 +233,12 @@ const IncludeExcludeQueryElement: React.FC<
                   className="normal-case max-w-[162px] cursor-pointer"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
-                    const newOperands = Array.isArray(x)
-                      ? operands.filter((o) => !x.includes(o))
-                      : operands.filter((o) => o !== x);
+                    const newOperands = Array.isArray(x.value)
+                      ? operands.filter((o) => !x.value.includes(o))
+                      : operands.filter((o) => o !== x.value);
+                    const newGroups = groups.filter(
+                      (g) => !isEqual(g.ids, x.value),
+                    );
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: "clear",
@@ -260,6 +255,7 @@ const IncludeExcludeQueryElement: React.FC<
                             field,
                             operands: newOperands,
                           },
+                          groups: newGroups,
                         }),
                       );
                   }}

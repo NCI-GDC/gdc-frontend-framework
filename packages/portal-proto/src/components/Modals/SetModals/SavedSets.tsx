@@ -12,6 +12,7 @@ import {
   SetTypes,
   Operation,
   FilterSet,
+  FilterGroup,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -34,7 +35,11 @@ interface SavedSetsProps {
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  readonly updateFilters: (field: string, op: Operation) => void;
+  readonly updateFilters: (
+    field: string,
+    op: Operation,
+    groups?: FilterGroup[],
+  ) => void;
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;
 }
@@ -159,7 +164,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
               field: facetField,
               operator: "includes",
               operands: [
-                ...existingFilters.root[facetField]?.operands,
+                ...(existingFilters?.root?.[facetField]?.operands || []),
                 ...selectedSets.map((id) => `set_id:${id}`),
               ],
             });

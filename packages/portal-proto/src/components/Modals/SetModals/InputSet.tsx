@@ -20,6 +20,10 @@ import {
   hideModal,
   Operation,
   FilterSet,
+  FilterGroup,
+  useCoreSelector,
+  selectCurrentCohortGroupsByField,
+  isIncludes,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { getMatchedIdentifiers } from "./utils";
@@ -40,7 +44,11 @@ interface InputSetProps {
   readonly setTypeLabel: string;
   readonly hooks: {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
-    readonly updateFilters: (field: string, op: Operation) => void;
+    readonly updateFilters: (
+      field: string,
+      op: Operation,
+      groups?: FilterGroup[],
+    ) => void;
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters: () => FilterSet;
   };
@@ -72,6 +80,11 @@ const InputSet: React.FC<InputSetProps> = ({
     fieldDisplay,
     facetField,
   } = fieldConfig[setType];
+
+  const groups = useCoreSelector((state) =>
+    selectCurrentCohortGroupsByField(state, facetField),
+  );
+  const existingOperation = existingFilters?.root?.[facetField];
 
   const { data, isSuccess } = hooks.query({
     filters: {
@@ -249,14 +262,24 @@ const InputSet: React.FC<InputSetProps> = ({
         <DarkFunctionButton
           disabled={matched.length === 0}
           onClick={() => {
-            hooks.updateFilters(facetField, {
-              field: facetField,
-              operator: "includes",
-              operands: [
-                ...(existingFilters?.root?.[facetField]?.operands || []),
-                ...createSetIds,
-              ],
-            });
+            const newGroups =
+              createSetIds.length > 1
+                ? [...groups, { ids: createSetIds, field: facetField }]
+                : undefined;
+            hooks.updateFilters(
+              facetField,
+              {
+                field: facetField,
+                operator: "includes",
+                operands: [
+                  ...(existingOperation && isIncludes(existingOperation)
+                    ? existingOperation?.operands
+                    : []),
+                  ...createSetIds,
+                ],
+              },
+              newGroups,
+            );
             dispatch(hideModal());
           }}
         >

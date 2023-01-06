@@ -6,7 +6,7 @@ describe("setsSlice", () => {
   it("add new sets", () => {
     const coreStore = configureStore({ reducer: reducers });
     coreStore.dispatch(
-      addSet({ setType: "gene", setName: "my gene set", setId: "xZaB" }),
+      addSet({ setType: "genes", setName: "my gene set", setId: "xZaB" }),
     );
     expect(coreStore.getState().sets).toEqual({
       gene: { xZaB: "my gene set" },
@@ -14,7 +14,7 @@ describe("setsSlice", () => {
       ssm: {},
     });
     coreStore.dispatch(
-      addSet({ setType: "gene", setName: "my next gene set", setId: "aaZM" }),
+      addSet({ setType: "genes", setName: "my next gene set", setId: "aaZM" }),
     );
     expect(coreStore.getState().sets).toEqual({
       gene: { xZaB: "my gene set", aaZM: "my next gene set" },

@@ -48,7 +48,8 @@ import {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
-  selectCurrentCohortSets,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
 } from "./availableCohortsSlice";
 
 import {
@@ -137,5 +138,6 @@ export {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
-  selectCurrentCohortSets,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
 };

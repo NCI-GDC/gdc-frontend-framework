@@ -34,7 +34,7 @@ describe("<InputSet />", () => {
             inputInstructions="do stuff to have stuff happen"
             identifierToolTip="ids"
             textInputPlaceholder="ex. TCGA"
-            setType="ssm"
+            setType="ssms"
             setTypeLabel="mutation"
             hooks={{
               query: jest.fn().mockReturnValue({
@@ -46,6 +46,7 @@ describe("<InputSet />", () => {
               }),
               updateFilters: jest.fn(),
               createSet: createSetHook,
+              getExistingFilters: jest.fn(),
             }}
           />
           ,
