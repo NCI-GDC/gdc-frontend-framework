@@ -157,8 +157,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         id,
         numCases,
         ssm_case,
-        ...rest
-      }) => rest,
+        ...fields
+      }) => fields,
     );
     const blob = new Blob([JSON.stringify(content, null, 2)], {
       type: "text/json",
@@ -166,8 +166,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     saveAs(blob, fileName);
     setDl("");
   };
-
-  const handleTSV = () => {};
 
   return (
     <>
@@ -201,6 +199,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
                     <Button
+                      onClick={() => (dl === "tsv" ? setDl("") : setDl("tsv"))}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -217,7 +216,20 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                           ({ gene_id: geneId }) => geneId,
                         ),
                       }}
-                      extension={dl}
+                      headers={[
+                        "Symbol",
+                        "Name",
+                        "# SSM Affected Cases in Cohort",
+                        "# SSM Affected Cases Across the GDC",
+                        "# CNV Gain",
+                        "# CNV Loss",
+                        "# Mutations",
+                        "Annotations",
+                        "Survival",
+                      ]}
+                      fileName={`frequent-mutations.${convertDateToString(
+                        new Date(),
+                      )}.tsv`}
                       setDl={setDl}
                     />
                   )}

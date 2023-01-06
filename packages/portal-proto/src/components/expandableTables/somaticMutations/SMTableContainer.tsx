@@ -149,6 +149,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const handleTSV = () => {
+    // todo pass headers as param
+    const headers = [
+      "DNA Change",
+      "Protein Change",
+      "Mutation ID",
+      "Type",
+      "Consequences",
+      "# Affected Cases in Cohort",
+      "# Affected Cases Across the GDC	Impact",
+    ];
+  };
+
   return (
     <>
       <SelectedRowContext.Provider
