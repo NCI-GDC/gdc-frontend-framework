@@ -181,6 +181,15 @@ export const removeFromCart = (
   dispatch(removeFilesFromCart(filesToRemove));
 };
 
+export const showCartOverLimitNotification = (numFilesInCart: number): void => {
+  showNotification({
+    message: <OverLimitNotification numFilesInCart={numFilesInCart} />,
+    classNames: {
+      description: "flex flex-col content-center text-center",
+    },
+  });
+};
+
 export const addToCart = (
   files: CartFile[],
   currentCart: CartFile[],
@@ -190,12 +199,7 @@ export const addToCart = (
   cleanNotifications();
 
   if (newCartSize > CART_LIMIT) {
-    showNotification({
-      message: <OverLimitNotification numFilesInCart={currentCart.length} />,
-      classNames: {
-        description: "flex flex-col content-center text-center",
-      },
-    });
+    showCartOverLimitNotification(currentCart.length);
   } else {
     showNotification({
       message: (

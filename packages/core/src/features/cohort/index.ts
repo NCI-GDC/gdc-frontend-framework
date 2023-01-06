@@ -51,6 +51,7 @@ import {
   selectCohortFilterSetById,
   selectCohortCaseIdsSetById,
   addCaseIds,
+  selectCurrentCohortFiltersByNames,
 } from "./availableCohortsSlice";
 
 import {
@@ -142,4 +143,5 @@ export {
   selectCohortFilterSetById,
   selectCohortCaseIdsSetById,
   addCaseIds,
+  selectCurrentCohortFiltersByNames,
 };

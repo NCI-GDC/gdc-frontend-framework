@@ -72,15 +72,25 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
         </div>
       ) : (
         <>
-          <div className="flex justify-between p-2">
+          <div className="flex flex-row justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
-              className="p-2"
+              className="px-2"
               onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
-              <Radio value="counts" label="# of Cases" color="nci-blue" />
-              <Radio value="percent" label="% of Cases" color="nci-blue" />
+              <Radio
+                classNames={{ label: "font-heading pl-1" }}
+                value="counts"
+                label="# of Cases"
+                color="nci-blue"
+              />
+              <Radio
+                classNames={{ label: "font-heading pl-1" }}
+                value="percent"
+                label="% of Cases"
+                color="nci-blue"
+              />
             </Radio.Group>
             <Menu>
               <Menu.Target>
@@ -92,7 +102,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 >
                   <ActionIcon
                     variant="outline"
-                    className="bg-base-max text-base-contrast-max- border-primary-darkest"
+                    className="bg-base-max text-base-contrast-max border-primary-darkest"
                     aria-label="Download image or data"
                   >
                     <DownloadIcon />
@@ -100,9 +110,9 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>SVG</Menu.Item>
-                <Menu.Item>PNG</Menu.Item>
-                <Menu.Item>JSON</Menu.Item>
+                <Menu.Item>SVG (Coming soon)</Menu.Item>
+                <Menu.Item>PNG (Coming soon)</Menu.Item>
+                <Menu.Item>JSON (Coming soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>
