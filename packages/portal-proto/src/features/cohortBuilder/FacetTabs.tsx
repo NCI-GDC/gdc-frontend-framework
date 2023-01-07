@@ -104,8 +104,12 @@ type FacetGroupProps = {
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
+  console.log(children);
   return (
-    <div className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+    <div
+      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2"
+      data-testid="title-cohort-builder-facet-groups"
+    >
       {children}
     </div>
   );
@@ -187,6 +191,7 @@ const CustomFacetGroup = (): JSX.Element => {
               onClick={() => setOpened(true)}
               aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
+              data-testid="button-cohort-builder-add-a-custom-filter"
             >
               Add a Custom Filter
             </Button>
@@ -292,7 +297,17 @@ export const FacetTabs = (): JSX.Element => {
           {Object.entries(tabsConfig).map(
             ([key, tabEntry]: [string, CohortBuilderCategory]) => {
               return (
-                <Tabs.Tab key={key} value={key}>
+                <Tabs.Tab
+                  key={key}
+                  value={key}
+                  data-testid={
+                    "button-cohort-builder-" +
+                    tabEntry.label
+                      .toLowerCase()
+                      .replaceAll("_", "-")
+                      .replaceAll(" ", "-")
+                  }
+                >
                   {tabEntry.label}
                 </Tabs.Tab>
               );

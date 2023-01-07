@@ -287,6 +287,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                         >
                           <div className="flex-none">
                             <Checkbox
+                              data-testid={`checkbox-${value}`}
                               value={value}
                               size="xs"
                               color="accent"

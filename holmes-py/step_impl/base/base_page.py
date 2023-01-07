@@ -5,6 +5,9 @@ class BasePage:
     def __init__(self, driver) -> None:
         self.driver = driver
 
+    def goto(self, url):
+        self.driver.goto(url)
+
     def click(self, locator):
         self.driver.locator(locator).click()
 
