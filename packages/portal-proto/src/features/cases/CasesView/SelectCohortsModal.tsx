@@ -42,6 +42,9 @@ export const SelectCohortsModal = ({
   const cohortFilter = useCoreSelector((state) =>
     selectCohortFilterSetById(state, checkedValue),
   );
+  const case_ids = useCoreSelector((state) =>
+    selectCohortCaseIdsSetById(state, checkedValue),
+  );
   const [loading, setLoading] = useState(false);
 
   const isWithCohort = withOrWithoutCohort === "with";
@@ -104,6 +107,10 @@ export const SelectCohortsModal = ({
   const createCohortFromCases = async () => {
     let resCases: string[];
     setLoading(true);
+
+    // if (case_ids.length > 0) {
+    //   resCases = case_ids;
+    // } else {
     try {
       const res = await fetchGdcCases({
         filters: buildCohortGqlOperator(cohortFilter),
@@ -112,11 +119,14 @@ export const SelectCohortsModal = ({
       });
       resCases = res.data.hits.map((hit) => hit.case_id);
     } catch (error) {}
+    // }
 
-    const updatedCases = new Set(
-      !isWithCohort
-        ? resCases.filter((id) => !pickedCases.includes(id))
-        : pickedCases.concat(resCases),
+    const updatedCases = Array.from(
+      new Set(
+        !isWithCohort
+          ? resCases.filter((id) => !pickedCases.includes(id))
+          : pickedCases.concat(resCases),
+      ),
     );
     const pickedCasesfilters: FilterSet = {
       mode: "and",
@@ -124,7 +134,7 @@ export const SelectCohortsModal = ({
         "cases.case_id": {
           operator: "includes",
           field: "cases.case_id",
-          operands: Array.from(updatedCases),
+          operands: updatedCases,
         },
       },
     };
@@ -133,6 +143,7 @@ export const SelectCohortsModal = ({
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,
         message: "newCasesCohort",
+        case_ids: updatedCases,
       }),
     );
     setLoading(false);

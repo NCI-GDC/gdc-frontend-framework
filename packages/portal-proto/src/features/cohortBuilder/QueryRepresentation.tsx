@@ -153,6 +153,7 @@ const IncludeExcludeQueryElement: React.FC<
     </ActionIcon>
   );
 
+  // console.log({operands})
   return (
     <QueryContainer>
       <QueryFieldLabel>
@@ -192,28 +193,15 @@ const IncludeExcludeQueryElement: React.FC<
               color="primary.9"
               size="md"
               className="normal-case max-w-[162px] cursor-pointer"
-              // rightSection={<RemoveButton value={x.toString()} />}
-              // onClick={() => {
-              //   const newOperands = operands.filter((o) => o !== x);
-              //   if (newOperands.length === 0) {
-              //     setQueryExpressionsExpanded({
-              //       type: "clear",
-              //       cohortId: currentCohortId,
-              //       field,
-              //     });
-              //     dispatch(removeCohortFilter(field));
-              //   } else
-              //     dispatch(
-              //       updateActiveCohortFilter({
-              //         field,
-              //         operation: {
-              //           operator,
-              //           field,
-              //           operands: newOperands,
-              //         },
-              //       }),
-              //     );
-              // }}
+              rightSection={<RemoveButton value={`${operands.length} cases`} />}
+              onClick={() => {
+                setQueryExpressionsExpanded({
+                  type: "clear",
+                  cohortId: currentCohortId,
+                  field,
+                });
+                dispatch(removeCohortFilter(field));
+              }}
             >
               {`${operands.length.toLocaleString()} input cases`}
             </Badge>
@@ -229,6 +217,7 @@ const IncludeExcludeQueryElement: React.FC<
                   rightSection={<RemoveButton value={x.toString()} />}
                   onClick={() => {
                     const newOperands = operands.filter((o) => o !== x);
+                    console.log({ newOperands });
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: "clear",

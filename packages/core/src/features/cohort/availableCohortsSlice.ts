@@ -239,6 +239,7 @@ const newCohort = (
 interface NewCohortParams {
   filters?: FilterSet;
   message?: string;
+  case_ids?: string[];
 }
 
 interface CopyCohortParams {
@@ -303,6 +304,15 @@ const slice = createSlice({
     ) => {
       const cohort = newCohort(action.payload.filters);
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
+      // cohortsAdapter.updateOne(state, {
+      //   id: cohort.id,
+      //   changes: {
+      //     ...(action.payload.case_ids &&
+      //       action.payload.case_ids.length > 0 && {
+      //         case_ids: action.payload.case_ids,
+      //       }),
+      //   },
+      // });
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },
     copyCohort: (state, action: PayloadAction<CopyCohortParams>) => {
@@ -749,9 +759,12 @@ export const selectCohortFilterSetById = (
 
 export const selectCohortCaseIdsSetById = (
   state: CoreState,
-  cohortId: string,
+  cohortId?: string,
 ): string[] | undefined => {
-  const cohort = cohortSelectors.selectById(state, cohortId);
+  const cohort = cohortSelectors.selectById(
+    state,
+    cohortId ?? state.cohort.availableCohorts.currentCohort,
+  );
   return cohort?.case_ids;
 };
 
