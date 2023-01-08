@@ -14,15 +14,12 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   useCoreDispatch,
-  joinFilters,
   selectCohortFilterSetById,
-  useAllCases,
   fetchGdcCases,
   buildCohortGqlOperator,
-  selectCohortCaseIdsSetById,
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -41,9 +38,6 @@ export const SelectCohortsModal = ({
   const [checkedValue, setCheckedValue] = useState("");
   const cohortFilter = useCoreSelector((state) =>
     selectCohortFilterSetById(state, checkedValue),
-  );
-  const case_ids = useCoreSelector((state) =>
-    selectCohortCaseIdsSetById(state, checkedValue),
   );
   const [loading, setLoading] = useState(false);
 
@@ -108,9 +102,6 @@ export const SelectCohortsModal = ({
     let resCases: string[];
     setLoading(true);
 
-    // if (case_ids.length > 0) {
-    //   resCases = case_ids;
-    // } else {
     try {
       const res = await fetchGdcCases({
         filters: buildCohortGqlOperator(cohortFilter),
@@ -118,8 +109,10 @@ export const SelectCohortsModal = ({
         size: 100000,
       });
       resCases = res.data.hits.map((hit) => hit.case_id);
-    } catch (error) {}
-    // }
+    } catch (error) {
+      // TODO: how to handle this situation?
+      // maybe show a model and ask user to redo the task
+    }
 
     const updatedCases = Array.from(
       new Set(

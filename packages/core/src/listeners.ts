@@ -11,10 +11,8 @@ import {
   removeCohortFilter,
   setCurrentCohortId,
   addCaseCount,
-  // addCaseIds,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
-  // selectCurrentCohort,
 } from "./features/cohort/availableCohortsSlice";
 import {
   fetchCohortCaseCounts,
@@ -40,32 +38,9 @@ export const startCoreListening =
 startCoreListening({
   matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
   effect: async (_, listenerApi) => {
-    // dispatch updateCohortFilter or removeCohortFilter executed
     listenerApi.dispatch(resetSelectedCases());
   },
 });
-
-// startCoreListening({
-//   matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
-//   effect: async (_, listenerApi) => {
-//     // dispatch updateCohortFilter or removeCohortFilter executed
-//     const latestCohort = selectCurrentCohort(listenerApi.getState());
-//     try {
-//       const res = await fetchGdcCases({
-//         filters: buildCohortGqlOperator(latestCohort?.filters),
-//         size: 100000,
-//         fields: ["case_id"],
-//       });
-
-//       listenerApi.dispatch(
-//         addCaseIds({
-//           cohortId: latestCohort?.id,
-//           caseIds: res.data.hits.map((hit) => hit.case_id),
-//         }),
-//       );
-//     } catch (error) {}
-//   },
-// });
 
 startCoreListening({
   matcher: isFulfilled(fetchCohortCaseCounts),
@@ -74,23 +49,7 @@ startCoreListening({
       listenerApi.getState(),
       "caseCount",
     );
-
     listenerApi.dispatch(addCaseCount({ caseCount: cohortsCount }));
-    // const latestCohort = selectAvailableCohorts(listenerApi.getState());
-    // try {
-    //   const res = await fetchGdcCases({
-    //     filters: buildCohortGqlOperator(latestCohort[0].filters),
-    //     size: 100000,
-    //     fields: ["case_id"],
-    //   });
-
-    //   listenerApi.dispatch(
-    //     addCaseIds({
-    //       cohortId: latestCohort[0].id,
-    //       caseIds: res.data.hits.map((hit) => hit.case_id),
-    //     }),
-    //   );
-    // } catch (error) {}
   },
 });
 
@@ -104,13 +63,15 @@ startCoreListening({
       const res = await fetchGdcCases({
         filters: buildCohortGqlOperator(latestCohortFilter),
         size: 0,
-        // maybe give size of zero so that we can only get the count
       });
       const caseCount = res?.data?.pagination?.total;
 
       listenerApi.dispatch(
         addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
       );
-    } catch (error) {}
+    } catch (error) {
+      // TODO: how to deal with this?
+      console.log({ error });
+    }
   },
 });

@@ -304,15 +304,6 @@ const slice = createSlice({
     ) => {
       const cohort = newCohort(action.payload.filters);
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
-      // cohortsAdapter.updateOne(state, {
-      //   id: cohort.id,
-      //   changes: {
-      //     ...(action.payload.case_ids &&
-      //       action.payload.case_ids.length > 0 && {
-      //         case_ids: action.payload.case_ids,
-      //       }),
-      //   },
-      // });
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },
     copyCohort: (state, action: PayloadAction<CopyCohortParams>) => {
@@ -324,15 +315,6 @@ const slice = createSlice({
         };
         cohortsAdapter.addOne(state, destCohort);
       }
-    },
-    addCaseIds: (
-      state,
-      action: PayloadAction<{ cohortId?: string; caseIds: string[] }>,
-    ) => {
-      cohortsAdapter.updateOne(state, {
-        id: action.payload.cohortId ?? state.currentCohort,
-        changes: { case_ids: action.payload.caseIds },
-      });
     },
     addCaseCount: (
       state,
@@ -671,7 +653,6 @@ export const {
   discardCohortChanges,
   setCohortMessage,
   addCaseCount,
-  addCaseIds,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -755,17 +736,6 @@ export const selectCohortFilterSetById = (
 ): FilterSet | undefined => {
   const cohort = cohortSelectors.selectById(state, cohortId);
   return cohort?.filters;
-};
-
-export const selectCohortCaseIdsSetById = (
-  state: CoreState,
-  cohortId?: string,
-): string[] | undefined => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    cohortId ?? state.cohort.availableCohorts.currentCohort,
-  );
-  return cohort?.case_ids;
 };
 
 interface SplitFilterSet {

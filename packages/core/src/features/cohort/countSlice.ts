@@ -130,12 +130,12 @@ export const fetchCohortCaseCounts = createAsyncThunk<
     }),
   );
 
-  console.log({
-    cohortFiltersWithCaseSet,
-    cohortFilters,
-    caseSSMFilter,
-    sequenceReadsFilters,
-  });
+  // console.log({
+  //   cohortFiltersWithCaseSet,
+  //   cohortFilters,
+  //   caseSSMFilter,
+  //   sequenceReadsFilters,
+  // });
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFiltersWithCaseSet);
   const graphQlFilters = {
     filters: cohortFiltersGQL ?? {},
@@ -153,16 +153,16 @@ const slice = createSlice({
     builder
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
-        console.log({ response });
+        // console.log({ response });
         if (response.errors && Object.keys(response.errors).length > 0) {
           state.status = "rejected";
           state.error = response.errors.counts;
         } else {
           // copy the counts for explore and repository
-          console.log(
-            "hereeee: ",
-            response.data.viewer.explore.cases.hits.total,
-          );
+          // console.log(
+          //   "hereeee: ",
+          //   response.data.viewer.explore.cases.hits.total,
+          // );
           state.counts = {
             // TODO rename **Counts to count
             caseCount: response.data.viewer.explore.cases.hits.total,

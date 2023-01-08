@@ -153,7 +153,6 @@ const IncludeExcludeQueryElement: React.FC<
     </ActionIcon>
   );
 
-  // console.log({operands})
   return (
     <QueryContainer>
       <QueryFieldLabel>
@@ -217,7 +216,6 @@ const IncludeExcludeQueryElement: React.FC<
                   rightSection={<RemoveButton value={x.toString()} />}
                   onClick={() => {
                     const newOperands = operands.filter((o) => o !== x);
-                    console.log({ newOperands });
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: "clear",
