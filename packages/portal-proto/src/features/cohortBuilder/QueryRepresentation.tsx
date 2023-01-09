@@ -185,6 +185,7 @@ const IncludeExcludeQueryElement: React.FC<
           {operands.length}
         </b>
       ) : (
+        // TODO: Remove line 189 - 207 after PEAR-650 is completed
         <QueryRepresentationText>
           {field === "cases.case_id" ? (
             <Badge

@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -106,6 +106,10 @@ export const ContextualCasesView: React.FC = () => {
     sortBy: sortBy,
     searchTerm,
   });
+
+  useEffect(() => {
+    setOffset(0);
+  }, [cohortFilters]);
 
   const cases = useMemo(
     () =>
