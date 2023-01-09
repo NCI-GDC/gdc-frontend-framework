@@ -3,6 +3,7 @@ import {
   useGenesTable,
   FilterSet,
   useMutationFreqDLQuery,
+  usePrevious,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -20,6 +21,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import DL from "../shared/DL";
 import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -35,6 +37,7 @@ export interface GTableContainerProps {
   ) => void;
   handleGeneToggled: GeneToggledHandler;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
 }
 
@@ -43,6 +46,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
   handleGeneToggled,
   genomicFilters,
+  cohortFilters,
   toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
@@ -64,6 +68,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   });
   const [dl, setDl] = useState<string>("");
 
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
+
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
@@ -80,6 +87,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
   };
+
+  useEffect(() => {
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const gReducer = (
     selected: SelectedReducer<Genes>,

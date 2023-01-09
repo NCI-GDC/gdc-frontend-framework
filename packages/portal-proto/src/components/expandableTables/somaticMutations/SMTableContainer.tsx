@@ -1,4 +1,4 @@
-import { useSsmsTable, GDCSsmsTable, FilterSet } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable, FilterSet, usePrevious } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -20,6 +20,7 @@ import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
 import DL from "../shared/DL";
 import { useFreqGeneMutationDLQuery } from "@gff/core";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -37,6 +38,7 @@ export interface SMTableContainerProps {
     field: string,
   ) => void;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
@@ -50,6 +52,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   genomicFilters = { mode: "and", root: {} },
+  cohortFilters = { mode: "and", root: {} },
   handleSsmToggled = () => null,
   toggledSsms = [],
 }: SMTableContainerProps) => {
@@ -74,6 +77,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   });
   const [dl, setDl] = useState("");
 
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
+
   const handleSearch = (term: string) => {
     setSearchTerm(term);
   };
@@ -85,6 +91,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
+
+  useEffect(() => {
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);

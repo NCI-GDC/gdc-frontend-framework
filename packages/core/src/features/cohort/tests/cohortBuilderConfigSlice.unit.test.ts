@@ -243,7 +243,6 @@ describe("cohortConfig reducer", () => {
       "cases.diagnoses.igcccg_stage",
       "cases.diagnoses.inss_stage",
       "cases.diagnoses.iss_stage",
-      "cases.diagnoses.iss_stage",
       "cases.diagnoses.masaoka_stage",
       "cases.diagnoses.tumor_grade",
       "cases.diagnoses.eln_risk_classification",
