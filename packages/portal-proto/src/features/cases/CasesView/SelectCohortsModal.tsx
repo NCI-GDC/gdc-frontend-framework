@@ -136,7 +136,6 @@ export const SelectCohortsModal = ({
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,
         message: "newCasesCohort",
-        case_ids: updatedCases,
       }),
     );
     setLoading(false);
@@ -181,6 +180,7 @@ export const SelectCohortsModal = ({
                 size,
                 from,
                 total,
+                label: "cohorts",
               }}
               handleChange={handleChange}
               disablePageSize={true}

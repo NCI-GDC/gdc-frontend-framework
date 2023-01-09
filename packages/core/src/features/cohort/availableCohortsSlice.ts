@@ -33,7 +33,6 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
-  readonly case_ids?: Array<string>;
   readonly caseCount?: number; // track case count of a cohort
 }
 
@@ -239,7 +238,6 @@ const newCohort = (
 interface NewCohortParams {
   filters?: FilterSet;
   message?: string;
-  case_ids?: string[];
 }
 
 interface CopyCohortParams {

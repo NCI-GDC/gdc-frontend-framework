@@ -186,7 +186,7 @@ const IncludeExcludeQueryElement: React.FC<
         </b>
       ) : (
         <QueryRepresentationText>
-          {field === "cases.case_id" && operands.length > 1 ? (
+          {field === "cases.case_id" ? (
             <Badge
               variant="filled"
               color="primary.9"

@@ -385,7 +385,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         : "none"
                     }
                     tabIndex={column.canSort === false ? -1 : 0}
-                    onKeyPress={(event) => {
+                    onKeyDown={(event) => {
                       if (
                         column.canSort !== false &&
                         (event.key === "Enter" || event.key === " ")
@@ -500,29 +500,30 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   const ShowingCount: FC = () => {
-    let outputString = " --";
+    let outputString: JSX.Element;
     if (!isNaN(pagination.from) && status === "fulfilled") {
-      outputString = ` ${
-        pagination.from >= 0 && tableData.length > 0 ? pagination.from + 1 : 0
-      } - `;
+      const paginationFrom =
+        pagination.from >= 0 && tableData.length > 0 ? pagination.from + 1 : 0;
 
-      const paginationTo = pagination.from + pageSize;
-      if (paginationTo < pagination.total) {
-        outputString += paginationTo;
-      } else {
-        outputString += pagination.total;
-      }
-      outputString += ` of ${pagination.total.toLocaleString()}`;
+      const defaultPaginationTo = pagination.from + pageSize;
 
-      if (pagination.label) {
-        outputString += ` ${pagination.label}`;
-      }
+      const paginationTo =
+        defaultPaginationTo < pagination.total
+          ? defaultPaginationTo
+          : pagination.total;
+
+      const totalValue = pagination.total.toLocaleString();
+
+      outputString = (
+        <span>
+          <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
+          {pagination.label && ` ${pagination.label}`}
+        </span>
+      );
     }
 
     return (
-      <p className={"text-heading text-medium text-sm"}>
-        Showing {outputString}
-      </p>
+      <p className={"text-heading text-sm"}>Showing {outputString ?? "--"}</p>
     );
   };
 
