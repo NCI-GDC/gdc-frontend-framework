@@ -180,6 +180,7 @@ export const useEnumFacets = (
     prevEnumValues,
     enumValues,
     currentCohortFilters,
+    prevFilterLength,
   ]);
 };
 
