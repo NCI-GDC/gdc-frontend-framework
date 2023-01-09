@@ -22,7 +22,7 @@ import {
   GdcFile,
   Operation,
 } from "@gff/core";
-import { MdSave } from "react-icons/md";
+import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
@@ -306,11 +306,20 @@ const FilesTables: React.FC = () => {
   };
 
   //update everything that uses table component
-  let totalFileSize = "--";
+  let totalFileSize = <strong>--</strong>;
+  let totalCaseCount = "--";
 
   const fileSizeSliceData = useFilesSize(cohortGqlOperator);
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data?.total_file_size) {
-    totalFileSize = fileSize(fileSizeSliceData.data.total_file_size);
+    const fileSizeObj = fileSize(fileSizeSliceData.data.total_file_size, {
+      output: "object",
+    });
+    totalFileSize = (
+      <>
+        <strong>{fileSizeObj.value}</strong> {fileSizeObj.unit}
+      </>
+    );
+    totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
   return (
@@ -324,7 +333,12 @@ const FilesTables: React.FC = () => {
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">
               <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              <span>{totalFileSize}</span>
+              {totalFileSize}
+            </div>
+            <div className="">
+              <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+              <strong className="mr-1">{totalCaseCount}</strong>
+              Cases
             </div>
             <div className="">
               Total of{" "}

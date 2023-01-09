@@ -16,6 +16,11 @@ const graphQLQuery = `query Queries($filters: FiltersArgument) {
         fs {
           value
         }
+        project__project_id {
+          buckets {
+            case_count
+          }
+        }
       }
     }
   }
@@ -31,6 +36,7 @@ export const fetchTotalFileSize = createAsyncThunk<
 
 export interface FilesSizeData {
   total_file_size: number;
+  total_case_count: number;
 }
 
 export interface CartSummary {
@@ -42,6 +48,7 @@ export interface CartSummary {
 const initialState: CartSummary = {
   data: {
     total_file_size: 0,
+    total_case_count: 0,
   },
   status: "uninitialized",
 };
@@ -60,6 +67,12 @@ const slice = createSlice({
           state.data = {
             total_file_size:
               response?.data?.viewer?.cart_summary?.aggregations.fs?.value,
+            total_case_count:
+              response?.data?.viewer?.cart_summary?.aggregations.project__project_id?.buckets?.reduce(
+                (output: number, obj: { case_count: number }) =>
+                  (output += obj.case_count),
+                0,
+              ), // Add together all the case counts for a total
           };
           state.status = "fulfilled";
         }
