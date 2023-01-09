@@ -17,7 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-import DL from "./DL";
+import DL from "../shared/DL";
 import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
 
@@ -227,9 +227,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                         "Annotations",
                         "Survival",
                       ]}
-                      fileName={`frequent-mutations.${convertDateToString(
+                      fileName={`frequently-mutated-genes.${convertDateToString(
                         new Date(),
-                      )}.tsv`}
+                      )}`}
                       setDl={setDl}
                     />
                   )}

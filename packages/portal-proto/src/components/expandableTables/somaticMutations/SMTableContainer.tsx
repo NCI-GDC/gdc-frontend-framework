@@ -16,6 +16,10 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import saveAs from "file-saver";
+import { convertDateToString } from "src/utils/date";
+import DL from "../shared/DL";
+import { useFreqGeneMutationDLQuery } from "@gff/core";
 
 export const SelectedRowContext =
   createContext<
@@ -68,6 +72,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     offset: 0,
     ssms: [],
   });
+  const [dl, setDl] = useState("");
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -149,19 +154,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const handleTSV = () => {
-    // todo pass headers as param
-    const headers = [
-      "DNA Change",
-      "Protein Change",
-      "Mutation ID",
-      "Type",
-      "Consequences",
-      "# Affected Cases in Cohort",
-      "# Affected Cases Across the GDC	Impact",
-    ];
-  };
-
   return (
     <>
       <SelectedRowContext.Provider
@@ -199,6 +191,31 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       TSV
                     </Button>
                   </ButtonTooltip>
+                  {dl === "tsv" && (
+                    <DL
+                      dataHook={useFreqGeneMutationDLQuery}
+                      queryParams={{
+                        tableData,
+                        ssmsIds: tableData.ssms.map(
+                          ({ ssm_id: ssmsId }) => ssmsId,
+                        ),
+                      }}
+                      headers={[
+                        "DNA Change",
+                        "Protein Change",
+                        "Mutation ID",
+                        "Type",
+                        "Consequences",
+                        "# Affected Cases in Cohort",
+                        "# Affected Cases Across the GDC",
+                        "Impact",
+                      ]}
+                      fileName={`frequent-mutations.${convertDateToString(
+                        new Date(),
+                      )}`}
+                      setDl={setDl}
+                    />
+                  )}
                 </div>
               }
             />

@@ -293,11 +293,111 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         return transformedBuckets as TableSubrowData[];
       },
     }),
+    freqGeneMutationDL: builder.query<
+      Record<string, { numerators: string[]; denominators: string[] }>,
+      { ssmsIds: string[] }
+      // , tableData: any
+    >({
+      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+        let results: Record<
+          string,
+          { numerators: string[]; denominators: string[] }
+        > = {};
+        for (const ssmsId of arg.ssmsIds) {
+          const result = await fetchWithBQ({
+            graphQLQuery: `
+                    query SomaticMutationTableSubrow(
+                      $filters_case: FiltersArgument
+                      $filters_mutation: FiltersArgument
+                    ) {
+                      explore {
+                        cases {
+                          denominators: aggregations(filters: $filters_case) {
+                            project__project_id {
+                                buckets {
+                                    key
+                                    doc_count
+                                }
+                            }
+                          }
+                          numerators: aggregations(filters: $filters_mutation) {
+                            project__project_id {
+                              buckets {
+                                doc_count
+                                key
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  `,
+            graphQLFilters: {
+              filters_case: {
+                content: [
+                  {
+                    content: {
+                      field: "cases.available_variation_data",
+                      value: ["ssm"],
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              },
+              filters_mutation: {
+                content: [
+                  {
+                    content: {
+                      field: "ssms.ssm_id",
+                      value: [ssmsId],
+                    },
+                    op: "in",
+                  },
+                  {
+                    content: {
+                      field: "cases.gene.ssm.observation.observation_id",
+                      value: "MISSING",
+                    },
+                    op: "NOT",
+                  },
+                ],
+                op: "and",
+              },
+            },
+          });
+          // results["geneId"] = { numerators: [''], denominators: ['']};
+          console.table([result, results]);
+          debugger;
+
+          //   if (result.error) {
+          //     return { error: result.error };
+          //   }
+          //   else {
+          //     console.log("td", arg.tableData);
+          //     console.log("result", result.data);
+          //     debugger;
+          //     results = {
+          //       ...results,
+          //       [ssmsId]: {
+          //         numerators: (result.data as unknown as SubrowResponse).explore
+          //           .cases.denominators.project__project_id,
+          //         denominators: (result.data as unknown as SubrowResponse).explore
+          //           .cases.denominators.project__project_id,
+          //       },
+          //     };
+          //   }
+          // }
+        }
+        return { data: { eng12312: { numerators: [""], denominators: [""] } } };
+      },
+    }),
   }),
 });
 
 export const {
   useGetGeneTableSubrowQuery,
   useMutationFreqDLQuery,
+  useFreqGeneMutationDLQuery,
   useGetSomaticMutationTableSubrowQuery,
 } = tableSubrowApiSlice;

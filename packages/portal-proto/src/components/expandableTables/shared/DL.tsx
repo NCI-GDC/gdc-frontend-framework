@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
+// import saveAs from "file-saver";
 
 export const SOME_MAX_LIMIT = 9000;
 
@@ -24,17 +25,6 @@ const DL: React.FC<DLProps> = ({
   });
 
   useEffect(() => {
-    // const headers = [
-    //   "Symbol",
-    //   "Name",
-    //   "# SSM Affected Cases in Cohort",
-    //   "# SSM Affected Cases Across the GDC",
-    //   "# CNV Gain",
-    //   "# CNV Loss",
-    //   "# Mutations",
-    //   "Annotations",
-    // ]
-
     // todo: add this to transform response
 
     // const body = dataFromHook
@@ -71,10 +61,10 @@ const DL: React.FC<DLProps> = ({
 
     // body -> data
 
-    // const tsv = [header.join("\t"), data].join("\n");
+    // const tsv = [headers.join("\t"), data].join("\n");
     // const blob = new Blob([tsv], { type: "text/csv" });
 
-    // saveAs(blob, fileName);
+    // saveAs(blob, `${fileName}.{dl}`);
     debugger;
     setDl("");
   }, [isSuccess, headers]);
