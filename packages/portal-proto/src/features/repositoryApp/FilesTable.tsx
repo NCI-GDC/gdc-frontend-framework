@@ -318,8 +318,18 @@ const FilesTables: React.FC = () => {
       additionalControls={
         <div className="flex">
           <div className="flex gap-2">
-            <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-            <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+            <FunctionButton
+              onClick={handleDownloadJSON}
+              data-testid="button-json-files-table"
+            >
+              JSON
+            </FunctionButton>
+            <FunctionButton
+              onClick={handleDownloadTSV}
+              data-testid="button-tsv-files-table"
+            >
+              TSV
+            </FunctionButton>
           </div>
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">
