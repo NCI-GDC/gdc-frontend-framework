@@ -20,6 +20,7 @@ import {
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
+import { MAX_CASE_IDS } from "./utils";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -106,7 +107,7 @@ export const SelectCohortsModal = ({
       const res = await fetchGdcCases({
         filters: buildCohortGqlOperator(cohortFilter),
         fields: ["case_id"],
-        size: 100000,
+        size: MAX_CASE_IDS,
       });
       resCases = res.data.hits.map((hit) => hit.case_id);
     } catch (error) {
