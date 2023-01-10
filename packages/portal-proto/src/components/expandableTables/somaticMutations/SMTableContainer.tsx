@@ -168,6 +168,55 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const handleJSON = () => {
+    const fileName = `mutations.${convertDateToString(new Date())}.json`;
+    const content = tableData.ssms.map(
+      ({
+        consequence: consequences = [
+          {
+            annotation: {
+              polyphen_impact: "",
+              sift_impact: "",
+              vep_impact: "",
+            },
+          },
+        ],
+        genomic_dna_change,
+        mutation_subtype,
+        ssm_id,
+      }) => {
+        return {
+          consequence: consequences.map(
+            ({
+              annotation: {
+                polyphen_impact = "",
+                sift_impact = "",
+                vep_impact = "",
+              },
+            }) => {
+              return {
+                transcript: {
+                  annotation: {
+                    polyphen_impact,
+                    sift_impact,
+                    vep_impact,
+                  },
+                },
+              };
+            },
+          ),
+          genomic_dna_change,
+          mutation_subtype,
+          ssm_id,
+        };
+      },
+    );
+    const blob = new Blob([JSON.stringify(content, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, fileName);
+  };
+
   return (
     <>
       <SelectedRowContext.Provider
@@ -189,6 +238,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <div className="flex gap-2">
                   <ButtonTooltip label="Export All Except #Cases">
                     <Button
+                      onClick={() => handleJSON()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }

@@ -111,8 +111,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
     }),
     mutationFreqDL: builder.query<
       Record<string, { numerators: string[]; denominators: string[] }>,
-      { geneIds: string[] }
-      // , tableData: any
+      { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         let results: Record<
@@ -184,6 +183,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           });
           // results["geneId"] = { numerators: [''], denominators: ['']};
           console.table([result, results]);
+          console.log("tableData?", arg.tableData);
           debugger;
 
           //   if (result.error) {

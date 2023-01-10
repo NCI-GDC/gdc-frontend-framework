@@ -163,7 +163,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleJSON = () => {
     // todo: pass filename and content as params to function
     // return all entries in table, not just currently displayed
-    const fileName = `mutations.${convertDateToString(new Date())}.json`;
+    const fileName = `frequently-mutated.${convertDateToString(
+      new Date(),
+    )}.json`;
     const content = tableData.genes.map(
       ({
         case_cnv_gain,
@@ -224,12 +226,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   </ButtonTooltip>
                   {dl === "tsv" && (
                     <DL
-                      dataHook={useMutationFreqDLQuery}
+                      // useMutationFreqDLQuery
+                      dataHook={useGenesTable}
                       queryParams={{
+                        pageSize: gTotal,
+                        offset: 0,
+                        genomicFilters,
                         // tableData,
-                        geneIds: tableData.genes.map(
-                          ({ gene_id: geneId }) => geneId,
-                        ),
+                        // geneIds: tableData.genes.map(
+                        //   ({ gene_id: geneId }) => geneId,
+                        // ),
                       }}
                       headers={[
                         "Symbol",
