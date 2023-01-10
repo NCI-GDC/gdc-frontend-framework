@@ -25,6 +25,7 @@ interface GeneSetModalProps {
     groups?: FilterGroup[],
   ) => void;
   readonly existingFiltersHook: () => FilterSet;
+  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
 }
 
 const GeneSetModal: React.FC<GeneSetModalProps> = ({
@@ -33,6 +34,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  addNewFilterGroups,
 }: GeneSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -62,6 +64,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
           }}
+          addNewFilterGroups={addNewFilterGroups}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">

@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext, useEffect } from "react";
-import { difference, get, intersection, isEqual } from "lodash";
+import { get } from "lodash";
 import {
   Equals,
   ExcludeIfAny,
@@ -26,6 +26,7 @@ import {
   updateActiveCohortFilter,
   selectCurrentCohortGroupsByField,
   selectAllSets,
+  removeCohortGroup,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -141,29 +142,36 @@ const IncludeExcludeQueryElement: React.FC<
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
   );
-  let tempOperands = operands;
+  const tempOperands = [...operands];
   const displayOperands = [];
 
   if (groups) {
     // Replace operands from groups
     groups.forEach((group) => {
-      const operandsInGroup = intersection(group.ids, operands);
       const setName = setInfo?.[group?.setType]?.[group?.setId];
       if (setName) {
-        displayOperands.push({ label: setName, value: operandsInGroup });
+        displayOperands.push({ label: setName, group });
       } else {
         displayOperands.push({
           label: `${group.ids.length} input ${fieldName.toLowerCase()}s`,
-          value: operandsInGroup,
+          group,
         });
       }
 
-      // TODO - don't absorb duplicates into group
-      tempOperands = difference(tempOperands, operandsInGroup);
+      group.ids.forEach((id) => {
+        const index = tempOperands.findIndex((o) => o === id);
+        if (index >= 0) {
+          tempOperands.splice(index, 1);
+        }
+      });
     });
   }
 
   tempOperands.forEach((operand) => {
+    if (operand.toString().includes("set_id:")) {
+      return;
+    }
+
     if (field === "genes.gene_id") {
       displayOperands.push({
         label: isSuccess ? geneSymbolDict[operand.toString()] ?? "..." : "...",
@@ -221,9 +229,7 @@ const IncludeExcludeQueryElement: React.FC<
         <QueryRepresentationText>
           <Group spacing="xs">
             {displayOperands.map((x, i) => {
-              const value = Array.isArray(x.value)
-                ? x.label
-                : x.value.toString();
+              const value = x?.group ? x.label : x.value.toString();
               return (
                 <Badge
                   key={`query-rep-${field}-${value}-${i}`}
@@ -233,12 +239,19 @@ const IncludeExcludeQueryElement: React.FC<
                   className="normal-case max-w-[162px] cursor-pointer"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
-                    const newOperands = Array.isArray(x.value)
-                      ? operands.filter((o) => !x.value.includes(o))
-                      : operands.filter((o) => o !== x.value);
-                    const newGroups = groups.filter(
-                      (g) => !isEqual(g.ids, x.value),
-                    );
+                    let newOperands: (string | number)[];
+                    if (x.group) {
+                      const tempOperands = [...operands];
+                      x.group.ids.forEach((id) => {
+                        const index = tempOperands.findIndex((o) => o === id);
+                        if (index >= 0) {
+                          tempOperands.splice(index, 1);
+                        }
+                      });
+                      newOperands = tempOperands;
+                    } else {
+                      newOperands = operands.filter((o) => o !== x.value);
+                    }
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: "clear",
@@ -255,9 +268,12 @@ const IncludeExcludeQueryElement: React.FC<
                             field,
                             operands: newOperands,
                           },
-                          groups: newGroups,
                         }),
                       );
+
+                    if (x.group) {
+                      dispatch(removeCohortGroup(x.group));
+                    }
                   }}
                 >
                   <OverflowTooltippedLabel label={value}>

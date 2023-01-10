@@ -48,6 +48,7 @@ describe("<InputSet />", () => {
               createSet: createSetHook,
               getExistingFilters: jest.fn(),
             }}
+            addNewFilterGroups={jest.fn()}
           />
           ,
         </UserInputContext.Provider>

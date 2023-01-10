@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { produce } from "immer";
 import { CoreState } from "../../reducers";
 
-export type SetTypes = "case" | "genes" | "ssms";
+export type SetTypes = "cases" | "genes" | "ssms";
 
 const initialState: Record<SetTypes, Record<string, string>> = {
-  case: {},
+  cases: {},
   genes: {},
   ssms: {},
 };

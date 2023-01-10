@@ -21,7 +21,7 @@ export default {
     createSetField: "gene_id",
     facetField: "genes.gene_id",
   },
-  case: {
+  cases: {
     mappedToFields: ["submitter_id", "project.project_id"],
     matchAgainstIdentifiers: [
       "case_id",
@@ -53,7 +53,7 @@ export default {
       "samples.portions.analytes.aliquots.aliquot_id": "Aliquot UUID",
       "samples.portions.analytes.aliquots.submitter_id": "Aliquot ID",
     },
-    facetField: "case.case_id",
+    facetField: "cases.case_id",
     createSetField: "case_id",
   },
   ssms: {

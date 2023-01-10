@@ -21,8 +21,6 @@ import {
   Operation,
   FilterSet,
   FilterGroup,
-  useCoreSelector,
-  selectCurrentCohortGroupsByField,
   isIncludes,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -52,6 +50,7 @@ interface InputSetProps {
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters: () => FilterSet;
   };
+  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -61,6 +60,7 @@ const InputSet: React.FC<InputSetProps> = ({
   setType,
   setTypeLabel,
   hooks,
+  addNewFilterGroups,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -81,9 +81,6 @@ const InputSet: React.FC<InputSetProps> = ({
     facetField,
   } = fieldConfig[setType];
 
-  const groups = useCoreSelector((state) =>
-    selectCurrentCohortGroupsByField(state, facetField),
-  );
   const existingOperation = existingFilters?.root?.[facetField];
 
   const { data, isSuccess } = hooks.query({
@@ -262,24 +259,21 @@ const InputSet: React.FC<InputSetProps> = ({
         <DarkFunctionButton
           disabled={matched.length === 0}
           onClick={() => {
-            const newGroups =
+            const newGroup =
               createSetIds.length > 1
-                ? [...groups, { ids: createSetIds, field: facetField }]
+                ? [{ ids: createSetIds, field: facetField }]
                 : undefined;
-            hooks.updateFilters(
-              facetField,
-              {
-                field: facetField,
-                operator: "includes",
-                operands: [
-                  ...(existingOperation && isIncludes(existingOperation)
-                    ? existingOperation?.operands
-                    : []),
-                  ...createSetIds,
-                ],
-              },
-              newGroups,
-            );
+            hooks.updateFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: [
+                ...(existingOperation && isIncludes(existingOperation)
+                  ? existingOperation?.operands
+                  : []),
+                ...createSetIds,
+              ],
+            });
+            addNewFilterGroups(newGroup);
             dispatch(hideModal());
           }}
         >

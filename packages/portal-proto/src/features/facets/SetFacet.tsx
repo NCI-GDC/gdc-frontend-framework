@@ -11,6 +11,7 @@ import {
   useCoreSelector,
   selectSets,
   useGeneSymbol,
+  SetTypes,
 } from "@gff/core";
 import {
   controlsIconStyle,
@@ -24,12 +25,6 @@ const FACET_TO_MODAL = {
   "genes.gene_id": Modals.LocalGeneSetModal,
   "cases.case_id": Modals.LocalCaseSetModal,
   "ssms.ssm_id": Modals.LocalMutationSetModal,
-};
-
-const FACET_TO_SET_TYPE = {
-  "genes.gene_id": "gene",
-  "cases.case_id": "case",
-  "ssms.ssm_id": "ssm",
 };
 
 const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
@@ -48,26 +43,55 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   const dispatch = useCoreDispatch();
   const facetValues = (hooks.useGetFacetValues(field) ||
     []) as EnumOperandValue;
+  const [setType] = field.split(".");
   const sets = useCoreSelector((state) =>
-    selectSets(state, FACET_TO_SET_TYPE[field]),
+    selectSets(state, setType as SetTypes),
   );
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
   );
 
-  const displayValues = facetValues.every((v: string) => v.includes("set_id"))
-    ? facetValues.map((v: string) => sets[v.split("set_id:")[1]])
-    : facetValues.length === 1
-    ? [
-        field === "genes.gene_id" && isSuccess
-          ? geneSymbolDict[facetValues[0]]
-          : facetValues[0],
-      ]
-    : [
-        `${facetValues.length.toLocaleString()} input ${
-          FACET_TO_SET_TYPE[field]
-        }s`,
-      ];
+  const groups = hooks.useFilterGroups();
+
+  const tempOperands = [...facetValues];
+  const displayOperands = [];
+
+  if (groups) {
+    // Replace operands from groups
+    groups.forEach((group) => {
+      displayOperands.push({
+        label: `${group.ids.length} input ${setType.toLowerCase()}`,
+        group,
+      });
+
+      group.ids.forEach((id) => {
+        const index = tempOperands.findIndex((o) => o === id);
+        if (index >= 0) {
+          tempOperands.splice(index, 1);
+        }
+      });
+    });
+  }
+
+  tempOperands.forEach((operand) => {
+    if (typeof operand === "string" && operand.includes("set_id:")) {
+      const setId = operand.split("set_id:")[1];
+
+      const setName = sets?.[setId];
+      displayOperands.push({ label: setName, value: operand });
+    } else {
+      if (field === "genes.gene_id") {
+        displayOperands.push({
+          label: isSuccess
+            ? geneSymbolDict[operand.toString()] ?? "..."
+            : "...",
+          value: operand,
+        });
+      } else {
+        displayOperands.push({ label: operand, value: operand });
+      }
+    }
+  });
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
@@ -90,8 +114,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         color="white"
         radius="xl"
         variant="transparent"
-        arial-label="remove value from filter"
-        onClick={() => setValues(facetValues.filter((i) => i !== x))}
+        arial-label={`remove ${x} from filter`}
       >
         <CloseIcon size={10} />
       </ActionIcon>
@@ -148,17 +171,44 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           + Add {facetTitle}
         </Button>
         <Group spacing="xs" className="px-2 py-1" data-testid="values group">
-          {displayValues.map((x) => (
-            <Badge
-              size="sm"
-              variant="filled"
-              color="accent"
-              key={x}
-              rightSection={removeButton(x)}
-            >
-              {x}
-            </Badge>
-          ))}
+          {displayOperands.map((x, i) => {
+            const value = x?.group ? x.label : x.value.toString();
+
+            return (
+              <Badge
+                size="sm"
+                variant="filled"
+                color="accent"
+                key={`${field}-${value}-${i}`}
+                rightSection={removeButton(value)}
+                className="cursor-pointer"
+                onClick={() => {
+                  let newOperands: (string | number)[];
+                  if (x.group) {
+                    const tempOperands = [...facetValues];
+                    x.group.ids.forEach((id) => {
+                      const index = tempOperands.findIndex((o) => o === id);
+                      if (index >= 0) {
+                        tempOperands.splice(index, 1);
+                      }
+                    });
+                    newOperands = tempOperands;
+                  } else {
+                    newOperands = facetValues.filter((o) => o !== x.value);
+                  }
+                  console.log(x);
+                  console.log(newOperands);
+                  console.log(facetValues);
+                  setValues(newOperands);
+                  if (x.group) {
+                    hooks.removeFilterGroup(x.group);
+                  }
+                }}
+              >
+                {x.label}
+              </Badge>
+            );
+          })}
         </Group>
       </div>
     </div>

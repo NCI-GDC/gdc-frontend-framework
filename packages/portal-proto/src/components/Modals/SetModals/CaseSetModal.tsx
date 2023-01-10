@@ -10,11 +10,13 @@ interface CaseSetModalProps {
     groups?: FilterGroup[],
   ) => void;
   readonly existingFiltersHook: () => FilterSet;
+  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
 }
 
 const CaseSetModal: React.FC<CaseSetModalProps> = ({
   updateFilters,
   existingFiltersHook,
+  addNewFilterGroups,
 }: CaseSetModalProps) => {
   return (
     <GenericSetModal
@@ -43,13 +45,14 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
         textInputPlaceholder={
           "e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81"
         }
-        setType="case"
+        setType="cases"
         setTypeLabel="case"
         hooks={{
           query: useGetCasesQuery,
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
         }}
+        addNewFilterGroups={addNewFilterGroups}
       />
     </GenericSetModal>
   );

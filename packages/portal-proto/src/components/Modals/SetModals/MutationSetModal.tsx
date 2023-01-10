@@ -25,6 +25,7 @@ interface MutationSetModalProps {
     groups?: FilterGroup[],
   ) => void;
   readonly existingFiltersHook: () => FilterSet;
+  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
 }
 
 const MutationSetModal: React.FC<MutationSetModalProps> = ({
@@ -33,6 +34,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  addNewFilterGroups,
 }) => {
   const dispatch = useCoreDispatch();
 
@@ -60,6 +62,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
           }}
+          addNewFilterGroups={addNewFilterGroups}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">

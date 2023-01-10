@@ -13,6 +13,7 @@ import {
   Operation,
   FilterSet,
   FilterGroup,
+  isIncludes,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -59,6 +60,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   const sets = useCoreSelector((state) => selectSets(state, setType));
   const dispatch = useCoreDispatch();
   const existingFilters = existingFiltersHook();
+  const existingOperation = existingFilters?.root?.[facetField];
 
   const tableData = useMemo(() => {
     return Object.entries(sets).map(([setId, name]) => ({
@@ -164,7 +166,9 @@ const SavedSets: React.FC<SavedSetsProps> = ({
               field: facetField,
               operator: "includes",
               operands: [
-                ...(existingFilters?.root?.[facetField]?.operands || []),
+                ...(existingOperation && isIncludes(existingOperation)
+                  ? existingOperation?.operands
+                  : []),
                 ...selectedSets.map((id) => `set_id:${id}`),
               ],
             });

@@ -1,6 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
+import {
+  useCoreSelector,
+  Modals,
+  selectCurrentModal,
+  FilterGroup,
+} from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import partial from "lodash/partial";
@@ -10,6 +15,7 @@ import {
   useUpdateGenomicEnumFacetFilter,
   useGenomicFilterByName,
   useGenomicFacetFilter,
+  useRemoveFilterGroup,
 } from "@/features/genomic/hooks";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -20,10 +26,22 @@ import EnumFacet from "@/features/facets/EnumFacet";
 import SetFacet from "@/features/facets/SetFacet";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
+import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
+import { addNewFilterGroups, selectFilterGroups } from "./geneFilterGroupSlice";
 
 const GeneAndSSMFilterPanel = (): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
+  const dispatch = useAppDispatch();
+
+  const addNewGenomicFilterGroups = (groups: FilterGroup[]) => {
+    dispatch(addNewFilterGroups(groups));
+  };
+  const useFilterGroups = () =>
+    useAppSelector((state) => selectFilterGroups(state));
+
+  const removeFilterGroup = useRemoveFilterGroup();
+
   // TODO - remove feature flag
   const router = useRouter();
   const { FEATURE_SETS } = router.query;
@@ -41,6 +59,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
           existingFiltersHook={useGenomicFacetFilter}
+          addNewFilterGroups={addNewGenomicFilterGroups}
         />
       )}
       {modal === Modals.LocalMutationSetModal && (
@@ -87,6 +106,8 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
                 useGetFacetValues: useGenomicFilterByName,
+                useFilterGroups: useFilterGroups,
+                removeFilterGroup: removeFilterGroup,
               }}
             />
           );
@@ -126,6 +147,8 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
                 useGetFacetValues: useGenomicFilterByName,
+                useFilterGroups: useFilterGroups,
+                removeFilterGroup: removeFilterGroup,
               }}
             />
           );

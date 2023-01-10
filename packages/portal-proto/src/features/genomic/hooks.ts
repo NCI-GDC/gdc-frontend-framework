@@ -21,6 +21,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
+  FilterGroup,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -32,6 +33,7 @@ import {
   selectGeneAndSSMFilters,
   removeGeneAndSSMFilter,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import { removeFilterGroup } from "./geneFilterGroupSlice";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -168,4 +170,9 @@ export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
   return (field: string, operation: Operation) => {
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
+};
+
+export const useRemoveFilterGroup = (): ((group: FilterGroup) => void) => {
+  const dispatch = useAppDispatch();
+  return (group: FilterGroup) => dispatch(removeFilterGroup(group));
 };
