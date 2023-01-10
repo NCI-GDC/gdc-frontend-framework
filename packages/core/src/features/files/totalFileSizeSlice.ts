@@ -69,8 +69,8 @@ const slice = createSlice({
               response?.data?.viewer?.cart_summary?.aggregations.fs?.value,
             total_case_count:
               response?.data?.viewer?.cart_summary?.aggregations.project__project_id?.buckets?.reduce(
-                (output: number, obj: { case_count: number }) =>
-                  (output += obj.case_count),
+                (totalCaseCount: number, obj: { case_count: number }) =>
+                  (totalCaseCount += obj.case_count),
                 0,
               ), // Add together all the case counts for a total
           };
