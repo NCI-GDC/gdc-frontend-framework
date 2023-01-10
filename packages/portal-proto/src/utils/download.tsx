@@ -117,28 +117,36 @@ const download = async ({
   customErrorMessage?: string;
 }): Promise<void> => {
   let canceled = false;
-  showNotification({
-    message: (
-      <DownloadNotification
-        onClick={() => {
-          cleanNotifications();
-          canceled = true;
-          if (done) {
-            done();
-          }
-        }}
-      />
-    ),
-    styles: () => ({
-      root: {
-        textAlign: "center",
-      },
-      closeButton: {
-        color: "black",
-        "&:hover": { backgroundColor: theme.extend.colors["gdc-grey"].lighter },
-      },
-    }),
-  });
+
+  // place notification in timeout to avoid flicker on fast calls
+  const showNotificationTimeout = setTimeout(
+    () =>
+      showNotification({
+        message: (
+          <DownloadNotification
+            onClick={() => {
+              cleanNotifications();
+              canceled = true;
+              if (done) {
+                done();
+              }
+            }}
+          />
+        ),
+        styles: () => ({
+          root: {
+            textAlign: "center",
+          },
+          closeButton: {
+            color: "black",
+            "&:hover": {
+              backgroundColor: theme.extend.colors["gdc-grey"].lighter,
+            },
+          },
+        }),
+      }),
+    100,
+  ); // set to 100 as that is perceved as instent
 
   const fields = reduce(
     params,
@@ -155,16 +163,11 @@ const download = async ({
   const iFrame = document.createElement("iframe");
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
+  iFrame.id = iFrame.name = "test456";
 
   // Appending to document body to allow navigation away from the current
   // page and downloads in the background
   document.body.appendChild(iFrame);
-  const form = document.createElement("form");
-  form.method = method.toUpperCase();
-  form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
-  form.innerHTML = fields;
-
-  getBody(iFrame).appendChild(form);
 
   // TODO - handle slow download notification PEAR-624
   /*
@@ -210,11 +213,23 @@ const download = async ({
 
     return new Promise(executePoll);
   };*/
+  const addFormAndSubmit = () => {
+    //do all of this together for FireFox support
+    const form = document.createElement("form");
+    form.method = method.toUpperCase();
+    form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
+    form.innerHTML = fields;
+
+    getBody(iFrame).appendChild(form);
+
+    form.submit();
+  };
 
   const handleDownloadResponse = async (res: Response) => {
+    clearTimeout(showNotificationTimeout);
     cleanNotifications();
     if (!canceled && res.ok) {
-      form.submit();
+      addFormAndSubmit();
       setTimeout(() => {
         if (done) {
           done();
