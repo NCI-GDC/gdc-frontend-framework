@@ -163,7 +163,6 @@ const download = async ({
   const iFrame = document.createElement("iframe");
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
-  iFrame.id = iFrame.name = "test456";
 
   // Appending to document body to allow navigation away from the current
   // page and downloads in the background
