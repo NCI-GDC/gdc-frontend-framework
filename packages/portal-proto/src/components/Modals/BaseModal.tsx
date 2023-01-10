@@ -38,6 +38,7 @@ export const BaseModal: React.FC<Props> = ({
     <Modal
       opened={openModal}
       title={title}
+      zIndex={400}
       onClose={() => {
         dispatch(hideModal());
         if (onClose) {

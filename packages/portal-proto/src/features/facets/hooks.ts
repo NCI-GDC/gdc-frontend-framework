@@ -8,7 +8,6 @@ import {
   FilterSet,
   removeCohortFilter,
   selectCurrentCohortFilters,
-  selectCurrentCohortFiltersByName,
   fetchFacetByNameGQL,
   updateCohortFilter,
   useCoreDispatch,
@@ -22,6 +21,9 @@ import {
   usePrevious,
   selectTotalCountsByName,
   useCurrentCohortFilters,
+  selectMultipleFacetsByDocTypeAndField,
+  selectCurrentCohortFiltersByName,
+  selectCurrentCohortFiltersByNames,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -55,6 +57,18 @@ const useCohortFacetFilterByName = (field: string): OperandValue => {
     selectCurrentCohortFiltersByName(state, field),
   );
   return enumFilters ? extractValue(enumFilters) : undefined;
+};
+
+const useEnumFiltersByNames = (
+  fields: ReadonlyArray<string>,
+): Record<string, OperandValue> => {
+  const enumFilters: Record<string, Operation> = useCoreSelector((state) =>
+    selectCurrentCohortFiltersByNames(state, fields),
+  );
+  return Object.entries(enumFilters).reduce((obj, [key, value]) => {
+    if (value) obj[key] = extractValue(value);
+    return obj;
+  }, {});
 };
 
 /**
@@ -113,6 +127,58 @@ export const useEnumFacet = (
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
   };
+};
+
+/**
+ * Fetch multiple enum facets via a single API call. Does not return any value but initiates the
+ * fetch for each field.
+ * @param docType - "cases", "files", etc
+ * @param indexType = "explore" | "repository"
+ * @param fields - list of fields.
+ */
+export const useEnumFacets = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+  fields: ReadonlyArray<string>,
+): void => {
+  const facet: ReadonlyArray<FacetBuckets> = useCoreSelector((state) =>
+    selectMultipleFacetsByDocTypeAndField(state, docType, fields),
+  );
+  const coreDispatch = useCoreDispatch();
+
+  const enumValues = useEnumFiltersByNames(fields);
+  const currentCohortFilters = useCurrentCohortFilters();
+  const cohortFilters = useCohortFacetFilter();
+  const prevCohortFilters = usePrevious(currentCohortFilters);
+  const prevEnumValues = usePrevious(enumValues);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    if (
+      !facet ||
+      !isEqual(prevCohortFilters, currentCohortFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: fields,
+          docType: docType,
+          index: indexType,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    fields,
+    cohortFilters,
+    docType,
+    indexType,
+    prevCohortFilters,
+    prevEnumValues,
+    enumValues,
+    currentCohortFilters,
+  ]);
 };
 
 type UpdateEnumFiltersFunc = (
@@ -225,6 +291,27 @@ export const useClearFilters = (): ClearFacetFunction => {
   const dispatch = useCoreDispatch();
   return (field: string) => {
     dispatch(removeCohortFilter(field));
+  };
+};
+
+export const useEnumFacetValues = (
+  docType: GQLDocType,
+  indexType: GQLIndexType,
+  field: string,
+): EnumFacetResponse => {
+  // facet data is store in core
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    selectFacetByDocTypeAndField(state, docType, field),
+  );
+  const enumValues = useCohortFacetFilterByName(field);
+  return {
+    data: facet?.buckets,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
   };
 };
 
