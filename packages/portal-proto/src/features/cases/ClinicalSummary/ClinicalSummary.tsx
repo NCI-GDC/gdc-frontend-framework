@@ -73,7 +73,11 @@ export const ClinicalSummary = ({
   return (
     <div className="flex flex-col gap-2 mt-5 max-w-full">
       <div className="flex justify-between">
-        <Text size="xl" weight={500}>
+        <Text
+          size="lg"
+          weight={500}
+          className="font-heading text-primary uppercase tracking-wide"
+        >
           Clinical
         </Text>
         <Menu width="target">

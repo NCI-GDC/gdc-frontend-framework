@@ -3,6 +3,7 @@ import {
   VerticalTable,
   HandleChangeInput,
   Columns,
+  filterColumnCells,
 } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
@@ -26,8 +27,9 @@ import {
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { downloadTSV } from "../shared/TableUtils";
+import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 
 interface CellProps {
   value: string[];
@@ -292,6 +294,40 @@ const ProjectsTable: React.FC = () => {
     });
   };
 
+  const handleDownloadTSV = () => {
+    downloadTSV(
+      data,
+      filterColumnCells(columns),
+      `projects-table.${convertDateToString(new Date())}.tsv`,
+      {
+        blacklist: ["selected"],
+        overwrite: {
+          program: {
+            composer: "program.name",
+          },
+          cases: {
+            composer: "summary.case_count",
+          },
+          data_categories: {
+            composer: (project) =>
+              project.summary.data_categories.map(
+                (category) => category.data_category,
+              ) || "--",
+          },
+          experimental_strategies: {
+            composer: (project) =>
+              project.summary.experimental_strategies.map(
+                (strategy) => strategy.experimental_strategy,
+              ) || "--",
+          },
+          files: {
+            composer: "summary.file_count",
+          },
+        },
+      },
+    );
+  };
+
   //update everything that uses table component
   return (
     <VerticalTable
@@ -302,9 +338,7 @@ const ProjectsTable: React.FC = () => {
         <div className="flex gap-2">
           <ProjectsCohortButton />
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <ButtonTooltip label="Save as TSX" comingSoon={true}>
-            <FunctionButton>TSV</FunctionButton>
-          </ButtonTooltip>
+          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
         </div>
       }
       tableData={formattedTableData}

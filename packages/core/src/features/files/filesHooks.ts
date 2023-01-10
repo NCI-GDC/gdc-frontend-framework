@@ -5,7 +5,7 @@ import {
 import { fetchFiles, selectFilesData } from "./filesSlice";
 import { selectCurrentCohortFilters } from "../cohort/availableCohortsSlice";
 import { useFilesSize } from "./totalFileSizeSlice";
-import { useAllFiles } from "./allFilesSlice";
+import { useGetAllFilesMutation, GdcFileIds } from "./allFilesMutation";
 
 export const useFiles = createUseCoreDataHook(fetchFiles, selectFilesData);
 
@@ -15,4 +15,4 @@ export const useFilteredFiles = createUseFiltersCoreDataHook(
   selectCurrentCohortFilters,
 );
 
-export { useFilesSize, useAllFiles };
+export { useFilesSize, useGetAllFilesMutation, GdcFileIds };

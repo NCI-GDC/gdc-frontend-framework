@@ -1023,6 +1023,21 @@ export const selectCurrentCohortFiltersByName = (
   return cohort?.filters?.root[name];
 };
 
+export const selectCurrentCohortFiltersByNames = (
+  state: CoreState,
+  names: ReadonlyArray<string>,
+): Record<string, Operation> => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    state.cohort.availableCohorts.currentCohort,
+  );
+
+  return names.reduce((obj, name) => {
+    if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
+    return obj;
+  }, {} as Record<string, Operation>);
+};
+
 /**
  * Returns the current caseSetId filter representing the cohort
  * if the cohort is undefined it returns an empty caseSetIdFilter

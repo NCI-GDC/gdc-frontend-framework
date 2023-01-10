@@ -139,7 +139,6 @@ export const ContextualCasesView: React.FC = () => {
                     className={`mt-0.5 ${
                       slideCount === 0 && "text-base-contrast-lightest"
                     }`}
-                    size="1.25em"
                   />
                 }
                 size="xs"
@@ -166,7 +165,6 @@ export const ContextualCasesView: React.FC = () => {
                   }
                   rightIcon={
                     <Dropdown
-                      size="1.25rem"
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
@@ -338,7 +336,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Biospecimen
                 </Button>
@@ -360,7 +358,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Clinical
                 </Button>

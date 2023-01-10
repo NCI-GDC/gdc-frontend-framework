@@ -225,6 +225,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           root: "bg-base-max border-0 w-full",
         }}
         onTabChange={handleTabChanged}
+        keepMounted={false}
       >
         <Tabs.List>
           <Tabs.Tab value="genes">Genes</Tabs.Tab>
@@ -270,6 +271,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               )}
               toggledGenes={currentGenes}
               genomicFilters={genomicFilters}
+              cohortFilters={cohortFilters}
             />
           </div>
         </Tabs.Panel>
@@ -300,6 +302,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             selectedSurvivalPlot={comparativeSurvival}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
             genomicFilters={genomicFilters}
+            cohortFilters={cohortFilters}
             handleSsmToggled={partial(
               handleGeneAndSSmToggled,
               currentMutations,
