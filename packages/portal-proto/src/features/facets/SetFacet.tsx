@@ -196,9 +196,6 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
                   } else {
                     newOperands = facetValues.filter((o) => o !== x.value);
                   }
-                  console.log(x);
-                  console.log(newOperands);
-                  console.log(facetValues);
                   setValues(newOperands);
                   if (x.group) {
                     hooks.removeFilterGroup(x.group);

@@ -496,7 +496,6 @@ const slice = createSlice({
       } else {
         const caseSetIds =
           state.entities[state.currentCohort]?.caseSet?.caseSetIds;
-
         if (caseSetIds) {
           // using a caseSet
           const dividedFilters = divideFilterSetByPrefix(
@@ -735,7 +734,6 @@ const slice = createSlice({
           // create a new cohort and add it
           // as the GDC All Cohort is immutable
           const cohort = newCohort(filters, true);
-
           cohortsAdapter.addOne(state, {
             ...cohort,
             caseSet: {
