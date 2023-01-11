@@ -73,4 +73,3 @@ def verify_file_filter_applied(filter_name: str):
     assert (
         expected_filter_name == actual_filter_name
     ), f"Custom filter not found in facets.\nExpected: {expected_filter_name}\nActual: {actual_filter_name}"
-
