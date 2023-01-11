@@ -15,16 +15,22 @@ import {
 import EnumFacet from "@/features/facets/EnumFacet";
 import React from "react";
 
-const GeneAndSSMFilterPanel = (): JSX.Element => {
+const GeneAndSSMFilterPanel = ({
+  isDemoMode,
+}: {
+  isDemoMode: boolean;
+}): JSX.Element => {
   useGenesFacets(
     "genes",
     "explore",
     FilterFacets.genes.map((x) => x.facet_filter),
+    isDemoMode,
   );
   useGenesFacets(
     "ssms",
     "explore",
     FilterFacets.ssms.map((x) => x.facet_filter),
+    isDemoMode,
   );
 
   return (

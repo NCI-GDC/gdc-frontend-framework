@@ -12,6 +12,7 @@ import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
+  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
 
@@ -62,6 +63,7 @@ export interface GenesFrequencyChart {
   readonly genesTotal: number;
 }
 
+// TODO pass in demo filter here
 export const fetchGeneFrequencies = createAsyncThunk<
   GraphQLApiResponse,
   GenomicTableProps,
@@ -69,12 +71,20 @@ export const fetchGeneFrequencies = createAsyncThunk<
 >(
   "genes/geneFrequencyChart",
   async (
-    { pageSize = 20, offset = 0, genomicFilters }: GenomicTableProps,
+    {
+      pageSize = 20,
+      offset = 0,
+      genomicFilters,
+      isDemoMode,
+      demoFilters,
+    }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const filters = buildCohortGqlOperator(
-      mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
-    );
+    const filters = isDemoMode
+      ? buildCohortGqlOperator(joinFilters(demoFilters, genomicFilters))
+      : buildCohortGqlOperator(
+          mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
+        );
 
     const graphQlVariables = {
       geneFrequencyChart_filters: filters ?? {},

@@ -124,7 +124,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             <Button
               disabled={selectedCohort === null}
               variant={"filled"}
-              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base bg-primary text-primary-contrast hover:bg-primary-lighter"
+              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base text-primary-contrast hover:bg-primary-lighter"
               onClick={() => {
                 dispatch(setComparisonCohorts([selectedCohort]));
                 closeCohortSelection();

@@ -12,6 +12,7 @@ interface SwitchSpringProps {
   survivalProps?: {
     plot: string;
   };
+  isDemoMode?: boolean;
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -22,6 +23,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   tooltip = undefined,
   margin,
   survivalProps,
+  isDemoMode = false,
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
@@ -35,12 +37,19 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const { plot } = survivalProps ?? { plot: "" };
 
+  // TODO add roles in divs for switch for a11y
   return (
-    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
-      <animated.div className={`text-center items-center`}>
+    <Tooltip label={tooltip} disabled={!tooltip} withArrow arrowSize={12}>
+      <animated.div
+        className={`text-center items-center bg-gray ${
+          isDemoMode && "cursor-not-allowed"
+        }`}
+      >
         <animated.div
           style={sliderSpring}
-          className={`border border-lightgray h-5 ${icon ? `` : `rounded-xl`} ${
+          className={`border  border-lightgray ${
+            isDemoMode && "pointer-events-none"
+          } h-5 ${icon ? `` : `rounded-xl`} ${
             isActive ? `bg-activeColor` : `bg-gray-300`
           } m-auto align-middle`}
           onClick={() => {

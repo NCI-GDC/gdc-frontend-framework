@@ -43,7 +43,7 @@ const ALL_OTHER_APPS = Object.keys(initialApps).filter(
 );
 
 interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string) => void;
+  readonly onAppSelected?: (id: string, demoMode?: boolean) => void;
 }
 
 const AnalysisGrid: React.FC<AnalysisGridProps> = ({
@@ -83,8 +83,11 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     filterAppsByTagsAndSort();
   }, [filterAppsByTagsAndSort]);
 
-  const handleOpenAppClicked = (x: AppRegistrationEntry) => {
-    onAppSelected(x.id);
+  const handleOpenAppClicked = (
+    x: AppRegistrationEntry,
+    demoMode?: boolean,
+  ) => {
+    onAppSelected(x.id, demoMode);
   };
 
   return (
@@ -289,8 +292,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     }
   }, [app, scrollIntoView]);
 
-  const handleAppSelected = (app: string) => {
-    router.push({ query: { app } });
+  const handleAppSelected = (app: string, demoMode?: boolean) => {
+    router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
 
   const handleAppLoaded = useCallback(() => {

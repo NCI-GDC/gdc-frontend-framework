@@ -23,7 +23,7 @@ import {
   usePrevious,
   selectMultipleFacetsByDocTypeAndField,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
@@ -181,6 +181,7 @@ export const useGenesFacets = (
   docType: GQLDocType,
   indexType: GQLIndexType,
   fields: ReadonlyArray<string>,
+  isDemoMode: boolean,
 ): void => {
   const facet: ReadonlyArray<FacetBuckets> = useCoreSelector((state) =>
     selectMultipleFacetsByDocTypeAndField(state, docType, fields),
@@ -188,7 +189,23 @@ export const useGenesFacets = (
 
   const coreDispatch = useCoreDispatch();
   const enumValues = useGenomicFiltersByNames(fields);
+
+  const demoFilter: FilterSet = useMemo(
+    () => ({
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          operator: "includes",
+          field: "cases.project.project_id",
+          operands: ["TCGA-LGG"],
+        },
+      },
+    }),
+    [],
+  );
+
   const cohortFilters = useCohortOrCaseSetFacetFilter();
+
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -196,7 +213,7 @@ export const useGenesFacets = (
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selectLocalGenomicFiltersPlusCohortFilters = (_ignore) =>
-      joinFilters(cohortFilters, genomicFilters);
+      joinFilters(isDemoMode ? demoFilter : cohortFilters, genomicFilters);
     if (
       !facet ||
       !isEqual(prevCohortFilters, cohortFilters) ||
@@ -224,6 +241,8 @@ export const useGenesFacets = (
     enumValues,
     prevGenomicFilters,
     genomicFilters,
+    demoFilter,
+    isDemoMode,
   ]);
 };
 
