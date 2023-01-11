@@ -71,6 +71,8 @@ interface GeneFrequencyChartProps {
   readonly title?: string;
   readonly maxBins?: number;
   readonly orientation?: string;
+  readonly isDemoMode: boolean;
+  readonly demoFilters: FilterSet;
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
@@ -80,11 +82,15 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   title = "Distribution of Most Frequently Mutated Genes",
   maxBins = 20,
   orientation = "v",
+  isDemoMode = false,
+  demoFilters,
 }: GeneFrequencyChartProps) => {
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
     offset: 0,
     genomicFilters: genomicFilters,
+    isDemoMode: isDemoMode,
+    demoFilters: demoFilters,
   });
 
   return (

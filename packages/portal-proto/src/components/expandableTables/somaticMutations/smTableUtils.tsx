@@ -37,6 +37,7 @@ export const createTableColumn = (
   handleSsmToggled: SsmToggledHandler,
   toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
+  isDemoMode: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -81,7 +82,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start w-12"
+                className="mx-3"
               />
             ),
             cell: ({ row }) => {
@@ -105,7 +106,10 @@ export const createTableColumn = (
                           symbol: row.original?.DNAChange,
                         })
                       }
-                      tooltip={""}
+                      tooltip={
+                        isDemoMode && "Feature not available in demo mode"
+                      }
+                      isDemoMode={isDemoMode}
                     />
                   )}
                 </div>

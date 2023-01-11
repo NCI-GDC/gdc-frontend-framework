@@ -23,6 +23,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   columnListOrder,
   visibleColumns,
   searchTerm,
+  isDemoMode = false,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -112,6 +113,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           handleGeneToggled,
           toggledGenes,
           setGeneID,
+          isDemoMode, // send in the prop variable
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

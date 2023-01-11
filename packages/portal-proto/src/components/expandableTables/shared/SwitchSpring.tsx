@@ -14,6 +14,7 @@ interface SwitchSpringProps {
   survivalProps?: {
     plot: string;
   };
+  isDemoMode?: boolean;
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -25,6 +26,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   tooltip = undefined,
   margin,
   survivalProps,
+  isDemoMode = false,
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
@@ -38,8 +40,9 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const { plot } = survivalProps ?? { plot: "" };
 
+  // TODO add roles in divs for switch for a11y
   return (
-    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
+    <Tooltip label={tooltip} disabled={!tooltip}>
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}

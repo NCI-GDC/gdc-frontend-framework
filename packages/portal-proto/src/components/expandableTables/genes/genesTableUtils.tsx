@@ -28,6 +28,7 @@ export const createTableColumn = (
   handleGeneToggled: GeneToggledHandler,
   toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
+  isDemoMode: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -97,7 +98,10 @@ export const createTableColumn = (
                           symbol: row.original?.symbol,
                         })
                       }
-                      tooltip={""}
+                      tooltip={
+                        isDemoMode && "Feature not available in demo mode"
+                      }
+                      isDemoMode={isDemoMode}
                     />
                   )}
                 </>
