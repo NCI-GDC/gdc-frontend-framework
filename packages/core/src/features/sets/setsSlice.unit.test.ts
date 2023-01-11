@@ -30,7 +30,7 @@ describe("setsSlice", () => {
     );
     expect(coreStore.getState().sets).toEqual({
       cases: { xZaB: "my case set" },
-      gene: {},
+      genes: {},
       ssms: {},
     });
     coreStore.dispatch(
