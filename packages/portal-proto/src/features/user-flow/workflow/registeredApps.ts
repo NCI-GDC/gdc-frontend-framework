@@ -147,14 +147,14 @@ export const REGISTERED_APPS = [
       "Current cohort does not have SSM data available for visualization.",
   },
   {
-    name: "Sample Matrix",
+    name: "OncoMatrix (prototype)",
     icon: "matrix.png",
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
-    id: "MatrixApp",
+    id: "OncoMatrix",
     countsField: "ssmCaseCounts",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
