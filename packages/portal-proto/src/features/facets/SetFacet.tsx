@@ -31,11 +31,11 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   field,
   description,
   facetName = undefined,
-  dismissCallback = undefined,
   width = undefined,
   hooks,
 }) => {
   const clearFilters = hooks.useClearFilter();
+  const clearGroups = hooks.useClearGroups();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const facetTitle = facetName
     ? facetName
@@ -145,22 +145,14 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         </Tooltip>
         <div className="flex flex-row">
           <FacetIconButton
-            onClick={() => clearFilters(field)}
+            onClick={() => {
+              clearFilters(field);
+              clearGroups(field);
+            }}
             aria-label="clear selection"
           >
             <UndoIcon size="1.15em" className={controlsIconStyle} />
           </FacetIconButton>
-          {dismissCallback ? (
-            <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                dismissCallback(field);
-              }}
-              aria-label="Remove the facet"
-            >
-              <CloseIcon size="1.25em" className={controlsIconStyle} />
-            </FacetIconButton>
-          ) : null}
         </div>
       </FacetHeader>
       <div className="p-2">

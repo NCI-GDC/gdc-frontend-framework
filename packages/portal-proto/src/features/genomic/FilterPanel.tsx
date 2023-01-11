@@ -28,7 +28,11 @@ import SetFacet from "@/features/facets/SetFacet";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
-import { addNewFilterGroups, selectFilterGroups } from "./geneFilterGroupSlice";
+import {
+  addNewFilterGroups,
+  clearFilterGroups,
+  selectFilterGroups,
+} from "./geneFilterGroupSlice";
 
 const GeneAndSSMFilterPanel = (): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
@@ -42,6 +46,9 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
     useAppSelector((state) => selectFilterGroups(state));
 
   const removeFilterGroup = useRemoveFilterGroup();
+  const useClearFilterGroups = () => {
+    return (field: string) => dispatch(clearFilterGroups(field));
+  };
 
   // TODO - remove feature flag
   const router = useRouter();
@@ -124,6 +131,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
                 useGetFacetValues: useGenomicFilterByName,
                 useFilterGroups: useFilterGroups,
                 removeFilterGroup: removeFilterGroup,
+                useClearGroups: useClearFilterGroups,
               }}
             />
           );
@@ -165,6 +173,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
                 useGetFacetValues: useGenomicFilterByName,
                 useFilterGroups: useFilterGroups,
                 removeFilterGroup: removeFilterGroup,
+                useClearGroups: useClearFilterGroups,
               }}
             />
           );

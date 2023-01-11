@@ -54,6 +54,7 @@ export interface SetFacetHooks extends FacetDataHooks {
   useGetFacetValues: (field: string) => OperandValue;
   useFilterGroups: () => FilterGroup[];
   removeFilterGroup: (group: FilterGroup) => void;
+  useClearGroups: () => (field: string) => void;
 }
 
 export interface FacetRequiredHooks {

@@ -15,10 +15,14 @@ const slice = createSlice({
     removeFilterGroup: (state, action: PayloadAction<FilterGroup>) => {
       return state.filter((group) => !isEqual(group, action.payload));
     },
+    clearFilterGroups: (state, action: PayloadAction<string>) => {
+      return state.filter((group) => group.field !== action.payload);
+    },
   },
 });
 
 export const geneFrequencyFilterGroupReducer = slice.reducer;
-export const { addNewFilterGroups, removeFilterGroup } = slice.actions;
+export const { addNewFilterGroups, removeFilterGroup, clearFilterGroups } =
+  slice.actions;
 export const selectFilterGroups = (state: AppState): FilterGroup[] =>
   state.groups;
