@@ -168,6 +168,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const handleTSV = () => {
+    const headers = [
+      "DNA Change",
+      "Protein Change",
+      "Mutation ID",
+      "Type",
+      "Consequences",
+      "# Affected Cases in Cohort",
+      "# Affected Cases Across the GDC",
+      "Impact",
+    ];
+    console.log(tableData.ssms);
+  };
+
   const handleJSON = () => {
     const fileName = `mutations.${convertDateToString(new Date())}.json`;
     const content = tableData.ssms.map(
@@ -248,6 +262,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view">
                     <Button
+                      onClick={() => {
+                        handleTSV();
+                      }}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -255,7 +272,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       TSV
                     </Button>
                   </ButtonTooltip>
-                  {dl === "tsv" && (
+                  {/* {dl === "tsv" && (
                     <DL
                       dataHook={useFreqGeneMutationDLQuery}
                       queryParams={{
@@ -279,7 +296,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       )}`}
                       setDl={setDl}
                     />
-                  )}
+                  )} */}
                 </div>
               }
             />
