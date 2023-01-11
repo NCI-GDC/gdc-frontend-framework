@@ -106,6 +106,7 @@ const ColorPaletteModal: React.FC<ColorPaletteModalProps> = ({
         body: "px-16",
       }}
       size={800}
+      zIndex={400}
       withinPortal={false}
     >
       Select the colors to display for each element on the OncoGrid. Click on an
