@@ -146,7 +146,7 @@ const download = async ({
         }),
       }),
     100,
-  ); // set to 100 as that is perceved as instent
+  ); // set to 100 as that is perceived as instant
 
   const fields = reduce(
     params,
