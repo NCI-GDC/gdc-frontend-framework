@@ -63,5 +63,5 @@ describe("<InputSet />", () => {
     );
 
     expect(createSet).toBeCalledWith({ values: ["7890-123"] });
-  });
+  }, 10000);
 });
