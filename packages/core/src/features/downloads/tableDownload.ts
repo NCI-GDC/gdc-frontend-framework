@@ -1,8 +1,8 @@
-import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
-
-interface DownloadResponse {
-  something: any;
-}
+import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+// GraphQLApiResponse
+// interface DownloadResponse {
+//   something: any;
+// }
 
 // todo: 1 for tsv, 1 for json format
 
@@ -15,7 +15,8 @@ export type DownloadData = Partial<TableDownloadData>;
 export const tableDownloadApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneTableDownload: builder.query({
-      query: (request: {}) => ({
+      // request: {}
+      query: () => ({
         graphQLQuery: `
             query GenesTable(
               $genesTable_filters: FiltersArgument

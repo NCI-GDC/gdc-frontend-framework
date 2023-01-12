@@ -230,33 +230,33 @@ export const fetchGTableDL = createAsyncThunk<
       genesTableDownloadQuery,
       graphQLFilters,
     );
-    if (!results.errors) {
-      // extract the gene ids and user it for the call to
-      const geneIds =
-        results.data.genesTableDownloadViewer.explore.genes.hits.edges.map(
-          ({ node }: Record<string, any>) => node.gene_id,
-        );
-      const counts = await fetchSmsAggregations({
-        ids: geneIds,
-        filters: filterContents,
-      });
-      if (!counts.errors) {
-        const countsData =
-          counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
-            .consequence__transcript__gene__gene_id;
-        results.data.genesTableDownloadViewer["mutationCounts"] =
-          countsData.buckets.reduce(
-            (
-              counts: Record<string, number>,
-              apiBucket: Record<string, any>,
-            ) => {
-              counts[apiBucket.key] = apiBucket.doc_count.toLocaleString();
-              return counts;
-            },
-            {} as Record<string, number>,
-          );
-      }
-    }
+    // if (!results.errors) {
+    //   // extract the gene ids and user it for the call to
+    //   const geneIds =
+    //     results.data.genesTableDownloadViewer.explore.genes.hits.edges.map(
+    //       ({ node }: Record<string, any>) => node.gene_id,
+    //     );
+    //   const counts = await fetchSmsAggregations({
+    //     ids: geneIds,
+    //     filters: filterContents,
+    //   });
+    //   if (!counts.errors) {
+    //     const countsData =
+    //       counts.data.ssmsAggregationsViewer.explore.ssms.aggregations
+    //         .consequence__transcript__gene__gene_id;
+    //     results.data.genesTableDownloadViewer["mutationCounts"] =
+    //       countsData.buckets.reduce(
+    //         (
+    //           counts: Record<string, number>,
+    //           apiBucket: Record<string, any>,
+    //         ) => {
+    //           counts[apiBucket.key] = apiBucket.doc_count.toLocaleString();
+    //           return counts;
+    //         },
+    //         {} as Record<string, number>,
+    //       );
+    //   }
+    // }
     console.log("results", results);
     return results;
   },
