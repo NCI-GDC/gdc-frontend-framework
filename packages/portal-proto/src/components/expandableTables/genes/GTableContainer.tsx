@@ -229,8 +229,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       // useMutationFreqDLQuery
                       dataHook={useGenesTable}
                       queryParams={{
-                        pageSize: gTotal,
-                        offset: 0,
+                        totalCount: gTotal,
                         genomicFilters,
                         // tableData,
                         // geneIds: tableData.genes.map(
