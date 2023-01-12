@@ -46,6 +46,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}
+        role="switch"
       >
         <animated.div
           style={sliderSpring}
@@ -70,7 +71,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${
+            className={`border ${isDemoMode && "bg-gray-400"} ${
               isActive ? `border-activeColor` : ``
             } bg-white ${icon ? `` : `rounded-xl`} ${
               isActive ? `bg-lightgray` : ``

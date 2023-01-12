@@ -86,7 +86,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const {
     query: { demoMode },
   } = useRouter();
-  console.log(demoMode);
   const isDemoMode = demoMode === "true" ? true : false;
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
@@ -155,8 +154,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     survivalData: [],
   };
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } =
-    useTopGene(genomicFilters); // get the default top gene/ssms to show by default
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
+    genomicFilters,
+    isDemoMode,
+    overwritingDemoFilter,
+  }); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -342,7 +344,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                   names={
                     survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.name]
+                      ? [comparativeSurvival.symbol]
                       : []
                   }
                 />
