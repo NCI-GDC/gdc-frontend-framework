@@ -1,4 +1,4 @@
-import { CartFile, GdcFile, caseFileType } from "@gff/core";
+import { CartFile, GdcFile, caseFileType, GdcFileIds } from "@gff/core";
 import { get, omit, pick } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
@@ -134,7 +134,9 @@ export const parseSlideDetailsInfo: parseSlideDetailsInfoFunc = (
   return formatImageDetailsInfo(slideDetailsInfo);
 };
 
-export const mapGdcFileToCartFile = (files: GdcFile[]): CartFile[] =>
+export const mapGdcFileToCartFile = (
+  files: GdcFile[] | GdcFileIds[],
+): CartFile[] =>
   files.map((file) =>
     pick(file, [
       "access",

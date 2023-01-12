@@ -66,6 +66,7 @@ export interface FacetCardProps<T extends FacetDataHooks> {
   readonly facetName?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;
+  readonly isFacetView?: boolean;
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;

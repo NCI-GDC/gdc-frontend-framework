@@ -69,7 +69,7 @@ interface CasesResponse {
 export const buildCasesTableSearchFilters = (
   term?: string,
 ): Union | undefined => {
-  if (term !== undefined) {
+  if (term !== undefined && term.length > 0) {
     return {
       operator: "or",
       operands: [

@@ -134,10 +134,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="p-2">
+    <li key={field.full} className="px-2">
       {searchTerm ? (
         <>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <label
               className="font-content font-medium text-md"
               htmlFor={`switch-${field.full}`}
@@ -179,7 +179,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Highlight>
         </>
       ) : (
-        <div className="flex justify-between cursor-pointer bg-none">
+        <div className="flex justify-between cursor-pointer items-center bg-none">
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
@@ -216,6 +216,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             })}
             classNames={{
               input: "bg-none rounded-lg",
+              body: "pb-4",
             }}
             checked={checked}
             onChange={(e) => {
@@ -303,7 +304,7 @@ const Controls: React.FC<ControlPanelProps> = ({
             )
           }
         />
-        <p className="p-2">
+        <p className="p-2 font-heading font-medium">
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values
         </p>

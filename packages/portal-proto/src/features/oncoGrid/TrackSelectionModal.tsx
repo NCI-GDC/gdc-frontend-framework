@@ -29,6 +29,7 @@ const TrackSelectionModal: React.FC<TrackSelectionModalProps> = ({
     <Modal
       opened
       withinPortal={false}
+      zIndex={400}
       onClose={closeModal}
       title="Select Tracks to Add"
     >
