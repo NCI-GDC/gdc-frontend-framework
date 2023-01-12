@@ -51,7 +51,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
   );
 
-  const groups = hooks.useFilterGroups();
+  const groups = hooks.useFilterGroups(field);
 
   const tempOperands = [...facetValues];
   const displayOperands = [];

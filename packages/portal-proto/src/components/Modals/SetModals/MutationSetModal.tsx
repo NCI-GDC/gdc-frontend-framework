@@ -71,7 +71,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
           setTypeLabel="mutation"
           createSetsInstructions={
             <p>
-              Mutation sets can be created from the <b>Enter Mutation tab</b>,
+              Mutation sets can be created from the <b>Enter Mutations tab</b>,
               or from the{" "}
               <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                 <a>

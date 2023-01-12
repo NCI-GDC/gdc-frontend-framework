@@ -42,8 +42,8 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
   const addNewGenomicFilterGroups = (groups: FilterGroup[]) => {
     dispatch(addNewFilterGroups(groups));
   };
-  const useFilterGroups = () =>
-    useAppSelector((state) => selectFilterGroups(state));
+  const useFilterGroups = (field: string) =>
+    useAppSelector((state) => selectFilterGroups(state, field));
 
   const removeFilterGroup = useRemoveFilterGroup();
   const useClearFilterGroups = () => {

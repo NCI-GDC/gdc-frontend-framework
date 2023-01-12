@@ -259,10 +259,6 @@ const InputSet: React.FC<InputSetProps> = ({
         <DarkFunctionButton
           disabled={matched.length === 0}
           onClick={() => {
-            const newGroup =
-              createSetIds.length > 1
-                ? [{ ids: createSetIds, field: facetField }]
-                : undefined;
             hooks.updateFilters(facetField, {
               field: facetField,
               operator: "includes",
@@ -273,7 +269,9 @@ const InputSet: React.FC<InputSetProps> = ({
                 ...createSetIds,
               ],
             });
-            addNewFilterGroups(newGroup);
+            if (createSetIds.length > 1) {
+              addNewFilterGroups([{ ids: createSetIds, field: facetField }]);
+            }
             dispatch(hideModal());
           }}
         >

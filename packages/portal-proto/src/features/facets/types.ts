@@ -52,7 +52,7 @@ export interface RangeFacetHooks extends FacetDataHooks {
 export interface SetFacetHooks extends FacetDataHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetValues: (field: string) => OperandValue;
-  useFilterGroups: () => FilterGroup[];
+  useFilterGroups: (field: string) => FilterGroup[];
   removeFilterGroup: (group: FilterGroup) => void;
   useClearGroups: () => (field: string) => void;
 }

@@ -24,5 +24,7 @@ const slice = createSlice({
 export const geneFrequencyFilterGroupReducer = slice.reducer;
 export const { addNewFilterGroups, removeFilterGroup, clearFilterGroups } =
   slice.actions;
-export const selectFilterGroups = (state: AppState): FilterGroup[] =>
-  state.groups;
+export const selectFilterGroups = (
+  state: AppState,
+  field: string,
+): FilterGroup[] => state.groups.filter((group) => group.field === field);
