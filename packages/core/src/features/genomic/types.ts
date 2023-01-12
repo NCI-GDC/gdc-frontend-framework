@@ -4,5 +4,5 @@ import { FilterSet } from "../cohort";
 export interface GenomicTableProps extends TablePageOffsetProps {
   genomicFilters: FilterSet;
   isDemoMode: boolean;
-  demoFilters: FilterSet;
+  overwritingDemoFilter: FilterSet;
 }

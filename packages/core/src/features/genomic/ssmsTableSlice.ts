@@ -166,7 +166,7 @@ export const buildSSMSTableSearchFilters = (
 export interface SsmsTableRequestParameters extends GenomicTableProps {
   readonly geneSymbol?: string;
   isDemoMode: boolean;
-  demoFilters: FilterSet;
+  overwritingDemoFilter: FilterSet;
 }
 
 export const fetchSsmsTable = createAsyncThunk<
@@ -183,7 +183,7 @@ export const fetchSsmsTable = createAsyncThunk<
       genomicFilters,
       geneSymbol,
       isDemoMode,
-      demoFilters,
+      overwritingDemoFilter,
     }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
@@ -200,7 +200,7 @@ export const fetchSsmsTable = createAsyncThunk<
             },
           }
         : isDemoMode
-        ? demoFilters
+        ? overwritingDemoFilter
         : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
@@ -229,10 +229,9 @@ export const fetchSsmsTable = createAsyncThunk<
     const tableFilters = isDemoMode
       ? convertFilterToGqlFilter(
           appendFilterToOperation(
-            filterSetToOperation(joinFilters(demoFilters, genomicFilters)) as
-              | Union
-              | Intersection
-              | undefined,
+            filterSetToOperation(
+              joinFilters(overwritingDemoFilter, genomicFilters),
+            ) as Union | Intersection | undefined,
             searchFilters,
           ),
         )

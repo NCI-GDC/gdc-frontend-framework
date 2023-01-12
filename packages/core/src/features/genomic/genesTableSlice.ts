@@ -171,7 +171,7 @@ export const fetchGenesTable = createAsyncThunk<
       searchTerm,
       genomicFilters,
       isDemoMode,
-      demoFilters,
+      overwritingDemoFilter,
     }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
@@ -180,7 +180,7 @@ export const fetchGenesTable = createAsyncThunk<
     );
 
     const demoOrCohort = isDemoMode
-      ? buildCohortGqlOperator(demoFilters)
+      ? buildCohortGqlOperator(overwritingDemoFilter)
       : cohortFilters;
     const cohortFiltersContent = demoOrCohort?.content
       ? Object(demoOrCohort?.content)
@@ -190,17 +190,18 @@ export const fetchGenesTable = createAsyncThunk<
       genomicFilters,
     );
     const filters = isDemoMode
-      ? buildCohortGqlOperator(joinFilters(demoFilters, genomicFilters))
+      ? buildCohortGqlOperator(
+          joinFilters(overwritingDemoFilter, genomicFilters),
+        )
       : buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(
       appendFilterToOperation(
         isDemoMode
-          ? (filterSetToOperation(joinFilters(demoFilters, genomicFilters)) as
-              | Union
-              | Intersection
-              | undefined)
+          ? (filterSetToOperation(
+              joinFilters(overwritingDemoFilter, genomicFilters),
+            ) as Union | Intersection | undefined)
           : (filterSetToOperation(geneAndCohortFilters) as
               | Union
               | Intersection
