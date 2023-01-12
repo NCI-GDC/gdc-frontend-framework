@@ -14,7 +14,7 @@ class NavAnalysisCenterLocators:
 
 class NavAnalysisCenterPage:
     def __init__(self, driver: Page, url):
-        self.URL = "{}/".format(url)
+        self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
 
     """Home page actions """

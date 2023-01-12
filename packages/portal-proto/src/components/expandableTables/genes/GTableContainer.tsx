@@ -1,4 +1,9 @@
-import { GDCGenesTable, useGenesTable, FilterSet } from "@gff/core";
+import {
+  GDCGenesTable,
+  useGenesTable,
+  FilterSet,
+  usePrevious,
+} from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
@@ -12,6 +17,7 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -27,6 +33,7 @@ export interface GTableContainerProps {
   ) => void;
   handleGeneToggled: GeneToggledHandler;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
 }
 
@@ -35,6 +42,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   handleSurvivalPlotToggled,
   handleGeneToggled,
   genomicFilters,
+  cohortFilters,
   toggledGenes = [],
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
@@ -55,6 +63,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
 
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
+
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
@@ -71,6 +82,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
   };
+
+  useEffect(() => {
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const gReducer = (
     selected: SelectedReducer<Genes>,
@@ -225,7 +244,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {visibleColumns.length ? (
           <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
             <div className={"grow-0"}>
-              <div className="flex flex-row items-center text-sm  ml-0">
+              <div className="flex flex-row items-center text-sm ml-0">
                 <span className="my-auto mx-1 ">Show</span>
                 <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
                 <span className="my-auto mx-1 ">Entries</span>

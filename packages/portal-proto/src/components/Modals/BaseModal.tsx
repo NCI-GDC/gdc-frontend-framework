@@ -13,6 +13,7 @@ interface Props {
     onClick?: () => void;
     hideModalOnClick?: boolean;
     title: string;
+    dataTestId: string;
   }>;
   withCloseButton?: boolean;
   onClose?: () => void;
@@ -37,6 +38,7 @@ export const BaseModal: React.FC<Props> = ({
     <Modal
       opened={openModal}
       title={title}
+      zIndex={400}
       onClose={() => {
         dispatch(hideModal());
         if (onClose) {
@@ -61,8 +63,9 @@ export const BaseModal: React.FC<Props> = ({
       {children}
       {buttons && (
         <div className="flex justify-end mt-2.5 gap-2">
-          {buttons.map(({ onClick, title, hideModalOnClick }) => (
+          {buttons.map(({ onClick, title, hideModalOnClick, dataTestId }) => (
             <Button
+              data-testid={dataTestId}
               key={title}
               onClick={() => {
                 if (onClick) {

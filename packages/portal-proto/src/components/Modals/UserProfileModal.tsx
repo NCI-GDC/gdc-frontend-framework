@@ -67,7 +67,7 @@ export const UserProfileModal = ({
       closeButtonLabel="Done"
       openModal={openModal}
       size="60%"
-      buttons={[{ title: "Done" }]}
+      buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}
     >
       <div className={`${!data ? "py-15px" : "py-5px"} border-y border-y-base`}>
         {data.length > 0 ? (
