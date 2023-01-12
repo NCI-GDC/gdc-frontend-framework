@@ -7,7 +7,6 @@ import time
 class Utility:
     def parent_dir(path_from=__file__):
         for path in Path(path_from).parents:
-            # print(f"path: {path}")
             git_dir = path / ".git"
             if git_dir.is_dir():
                 return path
@@ -26,3 +25,27 @@ class Utility:
     def get_screen_size():
         width, height = pyautogui.size()
         return {"width": width, "height": height}
+
+    def validate_json_key_exists(json_obj, json_key, fails):
+        try:
+            json_obj[json_key]
+        except:
+            fails[json_key] = f"NOT FOUND. {json_obj}"
+        finally:
+            return fails
+
+    def flatten_json(y):
+        out = {}
+        def flatten(x, name=''):
+            if type(x) is dict:
+                for a in x:
+                    flatten(x[a], name + a + '.')
+            elif type(x) is list:
+                i = 0
+                for a in x:
+                    flatten(a, name)
+                    i += 1
+            else:
+                out[name[:-1]] = x
+        flatten(y)
+        return out
