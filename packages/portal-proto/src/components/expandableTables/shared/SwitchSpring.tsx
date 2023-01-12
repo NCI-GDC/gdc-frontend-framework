@@ -47,8 +47,8 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       >
         <animated.div
           style={sliderSpring}
-          className={`border  border-lightgray ${
-            isDemoMode && "pointer-events-none"
+          className={`border border-lightgray ${
+            isDemoMode && "pointer-events-none bg-gray-400"
           } h-5 ${icon ? `` : `rounded-xl`} ${
             isActive ? `bg-activeColor` : `bg-gray-300`
           } m-auto align-middle`}
@@ -61,7 +61,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${
+            className={`border ${isDemoMode && "bg-gray-400"} ${
               isActive ? `border-activeColor` : ``
             } bg-white ${icon ? `` : `rounded-xl`} ${
               isActive ? `bg-lightgray` : ``
