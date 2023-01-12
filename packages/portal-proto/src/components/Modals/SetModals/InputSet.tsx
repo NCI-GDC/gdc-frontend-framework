@@ -50,7 +50,7 @@ interface InputSetProps {
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters: () => FilterSet;
   };
-  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
+  readonly useAddNewFilterGroups: () => (groups: FilterGroup[]) => void;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -60,7 +60,7 @@ const InputSet: React.FC<InputSetProps> = ({
   setType,
   setTypeLabel,
   hooks,
-  addNewFilterGroups,
+  useAddNewFilterGroups,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -71,6 +71,7 @@ const InputSet: React.FC<InputSetProps> = ({
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
   const existingFilters = hooks.getExistingFilters();
+  const addNewFilterGroups = useAddNewFilterGroups();
 
   const {
     mappedToFields,

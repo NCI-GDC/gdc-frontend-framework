@@ -6,36 +6,21 @@ import {
   hideModal,
   useGetSsmsQuery,
   useCreateSsmsSetMutation,
-  Operation,
   useSsmSetCountQuery,
-  FilterSet,
-  FilterGroup,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
 import GenericSetModal from "./GenericSetModal";
+import { SavedSetModalProps } from "./types";
 
-interface MutationSetModalProps {
-  readonly modalTitle: string;
-  readonly inputInstructions: string;
-  readonly selectSetInstructions: string;
-  readonly updateFilters: (
-    field: string,
-    operation: Operation,
-    groups?: FilterGroup[],
-  ) => void;
-  readonly existingFiltersHook: () => FilterSet;
-  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
-}
-
-const MutationSetModal: React.FC<MutationSetModalProps> = ({
+const MutationSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
-  addNewFilterGroups,
-}) => {
+  useAddNewFilterGroups,
+}: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
   return (
@@ -62,7 +47,7 @@ const MutationSetModal: React.FC<MutationSetModalProps> = ({
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
           }}
-          addNewFilterGroups={addNewFilterGroups}
+          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">

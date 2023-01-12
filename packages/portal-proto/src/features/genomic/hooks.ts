@@ -35,7 +35,12 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
-import { removeFilterGroup } from "./geneFilterGroupSlice";
+import {
+  removeFilterGroup,
+  addNewFilterGroups,
+  clearFilterGroups,
+  selectFilterGroups,
+} from "./geneFilterGroupSlice";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -255,6 +260,21 @@ export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
   return (field: string, operation: Operation) => {
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
+};
+
+export const useAddNewGenomicFilterGroups = (): ((
+  groups: FilterGroup[],
+) => void) => {
+  const dispatch = useAppDispatch();
+  return (groups: FilterGroup[]) => dispatch(addNewFilterGroups(groups));
+};
+
+export const useFilterGroups = (field: string): void =>
+  useAppSelector((state) => selectFilterGroups(state, field));
+
+export const useClearFilterGroups = (): ((field: string) => void) => {
+  const dispatch = useAppDispatch();
+  return (field: string) => dispatch(clearFilterGroups(field));
 };
 
 export const useRemoveFilterGroup = (): ((group: FilterGroup) => void) => {

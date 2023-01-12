@@ -52,6 +52,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   );
 
   const groups = hooks.useFilterGroups(field);
+  const removeFilterGroup = hooks.useRemoveFilterGroup();
 
   const tempOperands = [...facetValues];
   const displayOperands = [];
@@ -190,7 +191,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
                   }
                   setValues(newOperands);
                   if (x.group) {
-                    hooks.removeFilterGroup(x.group);
+                    removeFilterGroup(x.group);
                   }
                 }}
               >

@@ -1,11 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import {
-  useCoreSelector,
-  Modals,
-  selectCurrentModal,
-  FilterGroup,
-} from "@gff/core";
+import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import partial from "lodash/partial";
@@ -15,8 +10,11 @@ import {
   useUpdateGenomicEnumFacetFilter,
   useGenomicFilterByName,
   useGenomicFacetFilter,
-  useRemoveFilterGroup,
   useGenesFacetValues,
+  useAddNewGenomicFilterGroups,
+  useFilterGroups,
+  useRemoveFilterGroup,
+  useClearFilterGroups,
 } from "@/features/genomic/hooks";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -27,29 +25,11 @@ import EnumFacet from "@/features/facets/EnumFacet";
 import SetFacet from "@/features/facets/SetFacet";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
-import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
-import {
-  addNewFilterGroups,
-  clearFilterGroups,
-  selectFilterGroups,
-} from "./geneFilterGroupSlice";
 
 const GeneAndSSMFilterPanel = (): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
-  const dispatch = useAppDispatch();
-
-  const addNewGenomicFilterGroups = (groups: FilterGroup[]) => {
-    dispatch(addNewFilterGroups(groups));
-  };
-  const useFilterGroups = (field: string) =>
-    useAppSelector((state) => selectFilterGroups(state, field));
-
-  const removeFilterGroup = useRemoveFilterGroup();
-  const useClearFilterGroups = () => {
-    return (field: string) => dispatch(clearFilterGroups(field));
-  };
-
+  /*
   // TODO - remove feature flag
   const router = useRouter();
   const { FEATURE_SETS } = router.query;
@@ -57,15 +37,18 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
     FilterFacets.genes.splice(2);
     FilterFacets.ssms.splice(5);
   }
+  */
   useGenesFacets(
     "genes",
     "explore",
-    FilterFacets.genes.map((x) => x.facet_filter),
+    FilterFacets.filter((f) => f.docType === "genes").map(
+      (x) => x.facet_filter,
+    ),
   );
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.ssms.map((x) => x.facet_filter),
+    FilterFacets.filter((f) => f.docType === "ssms").map((x) => x.facet_filter),
   );
 
   return (
@@ -77,7 +60,7 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
           existingFiltersHook={useGenomicFacetFilter}
-          addNewFilterGroups={addNewGenomicFilterGroups}
+          useAddNewFilterGroups={useAddNewGenomicFilterGroups}
         />
       )}
       {modal === Modals.LocalMutationSetModal && (
@@ -87,10 +70,10 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
           existingFiltersHook={useGenomicFacetFilter}
-          addNewFilterGroups={addNewGenomicFilterGroups}
+          useAddNewFilterGroups={useAddNewGenomicFilterGroups}
         />
       )}
-      {FilterFacets.genes.map((x, index) => {
+      {FilterFacets.map((x, index) => {
         if (x.type == "toggle") {
           return (
             <ToggleFacet
@@ -99,18 +82,18 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
               hooks={{
                 useGetFacetData: partial(
                   useGenesFacetValues,
-                  "genes",
+                  x.docType,
                   "explore",
                 ),
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
                 useTotalCounts: partial(
                   useTotalCounts,
-                  FacetDocTypeToCountsIndexMap["genes"],
+                  FacetDocTypeToCountsIndexMap[x.docType],
                 ),
               }}
               facetName={x.name}
-              valueLabel={FacetDocTypeToLabelsMap["genes"]}
+              valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               showPercent={false}
               hideIfEmpty={false}
               description={x.description}
@@ -124,13 +107,13 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
               facetName={x.name}
               field={x.facet_filter}
               width="w-64"
-              valueLabel={FacetDocTypeToLabelsMap["genes"]}
+              valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               hooks={{
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
                 useGetFacetValues: useGenomicFilterByName,
                 useFilterGroups: useFilterGroups,
-                removeFilterGroup: removeFilterGroup,
+                useRemoveFilterGroup: useRemoveFilterGroup,
                 useClearGroups: useClearFilterGroups,
               }}
             />
@@ -141,60 +124,23 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
             key={`genes-mutations-app-${x.facet_filter}-${index}`}
             field={`${x.facet_filter}`}
             hooks={{
-              useGetFacetData: partial(useGenesFacetValues, "genes", "explore"),
+              useGetFacetData: partial(
+                useGenesFacetValues,
+                x.docType,
+                "explore",
+              ),
               useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
               useClearFilter: useClearGenomicFilters,
               useTotalCounts: partial(
                 useTotalCounts,
-                FacetDocTypeToCountsIndexMap["genes"],
+                FacetDocTypeToCountsIndexMap[x.docType],
               ),
             }}
             facetName={x.name}
-            valueLabel={FacetDocTypeToLabelsMap["genes"]}
+            valueLabel={FacetDocTypeToLabelsMap[x.docType]}
             showPercent={false}
             hideIfEmpty={false}
             description={x.description}
-            width="w-64"
-          />
-        );
-      })}
-      {FilterFacets.ssms.map((x, index) => {
-        if (x.type === "set") {
-          return (
-            <SetFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              facetName={x.name}
-              field={x.facet_filter}
-              width="w-64"
-              valueLabel={FacetDocTypeToLabelsMap["ssms"]}
-              hooks={{
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useGetFacetValues: useGenomicFilterByName,
-                useFilterGroups: useFilterGroups,
-                removeFilterGroup: removeFilterGroup,
-                useClearGroups: useClearFilterGroups,
-              }}
-            />
-          );
-        }
-        return (
-          <EnumFacet
-            key={`genes-mutations-app-${x.facet_filter}-${index}`}
-            field={`${x.facet_filter}`}
-            facetName={x.name}
-            valueLabel={FacetDocTypeToLabelsMap["ssms"]}
-            hooks={{
-              useGetFacetData: partial(useGenesFacetValues, "ssms", "explore"),
-              useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-              useClearFilter: useClearGenomicFilters,
-              useTotalCounts: partial(
-                useTotalCounts,
-                FacetDocTypeToCountsIndexMap["ssms"],
-              ),
-            }}
-            showPercent={false}
-            hideIfEmpty={false}
             width="w-64"
           />
         );

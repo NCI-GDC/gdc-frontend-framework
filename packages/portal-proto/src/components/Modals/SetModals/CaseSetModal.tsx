@@ -1,23 +1,14 @@
 import React from "react";
-import { useGetCasesQuery, Operation, FilterSet, FilterGroup } from "@gff/core";
+import { useGetCasesQuery } from "@gff/core";
 import InputSet from "./InputSet";
 import GenericSetModal from "./GenericSetModal";
+import { InputModalProps } from "./types";
 
-interface CaseSetModalProps {
-  readonly updateFilters: (
-    field: string,
-    operation: Operation,
-    groups?: FilterGroup[],
-  ) => void;
-  readonly existingFiltersHook: () => FilterSet;
-  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
-}
-
-const CaseSetModal: React.FC<CaseSetModalProps> = ({
+const CaseSetModal: React.FC<InputModalProps> = ({
   updateFilters,
   existingFiltersHook,
-  addNewFilterGroups,
-}: CaseSetModalProps) => {
+  useAddNewFilterGroups,
+}: InputModalProps) => {
   return (
     <GenericSetModal
       modalTitle={"Filter Current Cohort by Cases"}
@@ -52,7 +43,7 @@ const CaseSetModal: React.FC<CaseSetModalProps> = ({
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
         }}
-        addNewFilterGroups={addNewFilterGroups}
+        useAddNewFilterGroups={useAddNewFilterGroups}
       />
     </GenericSetModal>
   );

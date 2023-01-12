@@ -6,36 +6,21 @@ import {
   hideModal,
   useGetGenesQuery,
   useCreateGeneSetMutation,
-  Operation,
   useGeneSetCountQuery,
-  FilterSet,
-  FilterGroup,
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
 import GenericSetModal from "./GenericSetModal";
+import { SavedSetModalProps } from "./types";
 
-interface GeneSetModalProps {
-  readonly modalTitle: string;
-  readonly inputInstructions: string;
-  readonly selectSetInstructions: string;
-  readonly updateFilters: (
-    field: string,
-    operation: Operation,
-    groups?: FilterGroup[],
-  ) => void;
-  readonly existingFiltersHook: () => FilterSet;
-  readonly addNewFilterGroups: (groups: FilterGroup[]) => void;
-}
-
-const GeneSetModal: React.FC<GeneSetModalProps> = ({
+const GeneSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
   inputInstructions,
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
-  addNewFilterGroups,
-}: GeneSetModalProps) => {
+  useAddNewFilterGroups,
+}: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
     <GenericSetModal modalTitle={modalTitle} tabLabel="Genes" tabbed>
@@ -64,7 +49,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
           }}
-          addNewFilterGroups={addNewFilterGroups}
+          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
