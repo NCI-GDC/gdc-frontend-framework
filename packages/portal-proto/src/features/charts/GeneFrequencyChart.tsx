@@ -71,8 +71,8 @@ interface GeneFrequencyChartProps {
   readonly title?: string;
   readonly maxBins?: number;
   readonly orientation?: string;
-  readonly isDemoMode: boolean;
-  readonly demoFilters: FilterSet;
+  readonly isDemoMode?: boolean;
+  readonly demoFilters?: FilterSet;
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
