@@ -16,12 +16,14 @@ const graphQLQuery = `query Queries($filters: FiltersArgument) {
         fs {
           value
         }
-        project__project_id {
-          buckets {
-            case_count
+      }
+    }
+    repository {
+      cases {
+          hits(filters: $filters, first: 0) {
+            total
           }
         }
-      }
     }
   }
 }`;
@@ -68,11 +70,7 @@ const slice = createSlice({
             total_file_size:
               response?.data?.viewer?.cart_summary?.aggregations.fs?.value,
             total_case_count:
-              response?.data?.viewer?.cart_summary?.aggregations.project__project_id?.buckets?.reduce(
-                (totalCaseCount: number, obj: { case_count: number }) =>
-                  (totalCaseCount += obj.case_count),
-                0,
-              ), // Add together all the case counts for a total
+              response?.data?.viewer?.repository?.cases?.hits?.total,
           };
           state.status = "fulfilled";
         }

@@ -184,19 +184,19 @@ const FilesTables: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
-
+  // TODO fix filters
   const buildSearchFilters = (term: string): Operation => {
     return {
       operator: "or",
       operands: [
         {
           operator: "=",
-          field: "file_name",
+          field: "files.file_name",
           operand: `*${term}*`,
         },
         {
           operator: "=",
-          field: "file_id",
+          field: "files.file_id",
           operand: `*${term}*`,
         },
       ],
@@ -343,7 +343,9 @@ const FilesTables: React.FC = () => {
             <div className="">
               Total of{" "}
               <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 ? "Files" : "File"}
+              {tempPagination?.total > 1 || tempPagination?.total === 0
+                ? "Files"
+                : "File"}
             </div>
           </div>
         </div>
