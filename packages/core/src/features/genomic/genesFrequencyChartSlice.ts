@@ -63,7 +63,6 @@ export interface GenesFrequencyChart {
   readonly genesTotal: number;
 }
 
-// TODO pass in demo filter here
 export const fetchGeneFrequencies = createAsyncThunk<
   GraphQLApiResponse,
   GenomicTableProps,
@@ -76,12 +75,14 @@ export const fetchGeneFrequencies = createAsyncThunk<
       offset = 0,
       genomicFilters,
       isDemoMode,
-      demoFilters,
+      overwritingDemoFilter,
     }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const filters = isDemoMode
-      ? buildCohortGqlOperator(joinFilters(demoFilters, genomicFilters))
+      ? buildCohortGqlOperator(
+          joinFilters(overwritingDemoFilter, genomicFilters),
+        )
       : buildCohortGqlOperator(
           mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
         );

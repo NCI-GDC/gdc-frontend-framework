@@ -104,7 +104,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
-  const demoFilter: FilterSet = useMemo(
+  const overwritingDemoFilter: FilterSet = useMemo(
     () => ({
       mode: "and",
       root: {
@@ -121,10 +121,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const filters = useMemo(
     () =>
       buildCohortGqlOperator(
-        joinFilters(isDemoMode ? demoFilter : cohortFilters, genomicFilters),
+        joinFilters(
+          isDemoMode ? overwritingDemoFilter : cohortFilters,
+          genomicFilters,
+        ),
       ),
 
-    [isDemoMode, cohortFilters, demoFilter, genomicFilters],
+    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
   );
 
   const f = buildGeneHaveAndHaveNotFilters(
@@ -216,7 +219,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
     appDispatch(clearGeneAndSSMFilters());
-  }, [demoFilter, cohortFilters, appDispatch]);
+  }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
   /**
    * Clear comparative when local filters change
@@ -273,7 +276,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     marginBottom={95}
                     genomicFilters={genomicFilters}
                     isDemoMode={isDemoMode}
-                    demoFilters={demoFilter}
+                    overwritingDemoFilter={overwritingDemoFilter}
                   />
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
@@ -307,7 +310,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 )}
                 toggledGenes={currentGenes}
                 genomicFilters={genomicFilters}
-                cohortFilters={isDemoMode ? demoFilter : cohortFilters}
+                cohortFilters={
+                  isDemoMode ? overwritingDemoFilter : cohortFilters
+                }
                 isDemoMode={isDemoMode}
               />
             </div>
@@ -339,7 +344,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               genomicFilters={genomicFilters}
-              cohortFilters={isDemoMode ? demoFilter : cohortFilters}
+              cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
               handleSsmToggled={partial(
                 handleGeneAndSSmToggled,
                 currentMutations,

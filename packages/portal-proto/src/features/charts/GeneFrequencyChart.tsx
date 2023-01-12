@@ -72,7 +72,7 @@ interface GeneFrequencyChartProps {
   readonly maxBins?: number;
   readonly orientation?: string;
   readonly isDemoMode?: boolean;
-  readonly demoFilters?: FilterSet;
+  readonly overwritingDemoFilter?: FilterSet;
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
@@ -83,14 +83,14 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   maxBins = 20,
   orientation = "v",
   isDemoMode = false,
-  demoFilters,
+  overwritingDemoFilter,
 }: GeneFrequencyChartProps) => {
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
     offset: 0,
     genomicFilters: genomicFilters,
     isDemoMode: isDemoMode,
-    demoFilters: demoFilters,
+    overwritingDemoFilter: overwritingDemoFilter,
   });
 
   return (
