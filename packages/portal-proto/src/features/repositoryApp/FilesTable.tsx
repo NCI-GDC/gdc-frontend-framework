@@ -29,7 +29,10 @@ import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import { useUpdateRepositoryFacetFilter } from "@/features/repositoryApp/hooks";
+import {
+  useRemoveRepositoryFacetFilter,
+  useUpdateRepositoryFacetFilter,
+} from "@/features/repositoryApp/hooks";
 
 const FilesTables: React.FC = () => {
   const columnListOrder: Columns[] = [
@@ -204,10 +207,14 @@ const FilesTables: React.FC = () => {
   };
 
   const updateFilter = useUpdateRepositoryFacetFilter();
+  const removeFilter = useRemoveRepositoryFacetFilter();
   const newSearchActions = (searchTerm: string) => {
     //TODO if lots of calls fast last call might not be displayed
     if (searchTerm.length > 0)
       updateFilter("files", buildSearchFilters(searchTerm));
+    else {
+      removeFilter("files");
+    }
   };
 
   const handleChange = (obj: HandleChangeInput) => {
@@ -327,8 +334,18 @@ const FilesTables: React.FC = () => {
       additionalControls={
         <div className="flex">
           <div className="flex gap-2">
-            <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-            <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+            <FunctionButton
+              onClick={handleDownloadJSON}
+              data-testid="button-json-files-table"
+            >
+              JSON
+            </FunctionButton>
+            <FunctionButton
+              onClick={handleDownloadTSV}
+              data-testid="button-tsv-files-table"
+            >
+              TSV
+            </FunctionButton>
           </div>
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">

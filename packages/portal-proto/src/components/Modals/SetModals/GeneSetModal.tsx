@@ -34,6 +34,7 @@ const GeneSetModal: React.FC<GeneSetModalProps> = ({
       withinPortal={false}
       classNames={modalStyles}
       closeButtonLabel="close modal"
+      zIndex={400}
     >
       <Tabs defaultValue="input" classNames={tabStyles}>
         <Tabs.List>

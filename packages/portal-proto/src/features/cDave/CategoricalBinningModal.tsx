@@ -180,6 +180,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       opened
       onClose={() => setModalOpen(false)}
       size={800}
+      zIndex={400}
       title={`Create Custom Bins: ${field}`}
       withinPortal={false}
       classNames={{

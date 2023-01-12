@@ -44,7 +44,7 @@ const ActionButtonBar = () => {
                 query: { app: undefined },
               }}
               className="mx-4 p-2 px-5"
-              data-testid="analysisHomePageButton"
+              data-testid="button-home-page-analysis-center"
             >
               <div className="flex flex-row items-center">
                 <Image
@@ -76,7 +76,7 @@ const ActionButtonBar = () => {
               pathname: "/analysis_page",
               query: { app: "Projects" },
             }}
-            data-testid="studiesHomePageButton"
+            data-testid="button-home-page-studies"
           >
             <Image
               src={"/user-flow/icons/crowd-of-users.svg"}
@@ -103,7 +103,7 @@ const ActionButtonBar = () => {
               pathname: "/analysis_page",
               query: { app: "CohortBuilder" },
             }}
-            data-testid="cohortHomePageButton"
+            data-testid="button-home-page-cohort"
           >
             <Image
               src={"/user-flow/icons/build.svg"}
@@ -131,7 +131,7 @@ const ActionButtonBar = () => {
               pathname: "/analysis_page",
               query: { app: "Downloads" },
             }}
-            data-testid="downloadsHomePageButton"
+            data-testid="button-home-page-downloads"
           >
             <Image
               src={"/user-flow/icons/database.svg"}
@@ -183,7 +183,7 @@ const IndexPage: NextPage = () => {
                   type="text"
                   className="h-10 pr-8 w-full pl-5 bg-base-lightest border-primary-light rounded-full focus:outline-none focus:ring focus:ring-accent-cool-light focus:border-accent-cool-light hover:shadow-lg hover:border-accent-cool-lighter"
                   placeholder={`e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2`}
-                  data-testid="homepageSearchField"
+                  data-testid="input-home-page-search"
                 />
               </div>
             </div>
