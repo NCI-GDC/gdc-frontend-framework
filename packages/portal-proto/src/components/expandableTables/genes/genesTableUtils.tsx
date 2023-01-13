@@ -74,7 +74,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -85,11 +85,19 @@ export const createTableColumn = (
                       isActive={toggledGenes.includes(row.original?.geneID)}
                       margin={`my-0.5 ml-0`}
                       icon={
-                        <Image
-                          src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
-                        />
+                        isDemoMode ? (
+                          <Image
+                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        ) : (
+                          <Image
+                            src={"/user-flow/icons/cohort-dna.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        )
                       }
                       selected={row.original["cohort"]}
                       handleSwitch={() =>

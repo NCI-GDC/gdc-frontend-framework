@@ -71,10 +71,11 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${isDemoMode && "bg-gray-400"} ${
-              isActive ? `border-activeColor` : ``
-            } bg-white ${icon ? `` : `rounded-xl`} ${
-              isActive ? `bg-lightgray` : ``
+            className={`border-2 rounded-sm ${
+              isDemoMode ? "border-gray-300" : "border-activeColor"
+            }
+             bg-white ${icon && `rounded-xl`} ${
+              isActive && `bg-lightgray`
             } text-xs h-5`}
           >
             <div className={margin}>{icon}</div>

@@ -49,13 +49,16 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <div className="ml-0">
-                {" "}
-                <TableHeader title={startCase(accessor)} tooltip={""} />{" "}
+                <TableHeader
+                  title={startCase(accessor)}
+                  tooltip={""}
+                  className="ml-1 mr-2"
+                />
               </div>
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <div className="ml-1.5 mr-2">
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -82,7 +85,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -93,11 +96,19 @@ export const createTableColumn = (
                       isActive={toggledSsms.includes(row.original?.mutationID)}
                       margin={`my-0.5 ml-0`}
                       icon={
-                        <Image
-                          src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
-                        />
+                        isDemoMode ? (
+                          <Image
+                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        ) : (
+                          <Image
+                            src={"/user-flow/icons/cohort-dna.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        )
                       }
                       selected={row.original["cohort"]}
                       handleSwitch={() =>

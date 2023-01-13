@@ -84,9 +84,10 @@ type AppModeState = "genes" | "ssms";
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   // get the params pass to the app
   const {
-    query: { demoMode },
+    query: { demoMode, app },
   } = useRouter();
-  const isDemoMode = demoMode === "true" ? true : false;
+  const isDemoMode =
+    demoMode === "true" || (app as string).endsWith("Demo") ? true : false;
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
