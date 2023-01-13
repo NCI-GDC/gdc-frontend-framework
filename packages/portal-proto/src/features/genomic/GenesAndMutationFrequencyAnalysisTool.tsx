@@ -14,6 +14,7 @@ import {
   useCoreDispatch,
   removeCohortFilter,
   updateActiveCohortFilter,
+  usePrevious,
 } from "@gff/core";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
@@ -28,6 +29,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import { useRouter } from "next/router";
+import isEqual from "lodash/isEqual";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -130,10 +132,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
   );
 
-  const f = buildGeneHaveAndHaveNotFilters(
-    filters,
-    comparativeSurvival?.symbol,
-    comparativeSurvival?.field,
+  const prevFilters = usePrevious(filters);
+
+  const f = useMemo(
+    () =>
+      buildGeneHaveAndHaveNotFilters(
+        filters,
+        comparativeSurvival?.symbol,
+        comparativeSurvival?.field,
+      ),
+    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
   );
 
   const { data: survivalPlotData, isSuccess: survivalPlotReady } =
@@ -228,8 +236,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * Clear comparative when local filters change
    */
   useEffect(() => {
-    setComparativeSurvival(undefined);
-  }, [filters]);
+    if (!isEqual(prevFilters, filters)) setComparativeSurvival(undefined);
+  }, [filters, prevFilters]);
 
   /**
    *  Received a new topGene in response to a filter change, so set comparativeSurvival
