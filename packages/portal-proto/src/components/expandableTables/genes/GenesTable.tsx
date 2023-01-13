@@ -113,7 +113,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           handleGeneToggled,
           toggledGenes,
           setGeneID,
-          isDemoMode, // send in the prop variable
+          isDemoMode,
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
