@@ -88,7 +88,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                   {
                     ...entry,
                     name: `${entry.name} Demo`,
-                    id: `${entry.id}Demo`,
+                    id: `${entry.id}`,
                   },
                   true,
                 )

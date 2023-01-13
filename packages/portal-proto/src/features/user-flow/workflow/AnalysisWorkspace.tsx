@@ -273,9 +273,11 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
+  readonly demoMode?: boolean;
 }
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
+  demoMode = false,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
@@ -334,6 +336,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         <>
           <AnalysisBreadcrumbs
             currentApp={app}
+            demoMode={demoMode}
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}

@@ -113,7 +113,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <Button
             variant={"filled"}
             onClick={() => {
-              setActiveApp(`${currentApp.id}Demo`, true);
+              setActiveApp(`${currentApp.id}`, true);
               closeCohortSelection();
             }}
             className="bg-primary border-primary-darkest text-primary-contrast hover:bg-primary-lighter mx-2"

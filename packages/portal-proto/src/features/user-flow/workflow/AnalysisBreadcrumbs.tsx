@@ -8,6 +8,7 @@ interface AnalysisBreadcrumbsProps {
   readonly cohortSelectionOpen: boolean;
   readonly setActiveApp: (app: string) => void;
   readonly rightComponent?: React.ReactElement;
+  readonly demoMode: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
@@ -16,9 +17,12 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   cohortSelectionOpen,
   setActiveApp,
   rightComponent,
+  demoMode = false,
 }: AnalysisBreadcrumbsProps) => {
-  const onDemoApp = currentApp?.includes("Demo");
-  const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
+  //  const onDemoApp = currentApp?.includes("Demo");
+  //  const appId = onDemoApp ? currentApp?.split("Demo")[0] : currentApp;
+  const onDemoApp = demoMode;
+  const appId = currentApp;
   const appInfo = REGISTERED_APPS.find((app) => app.id === appId);
 
   const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;

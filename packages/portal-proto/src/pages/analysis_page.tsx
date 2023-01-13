@@ -9,9 +9,10 @@ import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
   const {
-    query: { app },
+    query: { app, demoMode },
   } = router;
 
+  const isDemo = demoMode == "true" ?? false;
   return (
     <UserFlowVariedPages {...{ indexPath: "/", headerElements }}>
       <Head>
@@ -25,6 +26,7 @@ const SingleAppsPage: NextPage = () => {
       <ContextBar />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
+        demoMode={isDemo}
       />
     </UserFlowVariedPages>
   );
