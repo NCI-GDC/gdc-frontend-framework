@@ -41,15 +41,15 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   return (
     <Tooltip label={tooltip} disabled={!tooltip} withArrow arrowSize={12}>
       <animated.div
-        className={`text-center items-center bg-gray ${
+        className={`text-center items-center ${
           isDemoMode && "cursor-not-allowed"
         }`}
       >
         <animated.div
           style={sliderSpring}
-          className={`border border-lightgray ${
-            isDemoMode && "pointer-events-none bg-gray-400"
-          } h-5 ${icon ? `` : `rounded-xl`} ${
+          className={`border rounded-sm border-lightgray ${
+            isDemoMode && "pointer-events-none"
+          } h-5 ${!icon && `rounded-xl`} ${
             isActive ? `bg-activeColor` : `bg-gray-300`
           } m-auto align-middle`}
           onClick={() => {
@@ -61,10 +61,11 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${isDemoMode && "bg-gray-400"} ${
-              isActive ? `border-activeColor` : ``
-            } bg-white ${icon ? `` : `rounded-xl`} ${
-              isActive ? `bg-lightgray` : ``
+            className={`border-2 rounded-sm ${
+              isDemoMode ? "border-gray-300" : "border-activeColor"
+            }
+             bg-white ${icon && `rounded-xl`} ${
+              isActive && `bg-lightgray`
             } text-xs h-5`}
           >
             <div className={margin}>{icon}</div>

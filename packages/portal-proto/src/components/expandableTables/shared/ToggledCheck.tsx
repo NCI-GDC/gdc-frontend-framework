@@ -55,9 +55,10 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         }}
         classNames={{
           root: margin,
-          input: "hover:bg-primary checked:bg-primary-darkest",
+          input:
+            "hover:bg-primary checked:bg-primary-darkest border border-activeColor",
         }}
-      ></Checkbox>
+      />
     </Tooltip>
   );
 };
