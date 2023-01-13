@@ -9,6 +9,7 @@ import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import html2canvas from "html2canvas";
+import { toBlob } from "html-to-image";
 import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
 
@@ -336,11 +337,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const handleDownloadPNG = async () => {
     if (downloadRef.current) {
-      const canvas = await html2canvas(downloadRef.current);
-
-      canvas.toBlob((blob) => {
+      toBlob(downloadRef.current, { cacheBust: true }).then(function (blob) {
         saveAs(blob, "survival-plot.png");
-      }, "image/png");
+      });
+
+      // const canvas = await html2canvas(downloadRef.current);
+      //
+      // canvas.toBlob((blob) => {
+      //   saveAs(blob, "survival-plot.png");
+      // }, "image/png");
     }
   };
 
