@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import ToggleFacet from "@/features/facets/ToggleFacet";
@@ -29,15 +28,7 @@ import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 const GeneAndSSMFilterPanel = (): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
-  /*
-  // TODO - remove feature flag
-  const router = useRouter();
-  const { FEATURE_SETS } = router.query;
-  if (FEATURE_SETS !== "true") {
-    FilterFacets.genes.splice(2);
-    FilterFacets.ssms.splice(5);
-  }
-  */
+
   useGenesFacets(
     "genes",
     "explore",

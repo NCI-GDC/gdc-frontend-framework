@@ -269,7 +269,7 @@ export const useAddNewGenomicFilterGroups = (): ((
   return (groups: FilterGroup[]) => dispatch(addNewFilterGroups(groups));
 };
 
-export const useFilterGroups = (field: string): void =>
+export const useFilterGroups = (field: string): FilterGroup[] =>
   useAppSelector((state) => selectFilterGroups(state, field));
 
 export const useClearFilterGroups = (): ((field: string) => void) => {

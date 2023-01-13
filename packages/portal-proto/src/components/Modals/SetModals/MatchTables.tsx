@@ -51,10 +51,12 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         id: "mapped_to",
         visible: true,
         disableSortBy: true,
+        highlighted: true,
         columns: uniqueMappedToFields.map((id) => ({
           columnName: fieldDisplay[id],
           id: `mapped_${id.replaceAll(".", "_")}`,
           visible: true,
+          highlighted: true,
         })),
       },
       {

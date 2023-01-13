@@ -1,5 +1,6 @@
 import React from "react";
 import { Badge, Group, Tooltip, Button, ActionIcon } from "@mantine/core";
+import { uniq } from "lodash";
 import { MdClose as CloseIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
@@ -12,6 +13,7 @@ import {
   selectSets,
   useGeneSymbol,
   SetTypes,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   controlsIconStyle,
@@ -61,7 +63,9 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     // Replace operands from groups
     groups.forEach((group) => {
       displayOperands.push({
-        label: `${group.ids.length} input ${setType.toLowerCase()}`,
+        label: `${group.ids.length} input ${
+          field === "genes.gene_id" ? "GENE" : fieldNameToTitle(field)
+        }s`,
         group,
       });
 
@@ -74,7 +78,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     });
   }
 
-  tempOperands.forEach((operand) => {
+  uniq(tempOperands).forEach((operand) => {
     if (typeof operand === "string" && operand.includes("set_id:")) {
       const setId = operand.split("set_id:")[1];
 
