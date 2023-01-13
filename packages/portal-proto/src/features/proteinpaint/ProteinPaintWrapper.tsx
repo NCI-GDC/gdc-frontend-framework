@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
-//import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -67,13 +66,10 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       ) as PpArg;
 
       if (ppRef.current) {
-        //setIsLoading(true)
         ppRef.current.update(arg);
       } else {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
-        //arg.postRender = ()=>setIsLoading(false)
-        //setIsLoading(true)
         runproteinpaint(arg).then((pp) => {
           ppRef.current = pp;
         });
@@ -143,7 +139,6 @@ function getLollipopTrack(props: PpProps, filter0: any) {
   const arg: Mds3Arg = {
     host: props.basepath || (basepath as string),
     genome: "hg38", // hardcoded for gdc
-    //gene: data.gene,
     tracks: [
       {
         type: "mds3",
