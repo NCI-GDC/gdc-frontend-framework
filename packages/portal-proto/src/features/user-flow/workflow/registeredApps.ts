@@ -146,6 +146,21 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
   },
+  {
+    name: "OncoMatrix (prototype)",
+    icon: "matrix.png",
+    iconSize: { width: 80, height: 48 },
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    hasDemo: true,
+    description:
+      "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
+    id: "OncoMatrix",
+    countsField: "ssmCaseCounts",
+    caseCounts: 0.25,
+    optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have SSM or CNV data available for visualization.",
+  },
   /*
   {
     name: "scRNA-Seq",
