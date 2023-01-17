@@ -1,12 +1,9 @@
-import { useRouter } from "next/router";
+import useIsDemoApp from "@/hooks/useIsDemoApp";
 import { FC } from "react";
 import SetOperationsDemo from "../set-operations/SetOperationsDemo";
 
 const SetOperationsApp: FC = () => {
-  const {
-    query: { demoMode },
-  } = useRouter();
-  const isDemoMode = demoMode === "true" ? true : false;
+  const isDemoMode = useIsDemoApp();
 
   return <>{isDemoMode ? <SetOperationsDemo /> : <div>Coming soon</div>}</>;
 };

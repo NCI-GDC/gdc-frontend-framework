@@ -1,3 +1,4 @@
+import useIsDemoApp from "@/hooks/useIsDemoApp";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import ClinicalDataAnalysis from "../cDave/ClinicalDataAnalysis";
@@ -7,10 +8,7 @@ export interface CDaveAppProps {
 }
 
 const CDaveApp: FC<CDaveAppProps> = ({ onLoaded }: CDaveAppProps) => {
-  const {
-    query: { demoMode },
-  } = useRouter();
-  const isDemoMode = demoMode === "true" ? true : false;
+  const isDemoMode = useIsDemoApp();
   return isDemoMode ? (
     <div>Yet to be build</div>
   ) : (

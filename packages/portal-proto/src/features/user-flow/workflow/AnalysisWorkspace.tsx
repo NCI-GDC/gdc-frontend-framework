@@ -21,6 +21,7 @@ import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
+import useIsDemoApp from "@/hooks/useIsDemoApp";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -280,7 +281,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
-  const isDemoMode = router.query.demoMode === "true" ? true : false;
+  const isDemoMode = useIsDemoApp();
   useEffect(() => {
     const appInfo = REGISTERED_APPS.find((a) => a.id === app);
     setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
@@ -290,7 +291,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     } else {
       clearComparisonCohorts();
     }
-  }, [app, scrollIntoView]);
+  }, [isDemoMode, app, scrollIntoView]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });

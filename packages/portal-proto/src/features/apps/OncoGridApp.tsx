@@ -1,13 +1,10 @@
 import React, { FC } from "react";
 import { selectGdcAppById, useCoreSelector } from "@gff/core";
 import { OncoGridAppId } from "@/features/oncoGrid/registerApp";
-import { useRouter } from "next/router";
+import useIsDemoApp from "@/hooks/useIsDemoApp";
 
 const OncoGridApp: FC = () => {
-  const {
-    query: { demoMode },
-  } = useRouter();
-  const isDemoMode = demoMode === "true" ? true : false;
+  const isDemoMode = useIsDemoApp();
 
   const GdcApp = useCoreSelector(() =>
     selectGdcAppById(OncoGridAppId),

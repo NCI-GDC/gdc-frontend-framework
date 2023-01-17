@@ -1,16 +1,13 @@
+import useIsDemoApp from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortName,
   selectComparisonCohorts,
 } from "@gff/core";
-import { useRouter } from "next/router";
 import CohortComparison from "../cohortComparison/CohortComparison";
 
 const CohortComparisonApp: React.FC = () => {
-  const {
-    query: { demoMode },
-  } = useRouter();
-  const isDemoMode = demoMode === "true" ? true : false;
+  const isDemoMode = useIsDemoApp();
 
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
