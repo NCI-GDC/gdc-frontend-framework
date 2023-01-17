@@ -1,5 +1,4 @@
 import useIsDemoApp from "@/hooks/useIsDemoApp";
-import { useRouter } from "next/router";
 import { FC } from "react";
 import ClinicalDataAnalysis from "../cDave/ClinicalDataAnalysis";
 

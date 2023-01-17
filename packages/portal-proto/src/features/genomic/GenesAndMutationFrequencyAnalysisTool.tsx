@@ -28,7 +28,6 @@ import {
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
-import { useRouter } from "next/router";
 import isEqual from "lodash/isEqual";
 import useIsDemoApp from "@/hooks/useIsDemoApp";
 
