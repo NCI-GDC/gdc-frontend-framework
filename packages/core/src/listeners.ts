@@ -59,18 +59,15 @@ startCoreListening({
     const latestCohort = selectAvailableCohorts(listenerApi.getState());
     const latestCohortFilter = latestCohort[1]?.filters;
     const latestCohortId = latestCohort[1]?.id;
-    try {
-      const res = await fetchGdcCases({
-        filters: buildCohortGqlOperator(latestCohortFilter),
-        size: 0,
-      });
-      const caseCount = res?.data?.pagination?.total;
 
-      listenerApi.dispatch(
-        addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
-      );
-    } catch (error) {
-      console.error({ error });
-    }
+    const res = await fetchGdcCases({
+      filters: buildCohortGqlOperator(latestCohortFilter),
+      size: 0,
+    });
+    const caseCount = res?.data?.pagination?.total;
+
+    listenerApi.dispatch(
+      addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
+    );
   },
 });
