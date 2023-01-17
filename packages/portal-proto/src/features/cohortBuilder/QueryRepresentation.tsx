@@ -185,44 +185,67 @@ const IncludeExcludeQueryElement: React.FC<
           {operands.length}
         </b>
       ) : (
+        // TODO: Remove line 189 - 207 after PEAR-650 is completed
         <QueryRepresentationText>
-          <Group spacing="xs">
-            {operands.map((x, i) => (
-              <Badge
-                key={`query-rep-${field}-${x}-${i}`}
-                variant="filled"
-                color="primary.9"
-                size="md"
-                className="normal-case max-w-[162px] cursor-pointer"
-                rightSection={<RemoveButton value={x.toString()} />}
-                onClick={() => {
-                  const newOperands = operands.filter((o) => o !== x);
-                  if (newOperands.length === 0) {
-                    setQueryExpressionsExpanded({
-                      type: "clear",
-                      cohortId: currentCohortId,
-                      field,
-                    });
-                    dispatch(removeCohortFilter(field));
-                  } else
-                    dispatch(
-                      updateActiveCohortFilter({
+          {field === "cases.case_id" ? (
+            <Badge
+              variant="filled"
+              color="primary.9"
+              size="md"
+              // TODO: remove pixel width to be replaced with em-based width
+              className="normal-case max-w-[162px] cursor-pointer"
+              rightSection={<RemoveButton value={`${operands.length} cases`} />}
+              onClick={() => {
+                setQueryExpressionsExpanded({
+                  type: "clear",
+                  cohortId: currentCohortId,
+                  field,
+                });
+                dispatch(removeCohortFilter(field));
+              }}
+            >
+              {`${operands.length.toLocaleString()} input cases`}
+            </Badge>
+          ) : (
+            <Group spacing="xs">
+              {operands.map((x, i) => (
+                <Badge
+                  key={`query-rep-${field}-${x}-${i}`}
+                  variant="filled"
+                  color="primary.9"
+                  size="md"
+                  // TODO: remove pixel width to be replaced with em-based width
+                  className="normal-case max-w-[162px] cursor-pointer"
+                  rightSection={<RemoveButton value={x.toString()} />}
+                  onClick={() => {
+                    const newOperands = operands.filter((o) => o !== x);
+                    if (newOperands.length === 0) {
+                      setQueryExpressionsExpanded({
+                        type: "clear",
+                        cohortId: currentCohortId,
                         field,
-                        operation: {
-                          operator,
+                      });
+                      dispatch(removeCohortFilter(field));
+                    } else
+                      dispatch(
+                        updateActiveCohortFilter({
                           field,
-                          operands: newOperands,
-                        },
-                      }),
-                    );
-                }}
-              >
-                <OverflowTooltippedLabel label={x.toString()}>
-                  {labels[i]}
-                </OverflowTooltippedLabel>
-              </Badge>
-            ))}
-          </Group>
+                          operation: {
+                            operator,
+                            field,
+                            operands: newOperands,
+                          },
+                        }),
+                      );
+                  }}
+                >
+                  <OverflowTooltippedLabel label={x.toString()}>
+                    {labels[i]}
+                  </OverflowTooltippedLabel>
+                </Badge>
+              ))}
+            </Group>
+          )}
         </QueryRepresentationText>
       )}
     </QueryContainer>

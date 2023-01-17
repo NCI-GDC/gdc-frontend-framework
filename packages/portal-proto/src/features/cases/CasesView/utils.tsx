@@ -115,3 +115,5 @@ ${(p: { $count?: number }) =>
   font-heading
   rounded-md
 `;
+
+export const MAX_CASE_IDS = 100000;

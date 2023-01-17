@@ -18,7 +18,7 @@ export const REGISTERED_APPS = [
     icon: "icons/apps/cdave.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     id: "CDave",
     description:
       "Use clinical variables to perform basic statistical analysis of your cohort.",
@@ -29,7 +29,7 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     description:
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
   },
@@ -39,7 +39,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
-    countsField: "ssmCaseCounts",
+    countsField: "ssmCaseCount",
     description:
       "Visualize most frequently mutated genes and somatic mutations.",
     noDataTooltip:
@@ -51,7 +51,7 @@ export const REGISTERED_APPS = [
     icon: "icons/database.svg",
     tags: ["files"],
     hasDemo: false,
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     id: "Downloads",
     description:
       "Browse and download the files associated with your cohort for more sophisticated analysis.",
@@ -62,7 +62,7 @@ export const REGISTERED_APPS = [
     tags: [],
     hasDemo: false,
     id: "Projects",
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     description:
       "View the Projects available within the GDC and select them for further exploration and analysis.",
   },
@@ -72,7 +72,7 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
     selectAdditionalCohort: true,
@@ -98,7 +98,7 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
-    countsField: "repositoryCaseCounts",
+    countsField: "repositoryCaseCount",
     description:
       "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
@@ -110,7 +110,7 @@ export const REGISTERED_APPS = [
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
-    countsField: "ssmCaseCounts",
+    countsField: "ssmCaseCount",
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoGridApp",
@@ -123,7 +123,7 @@ export const REGISTERED_APPS = [
     icon: "sequence-reads.png",
     tags: ["sequenceAnalysis"],
     hasDemo: false,
-    countsField: "sequenceReadCaseCounts",
+    countsField: "sequenceReadCaseCount",
     description:
       "Visualize sequencing reads for a given gene, position, SNP, or variant.",
     id: "SequenceReadApp",
@@ -140,7 +140,7 @@ export const REGISTERED_APPS = [
     description:
       "Visualize mutations in protein-coding genes by consequence type and protein domain.",
     id: "ProteinPaintApp",
-    countsField: "ssmCaseCounts",
+    countsField: "ssmCaseCount",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:
