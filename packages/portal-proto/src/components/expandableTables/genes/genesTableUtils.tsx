@@ -135,15 +135,30 @@ export const createTableColumn = (
               return (
                 <>
                   {row.getCanExpand() && (
-                    <ToggledCheck
-                      margin="mt-[0.42em] ml-0.5"
-                      isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon size={24} />}
-                      selected={row.original["survival"]}
-                      handleSwitch={handleSurvivalPlotToggled}
-                      survivalProps={{ plot: "gene.symbol" }}
-                      tooltip={tooltip}
-                    />
+                    <Tooltip
+                      label={`${tooltip}`}
+                      disabled={!tooltip || tooltip.length == 0}
+                      withArrow
+                      arrowSize={6}
+                      transition="fade"
+                      transitionDuration={200}
+                      multiline
+                      classNames={{
+                        tooltip:
+                          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
+                      }}
+                    >
+                      <ToggledCheck
+                        margin="mt-[0.42em] ml-0.5"
+                        isActive={row.original["survival"].checked}
+                        icon={<SurvivalIcon size={24} />}
+                        selected={row.original["survival"]}
+                        handleSwitch={handleSurvivalPlotToggled}
+                        survivalProps={{ plot: "gene.symbol" }}
+                        tooltip={tooltip}
+                        disabled={disabled}
+                      />
+                    </Tooltip>
                   )}
                 </>
               );

@@ -47,18 +47,21 @@ const ToggledCheck: React.FC<ToggleProps> = ({
       <Checkbox
         radius="xs"
         checked={isActive}
-        disabled={disabled}
         indeterminate
         icon={CheckboxIcon}
+        aria-disabled={disabled}
         onChange={() => {
-          // todo: if used for > 2 icons refactor to use switch(icon) statement
-          icon
-            ? handleSwitch(selected[`symbol`], selected[`name`], plot)
-            : handleSwitch(selected);
+          if (!disabled)
+            // todo: if used for > 2 icons refactor to use switch(icon) statement
+            icon
+              ? handleSwitch(selected[`symbol`], selected[`name`], plot)
+              : handleSwitch(selected);
         }}
         classNames={{
           root: margin,
-          input: "hover:bg-primary checked:bg-primary-darkest",
+          input: disabled
+            ? "bg-base-lighter hover:bg-primary-lighter"
+            : "hover:bg-primary checked:bg-primary-darkest",
         }}
       ></Checkbox>
     </Tooltip>
