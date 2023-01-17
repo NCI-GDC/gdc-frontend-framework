@@ -280,10 +280,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
-
+  const isDemoMode = router.query.demoMode === "true" ? true : false;
   useEffect(() => {
     const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
+    setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
 
     if (app) {
       scrollIntoView();
@@ -321,6 +321,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setCohortSelectionOpen={setCohortSelectionOpen}
               cohortSelectionOpen={cohortSelectionOpen}
               setActiveApp={handleAppSelected}
+              onDemoApp={isDemoMode}
             />
             <AdditionalCohortSelection
               app={app}
@@ -337,6 +338,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
+            onDemoApp={isDemoMode}
             rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
           />
           <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
