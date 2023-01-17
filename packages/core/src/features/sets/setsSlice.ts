@@ -42,7 +42,7 @@ const slice = createSlice({
 export const setsReducer = slice.reducer;
 export const { addSet } = slice.actions;
 
-export const selectSets = (
+export const selectSetsByType = (
   state: CoreState,
   setType: SetTypes,
 ): Record<string, string> => state.sets[setType];

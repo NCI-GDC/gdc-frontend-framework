@@ -6,7 +6,7 @@ import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
-  selectSets,
+  selectSetsByType,
   useCoreDispatch,
   hideModal,
   SetTypes,
@@ -57,7 +57,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
 }: SavedSetsProps) => {
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [, setUserEnteredInput] = useContext(UserInputContext);
-  const sets = useCoreSelector((state) => selectSets(state, setType));
+  const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const dispatch = useCoreDispatch();
   const existingFilters = existingFiltersHook();
   const existingOperation = existingFilters?.root?.[facetField];

@@ -10,7 +10,7 @@ import {
   EnumOperandValue,
   Modals,
   useCoreSelector,
-  selectSets,
+  selectSetsByType,
   useGeneSymbol,
   SetTypes,
   fieldNameToTitle,
@@ -47,7 +47,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     []) as EnumOperandValue;
   const [setType] = field.split(".");
   const sets = useCoreSelector((state) =>
-    selectSets(state, setType as SetTypes),
+    selectSetsByType(state, setType as SetTypes),
   );
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],

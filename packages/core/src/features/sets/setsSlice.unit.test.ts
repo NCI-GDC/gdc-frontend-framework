@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { reducers } from "src/reducers";
-import { addSet } from "./setsSlice";
+import { getInitialCoreState } from "../../store.unit.test";
+import { addSet, selectSetsByType } from "./setsSlice";
 
 describe("setsSlice", () => {
   it("add new sets", () => {
@@ -40,6 +41,26 @@ describe("setsSlice", () => {
       cases: { pLaR: "my case set" },
       genes: {},
       ssms: {},
+    });
+  });
+
+  it("select sets by type", () => {
+    const state = getInitialCoreState();
+    const result = selectSetsByType(
+      {
+        ...state,
+        sets: {
+          genes: {},
+          ssms: { aaZM: "my mutation set", oLaI: "my other mutation set" },
+          cases: { pLaR: "my case set" },
+        },
+      },
+      "ssms",
+    );
+
+    expect(result).toEqual({
+      aaZM: "my mutation set",
+      oLaI: "my other mutation set",
     });
   });
 });

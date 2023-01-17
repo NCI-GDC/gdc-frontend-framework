@@ -5,7 +5,7 @@ import {
 import {
   setsReducer,
   addSet,
-  selectSets,
+  selectSetsByType,
   selectAllSets,
   SetTypes,
 } from "./setsSlice";
@@ -16,7 +16,7 @@ export {
   useCreateSsmsSetMutation,
   setsReducer,
   addSet,
-  selectSets,
+  selectSetsByType,
   selectAllSets,
   SetTypes,
   useGeneSetCountQuery,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
-  selectSets,
+  selectSetsByType,
   useCoreDispatch,
   useCoreSelector,
   addSet,
@@ -29,7 +29,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [createSet, response] = createSetHook();
   const [setName, setSetName] = useState(null);
-  const sets = useCoreSelector((state) => selectSets(state, setType));
+  const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
   useEffect(() => {
     if (response.isSuccess && setName) {
