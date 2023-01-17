@@ -2,7 +2,6 @@ import {
   GDCGenesTable,
   useGenesTable,
   FilterSet,
-  useMutationFreqDLQuery,
   usePrevious,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
@@ -19,9 +18,9 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import DL from "../shared/DL";
-import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
 import isEqual from "lodash/isEqual";
+import { dlMutatedGenesJSONQuery, dlMutatedGenesTSVQuery } from "./query";
 
 export const SelectedRowContext =
   createContext<
@@ -161,27 +160,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   }, [status, initialData]);
 
   const handleJSON = () => {
-    // todo: pass filename and content as params to function
-    // return all entries in table, not just currently displayed
-    const fileName = `frequently-mutated.${convertDateToString(
-      new Date(),
-    )}.json`;
-    const content = tableData.genes.map(
-      ({
-        case_cnv_gain,
-        case_cnv_loss,
-        cnv_case,
-        id,
-        numCases,
-        ssm_case,
-        ...fields
-      }) => fields,
-    );
-    const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: "text/json",
-    });
-    saveAs(blob, fileName);
-    setDl("");
+    setDl("json");
   };
 
   return (
@@ -224,17 +203,23 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       {dl === "tsv" ? <Loader /> : "TSV"}
                     </Button>
                   </ButtonTooltip>
-                  {dl === "tsv" && (
+                  {dl === "json" && (
                     <DL
-                      // useMutationFreqDLQuery
-                      dataHook={useGenesTable}
+                      dataHook={dlMutatedGenesJSONQuery}
                       queryParams={{
                         totalCount: gTotal,
                         genomicFilters,
-                        // tableData,
-                        // geneIds: tableData.genes.map(
-                        //   ({ gene_id: geneId }) => geneId,
-                        // ),
+                      }}
+                      fileName={`genes.${convertDateToString(new Date())}.json`}
+                      setDl={setDl}
+                    />
+                  )}
+                  {dl === "tsv" && (
+                    <DL
+                      dataHook={dlMutatedGenesTSVQuery}
+                      queryParams={{
+                        totalCount: gTotal,
+                        genomicFilters,
                       }}
                       headers={[
                         "Symbol",

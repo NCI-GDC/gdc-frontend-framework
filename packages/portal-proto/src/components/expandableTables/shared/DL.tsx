@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { fetchGTableDL } from "../genes/query";
+import { fetchedMutatedGenesJSON } from "../genes/query";
 // import saveAs from "file-saver";
 
 export const SOME_MAX_LIMIT = 9000;
@@ -26,7 +26,7 @@ const DL: React.FC<DLProps> = ({
   // }, [isSuccess, headers]);
 
   useEffect(() => {
-    fetchGTableDL(queryParams);
+    dataHook(queryParams);
   }, []);
 
   return (
