@@ -36,7 +36,7 @@ export const headerElements = [
         query: { app: undefined },
       }}
       className=" "
-      data-testid="analysisButton"
+      data-testid="button-header-analysis"
       aria-label="analysis center button"
     >
       <Image
@@ -64,7 +64,7 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "Projects" },
       }}
-      data-testid="projectsButton"
+      data-testid="button-header-projects"
       aria-label="project/studies center button"
     >
       <Image
@@ -92,7 +92,7 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "CohortBuilder" },
       }}
-      data-testid="cohortButton"
+      data-testid="button-header-cohort"
       aria-label="cohort builder button"
     >
       <Image
@@ -120,7 +120,7 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "Downloads" },
       }}
-      data-testid="downloadsButton"
+      data-testid="button-header-downloads"
       aria-label="download center button"
     >
       <Image

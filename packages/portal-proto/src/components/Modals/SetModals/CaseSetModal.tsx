@@ -13,6 +13,7 @@ const CaseSetModal: React.FC = () => {
       onClose={() => dispatch(hideModal())}
       size="xl"
       withinPortal={false}
+      zIndex={400}
       classNames={modalStyles}
       closeButtonLabel="close modal"
     >
