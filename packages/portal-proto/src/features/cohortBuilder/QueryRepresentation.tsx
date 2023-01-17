@@ -192,6 +192,7 @@ const IncludeExcludeQueryElement: React.FC<
               variant="filled"
               color="primary.9"
               size="md"
+              // TODO: remove pixel width to be replaced with em-based width
               className="normal-case max-w-[162px] cursor-pointer"
               rightSection={<RemoveButton value={`${operands.length} cases`} />}
               onClick={() => {
@@ -213,6 +214,7 @@ const IncludeExcludeQueryElement: React.FC<
                   variant="filled"
                   color="primary.9"
                   size="md"
+                  // TODO: remove pixel width to be replaced with em-based width
                   className="normal-case max-w-[162px] cursor-pointer"
                   rightSection={<RemoveButton value={x.toString()} />}
                   onClick={() => {

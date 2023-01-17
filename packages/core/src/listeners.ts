@@ -70,8 +70,7 @@ startCoreListening({
         addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
       );
     } catch (error) {
-      // TODO: how to deal with this?
-      console.log({ error });
+      console.error({ error });
     }
   },
 });

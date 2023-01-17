@@ -30,6 +30,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 const useStyles = createStyles((theme) => ({
   item: {
     "&[data-hovered]": {
+      // TODO: remove with theme color other than blue
       backgroundColor: theme.colors.blue[3],
       color: theme.white,
     },
