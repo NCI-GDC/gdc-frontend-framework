@@ -132,6 +132,8 @@ export const createTableColumn = (
                 : isActive
                 ? `Click to remove ${selected.symbol} from plot`
                 : `Click to plot ${selected.symbol}`;
+              // NOTE: If button is disabled then tooltips will not show up
+              // https://floating-ui.com/docs/react#disabled-elements
               return (
                 <>
                   {row.getCanExpand() && (
