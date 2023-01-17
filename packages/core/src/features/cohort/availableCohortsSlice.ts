@@ -38,6 +38,7 @@ export interface FilterGroup {
   readonly field: string;
   readonly setId?: string;
   readonly setType?: SetTypes;
+  readonly groupId?: string; // unique identifier for groups that aren't sets
 }
 
 export interface Cohort {
