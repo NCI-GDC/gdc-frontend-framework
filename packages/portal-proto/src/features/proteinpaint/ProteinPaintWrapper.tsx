@@ -139,7 +139,6 @@ function getLollipopTrack(props: PpProps, filter0: any) {
   const arg: Mds3Arg = {
     host: props.basepath || (basepath as string),
     genome: "hg38", // hardcoded for gdc
-    //gene: data.gene,
     tracks: [
       {
         type: "mds3",
@@ -196,10 +195,31 @@ interface MatrixArg {
 function getMatrixTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
+  const defaultFilter = {
+    op: "and",
+    content: [
+      {
+        op: "in",
+        content: {
+          field: "cases.primary_site",
+          value: ["breast", "bronchus and lung"],
+        },
+      },
+      {
+        op: ">=",
+        content: { field: "cases.diagnoses.age_at_diagnosis", value: 10000 },
+      },
+      {
+        op: "<=",
+        content: { field: "cases.diagnoses.age_at_diagnosis", value: 20000 },
+      },
+    ],
+  };
+
   const arg: MatrixArg = {
     host: props.basepath || (basepath as string),
     launchGdcMatrix: true,
-    filter0,
+    filter0: filter0 || defaultFilter,
   };
 
   return arg;

@@ -150,6 +150,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     { value: cohorts[0].id, label: cohorts[0].name },
     ...cohorts // Make ALL GDC always first
       .slice(1)
+      .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
       .map((x) => {
         return { value: x.id, label: x.name };
       }),

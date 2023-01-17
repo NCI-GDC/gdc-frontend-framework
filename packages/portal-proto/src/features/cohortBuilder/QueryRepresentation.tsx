@@ -226,6 +226,7 @@ const IncludeExcludeQueryElement: React.FC<
           {displayOperands.length}
         </b>
       ) : (
+        // TODO: Remove line 189 - 207 after PEAR-650 is completed
         <QueryRepresentationText>
           <Group spacing="xs">
             {displayOperands.map((x, i) => {

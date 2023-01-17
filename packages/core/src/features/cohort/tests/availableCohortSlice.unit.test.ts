@@ -13,7 +13,7 @@ import {
   addNewCohortWithFilterAndMessage,
   divideCurrentCohortFilterSetFilterByPrefix,
   divideFilterSetByPrefix,
-  buildCaseSetGQLQueryAndVariables,
+  buildCaseSetGQLQueryAndVariablesFromFilters,
   buildCaseSetMutationQuery,
   REQUIRES_CASE_SET_FILTERS,
   processCaseSetResponse,
@@ -745,10 +745,11 @@ describe("caseSet creation", () => {
       cohortFilters,
       REQUIRES_CASE_SET_FILTERS,
     );
-    const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
-      dividedFilters.withPrefix,
-      "2394944y3",
-    );
+    const { query, parameters, variables } =
+      buildCaseSetGQLQueryAndVariablesFromFilters(
+        dividedFilters.withPrefix,
+        "2394944y3",
+      );
 
     expect(query).toEqual(
       "genesCases : case (input: $inputgenes) { set_id size }," +

@@ -51,7 +51,8 @@ export const SelectAlCasesButton = ({
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    setChecked(caseIds.every((id) => pickedCases.includes(id)));
+    caseIds.length > 0 &&
+      setChecked(caseIds.every((id) => pickedCases.includes(id)));
   }, [caseIds, pickedCases]);
 
   return (
@@ -59,6 +60,7 @@ export const SelectAlCasesButton = ({
       className="ml-1"
       size="xs"
       checked={checked}
+      disabled={caseIds.length === 0}
       onChange={(event) => {
         setChecked(event.currentTarget.checked);
         if (event.currentTarget.checked)

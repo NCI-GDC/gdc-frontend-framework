@@ -53,6 +53,7 @@ import {
   FilterGroup,
   addNewCohortGroups,
   removeCohortGroup,
+  selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
 } from "./availableCohortsSlice";
 
@@ -147,5 +148,6 @@ export {
   FilterGroup,
   addNewCohortGroups,
   removeCohortGroup,
+  selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
 };

@@ -50,13 +50,43 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
+  readonly caseCount?: number; // track case count of a cohort
 }
 
-export const buildCaseSetGQLQueryAndVariables = (
+/**
+ * Parses the set of Filter and returns an object containing query, parameters, and variables
+ * used to create a caseSet from the input filters. The prefix (e.g. genes.") of the filters is used to group them.
+ * The assumption is that all filters will have a prefix separated by "."
+ * @param filters
+ * @param id
+ */
+export const buildCaseSetGQLQueryAndVariablesFromFilters = (
   filters: FilterSet,
   id: string,
 ): Record<string, any> => {
-  const prefix = Object.keys(filters.root).map((x) => x.split(".")[0]);
+  const prefix = Object.keys(filters.root)
+    .map((x) => x.split(".")[0])
+    .filter((v, i, a) => a.indexOf(v) == i);
+  const sorted = Object.keys(filters.root).reduce(
+    (obj, filterName) => {
+      const filterPrefix = filterName.split(".")[0];
+      return {
+        ...obj,
+        [filterPrefix]: {
+          ...obj[filterPrefix],
+          [filterName]: filters.root[filterName],
+        },
+      };
+    },
+    prefix.reduce(
+      (obj: Record<string, any>, pfx) => ({
+        ...obj,
+        [pfx]: {},
+      }),
+      {},
+    ),
+  );
+
   return {
     query: prefix
       .map(
@@ -68,20 +98,18 @@ export const buildCaseSetGQLQueryAndVariables = (
       .map((name) => ` $input${name}: CreateSetInput`)
       .join(","),
 
-    variables: Object.keys(filters.root).reduce(
-      (obj, name, index) => ({
+    variables: Object.entries(sorted).reduce((obj, [key, value]) => {
+      return {
         ...obj,
-
-        [`input${prefix[index]}`]: {
+        [`input${key}`]: {
           filters: buildCohortGqlOperator({
             mode: "and",
-            root: { [name]: filters.root[name] },
+            root: value as Record<string, Operation>,
           }),
-          set_id: `${prefix[index]}-${id}`,
+          set_id: `${key}-${id}`,
         },
-      }),
-      {},
-    ),
+      };
+    }, {}),
   };
 };
 
@@ -166,10 +194,11 @@ export const createCaseSet = createAsyncThunk<
       REQUIRES_CASE_SET_FILTERS,
     );
 
-    const { query, parameters, variables } = buildCaseSetGQLQueryAndVariables(
-      dividedFilters.withPrefix,
-      caseSetId,
-    );
+    const { query, parameters, variables } =
+      buildCaseSetGQLQueryAndVariablesFromFilters(
+        dividedFilters.withPrefix,
+        caseSetId,
+      );
 
     const graphQL = buildCaseSetMutationQuery(parameters, query);
     return graphqlAPI(graphQL, variables);
@@ -448,6 +477,15 @@ const slice = createSlice({
         };
         cohortsAdapter.addOne(state, destCohort);
       }
+    },
+    addCaseCount: (
+      state,
+      action: PayloadAction<{ cohortId?: string; caseCount: number }>,
+    ) => {
+      cohortsAdapter.updateOne(state, {
+        id: action.payload.cohortId ?? state.currentCohort,
+        changes: { caseCount: action.payload.caseCount },
+      });
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -810,6 +848,7 @@ export const {
   setCohortMessage,
   addNewCohortGroups,
   removeCohortGroup,
+  addCaseCount,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -902,6 +941,18 @@ export const selectCurrentCohortGroupsByField = (
     state.cohort.availableCohorts.currentCohort,
   );
   return (cohort?.groups || []).filter((set) => set.field === field);
+};
+
+/**
+ * Returns the current cohort filters as a FilterSet
+ * @param state
+ */
+export const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
+  return cohort?.filters;
 };
 
 interface SplitFilterSet {
