@@ -33,6 +33,7 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
+  readonly caseCount?: number; // track case count of a cohort
 }
 
 /**
@@ -348,6 +349,15 @@ const slice = createSlice({
         };
         cohortsAdapter.addOne(state, destCohort);
       }
+    },
+    addCaseCount: (
+      state,
+      action: PayloadAction<{ cohortId?: string; caseCount: number }>,
+    ) => {
+      cohortsAdapter.updateOne(state, {
+        id: action.payload.cohortId ?? state.currentCohort,
+        changes: { caseCount: action.payload.caseCount },
+      });
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -676,6 +686,7 @@ export const {
   copyCohort,
   discardCohortChanges,
   setCohortMessage,
+  addCaseCount,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -746,6 +757,18 @@ export const selectCurrentCohortFilterSet = (
     state,
     state.cohort.availableCohorts.currentCohort,
   );
+  return cohort?.filters;
+};
+
+/**
+ * Returns the current cohort filters as a FilterSet
+ * @param state
+ */
+export const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
   return cohort?.filters;
 };
 
