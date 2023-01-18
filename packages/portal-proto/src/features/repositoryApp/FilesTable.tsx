@@ -211,9 +211,9 @@ const FilesTables: React.FC = () => {
   const newSearchActions = (searchTerm: string) => {
     //TODO if lots of calls fast last call might not be displayed
     if (searchTerm.length > 0)
-      updateFilter("files", buildSearchFilters(searchTerm));
+      updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
     else {
-      removeFilter("files");
+      removeFilter("joinOrToAllfilesSearch");
     }
   };
 

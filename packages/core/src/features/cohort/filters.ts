@@ -121,19 +121,143 @@ export class EnumValueExtractorHandler
     undefined;
   handleUnion: (_: Union) => undefined = (_: Union) => undefined;
 }
-
+/**
+ * Build Cohort Gql Operator from Filter Set
+ *
+ * @parm {object} - FilterSet it has special code for ids with joinOrToAll that will join each or filter with all other filters as a separate and linked by an or statement
+ * @returns {object} GqlOperation
+ *
+ * @example
+ * // Here's an example with joinOrToAll IN:
+ * {
+ *   "mode": "and",
+ *   "root": {
+ *     "joinOrToAllfilesSearch": {
+ *       "operator": "or",
+ *       "operands": [
+ *         {
+ *           "operator": "=",
+ *           "field": "files.file_name",
+ *           "operand": "*test*"
+ *         },
+ *         {
+ *           "operator": "=",
+ *           "field": "files.file_id",
+ *           "operand": "*test*"
+ *         }
+ *       ]
+ *     },
+ *     "files.data_category": {
+ *       "operator": "includes",
+ *       "field": "files.data_category",
+ *       "operands": [
+ *         "clinical"
+ *       ]
+ *     }
+ *   }
+ * }
+ *
+ * // Out:
+ * {
+ *   "op": "or",
+ *   "content": [
+ *     {
+ *       "op": "and",
+ *       "content": [
+ *         {
+ *           "op": "=",
+ *           "content": {
+ *             "field": "files.file_name",
+ *             "value": "*test*"
+ *           }
+ *         },
+ *         {
+ *           "op": "in",
+ *           "content": {
+ *             "field": "files.data_category",
+ *             "value": [
+ *               "clinical"
+ *             ]
+ *           }
+ *         }
+ *       ]
+ *     },
+ *     {
+ *       "op": "and",
+ *       "content": [
+ *         {
+ *           "op": "=",
+ *           "content": {
+ *             "field": "files.file_id",
+ *             "value": "*test*"
+ *           }
+ *         },
+ *         {
+ *           "op": "in",
+ *           "content": {
+ *             "field": "files.data_category",
+ *             "value": [
+ *               "clinical"
+ *             ]
+ *           }
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }
+ */
 export const buildCohortGqlOperator = (
   fs: FilterSet | undefined,
 ): GqlOperation | undefined => {
   if (!fs) return undefined;
+
+  const fsKeys = Object.keys(fs.root);
+  // find key using keyword "joinOrToAll"
+  const joinOrToAllKey = fsKeys.filter((x) => x.includes("joinOrToAll"));
+
   switch (fs.mode) {
     case "and":
+      if (joinOrToAllKey.length === 1) {
+        const firstJoinOrToAllKey = joinOrToAllKey[0];
+
+        // Remove firstJoinOrToAllKey from Array
+        fsKeys.splice(fsKeys.indexOf(firstJoinOrToAllKey), 1);
+
+        const firstJoinOrToAllObj = fs.root[firstJoinOrToAllKey];
+        // make sure type is or/ Union
+        if (firstJoinOrToAllObj.operator === "or") {
+          return {
+            op: "or",
+            content: firstJoinOrToAllObj?.operands.map((orObj) => {
+              // go through each or stament and add all other filters to it
+              return {
+                op: "and",
+                content: [
+                  convertFilterToGqlFilter(orObj),
+                  ...fsKeys.map((k): GqlOperation => {
+                    return convertFilterToGqlFilter(fs.root[k]);
+                  }),
+                ],
+              };
+            }),
+          };
+        } else {
+          console.error(
+            `function buildCohortGqlOperator expecting "or" receaved "${firstJoinOrToAllObj.operator}" on key "${firstJoinOrToAllKey}"`,
+          );
+        }
+      } else if (joinOrToAllKey.length > 1) {
+        console.error(
+          `function buildCohortGqlOperator expecting only one joinOrToAll receaved: ${joinOrToAllKey.length}`,
+          fsKeys,
+        );
+      }
       return Object.keys(fs.root).length == 0
         ? undefined
         : {
             // TODO: Replace fixed AND with cohort top level operation like Union or Intersection
             op: fs.mode,
-            content: Object.keys(fs.root).map((k): GqlOperation => {
+            content: fsKeys.map((k): GqlOperation => {
               return convertFilterToGqlFilter(fs.root[k]);
             }),
           };
