@@ -9,13 +9,14 @@ import {
   graphqlAPI,
 } from "@gff/core";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { castDraft } from "immer";
 
 // interface GenomicTableDownloadProps extends TablePageOffsetProps {
 //     totalCount: number;
 // }
 
 export const fetchMutatedGenesDownload = createAsyncThunk(
-  "mutatedGenesDownload/fetchedMutatedGenesJSON",
+  "downloads/json",
   async (queryParams: any): Promise<GraphQLApiResponse> => {
     const { totalCount, genomicFilters } = queryParams;
     return await fetchedMutatedGenesJSON(totalCount, genomicFilters);
@@ -180,24 +181,30 @@ export const fetchedMutatedGenesJSON = async (
 
 export interface DownloadMutatedGenes {
   readonly status: DataStatus;
-  readonly genes: { hits: { edges: Array<{ node: any }> } };
+  readonly genes: [];
+  readonly error?: string;
 }
 
 const initialState: DownloadMutatedGenes = {
   status: "uninitialized",
-  genes: { hits: { edges: [] } },
+  genes: [],
 };
 
 const slice = createSlice({
-  name: "mutatedGenesDownload",
+  name: "downloads",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchMutatedGenesDownload.fulfilled, (state, action) => {
+        if (action?.payload?.errors) {
+          state = castDraft(initialState);
+          state.status = "rejected";
+          state.error = action.payload.errors.message;
+        }
         const response = action.payload;
         state.status = "fulfilled";
-        state.genes = response?.data?.explore?.genes?.hits?.edges[0]?.genes;
+        state.genes = response?.data?.explore?.genes;
         return state;
       })
       .addCase(fetchMutatedGenesDownload.pending, (state) => {
@@ -216,14 +223,19 @@ export const downloadsReducer = slice.reducer;
 
 export const selectMutatedGenesJSON = (
   state: CoreState,
-): CoreDataSelectorResponse<any> => ({
-  data: {
-    genes: state.genes,
-  },
-  status: state.status,
-});
+): CoreDataSelectorResponse<any> => state.genes;
+
+export const selectDownloadsData = (
+  state: CoreState,
+): CoreDataSelectorResponse<{}> => {
+  return {
+    data: state.downloads.json.genes,
+    status: state.downloads.json.status,
+    error: state.downloads.json.error,
+  };
+};
 
 export const useDownloadData = createUseCoreDataHook(
   fetchMutatedGenesDownload,
-  selectMutatedGenesJSON,
+  selectDownloadsData,
 );
