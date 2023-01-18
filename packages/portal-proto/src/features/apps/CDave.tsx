@@ -9,7 +9,7 @@ export interface CDaveAppProps {
 const CDaveApp: FC<CDaveAppProps> = ({ onLoaded }: CDaveAppProps) => {
   const isDemoMode = useIsDemoApp();
   return isDemoMode ? (
-    <div>Yet to be build</div>
+    <div>Coming Soon!</div>
   ) : (
     <ClinicalDataAnalysis onLoaded={onLoaded} />
   );

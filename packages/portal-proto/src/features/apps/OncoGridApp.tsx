@@ -11,9 +11,7 @@ const OncoGridApp: FC = () => {
   ) as React.ElementType;
 
   return (
-    <>
-      {!isDemoMode && GdcApp ? <GdcApp></GdcApp> : <div>Yet to be build</div>}
-    </>
+    <>{!isDemoMode && GdcApp ? <GdcApp></GdcApp> : <div>Coming Soon!</div>}</>
   );
 };
 

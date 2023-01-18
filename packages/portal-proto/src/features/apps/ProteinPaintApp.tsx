@@ -6,7 +6,7 @@ const ProteinPaintApp: FC = () => {
   const isDemoMode = useIsDemoApp();
 
   return isDemoMode ? (
-    <div>Yet to be build</div>
+    <div>Coming Soon!</div>
   ) : (
     <ProteinPaintWrapper track="lollipop" />
   );
