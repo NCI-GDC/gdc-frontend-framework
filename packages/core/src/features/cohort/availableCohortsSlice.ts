@@ -205,6 +205,11 @@ export const createCaseSet = createAsyncThunk<
   },
 );
 
+/*
+  Fetches the values associated with the set we are adding to the cohort and
+  adds those as filters to the cohort. Sets are ephemeral so we want the values added to filters
+  instead of the set id.
+*/
 const handleFiltersForSet = createAsyncThunk<
   void,
   {
@@ -435,6 +440,8 @@ interface CopyCohortParams {
  * removeCohort(): removes the current cohort
  * setCohortMessage(): sets the current cohort message
  * clearCohortMessage(): clears the current message by setting it to undefined
+ * addNewCohortGroups(): adds groups of filters to the cohort
+ * removeCohortGroup(): removes a group of filters from the cohort
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
@@ -922,6 +929,10 @@ export const selectCurrentCohortFilterSet = (
   return cohort?.filters;
 };
 
+/**
+ * Returns filter groups from the current cohort
+ * @param state
+ */
 export const selectCurrentCohortGroups = (
   state: CoreState,
 ): FilterGroup[] | undefined => {
@@ -932,6 +943,10 @@ export const selectCurrentCohortGroups = (
   return cohort?.groups || [];
 };
 
+/**
+ * Returns filter groups from the current cohort filtered by field
+ * @param state
+ */
 export const selectCurrentCohortGroupsByField = (
   state: CoreState,
   field: string,
