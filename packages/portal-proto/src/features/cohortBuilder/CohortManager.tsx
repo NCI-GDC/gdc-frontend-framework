@@ -109,10 +109,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       .every((cohort) => cohort.name !== name);
 
   // Cohort specific actions
-  const newCohort = useCallback(() => {
-    coreDispatch(resetSelectedCases());
-    coreDispatch(addNewCohort());
-  }, [coreDispatch]);
+  const newCohort = useCallback(
+    (customName: string) => {
+      coreDispatch(resetSelectedCases());
+      coreDispatch(addNewCohort(customName));
+    },
+    [coreDispatch],
+  );
 
   const discardChanges = useCallback(
     (filters: FilterSet | undefined) => {
@@ -139,6 +142,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -253,7 +257,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         entity="cohort"
         opened={showSaveCohort}
         onClose={() => setShowSaveCohort(false)}
-        onSaveClick={async (newName: string) => {
+        onActionClick={async (newName: string) => {
           const prevCohort = cohortId;
           const addBody = {
             name: newName,
@@ -287,6 +291,23 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               );
             })
             .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
+        }}
+        onNameChange={onSaveCohort}
+      />
+
+      <SaveModal
+        initialName={`Custom cohort ${new Date()
+          .toLocaleString("en-CA", {
+            timeZone: "America/Chicago",
+            hour12: false,
+          })
+          .replace(",", "")}`}
+        entity="cohort"
+        action="Create"
+        opened={showCreateCohort}
+        onClose={() => setShowCreateCohort(false)}
+        onActionClick={async (newName: string) => {
+          newCohort(newName);
         }}
         onNameChange={onSaveCohort}
       />
@@ -371,8 +392,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
+            {/* change here */}
             <CohortGroupButton
-              onClick={() => newCohort()}
+              onClick={() => setShowCreateCohort(true)}
               data-testid="addButton"
             >
               <AddIcon size="1.5em" aria-label="Add cohort" />

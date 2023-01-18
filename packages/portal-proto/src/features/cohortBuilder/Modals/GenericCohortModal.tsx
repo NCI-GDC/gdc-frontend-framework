@@ -91,7 +91,6 @@ export const GenericCohortModal = ({
                 backgroundColor: "white",
               },
             })}
-            // aria
             color="primary.5"
             onClick={onClose}
           >
