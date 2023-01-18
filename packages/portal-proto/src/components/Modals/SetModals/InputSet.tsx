@@ -11,7 +11,8 @@ import {
   ActionIcon,
   Loader,
 } from "@mantine/core";
-import { flatten, uniqueId } from "lodash";
+import { flatten } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import {
@@ -272,7 +273,7 @@ const InputSet: React.FC<InputSetProps> = ({
             });
             if (createSetIds.length > 1) {
               addNewFilterGroups([
-                { ids: createSetIds, field: facetField, groupId: uniqueId() },
+                { ids: createSetIds, field: facetField, groupId: uuidv4() },
               ]);
             }
             dispatch(hideModal());

@@ -49,6 +49,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   const sets = useCoreSelector((state) =>
     selectSetsByType(state, setType as SetTypes),
   );
+  console.log("!sets", sets);
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
   );
@@ -64,7 +65,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     groups.forEach((group) => {
       displayOperands.push({
         label: `${group.ids.length} input ${
-          field === "genes.gene_id" ? "GENE" : fieldNameToTitle(field)
+          field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
         }s`,
         group,
       });
@@ -177,22 +178,26 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
                 variant="filled"
                 color="accent"
                 key={`${field}-${value}-${i}`}
+                data-testid={`set-facet-${field}-${value}-${i}`}
                 rightSection={removeButton(value)}
                 className="cursor-pointer"
                 onClick={() => {
-                  let newOperands: (string | number)[];
+                  const newOperands = [...facetValues];
+
                   if (x.group) {
-                    const tempOperands = [...facetValues];
                     x.group.ids.forEach((id) => {
-                      const index = tempOperands.findIndex((o) => o === id);
+                      const index = newOperands.findIndex((o) => o === id);
                       if (index >= 0) {
-                        tempOperands.splice(index, 1);
+                        newOperands.splice(index, 1);
                       }
                     });
-                    newOperands = tempOperands;
                   } else {
-                    newOperands = facetValues.filter((o) => o !== x.value);
+                    const index = newOperands.findIndex((o) => o === x.value);
+                    if (index >= 0) {
+                      newOperands.splice(index, 1);
+                    }
                   }
+
                   setValues(newOperands);
                   if (x.group) {
                     removeFilterGroup(x.group);

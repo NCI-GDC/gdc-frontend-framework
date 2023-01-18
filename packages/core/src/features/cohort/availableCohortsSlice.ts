@@ -407,6 +407,7 @@ const newCohort = (
 interface NewCohortParams {
   filters?: FilterSet;
   message?: string;
+  group?: FilterGroup;
 }
 
 interface CopyCohortParams {
@@ -440,8 +441,8 @@ interface CopyCohortParams {
  * removeCohort(): removes the current cohort
  * setCohortMessage(): sets the current cohort message
  * clearCohortMessage(): clears the current message by setting it to undefined
- * addNewCohortGroups(): adds groups of filters to the cohort
- * removeCohortGroup(): removes a group of filters from the cohort
+ * addNewCohortGroups(): adds groups of filters to the current cohort
+ * removeCohortGroup(): removes a group of filters from the current cohort
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
@@ -473,6 +474,14 @@ const slice = createSlice({
     ) => {
       const cohort = newCohort(action.payload.filters);
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
+      if (action.payload.group) {
+        cohortsAdapter.updateOne(state, {
+          id: cohort.id,
+          changes: {
+            groups: [action.payload.group],
+          },
+        });
+      }
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },
     copyCohort: (state, action: PayloadAction<CopyCohortParams>) => {
@@ -705,7 +714,6 @@ const slice = createSlice({
         },
       });
     },
-
     addNewCohortGroups: (state, action: PayloadAction<FilterGroup[]>) => {
       const groups = state.entities[state.currentCohort]?.groups;
       cohortsAdapter.updateOne(state, {

@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
 import { CoreProvider } from "@gff/core";
 import { QueryExpressionsExpandedContext } from "../QueryExpressionSection";
@@ -67,5 +68,51 @@ describe("<QueryRepresentation />", () => {
     );
     expect(getByText("my gene set")).toBeInTheDocument();
     expect(getByText("FAT4")).toBeInTheDocument();
+  });
+
+  it("removes group without removing individual filter", async () => {
+    const mockUpdateFilter = jest.fn();
+    jest
+      .spyOn(core, "updateActiveCohortFilter")
+      .mockImplementation(mockUpdateFilter);
+    jest
+      .spyOn(core, "selectCurrentCohortGroupsByField")
+      .mockImplementation(() => [
+        {
+          ids: ["E10", "E40"],
+          field: "genes.gene_id",
+          setId: "123",
+          setType: "genes",
+        },
+      ]);
+    jest.spyOn(core, "selectAllSets").mockImplementation(() => ({
+      genes: { 123: "my gene set" },
+      cases: {},
+      ssms: {},
+    }));
+
+    const { getByText, getByTestId } = render(
+      <CoreProvider>
+        <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
+          {convertFilterToComponent({
+            operator: "includes",
+            operands: ["E10", "E40", "E60", "E40"],
+            field: "genes.gene_id",
+          })}
+        </QueryExpressionsExpandedContext.Provider>
+      </CoreProvider>,
+    );
+
+    expect(getByText("FAT3")).toBeInTheDocument();
+    await userEvent.click(getByTestId("query-rep-genes.gene_id-my gene set-0"));
+
+    expect(mockUpdateFilter).toBeCalledWith({
+      field: "genes.gene_id",
+      operation: {
+        operator: "includes",
+        field: "genes.gene_id",
+        operands: ["E60", "E40"],
+      },
+    });
   });
 });

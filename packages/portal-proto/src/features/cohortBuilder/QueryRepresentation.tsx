@@ -226,7 +226,6 @@ const IncludeExcludeQueryElement: React.FC<
           {displayOperands.length}
         </b>
       ) : (
-        // TODO: Remove line 189 - 207 after PEAR-650 is completed
         <QueryRepresentationText>
           <Group spacing="xs">
             {displayOperands.map((x, i) => {
@@ -234,25 +233,28 @@ const IncludeExcludeQueryElement: React.FC<
               return (
                 <Badge
                   key={`query-rep-${field}-${value}-${i}`}
+                  data-testid={`query-rep-${field}-${value}-${i}`}
                   variant="filled"
                   color="primary.9"
                   size="md"
                   className="normal-case max-w-[162px] cursor-pointer"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
-                    let newOperands: (string | number)[];
+                    const newOperands = [...operands];
                     if (x.group) {
-                      const tempOperands = [...operands];
                       x.group.ids.forEach((id) => {
-                        const index = tempOperands.findIndex((o) => o === id);
+                        const index = newOperands.findIndex((o) => o === id);
                         if (index >= 0) {
-                          tempOperands.splice(index, 1);
+                          newOperands.splice(index, 1);
                         }
                       });
-                      newOperands = tempOperands;
                     } else {
-                      newOperands = operands.filter((o) => o !== x.value);
+                      const index = newOperands.findIndex((o) => o === x.value);
+                      if (index >= 0) {
+                        newOperands.splice(index, 1);
+                      }
                     }
+
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
                         type: "clear",
