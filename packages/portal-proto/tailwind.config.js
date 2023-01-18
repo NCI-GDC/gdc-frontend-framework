@@ -677,6 +677,7 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
         content: ["Montserrat", "sans-serif"],
+        data: ["Noto Sans", "sans-serif"],
       },
       borderWidth: {
         DEFAULT: "1px",
