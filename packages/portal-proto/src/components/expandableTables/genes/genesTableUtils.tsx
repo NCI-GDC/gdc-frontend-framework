@@ -74,7 +74,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start"
+                className="mx-3"
               />
             ),
             cell: ({ row }) => {
@@ -83,7 +83,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
-                      margin={`my-0.5 ml-0`}
+                      margin={`my-0.5 ml-0 mr-1`}
                       icon={
                         isDemoMode ? (
                           <Image

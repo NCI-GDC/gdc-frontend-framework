@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -282,8 +282,11 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
+  const appInfo = useMemo(
+    () => REGISTERED_APPS.find((a) => a.id === app),
+    [app],
+  );
   useEffect(() => {
-    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
     setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
 
     if (app) {
@@ -291,7 +294,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     } else {
       clearComparisonCohorts();
     }
-  }, [isDemoMode, app, scrollIntoView]);
+  }, [isDemoMode, appInfo, scrollIntoView]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
@@ -322,7 +325,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setCohortSelectionOpen={setCohortSelectionOpen}
               cohortSelectionOpen={cohortSelectionOpen}
               setActiveApp={handleAppSelected}
-              onDemoApp={isDemoMode}
+              onDemoApp={isDemoMode && appInfo.hasDemo}
             />
             <AdditionalCohortSelection
               app={app}
@@ -339,7 +342,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
-            onDemoApp={isDemoMode}
+            onDemoApp={isDemoMode && appInfo.hasDemo}
             rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
           />
           <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />

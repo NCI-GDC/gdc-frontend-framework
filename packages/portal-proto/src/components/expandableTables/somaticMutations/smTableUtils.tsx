@@ -85,12 +85,12 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start"
+                className="flex justify-start ml-2"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start">
+                <div className="flex justify-start ml-3">
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
