@@ -33,6 +33,7 @@ import {
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
+import { downloadsReducer } from "./features/downloads/downloadsApi";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
@@ -90,6 +91,7 @@ export const reducers = combineReducers({
   versionInfo: versionInfoReducer,
   sets: setsReducer,
   selectedCases: selectedCasesReducer,
+  downloads: downloadsReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

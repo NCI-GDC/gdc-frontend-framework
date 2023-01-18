@@ -3,6 +3,7 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
+  // useDownloadData
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -18,9 +19,8 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import DL from "../shared/DL";
-import { convertDateToString } from "src/utils/date";
 import isEqual from "lodash/isEqual";
-import { dlMutatedGenesJSONQuery, dlMutatedGenesTSVQuery } from "./query";
+import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
   createContext<
@@ -159,10 +159,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const handleJSON = () => {
-    setDl("json");
-  };
-
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -185,7 +181,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() => (dl === "json" ? setDl("") : handleJSON())}
+                      onClick={() =>
+                        dl === "json" ? setDl("") : setDl("json")
+                      }
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -205,7 +203,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   </ButtonTooltip>
                   {dl === "json" && (
                     <DL
-                      dataHook={dlMutatedGenesJSONQuery}
+                      // dataHook={useDownloadData}
                       queryParams={{
                         totalCount: gTotal,
                         genomicFilters,
@@ -214,9 +212,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       setDl={setDl}
                     />
                   )}
-                  {dl === "tsv" && (
+                  {/* {dl === "tsv" && (
                     <DL
-                      dataHook={dlMutatedGenesTSVQuery}
+                    fetchedMutatedGenesTSV
+                      dataHook={}
                       queryParams={{
                         totalCount: gTotal,
                         genomicFilters,
@@ -237,7 +236,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       )}`}
                       setDl={setDl}
                     />
-                  )}
+                  )} */}
                 </div>
               }
             />
@@ -329,3 +328,211 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     </>
   );
 };
+
+// export const dlMutatedGenesTSVQuery = `
+// query GenesTable(
+//   $genesTable_size: Int
+//   $genesTable_offset: Int
+//   $score: String
+// ) {
+//   genesTableDownloadViewer: viewer {
+//     explore {
+//       genes {
+//         hits(
+//           first: $genesTable_size
+//           offset: $genesTable_offset
+//           score: $score
+//         ) {
+//           total
+//           edges {
+//             node {
+//               symbol
+//               name
+//               cytoband
+//               biotype
+//               gene_id
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+// `;
+
+// export const fetchedMutatedGenesTSV = createAsyncThunk<
+//   GraphQLApiResponse,
+//   GenomicTableDownloadProps,
+//   { dispatch: CoreDispatch; state: CoreState }
+// >(
+//   "genes/mutatedGenes/tsv",
+//   async (
+//     { totalCount, genomicFilters }: GenomicTableDownloadProps,
+//     thunkAPI,
+//   ): Promise<GraphQLApiResponse> => {
+//     const geneAndCohortFilters = joinFilters(
+//       selectCurrentCohortFilterOrCaseSet(thunkAPI.getState()),
+//       genomicFilters,
+//     );
+//     const filters = buildCohortGqlOperator(geneAndCohortFilters);
+//     const filtersContent = filters?.content ? Object(filters?.content) : [];
+//     const graphQLFilters = {
+//       genesTable_size: totalCount,
+//       genesTable_offset: 0,
+//       score: "case.project.project_id",
+//       ssmCase: {
+//         op: "and",
+//         content: [
+//           {
+//             op: "in",
+//             content: {
+//               field: "cases.available_variation_data",
+//               value: ["ssm"],
+//             },
+//           },
+//           {
+//             op: "NOT",
+//             content: {
+//               field: "genes.case.ssm.observation.observation_id",
+//               value: "MISSING",
+//             },
+//           },
+//         ],
+//       },
+//       geneCaseFilter: {
+//         content: [
+//           ...[
+//             {
+//               content: {
+//                 field: "cases.available_variation_data",
+//                 value: ["ssm"],
+//               },
+//               op: "in",
+//             },
+//           ],
+//           ...filtersContent,
+//         ],
+//         op: "and",
+//       },
+//       ssmTested: {
+//         content: [
+//           {
+//             content: {
+//               field: "cases.available_variation_data",
+//               value: ["ssm"],
+//             },
+//             op: "in",
+//           },
+//         ],
+//         op: "and",
+//       },
+//       cnvTested: {
+//         op: "and",
+//         content: [
+//           ...[
+//             {
+//               content: {
+//                 field: "cases.available_variation_data",
+//                 value: ["cnv"],
+//               },
+//               op: "in",
+//             },
+//           ],
+//           ...filtersContent,
+//         ],
+//       },
+//       cnvGainFilters: {
+//         op: "and",
+//         content: [
+//           ...[
+//             {
+//               content: {
+//                 field: "cases.available_variation_data",
+//                 value: ["cnv"],
+//               },
+//               op: "in",
+//             },
+//             {
+//               content: {
+//                 field: "cnvs.cnv_change",
+//                 value: ["Gain"],
+//               },
+//               op: "in",
+//             },
+//           ],
+//           ...filtersContent,
+//         ],
+//       },
+//       cnvLossFilters: {
+//         op: "and",
+//         content: [
+//           ...[
+//             {
+//               content: {
+//                 field: "cases.available_variation_data",
+//                 value: ["cnv"],
+//               },
+//               op: "in",
+//             },
+//             {
+//               content: {
+//                 field: "cnvs.cnv_change",
+//                 value: ["Loss"],
+//               },
+//               op: "in",
+//             },
+//           ],
+//           ...filtersContent,
+//         ],
+//       },
+//     };
+//     const results: GraphQLApiResponse<any> = await graphqlAPI(
+//       dlMutatedGenesTSVQuery,
+//       graphQLFilters,
+//     );
+//     console.log("results", results);
+//     debugger;
+//     return results;
+//   },
+// );
+
+// todo: add this to transform response
+
+// const body = dataFromHook
+//   .map({
+//   symbol,
+//   name,
+//   numCases,
+//   filteredCases,
+//   ssm_case,
+//   cases,
+//   cnvCases,
+//   case_cnv_gain,
+//   case_cnv_loss,
+//   mutationCounts,
+//   gene_id
+//   is_cancer_gene_census
+//  }) =>
+//     [
+//       symbol,
+//       name,
+//       `{ numCases } / { filteredCases } ( ... )`,
+//       `{ ssm_case } / { cases } ( ... )`,
+//       cnvCases > 0 ? `${case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()}
+//       (${((100 * case_cnv_gain) / cnvCases).toFixed(2)}%)`,
+//       : `--`,
+//       cnvCases > 0 ? `${case_cnv_loss.toLocaleString()} / ${cnvCases.toLocaleString()}
+//       (${((100 * case_cnv_loss) / cnvCases).toFixed(2)}%)`
+//       : `--`,
+//       mutationCounts[gene_id],
+//       is_cancer_genus,
+//     ].join("\t"),
+//   )
+//   .join("\n");
+
+// body -> data
+
+// const tsv = [headers.join("\t"), data].join("\n");
+// const blob = new Blob([tsv], { type: "text/csv" });
+
+// saveAs(blob, `${fileName}.{dl}`);
