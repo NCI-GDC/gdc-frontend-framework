@@ -38,7 +38,6 @@ left-0
 top-0
 w-full
 h-full
-font-data
 text-percentage-bar-label
 text-center`;
 
@@ -48,7 +47,6 @@ left-0
 top-0
 w-full
 h-full
-font-data
 bg-percentage-bar-complete
 rounded-sm`;
 
@@ -229,7 +227,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         data_category: data_c.data_category,
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
-          <div className="flex font-data">
+          <div className="flex">
             <span className="w-1/4 pr-1.5 text-right">
               {data_c.case_count.toLocaleString()}
             </span>
@@ -247,7 +245,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         ),
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex font-data">
+          <div className="flex">
             <span className="w-1/4 pr-1.5 text-right">
               {data_c.file_count.toLocaleString()}
             </span>
@@ -297,7 +295,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         experimental_strategy: exp_c.experimental_strategy,
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
-          <div className="flex font-data">
+          <div className="flex">
             <span className="w-1/4 pr-1.5 text-right">
               {exp_c.case_count.toLocaleString()}
             </span>
@@ -315,7 +313,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         ),
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex font-data">
+          <div className="flex">
             <span className="w-1/4 pr-1.5 text-right">
               {exp_c.file_count.toLocaleString()}
             </span>
