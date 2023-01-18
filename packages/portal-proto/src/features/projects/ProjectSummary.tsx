@@ -31,7 +31,7 @@ px-1
 w-14
 h-full`;
 
-const PercentBarLabel = tw.span`
+const PercentBarLabel = tw.git`
 absolute
 z-10
 left-0
@@ -306,9 +306,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
           <div className="flex">
-            <span className="basis-1/3 text-right">
+            <div className="basis-1/3 text-right">
               {exp_c.case_count.toLocaleString()}
-            </span>
+            </div>
             <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${caseCountPercentage.toFixed(
