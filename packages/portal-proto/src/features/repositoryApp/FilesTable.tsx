@@ -317,8 +317,8 @@ const FilesTables: React.FC = () => {
   let totalCaseCount = "--";
 
   const fileSizeSliceData = useFilesSize(cohortGqlOperator);
-  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data?.total_file_size) {
-    const fileSizeObj = fileSize(fileSizeSliceData.data.total_file_size, {
+  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
+    const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
       output: "object",
     });
     totalFileSize = (
@@ -355,7 +355,10 @@ const FilesTables: React.FC = () => {
             <div className="">
               <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
               <strong className="mr-1">{totalCaseCount}</strong>
-              Cases
+              {fileSizeSliceData?.data?.total_case_count > 1 ||
+              fileSizeSliceData?.data?.total_case_count === 0
+                ? "Cases"
+                : "Case"}
             </div>
             <div className="">
               Total of{" "}
