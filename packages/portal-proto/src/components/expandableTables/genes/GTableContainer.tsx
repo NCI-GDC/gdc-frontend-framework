@@ -205,7 +205,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     <DL
                       // dataHook={useDownloadData}
                       queryParams={{
-                        totalCount: gTotal,
+                        // totalCount: gTotal,
                         genomicFilters,
                       }}
                       fileName={`genes.${convertDateToString(new Date())}.json`}

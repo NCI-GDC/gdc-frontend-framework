@@ -1,27 +1,14 @@
 import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import {
-  buildCohortGqlOperator,
   CoreDataSelectorResponse,
+  CoreDispatch,
   CoreState,
   createUseCoreDataHook,
   DataStatus,
-  FilterSet,
+  GqlOperation,
   graphqlAPI,
 } from "@gff/core";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { castDraft } from "immer";
-
-// interface GenomicTableDownloadProps extends TablePageOffsetProps {
-//     totalCount: number;
-// }
-
-export const fetchMutatedGenesDownload = createAsyncThunk(
-  "downloads/json",
-  async (queryParams: any): Promise<GraphQLApiResponse> => {
-    const { totalCount, genomicFilters } = queryParams;
-    return await fetchedMutatedGenesJSON(totalCount, genomicFilters);
-  },
-);
 
 export const dlMutatedGenesJSONQuery = `
 query GenesTable(
@@ -53,189 +40,215 @@ query GenesTable(
   }
 }
 `;
+export const fetchMutatedGenesDownload = createAsyncThunk<
+  GraphQLApiResponse,
+  GqlOperation,
+  { dispatch: CoreDispatch; state: CoreState }
+>("mutatedGenes/fetchMutatedGenes", async (filters?: GqlOperation) => {
+  const graphQlFilters = filters ? { filters: filters } : {};
+  return await graphqlAPI(dlMutatedGenesJSONQuery, graphQlFilters);
+});
 
-export const fetchedMutatedGenesJSON = async (
-  totalCount: number,
-  genomicFilters: FilterSet,
-): Promise<GraphQLApiResponse> => {
-  const filters = buildCohortGqlOperator(genomicFilters);
-  const filtersContent = filters?.content ? Object(filters?.content) : [];
-
-  // v1 behavior for offset
-  const graphQLFilters = {
-    genesTable_size: totalCount,
-    genesTable_offset: 0,
-    score: "case.project.project_id",
-    ssmCase: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-        },
-        {
-          op: "NOT",
-          content: {
-            field: "genes.case.ssm.observation.observation_id",
-            value: "MISSING",
-          },
-        },
-      ],
-    },
-    geneCaseFilter: {
-      content: [
-        ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["ssm"],
-            },
-            op: "in",
-          },
-        ],
-        ...filtersContent,
-      ],
-      op: "and",
-    },
-    ssmTested: {
-      content: [
-        {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
-    cnvTested: {
-      op: "and",
-      content: [
-        ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
-            },
-            op: "in",
-          },
-        ],
-        ...filtersContent,
-      ],
-    },
-    cnvGainFilters: {
-      op: "and",
-      content: [
-        ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
-            },
-            op: "in",
-          },
-          {
-            content: {
-              field: "cnvs.cnv_change",
-              value: ["Gain"],
-            },
-            op: "in",
-          },
-        ],
-        ...filtersContent,
-      ],
-    },
-    cnvLossFilters: {
-      op: "and",
-      content: [
-        ...[
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["cnv"],
-            },
-            op: "in",
-          },
-          {
-            content: {
-              field: "cnvs.cnv_change",
-              value: ["Loss"],
-            },
-            op: "in",
-          },
-        ],
-        ...filtersContent,
-      ],
-    },
-  };
-  const results: GraphQLApiResponse<any> = await graphqlAPI(
-    dlMutatedGenesJSONQuery,
-    graphQLFilters,
-  );
-  return results;
-};
-
-export interface DownloadMutatedGenes {
-  readonly status: DataStatus;
-  readonly genes: [];
-  readonly error?: string;
+export interface MutatedGeneDownload {
+  data: any;
+  status: DataStatus;
+  error?: string;
 }
 
-const initialState: DownloadMutatedGenes = {
+const initialState: MutatedGeneDownload = {
+  data: {
+    genes: [],
+  },
   status: "uninitialized",
-  genes: [],
 };
 
 const slice = createSlice({
-  name: "downloads",
+  name: "fetchMutatedGenes",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchMutatedGenesDownload.fulfilled, (state, action) => {
-        if (action?.payload?.errors) {
-          state = castDraft(initialState);
-          state.status = "rejected";
-          state.error = action.payload.errors.message;
-        }
         const response = action.payload;
-        state.status = "fulfilled";
-        state.genes = response?.data?.explore?.genes;
-        return state;
+        if (response.errors) {
+          state.status = "rejected";
+        } else {
+          state.data = {
+            genes: response?.data?.explore?.genes,
+          };
+          state.status = "fulfilled";
+        }
       })
       .addCase(fetchMutatedGenesDownload.pending, (state) => {
         state.status = "pending";
-        return state;
       })
       .addCase(fetchMutatedGenesDownload.rejected, (state) => {
         state.status = "rejected";
-        return state;
       });
   },
 });
 
+// interface GenomicTableDownloadProps extends TablePageOffsetProps {
+//     totalCount: number;
+// }
+
+// export const fetchMutatedGenesDownload = createAsyncThunk(
+//   "downloads/json",
+//   async (queryParams: any): Promise<GraphQLApiResponse> => {
+//     const { totalCount, genomicFilters } = queryParams;
+//     return await fetchedMutatedGenesJSON(totalCount, genomicFilters);
+//   },
+// );
+
+// export const fetchedMutatedGenesJSON = async (
+//     totalCount: number,
+//     genomicFilters: FilterSet,
+// ): Promise<GraphQLApiResponse> => {
+//     const filters = buildCohortGqlOperator(genomicFilters);
+//     const filtersContent = filters?.content ? Object(filters?.content) : [];
+
+//     // v1 behavior for offset
+//     const graphQLFilters = {
+//         genesTable_size: totalCount,
+//         genesTable_offset: 0,
+//         score: "case.project.project_id",
+//         ssmCase: {
+//             op: "and",
+//             content: [
+//                 {
+//                     op: "in",
+//                     content: {
+//                         field: "cases.available_variation_data",
+//                         value: ["ssm"],
+//                     },
+//                 },
+//                 {
+//                     op: "NOT",
+//                     content: {
+//                         field: "genes.case.ssm.observation.observation_id",
+//                         value: "MISSING",
+//                     },
+//                 },
+//             ],
+//         },
+//         geneCaseFilter: {
+//             content: [
+//                 ...[
+//                     {
+//                         content: {
+//                             field: "cases.available_variation_data",
+//                             value: ["ssm"],
+//                         },
+//                         op: "in",
+//                     },
+//                 ],
+//                 ...filtersContent,
+//             ],
+//             op: "and",
+//         },
+//         ssmTested: {
+//             content: [
+//                 {
+//                     content: {
+//                         field: "cases.available_variation_data",
+//                         value: ["ssm"],
+//                     },
+//                     op: "in",
+//                 },
+//             ],
+//             op: "and",
+//         },
+//         cnvTested: {
+//             op: "and",
+//             content: [
+//                 ...[
+//                     {
+//                         content: {
+//                             field: "cases.available_variation_data",
+//                             value: ["cnv"],
+//                         },
+//                         op: "in",
+//                     },
+//                 ],
+//                 ...filtersContent,
+//             ],
+//         },
+//         cnvGainFilters: {
+//             op: "and",
+//             content: [
+//                 ...[
+//                     {
+//                         content: {
+//                             field: "cases.available_variation_data",
+//                             value: ["cnv"],
+//                         },
+//                         op: "in",
+//                     },
+//                     {
+//                         content: {
+//                             field: "cnvs.cnv_change",
+//                             value: ["Gain"],
+//                         },
+//                         op: "in",
+//                     },
+//                 ],
+//                 ...filtersContent,
+//             ],
+//         },
+//         cnvLossFilters: {
+//             op: "and",
+//             content: [
+//                 ...[
+//                     {
+//                         content: {
+//                             field: "cases.available_variation_data",
+//                             value: ["cnv"],
+//                         },
+//                         op: "in",
+//                     },
+//                     {
+//                         content: {
+//                             field: "cnvs.cnv_change",
+//                             value: ["Loss"],
+//                         },
+//                         op: "in",
+//                     },
+//                 ],
+//                 ...filtersContent,
+//             ],
+//         },
+//     };
+//     const results: GraphQLApiResponse<any> = await graphqlAPI(
+//         dlMutatedGenesJSONQuery,
+//         graphQLFilters,
+//     );
+//     return results;
+// };
+
 export const downloadsReducer = slice.reducer;
-// export interface DownloadMutatedGenes
 
-export const selectMutatedGenesJSON = (
-  state: CoreState,
-): CoreDataSelectorResponse<any> => state.genes;
+export interface MutatedGene {
+  symbol: string;
+  name: string;
+  cytoband: string[];
+  biotype: string;
+  gene_id: string;
+}
 
-export const selectDownloadsData = (
+export interface MutatedGeneDlData {
+  genes: Array<MutatedGene>;
+}
+
+export const selectMutatedGenesDownload = (
   state: CoreState,
-): CoreDataSelectorResponse<{}> => {
+): CoreDataSelectorResponse<MutatedGeneDlData> => {
   return {
-    data: state.downloads.json.genes,
-    status: state.downloads.json.status,
-    error: state.downloads.json.error,
+    data: state.mutatedGenes.data,
+    status: state.mutatedGenes.status,
   };
 };
 
-export const useDownloadData = createUseCoreDataHook(
+export const useMutatedGenes = createUseCoreDataHook(
   fetchMutatedGenesDownload,
-  selectDownloadsData,
+  selectMutatedGenesDownload,
 );

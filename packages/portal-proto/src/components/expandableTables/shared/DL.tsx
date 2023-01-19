@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDownloadData } from "@gff/core";
+import { useMutatedGenes } from "@gff/core";
 // import { fetchedMutatedGenesJSON } from
 // import saveAs from "file-saver";
 
@@ -21,15 +21,11 @@ const DL: React.FC<DLProps> = ({
   fileName,
   setDl,
 }: DLProps) => {
-  const { data } = useDownloadData({ queryParams });
-  // useEffect(() => {
-  //   debugger;
-  //   setDl("");
-  // }, [isSuccess, headers]);
+  const { data } = useMutatedGenes(queryParams);
 
-  // useEffect(() => {
-  //  console.log('results', results);
-  // }, [results]);
+  useEffect(() => {
+    console.log("data", data);
+  }, [data]);
 
   return (
     <>
