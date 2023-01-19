@@ -249,6 +249,14 @@ export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
   };
 };
 
+export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string) => {
+    dispatch(removeRepositoryFilter(field));
+  };
+};
+
 //  Selector Hooks for getting repository filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectFiltersByName(state, field));
