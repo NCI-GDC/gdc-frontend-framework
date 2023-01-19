@@ -417,7 +417,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
-            {/* change here */}
             <CohortGroupButton
               onClick={() => setShowCreateCohort(true)}
               data-testid="addButton"

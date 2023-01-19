@@ -170,7 +170,7 @@ export const SelectCohortsModal = ({
           withinPortal={false}
           classNames={{
             ...modalStyles,
-            body: "flex flex-col justify-between	 min-h-[300px]",
+            body: "flex flex-col justify-between min-h-[300px]",
           }}
           size="xl"
           zIndex={400}
