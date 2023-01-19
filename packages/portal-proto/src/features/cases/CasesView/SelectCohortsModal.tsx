@@ -1,4 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
+import { SaveModal } from "@/components/Modals/SaveModal";
 import { modalStyles } from "@/components/Modals/SetModals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
@@ -99,7 +100,7 @@ export const SelectCohortsModal = ({
     }
   };
 
-  const createCohortFromCases = async () => {
+  const createCohortFromCases = async (customName: string) => {
     let resCases: string[];
     setLoading(true);
 
@@ -112,7 +113,7 @@ export const SelectCohortsModal = ({
       resCases = res.data.hits.map((hit) => hit.case_id);
     } catch (error) {
       // TODO: how to handle this situation?
-      // maybe show a model and ask user to redo the task
+      // maybe show a modal and ask user to redo the task
     }
 
     const updatedCases = Array.from(
@@ -137,6 +138,7 @@ export const SelectCohortsModal = ({
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,
         message: "newCasesCohort",
+        name: customName,
       }),
     );
     setLoading(false);
@@ -151,6 +153,10 @@ export const SelectCohortsModal = ({
       isWithCohort ? "and" : "expect"
     } the cases previously selected.`;
 
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
+  const [showCreateCohort, setShowCreateCohorts] = useState(false);
   return (
     <>
       {loading ? (
@@ -162,10 +168,33 @@ export const SelectCohortsModal = ({
           withCloseButton
           title={title}
           withinPortal={false}
-          classNames={modalStyles}
+          classNames={{
+            ...modalStyles,
+            body: "flex flex-col justify-between	 min-h-[300px]",
+          }}
           size="xl"
           zIndex={400}
         >
+          {showCreateCohort && (
+            <SaveModal
+              initialName={`Custom cohort ${new Date()
+                .toLocaleString("en-CA", {
+                  timeZone: "America/Chicago",
+                  hour12: false,
+                })
+                .replace(",", "")}`}
+              entity="cohort"
+              action="Create"
+              opened={showCreateCohort}
+              onClose={() => setShowCreateCohorts(false)}
+              onActionClick={async (newName: string) => {
+                await createCohortFromCases(newName);
+                onClose();
+              }}
+              onNameChange={onNameChange}
+            />
+          )}
+
           <div className="px-4">
             <Text className="text-xs mb-4 block">{description}</Text>
 
@@ -187,14 +216,12 @@ export const SelectCohortsModal = ({
               disablePageSize={true}
             />
           </div>
-
           <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
             <FunctionButton onClick={onClose}>Cancel</FunctionButton>
             <DarkFunctionButton
               disabled={!checkedValue}
-              onClick={async () => {
-                await createCohortFromCases();
-                onClose();
+              onClick={() => {
+                setShowCreateCohorts(true);
               }}
             >
               Submit

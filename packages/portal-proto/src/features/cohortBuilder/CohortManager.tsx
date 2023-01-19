@@ -108,6 +108,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
 
+  const onCreateCohort = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
   // Cohort specific actions
   const newCohort = useCallback(
     (customName: string) => {
@@ -168,150 +171,171 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         isDeleteCohortLoading ||
         isUpdateCohortLoading) && <LoadingOverlay visible />}
       {/*  Modals Start   */}
-      <GenericCohortModal
-        title="Delete Cohort"
-        opened={showDelete}
-        onClose={() => setShowDelete(false)}
-        actionText="Delete"
-        mainText={
-          <>
-            Are you sure you want to permanently delete <b>{cohortName}</b>?
-          </>
-        }
-        subText={<>You cannot undo this action.</>}
-        onActionClick={async () => {
-          setShowDelete(false);
-          // only delete cohort from BE if it's been saved before
-          if (currentCohort?.saved) {
-            // dont delete it from the local adapter if not able to delete from the BE
-            await deleteCohortFromBE(cohortId)
-              .unwrap()
-              .then(() => deleteCohort())
-              .catch(() =>
-                coreDispatch(setCohortMessage("error|deleting|allId")),
-              );
-          } else {
-            deleteCohort();
+
+      {showDelete && (
+        <GenericCohortModal
+          title="Delete Cohort"
+          opened
+          onClose={() => setShowDelete(false)}
+          actionText="Delete"
+          mainText={
+            <>
+              Are you sure you want to permanently delete <b>{cohortName}</b>?
+            </>
           }
-        }}
-      />
-      <GenericCohortModal
-        title="Discard Changes"
-        opened={showDiscard}
-        onClose={() => setShowDiscard(false)}
-        actionText="Discard"
-        mainText={
-          <>Are you sure you want to permanently discard the unsaved changes?</>
-        }
-        subText={<>You cannot undo this action.</>}
-        onActionClick={async () => {
-          if (currentCohort.saved) {
-            await trigger(cohortId)
+          subText={<>You cannot undo this action.</>}
+          onActionClick={async () => {
+            setShowDelete(false);
+            // only delete cohort from BE if it's been saved before
+            if (currentCohort?.saved) {
+              // dont delete it from the local adapter if not able to delete from the BE
+              await deleteCohortFromBE(cohortId)
+                .unwrap()
+                .then(() => deleteCohort())
+                .catch(() =>
+                  coreDispatch(setCohortMessage("error|deleting|allId")),
+                );
+            } else {
+              deleteCohort();
+            }
+          }}
+        />
+      )}
+
+      {showDiscard && (
+        <GenericCohortModal
+          title="Discard Changes"
+          opened
+          onClose={() => setShowDiscard(false)}
+          actionText="Discard"
+          mainText={
+            <>
+              Are you sure you want to permanently discard the unsaved changes?
+            </>
+          }
+          subText={<>You cannot undo this action.</>}
+          onActionClick={async () => {
+            if (currentCohort.saved) {
+              await trigger(cohortId)
+                .unwrap()
+                .then((payload) => {
+                  discardChanges(buildGqlOperationToFilterSet(payload.filters));
+                })
+                .catch(() =>
+                  coreDispatch(setCohortMessage("error|discarding|allId")),
+                );
+            } else {
+              discardChanges(undefined);
+            }
+          }}
+        />
+      )}
+
+      {showUpdateCohort && (
+        <GenericCohortModal
+          title="Save Cohort"
+          opened
+          onClose={() => setShowUpdateCohort(false)}
+          actionText="Save"
+          mainText={
+            <>
+              Are you sure you want to save <b>{cohortName}</b>? This will
+              overwrite your previously saved changes.
+            </>
+          }
+          subText={<>You cannot undo this action.</>}
+          onActionClick={async () => {
+            setShowUpdateCohort(false);
+            const updateBody = {
+              id: cohortId,
+              name: cohortName,
+              type: "static",
+              filters:
+                Object.keys(filters.root).length > 0
+                  ? buildCohortGqlOperator(filters)
+                  : {},
+            };
+
+            await updateCohort(updateBody)
+              .unwrap()
+              .then(() =>
+                coreDispatch(
+                  setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
+                ),
+              )
+              .catch(() =>
+                coreDispatch(setCohortMessage("error|saving|allId")),
+              );
+          }}
+        />
+      )}
+
+      {showSaveCohort && (
+        <SaveModal
+          initialName={cohortName}
+          entity="cohort"
+          opened
+          onClose={() => setShowSaveCohort(false)}
+          onActionClick={async (newName: string) => {
+            const prevCohort = cohortId;
+            const addBody = {
+              name: newName,
+              type: "static",
+              filters:
+                Object.keys(filters.root).length > 0
+                  ? buildCohortGqlOperator(filters)
+                  : {},
+            };
+
+            await addCohort(addBody)
               .unwrap()
               .then((payload) => {
-                discardChanges(buildGqlOperationToFilterSet(payload.filters));
+                coreDispatch(
+                  copyCohort({ sourceId: prevCohort, destId: payload.id }),
+                );
+                // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+                // which does not exist will cause this
+                // Therefore, copy the unsaved cohort to the new cohort id received from
+                // the BE.
+                coreDispatch(setCurrentCohortId(payload.id));
+                coreDispatch(
+                  setCohortMessage(`savedCohort|${newName}|${payload.id}`),
+                );
+                onSelectionChanged(payload.id);
+                coreDispatch(
+                  removeCohort({
+                    shouldShowMessage: false,
+                    currentID: prevCohort,
+                  }),
+                );
               })
               .catch(() =>
-                coreDispatch(setCohortMessage("error|discarding|allId")),
+                coreDispatch(setCohortMessage("error|saving|allId")),
               );
-          } else {
-            discardChanges(undefined);
-          }
-        }}
-      />
-      <GenericCohortModal
-        title="Save Cohort"
-        opened={showUpdateCohort}
-        onClose={() => setShowUpdateCohort(false)}
-        actionText="Save"
-        mainText={
-          <>
-            Are you sure you want to save <b>{cohortName}</b>? This will
-            overwrite your previously saved changes.
-          </>
-        }
-        subText={<>You cannot undo this action.</>}
-        onActionClick={async () => {
-          setShowUpdateCohort(false);
-          const updateBody = {
-            id: cohortId,
-            name: cohortName,
-            type: "static",
-            filters:
-              Object.keys(filters.root).length > 0
-                ? buildCohortGqlOperator(filters)
-                : {},
-          };
+          }}
+          onNameChange={onSaveCohort}
+        />
+      )}
 
-          await updateCohort(updateBody)
-            .unwrap()
-            .then(() =>
-              coreDispatch(
-                setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
-              ),
-            )
-            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
-        }}
-      />
-      <SaveModal
-        initialName={cohortName}
-        entity="cohort"
-        opened={showSaveCohort}
-        onClose={() => setShowSaveCohort(false)}
-        onActionClick={async (newName: string) => {
-          const prevCohort = cohortId;
-          const addBody = {
-            name: newName,
-            type: "static",
-            filters:
-              Object.keys(filters.root).length > 0
-                ? buildCohortGqlOperator(filters)
-                : {},
-          };
-
-          await addCohort(addBody)
-            .unwrap()
-            .then((payload) => {
-              coreDispatch(
-                copyCohort({ sourceId: prevCohort, destId: payload.id }),
-              );
-              // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-              // which does not exist will cause this
-              // Therefore, copy the unsaved cohort to the new cohort id received from
-              // the BE.
-              coreDispatch(setCurrentCohortId(payload.id));
-              coreDispatch(
-                setCohortMessage(`savedCohort|${newName}|${payload.id}`),
-              );
-              onSelectionChanged(payload.id);
-              coreDispatch(
-                removeCohort({
-                  shouldShowMessage: false,
-                  currentID: prevCohort,
-                }),
-              );
+      {showCreateCohort && (
+        <SaveModal
+          initialName={`Custom cohort ${new Date()
+            .toLocaleString("en-CA", {
+              timeZone: "America/Chicago",
+              hour12: false,
             })
-            .catch(() => coreDispatch(setCohortMessage("error|saving|allId")));
-        }}
-        onNameChange={onSaveCohort}
-      />
+            .replace(",", "")}`}
+          entity="cohort"
+          action="Create"
+          opened
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={async (newName: string) => {
+            newCohort(newName);
+          }}
+          onNameChange={onCreateCohort}
+        />
+      )}
 
-      <SaveModal
-        initialName={`Custom cohort ${new Date()
-          .toLocaleString("en-CA", {
-            timeZone: "America/Chicago",
-            hour12: false,
-          })
-          .replace(",", "")}`}
-        entity="cohort"
-        action="Create"
-        opened={showCreateCohort}
-        onClose={() => setShowCreateCohort(false)}
-        onActionClick={async (newName: string) => {
-          newCohort(newName);
-        }}
-        onNameChange={onSaveCohort}
-      />
       {modal === Modals.CaseSetModal && <CaseSetModal />}
       {modal === Modals.GeneSetModal && (
         <GeneSetModal

@@ -274,6 +274,7 @@ const newCohort = ({
 interface NewCohortParams {
   filters?: FilterSet;
   message?: string;
+  name?: string;
 }
 
 interface CopyCohortParams {
@@ -336,7 +337,10 @@ const slice = createSlice({
       state,
       action: PayloadAction<NewCohortParams>,
     ) => {
-      const cohort = newCohort({ filters: action.payload.filters });
+      const cohort = newCohort({
+        filters: action.payload.filters,
+        customName: action.payload.name,
+      });
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },
