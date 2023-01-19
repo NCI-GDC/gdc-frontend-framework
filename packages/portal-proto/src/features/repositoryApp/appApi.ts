@@ -4,12 +4,14 @@ import storage from "redux-persist/lib/storage";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
 import { createAppStore } from "@gff/core";
+import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
 const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
   filters: repositoryFiltersReducer,
+  images: imageCountsReducer,
 });
 
 const persistConfig = {

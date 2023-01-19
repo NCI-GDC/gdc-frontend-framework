@@ -1,24 +1,41 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GraphQLApiResponse, graphqlAPI } from "@gff/core";
-import { castDraft } from "immer";
-import { DataStatus } from "@gff/core/dist/dts";
+import {
+  GraphQLApiResponse,
+  graphqlAPI,
+  DataStatus,
+  AppDataSelectorResponse,
+  GqlUnion,
+  GqlIntersection,
+} from "@gff/core";
+import { AppState } from "./appApi";
+import { createUseAppDataHook } from "@/features/repositoryApp/hooks";
+
+/**
+ * Retreived the case count containing images based on the filters parameter.
+ * Note once the ImageViewer is converted into an app this can move to either the app or the
+ * core counts slice.
+ */
 
 const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
   $filters: FiltersArgument
-  $slideFilter: FiltersArgument
+  $fileFilters: FiltersArgument
 ) {
   viewer {
     repository {
       cases {
         hits(filters: $filters) {
           total
-          edges {
-            node {
-              files {
-                hits(filters: $slideFilter, first: 0) {
-                  total
-                }
-              }
+        }
+      }
+      files {
+        aggregations(
+          filters: $fileFilters
+          aggregations_filter_themselves: false
+        ) {
+          files__data_type: data_type {
+            buckets {
+              doc_count
+              key
             }
           }
         }
@@ -29,9 +46,7 @@ const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
 
 export const fetchImageCounts = createAsyncThunk(
   "repositoryApp/getImageCounts",
-  async (
-    filters: ReadonlyArray<Record<string, unknown>>,
-  ): Promise<GraphQLApiResponse> => {
+  async (filters?: GqlUnion | GqlIntersection): Promise<GraphQLApiResponse> => {
     const variables = {
       filters: {
         content: [
@@ -44,20 +59,12 @@ export const fetchImageCounts = createAsyncThunk(
               },
             },
           ],
-          ...filters,
+          ...filters?.content,
         ],
         op: "and",
       },
-      slideFilter: {
-        content: [
-          {
-            content: {
-              field: "files.data_type",
-              value: ["Slide Image"],
-            },
-            op: "in",
-          },
-        ],
+      fileFilters: {
+        content: [...filters?.content],
         op: "and",
       },
     };
@@ -65,14 +72,19 @@ export const fetchImageCounts = createAsyncThunk(
   },
 );
 
-export interface ImageCountState {
+export interface ImageCount {
   readonly casesWithImagesCount: number;
+  readonly slidesCount: number;
+}
+
+export interface ImageCountState extends ImageCount {
   readonly status: DataStatus;
   readonly error?: string;
 }
 
-const initialState = {
+const initialState: ImageCountState = {
   casesWithImagesCount: -1,
+  slidesCount: -1,
   status: "uninitialized",
 };
 
@@ -83,16 +95,21 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchImageCounts.fulfilled, (state, action) => {
-        const response = action.payload.data.hits[0];
-        state.casesWithImagesCount = castDraft(response);
+        const dataRoot = action.payload.data?.viewer?.repository;
+        state.casesWithImagesCount = dataRoot?.cases?.hits?.total;
+        const imageBucket =
+          dataRoot?.files?.aggregations.files__data_type.buckets.find(
+            (x) => x.bucket === "Slide Image",
+          );
+        state.slidesCount = imageBucket ? imageBucket.doc_count : -1;
         state.status = "fulfilled";
-
+        console.log("casesWithImagesCount", state.casesWithImagesCount);
+        console.log("slidesCount", state.slidesCount);
         return state;
       })
       .addCase(fetchImageCounts.pending, (state) => {
         state.casesWithImagesCount = -1;
         state.status = "pending";
-
         return state;
       })
       .addCase(fetchImageCounts.rejected, (state) => {
@@ -102,3 +119,20 @@ const slice = createSlice({
       });
   },
 });
+
+export const imageCountsReducer = slice.reducer;
+
+export const selectCasesWithImagesCount = (
+  state: AppState,
+): AppDataSelectorResponse<ImageCount> => ({
+  data: {
+    casesWithImagesCount: state.images.casesWithImagesCount,
+    slidesCount: state.images.slidesCount,
+  },
+  status: state.images.status,
+});
+
+export const useImageCounts = createUseAppDataHook(
+  fetchImageCounts,
+  selectCasesWithImagesCount,
+);

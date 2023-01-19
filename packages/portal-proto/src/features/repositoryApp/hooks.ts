@@ -254,7 +254,7 @@ export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectFiltersByName(state, field));
 };
 
-export const useClearLocalFilterWhenCohortChanges = () => {
+export const useClearLocalFilterWhenCohortChanges = (): void => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
@@ -273,4 +273,29 @@ export const useClearLocalFilterWhenCohortChanges = () => {
       appDispatch(clearRepositoryFilters());
     }
   }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
+};
+
+export const createUseAppDataHook = (fetchDataActionCreator, dataSelector) => {
+  return (...params) => {
+    const appDispatch = useAppDispatch();
+    const { data, status, error } = useAppSelector(dataSelector);
+    const action = fetchDataActionCreator(...params);
+    const prevParams = usePrevious(params);
+    useEffect(() => {
+      if (status === "uninitialized" || !isEqual(prevParams, params)) {
+        // createDispatchHook types forces the input to AnyAction, which is
+        // not compatible with thunk actions. hence, the `as any` cast. ;(
+        appDispatch(action); // eslint-disable-line
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, appDispatch, action, params, prevParams]);
+    return {
+      data,
+      error,
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
+    };
+  };
 };
