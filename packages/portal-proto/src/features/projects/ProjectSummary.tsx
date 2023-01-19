@@ -31,7 +31,7 @@ px-1
 w-14
 h-full`;
 
-const PercentBarLabel = tw.git`
+const PercentBarLabel = tw.div`
 absolute
 z-10
 left-0
