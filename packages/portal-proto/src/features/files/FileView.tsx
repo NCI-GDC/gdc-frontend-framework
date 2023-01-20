@@ -84,7 +84,7 @@ const getAnnotationsLinkParams = (
 //temp table component until global one is done
 interface TempTableProps {
   readonly tableData: {
-    readonly headers: string[];
+    readonly headers: string[] | JSX.Element[];
     readonly tableRows: any[];
   };
 }

@@ -1,11 +1,13 @@
 import React, { ReactNode } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Tooltip } from "@mantine/core";
+import classNames from "classnames";
 
 interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
   selected: string | Record<string, any>;
+  disabled?: boolean;
   handleSwitch: any;
   tooltip: string;
   margin: string;
@@ -19,6 +21,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   isActive,
   icon,
   selected,
+  disabled = false,
   handleSwitch,
   tooltip = undefined,
   margin,
@@ -39,20 +42,26 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   // TODO add roles in divs for switch for a11y
   return (
-    <Tooltip label={tooltip} disabled={!tooltip} withArrow arrowSize={12}>
+    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
       <animated.div
-        className={`text-center items-center ${
-          isDemoMode && "cursor-not-allowed"
-        }`}
+        className={`text-center items-center`}
+        aria-disabled={disabled}
       >
         <animated.div
           style={sliderSpring}
-          className={`border rounded-sm border-lightgray ${
-            isDemoMode && "pointer-events-none"
-          } h-5 ${!icon && `rounded-xl`} ${
-            isActive ? `bg-activeColor` : `bg-gray-300`
-          } m-auto align-middle`}
+          className={classNames(
+            "border border-lightgray h-5",
+            {
+              "rounded-xl": icon,
+              "cursor-not-allowed": disabled,
+            },
+            isActive ? "bg-activeColor" : "bg-gray-300",
+            "m-auto align-middle",
+          )}
           onClick={() => {
+            if (disabled) {
+              return;
+            }
             // todo: if used for > 2 icons refactor to use switch(icon) statement
             icon
               ? handleSwitch(selected[`symbol`], selected[`name`], plot)

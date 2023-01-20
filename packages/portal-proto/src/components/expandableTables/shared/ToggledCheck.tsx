@@ -5,6 +5,7 @@ interface ToggleProps {
   isActive: boolean;
   icon: JSX.Element;
   selected: string | Record<string, string>;
+  disabled?: boolean;
   handleSwitch: any;
   tooltip: string;
   margin: string;
@@ -17,6 +18,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
   isActive,
   icon,
   selected,
+  disabled = false,
   handleSwitch,
   tooltip = undefined,
   margin,
@@ -47,16 +49,19 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         checked={isActive}
         indeterminate
         icon={CheckboxIcon}
+        aria-disabled={disabled}
         onChange={() => {
-          // todo: if used for > 2 icons refactor to use switch(icon) statement
-          icon
-            ? handleSwitch(selected[`symbol`], selected[`name`], plot)
-            : handleSwitch(selected);
+          if (!disabled)
+            // todo: if used for > 2 icons refactor to use switch(icon) statement
+            icon
+              ? handleSwitch(selected[`symbol`], selected[`name`], plot)
+              : handleSwitch(selected);
         }}
         classNames={{
           root: margin,
-          input:
-            "hover:bg-primary checked:bg-primary-darkest border border-activeColor",
+          input: disabled
+            ? "bg-base-lighter hover:bg-primary-lighter"
+            : "hover:bg-primary checked:bg-primary-darkest",
         }}
       />
     </Tooltip>
