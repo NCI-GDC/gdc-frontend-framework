@@ -60,6 +60,7 @@ export * from "./features/versionInfo/versionInfoSlice";
 export * from "./features/api/cohortApiTypes";
 export * from "./features/sets";
 export * from "./features/cases/selectedCasesSlice";
+export * from "./features/downloads/json";
 export { CoreState } from "./reducers";
 
 import { datadogRum } from "@datadog/browser-rum";

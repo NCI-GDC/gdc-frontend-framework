@@ -1,11 +1,12 @@
 import {
   useMutatedGenesFreq,
   mutatedGenesFreqReducer,
+  MutatedGenesFreqData,
 } from "./mutatedGenesFreqSlice";
 import { combineReducers } from "@reduxjs/toolkit";
 
 export const downloadsReducer = combineReducers({
-  mutatedGenes: mutatedGenesFreqReducer,
+  mutatedGenesFreq: mutatedGenesFreqReducer,
 });
 
-export { useMutatedGenesFreq };
+export { MutatedGenesFreqData, useMutatedGenesFreq };

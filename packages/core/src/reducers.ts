@@ -20,6 +20,7 @@ import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
+import { downloadsReducer } from "./features/downloads/json";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -33,7 +34,6 @@ import {
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
-import { downloadsReducer } from "./features/downloads/downloadsApi";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";

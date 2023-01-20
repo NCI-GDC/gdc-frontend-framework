@@ -24,7 +24,6 @@ query MutatedGenesFreq(
           offset: $genesTable_offset
           score: $score
         ) {
-          total
           edges {
             node {
               symbol
@@ -59,19 +58,31 @@ export interface MutatedGene {
 }
 
 export interface MutatedGenesFreqData {
-  genes: Array<MutatedGene>;
+  viewer: {
+    explore: {
+      genes: {
+        hits: {
+          edges: Array<{
+            node: {
+              symbol: string;
+              name: string;
+              cytoband: string[];
+              biotype: string;
+              gene_id: string;
+            };
+          }>;
+        };
+      };
+    };
+  };
 }
 
 export interface MutatedGenesFreqState {
-  readonly data: MutatedGenesFreqData;
+  readonly genes?: MutatedGene[];
   readonly status: DataStatus;
-  readonly error?: string;
 }
 
 const initialState: MutatedGenesFreqState = {
-  data: {
-    genes: [],
-  },
   status: "uninitialized",
 };
 
@@ -83,14 +94,13 @@ const slice = createSlice({
     builder
       .addCase(fetchMutatedGenesFreqs.fulfilled, (state, action) => {
         const response = action.payload;
-        if (response.errors) {
-          state.status = "rejected";
-        } else {
-          state.data = {
-            genes: response?.data?.explore?.genes,
-          };
-          state.status = "fulfilled";
-        }
+        state.status = "fulfilled";
+
+        const edges = response.data.viewer.explore.genes.hits.edges;
+        if (edges.length === 0) return undefined;
+        // todo
+
+        return state;
       })
       .addCase(fetchMutatedGenesFreqs.pending, (state) => {
         state.status = "pending";
@@ -105,10 +115,12 @@ export const mutatedGenesFreqReducer = slice.reducer;
 
 export const selectMutatedGenesFreqData = (
   state: CoreState,
-): CoreDataSelectorResponse<MutatedGenesFreqData> => {
+): CoreDataSelectorResponse<{ genes: MutatedGenesFreqData | undefined }> => {
   return {
-    data: state.mutatedGenesFreq.genes.data,
-    status: state.mutatedGenesFreq.genes.status,
+    data: {
+      genes: state.downloads.mutatedGenesFreq.genes,
+    },
+    status: state.downloads.mutatedGenesFreq.status,
   };
 };
 
