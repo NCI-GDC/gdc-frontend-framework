@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Tooltip } from "@mantine/core";
-import classNames from "classnames";
 
 interface SwitchSpringProps {
   isActive: boolean;
