@@ -75,6 +75,7 @@ export interface Columns {
    */
   columns?: Columns[];
   width?: number;
+  highlighted?: boolean;
 }
 
 interface VerticalTableProps {
@@ -197,6 +198,7 @@ export interface Column {
   width?: number;
   Cell?: (value: any) => JSX.Element;
   columns?: Column[];
+  highlighted?: boolean;
 }
 
 interface TableProps {
@@ -209,6 +211,7 @@ const mapColumn = (obj: Columns): Column => {
     Header: obj.columnName,
     accessor: obj.id,
     disableSortBy: obj.disableSortBy || false,
+    highlighted: obj.highlighted || false,
   };
 
   if (obj.Cell) {
@@ -356,7 +359,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="font-heading text-xs font-bold bg-base-max text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md"
+              className={`font-heading text-xs font-bold text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -364,7 +367,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className="px-2 pt-3 pb-1 font-heading"
+                    className={`px-2 pt-3 pb-1 font-heading  ${
+                      column.highlighted
+                        ? "bg-nci-purple-lightest"
+                        : "bg-base-max"
+                    }`}
                     key={`hcolumn-${key}`}
                   >
                     {column.render("Header")}
@@ -372,9 +379,17 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold bg-base-max text-base-contrast-max whitespace-nowrap ${
+                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold ${
+                      column.highlighted
+                        ? "bg-nci-purple-lightest"
+                        : "bg-base-max"
+                    } text-base-contrast-max whitespace-nowrap ${
                       column.canSort &&
-                      "hover:bg-primary-lightest focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5"
+                      `${
+                        column.highlighted
+                          ? "hover:bg-nci-purple-lighter"
+                          : "hover:bg-primary-lightest"
+                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5`
                     }`}
                     key={`hcolumn-${key}`}
                     aria-sort={

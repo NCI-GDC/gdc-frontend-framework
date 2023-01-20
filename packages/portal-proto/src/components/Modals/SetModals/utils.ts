@@ -16,12 +16,16 @@ export const getMatchedIdentifiers = (
   mappedToFields: string[],
   givenIdentifierFields: string[],
   tokens: string[],
-): { mappedTo: Match[]; givenIdentifiers: Match[] }[] => {
+  createSetField: string,
+): { mappedTo: Match[]; createSet: Match[]; givenIdentifiers: Match[] }[] => {
   const matchedData = [];
   data.forEach((d) => {
     const mappedTo: Match[] = [];
     // fields we are mapping to don't need to be compared to user input
     findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
+
+    const createSet: Match[] = [];
+    findAllIdentifiers(d, [createSetField], undefined, "", createSet);
 
     const givenIdentifiers: Match[] = [];
     findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
@@ -29,6 +33,7 @@ export const getMatchedIdentifiers = (
     if (givenIdentifiers.length > 0) {
       matchedData.push({
         mappedTo,
+        createSet,
         givenIdentifiers,
       });
     }

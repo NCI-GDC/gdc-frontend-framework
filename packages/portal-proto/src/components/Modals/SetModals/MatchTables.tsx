@@ -19,6 +19,7 @@ interface MatchTablesProps {
     givenIdentifiers: { field: string; value: string }[];
   }[];
   readonly unmatched: string[];
+  readonly numberInput: number;
   readonly setTypeLabel: string;
   readonly fieldDisplay: Record<string, string>;
 }
@@ -26,6 +27,7 @@ interface MatchTablesProps {
 const MatchTables: React.FC<MatchTablesProps> = ({
   matched,
   unmatched,
+  numberInput,
   setTypeLabel,
   fieldDisplay,
 }: MatchTablesProps) => {
@@ -49,10 +51,12 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         id: "mapped_to",
         visible: true,
         disableSortBy: true,
+        highlighted: true,
         columns: uniqueMappedToFields.map((id) => ({
           columnName: fieldDisplay[id],
           id: `mapped_${id.replaceAll(".", "_")}`,
           visible: true,
+          highlighted: true,
         })),
       },
       {
@@ -67,7 +71,12 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         })),
       },
     ];
-  }, [matched, fieldDisplay, setTypeLabel]);
+  }, [
+    fieldDisplay,
+    setTypeLabel,
+    uniqueMappedToFields,
+    uniqueGivenIdentifierFields,
+  ]);
 
   const matchedTableData = useMemo(() => {
     return matched.map((d) => ({
@@ -137,7 +146,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
     }
   };
 
-  const numMatched = flatten(matched.map((d) => d.givenIdentifiers)).length;
+  const numMatched = numberInput - unmatched.length;
 
   return (
     <>
@@ -149,6 +158,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         onKeyDown={createKeyboardAccessibleFunction(() =>
           setShowTable(!showTable),
         )}
+        aria-expanded={showTable}
       >
         {showTable ? (
           <CollapseIcon size={18} className="text-primary-darkest" />

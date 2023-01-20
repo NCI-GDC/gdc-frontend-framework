@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
 import {
   UseMutation,
   UseQuery,
@@ -12,15 +12,26 @@ import {
   Loader,
 } from "@mantine/core";
 import { flatten } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
-import { SetTypes, useCoreDispatch, hideModal } from "@gff/core";
+import {
+  SetTypes,
+  useCoreDispatch,
+  hideModal,
+  Operation,
+  FilterSet,
+  FilterGroup,
+  isIncludes,
+} from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import FunctionButton from "@/components/FunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
+import DiscardChangesButton from "./DiscardChangesButton";
+import { UserInputContext } from "./GenericSetModal";
 import { ButtonContainer } from "./styles";
+import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
 
@@ -30,13 +41,17 @@ interface InputSetProps {
   readonly textInputPlaceholder: string;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly mappedToFields: string[];
-  readonly matchAgainstIdentifiers: string[];
-  readonly dataHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  readonly searchField: string;
-  readonly fieldDisplay: Record<string, string>;
-  readonly createSetHook?: UseMutation<any>;
-  readonly createSetField?: string;
+  readonly hooks: {
+    readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
+    readonly updateFilters: (
+      field: string,
+      op: Operation,
+      groups?: FilterGroup[],
+    ) => void;
+    readonly createSet?: UseMutation<any>;
+    readonly getExistingFilters: () => FilterSet;
+  };
+  readonly useAddNewFilterGroups: () => (groups: FilterGroup[]) => void;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -45,23 +60,32 @@ const InputSet: React.FC<InputSetProps> = ({
   textInputPlaceholder,
   setType,
   setTypeLabel,
-  mappedToFields,
-  matchAgainstIdentifiers,
-  dataHook,
-  searchField,
-  fieldDisplay,
-  createSetHook,
-  createSetField,
+  hooks,
+  useAddNewFilterGroups,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
   const [tokens, setTokens] = useState<string[]>([]);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
+  const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
+  const existingFilters = hooks.getExistingFilters();
+  const addNewFilterGroups = useAddNewFilterGroups();
 
-  const { data, isSuccess } = dataHook({
+  const {
+    mappedToFields,
+    matchAgainstIdentifiers,
+    searchField,
+    createSetField,
+    fieldDisplay,
+    facetField,
+  } = fieldConfig[setType];
+
+  const existingOperation = existingFilters?.root?.[facetField];
+
+  const { data, isSuccess } = hooks.query({
     filters: {
       op: "in",
       content: {
@@ -81,9 +105,17 @@ const InputSet: React.FC<InputSetProps> = ({
             mappedToFields,
             matchAgainstIdentifiers,
             tokens,
+            createSetField,
           )
         : [],
-    [data, mappedToFields, matchAgainstIdentifiers, tokens, isSuccess],
+    [
+      data,
+      mappedToFields,
+      matchAgainstIdentifiers,
+      tokens,
+      createSetField,
+      isSuccess,
+    ],
   );
 
   const matchedIds = flatten(
@@ -92,10 +124,29 @@ const InputSet: React.FC<InputSetProps> = ({
   const unmatched = tokens
     .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
+  const createSetIds = matched
+    .map(
+      (match) => match.createSet.find((m) => m.field === createSetField)?.value,
+    )
+    .filter((match) => match !== null);
 
   useEffect(() => {
     setTokens(input.trim().split(/[\s,]+/));
   }, [input]);
+
+  useEffect(() => {
+    setUserEnteredInput(false);
+    // on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (input !== "" || file !== null) {
+      setUserEnteredInput(true);
+    } else {
+      setUserEnteredInput(false);
+    }
+  }, [file, input, setUserEnteredInput]);
 
   useEffect(() => {
     if (matched.length > MATCH_LIMIT) {
@@ -177,38 +228,59 @@ const InputSet: React.FC<InputSetProps> = ({
           <MatchTables
             matched={matched}
             unmatched={unmatched}
+            numberInput={tokens.length}
             setTypeLabel={setTypeLabel}
             fieldDisplay={fieldDisplay}
           />
         )}
       </div>
       <ButtonContainer>
-        {createSetHook && (
+        {hooks.createSet && (
           <SaveSetButton
             disabled={matched.length === 0}
-            setValues={matched.map(
-              (match) =>
-                match.mappedTo.find((m) => m.field === createSetField).value,
-            )}
+            setValues={createSetIds}
             setType={setType}
-            createSetHook={createSetHook}
+            createSetHook={hooks.createSet}
           />
         )}
-        <FunctionButton onClick={() => dispatch(hideModal())}>
-          Cancel
-        </FunctionButton>
-        <DarkFunctionButton
+        <DiscardChangesButton
+          action={() => dispatch(hideModal())}
+          label="Cancel"
+          dark={false}
+        />
+        <DiscardChangesButton
           disabled={input === ""}
-          onClick={() => {
+          action={() => {
             setInput("");
             setFile(null);
             setScreenReaderMessage("");
             setTokens([]);
           }}
+          label={"Clear"}
+        />
+        <DarkFunctionButton
+          disabled={matched.length === 0}
+          onClick={() => {
+            hooks.updateFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: [
+                ...(existingOperation && isIncludes(existingOperation)
+                  ? existingOperation?.operands
+                  : []),
+                ...createSetIds,
+              ],
+            });
+            if (createSetIds.length > 1) {
+              addNewFilterGroups([
+                { ids: createSetIds, field: facetField, groupId: uuidv4() },
+              ]);
+            }
+            dispatch(hideModal());
+          }}
         >
-          Clear
+          Submit
         </DarkFunctionButton>
-        <DarkFunctionButton disabled>Submit</DarkFunctionButton>
       </ButtonContainer>
     </>
   );
