@@ -44,6 +44,7 @@ const GeneAndSSMFilterPanel = ({
     "ssms",
     "explore",
     FilterFacets.filter((f) => f.docType === "ssms").map((x) => x.facet_filter),
+    isDemoMode,
   );
 
   return (
