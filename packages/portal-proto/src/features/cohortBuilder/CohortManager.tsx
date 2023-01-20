@@ -431,7 +431,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               disabled={isFetchingCaseIds || isErrorCaseIds}
               $buttonDisabled={isFetchingCaseIds || isErrorCaseIds}
               onClick={() => {
-                const tsv = `id \n ${caseIds.map((c) => c.case_id).join("\n")}`;
+                const tsv = `id\n${caseIds.map((c) => c.case_id).join("\n")}`;
                 const blob = new Blob([tsv], { type: "text/tsv" });
                 const today = new Date();
                 saveAs(
