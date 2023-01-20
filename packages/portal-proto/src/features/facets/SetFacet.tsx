@@ -49,7 +49,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   const sets = useCoreSelector((state) =>
     selectSetsByType(state, setType as SetTypes),
   );
-  console.log("!sets", sets);
+
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
   );
