@@ -1,11 +1,13 @@
 import React, { ReactNode } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Tooltip } from "@mantine/core";
+import classNames from "classnames";
 
 interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
   selected: string | Record<string, any>;
+  disabled?: boolean;
   handleSwitch: any;
   tooltip: string;
   margin: string;
@@ -19,6 +21,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   isActive,
   icon,
   selected,
+  disabled = false,
   handleSwitch,
   tooltip = undefined,
   margin,
@@ -44,6 +47,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         className={`text-center items-center ${
           isDemoMode && "cursor-not-allowed"
         }`}
+        aria-disabled={disabled}
       >
         <animated.div
           style={sliderSpring}
@@ -53,6 +57,9 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
             isActive ? `bg-activeColor` : `bg-gray-300`
           } m-auto align-middle`}
           onClick={() => {
+            if (disabled) {
+              return;
+            }
             // todo: if used for > 2 icons refactor to use switch(icon) statement
             icon
               ? handleSwitch(selected[`symbol`], selected[`name`], plot)

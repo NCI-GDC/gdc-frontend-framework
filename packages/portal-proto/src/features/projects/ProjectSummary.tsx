@@ -28,10 +28,10 @@ relative
 bg-percentage-bar-base
 rounded-sm
 px-1
-w-16
+w-14
 h-full`;
 
-const PercentBarLabel = tw.span`
+const PercentBarLabel = tw.div`
 absolute
 z-10
 left-0
@@ -228,10 +228,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
           <div className="flex">
-            <span className="w-1/4 pr-1.5 text-right">
+            <div className="basis-1/3 text-right">
               {data_c.case_count.toLocaleString()}
-            </span>
-            <div className="w-3/4">
+            </div>
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${caseCountPercentage.toFixed(
                   2,
@@ -246,10 +246,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
           <div className="flex">
-            <span className="w-1/4 pr-1.5 text-right">
+            <div className="basis-1/3 text-right">
               {data_c.file_count.toLocaleString()}
-            </span>
-            <div className="w-3/4">
+            </div>
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
@@ -266,15 +266,25 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
     return {
       headers: [
-        "Data Category",
-        `Cases (n=${projectData.summary.case_count.toLocaleString()})`,
-        `Files (n=${projectData.summary.file_count.toLocaleString()})`,
+        <div key="project_summary_data_table_data_category">Data Category</div>,
+        <div key="project_summary_data_table_cases_header" className="flex">
+          <div className="basis-1/3 text-right">Cases</div>
+          <div className="basis-2/3 pl-1">
+            (n={projectData.summary.case_count.toLocaleString()})
+          </div>
+        </div>,
+        <div key="project_summary_data_table_files_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={projectData.summary.file_count.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
   };
 
-  const formatDataForExpCateogryTable = () => {
+  const formatDataForExpCategoryTable = () => {
     const sortedExpCategories = sortByPropertyAsc(
       projectData.summary.experimental_strategies,
       "experimental_strategy",
@@ -296,10 +306,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         case_count: (
           <div className="flex">
-            <span className="w-1/4 pr-1.5 text-right">
+            <div className="basis-1/3 text-right">
               {exp_c.case_count.toLocaleString()}
-            </span>
-            <div className="w-3/4">
+            </div>
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${caseCountPercentage.toFixed(
                   2,
@@ -314,10 +324,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
           <div className="flex">
-            <span className="w-1/4 pr-1.5 text-right">
+            <div className="basis-1/3 text-right">
               {exp_c.file_count.toLocaleString()}
-            </span>
-            <div className="w-3/4">
+            </div>
+            <div className="basis-2/3 pl-1">
               <PercentBar>
                 <PercentBarLabel>{`${fileCountPercentage.toFixed(
                   2,
@@ -334,9 +344,21 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
     return {
       headers: [
-        "Experimental Strategy",
-        `Cases (n=${projectData.summary.case_count.toLocaleString()})`,
-        `Files (n=${projectData.summary.file_count.toLocaleString()})`,
+        <div key="project_summary_exp_table_data_category">
+          Experimental Strategy
+        </div>,
+        <div key="project_summary_exp_table_cases_header" className="flex">
+          <div className="basis-1/3 text-right">Cases</div>
+          <div className="basis-2/3 pl-1">
+            (n={projectData.summary.case_count.toLocaleString()})
+          </div>
+        </div>,
+        <div key="project_summary_exp_table_files_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={projectData.summary.file_count.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
@@ -456,7 +478,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             <CategoryTableSummary
               title="Cases and File Counts by Experimental Strategy"
               dataObject={projectData?.summary?.experimental_strategies}
-              tableData={formatDataForExpCateogryTable()}
+              tableData={formatDataForExpCategoryTable()}
             />
           </div>
         </div>

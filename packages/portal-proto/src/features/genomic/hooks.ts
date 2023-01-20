@@ -21,6 +21,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
+  FilterGroup,
   selectMultipleFacetsByDocTypeAndField,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
@@ -34,6 +35,12 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import {
+  removeFilterGroup,
+  addNewFilterGroups,
+  clearFilterGroups,
+  selectFilterGroups,
+} from "./geneFilterGroupSlice";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -58,7 +65,7 @@ export const useClearGenomicFilters = (): ClearFacetFunction => {
   };
 };
 
-const useGenomicFilterByName = (field: string): OperandValue => {
+export const useGenomicFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>
     selectGeneAndSSMFiltersByName(state, field),
   );
@@ -81,7 +88,7 @@ const useCohortOrCaseSetFacetFilter = (): FilterSet => {
   return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
 };
 
-const useGenomicFacetFilter = (): FilterSet => {
+export const useGenomicFacetFilter = (): FilterSet => {
   return useAppSelector((state) => selectGeneAndSSMFilters(state));
 };
 
@@ -272,4 +279,24 @@ export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
   return (field: string, operation: Operation) => {
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
+};
+
+export const useAddNewGenomicFilterGroups = (): ((
+  groups: FilterGroup[],
+) => void) => {
+  const dispatch = useAppDispatch();
+  return (groups: FilterGroup[]) => dispatch(addNewFilterGroups(groups));
+};
+
+export const useFilterGroups = (field: string): FilterGroup[] =>
+  useAppSelector((state) => selectFilterGroups(state, field));
+
+export const useClearFilterGroups = (): ((field: string) => void) => {
+  const dispatch = useAppDispatch();
+  return (field: string) => dispatch(clearFilterGroups(field));
+};
+
+export const useRemoveFilterGroup = (): ((group: FilterGroup) => void) => {
+  const dispatch = useAppDispatch();
+  return (group: FilterGroup) => dispatch(removeFilterGroup(group));
 };
