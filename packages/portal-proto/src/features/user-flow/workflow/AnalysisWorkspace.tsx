@@ -294,7 +294,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     } else {
       clearComparisonCohorts();
     }
-  }, [isDemoMode, appInfo, scrollIntoView]);
+  }, [app, isDemoMode, appInfo, scrollIntoView]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
@@ -325,7 +325,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setCohortSelectionOpen={setCohortSelectionOpen}
               cohortSelectionOpen={cohortSelectionOpen}
               setActiveApp={handleAppSelected}
-              onDemoApp={isDemoMode && appInfo.hasDemo}
+              onDemoApp={isDemoMode}
             />
             <AdditionalCohortSelection
               app={app}
@@ -342,8 +342,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
-            onDemoApp={isDemoMode && appInfo.hasDemo}
-            rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
+            onDemoApp={isDemoMode}
+            rightComponent={
+              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
+            }
           />
           <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
         </>
