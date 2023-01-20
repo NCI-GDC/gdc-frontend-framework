@@ -19,6 +19,7 @@ import {
   FaUndo as DiscardIcon,
 } from "react-icons/fa";
 import tw from "tailwind-styled-components";
+import saveAs from "file-saver";
 import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
   DEFAULT_COHORT_ID,
@@ -46,6 +47,7 @@ import {
   Modals,
   selectCurrentModal,
   setCurrentCohortId,
+  useGetCasesQuery,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -54,6 +56,7 @@ import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
+import { convertDateToString } from "src/utils/date";
 
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
@@ -125,6 +128,18 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     coreDispatch(resetSelectedCases());
     coreDispatch(removeCohort({ shouldShowMessage: true }));
   };
+
+  const {
+    data: caseIds,
+    isFetching: isFetchingCaseIds,
+    isError: isErrorCaseIds,
+  } = useGetCasesQuery({
+    filters: buildCohortGqlOperator(currentCohort.filters),
+    fields: ["case_id"],
+    size: 50000,
+  });
+
+  console.log(isFetchingCaseIds);
 
   // Cohort persistence
   const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
@@ -389,7 +404,23 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton data-testid="uploadButton">
               <UploadIcon size="1.5em" aria-label="Upload cohort" />
             </CohortGroupButton>
-            <CohortGroupButton data-testid="downloadButton">
+            <CohortGroupButton
+              data-testid="downloadButton"
+              disabled={isFetchingCaseIds || isErrorCaseIds}
+              $buttonDisabled={isFetchingCaseIds || isErrorCaseIds}
+              onClick={() => {
+                const tsv = `id \n ${caseIds.map((c) => c.case_id).join("\n")}`;
+                const blob = new Blob([tsv], { type: "text/tsv" });
+                const today = new Date();
+                saveAs(
+                  blob,
+                  `${cohortName.replace(
+                    /[^A-Za-z0-9_.]/g,
+                    "_",
+                  )}_${convertDateToString(today)}.tsv`,
+                );
+              }}
+            >
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
             {/* Uncomment to test set modals */}
