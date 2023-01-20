@@ -59,7 +59,6 @@ export const BaseModal: React.FC<Props> = ({
       closeOnClickOutside={closeOnClickOutside ?? true}
       closeOnEscape={closeOnEscape ?? true}
       size={size && size}
-      zIndex={400}
     >
       {children}
       {buttons && (

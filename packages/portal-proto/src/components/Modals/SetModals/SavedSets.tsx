@@ -1,23 +1,29 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useContext } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
+import { Checkbox } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
-  selectSets,
+  selectSetsByType,
   useCoreDispatch,
   hideModal,
   SetTypes,
+  Operation,
+  FilterSet,
+  FilterGroup,
+  isIncludes,
 } from "@gff/core";
 import {
   VerticalTable,
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { ButtonContainer } from "./styles";
+import DiscardChangesButton from "./DiscardChangesButton";
+import { UserInputContext } from "./GenericSetModal";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });
@@ -30,6 +36,13 @@ interface SavedSetsProps {
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
+  readonly updateFilters: (
+    field: string,
+    op: Operation,
+    groups?: FilterGroup[],
+  ) => void;
+  readonly facetField: string;
+  readonly existingFiltersHook: () => FilterSet;
 }
 
 const SavedSets: React.FC<SavedSetsProps> = ({
@@ -38,17 +51,34 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   createSetsInstructions,
   selectSetInstructions,
   countHook,
+  updateFilters,
+  facetField,
+  existingFiltersHook,
 }: SavedSetsProps) => {
-  const [selectedSets, setSelectedSets] = useState([]);
-  const sets = useCoreSelector((state) => selectSets(state, setType));
+  const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [, setUserEnteredInput] = useContext(UserInputContext);
+  const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const dispatch = useCoreDispatch();
+  const existingFilters = existingFiltersHook();
+  const existingOperation = existingFilters?.root?.[facetField];
 
   const tableData = useMemo(() => {
-    return Object.entries(sets).map(([name, setId]) => ({
+    return Object.entries(sets).map(([setId, name]) => ({
+      select: (
+        <Checkbox
+          value={setId}
+          checked={selectedSets.includes(setId)}
+          onChange={() =>
+            selectedSets.includes(setId)
+              ? setSelectedSets(selectedSets.filter((id) => id !== setId))
+              : setSelectedSets([...selectedSets, setId])
+          }
+        />
+      ),
       name,
       count: <CountCell countHook={countHook} setId={setId} />,
     }));
-  }, [sets, countHook]);
+  }, [sets, selectedSets, countHook]);
 
   const columns = useMemo(() => {
     return [
@@ -61,6 +91,14 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       },
     ];
   }, [setTypeLabel]);
+
+  useEffect(() => {
+    if (selectedSets.length === 0) {
+      setUserEnteredInput(false);
+    } else {
+      setUserEnteredInput(true);
+    }
+  }, [selectedSets, setUserEnteredInput]);
 
   const {
     displayedData,
@@ -111,16 +149,34 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>
-        <FunctionButton onClick={() => dispatch(hideModal())}>
-          Cancel
-        </FunctionButton>
+        <DiscardChangesButton
+          action={() => dispatch(hideModal())}
+          label="Cancel"
+          dark={false}
+        />
+        <DiscardChangesButton
+          disabled={selectedSets.length === 0}
+          action={() => setSelectedSets([])}
+          label="Clear"
+        />
         <DarkFunctionButton
           disabled={selectedSets.length === 0}
-          onClick={() => setSelectedSets([])}
+          onClick={() => {
+            updateFilters(facetField, {
+              field: facetField,
+              operator: "includes",
+              operands: [
+                ...(existingOperation && isIncludes(existingOperation)
+                  ? existingOperation?.operands
+                  : []),
+                ...selectedSets.map((id) => `set_id:${id}`),
+              ],
+            });
+            dispatch(hideModal());
+          }}
         >
-          Clear
+          Submit
         </DarkFunctionButton>
-        <DarkFunctionButton disabled>Submit</DarkFunctionButton>
       </ButtonContainer>
     </>
   );

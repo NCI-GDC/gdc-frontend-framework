@@ -1,4 +1,4 @@
-import { NumericFromTo, Operation } from "@gff/core";
+import { NumericFromTo, OperandValue, Operation, FilterGroup } from "@gff/core";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -47,6 +47,14 @@ export interface RangeFacetHooks extends FacetDataHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetData: GetRangeFacetDataFunction;
   useTotalCounts: GetTotalCountsFunction;
+}
+
+export interface SetFacetHooks extends FacetDataHooks {
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  useGetFacetValues: (field: string) => OperandValue;
+  useFilterGroups: (field: string) => FilterGroup[];
+  useRemoveFilterGroup: () => (group: FilterGroup) => void;
+  useClearGroups: () => (field: string) => void;
 }
 
 export interface FacetRequiredHooks {

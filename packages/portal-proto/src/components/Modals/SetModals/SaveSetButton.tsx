@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
-  selectSets,
+  selectSetsByType,
   useCoreDispatch,
   useCoreSelector,
   addSet,
@@ -29,11 +29,11 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [createSet, response] = createSetHook();
   const [setName, setSetName] = useState(null);
-  const sets = useCoreSelector((state) => selectSets(state, setType));
+  const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
   useEffect(() => {
     if (response.isSuccess && setName) {
-      dispatch(addSet({ setType, newSet: { [setName]: response.data } }));
+      dispatch(addSet({ setType, setName, setId: response.data }));
       showNotification({ message: "Set has been saved." });
       setSetName(null);
     } else if (response.isError) {
@@ -59,7 +59,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
           setSetName(name);
           createSet({ values: setValues });
         }}
-        onNameChange={(name) => !Object.keys(sets).includes(name)}
+        onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton

@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { castDraft } from "immer";
+import { produce } from "immer";
 import { CoreState } from "../../reducers";
 
-export type SetTypes = "case" | "gene" | "ssm";
+export type SetTypes = "cases" | "genes" | "ssms";
 
 const initialState: Record<SetTypes, Record<string, string>> = {
-  case: {},
-  gene: {},
-  ssm: {},
+  cases: {},
+  genes: {},
+  ssms: {},
 };
 
 const slice = createSlice({
@@ -18,15 +18,20 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         setType: SetTypes;
-        newSet: Record<string, string>;
+        setName: string;
+        setId: string;
       }>,
     ) => {
-      state = castDraft({
-        ...state,
-        [action.payload.setType]: {
-          ...state[action.payload.setType],
-          ...action.payload.newSet,
-        },
+      state = produce(state, (draft) => {
+        const existingSet = Object.entries(state[action.payload.setType]).find(
+          ([, name]) => name === action.payload.setName,
+        );
+        // Replace existing set with the same name
+        if (existingSet) {
+          delete draft[action.payload.setType][existingSet[0]];
+        }
+        draft[action.payload.setType][action.payload.setId] =
+          action.payload.setName;
       });
       return state;
     },
@@ -37,7 +42,11 @@ const slice = createSlice({
 export const setsReducer = slice.reducer;
 export const { addSet } = slice.actions;
 
-export const selectSets = (
+export const selectSetsByType = (
   state: CoreState,
   setType: SetTypes,
 ): Record<string, string> => state.sets[setType];
+
+export const selectAllSets = (
+  state: CoreState,
+): Record<SetTypes, Record<string, string>> => state.sets;
