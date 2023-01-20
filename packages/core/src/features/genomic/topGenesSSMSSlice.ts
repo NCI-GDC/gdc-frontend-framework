@@ -235,12 +235,12 @@ const slice = createSlice({
           top: [
             {
               genes: {
-                name: genes[0].name,
-                symbol: genes[0].symbol,
+                name: genes[0]?.name,
+                symbol: genes[0]?.symbol,
               },
               ssms: {
-                symbol: ssms[0].ssm_id,
-                name: ssms[0].consequence[0]?.aa_change,
+                symbol: ssms[0]?.ssm_id,
+                name: ssms[0]?.consequence[0]?.aa_change,
               },
             },
           ],
