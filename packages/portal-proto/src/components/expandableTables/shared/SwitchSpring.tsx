@@ -39,7 +39,6 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const { plot } = survivalProps ?? { plot: "" };
 
-  // TODO add roles in divs for switch for a11y
   return (
     <Tooltip label={tooltip} disabled={!tooltip} withArrow arrowSize={12}>
       <animated.div
@@ -47,6 +46,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
           isDemoMode && "cursor-not-allowed"
         }`}
         aria-disabled={disabled}
+        role="switch"
       >
         <animated.div
           style={sliderSpring}
