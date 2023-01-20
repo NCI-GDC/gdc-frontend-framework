@@ -109,7 +109,7 @@ export const createTableColumn = (
                       tooltip={
                         isDemoMode && "Feature not available in demo mode"
                       }
-                      isDemoMode={isDemoMode}
+                      disabled={isDemoMode}
                     />
                   )}
                 </>
