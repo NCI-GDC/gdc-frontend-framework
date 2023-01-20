@@ -73,6 +73,7 @@ import {
   selectCohortCountsByName,
   useCohortCounts,
   useFilteredCohortCounts,
+  CountsData,
 } from "./countSlice";
 
 import {
@@ -150,4 +151,5 @@ export {
   removeCohortGroup,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
+  CountsData,
 };
