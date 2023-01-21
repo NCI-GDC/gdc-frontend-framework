@@ -55,7 +55,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         initialName=""
         opened={showSaveModal}
         onClose={() => setShowSaveModal(false)}
-        onSaveClick={(name: string) => {
+        onActionClick={(name: string) => {
           setSetName(name);
           createSet({ values: setValues });
         }}

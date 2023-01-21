@@ -398,19 +398,21 @@ describe("add, update, and remove cohort", () => {
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       { ids: [], entities: {}, currentCohort: "", message: undefined },
-      addNewCohort(),
+      addNewCohort("test"),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: "newCohort|New Cohort|000-000-000-1",
+      message: "newCohort|test|000-000-000-1",
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
-          name: "New Cohort",
+          name: "test",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
             status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
           },
           modified_datetime: "2020-11-01T00:00:00.000Z",
           modified: false,
@@ -428,13 +430,15 @@ describe("add, update, and remove cohort", () => {
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
-            name: "New Cohort",
+            name: "New Cohort 2",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
             caseSet: {
               status: "uninitialized",
+              caseSetIds: undefined,
+              filters: undefined,
             },
-            modified: false,
+            modified: true,
             modified_datetime: new Date().toISOString(),
           },
         },
@@ -455,17 +459,19 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: "newProjectsCohort|New Cohort 2|000-000-000-2",
+      message: "newProjectsCohort|New Cohort|000-000-000-2",
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
-          name: "New Cohort",
+          name: "New Cohort 2",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
             status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
           },
-          modified: false,
+          modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
         "000-000-000-2": {
@@ -482,10 +488,12 @@ describe("add, update, and remove cohort", () => {
           id: "000-000-000-2",
           caseSet: {
             status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
           },
-          modified: false,
+          modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
-          name: "New Cohort 2",
+          name: "New Cohort",
           saved: false,
         },
       },
@@ -505,17 +513,19 @@ describe("add, update, and remove cohort", () => {
             id: "000-000-000-1",
             caseSet: {
               status: "uninitialized",
+              caseSetIds: undefined,
+              filters: undefined,
             },
             modified: false,
             modified_datetime: "2020-11-01T00:00:00.000Z",
           },
         },
       },
-      addNewCohort(),
+      addNewCohort("test"),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
-      message: "newCohort|New Cohort 3|000-000-000-3",
+      message: "newCohort|test|000-000-000-3",
       ids: ["000-000-000-1", "000-000-000-3"],
       entities: {
         "000-000-000-1": {
@@ -533,10 +543,12 @@ describe("add, update, and remove cohort", () => {
           id: "000-000-000-3",
           caseSet: {
             status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
           },
           modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
-          name: "New Cohort 3",
+          name: "test",
           saved: false,
         },
       },
