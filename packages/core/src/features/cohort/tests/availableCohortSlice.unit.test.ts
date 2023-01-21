@@ -130,10 +130,14 @@ describe("test setting/getting currentCohortId", () => {
     },
     cohortCounts: {
       counts: {
-        caseCounts: -1,
-        fileCounts: -1,
-        genesCounts: -1,
-        mutationCounts: -1,
+        caseCount: -1,
+        fileCount: -1,
+        genesCount: -1,
+        mutationCount: -1,
+        ssmCaseCount: -1,
+        sequenceReadCaseCount: -1,
+        repositoryCaseCount: -1,
+        casesMax: -1,
       },
       status: "uninitialized" as DataStatus,
     },
