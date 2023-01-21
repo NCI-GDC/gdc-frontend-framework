@@ -21,6 +21,7 @@ import {
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
+import { v4 as uuidv4 } from "uuid";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -137,6 +138,7 @@ export const SelectCohortsModal = ({
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,
         message: "newCasesCohort",
+        group: { ids: updatedCases, field: "cases.case_id", groupId: uuidv4() },
       }),
     );
     setLoading(false);

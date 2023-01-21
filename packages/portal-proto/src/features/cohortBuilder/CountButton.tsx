@@ -1,8 +1,8 @@
 import { Loader } from "@mantine/core";
-import { useFilteredCohortCounts } from "@gff/core";
+import { useFilteredCohortCounts, CountsData } from "@gff/core";
 
 export interface CountButtonProp {
-  readonly countName: string;
+  readonly countName: keyof CountsData;
   readonly label: string;
   readonly className?: string;
   readonly bold?: boolean;

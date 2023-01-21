@@ -229,7 +229,7 @@ const ContextBar: React.FC = () => {
                   <FunctionButton>
                     <DownloadIcon />
                     <CountButton
-                      countName="fileCounts"
+                      countName="fileCount"
                       label="Files"
                       className="px-2"
                     />
