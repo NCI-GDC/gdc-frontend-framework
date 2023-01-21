@@ -14,7 +14,6 @@ interface SwitchSpringProps {
   survivalProps?: {
     plot: string;
   };
-  isDemoMode?: boolean;
 }
 
 const SwitchSpring: React.FC<SwitchSpringProps> = ({
@@ -26,7 +25,6 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   tooltip = undefined,
   margin,
   survivalProps,
-  isDemoMode = false,
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
@@ -46,6 +44,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}
+        role="switch"
       >
         <animated.div
           style={sliderSpring}
@@ -71,7 +70,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
           <animated.div
             style={ballSpring}
             className={`border-2 rounded-sm ${
-              isDemoMode ? "border-gray-300" : "border-activeColor"
+              disabled ? "border-gray-300" : "border-activeColor"
             }
              bg-white ${icon && `rounded-xl`} ${
               isActive && `bg-lightgray`
