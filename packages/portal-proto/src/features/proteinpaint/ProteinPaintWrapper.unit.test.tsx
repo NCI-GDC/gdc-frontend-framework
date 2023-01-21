@@ -37,6 +37,18 @@ test("SSM lolliplot arguments", () => {
   unmount();
 });
 
+test("OncoMatrix arguments", () => {
+  const { unmount } = render(<ProteinPaintWrapper track="matrix" />);
+  expect(typeof runpparg).toBe("object");
+  expect(typeof runpparg.host).toBe("string");
+  expect(runpparg.noheader).toEqual(true);
+  expect(runpparg.nobox).toEqual(true);
+  expect(runpparg.hide_dsHandles).toEqual(true);
+  expect(runpparg.holder instanceof HTMLElement).toBe(true);
+  expect(runpparg.launchGdcMatrix).toEqual(true);
+  unmount();
+});
+
 test("Sequence Read arguments - logged in", () => {
   userDetails = { data: { username: "test" } };
   filter = { test: 1 };

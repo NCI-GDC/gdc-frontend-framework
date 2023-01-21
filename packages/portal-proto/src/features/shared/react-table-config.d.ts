@@ -48,6 +48,10 @@ import {
   UseSortByState,
 } from "react-table";
 
+interface CustomColumn {
+  highlighted?: boolean;
+}
+
 declare module "react-table" {
   // take this file as-is, or comment out the sections that don't apply to your plugin configuration
   export interface TableOptions<D extends Record<string, unknown>>
@@ -110,7 +114,8 @@ declare module "react-table" {
   > extends UseFiltersColumnProps<D>,
       UseGroupByColumnProps<D>,
       UseResizeColumnsColumnProps<D>,
-      UseSortByColumnProps<D> {}
+      UseSortByColumnProps<D>,
+      CustomColumn {}
 
   export interface Cell<
     D extends Record<string, unknown> = Record<string, unknown>,

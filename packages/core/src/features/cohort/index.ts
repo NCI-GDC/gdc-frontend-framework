@@ -48,6 +48,12 @@ import {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  selectCurrentCohortGroups,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
+  addNewCohortGroups,
+  removeCohortGroup,
+  selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
 } from "./availableCohortsSlice";
 
@@ -67,6 +73,7 @@ import {
   selectCohortCountsByName,
   useCohortCounts,
   useFilteredCohortCounts,
+  CountsData,
 } from "./countSlice";
 
 import {
@@ -137,5 +144,12 @@ export {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  selectCurrentCohortGroups,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
+  addNewCohortGroups,
+  removeCohortGroup,
+  selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
+  CountsData,
 };

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { FacetTabs } from "../FacetTabs";
 import * as core from "@gff/core";
 import * as func from "@gff/core";
+import * as hooks from "@/features/facets/hooks";
 
 describe("<FacetTabs />", () => {
   beforeEach(() => {
@@ -33,6 +34,7 @@ describe("<FacetTabs />", () => {
         index: "repository",
       },
     });
+    jest.spyOn(hooks, "useEnumFacets").mockImplementation(jest.fn());
 
     const { queryByText } = render(<FacetTabs />);
     const customTab = queryByText("Custom");
