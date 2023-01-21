@@ -159,6 +159,7 @@ const RepositoryApp = () => {
               setActive={setActive}
               active={active}
             />
+
             <Link
               href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
                 stringifyJSONParam(repositoryFilters),
@@ -168,11 +169,16 @@ const RepositoryApp = () => {
                 label={"No images available to be viewed"}
                 disabled={!viewImageDisabled}
               >
-                <FunctionButton component="a" disabled={viewImageDisabled}>
+                <FunctionButton
+                  component="a"
+                  $disabled={viewImageDisabled}
+                  aria-disabled={viewImageDisabled}
+                >
                   View Images
                 </FunctionButton>
               </Tooltip>
             </Link>
+
             <FunctionButton
               leftIcon={<CartIcon />}
               loading={allFilesLoading}
