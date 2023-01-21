@@ -4,7 +4,7 @@ interface CategoryTableSummaryProps {
   title: string;
   dataObject: Array<Record<string, any>>;
   tableData: {
-    readonly headers: string[];
+    readonly headers: string[] | JSX.Element[];
     readonly tableRows: any[];
   };
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, createStyles, Menu } from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
 import {
   useCoreSelector,
   selectSelectedCases,
@@ -77,6 +78,11 @@ export const CasesCohortButton = (): JSX.Element => {
         filters: filters,
         message: "newCasesCohort",
         name,
+        group: {
+          ids: [...pickedCases],
+          field: "cases.case_id",
+          groupId: uuidv4(),
+        },
       }),
     );
   };
