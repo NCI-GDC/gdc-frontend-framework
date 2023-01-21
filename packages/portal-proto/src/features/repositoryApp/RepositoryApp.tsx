@@ -37,6 +37,7 @@ import FunctionButtonRemove from "@/components/FunctionButtonRemove";
 import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { FilterSet2GqlOperator } from "@/features/repositoryApp/utils";
+import { Tooltip } from "@mantine/core";
 
 const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
@@ -113,6 +114,8 @@ const RepositoryApp = () => {
 
   useClearLocalFilterWhenCohortChanges();
 
+  const viewImageDisabled =
+    imagesCount.slidesCount <= 0 && imagesCount.casesWithImagesCount <= 0;
   return (
     <div className="flex flex-row mt-4 mx-3">
       <div className="w-1/4">
@@ -161,15 +164,14 @@ const RepositoryApp = () => {
                 stringifyJSONParam(repositoryFilters),
               )}`}
             >
-              <FunctionButton
-                component="a"
-                disabled={
-                  imagesCount.slidesCount <= 0 &&
-                  imagesCount.casesWithImagesCount <= 0
-                }
+              <Tooltip
+                label={"No images available to be viewed"}
+                disabled={!viewImageDisabled}
               >
-                View Images
-              </FunctionButton>
+                <FunctionButton component="a" disabled={viewImageDisabled}>
+                  View Images
+                </FunctionButton>
+              </Tooltip>
             </Link>
             <FunctionButton
               leftIcon={<CartIcon />}
