@@ -340,6 +340,7 @@ const slice = createSlice({
       const cohort = newCohort({
         filters: action.payload.filters,
         customName: action.payload.name,
+        modified: true,
       });
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
