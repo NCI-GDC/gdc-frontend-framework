@@ -40,7 +40,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   // TODO add roles in divs for switch for a11y
   return (
-    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
+    <Tooltip label={tooltip} disabled={!tooltip}>
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}

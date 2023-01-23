@@ -15,29 +15,36 @@ import {
   selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
+export interface CountsData {
+  readonly caseCount: number;
+  readonly fileCount: number;
+  readonly genesCount: number;
+  readonly mutationCount: number;
+  readonly ssmCaseCount: number;
+  readonly sequenceReadCaseCount: number;
+  readonly repositoryCaseCount: number;
+  readonly casesMax: number;
+}
+
 export interface CountsState {
-  readonly counts: Record<string, number>;
+  readonly counts: CountsData;
   readonly status: DataStatus;
   readonly error?: string;
 }
 
 const initialState: CountsState = {
   counts: {
-    caseCounts: -1,
-    fileCounts: -1,
-    genesCounts: -1,
-    mutationCounts: -1,
-    ssmCaseCounts: -1,
-    sequenceReadCaseCounts: -1,
+    caseCount: -1,
+    fileCount: -1,
+    genesCount: -1,
+    mutationCount: -1,
+    ssmCaseCount: -1,
+    sequenceReadCaseCount: -1,
+    repositoryCaseCount: -1,
     casesMax: -1,
   },
   status: "uninitialized",
 };
-export interface CountsState {
-  readonly counts: Record<string, number>;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
 
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument,
@@ -185,7 +192,7 @@ export const cohortCountsReducer = slice.reducer;
 
 export const selectCohortCountsData = (
   state: CoreState,
-): CoreDataSelectorResponse<Record<string, number>> => {
+): CoreDataSelectorResponse<CountsData> => {
   return {
     data: state.cohort.cohortCounts.counts,
     status: state.cohort.cohortCounts.status,
@@ -193,12 +200,12 @@ export const selectCohortCountsData = (
   };
 };
 
-export const selectCohortCounts = (state: CoreState): Record<string, number> =>
+export const selectCohortCounts = (state: CoreState): CountsData =>
   state.cohort.cohortCounts.counts;
 
 export const selectCohortCountsByName = (
   state: CoreState,
-  name: string,
+  name: keyof CountsData,
 ): number => {
   const counts = state.cohort.cohortCounts.counts;
   return counts[name];

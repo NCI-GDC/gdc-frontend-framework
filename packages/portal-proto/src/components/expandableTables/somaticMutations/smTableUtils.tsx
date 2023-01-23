@@ -85,7 +85,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start ml-2"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -144,6 +144,10 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              if (row.depth > 0) {
+                // this is an expanded row
+                return null;
+              }
               const { numerator } = row?.original["affectedCasesInCohort"] ?? {
                 numerator: 0,
               };
