@@ -212,6 +212,10 @@ export const buildCohortGqlOperator = (
   if (!fs) return undefined;
 
   const fsKeys = Object.keys(fs.root);
+  // if no keys return undefined
+  if (fsKeys.length === 0) return undefined;
+
+  // TODO consider changing FilterSet: mode to support joinOrToAll as FilterSet mode
   // find key using keyword "joinOrToAll"
   const joinOrToAllKey = fsKeys.filter((x) => x.includes("joinOrToAll"));
 
@@ -252,15 +256,13 @@ export const buildCohortGqlOperator = (
           fsKeys,
         );
       }
-      return Object.keys(fs.root).length == 0
-        ? undefined
-        : {
-            // TODO: Replace fixed AND with cohort top level operation like Union or Intersection
-            op: fs.mode,
-            content: fsKeys.map((k): GqlOperation => {
-              return convertFilterToGqlFilter(fs.root[k]);
-            }),
-          };
+      return {
+        // TODO: Replace fixed AND with cohort top level operation like Union or Intersection
+        op: fs.mode,
+        content: fsKeys.map((k): GqlOperation => {
+          return convertFilterToGqlFilter(fs.root[k]);
+        }),
+      };
   }
   return undefined;
 };
