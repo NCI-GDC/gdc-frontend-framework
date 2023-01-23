@@ -83,6 +83,7 @@ export interface GenesTableProps {
   columnListOrder: Column[];
   visibleColumns: Column[];
   searchTerm: string;
+  isDemoMode?: boolean;
 }
 
 export const DEFAULT_GTABLE_ORDER = [

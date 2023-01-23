@@ -28,6 +28,7 @@ export const createTableColumn = (
   handleGeneToggled: GeneToggledHandler,
   toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
+  isDemoMode: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -73,7 +74,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -84,11 +85,19 @@ export const createTableColumn = (
                       isActive={toggledGenes.includes(row.original?.geneID)}
                       margin={`my-0.5 ml-0`}
                       icon={
-                        <Image
-                          src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
-                        />
+                        isDemoMode ? (
+                          <Image
+                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        ) : (
+                          <Image
+                            src={"/user-flow/icons/cohort-dna.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        )
                       }
                       selected={row.original["cohort"]}
                       handleSwitch={() =>
@@ -97,7 +106,10 @@ export const createTableColumn = (
                           symbol: row.original?.symbol,
                         })
                       }
-                      tooltip={""}
+                      tooltip={
+                        isDemoMode && "Feature not available in demo mode"
+                      }
+                      disabled={isDemoMode}
                     />
                   )}
                 </>
@@ -121,6 +133,11 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              if (row.depth > 0) {
+                // this is an expanded row
+                return null;
+              }
+
               const { numerator } = row?.original[
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0 };
