@@ -248,7 +248,7 @@ export const buildCohortGqlOperator = (
         }
       } else if (joinOrToAllKey.length > 1) {
         console.error(
-          `function buildCohortGqlOperator expecting only one joinOrToAll receaved: ${joinOrToAllKey.length}`,
+          `function buildCohortGqlOperator expecting only one joinOrToAll received: ${joinOrToAllKey.length}`,
           fsKeys,
         );
       }
