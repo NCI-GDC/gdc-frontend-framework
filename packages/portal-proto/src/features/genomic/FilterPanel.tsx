@@ -25,7 +25,11 @@ import SetFacet from "@/features/facets/SetFacet";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 
-const GeneAndSSMFilterPanel = (): JSX.Element => {
+const GeneAndSSMFilterPanel = ({
+  isDemoMode,
+}: {
+  isDemoMode: boolean;
+}): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
 
@@ -35,11 +39,13 @@ const GeneAndSSMFilterPanel = (): JSX.Element => {
     FilterFacets.filter((f) => f.docType === "genes").map(
       (x) => x.facet_filter,
     ),
+    isDemoMode,
   );
   useGenesFacets(
     "ssms",
     "explore",
     FilterFacets.filter((f) => f.docType === "ssms").map((x) => x.facet_filter),
+    isDemoMode,
   );
 
   return (

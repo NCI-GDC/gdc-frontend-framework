@@ -1,0 +1,31 @@
+<svg id="CohortSym" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.518" height="27.5" viewBox="0 0 22.518 27.5">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="Path_216" data-name="Path 216" d="M0,0H7.295V9H0Z" transform="translate(1639 135)" fill="#fff" stroke="#0c4564" stroke-width="1"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <path id="Path_215" data-name="Path 215" d="M0,0H9.55V9.75L0,15.29Z" transform="translate(1628.991 150.372) rotate(-90)" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+    <clipPath id="clip-path-3">
+      <path id="Path_214" data-name="Path 214" d="M-.78,1.3,10.6,1.271v6.5L.978,7.793Z" transform="translate(1638.715 134.989) rotate(-90)" fill="#fff" stroke="#c5c5c5" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <path id="Spiral" d="M9866.538-1298.745a4.759,4.759,0,0,1-2.839,2.557,14.6,14.6,0,0,1-4.9.432s-5.689-.8-7.275,2.408,1.911,7,1.911,7,2.441,3.4,2.105,5.613-.909,2.586-.909,2.586" transform="translate(-9844.991 1304.613)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  <path id="GeneLine" d="M9854.229-1289.069l-2.927-1.669" transform="translate(-9844.991 1304.613)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <path id="GeneLine-2" data-name="GeneLine" d="M9853.795-1289.254l-2.492-1.483" transform="translate(-9844.557 1301.798)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <path id="GeneLine-3" data-name="GeneLine" d="M9853.3-1289.449l-2-1.288" transform="translate(-9842.064 1299.993)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <g id="MaskedGene" transform="translate(-1624.991 -122.387)" clip-path="url(#clip-path)">
+    <path id="Path_203" data-name="Path 203" d="M9851.108-1278.15a4.759,4.759,0,0,1,2.839-2.557,14.6,14.6,0,0,1,4.9-.432s5.689.8,7.275-2.408-1.911-7-1.911-7-2.441-3.4-2.105-5.613.909-2.586.909-2.586" transform="translate(-8221 1423.895)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+  <path id="GeneLine-4" data-name="GeneLine" d="M9853.085-1289.721l-1.782-1.016" transform="translate(-9835.991 1309.613)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <path id="GeneLine-5" data-name="GeneLine" d="M9855.979-1287.953l-4.676-2.785" transform="translate(-9836.425 1306.281)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <path id="GeneLine-6" data-name="GeneLine" d="M9854.088-1288.943l-2.786-1.795" transform="translate(-9833.851 1304.487)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-width="1.5"/>
+  <g id="Maskedline2" transform="translate(-1628.991 -124.387)" clip-path="url(#clip-path-2)">
+    <path id="Path_207" data-name="Path 207" d="M9851.108-1278.15a4.759,4.759,0,0,1,2.839-2.557,14.6,14.6,0,0,1,4.9-.432s5.689.8,7.275-2.408-1.911-7-1.911-7-2.441-3.4-2.105-5.613.909-2.586.909-2.586" transform="translate(-8221.344 1423.895)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+  <g id="Maskedline1" transform="translate(-1628.991 -124.387)" clip-path="url(#clip-path-3)">
+    <path id="Path_208" data-name="Path 208" d="M9851.108-1278.15a4.759,4.759,0,0,1,2.839-2.557,14.6,14.6,0,0,1,4.9-.432s5.689.8,7.275-2.408-1.911-7-1.911-7-2.441-3.4-2.105-5.613.909-2.586.909-2.586" transform="translate(-8221.344 1423.895)" fill="none" stroke="#c5c5c5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+  <path id="BtmLine" d="M9847.783-1285.582l7.841,4.489" transform="translate(-9844.991 1304.613)" fill="none" stroke="#c5c5c5" stroke-width="1.5"/>
+  <path id="TopLine" d="M9847.783-1285.582l7.841,4.489" transform="translate(-9836.392 1289.205)" fill="none" stroke="#c5c5c5" stroke-width="1.5"/>
+</svg>

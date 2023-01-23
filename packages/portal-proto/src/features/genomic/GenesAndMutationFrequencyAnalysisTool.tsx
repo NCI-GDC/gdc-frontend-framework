@@ -29,6 +29,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
+import { useRouter } from "next/router";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -79,7 +80,14 @@ const buildGeneHaveAndHaveNotFilters = (
 // Persist which tab is active
 type AppModeState = "genes" | "ssms";
 
+// need to define isDemoMode Here
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
+  // get the params pass to the app
+  const {
+    query: { demoMode, app },
+  } = useRouter();
+  const isDemoMode =
+    demoMode === "true" || (app as string).endsWith("Demo") ? true : false;
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
@@ -98,10 +106,30 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
-  const filters = useMemo(
-    () => buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
+  const overwritingDemoFilter: FilterSet = useMemo(
+    () => ({
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          operator: "includes",
+          field: "cases.project.project_id",
+          operands: ["TCGA-LGG"],
+        },
+      },
+    }),
+    [],
+  );
 
-    [cohortFilters, genomicFilters],
+  const filters = useMemo(
+    () =>
+      buildCohortGqlOperator(
+        joinFilters(
+          isDemoMode ? overwritingDemoFilter : cohortFilters,
+          genomicFilters,
+        ),
+      ),
+
+    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
   );
 
   const prevFilters = usePrevious(filters);
@@ -127,8 +155,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     survivalData: [],
   };
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } =
-    useTopGene(genomicFilters); // get the default top gene/ssms to show by default
+  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
+    genomicFilters,
+    isDemoMode,
+    overwritingDemoFilter,
+  }); // get the default top gene/ssms to show by default
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -199,7 +230,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
     appDispatch(clearGeneAndSSMFilters());
-  }, [cohortFilters, appDispatch]);
+  }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
   /**
    * Clear comparative when local filters change
@@ -223,33 +254,83 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
   return (
-    <div className="flex flex-row w-100">
-      <GeneAndSSMFilterPanel />
-      <Tabs
-        value={appMode}
-        defaultValue="genes"
-        classNames={{
-          tab: SecondaryTabStyle,
-          tabsList: "px-2 mt-2 border-0",
-          root: "bg-base-max border-0 w-full",
-        }}
-        onTabChange={handleTabChanged}
-        keepMounted={false}
-      >
-        <Tabs.List>
-          <Tabs.Tab value="genes">Genes</Tabs.Tab>
-          <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="genes" pt="xs">
-          <div className="flex flex-col w-100 mx-6">
-            <Grid className="mx-2 bg-base-max">
-              <Grid.Col span={6}>
-                <GeneFrequencyChart
-                  marginBottom={95}
-                  genomicFilters={genomicFilters}
-                />
-              </Grid.Col>
-              <Grid.Col span={6} className="relative">
+    <>
+      <>
+        {isDemoMode && (
+          <span className="font-heading italic px-2 py-4 mt-4">
+            {"Demo showing cases with low grade gliomas (TCGA-LGG project)."}
+          </span>
+        )}
+      </>
+      <div className="flex flex-row w-100">
+        <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
+        <Tabs
+          value={appMode}
+          defaultValue="genes"
+          classNames={{
+            tab: SecondaryTabStyle,
+            tabsList: "px-2 mt-2 border-0",
+            root: "bg-base-max border-0 w-full",
+          }}
+          onTabChange={handleTabChanged}
+          keepMounted={false}
+        >
+          <Tabs.List>
+            <Tabs.Tab value="genes">Genes</Tabs.Tab>
+            <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="genes" pt="xs">
+            <div className="flex flex-col w-100 mx-6">
+              <Grid className="mx-2 bg-base-max">
+                <Grid.Col span={6}>
+                  <GeneFrequencyChart
+                    marginBottom={95}
+                    genomicFilters={genomicFilters}
+                    isDemoMode={isDemoMode}
+                    overwritingDemoFilter={overwritingDemoFilter}
+                  />
+                </Grid.Col>
+                <Grid.Col span={6} className="relative">
+                  <LoadingOverlay
+                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                  />
+                  <SurvivalPlot
+                    plotType={SurvivalPlotTypes.overall}
+                    data={
+                      survivalPlotReady &&
+                      survivalPlotData.survivalData.length > 1
+                        ? survivalPlotData
+                        : emptySurvivalPlot
+                    }
+                    names={
+                      survivalPlotReady && comparativeSurvival
+                        ? [comparativeSurvival.symbol]
+                        : []
+                    }
+                  />
+                </Grid.Col>
+              </Grid>
+              <GTableContainer
+                selectedSurvivalPlot={comparativeSurvival}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                handleGeneToggled={partial(
+                  handleGeneAndSSmToggled,
+                  currentGenes,
+                  "genes.gene_id",
+                  "geneID",
+                )}
+                toggledGenes={currentGenes}
+                genomicFilters={genomicFilters}
+                cohortFilters={
+                  isDemoMode ? overwritingDemoFilter : cohortFilters
+                }
+                isDemoMode={isDemoMode}
+              />
+            </div>
+          </Tabs.Panel>
+          <Tabs.Panel value="ssms" pt="xs">
+            <div className="flex flex-col w-100 mx-6">
+              <div className="bg-base-max">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
@@ -257,6 +338,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   plotType={SurvivalPlotTypes.overall}
                   data={
                     survivalPlotReady &&
+                    comparativeSurvival &&
                     survivalPlotData.survivalData.length > 1
                       ? survivalPlotData
                       : emptySurvivalPlot
@@ -267,62 +349,26 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                       : []
                   }
                 />
-              </Grid.Col>
-            </Grid>
-            <GTableContainer
+              </div>
+            </div>
+            <SMTableContainer
               selectedSurvivalPlot={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              handleGeneToggled={partial(
-                handleGeneAndSSmToggled,
-                currentGenes,
-                "genes.gene_id",
-                "geneID",
-              )}
-              toggledGenes={currentGenes}
               genomicFilters={genomicFilters}
-              cohortFilters={cohortFilters}
+              cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+              handleSsmToggled={partial(
+                handleGeneAndSSmToggled,
+                currentMutations,
+                "ssms.ssm_id",
+                "mutationID",
+              )}
+              toggledSsms={currentMutations}
+              isDemoMode={isDemoMode}
             />
-          </div>
-        </Tabs.Panel>
-        <Tabs.Panel value="ssms" pt="xs">
-          <div className="flex flex-col w-100 mx-6">
-            <div className="bg-base-max">
-              <LoadingOverlay
-                visible={!survivalPlotReady && !topGeneSSMSSuccess}
-              />
-              <SurvivalPlot
-                plotType={SurvivalPlotTypes.overall}
-                data={
-                  survivalPlotReady &&
-                  comparativeSurvival &&
-                  survivalPlotData.survivalData.length > 1
-                    ? survivalPlotData
-                    : emptySurvivalPlot
-                }
-                names={
-                  survivalPlotReady && comparativeSurvival
-                    ? [comparativeSurvival.name]
-                    : []
-                }
-              />
-            </div>
-          </div>
-          <SMTableContainer
-            selectedSurvivalPlot={comparativeSurvival}
-            handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-            genomicFilters={genomicFilters}
-            cohortFilters={cohortFilters}
-            handleSsmToggled={partial(
-              handleGeneAndSSmToggled,
-              currentMutations,
-              "ssms.ssm_id",
-              "mutationID",
-            )}
-            toggledSsms={currentMutations}
-          />
-        </Tabs.Panel>
-      </Tabs>
-    </div>
+          </Tabs.Panel>
+        </Tabs>
+      </div>
+    </>
   );
 };
 
