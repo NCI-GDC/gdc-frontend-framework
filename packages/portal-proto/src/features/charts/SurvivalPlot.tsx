@@ -8,7 +8,6 @@ import {
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
-import html2canvas from "html2canvas";
 import { toPng, toSvg } from "html-to-image";
 import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
@@ -250,19 +249,21 @@ const buildManyLegend = (
       ];
 };
 
-function downloadFile(url, fileName) {
-  fetch(url, { method: "get", mode: "no-cors", referrerPolicy: "no-referrer" })
-    .then((res) => res.blob())
-    .then((res) => {
-      const aElement = document.createElement("a");
-      aElement.setAttribute("download", fileName);
-      const href = URL.createObjectURL(res);
-      aElement.href = href;
-      aElement.setAttribute("target", "_blank");
-      aElement.click();
-      URL.revokeObjectURL(href);
-    });
-}
+const DownloadFile = async (url: string, filename: string) => {
+  const res = await fetch(url, {
+    method: "get",
+    mode: "no-cors",
+    referrerPolicy: "no-referrer",
+  });
+  const blob = await res.blob();
+  const aElement = document.createElement("a");
+  aElement.setAttribute("download", filename);
+  const href = URL.createObjectURL(blob);
+  aElement.href = href;
+  aElement.setAttribute("target", "_blank");
+  aElement.click();
+  URL.revokeObjectURL(href);
+};
 
 export enum SurvivalPlotTypes {
   mutation = "mutation",
@@ -352,14 +353,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const handleDownloadPNG = async () => {
     if (downloadRef.current) {
       toPng(downloadRef.current, { cacheBust: true }).then(function (blob) {
-        downloadFile(blob, "survival-plot.png");
+        DownloadFile(blob, "survival-plot.png");
       });
-
-      // const canvas = await html2canvas(downloadRef.current);
-      //
-      // canvas.toBlob((blob) => {
-      //   saveAs(blob, "survival-plot.png");
-      // }, "image/png");
     }
   };
 
