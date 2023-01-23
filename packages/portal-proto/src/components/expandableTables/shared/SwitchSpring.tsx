@@ -40,14 +40,20 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   // TODO add roles in divs for switch for a11y
   return (
-    <Tooltip label={tooltip} disabled={!tooltip}>
+    <Tooltip
+      label={tooltip}
+      disabled={!tooltip}
+      data-testid="tooltipSwitchSpring"
+    >
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}
         role="switch"
+        data-testid="top-div-switchSpring"
       >
         <animated.div
           style={sliderSpring}
+          data-testid="middle-div-switchSpring"
           className={classNames(
             "border border-lightgray h-5",
             {
@@ -75,6 +81,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
              bg-white ${icon && `rounded-xl`} ${
               isActive && `bg-lightgray`
             } text-xs h-5`}
+            data-testid="bottom-div-switchSpring"
           >
             <div className={margin}>{icon}</div>
           </animated.div>

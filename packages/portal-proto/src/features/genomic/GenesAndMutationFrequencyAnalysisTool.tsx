@@ -29,7 +29,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,

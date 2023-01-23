@@ -1,4 +1,4 @@
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
 import ClinicalDataAnalysis from "../cDave/ClinicalDataAnalysis";
 import { DemoUtil } from "./DemoUtil";

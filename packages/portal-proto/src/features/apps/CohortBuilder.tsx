@@ -1,7 +1,7 @@
 import FacetTabs from "../cohortBuilder/FacetTabs";
 import { FC } from "react";
 import { DemoUtil } from "./DemoUtil";
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const CohortBuilder: FC = () => {
   const isDemoMode = useIsDemoApp();

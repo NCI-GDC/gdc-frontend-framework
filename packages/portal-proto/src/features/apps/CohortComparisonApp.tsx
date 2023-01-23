@@ -1,4 +1,4 @@
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortName,

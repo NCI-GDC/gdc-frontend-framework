@@ -1,4 +1,4 @@
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
 import SetOperationsDemo from "../set-operations/SetOperationsDemo";
 import { DemoUtil } from "./DemoUtil";

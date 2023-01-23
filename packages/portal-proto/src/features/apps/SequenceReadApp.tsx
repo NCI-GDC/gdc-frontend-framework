@@ -1,4 +1,4 @@
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
 import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
 import { DemoUtil } from "./DemoUtil";

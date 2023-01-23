@@ -21,7 +21,7 @@ import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),

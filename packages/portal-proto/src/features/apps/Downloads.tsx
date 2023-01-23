@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { RepositoryAppId } from "../repositoryApp/RepositoryApp";
 import { selectGdcAppById, useCoreSelector } from "@gff/core";
-import useIsDemoApp from "@/hooks/useIsDemoApp";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoUtil } from "./DemoUtil";
 
 const Downloads: FC = () => {
