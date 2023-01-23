@@ -243,7 +243,7 @@ export const buildCohortGqlOperator = (
           };
         } else {
           console.error(
-            `function buildCohortGqlOperator expecting "or" receaved "${firstJoinOrToAllObj.operator}" on key "${firstJoinOrToAllKey}"`,
+            `function buildCohortGqlOperator expecting "or" received "${firstJoinOrToAllObj.operator}" on key "${firstJoinOrToAllKey}"`,
           );
         }
       } else if (joinOrToAllKey.length > 1) {
