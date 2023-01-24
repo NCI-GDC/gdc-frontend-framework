@@ -12,6 +12,7 @@ import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
   FilterSet,
+  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
 
@@ -99,16 +100,29 @@ export interface GeneSSMSEntry {
   };
 }
 
+export interface FetchTopGeneProps {
+  genomicFilters: FilterSet;
+  isDemoMode: boolean;
+  overwritingDemoFilter: FilterSet;
+}
+
 export const fetchTopGene = createAsyncThunk<
   GraphQLApiResponse,
-  FilterSet, // additional local filters
+  FetchTopGeneProps, // additional local filters
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/topGene",
-  async (genomicFilters, thunkAPI): Promise<GraphQLApiResponse> => {
-    const filters = buildCohortGqlOperator(
-      mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
-    );
+  async (
+    { genomicFilters, isDemoMode, overwritingDemoFilter }: FetchTopGeneProps,
+    thunkAPI,
+  ): Promise<GraphQLApiResponse> => {
+    const filters = isDemoMode
+      ? buildCohortGqlOperator(
+          joinFilters(overwritingDemoFilter, genomicFilters),
+        )
+      : buildCohortGqlOperator(
+          mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
+        );
     const filterContents = filters?.content ? Object(filters?.content) : [];
 
     const graphQlVariables = {

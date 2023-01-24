@@ -16,7 +16,7 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 
 interface AdditionalCohortSelectionProps {
   readonly app: string;
-  readonly setActiveApp?: (id: string) => void;
+  readonly setActiveApp?: (id: string, demoMode?: boolean) => void;
   readonly setOpen: (open: boolean) => void;
 }
 
@@ -113,7 +113,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <Button
             variant={"filled"}
             onClick={() => {
-              setActiveApp(`${currentApp.id}Demo`);
+              setActiveApp(`${currentApp.id}Demo`, true);
               closeCohortSelection();
             }}
             className="bg-primary border-primary-darkest text-primary-contrast hover:bg-primary-lighter mx-2"
@@ -124,7 +124,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             <Button
               disabled={selectedCohort === null}
               variant={"filled"}
-              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base bg-primary text-primary-contrast hover:bg-primary-lighter"
+              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base text-primary-contrast hover:bg-primary-lighter"
               onClick={() => {
                 dispatch(setComparisonCohorts([selectedCohort]));
                 closeCohortSelection();

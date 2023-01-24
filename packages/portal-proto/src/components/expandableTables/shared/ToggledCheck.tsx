@@ -63,7 +63,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
             ? "bg-base-lighter hover:bg-primary-lighter"
             : "hover:bg-primary checked:bg-primary-darkest",
         }}
-      ></Checkbox>
+      />
     </Tooltip>
   );
 };

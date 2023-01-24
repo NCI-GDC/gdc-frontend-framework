@@ -13,6 +13,7 @@ import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
   filterSetToOperation,
+  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
@@ -164,28 +165,47 @@ export const fetchGenesTable = createAsyncThunk<
   "genes/genesTable",
   async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { pageSize, offset, searchTerm, genomicFilters }: GenomicTableProps,
+    {
+      pageSize,
+      offset,
+      searchTerm,
+      genomicFilters,
+      isDemoMode,
+      overwritingDemoFilter,
+    }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     const cohortFilters = buildCohortGqlOperator(
       selectCurrentCohortFilters(thunkAPI.getState()),
     );
-    const cohortFiltersContent = cohortFilters?.content
-      ? Object(cohortFilters?.content)
+
+    const demoOrCohort = isDemoMode
+      ? buildCohortGqlOperator(overwritingDemoFilter)
+      : cohortFilters;
+    const cohortFiltersContent = demoOrCohort?.content
+      ? Object(demoOrCohort?.content)
       : [];
     const geneAndCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
       genomicFilters,
     );
-    const filters = buildCohortGqlOperator(geneAndCohortFilters);
+    const filters = isDemoMode
+      ? buildCohortGqlOperator(
+          joinFilters(overwritingDemoFilter, genomicFilters),
+        )
+      : buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(
       appendFilterToOperation(
-        filterSetToOperation(geneAndCohortFilters) as
-          | Union
-          | Intersection
-          | undefined,
+        isDemoMode
+          ? (filterSetToOperation(
+              joinFilters(overwritingDemoFilter, genomicFilters),
+            ) as Union | Intersection | undefined)
+          : (filterSetToOperation(geneAndCohortFilters) as
+              | Union
+              | Intersection
+              | undefined),
         searchFilters,
       ),
     );
