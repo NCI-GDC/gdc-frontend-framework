@@ -289,6 +289,8 @@ export const createUseAppDataHook = (fetchDataActionCreator, dataSelector) => {
     const { data, status, error } = useAppSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
     const prevParams = usePrevious(params);
+
+    console.log("cmp", prevParams, params);
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is

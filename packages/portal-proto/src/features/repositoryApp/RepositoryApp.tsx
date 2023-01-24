@@ -58,7 +58,7 @@ const useCohortCentricFiles = () => {
     if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
       coreDispatch(
         fetchFiles({
-          filters: FilterSet2GqlOperator(allFilters),
+          filters: buildCohortGqlOperator(allFilters),
           expand: [
             "annotations", //annotations
             "cases.project", //project_id
