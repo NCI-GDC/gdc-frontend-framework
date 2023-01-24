@@ -1,11 +1,11 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
-  CoreState,
-  createUseCoreDataHook,
   DataStatus,
-} from "@gff/core";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { GraphQLApiResponse } from "../../gdcapi/gdcgraphql";
+  createUseCoreDataHook,
+} from "src/dataAccess";
+import { GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
+import { CoreState } from "src/reducers";
 import {
   fetchMutatedGenesFreqQuery,
   MutatedGenesFreqResponse,

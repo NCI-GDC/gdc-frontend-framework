@@ -1,4 +1,4 @@
-import { GraphQLApiResponse, graphqlAPI } from "../../gdcapi/gdcgraphql";
+import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 
 export const mutatedGenesFreqQuery = `
 query MutatedGenesFreq(
