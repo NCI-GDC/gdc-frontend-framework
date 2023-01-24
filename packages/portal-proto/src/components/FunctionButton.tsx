@@ -6,7 +6,10 @@ interface FunctionButtonProps {
 }
 
 export default tw(Button)<FunctionButtonProps>`
- ${(p) => (p.$disabled ? "opacity-60 border-opacity-60 text-opacity-60" : null)}
+ ${(p) =>
+   p.$disabled
+     ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
+     : null}
 flex
 flex-row
 items-center

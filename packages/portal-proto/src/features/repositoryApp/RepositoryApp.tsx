@@ -169,11 +169,7 @@ const RepositoryApp = () => {
                 label={"No images available to be viewed"}
                 disabled={!viewImageDisabled}
               >
-                <FunctionButton
-                  component="a"
-                  $disabled={viewImageDisabled}
-                  aria-disabled={viewImageDisabled}
-                >
+                <FunctionButton component="a" $disabled={viewImageDisabled}>
                   View Images
                 </FunctionButton>
               </Tooltip>
