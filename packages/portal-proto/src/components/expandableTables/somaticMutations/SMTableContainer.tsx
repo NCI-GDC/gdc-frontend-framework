@@ -41,6 +41,7 @@ export interface SMTableContainerProps {
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
+  isDemoMode?: boolean;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -53,6 +54,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   cohortFilters = { mode: "and", root: {} },
   handleSsmToggled = () => null,
   toggledSsms = [],
+  isDemoMode = false,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -152,6 +154,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
     genomicFilters: genomicFilters,
     geneSymbol: geneSymbol,
+    isDemoMode: isDemoMode,
+    overwritingDemoFilter: cohortFilters,
   });
 
   useEffect(() => {
@@ -338,6 +342,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 searchTerm={searchTerm}
                 handleSsmToggled={handleSsmToggled}
                 toggledSsms={toggledSsms}
+                isDemoMode={isDemoMode}
               />
             </div>
           )}

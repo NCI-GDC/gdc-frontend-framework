@@ -36,6 +36,7 @@ export interface GTableContainerProps {
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
+  isDemoMode?: boolean;
 }
 
 export const GTableContainer: React.FC<GTableContainerProps> = ({
@@ -45,6 +46,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   genomicFilters,
   cohortFilters,
   toggledGenes = [],
+  isDemoMode = false,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -142,6 +144,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     genomicFilters: genomicFilters,
+    isDemoMode: isDemoMode,
+    overwritingDemoFilter: cohortFilters,
   });
 
   useEffect(() => {
@@ -240,6 +244,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
+                isDemoMode={isDemoMode}
               />
             </div>
           )}

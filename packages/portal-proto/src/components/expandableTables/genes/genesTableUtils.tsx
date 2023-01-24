@@ -28,6 +28,7 @@ export const createTableColumn = (
   handleGeneToggled: GeneToggledHandler,
   toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
+  isDemoMode: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -73,7 +74,7 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="mx-3"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -84,11 +85,19 @@ export const createTableColumn = (
                       isActive={toggledGenes.includes(row.original?.geneID)}
                       margin={`my-0.5 ml-0`}
                       icon={
-                        <Image
-                          src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
-                        />
+                        isDemoMode ? (
+                          <Image
+                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        ) : (
+                          <Image
+                            src={"/user-flow/icons/cohort-dna.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        )
                       }
                       selected={row.original["cohort"]}
                       handleSwitch={() =>
@@ -97,7 +106,10 @@ export const createTableColumn = (
                           symbol: row.original?.symbol,
                         })
                       }
-                      tooltip={""}
+                      tooltip={
+                        isDemoMode && "Feature not available in demo mode"
+                      }
+                      disabled={isDemoMode}
                     />
                   )}
                 </>
@@ -121,18 +133,51 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              if (row.depth > 0) {
+                // this is an expanded row
+                return null;
+              }
+
+              const { numerator } = row?.original[
+                "SSMSAffectedCasesInCohort"
+              ] ?? { numerator: 0 };
+              const disabled = numerator < 10;
+              const selected = row.original["survival"];
+              const isActive = selected.checked;
+              const tooltip = disabled
+                ? `Not enough data`
+                : isActive
+                ? `Click to remove ${selected.symbol} from plot`
+                : `Click to plot ${selected.symbol}`;
+              // NOTE: If button is disabled then tooltips will not show up
+              // https://floating-ui.com/docs/react#disabled-elements
               return (
                 <>
                   {row.getCanExpand() && (
-                    <ToggledCheck
-                      margin="mt-[0.42em] ml-0.5"
-                      isActive={row.original["survival"].checked}
-                      icon={<SurvivalIcon size={24} />}
-                      selected={row.original["survival"]}
-                      handleSwitch={handleSurvivalPlotToggled}
-                      survivalProps={{ plot: "gene.symbol" }}
-                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
-                    />
+                    <Tooltip
+                      label={`${tooltip}`}
+                      disabled={!tooltip || tooltip.length == 0}
+                      withArrow
+                      arrowSize={6}
+                      transition="fade"
+                      transitionDuration={200}
+                      multiline
+                      classNames={{
+                        tooltip:
+                          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
+                      }}
+                    >
+                      <ToggledCheck
+                        margin="mt-[0.42em] ml-0.5"
+                        isActive={row.original["survival"].checked}
+                        icon={<SurvivalIcon size={24} />}
+                        selected={row.original["survival"]}
+                        handleSwitch={handleSurvivalPlotToggled}
+                        survivalProps={{ plot: "gene.symbol" }}
+                        tooltip={tooltip}
+                        disabled={disabled}
+                      />
+                    </Tooltip>
                   )}
                 </>
               );

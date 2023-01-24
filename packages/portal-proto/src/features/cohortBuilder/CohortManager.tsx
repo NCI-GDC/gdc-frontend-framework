@@ -3,7 +3,7 @@ import {
   LoadingOverlay,
   Select,
   //TODO uncomment to show set modals menu
-  // Menu
+  Menu,
 } from "@mantine/core";
 import {
   MdAdd as AddIcon,
@@ -12,7 +12,7 @@ import {
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
   //TODO uncomment to show set modals menu
-  // MdFilterAlt as CohortFilterIcon,
+  MdFilterAlt as CohortFilterIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -42,10 +42,14 @@ import {
   useAddCohortMutation,
   resetSelectedCases,
   //TODO uncomment to show set modals menu
-  // showModal,
+  showModal,
   Modals,
   selectCurrentModal,
   setCurrentCohortId,
+  Operation,
+  updateActiveCohortFilter,
+  FilterGroup,
+  addNewCohortGroups,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -146,12 +150,21 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     { value: cohorts[0].id, label: cohorts[0].name },
     ...cohorts // Make ALL GDC always first
       .slice(1)
+      .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
       .map((x) => {
         return { value: x.id, label: x.name };
       }),
   ];
 
   const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
+
+  const updateCohortFilters = (field: string, operation: Operation, groups) => {
+    coreDispatch(updateActiveCohortFilter({ field, operation, groups }));
+  };
+
+  const useAddNewFilterGroups = () => {
+    return (groups: FilterGroup[]) => coreDispatch(addNewCohortGroups(groups));
+  };
 
   return (
     <div
@@ -290,19 +303,31 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         }}
         onNameChange={onSaveCohort}
       />
-      {modal === Modals.CaseSetModal && <CaseSetModal />}
-      {modal === Modals.GeneSetModal && (
+      {modal === Modals.GlobalCaseSetModal && (
+        <CaseSetModal
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+          useAddNewFilterGroups={useAddNewFilterGroups}
+        />
+      )}
+      {modal === Modals.GlobalGeneSetModal && (
         <GeneSetModal
           modalTitle="Filter Current Cohort by Genes"
           inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
-      {modal === Modals.MutationSetModal && (
+      {modal === Modals.GlobalMutationSetModal && (
         <MutationSetModal
           modalTitle="Filter Current Cohort by Mutations"
           inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
           selectSetInstructions="Select one or more sets below to filter your cohort."
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {/*  Modals End   */}
@@ -391,8 +416,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton data-testid="downloadButton">
               <DownloadIcon size="1.5em" aria-label="Download cohort" />
             </CohortGroupButton>
-            {/* Uncomment to test set modals */}
-            {/*
             <Menu>
               <Menu.Target>
                 <CohortGroupButton>
@@ -405,28 +428,33 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               <Menu.Dropdown>
                 <Menu.Item
                   onClick={() =>
-                    coreDispatch(showModal({ modal: Modals.CaseSetModal }))
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalCaseSetModal }),
+                    )
                   }
                 >
                   cases
                 </Menu.Item>
                 <Menu.Item
                   onClick={() =>
-                    coreDispatch(showModal({ modal: Modals.GeneSetModal }))
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalGeneSetModal }),
+                    )
                   }
                 >
                   genes
                 </Menu.Item>
                 <Menu.Item
                   onClick={() =>
-                    coreDispatch(showModal({ modal: Modals.MutationSetModal }))
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalMutationSetModal }),
+                    )
                   }
                 >
                   mutations
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            */}
           </>
         ) : (
           <div />

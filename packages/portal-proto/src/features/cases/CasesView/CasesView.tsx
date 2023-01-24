@@ -8,12 +8,12 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { CasesCohortButton, CountsIcon } from "../CasesCohortButton";
+import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
 import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
@@ -30,8 +30,8 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 const useStyles = createStyles((theme) => ({
   item: {
     "&[data-hovered]": {
-      backgroundColor:
-        theme.colors[theme.primaryColor][theme.fn.primaryShade()],
+      // TODO: remove with theme color other than blue
+      backgroundColor: theme.colors.blue[3],
       color: theme.white,
     },
   },
@@ -107,6 +107,10 @@ export const ContextualCasesView: React.FC = () => {
     sortBy: sortBy,
     searchTerm,
   });
+
+  useEffect(() => {
+    setOffset(0);
+  }, [cohortFilters]);
 
   const cases = useMemo(
     () =>
@@ -380,7 +384,7 @@ export const ContextualCasesView: React.FC = () => {
             </ButtonTooltip>
           </div>
         }
-        tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${
+        tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
           pagination?.total > 1 ? "Cases" : "Case"
         }`}
         showControls={true}

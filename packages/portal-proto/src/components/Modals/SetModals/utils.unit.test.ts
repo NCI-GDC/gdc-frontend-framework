@@ -45,6 +45,7 @@ describe("getMatchedIdentifiers", () => {
       "TCGA-06-5416-01A-01D-1480-02",
       "NOT-A-MATCH",
     ];
+    const createSetField = "case_id";
 
     expect(
       getMatchedIdentifiers(
@@ -52,6 +53,7 @@ describe("getMatchedIdentifiers", () => {
         mappedToFields,
         givenIdentifierFields,
         tokens,
+        createSetField,
       ),
     ).toEqual([
       {
@@ -64,6 +66,9 @@ describe("getMatchedIdentifiers", () => {
             field: "samples.portions.analytes.aliquots.submitter_id",
             value: "TCGA-06-5416-01A-01D-1480-02",
           },
+        ],
+        createSet: [
+          { field: "case_id", value: "3a3fc890-1985-4353-861b-dc3abfb364b1" },
         ],
       },
     ]);
@@ -84,6 +89,7 @@ describe("getMatchedIdentifiers", () => {
     const mappedToFields = ["symbol"];
     const givenIdentifierFields = ["gene_id"];
     const tokens = ["ENSG00000181143"];
+    const createSetField = "gene_id";
 
     expect(
       getMatchedIdentifiers(
@@ -91,11 +97,13 @@ describe("getMatchedIdentifiers", () => {
         mappedToFields,
         givenIdentifierFields,
         tokens,
+        createSetField,
       ),
     ).toEqual([
       {
         mappedTo: [{ field: "symbol", value: "MUC16" }],
         givenIdentifiers: [{ field: "gene_id", value: "ENSG00000181143" }],
+        createSet: [{ field: "gene_id", value: "ENSG00000181143" }],
       },
     ]);
   });
@@ -129,6 +137,7 @@ describe("getMatchedIdentifiers", () => {
     ];
 
     const tokens = ["HGNC:15582", "P04637"];
+    const createSetField = "id";
 
     expect(
       getMatchedIdentifiers(
@@ -136,6 +145,7 @@ describe("getMatchedIdentifiers", () => {
         mappedToFields,
         matchAgainstIdentifiers,
         tokens,
+        createSetField,
       ),
     ).toEqual([
       {
@@ -146,6 +156,7 @@ describe("getMatchedIdentifiers", () => {
         givenIdentifiers: [
           { field: "external_db_ids.hgnc", value: "HGNC:15582" },
         ],
+        createSet: [{ field: "id", value: "ENSG00000181143" }],
       },
       {
         mappedTo: [
@@ -155,6 +166,7 @@ describe("getMatchedIdentifiers", () => {
         givenIdentifiers: [
           { field: "external_db_ids.uniprotkb_swissprot", value: "P04637" },
         ],
+        createSet: [{ field: "id", value: "ENSG00000141510" }],
       },
     ]);
   });
@@ -175,6 +187,7 @@ describe("getMatchedIdentifiers", () => {
     const matchAgainstIdentifiers = ["symbol"];
 
     const tokens = ["muc16"];
+    const createSetField = "symbol";
 
     expect(
       getMatchedIdentifiers(
@@ -182,11 +195,13 @@ describe("getMatchedIdentifiers", () => {
         mappedToFields,
         matchAgainstIdentifiers,
         tokens,
+        createSetField,
       ),
     ).toEqual([
       {
         mappedTo: [{ field: "gene_id", value: "ENSG00000181143" }],
         givenIdentifiers: [{ field: "symbol", value: "MUC16" }],
+        createSet: [{ field: "symbol", value: "MUC16" }],
       },
     ]);
   });

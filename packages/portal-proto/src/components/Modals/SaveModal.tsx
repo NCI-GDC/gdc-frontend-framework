@@ -109,6 +109,7 @@ export const SaveModal = ({
           }}
           inputWrapperOrder={["label", "input", "error", "description"]}
           {...form.getInputProps("name")}
+          aria-required
         />
       </Box>
       <Box
