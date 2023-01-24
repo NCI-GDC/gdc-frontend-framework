@@ -13,11 +13,16 @@ import {
 } from "@mantine/core";
 import {
   edgeDetails,
+  selectCurrentCohortFilters,
   setShouldResetEdgesState,
   useCoreDispatch,
+  useCoreSelector,
   useImageViewer,
+  FilterSet,
+  joinFilters,
+  parseJSONParam,
 } from "@gff/core";
-import { formatImageDetailsInfo } from "../features/files/utils";
+import { formatImageDetailsInfo } from "@/features/files/utils";
 import { MdOutlineSearch } from "react-icons/md";
 import { Slides } from "./Slides";
 import { useRouter } from "next/router";
@@ -29,11 +34,16 @@ const ImageViewer = dynamic(() => import("./ImageViewer"), {
 interface MultipleImageViewerProps {
   case_id?: string;
   selectedId?: string;
+  isCohortCentric?: boolean;
+  additionalFilters?: string;
+  backLink?: string;
 }
 
 export const MultipleImageViewer = ({
   case_id,
   selectedId,
+  isCohortCentric = false,
+  additionalFilters = '{ "mode": "and", "root": {}',
 }: MultipleImageViewerProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState(0);
   const [showSearch, setShowSearch] = useState(false);
@@ -47,10 +57,23 @@ export const MultipleImageViewer = ({
   const router = useRouter();
   const dispatch = useCoreDispatch();
 
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
+  const filters = joinFilters(
+    isCohortCentric ? cohortFilters : { mode: "and", root: {} },
+    parseJSONParam(
+      decodeURIComponent(additionalFilters),
+      '{ "mode": "and", "root": {}}',
+    ) as FilterSet,
+  );
+
   const { data, isFetching } = useImageViewer({
     cases_offset,
     searchValues,
     case_id,
+    caseFilters: filters,
   });
 
   useEffect(() => {
