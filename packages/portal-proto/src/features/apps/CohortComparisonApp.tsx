@@ -1,3 +1,4 @@
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortName,
@@ -6,6 +7,8 @@ import {
 import CohortComparison from "../cohortComparison/CohortComparison";
 
 const CohortComparisonApp: React.FC = () => {
+  const isDemoMode = useIsDemoApp();
+
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
@@ -15,7 +18,14 @@ const CohortComparisonApp: React.FC = () => {
   )[0];
 
   return (
-    <CohortComparison cohortNames={[primaryCohortName, comparisonCohort]} />
+    <CohortComparison
+      cohortNames={
+        isDemoMode
+          ? ["Pancreas - KRAS mutated", "Pancreas - KRAS not mutated"]
+          : [primaryCohortName, comparisonCohort]
+      }
+      demoMode={isDemoMode}
+    />
   );
 };
 

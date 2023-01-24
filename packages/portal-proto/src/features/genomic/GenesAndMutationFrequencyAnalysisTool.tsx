@@ -29,7 +29,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
-import { useRouter } from "next/router";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -82,12 +82,7 @@ type AppModeState = "genes" | "ssms";
 
 // need to define isDemoMode Here
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
-  // get the params pass to the app
-  const {
-    query: { demoMode, app },
-  } = useRouter();
-  const isDemoMode =
-    demoMode === "true" || (app as string).endsWith("Demo") ? true : false;
+  const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
