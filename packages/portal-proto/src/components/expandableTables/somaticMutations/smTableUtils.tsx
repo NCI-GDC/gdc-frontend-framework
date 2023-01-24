@@ -90,7 +90,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start">
+                <div className="flex justify-start ml-3">
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}

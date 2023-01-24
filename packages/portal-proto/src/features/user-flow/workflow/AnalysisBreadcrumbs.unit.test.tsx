@@ -19,10 +19,11 @@ describe("<AnalysisBreadcrumb />", () => {
   it("Demo apps only displays name", () => {
     const { queryByText } = render(
       <AnalysisBreadcrumbs
-        currentApp="CohortComparisonAppDemo"
+        currentApp="CohortComparisonApp"
         setActiveApp={jest.fn()}
         cohortSelectionOpen={false}
         setCohortSelectionOpen={jest.fn()}
+        onDemoApp={true}
       />,
     );
 
