@@ -18,8 +18,6 @@ import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonToolti
 import { useDebouncedValue } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
-import DL from "../shared/DL";
-import { useFreqGeneMutationDLQuery } from "@gff/core";
 import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =

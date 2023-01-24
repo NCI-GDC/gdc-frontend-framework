@@ -3,13 +3,12 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
-  // useDownloadData
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button, Loader } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -18,9 +17,8 @@ import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-import DL from "../shared/DL";
 import isEqual from "lodash/isEqual";
-import { convertDateToString } from "src/utils/date";
+// import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
   createContext<
@@ -65,7 +63,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
-  const [dl, setDl] = useState<string>("");
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -181,62 +178,24 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={() =>
-                        dl === "json" ? setDl("") : setDl("json")
-                      }
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      {dl === "json" ? <Loader /> : "JSON"}
+                      {/* {dl === "json" ? <Loader /> : "JSON"} */}
+                      {"JSON"}
                     </Button>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
                     <Button
-                      onClick={() => (dl === "tsv" ? setDl("") : setDl("tsv"))}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      {dl === "tsv" ? <Loader /> : "TSV"}
+                      {/* {dl === "tsv" ? <Loader /> : "TSV"} */}
+                      {"TSV"}
                     </Button>
                   </ButtonTooltip>
-                  {dl === "json" && (
-                    <DL
-                      // dataHook={useDownloadData}
-                      queryParams={{
-                        // totalCount: gTotal,
-                        genomicFilters,
-                      }}
-                      fileName={`genes.${convertDateToString(new Date())}.json`}
-                      setDl={setDl}
-                    />
-                  )}
-                  {/* {dl === "tsv" && (
-                    <DL
-                    fetchedMutatedGenesTSV
-                      dataHook={}
-                      queryParams={{
-                        totalCount: gTotal,
-                        genomicFilters,
-                      }}
-                      headers={[
-                        "Symbol",
-                        "Name",
-                        "# SSM Affected Cases in Cohort",
-                        "# SSM Affected Cases Across the GDC",
-                        "# CNV Gain",
-                        "# CNV Loss",
-                        "# Mutations",
-                        "Annotations",
-                        "Survival",
-                      ]}
-                      fileName={`frequently-mutated-genes.${convertDateToString(
-                        new Date(),
-                      )}`}
-                      setDl={setDl}
-                    />
-                  )} */}
                 </div>
               }
             />
