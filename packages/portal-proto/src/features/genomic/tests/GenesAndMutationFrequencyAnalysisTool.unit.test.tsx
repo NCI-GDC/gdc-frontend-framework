@@ -1,9 +1,12 @@
 import { render } from "@testing-library/react";
+import { CoreProvider } from "@gff/core";
 import GenesAndMutationFrequencyAnalysisTool from "../GenesAndMutationFrequencyAnalysisTool";
-import * as routerHook from "next/router";
-import * as hook from "src/hooks/useIsDemoApp";
+import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
+import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
+
+jest.mock("src/hooks/useIsDemoApp");
 
 beforeEach(() => {
   jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
@@ -16,17 +19,23 @@ beforeEach(() => {
     },
     refetch: jest.fn(),
   });
-  jest.spyOn(genomicReducer, "useAppDispatch").mockImplementation(jest.fn());
+  jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
+  jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
   jest.spyOn(genomicReducer, "useAppSelector").mockImplementation(jest.fn());
+  jest.clearAllMocks();
 });
 
-describe.skip("<GenesAndMutationFrequencyAnalysisTool />", () => {
+describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
   it("should show demo text if it is demo mode", () => {
-    jest
-      .spyOn(routerHook, "useRouter")
-      .mockReturnValueOnce({ query: { demoMode: true } } as any);
-    jest.spyOn(hook, "useIsDemoApp").mockReturnValueOnce(true);
-    const { getByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
+    (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
+      true as any,
+    );
+    const { getByText } = render(
+      <CoreProvider>
+        <GenesAndMutationFrequencyAnalysisTool />
+      </CoreProvider>,
+    );
+
     expect(
       getByText(
         "Demo showing cases with low grade gliomas (TCGA-LGG project).",
@@ -35,11 +44,14 @@ describe.skip("<GenesAndMutationFrequencyAnalysisTool />", () => {
   });
 
   it("should NOT show demo text if it is demo mode", () => {
-    jest
-      .spyOn(routerHook, "useRouter")
-      .mockReturnValueOnce({ query: { demoMode: false } } as any);
-    jest.spyOn(hook, "useIsDemoApp").mockReturnValueOnce(false);
-    const { queryByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
+    (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
+      false as any,
+    );
+    const { queryByText } = render(
+      <CoreProvider>
+        <GenesAndMutationFrequencyAnalysisTool />
+      </CoreProvider>,
+    );
     expect(
       queryByText(
         "Demo showing cases with low grade gliomas (TCGA-LGG project).",

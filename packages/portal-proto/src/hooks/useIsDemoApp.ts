@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
-export const useIsDemoApp = (): boolean => {
+export type useIsDemoAppType = () => boolean;
+export const useIsDemoApp: useIsDemoAppType = (): boolean => {
   const {
     query: { demoMode },
   } = useRouter();
