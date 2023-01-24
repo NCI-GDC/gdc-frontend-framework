@@ -38,7 +38,6 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const { plot } = survivalProps ?? { plot: "" };
 
-  // TODO add roles in divs for switch for a11y
   return (
     <Tooltip
       label={tooltip}
