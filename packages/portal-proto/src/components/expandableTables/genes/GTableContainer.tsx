@@ -18,6 +18,7 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
+import { useMutatedGenesFreqData } from "@gff/core";
 // import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
@@ -65,6 +66,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
+
+  const [dls, setDls] = useState({});
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -144,8 +147,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
+    // isDemoMode: isDemoMode,
+    // overwritingDemoFilter: cohortFilters,
   });
 
   useEffect(() => {
@@ -159,6 +162,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       setTableData(initialData);
     }
   }, [status, initialData]);
+
+  const { data: mutatedGenesFreqData, isFetching: mutatedGenesFreqFetching } =
+    useMutatedGenesFreqData({ genomic_filter: genomicFilters });
+
+  useEffect(() => {
+    console.log("mutatedGenesFreqData", mutatedGenesFreqData);
+  }, [mutatedGenesFreqData, mutatedGenesFreqFetching]);
+  const handleMutatedGenesDl = (extension: "json" | "tsv") => {
+    // todo
+  };
 
   return (
     <>
@@ -182,6 +195,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
+                      onClick={
+                        () => {
+                          if (!Object.keys(dls).includes("json")) {
+                            setDls((dls) => {
+                              return {
+                                ...dls,
+                                json: "isFetching",
+                              };
+                            });
+                            handleMutatedGenesDl("json");
+                          }
+                        }
+                        // else {
+                        //   // exportMutatedGenes(extension, genomicFilters);
+                        // }
+                      }
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }

@@ -49,20 +49,18 @@ const slice = createSlice({
         const response = action.payload;
         state.status = "fulfilled";
         const edges = response?.data?.viewer?.explore?.genes?.hits?.edges;
-        if (edges.length === 0) return undefined;
+        console.log("res", response);
+        debugger;
+        if (edges?.length === 0) return undefined;
 
-        const {
-          node: { symbol, name, cytoband, biotype, gene_id },
-        } = edges[0];
-        const frequencies = {
-          symbol: symbol,
-          name: name,
-          cytoband: cytoband,
-          biotype: biotype,
-          gene_id: gene_id,
-        };
-        state.mutatedGenes = { ...frequencies };
-
+        // const frequencies = {
+        //   symbol: symbol,
+        //   name: name,
+        //   cytoband: cytoband,
+        //   biotype: biotype,
+        //   gene_id: gene_id,
+        // };
+        // state.mutatedGenes = { ...frequencies };
         return state;
       })
       .addCase(fetchMutatedGenesFreq.pending, (state) => {
@@ -89,7 +87,7 @@ export const selectMutatedGenesFreqData = (
   };
 };
 
-export const useMutatedGenesFreq = createUseCoreDataHook(
+export const useMutatedGenesFreqData = createUseCoreDataHook(
   fetchMutatedGenesFreq,
   selectMutatedGenesFreqData,
 );

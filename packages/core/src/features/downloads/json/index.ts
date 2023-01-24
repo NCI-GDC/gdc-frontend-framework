@@ -1,5 +1,5 @@
 import {
-  useMutatedGenesFreq,
+  useMutatedGenesFreqData,
   mutatedGenesFreqReducer,
   MutatedGenesFreqData,
 } from "./mutatedGenesFreqSlice";
@@ -9,4 +9,4 @@ export const downloadsReducer = combineReducers({
   mutatedGenesFreq: mutatedGenesFreqReducer,
 });
 
-export { MutatedGenesFreqData, useMutatedGenesFreq };
+export { MutatedGenesFreqData, useMutatedGenesFreqData };

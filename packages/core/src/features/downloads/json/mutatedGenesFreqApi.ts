@@ -1,16 +1,16 @@
 import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 
-export const mutatedGenesFreqQuery = `
+export const getMutatedGenesFreqQuery = (size: number) => {
+  return `
 query MutatedGenesFreq(
-  $genesTable_size: Int
   $genesTable_offset: Int
   $score: String
 ) {
-  genesTableDownloadViewer: viewer {
+  viewer {
     explore {
       genes {
         hits(
-          first: $genesTable_size
+          first: ${`${size}`}
           offset: $genesTable_offset
           score: $score
         ) {
@@ -29,6 +29,7 @@ query MutatedGenesFreq(
   }
 }
 `;
+};
 
 export interface MutatedGenesFreqResponse {
   viewer: {
@@ -56,7 +57,7 @@ export const fetchMutatedGenesFreqQuery = async ({
   genomic_filters: any;
 }): Promise<GraphQLApiResponse<MutatedGenesFreqResponse>> => {
   const graphQlFilters = genomic_filters ? { filters: genomic_filters } : {};
-  return await graphqlAPI(mutatedGenesFreqQuery, {
+  return await graphqlAPI(getMutatedGenesFreqQuery(1000), {
     graphQlFilters,
   });
 };
