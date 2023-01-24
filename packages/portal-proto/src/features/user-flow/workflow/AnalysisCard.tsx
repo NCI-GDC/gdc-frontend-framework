@@ -14,7 +14,7 @@ import { AppRegistrationEntry } from "./utils";
 
 export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
-  readonly onClick?: (x: AppRegistrationEntry) => void;
+  readonly onClick?: (x: AppRegistrationEntry, demoMode?: boolean) => void;
   readonly descriptionVisible: boolean;
   readonly setDescriptionVisible: () => void;
 }
@@ -84,11 +84,14 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           {entry.hasDemo ? (
             <Button
               onClick={() =>
-                onClick({
-                  ...entry,
-                  name: `${entry.name} Demo`,
-                  id: `${entry.id}Demo`,
-                })
+                onClick(
+                  {
+                    ...entry,
+                    name: `${entry.name}`,
+                    id: `${entry.id}`,
+                  },
+                  true,
+                )
               }
               compact
               size="xs"

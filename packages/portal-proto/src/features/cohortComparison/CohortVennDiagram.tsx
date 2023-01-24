@@ -22,13 +22,13 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
 }: CohortVennDiagramProps) => {
   const cohort1Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[0]).filters,
+      selectAvailableCohortByName(state, cohortNames[0])?.filters,
     ),
   );
 
   const cohort2Filters = useCoreSelector((state) =>
     buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[1]).filters,
+      selectAvailableCohortByName(state, cohortNames[1])?.filters,
     ),
   );
   const filters = makeIntersectionFilters(

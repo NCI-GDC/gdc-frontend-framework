@@ -39,13 +39,20 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   const { plot } = survivalProps ?? { plot: "" };
 
   return (
-    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
+    <Tooltip
+      label={tooltip}
+      disabled={!tooltip}
+      data-testid="tooltipSwitchSpring"
+    >
       <animated.div
         className={`text-center items-center`}
         aria-disabled={disabled}
+        role="switch"
+        data-testid="top-div-switchSpring"
       >
         <animated.div
           style={sliderSpring}
+          data-testid="middle-div-switchSpring"
           className={classNames(
             "border border-lightgray h-5",
             {
@@ -67,11 +74,13 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${
-              isActive ? `border-activeColor` : ``
-            } bg-white ${icon ? `` : `rounded-xl`} ${
-              isActive ? `bg-lightgray` : ``
+            className={`border-2 rounded-sm ${
+              disabled ? "border-gray-300" : "border-activeColor"
+            }
+             bg-white ${icon && `rounded-xl`} ${
+              isActive && `bg-lightgray`
             } text-xs h-5`}
+            data-testid="bottom-div-switchSpring"
           >
             <div className={margin}>{icon}</div>
           </animated.div>
