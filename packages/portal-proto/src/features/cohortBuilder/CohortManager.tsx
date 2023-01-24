@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   LoadingOverlay,
   Select,
   //TODO uncomment to show set modals menu
   Menu,
+  Loader,
 } from "@mantine/core";
 import {
   MdAdd as AddIcon,
@@ -62,6 +63,21 @@ import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
 
+const exportCohort = (
+  caseIds: readonly Record<string, any>[],
+  cohortName: string,
+) => {
+  const tsv = `id\n${caseIds.map((c) => c.case_id).join("\n")}`;
+  const blob = new Blob([tsv], { type: "text/tsv" });
+  const today = new Date();
+  saveAs(
+    blob,
+    `cohort_${cohortName.replace(/[^A-Za-z0-9_.]/g, "_")}.${convertDateToString(
+      today,
+    )}.tsv`,
+  );
+};
+
 interface CohortGroupButtonProps {
   $buttonDisabled?: boolean;
   $isDiscard?: boolean;
@@ -97,6 +113,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   startingId,
   hide_controls = false,
 }: CohortManagerProps) => {
+  const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
 
   // Info about current Cohort
@@ -142,6 +159,21 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     fields: ["case_id"],
     size: 50000,
   });
+
+  useEffect(() => {
+    if (isErrorCaseIds) {
+      setExportCohortPending(false);
+    } else if (exportCohortPending && !isFetchingCaseIds) {
+      exportCohort(caseIds, cohortName);
+      setExportCohortPending(false);
+    }
+  }, [
+    isFetchingCaseIds,
+    isErrorCaseIds,
+    exportCohortPending,
+    caseIds,
+    cohortName,
+  ]);
 
   // Cohort persistence
   const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
@@ -428,22 +460,21 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
             <CohortGroupButton
               data-testid="downloadButton"
-              disabled={isFetchingCaseIds || isErrorCaseIds}
-              $buttonDisabled={isFetchingCaseIds || isErrorCaseIds}
+              disabled={isErrorCaseIds}
+              $buttonDisabled={isErrorCaseIds}
               onClick={() => {
-                const tsv = `id\n${caseIds.map((c) => c.case_id).join("\n")}`;
-                const blob = new Blob([tsv], { type: "text/tsv" });
-                const today = new Date();
-                saveAs(
-                  blob,
-                  `${cohortName.replace(
-                    /[^A-Za-z0-9_.]/g,
-                    "_",
-                  )}_${convertDateToString(today)}.tsv`,
-                );
+                if (isFetchingCaseIds) {
+                  setExportCohortPending(true);
+                } else {
+                  exportCohort(caseIds, cohortName);
+                }
               }}
             >
-              <DownloadIcon size="1.5em" aria-label="Download cohort" />
+              {exportCohortPending ? (
+                <Loader />
+              ) : (
+                <DownloadIcon size="1.5em" aria-label="Download cohort" />
+              )}
             </CohortGroupButton>
             <Menu>
               <Menu.Target>
