@@ -277,7 +277,6 @@ export const useClearLocalFilterWhenCohortChanges = (): void => {
       (prevCohortFilters && !isEqual(prevCohortFilters, cohortFilters)) ||
       (prevId && !isEqual(prevId, cohortId))
     ) {
-      console.log("clearing filters");
       appDispatch(clearRepositoryFilters());
     }
   }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
@@ -290,7 +289,6 @@ export const createUseAppDataHook = (fetchDataActionCreator, dataSelector) => {
     const action = fetchDataActionCreator(...params);
     const prevParams = usePrevious(params);
 
-    console.log("cmp", prevParams, params);
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is

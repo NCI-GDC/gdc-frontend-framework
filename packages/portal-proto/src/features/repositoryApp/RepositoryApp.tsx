@@ -36,7 +36,6 @@ import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
 import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
-import { FilterSet2GqlOperator } from "@/features/repositoryApp/utils";
 import { Tooltip } from "@mantine/core";
 
 const useCohortCentricFiles = () => {
@@ -69,9 +68,7 @@ const useCohortCentricFiles = () => {
     }
   }, [status, coreDispatch, allFilters, prevFilters]);
 
-  const { data: imagesCount } = useImageCounts(
-    FilterSet2GqlOperator(allFilters),
-  );
+  const { data: imagesCount } = useImageCounts(allFilters);
 
   return { allFilters, pagination, repositoryFilters, imagesCount };
 };

@@ -4,8 +4,9 @@ import {
   graphqlAPI,
   DataStatus,
   AppDataSelectorResponse,
-  GqlUnion,
-  GqlIntersection,
+  FilterSet,
+  buildCohortGqlOperator,
+  joinFilters,
 } from "@gff/core";
 import { AppState } from "./appApi";
 import { createUseAppDataHook } from "@/features/repositoryApp/hooks";
@@ -46,27 +47,23 @@ const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
 
 export const fetchImageCounts = createAsyncThunk(
   "repositoryApp/getImageCounts",
-  async (filters?: GqlUnion | GqlIntersection): Promise<GraphQLApiResponse> => {
+  async (filters: FilterSet): Promise<GraphQLApiResponse> => {
+    const fileFilters = buildCohortGqlOperator(filters);
+    const caseFilters = buildCohortGqlOperator(
+      joinFilters(filters, {
+        mode: "and",
+        root: {
+          "summary.experimental_strategies.experimental_strategy": {
+            operator: "includes",
+            field: "summary.experimental_strategies.experimental_strategy",
+            operands: ["Tissue Slide", "Diagnostic Slide"],
+          },
+        },
+      }),
+    );
     const variables = {
-      filters: {
-        content: [
-          ...[
-            {
-              op: "in",
-              content: {
-                field: "summary.experimental_strategies.experimental_strategy",
-                value: ["Tissue Slide", "Diagnostic Slide"],
-              },
-            },
-          ],
-          ...filters?.content,
-        ],
-        op: "and",
-      },
-      fileFilters: {
-        content: [...filters?.content],
-        op: "and",
-      },
+      filters: caseFilters,
+      fileFilters: fileFilters,
     };
     return await graphqlAPI(repositoryCaseSlidesQuery, variables);
   },
@@ -103,8 +100,6 @@ const slice = createSlice({
           );
         state.slidesCount = imageBucket ? imageBucket.doc_count : -1;
         state.status = "fulfilled";
-        console.log("casesWithImagesCount", state.casesWithImagesCount);
-        console.log("slidesCount", state.slidesCount);
         return state;
       })
       .addCase(fetchImageCounts.pending, (state) => {
