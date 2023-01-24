@@ -150,7 +150,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       const parentStyle = window.getComputedStyle(filtersRef.current);
       // height of rows + top padding of parent + padding below rows
       setCollapsedHeight(
-        tempCollapsedHeight + parseInt(parentStyle.paddingTop) + 8,
+        tempCollapsedHeight + parseInt(parentStyle.paddingTop) + 4,
       );
     }
   }, [filters, filtersRef?.current?.clientHeight, expandedState]);
