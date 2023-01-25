@@ -1,4 +1,10 @@
-import { useSsmsTable, GDCSsmsTable, FilterSet, usePrevious } from "@gff/core";
+import {
+  useSsmsTable,
+  GDCSsmsTable,
+  FilterSet,
+  usePrevious,
+  useMutationsFreqData,
+} from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -232,6 +238,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
     saveAs(blob, fileName);
   };
+
+  const { data: mutationsFreqData, isFetching: mutationsFreqFetching } =
+    useMutationsFreqData({
+      currentFilters: genomicFilters,
+      size: initialData?.ssmsTotal,
+    });
+
+  useEffect(() => {
+    console.log("data", mutationsFreqData, mutationsFreqFetching);
+  }, [mutationsFreqData, initialData, mutationsFreqFetching]);
 
   return (
     <>

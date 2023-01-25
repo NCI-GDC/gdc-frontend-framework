@@ -69,7 +69,64 @@ const slice = createSlice({
       .addCase(fetchMutationsFreq.fulfilled, (state, action) => {
         const response = action.payload;
         state.status = "fulfilled";
-        // todo
+
+        const edges = response?.data?.viewer?.explore?.ssms?.hits?.edges;
+
+        if (edges?.length === 0) return undefined;
+
+        const mtns = edges.map(
+          ({
+            node: {
+              genomic_dna_change,
+              mutation_subtype,
+              consequence,
+              biotype,
+              gene_id,
+            },
+          }) => {
+            return {
+              genomic_dna_change,
+              mutation_subtype,
+              consequence: consequence?.edges.map(
+                ({
+                  node: {
+                    transcript: {
+                      is_canonical,
+                      annotation: { vep_impact, polyphen_impact, sift_impact },
+                      consequence_type,
+                      gene: { gene_id, symbol },
+                      aa_change,
+                    },
+                  },
+                }) => {
+                  return {
+                    transcript: {
+                      is_canonical,
+                      annotation: {
+                        vep_impact,
+                        polyphen_impact,
+                        sift_impact,
+                      },
+                      consequence_type,
+                      gene: {
+                        gene_id,
+                        symbol,
+                      },
+                      aa_change,
+                    },
+                  };
+                },
+              ),
+              biotype,
+              gene_id,
+            };
+          },
+        );
+        console.log("ssms,", mtns);
+        debugger;
+
+        // state.mutations = ssmsMutation;
+        return state;
 
         return state;
       })
