@@ -19,10 +19,10 @@ const DownloadFile = async (url: string, filename: string) => {
     mode: "no-cors",
     referrerPolicy: "no-referrer",
   });
-  const blob = await res.blob();
+  const dataUrl = await res.blob();
   const aElement = document.createElement("a");
   aElement.setAttribute("download", filename);
-  const href = URL.createObjectURL(blob);
+  const href = URL.createObjectURL(dataUrl);
   aElement.href = href;
   aElement.setAttribute("target", "_blank");
   aElement.click();
@@ -38,8 +38,8 @@ export const handleDownloadSVG = (
   filename: string,
 ): void => {
   if (ref.current) {
-    toSvg(ref.current, { cacheBust: true }).then(function (blob) {
-      void DownloadFile(blob, filename);
+    toSvg(ref.current, { cacheBust: true }).then(function (dataUrl) {
+      void DownloadFile(dataUrl, filename);
     });
   }
 };
