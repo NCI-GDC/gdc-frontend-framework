@@ -3,7 +3,7 @@ import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
-export const SaveModal = ({
+export const SaveOrCreateCohortModal = ({
   entity,
   action = "Save",
   initialName,
@@ -58,7 +58,7 @@ export const SaveModal = ({
 
   return (
     <Modal
-      title={`${action} ${upperFirst(entity)}`}
+      title={`${upperFirst(action)} ${upperFirst(entity)}`}
       opened={opened}
       padding={0}
       radius="md"
@@ -147,7 +147,7 @@ export const SaveModal = ({
               onClose();
             }}
           >
-            {action}
+            {upperFirst(action)}
           </Button>
         </Group>
       </Box>

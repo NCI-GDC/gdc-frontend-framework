@@ -53,7 +53,7 @@ import {
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
-import { SaveModal } from "@/components/Modals/SaveModal";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
@@ -283,7 +283,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showSaveCohort && (
-        <SaveModal
+        <SaveOrCreateCohortModal
           initialName={cohortName}
           entity="cohort"
           opened
@@ -330,7 +330,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showCreateCohort && (
-        <SaveModal
+        <SaveOrCreateCohortModal
           initialName={`Custom cohort ${new Date()
             .toLocaleString("en-CA", {
               timeZone: "America/Chicago",
@@ -338,7 +338,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             })
             .replace(",", "")}`}
           entity="cohort"
-          action="Create"
+          action="create"
           opened
           onClose={() => setShowCreateCohort(false)}
           onActionClick={async (newName: string) => {

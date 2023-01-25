@@ -472,7 +472,7 @@ const slice = createSlice({
       }
     },
     addNewCohort: (state, action?: PayloadAction<string>) => {
-      const cohort = newCohort({ customName: action?.payload });
+      const cohort = newCohort({ customName: action?.payload, modified: true });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
       state.message = `newCohort|${cohort.name}|${cohort.id}`;

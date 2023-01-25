@@ -9,7 +9,7 @@ import {
   SetTypes,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
-import { SaveModal } from "@/components/Modals/SaveModal";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface SaveSetButttonProps {
@@ -50,7 +50,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
   return (
     <>
-      <SaveModal
+      <SaveOrCreateCohortModal
         entity="set"
         initialName=""
         opened={showSaveModal}

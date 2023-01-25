@@ -20,7 +20,7 @@ import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
-import { SaveModal } from "@/components/Modals/SaveModal";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 interface CountsIconProps {
   $count?: number;
@@ -173,7 +173,7 @@ export const CasesCohortButton = (): JSX.Element => {
         />
       )}
       {showCreateCohort && (
-        <SaveModal
+        <SaveOrCreateCohortModal
           initialName={`Custom cohort ${new Date()
             .toLocaleString("en-CA", {
               timeZone: "America/Chicago",
@@ -181,7 +181,7 @@ export const CasesCohortButton = (): JSX.Element => {
             })
             .replace(",", "")}`}
           entity="cohort"
-          action="Create"
+          action="create"
           opened
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {

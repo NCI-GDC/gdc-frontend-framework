@@ -1,5 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
-import { SaveModal } from "@/components/Modals/SaveModal";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { modalStyles } from "@/components/Modals/SetModals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
@@ -178,7 +178,7 @@ export const SelectCohortsModal = ({
           zIndex={400}
         >
           {showCreateCohort && (
-            <SaveModal
+            <SaveOrCreateCohortModal
               initialName={`Custom cohort ${new Date()
                 .toLocaleString("en-CA", {
                   timeZone: "America/Chicago",
@@ -186,7 +186,7 @@ export const SelectCohortsModal = ({
                 })
                 .replace(",", "")}`}
               entity="cohort"
-              action="Create"
+              action="create"
               opened={showCreateCohort}
               onClose={() => setShowCreateCohorts(false)}
               onActionClick={async (newName: string) => {

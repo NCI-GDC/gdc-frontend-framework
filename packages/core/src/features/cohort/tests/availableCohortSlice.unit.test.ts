@@ -419,7 +419,7 @@ describe("add, update, and remove cohort", () => {
             filters: undefined,
           },
           modified_datetime: "2020-11-01T00:00:00.000Z",
-          modified: false,
+          modified: true,
           saved: false,
         },
       },
@@ -434,7 +434,7 @@ describe("add, update, and remove cohort", () => {
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
-            name: "New Cohort 2",
+            name: "New Cohort",
             filters: { mode: "and", root: {} },
             id: "000-000-000-1",
             caseSet: {
@@ -467,7 +467,7 @@ describe("add, update, and remove cohort", () => {
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
-          name: "New Cohort 2",
+          name: "New Cohort",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
@@ -550,7 +550,7 @@ describe("add, update, and remove cohort", () => {
             caseSetIds: undefined,
             filters: undefined,
           },
-          modified: false,
+          modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
           name: "test",
           saved: false,

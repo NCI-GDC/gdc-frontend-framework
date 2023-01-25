@@ -209,7 +209,7 @@ export class EnumValueExtractorHandler
 export const buildCohortGqlOperator = (
   fs: FilterSet | undefined,
 ): GqlOperation | undefined => {
-  if (!fs) return undefined;
+  if (!fs || !fs.root) return undefined;
 
   const fsKeys = Object.keys(fs.root);
   // if no keys return undefined
