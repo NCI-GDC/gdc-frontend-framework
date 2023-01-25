@@ -459,11 +459,12 @@ describe("add, update, and remove cohort", () => {
           },
         },
         message: "newProjectsCohort",
+        name: "New Cohort 2",
       }),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: "newProjectsCohort|New Cohort|000-000-000-2",
+      message: "newProjectsCohort|New Cohort 2|000-000-000-2",
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
@@ -497,7 +498,7 @@ describe("add, update, and remove cohort", () => {
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
-          name: "New Cohort",
+          name: "New Cohort 2",
           saved: false,
         },
       },
