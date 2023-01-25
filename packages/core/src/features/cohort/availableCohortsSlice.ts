@@ -23,6 +23,7 @@ import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
+import { defaultCohortNameGenerator } from "./utils";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -379,7 +380,7 @@ export const processCaseSetResponse = (
 
 const newCohort = ({
   filters = { mode: "and", root: {} },
-  modified = false,
+  modified = true,
   pendingFilters,
   customName,
 }: {
@@ -389,13 +390,8 @@ const newCohort = ({
   customName?: string;
 }): Cohort => {
   const ts = new Date();
-  const newName =
-    customName ??
-    createCohortName(
-      ts
-        .toLocaleString("en-CA", { timeZone: "America/Chicago", hour12: false })
-        .replace(",", ""),
-    );
+  const newName = customName ?? defaultCohortNameGenerator();
+
   const newId = createCohortId();
   return {
     name: newName,
@@ -472,7 +468,7 @@ const slice = createSlice({
       }
     },
     addNewCohort: (state, action?: PayloadAction<string>) => {
-      const cohort = newCohort({ customName: action?.payload, modified: true });
+      const cohort = newCohort({ customName: action?.payload });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
       state.message = `newCohort|${cohort.name}|${cohort.id}`;
@@ -484,7 +480,6 @@ const slice = createSlice({
       const cohort = newCohort({
         filters: action.payload.filters,
         customName: action.payload.name,
-        modified: true,
       });
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       if (action.payload.group) {
@@ -557,7 +552,7 @@ const slice = createSlice({
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
-        const cohort = newCohort({ filters, modified: true });
+        const cohort = newCohort({ filters });
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
         state.message = `newCohort|${cohort.name}|${cohort.id}`;
@@ -800,7 +795,7 @@ const slice = createSlice({
         if (state.currentCohort === DEFAULT_COHORT_ID) {
           // create a new cohort and add it
           // as the GDC All Cohort is immutable
-          const cohort = newCohort({ filters, modified: true });
+          const cohort = newCohort({ filters });
           cohortsAdapter.addOne(state, {
             ...cohort,
             caseSet: {

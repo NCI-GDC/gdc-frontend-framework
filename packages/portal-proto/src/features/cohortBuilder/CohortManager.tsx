@@ -50,6 +50,7 @@ import {
   updateActiveCohortFilter,
   FilterGroup,
   addNewCohortGroups,
+  defaultCohortNameGenerator,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -331,12 +332,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={`Custom cohort ${new Date()
-            .toLocaleString("en-CA", {
-              timeZone: "America/Chicago",
-              hour12: false,
-            })
-            .replace(",", "")}`}
+          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

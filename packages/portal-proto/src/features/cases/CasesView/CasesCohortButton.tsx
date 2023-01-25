@@ -11,6 +11,7 @@ import {
   addNewCohortWithFilterAndMessage,
   clearCohortMessage,
   selectAvailableCohorts,
+  defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -174,12 +175,7 @@ export const CasesCohortButton = (): JSX.Element => {
       )}
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={`Custom cohort ${new Date()
-            .toLocaleString("en-CA", {
-              timeZone: "America/Chicago",
-              hour12: false,
-            })
-            .replace(",", "")}`}
+          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

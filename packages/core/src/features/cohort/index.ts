@@ -81,6 +81,7 @@ import {
   clearComparisonCohorts,
   selectComparisonCohorts,
 } from "./comparisonCohortsSlice";
+import { defaultCohortNameGenerator } from "./utils";
 
 export {
   DEFAULT_COHORT_ID,
@@ -152,4 +153,5 @@ export {
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
   CountsData,
+  defaultCohortNameGenerator,
 };
