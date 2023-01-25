@@ -8,9 +8,8 @@ import {
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
-import html2canvas from "html2canvas";
-import { elementToSVG } from "dom-to-svg";
 import saveAs from "file-saver";
+import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -275,7 +274,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   height = 380,
   field,
 }: SurvivalPlotProps) => {
-  // handle the current range of the xAxis set to undefined to reset
+  // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
@@ -324,25 +323,6 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       legend = buildManyLegend(plotData, names, field, plotType);
       break;
   }
-
-  const handleDownloadSVG = () => {
-    if (downloadRef.current) {
-      const svg = elementToSVG(downloadRef.current);
-      const svgStr = new XMLSerializer().serializeToString(svg);
-      const blob = new Blob([svgStr], { type: "image/svg+xml" });
-      saveAs(blob, "survival-plot.svg");
-    }
-  };
-
-  const handleDownloadPNG = async () => {
-    if (downloadRef.current) {
-      const canvas = await html2canvas(downloadRef.current);
-
-      canvas.toBlob((blob) => {
-        saveAs(blob, "survival-plot.png");
-      }, "image/png");
-    }
-  };
 
   const handleDownloadJSON = async () => {
     const blob = new Blob(
@@ -436,8 +416,20 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={handleDownloadSVG}>SVG</Menu.Item>
-              <Menu.Item onClick={handleDownloadPNG}>PNG</Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  handleDownloadSVG(downloadRef, "survival-plot.svg")
+                }
+              >
+                SVG
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  handleDownloadPNG(downloadRef, "survival-plot.png")
+                }
+              >
+                PNG
+              </Menu.Item>
               <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
               <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
             </Menu.Dropdown>

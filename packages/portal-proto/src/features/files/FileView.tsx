@@ -215,7 +215,7 @@ const AssociatedCB = ({
         entity.entity_submitter_id
           .toLowerCase()
           .includes(associatedCBSearchTerm.toLowerCase()) ||
-        caseData.submitter_id
+        caseData?.submitter_id
           .toLowerCase()
           .includes(associatedCBSearchTerm.toLowerCase())
       ) {
@@ -229,10 +229,10 @@ const AssociatedCB = ({
           ),
           entity_type: entity.entity_type,
           sample_type: sample_type,
-          case_id: () => (
+          case_id: (
             <GenericLink
               path={`/cases/${entity.case_id}`}
-              text={caseData.submitter_id}
+              text={caseData?.submitter_id}
             />
           ),
           annotations: annotationsLink,
