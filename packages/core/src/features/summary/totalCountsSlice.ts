@@ -9,7 +9,7 @@ import {
 } from "../../dataAccess";
 
 const CountsGraphQLQuery = `
-  query countsQuery($filters: FiltersArgument) {
+  query totalCountsQuery($filters: FiltersArgument) {
   viewer {
       projects {
       aggregations {

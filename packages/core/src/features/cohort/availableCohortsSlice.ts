@@ -796,15 +796,18 @@ const slice = createSlice({
             },
           });
         }
-        const data = response.data.sets.create.explore;
+        const data = response.data.sets.create;
         const filters = pendingFilters;
         const additionalFilters =
           filters === undefined
             ? {}
             : divideFilterSetByPrefix(filters, REQUIRES_CASE_SET_FILTERS)
                 .withoutPrefix.root;
-
-        const caseSetIds = processCaseSetResponse(data);
+        // process the response and build the case set filters for both repository and explore results
+        const caseSetIds = processCaseSetResponse({
+          ...data.explore,
+          ...data.repository,
+        });
         const caseSetIntersection = buildCaseSetFilters(caseSetIds);
         const caseSetFilters: FilterSet = {
           mode: "and",

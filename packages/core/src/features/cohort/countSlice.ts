@@ -101,9 +101,9 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
     thunkAPI.getState(),
   );
-  const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
+  //const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
   const caseSSMFilter = buildCohortGqlOperator(
-    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+    joinFilters(cohortFiltersWithCaseSet ?? { mode: "and", root: {} }, {
       mode: "and",
       root: {
         "cases.available_variation_data": {
@@ -115,7 +115,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
     }),
   );
   const sequenceReadsFilters = buildCohortGqlOperator(
-    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+    joinFilters(cohortFiltersWithCaseSet ?? { mode: "and", root: {} }, {
       mode: "and",
       root: {
         "files.index_files.data_format": {
