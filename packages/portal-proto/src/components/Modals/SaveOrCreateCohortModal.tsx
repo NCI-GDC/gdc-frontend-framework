@@ -112,6 +112,7 @@ export const SaveOrCreateCohortModal = ({
           inputWrapperOrder={["label", "input", "error", "description"]}
           {...form.getInputProps("name")}
           aria-required
+          data-testid="input-field"
         />
       </Box>
       <Box
@@ -146,6 +147,7 @@ export const SaveOrCreateCohortModal = ({
               form.reset();
               onClose();
             }}
+            data-testid="action-button"
           >
             {upperFirst(action)}
           </Button>
