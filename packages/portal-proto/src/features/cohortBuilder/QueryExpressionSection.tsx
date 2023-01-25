@@ -28,6 +28,8 @@ const QueryExpressionContainer = tw.div`
   mt-3
 `;
 
+const MAX_COLLAPSED_ROWS = 3;
+
 interface CollapsedStateReducerAction {
   type: "expand" | "collapse" | "clear" | "init" | "expandAll" | "collapseAll";
   cohortId: string;
@@ -136,13 +138,20 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         } else if (f.offsetLeft <= filterElements[i - 1].offsetLeft) {
           // If the current element is further to the left than the previous, we are on a new row
           tempNumRows++;
-          const style = window.getComputedStyle(f);
-          tempCollapsedHeight += f.clientHeight + parseInt(style.marginBottom);
+          if (tempNumRows <= MAX_COLLAPSED_ROWS) {
+            const style = window.getComputedStyle(f);
+            tempCollapsedHeight +=
+              f.clientHeight + parseInt(style.marginBottom);
+          }
         }
       });
 
       setNumberOfRows(tempNumRows);
-      setCollapsedHeight(tempCollapsedHeight);
+      const parentStyle = window.getComputedStyle(filtersRef.current);
+      // height of rows + top padding of parent + padding below rows
+      setCollapsedHeight(
+        tempCollapsedHeight + parseInt(parentStyle.paddingTop) + 4,
+      );
     }
   }, [filters, filtersRef?.current?.clientHeight, expandedState]);
 
@@ -213,7 +222,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || numOfRows < 4}
+                    disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
                   >
                     {filtersSectionCollapsed ? (
                       <>
@@ -233,7 +242,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
               }`}
               style={
-                filtersSectionCollapsed && numOfRows > 3
+                filtersSectionCollapsed && numOfRows > MAX_COLLAPSED_ROWS
                   ? { maxHeight: collapsedHeight }
                   : undefined
               }
