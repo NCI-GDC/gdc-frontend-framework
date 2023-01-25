@@ -750,7 +750,7 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      label: gene.symbol + " " + aa_change,
+      label: aa_change ? gene.symbol + " " + aa_change : gene.symbol,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,
