@@ -163,15 +163,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const { data: mutatedGenesFreqData, isFetching: mutatedGenesFreqFetching } =
-    useMutatedGenesFreqData({ genomic_filter: genomicFilters });
-
-  useEffect(() => {
-    console.log("mutatedGenesFreqData", mutatedGenesFreqData);
-  }, [mutatedGenesFreqData, mutatedGenesFreqFetching]);
   const handleMutatedGenesDl = (extension: "json" | "tsv") => {
     // todo
   };
+
+  const { data: mutatedGenesFreqData, isFetching: mutatedGenesFreqFetching } =
+    useMutatedGenesFreqData({
+      currentFilters: genomicFilters,
+      size: initialData?.genes_total || 1000,
+    });
+
+  useEffect(() => {
+    console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
+  }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
 
   return (
     <>

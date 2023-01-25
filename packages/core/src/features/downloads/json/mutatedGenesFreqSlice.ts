@@ -14,11 +14,13 @@ import {
 export const fetchMutatedGenesFreq = createAsyncThunk(
   "mutatedGenesFreq/fetchMutatedGenesFreq",
   async ({
-    genomic_filters,
+    currentFilters,
+    size,
   }: {
-    genomic_filters: any;
+    currentFilters: any;
+    size: number;
   }): Promise<GraphQLApiResponse<MutatedGenesFreqResponse>> => {
-    return await fetchMutatedGenesFreqQuery({ genomic_filters });
+    return await fetchMutatedGenesFreqQuery({ currentFilters, size });
   },
 );
 

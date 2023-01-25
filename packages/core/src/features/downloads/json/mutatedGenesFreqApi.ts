@@ -52,12 +52,14 @@ export interface MutatedGenesFreqResponse {
 }
 
 export const fetchMutatedGenesFreqQuery = async ({
-  genomic_filters,
+  currentFilters,
+  size,
 }: {
-  genomic_filters: any;
+  currentFilters: any;
+  size: number;
 }): Promise<GraphQLApiResponse<MutatedGenesFreqResponse>> => {
-  const graphQlFilters = genomic_filters ? { filters: genomic_filters } : {};
-  return await graphqlAPI(getMutatedGenesFreqQuery(1000), {
+  const graphQlFilters = currentFilters ? { filters: currentFilters } : {};
+  return await graphqlAPI(getMutatedGenesFreqQuery(size), {
     graphQlFilters,
   });
 };
