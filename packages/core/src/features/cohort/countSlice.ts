@@ -93,6 +93,14 @@ const CountsGraphQLQuery = `
   }
 }`;
 
+/**
+ * Fetches the counts for the current cohort
+ * @param _ - unused
+ *  @param thunkAPI - the thunkAPI object
+ *  @returns the GraphQLApiResponse
+ *  @throws Error if the GraphQLApiResponse is not successful or
+ *  GraphQLApiResponse does not contain the expected data
+ */
 export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
   void,
@@ -101,7 +109,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
     thunkAPI.getState(),
   );
-  //const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
   const caseSSMFilter = buildCohortGqlOperator(
     joinFilters(cohortFiltersWithCaseSet ?? { mode: "and", root: {} }, {
       mode: "and",
