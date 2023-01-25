@@ -1,11 +1,11 @@
 import {
-  createSlice,
-  createEntityAdapter,
-  PayloadAction,
-  nanoid,
-  createAsyncThunk,
-  ThunkAction,
   AnyAction,
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  nanoid,
+  PayloadAction,
+  ThunkAction,
 } from "@reduxjs/toolkit";
 import { isEqual } from "lodash";
 
@@ -14,9 +14,9 @@ import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { COHORTS } from "./cohortFixture";
 import {
   GqlOperation,
-  Operation,
-  isIncludes,
   Includes,
+  isIncludes,
+  Operation,
 } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
@@ -379,19 +379,19 @@ const buildCaseSetFilters = (
       },
     };
   }
-  if (Object.keys(data).length > 1) {
-    // build composite of the two case sets
-    return {
-      internalCaseSet: {
-        operator: "and",
-        operands: Object.values(data).map((caseSet) => ({
+  if (Object.values(data).length > 1) {
+    return Object.keys(data).reduce((obj, key) => {
+      return {
+        ...obj,
+        [key]: {
           field: "cases.case_id",
           operator: "includes",
-          operands: [`set_id:${caseSet}`],
-        })),
-      },
-    };
+          operands: [`set_id:${data[key]}`],
+        },
+      };
+    }, {});
   }
+  // default case
   return {};
 };
 
@@ -661,6 +661,7 @@ const slice = createSlice({
             ...additionalFilters,
           },
         };
+
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
