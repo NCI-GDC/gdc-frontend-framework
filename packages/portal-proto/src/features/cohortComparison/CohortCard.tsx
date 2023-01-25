@@ -12,10 +12,16 @@ interface CohortCardProps {
   readonly setSelectedCards: (cards: Record<string, boolean>) => void;
   readonly counts: number[];
   readonly options: Record<string, string>;
-  readonly cohorts: Array<{
-    filter: FilterSet;
-    name: string;
-  }>;
+  readonly cohorts?: {
+    primary_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+    comparison_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+  };
   readonly survivalPlotSelectable: boolean;
   readonly caseIds: string[][];
   readonly casesFetching: boolean;
@@ -37,10 +43,10 @@ const CohortCard: React.FC<CohortCardProps> = ({
         <div>
           <h2 className="font-heading text-lg font-semibold">Cohort</h2>
           <p className="font-heading py-1 text-[#1F77B4] font-semibold">
-            S<sub>1</sub> : {cohorts[0].name}
+            S<sub>1</sub> : {cohorts.primary_cohort.name}
           </p>
           <p className="py-1 text-[#BD5800] font-semibold">
-            S<sub>2</sub> : {cohorts[1].name}
+            S<sub>2</sub> : {cohorts.comparison_cohort.name}
           </p>
         </div>
         <div>

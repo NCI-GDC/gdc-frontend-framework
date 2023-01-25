@@ -11,10 +11,16 @@ const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
 });
 
 interface CohortVennDiagramProps {
-  readonly cohorts: Array<{
-    filter: FilterSet;
-    name: string;
-  }>;
+  readonly cohorts?: {
+    primary_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+    comparison_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+  };
   readonly caseIds: string[][];
 }
 
@@ -23,8 +29,8 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
   caseIds,
 }: CohortVennDiagramProps) => {
   const filters = makeIntersectionFilters(
-    buildCohortGqlOperator(cohorts[0].filter),
-    buildCohortGqlOperator(cohorts[1].filter),
+    buildCohortGqlOperator(cohorts.primary_cohort.filter),
+    buildCohortGqlOperator(cohorts.comparison_cohort.filter),
     caseIds,
   );
 

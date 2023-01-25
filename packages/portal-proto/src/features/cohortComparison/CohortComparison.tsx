@@ -7,10 +7,16 @@ import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 
 interface CohortComparisonProps {
-  readonly cohorts?: Array<{
-    filter: FilterSet;
-    name: string;
-  }>;
+  readonly cohorts?: {
+    primary_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+    comparison_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+  };
   readonly demoMode?: boolean;
 }
 

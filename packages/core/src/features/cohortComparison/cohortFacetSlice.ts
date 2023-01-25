@@ -116,16 +116,22 @@ export const fetchCohortFacets = createAsyncThunk<
   GraphQLApiResponse,
   {
     facetFields: string[];
-    cohorts: Array<{
-      filter: FilterSet;
-      name: string;
-    }>;
+    cohorts?: {
+      primary_cohort: {
+        filter: FilterSet;
+        name: string;
+      };
+      comparison_cohort: {
+        filter: FilterSet;
+        name: string;
+      };
+    };
   },
   { dispatch: CoreDispatch; state: CoreState }
 >("cohortComparison/cohortFacets", async ({ facetFields, cohorts }) => {
   const graphQLFilters = {
-    cohort1: buildCohortGqlOperator(cohorts[0].filter),
-    cohort2: buildCohortGqlOperator(cohorts[1].filter),
+    cohort1: buildCohortGqlOperator(cohorts?.primary_cohort.filter),
+    cohort2: buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     facets: facetFields,
     interval: 10 * DAYS_IN_YEAR,
   };

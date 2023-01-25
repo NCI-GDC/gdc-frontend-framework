@@ -11,10 +11,16 @@ interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
   readonly counts: number[];
-  readonly cohorts: Array<{
-    filter: FilterSet;
-    name: string;
-  }>;
+  readonly cohorts?: {
+    primary_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+    comparison_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+  };
 }
 
 export const FacetCard: React.FC<FacetCardProps> = ({
@@ -82,7 +88,9 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     x: cohort.map((facet) => facet.key),
     y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
     customdata: cohort.map((facet) => facet.count),
-    hovertemplate: `<b>${cohorts[idx].name}</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
+    hovertemplate: `<b>${
+      cohorts[idx === 0 ? "primary_cohort" : "comparison_cohort"].name
+    }</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
     marker: {
       color: idx === 0 ? "#1F77B4" : "#BD5800",
     },

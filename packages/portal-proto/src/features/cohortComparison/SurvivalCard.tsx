@@ -20,10 +20,16 @@ const tooltipLabel = (
 
 interface SurvivalCardProps {
   readonly counts: number[];
-  readonly cohorts: Array<{
-    filter: FilterSet;
-    name: string;
-  }>;
+  readonly cohorts?: {
+    primary_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+    comparison_cohort: {
+      filter: FilterSet;
+      name: string;
+    };
+  };
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
   readonly caseIds: string[][];
 }
@@ -35,8 +41,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   caseIds,
 }: SurvivalCardProps) => {
   const filters = makeIntersectionFilters(
-    buildCohortGqlOperator(cohorts[0].filter),
-    buildCohortGqlOperator(cohorts[1].filter),
+    buildCohortGqlOperator(cohorts.primary_cohort.filter),
+    buildCohortGqlOperator(cohorts.comparison_cohort.filter),
     caseIds,
   );
   const { data, isUninitialized, isFetching, isError } =
