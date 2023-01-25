@@ -7,7 +7,7 @@ import {
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator, selectAvailableCohortByName } from "../cohort";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { DAYS_IN_YEAR } from "../../constants";
 
 const graphQLQuery = `
@@ -114,28 +114,23 @@ const initialState: CohortComparisonState = {
 
 export const fetchCohortFacets = createAsyncThunk<
   GraphQLApiResponse,
-  { facetFields: string[]; primaryCohort: string; comparisonCohort: string },
-  { dispatch: CoreDispatch; state: CoreState }
->(
-  "cohortComparison/cohortFacets",
-  async ({ facetFields, primaryCohort, comparisonCohort }, thunkAPI) => {
-    const cohortFilters = buildCohortGqlOperator(
-      selectAvailableCohortByName(thunkAPI.getState(), primaryCohort)?.filters,
-    );
-    const cohort2Filters = buildCohortGqlOperator(
-      selectAvailableCohortByName(thunkAPI.getState(), comparisonCohort)
-        ?.filters,
-    );
-
-    const graphQLFilters = {
-      cohort1: cohortFilters,
-      cohort2: cohort2Filters,
-      facets: facetFields,
-      interval: 10 * DAYS_IN_YEAR,
-    };
-    return await graphqlAPI(graphQLQuery, graphQLFilters);
+  {
+    facetFields: string[];
+    cohorts: Array<{
+      filter: FilterSet;
+      name: string;
+    }>;
   },
-);
+  { dispatch: CoreDispatch; state: CoreState }
+>("cohortComparison/cohortFacets", async ({ facetFields, cohorts }) => {
+  const graphQLFilters = {
+    cohort1: buildCohortGqlOperator(cohorts[0].filter),
+    cohort2: buildCohortGqlOperator(cohorts[1].filter),
+    facets: facetFields,
+    interval: 10 * DAYS_IN_YEAR,
+  };
+  return await graphqlAPI(graphQLQuery, graphQLFilters);
+});
 
 const slice = createSlice({
   name: "cases",

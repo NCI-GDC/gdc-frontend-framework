@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { pickBy } from "lodash";
 import { LoadingOverlay } from "@mantine/core";
-import { useCohortFacets } from "@gff/core";
+import { FilterSet, useCohortFacets } from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 
 interface CohortComparisonProps {
-  readonly cohortNames: string[];
+  readonly cohorts?: Array<{
+    filter: FilterSet;
+    name: string;
+  }>;
   readonly demoMode?: boolean;
 }
 
 const CohortComparison: React.FC<CohortComparisonProps> = ({
-  cohortNames,
+  cohorts,
   demoMode = false,
 }: CohortComparisonProps) => {
   const [selectedCards, setSelectedCards] = useState({
@@ -39,8 +42,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const { data, isFetching, isUninitialized } = useCohortFacets({
     facetFields: fieldsToQuery,
-    primaryCohort: cohortNames[0],
-    comparisonCohort: cohortNames[1],
+    cohorts: cohorts,
   });
   const counts = data?.caseCounts || [];
 
@@ -49,7 +51,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
       {demoMode && (
         <span className="font-heading italic px-2 py-4 mt-4">
           {
-            "Demo showing cases with pancreatic cancer with and without mutations in the gene KRAS."
+            "Demo showing cases with low grade gliomas with and without mutations in the genes IDH1 and IDH2."
           }
         </span>
       )}
@@ -62,7 +64,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
           ) : (
             selectedCards.survival && (
               <SurvivalCard
-                cohortNames={cohortNames}
+                cohorts={cohorts}
                 counts={counts}
                 caseIds={data?.caseIds}
                 setSurvivalPlotSelectable={setSurvivalPlotSelectable}
@@ -89,7 +91,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                 }
                 field={fields[selectedCard]}
                 counts={counts}
-                cohortNames={cohortNames}
+                cohorts={cohorts}
               />
             ),
           )}
@@ -99,7 +101,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             selectedCards={selectedCards}
             setSelectedCards={setSelectedCards}
             counts={counts}
-            cohortNames={cohortNames}
+            cohorts={cohorts}
             options={fields}
             survivalPlotSelectable={survivalPlotSelectable}
             caseIds={data?.caseIds}

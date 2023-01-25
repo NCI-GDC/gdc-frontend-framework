@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { Alert, Loader, Paper, Tooltip } from "@mantine/core";
 import {
-  useCoreSelector,
-  selectAvailableCohortByName,
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
+  FilterSet,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
@@ -21,32 +20,23 @@ const tooltipLabel = (
 
 interface SurvivalCardProps {
   readonly counts: number[];
-  readonly cohortNames: string[];
+  readonly cohorts: Array<{
+    filter: FilterSet;
+    name: string;
+  }>;
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
   readonly caseIds: string[][];
 }
 
 const SurvivalCard: React.FC<SurvivalCardProps> = ({
   counts,
-  cohortNames,
+  cohorts,
   setSurvivalPlotSelectable,
   caseIds,
 }: SurvivalCardProps) => {
-  const cohort1Filters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[0])?.filters,
-    ),
-  );
-
-  const cohort2Filters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[1])?.filters,
-    ),
-  );
-
   const filters = makeIntersectionFilters(
-    cohort1Filters,
-    cohort2Filters,
+    buildCohortGqlOperator(cohorts[0].filter),
+    buildCohortGqlOperator(cohorts[1].filter),
     caseIds,
   );
   const { data, isUninitialized, isFetching, isError } =

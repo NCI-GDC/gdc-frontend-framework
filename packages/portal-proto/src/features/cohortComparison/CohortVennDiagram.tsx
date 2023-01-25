@@ -1,9 +1,8 @@
 import dynamic from "next/dynamic";
 import {
-  useCoreSelector,
-  selectAvailableCohortByName,
   buildCohortGqlOperator,
   useVennIntersectionData,
+  FilterSet,
 } from "@gff/core";
 
 import makeIntersectionFilters from "./makeIntersectionFilters";
@@ -12,28 +11,20 @@ const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
 });
 
 interface CohortVennDiagramProps {
-  readonly cohortNames: string[];
+  readonly cohorts: Array<{
+    filter: FilterSet;
+    name: string;
+  }>;
   readonly caseIds: string[][];
 }
 
 const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
-  cohortNames,
+  cohorts,
   caseIds,
 }: CohortVennDiagramProps) => {
-  const cohort1Filters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[0])?.filters,
-    ),
-  );
-
-  const cohort2Filters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      selectAvailableCohortByName(state, cohortNames[1])?.filters,
-    ),
-  );
   const filters = makeIntersectionFilters(
-    cohort1Filters,
-    cohort2Filters,
+    buildCohortGqlOperator(cohorts[0].filter),
+    buildCohortGqlOperator(cohorts[1].filter),
     caseIds,
   );
 

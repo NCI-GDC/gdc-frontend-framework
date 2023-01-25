@@ -513,4 +513,4 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
 export const stringifyJSONParam = (
   obj?: Record<string, any>,
   defaults = "{}",
-) => (obj ? JSON.stringify(obj) : defaults);
+): string => (obj ? JSON.stringify(obj) : defaults);

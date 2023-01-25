@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import { CohortFacetDoc, DAYS_IN_YEAR } from "@gff/core";
+import { CohortFacetDoc, DAYS_IN_YEAR, FilterSet } from "@gff/core";
 import BarChart from "../charts/BarChart";
 import PValue from "./PValue";
 import saveAs from "file-saver";
@@ -11,14 +11,17 @@ interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
   readonly counts: number[];
-  readonly cohortNames: string[];
+  readonly cohorts: Array<{
+    filter: FilterSet;
+    name: string;
+  }>;
 }
 
 export const FacetCard: React.FC<FacetCardProps> = ({
   data,
   field,
   counts,
-  cohortNames,
+  cohorts,
 }: FacetCardProps) => {
   const divId = `cohort_comparison_bar_chart_${field}`;
   const fieldLabel = humanify({ term: field });
@@ -79,7 +82,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     x: cohort.map((facet) => facet.key),
     y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
     customdata: cohort.map((facet) => facet.count),
-    hovertemplate: `<b>${cohortNames[idx]}</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
+    hovertemplate: `<b>${cohorts[idx].name}</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
     marker: {
       color: idx === 0 ? "#1F77B4" : "#BD5800",
     },
