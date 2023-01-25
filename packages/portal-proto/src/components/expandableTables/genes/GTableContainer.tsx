@@ -170,7 +170,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data: mutatedGenesFreqData, isFetching: mutatedGenesFreqFetching } =
     useMutatedGenesFreqData({
       currentFilters: genomicFilters,
-      size: initialData?.genes_total || 1000,
+      size: initialData?.genes_total,
     });
 
   useEffect(() => {

@@ -34,7 +34,7 @@ export interface MutatedGenesFreqData {
 
 export interface MutatedGenesFreqInitialState {
   status: DataStatus;
-  mutatedGenes?: MutatedGenesFreqData;
+  mutatedGenes?: MutatedGenesFreqData[];
 }
 
 const initialState: MutatedGenesFreqInitialState = {
@@ -51,18 +51,22 @@ const slice = createSlice({
         const response = action.payload;
         state.status = "fulfilled";
         const edges = response?.data?.viewer?.explore?.genes?.hits?.edges;
-        console.log("res", response);
-        debugger;
+
         if (edges?.length === 0) return undefined;
 
-        // const frequencies = {
-        //   symbol: symbol,
-        //   name: name,
-        //   cytoband: cytoband,
-        //   biotype: biotype,
-        //   gene_id: gene_id,
-        // };
-        // state.mutatedGenes = { ...frequencies };
+        const mutated = edges.map(
+          ({ node: { biotype, cytoband, gene_id, name, symbol } }) => {
+            return {
+              biotype,
+              cytoband,
+              gene_id,
+              name,
+              symbol,
+            };
+          },
+        );
+
+        state.mutatedGenes = mutated;
         return state;
       })
       .addCase(fetchMutatedGenesFreq.pending, (state) => {
