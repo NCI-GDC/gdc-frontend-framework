@@ -24,6 +24,7 @@ import {
   selectMultipleFacetsByDocTypeAndField,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortFiltersByNames,
+  updateActiveCohortFilter,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -285,7 +286,8 @@ export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
-    dispatch(updateCohortFilter({ field: field, operation: operation }));
+    //  dispatch(updateCohortFilter({ field: field, operation: operation }));
+    dispatch(updateActiveCohortFilter({ field: field, operation: operation }));
   };
 };
 

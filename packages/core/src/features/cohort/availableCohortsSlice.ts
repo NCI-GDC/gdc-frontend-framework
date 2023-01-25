@@ -53,6 +53,12 @@ export interface Cohort {
   readonly caseCount?: number; // track case count of a cohort
 }
 
+interface IndexedCaseSetGQLQueryAndVariables {
+  parameters: string;
+  variables: Record<string, GqlOperation | string | undefined>;
+  exploreQuery: string;
+  repositoryQuery: string;
+}
 /**
  * Parses the set of Filter and returns an object containing query, parameters, and variables
  * used to create a caseSet from the input filters. The prefix (e.g. genes.") of the filters is used to group them.
@@ -60,10 +66,11 @@ export interface Cohort {
  * @param filters
  * @param id
  */
+
 export const buildCaseSetGQLQueryAndVariablesFromFilters = (
   filters: FilterSet,
   id: string,
-): Record<string, any> => {
+): IndexedCaseSetGQLQueryAndVariables => {
   const prefix = Object.keys(filters.root)
     .map((x) => x.split(".")[0])
     .filter((v, i, a) => a.indexOf(v) == i);
@@ -87,17 +94,18 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
     ),
   );
 
-  return {
-    query: prefix
-      .map(
-        (name) => `${name}Cases : case (input: $input${name}) { set_id size }`,
-      )
-      .join(","),
+  // build the query and parameters for explore and repository
+  const explorePrefixes = prefix.filter((x) =>
+    INDEX_FOR_REQUIRED_CASE_SET_FILTERS.explore.includes(x),
+  );
+  const repositoryPrefixes = prefix.filter((x) =>
+    INDEX_FOR_REQUIRED_CASE_SET_FILTERS.repository.includes(x),
+  );
 
+  return {
     parameters: prefix
       .map((name) => ` $input${name}: CreateSetInput`)
       .join(","),
-
     variables: Object.entries(sorted).reduce((obj, [key, value]) => {
       return {
         ...obj,
@@ -110,6 +118,16 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
         },
       };
     }, {}),
+    exploreQuery: explorePrefixes
+      .map(
+        (name) => `${name}Cases : case (input: $input${name}) { set_id size }`,
+      )
+      .join(","),
+    repositoryQuery: repositoryPrefixes
+      .map(
+        (name) => `${name}Cases : case (input: $input${name}) { set_id size }`,
+      )
+      .join(","),
   };
 };
 
@@ -119,19 +137,23 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
 */
 export const buildCaseSetMutationQuery = (
   parameters: string,
-  query: string,
-): string => `
-mutation mutationsCreateRepositoryCaseSetMutation(
-  ${parameters}
-) {
-  sets {
-    create {
-      explore {
-       ${query}
-    }
-  }
- }
-}`;
+  exploreQuery: string,
+  repositoryQuery: string,
+): string => {
+  let mutationQueryBody =
+    exploreQuery.length > 1 ? "explore { " + exploreQuery + " }" : "";
+  mutationQueryBody +=
+    exploreQuery.length > 1 && repositoryQuery.length > 1 ? "," : "";
+  mutationQueryBody +=
+    repositoryQuery.length > 1 ? "repository { " + repositoryQuery + "}" : "";
+
+  return `mutation mutationsCreateRepositoryCaseSetMutation(${parameters}) { 
+      sets { create { 
+          ${mutationQueryBody} 
+      } 
+      } 
+  }`;
+};
 
 interface SetFilterResponse {
   viewer: {
@@ -194,13 +216,17 @@ export const createCaseSet = createAsyncThunk<
       REQUIRES_CASE_SET_FILTERS,
     );
 
-    const { query, parameters, variables } =
+    const { exploreQuery, repositoryQuery, parameters, variables } =
       buildCaseSetGQLQueryAndVariablesFromFilters(
         dividedFilters.withPrefix,
         caseSetId,
       );
 
-    const graphQL = buildCaseSetMutationQuery(parameters, query);
+    const graphQL = buildCaseSetMutationQuery(
+      parameters,
+      exploreQuery,
+      repositoryQuery,
+    );
     return graphqlAPI(graphQL, variables);
   },
 );
@@ -295,7 +321,11 @@ const handleFiltersForSet = createAsyncThunk<
 );
 
 export const DEFAULT_COHORT_ID = "ALL-GDC-COHORT";
-export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
+export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms.", "files."];
+const INDEX_FOR_REQUIRED_CASE_SET_FILTERS = {
+  explore: ["genes", "ssms"],
+  repository: ["files"],
+};
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -953,7 +983,8 @@ export const selectCurrentCohortGroups = (
 
 /**
  * Returns filter groups from the current cohort filtered by field
- * @param state
+ * @param state - the redux state
+ * @param field - the field to filter by
  */
 export const selectCurrentCohortGroupsByField = (
   state: CoreState,
@@ -968,7 +999,8 @@ export const selectCurrentCohortGroupsByField = (
 
 /**
  * Returns the current cohort filters as a FilterSet
- * @param state
+ * @param state - the redux state
+ * @param cohortId - the id of the cohort to get the filters from
  */
 export const selectCohortFilterSetById = (
   state: CoreState,
@@ -983,6 +1015,11 @@ interface SplitFilterSet {
   withoutPrefix: FilterSet;
 }
 
+/**
+ * Divides a filter set into two filter sets based on the prefixes provided
+ * @param filters - the filter set to divide
+ * @param prefixes - the prefixes to divide by
+ */
 export const divideFilterSetByPrefix = (
   filters: FilterSet,
   prefixes: string[],
@@ -1012,7 +1049,7 @@ export const divideFilterSetByPrefix = (
 /**
  * Divides the current cohort into prefix and not prefix. This is
  * used to create caseSets for files and cases
- * @param state
+ * @param state - the redux state
  * @param prefixes - and array of filter prefix to separate on (typically ["genes."])
  */
 export const divideCurrentCohortFilterSetFilterByPrefix = (
@@ -1034,7 +1071,7 @@ export const divideCurrentCohortFilterSetFilterByPrefix = (
 
 /**
  * Returns the currentCohortFilters as a GqlOperation
- * @param state
+ * @param state - the redux state
  */
 export const selectCurrentCohortGqlFilters = (
   state: CoreState,
@@ -1050,7 +1087,7 @@ export const selectCurrentCohortGqlFilters = (
  * Returns either a filterSet or a filter containing a caseSetId that was created
  * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
  * Used to create a cohort that work with both explore and repository indexes
- * @param state
+ * @param state - the redux state
  */
 export const selectCurrentCohortFilterOrCaseSet = (
   state: CoreState,
@@ -1066,7 +1103,7 @@ export const selectCurrentCohortFilterOrCaseSet = (
 
 /**
  * Main selector of the current Cohort Filters.
- * @param state
+ * @param state - the redux state
  */
 export const selectCurrentCohortFilters = (
   state: CoreState,
@@ -1084,8 +1121,8 @@ export const selectCurrentCohortFiltersGQL = (
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
  * returns undefined.
- * @param state
- * @param name
+ * @param state - the redux state
+ * @param name - the name of the filter to select
  */
 export const selectCurrentCohortFiltersByName = (
   state: CoreState,
@@ -1097,7 +1134,12 @@ export const selectCurrentCohortFiltersByName = (
   );
   return cohort?.filters?.root[name];
 };
-
+/**
+ * Selects a list of filters by their names from the current cohort. If the filter is not found
+ * returns an empty object.
+ * @param state - the redux state
+ * @param names - the names of the filters to select
+ */
 export const selectCurrentCohortFiltersByNames = (
   state: CoreState,
   names: ReadonlyArray<string>,

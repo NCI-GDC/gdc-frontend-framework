@@ -749,13 +749,13 @@ describe("caseSet creation", () => {
       cohortFilters,
       REQUIRES_CASE_SET_FILTERS,
     );
-    const { query, parameters, variables } =
+    const { exploreQuery, repositoryQuery, parameters, variables } =
       buildCaseSetGQLQueryAndVariablesFromFilters(
         dividedFilters.withPrefix,
         "2394944y3",
       );
 
-    expect(query).toEqual(
+    expect(exploreQuery).toEqual(
       "genesCases : case (input: $inputgenes) { set_id size }," +
         "ssmsCases : case (input: $inputssms) { set_id size }",
     );
@@ -794,19 +794,301 @@ describe("caseSet creation", () => {
     };
 
     expect(variables).toEqual(expected);
-    const graphQL = buildCaseSetMutationQuery(parameters, query);
-    expect(graphQL).toEqual(`
-mutation mutationsCreateRepositoryCaseSetMutation(
-   $inputgenes: CreateSetInput, $inputssms: CreateSetInput
-) {
-  sets {
-    create {
-      explore {
-       genesCases : case (input: $inputgenes) { set_id size },ssmsCases : case (input: $inputssms) { set_id size }
-    }
-  }
- }
-}`);
+    const graphQL = buildCaseSetMutationQuery(
+      parameters,
+      exploreQuery,
+      repositoryQuery,
+    );
+    expect(graphQL)
+      .toEqual(`mutation mutationsCreateRepositoryCaseSetMutation( $inputgenes: CreateSetInput, $inputssms: CreateSetInput) { 
+      sets { create { 
+          explore { genesCases : case (input: $inputgenes) { set_id size },ssmsCases : case (input: $inputssms) { set_id size } } 
+      } 
+      } 
+  }`);
+  });
+
+  test("extract caseset response", () => {
+    const data = {
+      genesCases: { set_id: "genes-4kaetNCo-HlpwBloLEcRy}", size: 4941 },
+      ssmsCases: { set_id: "ssms-4kaetNCo-HlpwBloLEcRy}", size: 389 },
+    };
+
+    const results = processCaseSetResponse(data);
+    expect(results).toEqual({
+      genes: "genes-4kaetNCo-HlpwBloLEcRy}",
+      ssms: "ssms-4kaetNCo-HlpwBloLEcRy}",
+    });
+  });
+});
+
+describe("caseSet creation with genes, ssms, and  files", () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  const cohortFilters: FilterSet = {
+    mode: "and",
+    root: {
+      "genes.symbol": {
+        field: "genes.symbol",
+        operands: ["KRAS"],
+        operator: "includes",
+      },
+      "ssms.ssm_id": {
+        field: "ssms.ssm_id",
+        operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+        operator: "includes",
+      },
+      "cases.primary_site": {
+        field: "cases.primary_site",
+        operands: ["pancreas"],
+        operator: "includes",
+      },
+      "files.data_type": {
+        field: "files.data_type",
+        operands: ["Aggregated Somatic Mutation"],
+        operator: "includes",
+      },
+    },
+  };
+
+  test("divide the cohort filters", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+
+    const expected = {
+      withPrefix: {
+        mode: "and",
+        root: {
+          "files.data_type": {
+            field: "files.data_type",
+            operands: ["Aggregated Somatic Mutation"],
+            operator: "includes",
+          },
+          "genes.symbol": {
+            field: "genes.symbol",
+            operands: ["KRAS"],
+            operator: "includes",
+          },
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+            operator: "includes",
+          },
+        },
+      },
+      withoutPrefix: {
+        mode: "and",
+        root: {
+          "cases.primary_site": {
+            field: "cases.primary_site",
+            operands: ["pancreas"],
+            operator: "includes",
+          },
+        },
+      },
+    };
+    expect(dividedFilters).toEqual(expected);
+  });
+
+  test("build the createSetQuery", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+    const { parameters, variables, exploreQuery, repositoryQuery } =
+      buildCaseSetGQLQueryAndVariablesFromFilters(
+        dividedFilters.withPrefix,
+        "2394944y3",
+      );
+
+    expect(exploreQuery).toEqual(
+      "genesCases : case (input: $inputgenes) { set_id size }," +
+        "ssmsCases : case (input: $inputssms) { set_id size }",
+    );
+    expect(repositoryQuery).toEqual(
+      "filesCases : case (input: $inputfiles) { set_id size }",
+    );
+
+    const expected = {
+      inputgenes: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "genes.symbol",
+                value: ["KRAS"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "genes-2394944y3",
+      },
+      inputssms: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "ssms.ssm_id",
+                value: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "ssms-2394944y3",
+      },
+      inputfiles: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "files.data_type",
+                value: ["Aggregated Somatic Mutation"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "files-2394944y3",
+      },
+    };
+
+    expect(variables).toEqual(expected);
+    const graphQL = buildCaseSetMutationQuery(
+      parameters,
+      exploreQuery,
+      repositoryQuery,
+    );
+    expect(graphQL)
+      .toEqual(`mutation mutationsCreateRepositoryCaseSetMutation( $inputgenes: CreateSetInput, $inputssms: CreateSetInput, $inputfiles: CreateSetInput) { 
+      sets { create { 
+          explore { genesCases : case (input: $inputgenes) { set_id size },ssmsCases : case (input: $inputssms) { set_id size } },repository { filesCases : case (input: $inputfiles) { set_id size }} 
+      } 
+      } 
+  }`);
+  });
+
+  test("extract caseset response", () => {
+    const data = {
+      genesCases: { set_id: "genes-4kaetNCo-HlpwBloLEcRy}", size: 4941 },
+      ssmsCases: { set_id: "ssms-4kaetNCo-HlpwBloLEcRy}", size: 389 },
+    };
+
+    const results = processCaseSetResponse(data);
+    expect(results).toEqual({
+      genes: "genes-4kaetNCo-HlpwBloLEcRy}",
+      ssms: "ssms-4kaetNCo-HlpwBloLEcRy}",
+    });
+  });
+});
+
+describe("caseSet creation with files only", () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  const cohortFilters: FilterSet = {
+    mode: "and",
+    root: {
+      "cases.primary_site": {
+        field: "cases.primary_site",
+        operands: ["pancreas"],
+        operator: "includes",
+      },
+      "files.data_type": {
+        field: "files.data_type",
+        operands: ["Aggregated Somatic Mutation"],
+        operator: "includes",
+      },
+    },
+  };
+
+  test("divide the cohort filters", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+
+    const expected = {
+      withPrefix: {
+        mode: "and",
+        root: {
+          "files.data_type": {
+            field: "files.data_type",
+            operands: ["Aggregated Somatic Mutation"],
+            operator: "includes",
+          },
+        },
+      },
+      withoutPrefix: {
+        mode: "and",
+        root: {
+          "cases.primary_site": {
+            field: "cases.primary_site",
+            operands: ["pancreas"],
+            operator: "includes",
+          },
+        },
+      },
+    };
+    expect(dividedFilters).toEqual(expected);
+  });
+
+  test("build the createSetQuery", () => {
+    const dividedFilters = divideFilterSetByPrefix(
+      cohortFilters,
+      REQUIRES_CASE_SET_FILTERS,
+    );
+    const { parameters, variables, exploreQuery, repositoryQuery } =
+      buildCaseSetGQLQueryAndVariablesFromFilters(
+        dividedFilters.withPrefix,
+        "2394944y3",
+      );
+
+    expect(exploreQuery).toEqual("");
+    expect(repositoryQuery).toEqual(
+      "filesCases : case (input: $inputfiles) { set_id size }",
+    );
+
+    const expected = {
+      inputfiles: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "files.data_type",
+                value: ["Aggregated Somatic Mutation"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        set_id: "files-2394944y3",
+      },
+    };
+
+    expect(variables).toEqual(expected);
+    const graphQL = buildCaseSetMutationQuery(
+      parameters,
+      exploreQuery,
+      repositoryQuery,
+    );
+    expect(graphQL)
+      .toEqual(`mutation mutationsCreateRepositoryCaseSetMutation( $inputfiles: CreateSetInput) { 
+      sets { create { 
+          repository { filesCases : case (input: $inputfiles) { set_id size }} 
+      } 
+      } 
+  }`);
   });
 
   test("extract caseset response", () => {
