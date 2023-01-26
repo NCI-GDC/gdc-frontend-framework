@@ -3,7 +3,6 @@ import {
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
-  selectCurrentCohortFilters,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -42,7 +41,6 @@ import {
   useTotalCounts,
 } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
-import { clearRepositoryFilters } from "./repositoryFiltersSlice";
 import { FacetRequiredHooks } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
@@ -71,13 +69,6 @@ export const FileFacetPanel = (): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const dispatch = useAppDispatch();
 
-  // Global cohort filters
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const prevCohortFilters = usePrevious(cohortFilters);
-
   const handleFilterSelected = useCallback(
     (filter: string) => {
       setOpened(false);
@@ -104,13 +95,6 @@ export const FileFacetPanel = (): JSX.Element => {
       setFacetDefinitions(facets);
     }
   }, [facets, isDictionaryReady, prevCustomFacets]);
-
-  // Clear filters if Cohort Changes
-  useEffect(() => {
-    if (!isEqual(prevCohortFilters, cohortFilters)) {
-      dispatch(clearRepositoryFilters());
-    }
-  }, [dispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
 
   const showReset = facetDefinitions.some(
     (facetDef) => !getDefaultFacets().includes(facetDef.full),

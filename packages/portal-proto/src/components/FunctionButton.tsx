@@ -1,7 +1,15 @@
 import tw from "tailwind-styled-components";
 import { Button } from "@mantine/core";
 
-export default tw(Button)`
+interface FunctionButtonProps {
+  $disabled: boolean;
+}
+
+export default tw(Button)<FunctionButtonProps>`
+ ${(p) =>
+   p.$disabled
+     ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
+     : null}
 flex
 flex-row
 items-center
@@ -13,7 +21,4 @@ border-primary-darker
 hover:bg-primary-darker
 font-heading
 hover:text-primary-contrast-darker
-disabled:opacity-60
-disabled:border-opacity-60
-disabled:text-opacity-60
 `;

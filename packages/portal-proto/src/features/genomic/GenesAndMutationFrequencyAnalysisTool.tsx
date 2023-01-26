@@ -29,7 +29,7 @@ import {
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
-import { useRouter } from "next/router";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -82,12 +82,7 @@ type AppModeState = "genes" | "ssms";
 
 // need to define isDemoMode Here
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
-  // get the params pass to the app
-  const {
-    query: { demoMode, app },
-  } = useRouter();
-  const isDemoMode =
-    demoMode === "true" || (app as string).endsWith("Demo") ? true : false;
+  const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
@@ -160,6 +155,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     isDemoMode,
     overwritingDemoFilter,
   }); // get the default top gene/ssms to show by default
+
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -295,7 +291,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     visible={!survivalPlotReady && !topGeneSSMSSuccess}
                   />
                   <SurvivalPlot
-                    plotType={SurvivalPlotTypes.overall}
+                    plotType={SurvivalPlotTypes.mutation}
                     data={
                       survivalPlotReady &&
                       survivalPlotData.survivalData.length > 1
@@ -335,7 +331,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
                 <SurvivalPlot
-                  plotType={SurvivalPlotTypes.overall}
+                  plotType={SurvivalPlotTypes.mutation}
                   data={
                     survivalPlotReady &&
                     comparativeSurvival &&
@@ -345,7 +341,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                   names={
                     survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.symbol]
+                      ? [comparativeSurvival.name]
                       : []
                   }
                 />

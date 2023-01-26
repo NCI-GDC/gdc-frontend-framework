@@ -16,6 +16,8 @@ const MultipleImageViewerPage: NextPage = () => {
       <MultipleImageViewer
         case_id={query.caseId as string}
         selectedId={query.selectedId as string}
+        isCohortCentric={(query.isCohortCentric as string) === "true"}
+        additionalFilters={query.additionalFilters as string}
       />
     </UserFlowVariedPages>
   );

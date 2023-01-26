@@ -22,7 +22,7 @@ import {
   GdcFile,
   Operation,
 } from "@gff/core";
-import { MdSave } from "react-icons/md";
+import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
@@ -187,19 +187,19 @@ const FilesTables: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
-
+  // TODO fix filters
   const buildSearchFilters = (term: string): Operation => {
     return {
       operator: "or",
       operands: [
         {
           operator: "=",
-          field: "file_name",
+          field: "files.file_name",
           operand: `*${term}*`,
         },
         {
           operator: "=",
-          field: "file_id",
+          field: "files.file_id",
           operand: `*${term}*`,
         },
       ],
@@ -211,9 +211,9 @@ const FilesTables: React.FC = () => {
   const newSearchActions = (searchTerm: string) => {
     //TODO if lots of calls fast last call might not be displayed
     if (searchTerm.length > 0)
-      updateFilter("files", buildSearchFilters(searchTerm));
+      updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
     else {
-      removeFilter("files");
+      removeFilter("joinOrToAllfilesSearch");
     }
   };
 
@@ -313,11 +313,20 @@ const FilesTables: React.FC = () => {
   };
 
   //update everything that uses table component
-  let totalFileSize = "--";
+  let totalFileSize = <strong>--</strong>;
+  let totalCaseCount = "--";
 
   const fileSizeSliceData = useFilesSize(cohortGqlOperator);
-  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data?.total_file_size) {
-    totalFileSize = fileSize(fileSizeSliceData.data.total_file_size);
+  if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
+    const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
+      output: "object",
+    });
+    totalFileSize = (
+      <>
+        <strong>{fileSizeObj.value}</strong> {fileSizeObj.unit}
+      </>
+    );
+    totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
   return (
@@ -341,12 +350,22 @@ const FilesTables: React.FC = () => {
           <div className="flex gap-2 w-full flex-row-reverse text-xl">
             <div className="pr-5">
               <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              <span>{totalFileSize}</span>
+              {totalFileSize}
+            </div>
+            <div className="">
+              <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+              <strong className="mr-1">{totalCaseCount}</strong>
+              {fileSizeSliceData?.data?.total_case_count > 1 ||
+              fileSizeSliceData?.data?.total_case_count === 0
+                ? "Cases"
+                : "Case"}
             </div>
             <div className="">
               Total of{" "}
               <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 ? "Files" : "File"}
+              {tempPagination?.total > 1 || tempPagination?.total === 0
+                ? "Files"
+                : "File"}
             </div>
           </div>
         </div>

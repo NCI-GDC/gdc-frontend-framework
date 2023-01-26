@@ -1,22 +1,23 @@
 import {
+  buildCohortGqlOperator,
+  CART_LIMIT,
   createGdcAppWithOwnStore,
+  fetchFiles,
+  FilterSet,
+  GdcFileIds,
+  GqlOperation,
+  joinFilters,
   selectCart,
-  useCoreDispatch,
-  useCoreSelector,
   selectCurrentCohortFilters,
   selectFilesData,
-  fetchFiles,
-  buildCohortGqlOperator,
-  joinFilters,
-  usePrevious,
+  stringifyJSONParam,
+  useCoreDispatch,
+  useCoreSelector,
   useGetAllFilesMutation,
-  GdcFileIds,
-  CART_LIMIT,
-  GqlOperation,
-  FilterSet,
+  usePrevious,
 } from "@gff/core";
 import { useEffect, useState } from "react";
-import { AppStore, id, AppContext, useAppSelector } from "./appApi";
+import { AppContext, AppStore, id, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
 import {
@@ -33,12 +34,18 @@ import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
+import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
+import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
+import { Tooltip } from "@mantine/core";
 
 const useCohortCentricFiles = () => {
   const coreDispatch = useCoreDispatch();
+
   const { pagination, status } = useCoreSelector(selectFilesData);
 
-  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const repositoryFilters = useAppSelector((state) =>
+    selectFilters(state),
+  ) as FilterSet;
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
@@ -61,14 +68,16 @@ const useCohortCentricFiles = () => {
     }
   }, [status, coreDispatch, allFilters, prevFilters]);
 
-  return { allFilters, pagination };
+  const { data: imagesCount } = useImageCounts(allFilters);
+
+  return { allFilters, pagination, repositoryFilters, imagesCount };
 };
 
 const RepositoryApp = () => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
-  const { allFilters, pagination } = useCohortCentricFiles();
-
+  const { allFilters, pagination, repositoryFilters, imagesCount } =
+    useCohortCentricFiles();
   const [
     getFileSizeSliceData, // This is the mutation trigger
     { isLoading: allFilesLoading }, // This is the destructured mutation result
@@ -100,9 +109,13 @@ const RepositoryApp = () => {
   };
   const [active, setActive] = useState(false);
 
+  useClearLocalFilterWhenCohortChanges();
+
+  const viewImageDisabled =
+    imagesCount.slidesCount <= 0 && imagesCount.casesWithImagesCount <= 0;
   return (
     <div className="flex flex-row mt-4 mx-3">
-      <div className="w-1/5">
+      <div className="w-1/4">
         <FileFacetPanel />
       </div>
       <div className="w-full overflow-hidden h-full">
@@ -143,9 +156,22 @@ const RepositoryApp = () => {
               setActive={setActive}
               active={active}
             />
-            <Link href="/image-viewer/MultipleImageViewerPage">
-              <FunctionButton component="a">View Images</FunctionButton>
+
+            <Link
+              href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
+                stringifyJSONParam(repositoryFilters),
+              )}`}
+            >
+              <Tooltip
+                label={"No images available to be viewed"}
+                disabled={!viewImageDisabled}
+              >
+                <FunctionButton component="a" $disabled={viewImageDisabled}>
+                  View Images
+                </FunctionButton>
+              </Tooltip>
             </Link>
+
             <FunctionButton
               leftIcon={<CartIcon />}
               loading={allFilesLoading}

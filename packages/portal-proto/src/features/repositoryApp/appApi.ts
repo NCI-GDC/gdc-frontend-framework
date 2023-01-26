@@ -1,20 +1,24 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
 import { createAppStore } from "@gff/core";
-import storage from "redux-persist/lib/storage";
+import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
+
+const REPOSITORY_APP_NAME = "DownloadApp";
 
 const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
   filters: repositoryFiltersReducer,
+  images: imageCountsReducer,
 });
 
 const persistConfig = {
-  key: "downloadApp",
+  key: REPOSITORY_APP_NAME,
   version: 1,
   storage,
-  whitelist: ["facets"],
+  whitelist: ["facets", "filters"],
 };
 
 // create the store, context and selector for the RepositoryApp
@@ -24,7 +28,7 @@ const persistConfig = {
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
     reducers: persistReducer(persistConfig, downloadAppReducers),
-    name: "DownloadApp",
+    name: REPOSITORY_APP_NAME,
     version: "0.0.1",
   });
 
