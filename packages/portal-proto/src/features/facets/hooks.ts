@@ -286,7 +286,6 @@ export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
-    //  dispatch(updateCohortFilter({ field: field, operation: operation }));
     dispatch(updateActiveCohortFilter({ field: field, operation: operation }));
   };
 };
