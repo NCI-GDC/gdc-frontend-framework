@@ -23,6 +23,7 @@ import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
+import { defaultCohortNameGenerator } from "./utils";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -377,17 +378,20 @@ export const processCaseSetResponse = (
   }, {});
 };
 
-const newCohort = (
-  filters: FilterSet = { mode: "and", root: {} },
-  modified = false,
-  pendingFilters?: FilterSet,
-): Cohort => {
+const newCohort = ({
+  filters = { mode: "and", root: {} },
+  modified = true,
+  pendingFilters,
+  customName,
+}: {
+  filters?: FilterSet;
+  modified?: boolean;
+  pendingFilters?: FilterSet;
+  customName?: string;
+}): Cohort => {
   const ts = new Date();
-  const newName = createCohortName(
-    ts
-      .toLocaleString("en-CA", { timeZone: "America/Chicago", hour12: false })
-      .replace(",", ""),
-  );
+  const newName = customName ?? defaultCohortNameGenerator();
+
   const newId = createCohortId();
   return {
     name: newName,
@@ -407,6 +411,7 @@ const newCohort = (
 interface NewCohortParams {
   filters?: FilterSet;
   message?: string;
+  name?: string;
   group?: FilterGroup;
 }
 
@@ -462,8 +467,8 @@ const slice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
-    addNewCohort: (state) => {
-      const cohort = newCohort();
+    addNewCohort: (state, action?: PayloadAction<string>) => {
+      const cohort = newCohort({ customName: action?.payload });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
       state.message = `newCohort|${cohort.name}|${cohort.id}`;
@@ -472,7 +477,10 @@ const slice = createSlice({
       state,
       action: PayloadAction<NewCohortParams>,
     ) => {
-      const cohort = newCohort(action.payload.filters);
+      const cohort = newCohort({
+        filters: action.payload.filters,
+        customName: action.payload.name,
+      });
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       if (action.payload.group) {
         cohortsAdapter.updateOne(state, {
@@ -544,7 +552,7 @@ const slice = createSlice({
       if (state.currentCohort === DEFAULT_COHORT_ID) {
         // create a new cohort and add it
         // as the GDC All Cohort is immutable
-        const cohort = newCohort(filters, true);
+        const cohort = newCohort({ filters });
         cohortsAdapter.addOne(state, cohort);
         state.currentCohort = cohort.id;
         state.message = `newCohort|${cohort.name}|${cohort.id}`;
@@ -787,7 +795,7 @@ const slice = createSlice({
         if (state.currentCohort === DEFAULT_COHORT_ID) {
           // create a new cohort and add it
           // as the GDC All Cohort is immutable
-          const cohort = newCohort(filters, true);
+          const cohort = newCohort({ filters });
           cohortsAdapter.addOne(state, {
             ...cohort,
             caseSet: {
