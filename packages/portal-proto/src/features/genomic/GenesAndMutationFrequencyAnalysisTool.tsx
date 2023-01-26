@@ -155,6 +155,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     isDemoMode,
     overwritingDemoFilter,
   }); // get the default top gene/ssms to show by default
+
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -290,7 +291,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                     visible={!survivalPlotReady && !topGeneSSMSSuccess}
                   />
                   <SurvivalPlot
-                    plotType={SurvivalPlotTypes.overall}
+                    plotType={SurvivalPlotTypes.mutation}
                     data={
                       survivalPlotReady &&
                       survivalPlotData.survivalData.length > 1
@@ -330,7 +331,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
                 />
                 <SurvivalPlot
-                  plotType={SurvivalPlotTypes.overall}
+                  plotType={SurvivalPlotTypes.mutation}
                   data={
                     survivalPlotReady &&
                     comparativeSurvival &&
@@ -340,7 +341,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                   names={
                     survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.symbol]
+                      ? [comparativeSurvival.name]
                       : []
                   }
                 />

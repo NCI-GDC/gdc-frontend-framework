@@ -54,7 +54,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
           if (!disabled)
             // todo: if used for > 2 icons refactor to use switch(icon) statement
             icon
-              ? handleSwitch(selected[`symbol`], selected[`name`], plot)
+              ? handleSwitch(selected[`symbol`], selected[`label`], plot)
               : handleSwitch(selected);
         }}
         classNames={{

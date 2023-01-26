@@ -10,6 +10,8 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   clearCohortMessage,
+  selectAvailableCohorts,
+  defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -19,6 +21,7 @@ import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 interface CountsIconProps {
   $count?: number;
@@ -53,9 +56,13 @@ export const CasesCohortButton = (): JSX.Element => {
   );
 
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
 
-  const createCohortFromCases = () => {
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
+  const createCohortFromCases = (name: string) => {
     const filters: FilterSet = {
       mode: "and",
       root: {
@@ -71,6 +78,7 @@ export const CasesCohortButton = (): JSX.Element => {
       addNewCohortWithFilterAndMessage({
         filters: filters,
         message: "newCasesCohort",
+        name,
         group: {
           ids: [...pickedCases],
           field: "cases.case_id",
@@ -105,6 +113,7 @@ export const CasesCohortButton = (): JSX.Element => {
 
   const { classes } = useStyles();
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
 
@@ -132,7 +141,11 @@ export const CasesCohortButton = (): JSX.Element => {
           {pickedCases.length}
           {pickedCases.length > 1 ? " Cases" : " Case"}
         </Menu.Label>
-        <Menu.Item onClick={() => createCohortFromCases()}>
+        <Menu.Item
+          onClick={() => {
+            setShowCreateCohort(true);
+          }}
+        >
           Only Selected Cases
         </Menu.Item>
         <Menu.Item
@@ -158,6 +171,19 @@ export const CasesCohortButton = (): JSX.Element => {
           onClose={() => setOpenSelectCohorts(false)}
           withOrWithoutCohort={withOrWithoutCohort}
           pickedCases={pickedCases}
+        />
+      )}
+      {showCreateCohort && (
+        <SaveOrCreateCohortModal
+          initialName={defaultCohortNameGenerator()}
+          entity="cohort"
+          action="create"
+          opened
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohortFromCases(newName);
+          }}
+          onNameChange={onNameChange}
         />
       )}
     </Menu>
