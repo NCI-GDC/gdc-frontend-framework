@@ -3,6 +3,7 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
+  useMutatedGenesFreqData,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -18,7 +19,7 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
-import { useMutatedGenesFreqData } from "@gff/core";
+import { useMutationFreqDLQuery } from "@gff/core";
 // import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
@@ -147,8 +148,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     genomicFilters: genomicFilters,
-    // isDemoMode: isDemoMode,
-    // overwritingDemoFilter: cohortFilters,
+    isDemoMode: isDemoMode,
+    overwritingDemoFilter: cohortFilters,
   });
 
   useEffect(() => {
@@ -173,9 +174,21 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       size: initialData?.genes_total,
     });
 
+  const {
+    data: mutatedGenesFreqTSVData,
+    isFetching: mutatedGenesFreqTSVFetching,
+  } = useMutationFreqDLQuery({
+    tableData,
+    geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
+  });
+
   useEffect(() => {
     console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
   }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
+
+  useEffect(() => {
+    console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
+  }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
 
   return (
     <>
