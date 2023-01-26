@@ -126,12 +126,12 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="flex flex-col bg-accent-darkest justify-center text-center p-10 text-accent-contrast-darkest text-xs">
-      <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-4 border-b border-accent-contrast-darkest">
-        <div className="">
+      <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-5 border-b border-accent-contrast-darkest">
+        <div>
           <h3 className="font-bold text-lg">National Cancer Institute</h3>
           <h4 className="font-bold">at the National Institutes of Health</h4>
           {/* TODO: fill in Placeholders */}
-          <ul className="py-4 text-sm">
+          <ul className="py-4 text-sm space-y-1">
             <li>Placeholder UI v1.30.0 @ 9fbb447b</li>
             <li>Placeholder API v3.0.0 @ 4dd36805</li>
             {status === "fulfilled" && (
@@ -151,13 +151,11 @@ export const Footer: React.FC = () => {
         {footerLinkColData.map((colData, colI) => (
           <div className="w-[200px] md:w-auto" key={colI}>
             <h3 className="text-lg uppercase">{colData.header}</h3>
-            <ul className="py-3 font-semibold">
+            <ul className="py-3 font-semibold space-y-2">
               {colData.links.map((linkData, linkI) => (
-                <li key={linkI} className="py-1">
+                <li key={linkI}>
                   {linkData.normalLink ? (
-                    <Link href={linkData.url} className="">
-                      {linkData.title}
-                    </Link>
+                    <Link href={linkData.url}>{linkData.title}</Link>
                   ) : (
                     <ExternalLink href={linkData.url} separator={false}>
                       {linkData.title}
