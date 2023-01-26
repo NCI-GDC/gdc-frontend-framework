@@ -181,8 +181,52 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               },
             },
           });
-          // results["geneId"] = { numerators: [''], denominators: ['']};
-          console.table([result, results]);
+          const { numerators, denominators } = result?.data?.data?.explore
+            ?.cases ?? { numerators: 0, denominators: 0 };
+          const [n, d] = [
+            numerators.project__project_id.buckets,
+            denominators.project__project_id.buckets,
+          ];
+          const { genes } = arg.tableData;
+
+          const casesAcrossGDC = n.map(
+            ({ doc_count: count, key }: { doc_count: string; key: string }) => {
+              return {
+                count,
+                key,
+              };
+            },
+          );
+          console.log("cases", casesAcrossGDC);
+
+          // todo: spread cases across gdc into mutated genes mapping
+
+          const mutated = genes.map(
+            ({
+              gene_id,
+              symbol,
+              name,
+              cytoband,
+              biotype,
+            }: {
+              gene_id: string;
+              symbol: string;
+              name: string;
+              cytoband: string[];
+              biotype: string;
+            }) => {
+              return {
+                gene_id,
+                symbol,
+                name,
+                cytoband,
+                biotype,
+              };
+            },
+          );
+
+          console.log("mutated", mutated);
+          console.log("n", n, "d", d, "results", results);
           console.log("tableData?", arg.tableData);
           debugger;
 
