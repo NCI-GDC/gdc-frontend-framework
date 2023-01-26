@@ -41,8 +41,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   caseIds,
 }: SurvivalCardProps) => {
   const filters = makeIntersectionFilters(
-    buildCohortGqlOperator(cohorts.primary_cohort.filter),
-    buildCohortGqlOperator(cohorts.comparison_cohort.filter),
+    buildCohortGqlOperator(cohorts?.primary_cohort.filter),
+    buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     caseIds,
   );
   const { data, isUninitialized, isFetching, isError } =

@@ -29,8 +29,8 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
   caseIds,
 }: CohortVennDiagramProps) => {
   const filters = makeIntersectionFilters(
-    buildCohortGqlOperator(cohorts.primary_cohort.filter),
-    buildCohortGqlOperator(cohorts.comparison_cohort.filter),
+    buildCohortGqlOperator(cohorts?.primary_cohort.filter),
+    buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     caseIds,
   );
 

@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import CohortComparison from "../cohortComparison/CohortComparison";
 
-const cohortDemo1: {
+export const cohortDemo1: {
   filter: FilterSet;
   name: string;
 } = {
@@ -31,7 +31,7 @@ const cohortDemo1: {
   name: "Low grade gliomas - IDH1 or IDH2 mutated",
 };
 
-const cohortDemo2: {
+export const cohortDemo2: {
   filter: FilterSet;
   name: string;
 } = {
