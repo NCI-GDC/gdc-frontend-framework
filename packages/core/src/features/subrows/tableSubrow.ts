@@ -190,16 +190,22 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           const { genes } = arg.tableData;
 
           const casesAcrossGDC = n.map(
-            ({ doc_count: count, key }: { doc_count: string; key: string }) => {
-              return {
-                count,
-                key,
-              };
+            ({
+              doc_count: count,
+              key: projectId,
+            }: {
+              doc_count: number;
+              key: string;
+            }) => {
+              const countComplement = d.find(
+                ({ key }: { key: string }) => key === projectId,
+              )?.doc_count;
+              return `${projectId}: ${count} / ${countComplement} (${(
+                100 *
+                (count / countComplement)
+              ).toFixed(2)}%)`;
             },
           );
-          console.log("cases", casesAcrossGDC);
-
-          // todo: spread cases across gdc into mutated genes mapping
 
           const mutated = genes.map(
             ({
@@ -221,6 +227,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 name,
                 cytoband,
                 biotype,
+                ssmsCasesAcrossGDC: casesAcrossGDC.join(", "),
               };
             },
           );
@@ -343,6 +350,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       // , tableData: any
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+        // todo: update record types for results
         let results: Record<
           string,
           { numerators: string[]; denominators: string[] }
