@@ -62,9 +62,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
         {children}
       </main>
-      <footer className="flex-none">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 };

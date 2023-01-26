@@ -7,6 +7,7 @@ interface ExternalLinkProps {
   separator?: ReactNode | string | false;
   children: any;
   dataTestId?: string;
+  className?: string;
 }
 
 export const ExternalLink: React.FC<ExternalLinkProps> = ({
@@ -14,7 +15,8 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
   href,
   children,
   dataTestId,
-  separator = <span> | </span>,
+  separator = <span> | </span>, //TODO should be css
+  className,
 }: ExternalLinkProps) => {
   return (
     <>
@@ -24,6 +26,7 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
           title={title ? title : href}
           target="_blank"
           rel="noopener noreferrer"
+          className={`${className}`}
         >
           {children}
         </a>
