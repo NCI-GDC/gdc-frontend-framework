@@ -379,17 +379,18 @@ const buildCaseSetFilters = (
       },
     };
   }
-  if (Object.values(data).length > 1) {
-    return Object.keys(data).reduce((obj, key) => {
-      return {
-        ...obj,
-        [key]: {
+  if (Object.keys(data).length > 1) {
+    // build composite of the two case sets
+    return {
+      internalCaseSet: {
+        operator: "and",
+        operands: Object.values(data).map((caseSet) => ({
           field: "cases.case_id",
           operator: "includes",
-          operands: [`set_id:${data[key]}`],
-        },
-      };
-    }, {});
+          operands: [`set_id:${caseSet}`],
+        })),
+      },
+    };
   }
   // default case
   return {};
@@ -1231,6 +1232,7 @@ export const updateActiveCohortFilter =
       );
     }
 
+    console.log("requiresCaseSet", requiresCaseSet);
     if (requiresCaseSet) {
       // need a caseset or the caseset needs updating
       const cohortId = selectCurrentCohortId(getState());
