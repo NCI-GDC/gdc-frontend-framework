@@ -83,7 +83,7 @@ export const mutatedGenesFreqReducer = slice.reducer;
 export const selectMutatedGenesFreqData = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
-  mutatedGenes: MutatedGenesFreqData | undefined;
+  mutatedGenes: MutatedGenesFreqData[] | undefined;
 }> => {
   return {
     data: {

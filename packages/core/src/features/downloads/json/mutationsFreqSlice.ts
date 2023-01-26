@@ -28,24 +28,20 @@ export interface MutationsFreqData {
   genomic_dna_change: string;
   mutation_subtype: string;
   consequence: {
-    edges: Array<{
-      node: {
-        transcript: {
-          is_canonical: boolean;
-          annotation: {
-            vep_impact: string;
-            polyphen_impact: string;
-            sift_impact: string;
-          };
-          consequence_type: string;
-          gene: {
-            gene_id: string;
-            symbol: string;
-          };
-          aa_change: string;
-        };
+    transcript: {
+      is_canonical: boolean;
+      annotation: {
+        vep_impact: string;
+        polyphen_impact: string;
+        sift_impact: string;
       };
-    }>;
+      consequence_type: string;
+      gene: {
+        gene_id: string;
+        symbol: string;
+      };
+      aa_change: string;
+    };
   };
   biotype: string;
   gene_id: string;
@@ -127,8 +123,6 @@ const slice = createSlice({
 
         // state.mutations = ssmsMutation;
         return state;
-
-        return state;
       })
       .addCase(fetchMutationsFreq.pending, (state) => {
         state.status = "pending";
@@ -144,7 +138,7 @@ export const mutationsFreqReducer = slice.reducer;
 export const selectMutationsFreqData = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
-  mutations: MutationsFreqData | undefined;
+  mutations: MutationsFreqData[] | undefined;
 }> => {
   return {
     data: {

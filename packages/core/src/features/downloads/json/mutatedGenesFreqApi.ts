@@ -2,33 +2,32 @@ import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 
 export const getMutatedGenesFreqQuery = (size: number) => {
   return `
-query MutatedGenesFreq(
-  $genesTable_offset: Int
-  $score: String
-) {
-  viewer {
-    explore {
-      genes {
-        hits(
-          first: ${`${size}`}
-          offset: $genesTable_offset
-          score: $score
-        ) {
-          edges {
-            node {
-              symbol
-              name
-              cytoband
-              biotype
-              gene_id
+  query MutatedGenesFreq(
+    $genesTable_offset: Int
+    $score: String
+    ) {
+      viewer {
+        explore {
+          genes {
+            hits(
+              first: ${`${size}`}
+              offset: $genesTable_offset
+              score: $score
+              ) {
+              edges {
+                node {
+                  symbol
+                  name
+                  cytoband
+                  biotype
+                  gene_id
+                }
+              }
             }
           }
         }
       }
-    }
-  }
-}
-`;
+    }`;
 };
 
 export interface MutatedGenesFreqResponse {
