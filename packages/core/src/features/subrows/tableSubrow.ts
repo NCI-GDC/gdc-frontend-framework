@@ -229,7 +229,9 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 name,
                 cytoband: cytoband.join(", "),
                 biotype,
-                ssmsCasesAcrossGDC: casesAcrossGDC.join(", "),
+                ...(gene_id === geneId
+                  ? { ssmsAffected: casesAcrossGDC.join(", ") }
+                  : {}),
               };
             },
           );
