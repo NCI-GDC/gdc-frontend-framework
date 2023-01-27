@@ -1,3 +1,4 @@
+// Takes an array of strings, sort it out in ascending and creates a comma separated spans.
 export const ArraySeparatedSpan = ({
   data,
 }: {
