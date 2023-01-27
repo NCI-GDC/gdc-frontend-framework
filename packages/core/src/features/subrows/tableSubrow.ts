@@ -1,6 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
+import { humanify } from "../../../../portal-proto/src/utils";
 
 export interface SubrowResponse {
   explore: {
@@ -72,8 +73,8 @@ export interface MutationsFreqTransformedData {
   mutationId: string;
   type: string;
   consequences: string;
-  affectedCasesInCohort: string;
-  affectedCasesAcrossGDC: string;
+  ssmsAffectedCasesInCohort: string;
+  ssmsAffectedCasesAcrossGDC: string;
   impact: string;
 }
 
@@ -320,7 +321,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               };
             },
           );
-
           // todo handle errors
           // if (error) {
           //   return { error };
@@ -495,8 +495,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             numerators?.project__project_id?.buckets,
             denominators?.project__project_id?.buckets,
           ];
-          console.log("result", result, "tableData", arg.tableData);
-          debugger;
+
           const { cases, filteredCases, ssms } = arg?.tableData;
 
           const casesAcrossGDC = n.map(
@@ -517,6 +516,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             },
           );
 
+          // todo: destructure needed vars prior in mtn, then clean up map
+
           const mtn = ssms.find(
             ({ ssm_id }: { ssm_id: string }) => ssm_id === ssmsId,
           );
@@ -528,9 +529,20 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               filteredOccurrences,
               mutation_subtype,
               consequence,
-            }: SSMData) => {
+            }: {
+              genomic_dna_change: string;
+              ssm_id: string;
+              filteredOccurrences: number;
+              mutation_subtype: string;
+              consequence: Consequence[];
+            }) => {
               return {
                 dnaChange: genomic_dna_change,
+                proteinChange: !!consequence.length
+                  ? consequence.map(({ gene, aa_change }) => {
+                      return startCase(aa_change + gene.symbol);
+                    })[0]
+                  : "",
                 mutationId: ssm_id,
                 type: [
                   "Oligo-nucleotide polymorphism",
@@ -538,17 +550,35 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ].includes(mutation_subtype)
                   ? mutation_subtype
                   : startCase(mutation_subtype.split(" ").at(-1)),
+                consequences: !!consequence.length
+                  ? humanify({
+                      term: (consequence[0]?.consequence_type as string)
+                        .replace("_variant", "")
+                        .replace("_", " "),
+                    }) ?? ``
+                  : ``,
                 ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                   100 *
                   (filteredOccurrences / filteredCases)
                 ).toFixed(2)}%)`,
-                // todo edge cases
-                consequences: consequence.map(({ gene, aa_change }) => {
-                  aa_change + gene.symbol;
-                }),
                 ...(ssm_id === ssmsId
                   ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
                   : {}),
+                impact: !!consequence.length
+                  ? consequence.map(
+                      ({
+                        annotation: {
+                          vep_impact,
+                          sift_impact,
+                          sift_score,
+                          polyphen_impact,
+                          polyphen_score,
+                        },
+                      }) => {
+                        return `VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`;
+                      },
+                    )[0]
+                  : "",
               };
             },
           );
@@ -558,6 +588,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             casesAcrossGDC,
             ssms,
             mutation,
+            result,
           ]);
           debugger;
 
@@ -565,9 +596,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           // if (error) {
           //   return { error };
           // } else {
-
-          results.push(mutation[0]);
-
           // }
         }
         return { data: { results } };
