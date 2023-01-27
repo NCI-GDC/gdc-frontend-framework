@@ -181,26 +181,28 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               },
             },
           });
-          const { numerators, denominators } = result?.data?.data?.explore
-            ?.cases ?? { numerators: 0, denominators: 0 };
+          const {
+            numerators = { project__project_id: { buckets: [] } },
+            denominators = { project__project_id: { buckets: [] } },
+          } = result?.data?.data?.explore?.cases;
           const [n, d] = [
-            numerators.project__project_id.buckets,
-            denominators.project__project_id.buckets,
+            numerators?.project__project_id?.buckets,
+            denominators?.project__project_id?.buckets,
           ];
-          const { genes } = arg.tableData;
+          const { genes } = arg?.tableData;
 
           const casesAcrossGDC = n.map(
             ({
               doc_count: count,
-              key: projectId,
+              key: projectName,
             }: {
               doc_count: number;
               key: string;
             }) => {
               const countComplement = d.find(
-                ({ key }: { key: string }) => key === projectId,
+                ({ key }: { key: string }) => key === projectName,
               )?.doc_count;
-              return `${projectId}: ${count} / ${countComplement} (${(
+              return `${projectName}: ${count} / ${countComplement} (${(
                 100 *
                 (count / countComplement)
               ).toFixed(2)}%)`;
@@ -225,7 +227,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 gene_id,
                 symbol,
                 name,
-                cytoband,
+                cytoband: cytoband.join(", "),
                 biotype,
                 ssmsCasesAcrossGDC: casesAcrossGDC.join(", "),
               };
