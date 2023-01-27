@@ -8,7 +8,7 @@ export const ArraySeparatedSpan = ({
       data
         .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
         .map((datum, idx) => (
-          <span key={`datum-${idx}`}>
+          <span key={`datum-${idx}`} data-testid="item-span">
             {datum}
             {idx < data.length - 1 && ", "}
           </span>
