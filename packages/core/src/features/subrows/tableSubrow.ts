@@ -20,6 +20,20 @@ export interface TableSubrowItem {
   denominator: number;
 }
 
+export interface MutatedGenesFreqTrasformedData {
+  gene_id: string;
+  symbol: string;
+  name: string;
+  cytoband: string;
+  biotype: string;
+  ssmsAffectedCasesInCohort: string;
+  ssmsAffectedCasesAcrossGDC: string;
+  cnvGain: string;
+  cnvLoss: string;
+  mutations: string;
+  annotations: string;
+}
+
 export type TableSubrowData = Partial<TableSubrowItem>;
 
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
@@ -110,14 +124,11 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       },
     }),
     mutationFreqDL: builder.query<
-      Record<string, { numerators: string[]; denominators: string[] }>,
+      Record<string, MutatedGenesFreqTrasformedData[]>,
       { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: Record<
-          string,
-          { numerators: string[]; denominators: string[] }
-        > = {};
+        let results: MutatedGenesFreqTrasformedData[] = [];
         for (const geneId of arg.geneIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
@@ -189,7 +200,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             numerators?.project__project_id?.buckets,
             denominators?.project__project_id?.buckets,
           ];
-          const { genes } = arg?.tableData;
+          const { genes, cnvCases, filteredCases, mutationCounts } =
+            arg?.tableData;
 
           const casesAcrossGDC = n.map(
             ({
@@ -209,19 +221,31 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             },
           );
 
-          const mutated = genes.map(
+          const gene = genes.find(
+            ({ gene_id }: { gene_id: string }) => gene_id === geneId,
+          );
+
+          const mutatedGene = [gene].map(
             ({
               gene_id,
               symbol,
               name,
               cytoband,
               biotype,
+              numCases,
+              case_cnv_gain,
+              case_cnv_loss,
+              annotations,
             }: {
               gene_id: string;
               symbol: string;
               name: string;
               cytoband: string[];
               biotype: string;
+              numCases: number;
+              case_cnv_gain: number;
+              case_cnv_loss: number;
+              annotations: boolean;
             }) => {
               return {
                 gene_id,
@@ -229,38 +253,38 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 name,
                 cytoband: cytoband.join(", "),
                 biotype,
+                ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
+                  100 *
+                  (numCases / filteredCases)
+                ).toFixed(2)}%)`,
                 ...(gene_id === geneId
-                  ? { ssmsAffected: casesAcrossGDC.join(", ") }
+                  ? { ssmsAffectedAcrossTheGdc: casesAcrossGDC.join(", ") }
                   : {}),
+                cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
+                  100 *
+                  (case_cnv_gain / cnvCases)
+                ).toFixed(2)}%)`,
+                cnvLoss: `${case_cnv_loss} / ${cnvCases} (${(
+                  100 *
+                  (case_cnv_loss / cnvCases)
+                ).toFixed(2)}%)`,
+                ...(mutationCounts[geneId] && {
+                  mutations: mutationCounts[geneId],
+                }),
+                ...(annotations
+                  ? { annotations: "Cancer Gene Cencus" }
+                  : { annotations: "" }),
               };
             },
           );
-
-          console.log("mutated", mutated);
-          console.log("n", n, "d", d, "results", results);
-          console.log("tableData?", arg.tableData);
-          debugger;
-
-          //   if (result.error) {
-          //     return { error: result.error };
-          //   }
-          //   else {
-          //     console.log("td", arg.tableData);
-          //     console.log("result", result.data);
-          //     debugger;
-          //     results = {
-          //       ...results,
-          //       [geneId]: {
-          //         numerators: (result.data as unknown as SubrowResponse).explore
-          //           .cases.denominators.project__project_id,
-          //         denominators: (result.data as unknown as SubrowResponse).explore
-          //           .cases.denominators.project__project_id,
-          //       },
-          //     };
-          //   }
+          // todo handle errors
+          // if (error) {
+          //   return { error };
+          // } else {
+          results.push(mutatedGene[0]);
           // }
         }
-        return { data: { eng12312: { numerators: [""], denominators: [""] } } };
+        return { data: { results } };
       },
     }),
     getSomaticMutationTableSubrow: builder.query({
