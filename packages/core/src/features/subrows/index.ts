@@ -1,15 +1,17 @@
 import {
   useGetGeneTableSubrowQuery,
   useGetSomaticMutationTableSubrowQuery,
-  useMutationFreqDLQuery,
-  useFreqGeneMutationDLQuery,
+  useMutationsFreqDLQuery,
+  useMutatedGenesFreqDLQuery,
   TableSubrowData,
 } from "./tableSubrow";
 
 export {
+  // subrow downloads
   useGetGeneTableSubrowQuery,
   useGetSomaticMutationTableSubrowQuery,
-  useFreqGeneMutationDLQuery,
-  useMutationFreqDLQuery,
+  // tsv downloads
+  useMutatedGenesFreqDLQuery,
+  useMutationsFreqDLQuery,
   TableSubrowData,
 };

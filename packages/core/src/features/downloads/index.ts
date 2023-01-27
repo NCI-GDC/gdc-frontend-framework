@@ -11,6 +11,7 @@ import {
 import { combineReducers } from "@reduxjs/toolkit";
 
 export const downloadsReducer = combineReducers({
+  // json downloads
   mutatedGenesFreq: mutatedGenesFreqReducer,
   mutationsFreq: mutationsFreqReducer,
 });

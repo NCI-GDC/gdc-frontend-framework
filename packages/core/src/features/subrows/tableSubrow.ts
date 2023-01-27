@@ -1,5 +1,6 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { startCase } from "lodash";
 
 export interface SubrowResponse {
   explore: {
@@ -20,6 +21,37 @@ export interface TableSubrowItem {
   denominator: number;
 }
 
+export interface Gene {
+  gene_id: string;
+  symbol: string;
+}
+export interface Annotation {
+  polyphen_impact: string;
+  polyphen_score: number;
+  sift_score: number;
+  sift_impact: string;
+  vep_impact: string;
+}
+
+export interface Consequence {
+  aa_change: string;
+  annotation: Annotation;
+  consequence_type: string;
+  gene: Gene;
+  id: string;
+  is_canonical: boolean;
+}
+
+export interface SSMData {
+  ssm_id: string;
+  occurrence: number;
+  filteredOccurrences: number;
+  genomic_dna_change: string;
+  mutation_subtype: string;
+  consequence: Consequence[];
+  annotation: Annotation;
+}
+
 export interface MutatedGenesFreqTransformedData {
   gene_id: string;
   symbol: string;
@@ -35,7 +67,14 @@ export interface MutatedGenesFreqTransformedData {
 }
 
 export interface MutationsFreqTransformedData {
-  ssms_id: string;
+  dnaChange: string;
+  proteinChange: string;
+  mutationId: string;
+  type: string;
+  consequences: string;
+  affectedCasesInCohort: string;
+  affectedCasesAcrossGDC: string;
+  impact: string;
 }
 
 export type TableSubrowData = Partial<TableSubrowItem>;
@@ -262,7 +301,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                   (numCases / filteredCases)
                 ).toFixed(2)}%)`,
                 ...(gene_id === geneId
-                  ? { ssmsAffectedAcrossTheGdc: casesAcrossGDC.join(", ") }
+                  ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
                   : {}),
                 cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
                   100 *
@@ -456,36 +495,71 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             numerators?.project__project_id?.buckets,
             denominators?.project__project_id?.buckets,
           ];
-          const { ssms, cnvCases, filteredCases, mutationCounts } =
-            arg?.tableData;
+          console.log("result", result, "tableData", arg.tableData);
+          debugger;
+          const { cases, filteredCases, ssms } = arg?.tableData;
 
-          //   const casesAcrossGDC = n.map(
-          //     ({
-          //       doc_count: count,
-          //       key: projectName,
-          //     }: {
-          //       doc_count: number;
-          //       key: string;
-          //     }) => {
-          //       const countComplement = d.find(
-          //         ({ key }: { key: string }) => key === projectName,
-          //       )?.doc_count;
-          //       return `${projectName}: ${count} / ${countComplement} (${(
-          //         100 *
-          //         (count / countComplement)
-          //       ).toFixed(2)}%)`;
-          //     },
-          //   );
-
-          const mtn = ssms.find(
-            ({ ssms_id }: { ssms_id: string }) => ssms_id === ssmsId,
+          const casesAcrossGDC = n.map(
+            ({
+              doc_count: count,
+              key: projectName,
+            }: {
+              doc_count: number;
+              key: string;
+            }) => {
+              const countComplement = d.find(
+                ({ key }: { key: string }) => key === projectName,
+              )?.doc_count;
+              return `${projectName}: ${count} / ${countComplement} (${(
+                100 *
+                (count / countComplement)
+              ).toFixed(2)}%)`;
+            },
           );
 
-          const mutation = [mtn].map(({ ssms_id }: { ssms_id: string }) => {
-            return {
-              ssms_id,
-            };
-          });
+          const mtn = ssms.find(
+            ({ ssm_id }: { ssm_id: string }) => ssm_id === ssmsId,
+          );
+
+          const mutation = [mtn].map(
+            ({
+              genomic_dna_change,
+              ssm_id,
+              filteredOccurrences,
+              mutation_subtype,
+              consequence,
+            }: SSMData) => {
+              return {
+                dnaChange: genomic_dna_change,
+                mutationId: ssm_id,
+                type: [
+                  "Oligo-nucleotide polymorphism",
+                  "Tri-nucleotide polymorphism",
+                ].includes(mutation_subtype)
+                  ? mutation_subtype
+                  : startCase(mutation_subtype.split(" ").at(-1)),
+                ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
+                  100 *
+                  (filteredOccurrences / filteredCases)
+                ).toFixed(2)}%)`,
+                // todo edge cases
+                consequences: consequence.map(({ gene, aa_change }) => {
+                  aa_change + gene.symbol;
+                }),
+                ...(ssm_id === ssmsId
+                  ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
+                  : {}),
+              };
+            },
+          );
+          console.table([
+            `cases:${cases}`,
+            `filtered${filteredCases}`,
+            casesAcrossGDC,
+            ssms,
+            mutation,
+          ]);
+          debugger;
 
           // todo handle errors
           // if (error) {
