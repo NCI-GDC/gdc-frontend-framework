@@ -3,7 +3,7 @@ import { ArraySeparatedSpan } from "../ArraySeparatedSpan";
 
 describe("<ArraySeparatedSpan />", () => {
   it("there should not be a comma after a last element of the array", () => {
-    const mockArray = ["apple", "ball", "cat", "dog", "elephant"];
+    const mockArray = ["apple", "cat", "ball", "elephant", "dog"];
     const { getAllByTestId } = render(<ArraySeparatedSpan data={mockArray} />);
     const itemSpans = getAllByTestId("item-span");
     //first element
