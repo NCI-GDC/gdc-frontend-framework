@@ -20,7 +20,7 @@ export interface TableSubrowItem {
   denominator: number;
 }
 
-export interface MutatedGenesFreqTrasformedData {
+export interface MutatedGenesFreqTransformedData {
   gene_id: string;
   symbol: string;
   name: string;
@@ -32,6 +32,10 @@ export interface MutatedGenesFreqTrasformedData {
   cnvLoss: string;
   mutations: string;
   annotations: string;
+}
+
+export interface MutationsFreqTransformedData {
+  ssms_id: string;
 }
 
 export type TableSubrowData = Partial<TableSubrowItem>;
@@ -123,12 +127,12 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         return transformedBuckets as TableSubrowData[];
       },
     }),
-    mutationFreqDL: builder.query<
-      Record<string, MutatedGenesFreqTrasformedData[]>,
+    mutatedGenesFreqDL: builder.query<
+      Record<string, MutatedGenesFreqTransformedData[]>,
       { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: MutatedGenesFreqTrasformedData[] = [];
+        let results: MutatedGenesFreqTransformedData[] = [];
         for (const geneId of arg.geneIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
@@ -277,11 +281,14 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               };
             },
           );
+
           // todo handle errors
           // if (error) {
           //   return { error };
           // } else {
+
           results.push(mutatedGene[0]);
+
           // }
         }
         return { data: { results } };
@@ -372,17 +379,12 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         return transformedBuckets as TableSubrowData[];
       },
     }),
-    freqGeneMutationDL: builder.query<
-      Record<string, { numerators: string[]; denominators: string[] }>,
-      { ssmsIds: string[] }
-      // , tableData: any
+    mutationsFreqDL: builder.query<
+      Record<string, MutationsFreqTransformedData[]>,
+      { ssmsIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        // todo: update record types for results
-        let results: Record<
-          string,
-          { numerators: string[]; denominators: string[] }
-        > = {};
+        let results: MutationsFreqTransformedData[] = [];
         for (const ssmsId of arg.ssmsIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
@@ -446,30 +448,55 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               },
             },
           });
-          // results["geneId"] = { numerators: [''], denominators: ['']};
-          console.table([result, results]);
-          debugger;
+          const {
+            numerators = { project__project_id: { buckets: [] } },
+            denominators = { project__project_id: { buckets: [] } },
+          } = result?.data?.data?.explore?.cases;
+          const [n, d] = [
+            numerators?.project__project_id?.buckets,
+            denominators?.project__project_id?.buckets,
+          ];
+          const { ssms, cnvCases, filteredCases, mutationCounts } =
+            arg?.tableData;
 
-          //   if (result.error) {
-          //     return { error: result.error };
-          //   }
-          //   else {
-          //     console.log("td", arg.tableData);
-          //     console.log("result", result.data);
-          //     debugger;
-          //     results = {
-          //       ...results,
-          //       [ssmsId]: {
-          //         numerators: (result.data as unknown as SubrowResponse).explore
-          //           .cases.denominators.project__project_id,
-          //         denominators: (result.data as unknown as SubrowResponse).explore
-          //           .cases.denominators.project__project_id,
-          //       },
-          //     };
-          //   }
+          //   const casesAcrossGDC = n.map(
+          //     ({
+          //       doc_count: count,
+          //       key: projectName,
+          //     }: {
+          //       doc_count: number;
+          //       key: string;
+          //     }) => {
+          //       const countComplement = d.find(
+          //         ({ key }: { key: string }) => key === projectName,
+          //       )?.doc_count;
+          //       return `${projectName}: ${count} / ${countComplement} (${(
+          //         100 *
+          //         (count / countComplement)
+          //       ).toFixed(2)}%)`;
+          //     },
+          //   );
+
+          const mtn = ssms.find(
+            ({ ssms_id }: { ssms_id: string }) => ssms_id === ssmsId,
+          );
+
+          const mutation = [mtn].map(({ ssms_id }: { ssms_id: string }) => {
+            return {
+              ssms_id,
+            };
+          });
+
+          // todo handle errors
+          // if (error) {
+          //   return { error };
+          // } else {
+
+          results.push(mutation[0]);
+
           // }
         }
-        return { data: { eng12312: { numerators: [""], denominators: [""] } } };
+        return { data: { results } };
       },
     }),
   }),
@@ -477,7 +504,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
 
 export const {
   useGetGeneTableSubrowQuery,
-  useMutationFreqDLQuery,
-  useFreqGeneMutationDLQuery,
+  useMutatedGenesFreqDLQuery,
+  useMutationsFreqDLQuery,
   useGetSomaticMutationTableSubrowQuery,
 } = tableSubrowApiSlice;

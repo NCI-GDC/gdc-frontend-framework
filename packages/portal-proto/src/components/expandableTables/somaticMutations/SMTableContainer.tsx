@@ -25,6 +25,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { convertDateToString } from "src/utils/date";
 import isEqual from "lodash/isEqual";
+import { useMutationsFreqDLQuery } from "@gff/core";
 
 export const SelectedRowContext =
   createContext<
@@ -243,6 +244,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     useMutationsFreqData({
       currentFilters: genomicFilters,
       size: initialData?.ssmsTotal,
+    });
+
+  const { data: mutationsFreqTSVData, isFetching: mutationsFreqTSVFetching } =
+    useMutationsFreqDLQuery({
+      tableData,
+      ssmsIds: tableData.ssms.map(({ ssm_id: ssmsId }) => ssmsId),
     });
 
   useEffect(() => {

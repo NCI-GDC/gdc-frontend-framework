@@ -19,7 +19,7 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
-import { useMutationFreqDLQuery } from "@gff/core";
+import { useMutatedGeneFreqDLQuery } from "@gff/core";
 // import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
@@ -177,7 +177,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const {
     data: mutatedGenesFreqTSVData,
     isFetching: mutatedGenesFreqTSVFetching,
-  } = useMutationFreqDLQuery({
+  } = useMutatedGeneFreqDLQuery({
     tableData,
     geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
   });
