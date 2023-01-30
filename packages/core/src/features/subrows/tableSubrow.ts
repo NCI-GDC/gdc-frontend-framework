@@ -1,7 +1,6 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
-import { humanify } from "../../../../portal-proto/src/utils";
 
 export interface SubrowResponse {
   explore: {
@@ -53,7 +52,7 @@ export interface SSMData {
   annotation: Annotation;
 }
 
-export interface MutatedGenesFreqTransformedData {
+export interface MutatedGenesFreqTransformedItem {
   gene_id: string;
   symbol: string;
   name: string;
@@ -67,7 +66,7 @@ export interface MutatedGenesFreqTransformedData {
   annotations: string;
 }
 
-export interface MutationsFreqTransformedData {
+export interface MutationsFreqTransformedItem {
   dnaChange: string;
   proteinChange: string;
   mutationId: string;
@@ -79,6 +78,10 @@ export interface MutationsFreqTransformedData {
 }
 
 export type TableSubrowData = Partial<TableSubrowItem>;
+export type MutatedGenesFreqTransformedData =
+  Partial<MutatedGenesFreqTransformedItem>;
+export type MutationsFreqTransformedData =
+  Partial<MutationsFreqTransformedItem>;
 
 export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -168,11 +171,11 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       },
     }),
     mutatedGenesFreqDL: builder.query<
-      Record<string, MutatedGenesFreqTransformedData[]>,
+      Record<string, MutatedGenesFreqTransformedItem[]>,
       { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: MutatedGenesFreqTransformedData[] = [];
+        let results: MutatedGenesFreqTransformedItem[] = [];
         for (const geneId of arg.geneIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
@@ -330,7 +333,40 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
 
           // }
         }
-        return { data: { results } };
+        console.log(
+          "test modifying query",
+          `
+        query GeneTableSubrow(
+            $filters_case: FiltersArgument
+            $filters_gene: FiltersArgument
+        ) {
+            explore {
+                cases {
+                  denominators: aggregations(filters: $filters_case) {
+                    project__project_id {
+                        buckets {
+                            key
+                            doc_count
+                        }
+                    }
+                  }
+                    numerators: aggregations(filters: $filters_gene) {
+                        project__project_id {
+                            buckets {
+                                doc_count
+                                key
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        `,
+        );
+        debugger;
+        return {
+          data: { results: results as MutatedGenesFreqTransformedItem[] },
+        };
       },
     }),
     getSomaticMutationTableSubrow: builder.query({
@@ -419,11 +455,11 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       },
     }),
     mutationsFreqDL: builder.query<
-      Record<string, MutationsFreqTransformedData[]>,
+      Record<string, MutationsFreqTransformedItem[]>,
       { ssmsIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: MutationsFreqTransformedData[] = [];
+        let results: MutationsFreqTransformedItem[] = [];
         for (const ssmsId of arg.ssmsIds) {
           const result = await fetchWithBQ({
             graphQLQuery: `
@@ -536,11 +572,14 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               mutation_subtype: string;
               consequence: Consequence[];
             }) => {
+              console.log("consequence", consequence);
+              debugger;
+
               return {
                 dnaChange: genomic_dna_change,
-                proteinChange: !!consequence.length
+                proteinChange: !consequence?.length
                   ? consequence.map(({ gene, aa_change }) => {
-                      return startCase(aa_change + gene.symbol);
+                      return `${aa_change} / ${gene.symbol}`;
                     })[0]
                   : "",
                 mutationId: ssm_id,
@@ -550,13 +589,13 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ].includes(mutation_subtype)
                   ? mutation_subtype
                   : startCase(mutation_subtype.split(" ").at(-1)),
-                consequences: !!consequence.length
-                  ? humanify({
-                      term: (consequence[0]?.consequence_type as string)
-                        .replace("_variant", "")
-                        .replace("_", " "),
-                    }) ?? ``
-                  : ``,
+                consequences: !consequence?.length
+                  ? consequence[0]?.consequence_type
+                  : "consequence fail",
+                // ? consequence[0]?.consequence_type
+                //     .replace("_variant", "")
+                //     .replace("_", " ")
+                // : ``,
                 ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                   100 *
                   (filteredOccurrences / filteredCases)
@@ -564,7 +603,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ...(ssm_id === ssmsId
                   ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
                   : {}),
-                impact: !!consequence.length
+                impact: !consequence?.length
                   ? consequence.map(
                       ({
                         annotation: {
@@ -598,7 +637,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           // } else {
           // }
         }
-        return { data: { results } };
+        return { data: { results: results as MutationsFreqTransformedItem[] } };
       },
     }),
   }),

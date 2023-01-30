@@ -82,7 +82,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     offset: 0,
     ssms: [],
   });
-  const [dl, setDl] = useState("");
+  // const [dl, setDl] = useState("");
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
