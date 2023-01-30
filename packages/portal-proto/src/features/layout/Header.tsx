@@ -24,6 +24,7 @@ import {
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
+import { IoOptions as OptionsIcon } from "react-icons/io5";
 import saveAs from "file-saver";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import urlJoin from "url-join";
@@ -43,6 +44,9 @@ import {
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
 hover:bg-base-lightest
+py-2
+px-1
+m-0
 `;
 
 const AppLink = tw.a`
@@ -87,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         Skip Navigation
       </a>
-      <div className="flex flex-col w-3/5">
+      <div className="flex flex-col w-1/2">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
@@ -122,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Options />
         </div>
       </div>
-      <div className="flex flex-col justify-around w-2/5">
+      <div className="flex flex-col justify-around w-1/2">
         <div className="flex flex-row justify-between items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
@@ -131,6 +135,10 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
+          <button className="flex items-center gap-1">
+            <OptionsIcon size="22px" className="rotate-90" />
+            Manage Sets
+          </button>
           <Link href="/cart" passHref>
             <Button unstyled data-testid="cartLink">
               <div className="flex items-center gap-1">
@@ -251,7 +259,12 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <LoginButton fromHeader />
           )}
-          <Menu withArrow arrowSize={16}>
+          <Menu
+            withArrow
+            arrowSize={16}
+            position="bottom-end"
+            arrowPosition="center"
+          >
             <Menu.Target>
               <button
                 data-testid="extraButton"
