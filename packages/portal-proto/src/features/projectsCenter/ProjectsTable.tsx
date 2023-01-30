@@ -30,6 +30,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
+import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
 
 interface CellProps {
   value: string[];
@@ -133,25 +134,10 @@ const ProjectsTable: React.FC = () => {
       },
     },
     {
-      id: "data_categories",
-      columnName: "Data Category",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow value={value} row={row} label="Data Categories" />
-      ),
-      disableSortBy: true,
-    },
-    {
       id: "experimental_strategies",
       columnName: "Experimental Strategy",
       visible: true,
-      Cell: ({ value, row }: CellProps) => (
-        <CollapsibleRow
-          value={value}
-          row={row}
-          label="Experimental Strategies"
-        />
-      ),
+      Cell: ({ value }: CellProps) => <ArraySeparatedSpan data={value} />,
       disableSortBy: true,
     },
     {
@@ -211,10 +197,6 @@ const ProjectsTable: React.FC = () => {
               </OverflowTooltippedLabel>
             ),
             cases: summary.case_count.toLocaleString().padStart(9),
-            data_categories: extractToArray(
-              summary.data_categories,
-              "data_category",
-            ),
             experimental_strategies: extractToArray(
               summary.experimental_strategies,
               "experimental_strategy",
