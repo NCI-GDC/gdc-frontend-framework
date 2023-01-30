@@ -1,7 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
-import { getAliasQueryList } from "./modQuery";
+import { getAliasQueryList, getAliasFilterList, caseFilter } from "./gqlmod";
 
 export interface SubrowResponse {
   explore: {
@@ -177,163 +177,165 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         let results: MutatedGenesFreqTransformedItem[] = [];
-        for (const geneId of arg.geneIds) {
-          console.log(arg.geneIds);
-          getAliasQueryList(arg.geneIds);
-          const result = await fetchWithBQ({
-            graphQLQuery: `
+        // for (const geneId of arg.geneIds) {
+        console.log(arg.geneIds);
+        getAliasQueryList(arg.geneIds);
+        const hello = arg.geneIds.map((id) => getAliasFilterList(id));
+        console.log("hello", hello);
+        debugger;
+        const result = await fetchWithBQ({
+          graphQLQuery: `
                         query GeneTableSubrow(
                             $filters_case: FiltersArgument
-                            $filters_gene: FiltersArgument
+                            ${arg.geneIds
+                              .map((geneId) => {
+                                return `$filters_gene_${geneId}`;
+                              })
+                              .join("\r\n")}
                         ) {
                             explore {
-                                cases {
-                                  denominators: aggregations(filters: $filters_case) {
-                                    project__project_id {
-                                        buckets {
-                                            key
-                                            doc_count
-                                        }
-                                    }
-                                  }
-                                    numerators: aggregations(filters: $filters_gene) {
-                                        project__project_id {
-                                            buckets {
-                                                doc_count
-                                                key
-                                            }
-                                        }
-                                    }
-                                }
+                              ${getAliasQueryList(arg.geneIds)}
                             }
                         }
                         `,
-            graphQLFilters: {
-              filters_case: {
-                content: [
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["ssm"],
-                    },
-                    op: "in",
-                  },
-                ],
-                op: "and",
-              },
-              filters_gene: {
-                op: "and",
-                content: [
-                  {
-                    content: {
-                      field: "genes.gene_id",
-                      value: [geneId],
-                    },
-                    op: "in",
-                  },
-                  {
-                    op: "NOT",
-                    content: {
-                      field: "cases.gene.ssm.observation.observation_id",
-                      value: "MISSING",
-                    },
-                  },
-                ],
-              },
-            },
-          });
-          const {
-            numerators = { project__project_id: { buckets: [] } },
-            denominators = { project__project_id: { buckets: [] } },
-          } = result?.data?.data?.explore?.cases;
-          const [n, d] = [
-            numerators?.project__project_id?.buckets,
-            denominators?.project__project_id?.buckets,
-          ];
-          const { genes, cnvCases, filteredCases, mutationCounts } =
-            arg?.tableData;
+          graphQLFilters: {
+            // filters_case: {
+            //   content: [
+            //     {
+            //       content: {
+            //         field: "cases.available_variation_data",
+            //         value: ["ssm"],
+            //       },
+            //       op: "in",
+            //     },
+            //   ],
+            //   op: "and",
+            // },
+            // filters_gene: {
+            //   op: "and",
+            //   content: [
+            //     {
+            //       content: {
+            //         field: "genes.gene_id",
+            //         value: [geneId],
+            //       },
+            //       op: "in",
+            //     },
+            //     {
+            //       op: "NOT",
+            //       content: {
+            //         field: "cases.gene.ssm.observation.observation_id",
+            //         value: "MISSING",
+            //       },
+            //     },
+            //   ],
+            // },
+            // ...caseFilter,
+            ...arg.geneIds.reduce(
+              (acc, id) => ({
+                ...acc,
+                ...getAliasFilterList(id),
+              }),
+              caseFilter,
+            ),
+            //   ...arg.geneIds.map((id) =>
+            //     getAliasFilterList(id)
+            //     )
+          },
+        });
+        console.log("what is result", result);
+        // const {
+        //   numerators = { project__project_id: { buckets: [] } },
+        //   denominators = { project__project_id: { buckets: [] } },
+        // } = result?.data?.data?.explore?.cases;
+        // const [n, d] = [
+        //   numerators?.project__project_id?.buckets,
+        //   denominators?.project__project_id?.buckets,
+        // ];
+        // const { genes, cnvCases, filteredCases, mutationCounts } =
+        //   arg?.tableData;
 
-          const casesAcrossGDC = n.map(
-            ({
-              doc_count: count,
-              key: projectName,
-            }: {
-              doc_count: number;
-              key: string;
-            }) => {
-              const countComplement = d.find(
-                ({ key }: { key: string }) => key === projectName,
-              )?.doc_count;
-              return `${projectName}: ${count} / ${countComplement} (${(
-                100 *
-                (count / countComplement)
-              ).toFixed(2)}%)`;
-            },
-          );
+        // const casesAcrossGDC = n.map(
+        //   ({
+        //     doc_count: count,
+        //     key: projectName,
+        //   }: {
+        //     doc_count: number;
+        //     key: string;
+        //   }) => {
+        //     const countComplement = d.find(
+        //       ({ key }: { key: string }) => key === projectName,
+        //     )?.doc_count;
+        //     return `${projectName}: ${count} / ${countComplement} (${(
+        //       100 *
+        //       (count / countComplement)
+        //     ).toFixed(2)}%)`;
+        //   },
+        // );
 
-          const gene = genes.find(
-            ({ gene_id }: { gene_id: string }) => gene_id === geneId,
-          );
+        // const gene = genes.find(
+        //   ({ gene_id }: { gene_id: string }) => gene_id === geneId,
+        // );
 
-          const mutatedGene = [gene].map(
-            ({
-              gene_id,
-              symbol,
-              name,
-              cytoband,
-              biotype,
-              numCases,
-              case_cnv_gain,
-              case_cnv_loss,
-              annotations,
-            }: {
-              gene_id: string;
-              symbol: string;
-              name: string;
-              cytoband: string[];
-              biotype: string;
-              numCases: number;
-              case_cnv_gain: number;
-              case_cnv_loss: number;
-              annotations: boolean;
-            }) => {
-              return {
-                gene_id,
-                symbol,
-                name,
-                cytoband: cytoband.join(", "),
-                biotype,
-                ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
-                  100 *
-                  (numCases / filteredCases)
-                ).toFixed(2)}%)`,
-                ...(gene_id === geneId
-                  ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
-                  : {}),
-                cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
-                  100 *
-                  (case_cnv_gain / cnvCases)
-                ).toFixed(2)}%)`,
-                cnvLoss: `${case_cnv_loss} / ${cnvCases} (${(
-                  100 *
-                  (case_cnv_loss / cnvCases)
-                ).toFixed(2)}%)`,
-                ...(mutationCounts[geneId] && {
-                  mutations: mutationCounts[geneId],
-                }),
-                ...(annotations
-                  ? { annotations: "Cancer Gene Cencus" }
-                  : { annotations: "" }),
-              };
-            },
-          );
-          // todo handle errors
-          // if (error) {
-          //   return { error };
-          // } else {
-          results.push(mutatedGene[0] as MutatedGenesFreqTransformedItem);
-          // }
-        }
+        // const mutatedGene = [gene].map(
+        //   ({
+        //     gene_id,
+        //     symbol,
+        //     name,
+        //     cytoband,
+        //     biotype,
+        //     numCases,
+        //     case_cnv_gain,
+        //     case_cnv_loss,
+        //     annotations,
+        //   }: {
+        //     gene_id: string;
+        //     symbol: string;
+        //     name: string;
+        //     cytoband: string[];
+        //     biotype: string;
+        //     numCases: number;
+        //     case_cnv_gain: number;
+        //     case_cnv_loss: number;
+        //     annotations: boolean;
+        //   }) => {
+        //     return {
+        //       gene_id,
+        //       symbol,
+        //       name,
+        //       cytoband: cytoband.join(", "),
+        //       biotype,
+        //       ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
+        //         100 *
+        //         (numCases / filteredCases)
+        //       ).toFixed(2)}%)`,
+        //       ...(gene_id === geneId
+        //         ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
+        //         : {}),
+        //       cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
+        //         100 *
+        //         (case_cnv_gain / cnvCases)
+        //       ).toFixed(2)}%)`,
+        //       cnvLoss: `${case_cnv_loss} / ${cnvCases} (${(
+        //         100 *
+        //         (case_cnv_loss / cnvCases)
+        //       ).toFixed(2)}%)`,
+        //       ...(mutationCounts[geneId] && {
+        //         mutations: mutationCounts[geneId],
+        //       }),
+        //       ...(annotations
+        //         ? { annotations: "Cancer Gene Cencus" }
+        //         : { annotations: "" }),
+        //     };
+        //   },
+        // );
+        // todo handle errors
+        // if (error) {
+        //   return { error };
+        // } else {
+        // results.push(mutatedGene[0] as MutatedGenesFreqTransformedItem);
+        // }
+        // }
         // console.log(
         //   "test modifying query",
         //   `
