@@ -40,13 +40,15 @@ import {
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
 
+const AppMenuItem = tw(Menu.Item)`
+cursor-pointer
+hover:bg-base-lightest
+`;
+
 const AppLink = tw.a`
 flex
 flex-col
-cursor-pointer
 items-center
-hover:bg-base-lightest
-p-1
 `;
 
 interface HeaderProps {
@@ -262,87 +264,112 @@ export const Header: React.FC<HeaderProps> = ({
             </Menu.Target>
             <Menu.Dropdown>
               <div className="grid grid-cols-2 py-4 gap-2">
-                <Link href={indexPath} passHref>
-                  <AppLink>
+                <AppMenuItem>
+                  <Link href={indexPath} passHref>
+                    <AppLink>
+                      <Image
+                        src="/user-flow/icons/gdc-app-data-portal-blue.svg"
+                        width={30}
+                        height={30}
+                        alt="portal"
+                      />
+                      Data Portal
+                    </AppLink>
+                  </Link>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink href="https://gdc.cancer.gov" target="_blank">
                     <Image
-                      src="/user-flow/icons/gdc-app-data-portal-blue.svg"
+                      src="/user-flow/icons/gdc-app-website-blue.svg"
                       width={30}
                       height={30}
+                      alt="website"
                     />
-                    Data Portal
+                    Website
                   </AppLink>
-                </Link>
-                <AppLink href="https://gdc.cancer.gov" target="_blank">
-                  <Image
-                    src="/user-flow/icons/gdc-app-website-blue.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Website
-                </AppLink>
-                <AppLink
-                  href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
-                  target="_blank"
-                >
-                  <Image
-                    src="/user-flow/icons/gdc-app-portal-api.svg"
-                    width={30}
-                    height={30}
-                  />
-                  API
-                </AppLink>
-                <AppLink
-                  href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
-                  target="_blank"
-                >
-                  <Image
-                    src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Data Transfer Tool
-                </AppLink>
-                <AppLink href="https://docs.gdc.cancer.gov" target="_blank">
-                  <Image
-                    src="/user-flow/icons/gdc-app-docs.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Documentation
-                </AppLink>
-                <AppLink
-                  href="https://portal.gdc.cancer.gov/submission"
-                  target="_blank"
-                >
-                  <Image
-                    src="/user-flow/icons/gdc-app-submission-portal.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Data Submission Portal
-                </AppLink>
-                <AppLink
-                  href="https://portal.gdc.cancer.gov/legacy-archive"
-                  target="_blank"
-                >
-                  <Image
-                    src="/user-flow/icons/gdc-app-legacy-archive.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Legacy Archive
-                </AppLink>
-                <AppLink
-                  href="https://gdc.cancer.gov/about-data/publications"
-                  target="_blank"
-                >
-                  <Image
-                    src="/user-flow/icons/gdc-app-publications.svg"
-                    width={30}
-                    height={30}
-                  />
-                  Publications
-                </AppLink>
+                </AppMenuItem>
+
+                <AppMenuItem>
+                  <AppLink
+                    href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-portal-api.svg"
+                      width={30}
+                      height={30}
+                      alt="API"
+                    />
+                    API
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink
+                    href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
+                      width={30}
+                      height={30}
+                      alt="data transfer tool"
+                    />
+                    Data Transfer Tool
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink href="https://docs.gdc.cancer.gov" target="_blank">
+                    <Image
+                      src="/user-flow/icons/gdc-app-docs.svg"
+                      width={30}
+                      height={30}
+                      alt="docs"
+                    />
+                    Documentation
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink
+                    href="https://portal.gdc.cancer.gov/submission"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-submission-portal.svg"
+                      width={30}
+                      height={30}
+                      alt="submission portal"
+                    />
+                    Data Submission Portal
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink
+                    href="https://portal.gdc.cancer.gov/legacy-archive"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-legacy-archive.svg"
+                      width={30}
+                      height={30}
+                      alt="legacy archive"
+                    />
+                    Legacy Archive
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink
+                    href="https://gdc.cancer.gov/about-data/publications"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-publications.svg"
+                      width={30}
+                      height={30}
+                      alt="publications"
+                    />
+                    Publications
+                  </AppLink>
+                </AppMenuItem>
               </div>
             </Menu.Dropdown>
           </Menu>
