@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Menu, Tabs } from "@mantine/core";
+import { Button, createStyles, Divider, Menu, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import { useCohortFacetFilters } from "./CohortGroup";
@@ -29,19 +29,19 @@ import {
   setActiveCohortList,
   DataStatus,
   Cohort,
+  Modals,
+  showModal,
 } from "@gff/core";
-
+import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
   MdDownload as DownloadIcon,
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon,
-  MdFileCopy as FilesIcon,
 } from "react-icons/md";
-import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
+import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 
 interface Error {
   data: {
@@ -50,10 +50,27 @@ interface Error {
   status: number;
 }
 
+const useStyles = createStyles((theme) => ({
+  item: {
+    "&[data-hovered]": {
+      // TODO: remove with theme color other than blue
+      backgroundColor: theme.colors.blue[3],
+      color: theme.white,
+    },
+  },
+  root: {
+    "&[data-disabled]": {
+      border: "1px solid gray",
+      margin: "2px 0",
+    },
+  },
+}));
+
 const ContextBar: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const { data: cohortsListData, error: getCohortError } =
     useGetCohortsByContextIdQuery();
+  const { classes } = useStyles();
 
   useEffect(() => {
     // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
@@ -211,6 +228,8 @@ const ContextBar: React.FC = () => {
     />
   );
 
+  const [activeTab, setActiveTab] = useState<string | null>("summary");
+
   return (
     <div
       className="font-heading bg-base-max flex flex-col"
@@ -220,40 +239,118 @@ const ContextBar: React.FC = () => {
         Top={CohortBarWithProps}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
+        onlyIcon={false}
       >
         <div className="flex flex-col ">
           <div className="relative p-2">
-            <div className="flex flex-row absolute ml-2">
-              <Menu>
+            <div className="flex flex-row absolute ml-2 gap-4">
+              {/* this can be a shared component */}
+              <Menu width="target" classNames={classes}>
                 <Menu.Target>
-                  <FunctionButton>
-                    <DownloadIcon />
-                    <CountButton
-                      countName="fileCount"
-                      label="Files"
-                      className="px-2"
-                    />
-                  </FunctionButton>
+                  <Button
+                    variant="outline"
+                    color="primary"
+                    leftIcon={
+                      <DownloadIcon size="1rem" aria-label="Files dropdown" />
+                    }
+                    rightIcon={<Dropdown size="1.25em" />}
+                  >
+                    <CountButton countName="fileCount" label="Files" />
+                  </Button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item icon={<AddToCartIcon />}>Add to Cart</Menu.Item>
-                  <Menu.Item icon={<DownloadIcon />}>
-                    Download Manifest
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-              <Menu>
-                <Menu.Target>
-                  <FunctionButton className="ml-2">
-                    <FilesIcon className="mr-1" /> Metadata
-                  </FunctionButton>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item>Biospecimen</Menu.Item>
-                  <Menu.Item>Clinical</Menu.Item>
+                  <Menu.Item>Add to Cart</Menu.Item>
+                  <Menu.Item>Download Manifest</Menu.Item>
+                  <Menu.Item>Metadata</Menu.Item>
                   <Menu.Item>Sample Sheet</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
+
+              <Menu width="target" classNames={classes}>
+                <Menu.Target>
+                  <Button
+                    variant="outline"
+                    color="primary"
+                    leftIcon={
+                      <CohortFilterIcon
+                        size="1rem"
+                        aria-label="Custom cohort filters"
+                      />
+                    }
+                    rightIcon={<Dropdown size="1.25em" />}
+                  >
+                    Custom Filters
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label className="font-bold">
+                    Filter your cohort by:
+                  </Menu.Label>
+                  <Menu.Divider />
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalCaseSetModal }),
+                      )
+                    }
+                  >
+                    Cases
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalGeneSetModal }),
+                      )
+                    }
+                  >
+                    Genes
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalMutationSetModal }),
+                      )
+                    }
+                  >
+                    Mutations
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+
+              {activeTab === "summary" && (
+                <>
+                  <Menu width="target" classNames={classes}>
+                    <Menu.Target>
+                      <Button
+                        variant="outline"
+                        color="primary"
+                        rightIcon={<Dropdown size="1.25em" />}
+                      >
+                        Biospecimen
+                      </Button>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item>JSON (Coming Soon)</Menu.Item>
+                      <Menu.Item>TSV (Coming Soon)</Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                  <Menu classNames={classes}>
+                    <Menu.Target>
+                      <Button
+                        variant="outline"
+                        color="primary"
+                        rightIcon={<Dropdown size="1.25em" />}
+                      >
+                        Clinical
+                      </Button>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item>JSON (Coming soon)</Menu.Item>
+                      <Menu.Item>TSV (Coming soon) </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </>
+              )}
             </div>
             <Tabs
               classNames={{
@@ -264,6 +361,8 @@ const ContextBar: React.FC = () => {
               data-tour="cohort_summary"
               defaultValue="summary"
               keepMounted={false}
+              value={activeTab}
+              onTabChange={setActiveTab}
             >
               <Tabs.List position="right">
                 <Tabs.Tab
