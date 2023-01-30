@@ -411,8 +411,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       <div className="border-opacity-0">
         {!hide_controls ? (
           <div className="flex justify-center items-center">
-            {/* this can be a shared component */}
-            <Tooltip label="Discard Changes" position="bottom" withArrow>
+            <Tooltip
+              label="Discard Unsaved Changes"
+              position="bottom"
+              withArrow
+            >
               <CohortGroupButton
                 onClick={() => {
                   if (!cohortModified) {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, createStyles, Menu } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
 import {
   useCoreSelector,
@@ -14,7 +13,6 @@ import {
   defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { showNotification } from "@mantine/notifications";
 import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
 import {
@@ -22,6 +20,7 @@ import {
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 interface CountsIconProps {
   $count?: number;
@@ -40,15 +39,6 @@ font-heading
 rounded-md
 
 `;
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    "&[data-hovered]": {
-      backgroundColor: theme.colors.blue[3],
-      color: theme.white,
-    },
-  },
-}));
 
 export const CasesCohortButton = (): JSX.Element => {
   const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
@@ -111,60 +101,52 @@ export const CasesCohortButton = (): JSX.Element => {
     }
   }, [cohortMessage, coreDispatch]);
 
-  const { classes } = useStyles();
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
 
   return (
-    <Menu classNames={classes} position="bottom-start">
-      <Menu.Target>
-        <Button
-          variant="outline"
-          color="primary"
-          disabled={pickedCases.length == 0}
-          leftIcon={
-            pickedCases.length ? (
-              <CountsIcon $count={pickedCases.length}>
-                {pickedCases.length}
-              </CountsIcon>
-            ) : null
-          }
-          rightIcon={<Dropdown size="1.25rem" />}
-        >
-          Create New Cohort
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Label className="bg-primary text-primary-contrast font-heading font-bold mb-2">
-          {pickedCases.length}
-          {pickedCases.length > 1 ? " Cases" : " Case"}
-        </Menu.Label>
-        <Menu.Item
-          onClick={() => {
-            setShowCreateCohort(true);
-          }}
-        >
-          Only Selected Cases
-        </Menu.Item>
-        <Menu.Item
-          onClick={() => {
-            setWithOrWithoutCohort("with");
-            setOpenSelectCohorts(true);
-          }}
-        >
-          Existing Cohort With Selected Cases
-        </Menu.Item>
-        <Menu.Item
-          onClick={() => {
-            setWithOrWithoutCohort("without");
-            setOpenSelectCohorts(true);
-          }}
-        >
-          Existing Cohort Without Selected Cases
-        </Menu.Item>
-      </Menu.Dropdown>
+    <>
+      <DropdownWithIcon
+        dropdownElements={[
+          {
+            title: "Only Selected Cases",
+            onClick: () => {
+              setShowCreateCohort(true);
+            },
+          },
+          {
+            title: " Existing Cohort With Selected Cases",
+            onClick: () => {
+              setWithOrWithoutCohort("with");
+              setOpenSelectCohorts(true);
+            },
+          },
+          {
+            title: " Existing Cohort Without Selected Cases",
+            onClick: () => {
+              setWithOrWithoutCohort("without");
+              setOpenSelectCohorts(true);
+            },
+          },
+        ]}
+        TargetButtonChildren="Create New Cohort"
+        disableTargetWidth={true}
+        targetButtonDisabled={pickedCases.length == 0}
+        LeftIcon={
+          pickedCases.length ? (
+            <CountsIcon $count={pickedCases.length}>
+              {pickedCases.length}
+            </CountsIcon>
+          ) : null
+        }
+        menuLabelText={`${pickedCases.length}
+        ${pickedCases.length > 1 ? " Cases" : " Case"}`}
+        menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+        customPosition="bottom-start"
+      />
+
       {openSelectCohorts && (
         <SelectCohortsModal
           opened
@@ -186,6 +168,6 @@ export const CasesCohortButton = (): JSX.Element => {
           onNameChange={onNameChange}
         />
       )}
-    </Menu>
+    </>
   );
 };
