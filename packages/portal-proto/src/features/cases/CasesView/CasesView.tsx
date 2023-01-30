@@ -7,7 +7,7 @@ import {
   SortBy,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { Button, createStyles, Divider, Menu } from "@mantine/core";
+import { Button, createStyles, Menu } from "@mantine/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
