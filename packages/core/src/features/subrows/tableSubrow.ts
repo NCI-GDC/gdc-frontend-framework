@@ -1,6 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
+import { getAliasQueryList } from "./modQuery";
 
 export interface SubrowResponse {
   explore: {
@@ -177,6 +178,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         let results: MutatedGenesFreqTransformedItem[] = [];
         for (const geneId of arg.geneIds) {
+          console.log(arg.geneIds);
+          getAliasQueryList(arg.geneIds);
           const result = await fetchWithBQ({
             graphQLQuery: `
                         query GeneTableSubrow(
@@ -328,41 +331,40 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           // if (error) {
           //   return { error };
           // } else {
-
-          results.push(mutatedGene[0]);
-
+          results.push(mutatedGene[0] as MutatedGenesFreqTransformedItem);
           // }
         }
-        console.log(
-          "test modifying query",
-          `
-        query GeneTableSubrow(
-            $filters_case: FiltersArgument
-            $filters_gene: FiltersArgument
-        ) {
-            explore {
-                cases {
-                  denominators: aggregations(filters: $filters_case) {
-                    project__project_id {
-                        buckets {
-                            key
-                            doc_count
-                        }
-                    }
-                  }
-                    numerators: aggregations(filters: $filters_gene) {
-                        project__project_id {
-                            buckets {
-                                doc_count
-                                key
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        `,
-        );
+        // console.log(
+        //   "test modifying query",
+        //   `
+        // query GeneTableSubrow(
+        //     $filters_case: FiltersArgument
+        //     $filters_gene: FiltersArgument
+        // ) {
+        //     explore {
+        //         cases {
+        //           denominators: aggregations(filters: $filters_case) {
+        //             project__project_id {
+        //                 buckets {
+        //                     key
+        //                     doc_count
+        //                 }
+        //             }
+        //           }
+        //             numerators: aggregations(filters: $filters_gene) {
+        //                 project__project_id {
+        //                     buckets {
+        //                         doc_count
+        //                         key
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // `,
+        // );
+        console.log("genesresults", results);
         debugger;
         return {
           data: { results: results as MutatedGenesFreqTransformedItem[] },
@@ -565,12 +567,16 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               filteredOccurrences,
               mutation_subtype,
               consequence,
+              case_cnv_gain,
+              case_cnv_loss,
             }: {
               genomic_dna_change: string;
               ssm_id: string;
               filteredOccurrences: number;
               mutation_subtype: string;
               consequence: Consequence[];
+              case_cnv_gain: number;
+              case_cnv_loss: number;
             }) => {
               console.log("consequence", consequence);
               debugger;
@@ -603,6 +609,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ...(ssm_id === ssmsId
                   ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
                   : {}),
+                cnvGain: case_cnv_gain / cases,
+                cnvLoss: case_cnv_loss / cases,
                 impact: !consequence?.length
                   ? consequence.map(
                       ({
@@ -621,15 +629,16 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               };
             },
           );
-          console.table([
-            `cases:${cases}`,
-            `filtered${filteredCases}`,
-            casesAcrossGDC,
-            ssms,
-            mutation,
-            result,
-          ]);
-          debugger;
+          results.push(mutation[0] as MutationsFreqTransformedItem);
+          // console.table([
+          //   `cases:${cases}`,
+          //   `filtered${filteredCases}`,
+          //   casesAcrossGDC,
+          //   ssms,
+          //   mutation,
+          //   result,
+          // ]);
+          // debugger;
 
           // todo handle errors
           // if (error) {
@@ -637,6 +646,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           // } else {
           // }
         }
+        console.log("results", results);
+        debugger;
         return { data: { results: results as MutationsFreqTransformedItem[] } };
       },
     }),
