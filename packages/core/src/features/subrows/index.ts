@@ -7,7 +7,7 @@ import {
 } from "./tableSubrow";
 
 export {
-  // subrow downloads
+  // subrow
   useGetGeneTableSubrowQuery,
   useGetSomaticMutationTableSubrowQuery,
   // tsv downloads

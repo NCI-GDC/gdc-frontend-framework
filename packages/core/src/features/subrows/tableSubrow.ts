@@ -1,7 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
-import { getAliasQueryList, getAliasFilterList, caseFilter } from "./gqlmod";
+import { getAliasFilters, getGQLQuery } from "./gqlmod";
 
 export interface SubrowResponse {
   explore: {
@@ -178,70 +178,31 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         let results: MutatedGenesFreqTransformedItem[] = [];
         // for (const geneId of arg.geneIds) {
-        console.log(arg.geneIds);
-        getAliasQueryList(arg.geneIds);
-        const hello = arg.geneIds.map((id) => getAliasFilterList(id));
-        console.log("hello", hello);
+        // console.log(arg.geneIds);
+        // getAliasQueryList(arg.geneIds);
+        // let graphQLFilters = { ...caseFilter } as Record<string, any>;
+        // arg.geneIds.forEach((id: string) => {
+        //   // if (id === "") {
+        //   graphQLFilters[`bullshit` as string] = getAliasFilterById("ENSG00000121879")
+        //   // }
+        // });
+        // const filterArgs = arg.geneIds
+        //   .map((geneId: string) => {
+        //     return `$filters_gene_${geneId}`;
+        //   })
+        //   .join("\r\n");
         debugger;
+        // ${arg.geneIds
+        //   .map((geneId) => {
+        //     return `$filters_gene_${geneId}`;
+        //   })
+        //   .join("\r\n")}
         const result = await fetchWithBQ({
-          graphQLQuery: `
-                        query GeneTableSubrow(
-                            $filters_case: FiltersArgument
-                            ${arg.geneIds
-                              .map((geneId) => {
-                                return `$filters_gene_${geneId}`;
-                              })
-                              .join("\r\n")}
-                        ) {
-                            explore {
-                              ${getAliasQueryList(arg.geneIds)}
-                            }
-                        }
-                        `,
-          graphQLFilters: {
-            // filters_case: {
-            //   content: [
-            //     {
-            //       content: {
-            //         field: "cases.available_variation_data",
-            //         value: ["ssm"],
-            //       },
-            //       op: "in",
-            //     },
-            //   ],
-            //   op: "and",
-            // },
-            // filters_gene: {
-            //   op: "and",
-            //   content: [
-            //     {
-            //       content: {
-            //         field: "genes.gene_id",
-            //         value: [geneId],
-            //       },
-            //       op: "in",
-            //     },
-            //     {
-            //       op: "NOT",
-            //       content: {
-            //         field: "cases.gene.ssm.observation.observation_id",
-            //         value: "MISSING",
-            //       },
-            //     },
-            //   ],
-            // },
-            // ...caseFilter,
-            ...arg.geneIds.reduce(
-              (acc, id) => ({
-                ...acc,
-                ...getAliasFilterList(id),
-              }),
-              caseFilter,
-            ),
-            //   ...arg.geneIds.map((id) =>
-            //     getAliasFilterList(id)
-            //     )
-          },
+          graphQLQuery: getGQLQuery(arg.geneIds),
+          graphQLFilters: getAliasFilters(arg.geneIds) as Record<
+            string,
+            unknown
+          >,
         });
         console.log("what is result", result);
         // const {
@@ -369,7 +330,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         console.log("genesresults", results);
         debugger;
         return {
-          data: { results: results as MutatedGenesFreqTransformedItem[] },
+          data: { results: results as any[] },
         };
       },
     }),

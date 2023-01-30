@@ -182,13 +182,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
   });
 
-  useEffect(() => {
-    console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
-  }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
+  // useEffect(() => {
+  //   console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
+  // }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
 
-  useEffect(() => {
-    console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
-  }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
+  // useEffect(() => {
+  //   console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
+  // }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
 
   return (
     <>

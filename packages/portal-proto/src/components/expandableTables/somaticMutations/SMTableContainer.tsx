@@ -177,19 +177,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const handleTSV = () => {
-    const headers = [
-      "DNA Change",
-      "Protein Change",
-      "Mutation ID",
-      "Type",
-      "Consequences",
-      "# Affected Cases in Cohort",
-      "# Affected Cases Across the GDC",
-      "Impact",
-    ];
-    console.log(tableData.ssms);
-  };
+  // const handleTSV = () => {
+  //   const headers = [
+  //     "DNA Change",
+  //     "Protein Change",
+  //     "Mutation ID",
+  //     "Type",
+  //     "Consequences",
+  //     "# Affected Cases in Cohort",
+  //     "# Affected Cases Across the GDC",
+  //     "Impact",
+  //   ];
+  //   console.log(tableData.ssms);
+  // };
 
   const handleJSON = () => {
     const fileName = `mutations.${convertDateToString(new Date())}.json`;
@@ -252,9 +252,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       ssmsIds: tableData.ssms.map(({ ssm_id: ssmsId }) => ssmsId),
     });
 
-  useEffect(() => {
-    console.log("data", mutationsFreqData, mutationsFreqFetching);
-  }, [mutationsFreqData, initialData, mutationsFreqFetching]);
+  // useEffect(() => {
+  //   console.log("data", mutationsFreqData, mutationsFreqFetching);
+  // }, [mutationsFreqData, initialData, mutationsFreqFetching]);
 
   return (
     <>

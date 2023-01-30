@@ -118,9 +118,6 @@ const slice = createSlice({
             };
           },
         );
-        console.log("ssms,", mtns);
-        debugger;
-
         // state.mutations = ssmsMutation;
         return state;
       })
