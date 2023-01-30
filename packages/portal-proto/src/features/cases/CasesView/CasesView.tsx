@@ -7,7 +7,7 @@ import {
   SortBy,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { Button, createStyles, Menu } from "@mantine/core";
+import { Button, createStyles, Divider, Menu } from "@mantine/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
@@ -321,6 +321,7 @@ export const ContextualCasesView: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full ml-2 mr-8">
+      <Divider color="#C5C5C5" className="mb-3 mr-4" />
       <VerticalTable
         tableData={cases || []}
         columns={columns}
