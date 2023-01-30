@@ -1,4 +1,4 @@
-export const getAliasQueryList = (ids: string[]) => {
+export const getSubrowQuery = (ids: string[]) => {
   // const aliasFragments = `{
   //     ${ids.join("\r\n")}
   // }`;
@@ -24,7 +24,7 @@ export const getAliasQueryList = (ids: string[]) => {
   return subrowAliases;
 };
 
-export const getGQLQuery = (ids: string[]) => {
+export const getAliasGraphQLQuery = (ids: string[]) => {
   // geneIds: string[], filters: string
   // ${filters}
   const query = `
@@ -56,9 +56,6 @@ export const getGQLQuery = (ids: string[]) => {
   }
 }
 }`;
-  // ${getAliasQueryList(geneIds).replaceAll(",", " ")}
-  console.log("QUEWRYYY", query);
-  debugger;
   return query.replaceAll(",", " ");
 };
 

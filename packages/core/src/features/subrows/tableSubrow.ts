@@ -1,7 +1,7 @@
 import { Buckets } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
-import { getAliasFilters, getGQLQuery } from "./gqlmod";
+import { getAliasFilters, getAliasGraphQLQuery } from "./gqlmod";
 
 export interface SubrowResponse {
   explore: {
@@ -177,34 +177,13 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         let results: MutatedGenesFreqTransformedItem[] = [];
-        // for (const geneId of arg.geneIds) {
-        // console.log(arg.geneIds);
-        // getAliasQueryList(arg.geneIds);
-        // let graphQLFilters = { ...caseFilter } as Record<string, any>;
-        // arg.geneIds.forEach((id: string) => {
-        //   // if (id === "") {
-        //   graphQLFilters[`bullshit` as string] = getAliasFilterById("ENSG00000121879")
-        //   // }
-        // });
-        // const filterArgs = arg.geneIds
-        //   .map((geneId: string) => {
-        //     return `$filters_gene_${geneId}`;
-        //   })
-        //   .join("\r\n");
-        debugger;
-        // ${arg.geneIds
-        //   .map((geneId) => {
-        //     return `$filters_gene_${geneId}`;
-        //   })
-        //   .join("\r\n")}
         const result = await fetchWithBQ({
-          graphQLQuery: getGQLQuery(arg.geneIds),
+          graphQLQuery: getAliasGraphQLQuery(arg.geneIds),
           graphQLFilters: getAliasFilters(arg.geneIds) as Record<
             string,
             unknown
           >,
         });
-        console.log("what is result", result);
         // const {
         //   numerators = { project__project_id: { buckets: [] } },
         //   denominators = { project__project_id: { buckets: [] } },
@@ -327,8 +306,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         // }
         // `,
         // );
-        console.log("genesresults", results);
-        debugger;
         return {
           data: { results: results as any[] },
         };
