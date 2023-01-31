@@ -13,30 +13,59 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+interface DropdownWithIconProps {
+  /**
+   *    if true, doesn't set width to be "target"
+   */
+  disableTargetWidth?: boolean;
+  /**
+   *   Left Icon for the taret button, can be undefined too
+   */
+  LeftIcon?: JSX.Element;
+  /**
+   *   Right Icon for the taret button, can be undefined too (default to dropdown icon)
+   */
+  RightIcon?: JSX.Element;
+  /**
+   *    Content for target button
+   */
+  TargetButtonChildren: ReactNode;
+  /**
+   *    disables the target button and menu
+   */
+  targetButtonDisabled?: boolean;
+  /**
+   *    array dropdown items. Need to pass title, onClick event handler is optional
+   */
+  dropdownElements: Array<{
+    title: string;
+    onClick?: () => void;
+  }>;
+  /**
+   *    only provide menuLabelText if we want label for dropdown elements
+   */
+  menuLabelText?: string;
+  /**
+   *    custom class / stylings for menuLabelText
+   */
+  menuLabelCustomClass?: string;
+  /**
+   *    custom position for Menu
+   */
+  customPosition?: FloatingPosition;
+}
+
 export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
-  RightIcon = <Dropdown size="1.25em" />,
+  RightIcon = <Dropdown size="1.25em" aria-label="dropdown icon" />,
   TargetButtonChildren,
   targetButtonDisabled,
   dropdownElements,
   menuLabelText,
   menuLabelCustomClass,
   customPosition,
-}: {
-  disableTargetWidth?: boolean;
-  LeftIcon?: JSX.Element;
-  RightIcon?: JSX.Element;
-  TargetButtonChildren: ReactNode;
-  targetButtonDisabled?: boolean;
-  dropdownElements: Array<{
-    title: string;
-    onClick?: () => void;
-  }>;
-  menuLabelText?: string;
-  menuLabelCustomClass?: string;
-  customPosition?: FloatingPosition;
-}): JSX.Element => {
+}: DropdownWithIconProps): JSX.Element => {
   const { classes } = useStyles();
 
   return (
@@ -44,6 +73,7 @@ export const DropdownWithIcon = ({
       width={!disableTargetWidth && "target"}
       classNames={classes}
       {...(customPosition && { position: customPosition })}
+      data-testid="menu-elem"
     >
       <Menu.Target>
         <Button
@@ -59,7 +89,10 @@ export const DropdownWithIcon = ({
       <Menu.Dropdown>
         {menuLabelText && (
           <>
-            <Menu.Label className={menuLabelCustomClass ?? "font-bold"}>
+            <Menu.Label
+              className={menuLabelCustomClass ?? "font-bold"}
+              data-testid="menu-label"
+            >
               {menuLabelText}
             </Menu.Label>
             <Menu.Divider />
@@ -70,7 +103,8 @@ export const DropdownWithIcon = ({
             onClick={() => {
               onClick && onClick();
             }}
-            key={`title-${idx}`}
+            key={`${title}-${idx}`}
+            data-testid={`${title}-${idx}`}
           >
             {title}
           </Menu.Item>
