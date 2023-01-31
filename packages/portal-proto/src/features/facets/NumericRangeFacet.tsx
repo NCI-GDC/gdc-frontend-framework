@@ -21,8 +21,7 @@ import {
   extractRangeValues,
   buildRangeBuckets,
   adjustAgeInYearsToDays,
-  adjustAgeInDaysToDays,
-  getUpperAgeYears,
+  adjustAgeInDaysToYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -300,7 +299,7 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? minimum : getLowerAgeYears(minimum);
   const upperUnitRange =
     units !== "years" ? maximum : getLowerAgeYears(maximum);
-  console.log("from value", fromValue, units);
+
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
@@ -312,9 +311,6 @@ const FromTo: React.FC<FromToProps> = ({
             value={fromOp}
             onChange={(value) => {
               setFromOp(value as RangeFromOp);
-              setFromValue(
-                adjustAgeInDaysToDays(fromOp as RangeFromOp, fromValue, units),
-              );
               changedCallback();
             }}
             data={[
@@ -328,7 +324,12 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
-            value={units !== "years" ? fromValue : getUpperAgeYears(fromValue)}
+            // units are always days
+            value={adjustAgeInDaysToYears(
+              fromOp as RangeFromOp,
+              fromValue,
+              units,
+            )}
             onChange={(value) => {
               setFromValue(
                 adjustAgeInYearsToDays(fromOp as RangeFromOp, value, units),
@@ -347,9 +348,6 @@ const FromTo: React.FC<FromToProps> = ({
             value={toOp}
             onChange={(value) => {
               setToOp(value as RangeToOp);
-              setToValue(
-                adjustAgeInDaysToDays(value as RangeToOp, toValue, units),
-              );
               changedCallback();
             }}
             data={[
@@ -365,11 +363,11 @@ const FromTo: React.FC<FromToProps> = ({
             max={upperUnitRange}
             onChange={(value) => {
               setToValue(
-                adjustAgeInYearsToDays(toOp as RangeFromOp, value, units),
+                adjustAgeInYearsToDays(toOp as RangeToOp, value, units),
               );
               changedCallback();
             }}
-            value={units !== "years" ? toValue : getUpperAgeYears(toValue)}
+            value={adjustAgeInDaysToYears(toOp as RangeToOp, toValue, units)}
             hideControls
             aria-label="input to value"
           />

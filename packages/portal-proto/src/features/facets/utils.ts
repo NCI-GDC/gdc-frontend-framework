@@ -30,9 +30,7 @@ export const getUpperAgeYears = (days?: number): number | undefined =>
 export const getLowerAgeFromYears = (years?: number): number | undefined =>
   years !== undefined ? Math.floor(years * DAYS_IN_YEAR) : undefined;
 export const getUpperAgeFromYears = (years?: number): number | undefined =>
-  years !== undefined
-    ? Math.floor(years * DAYS_IN_YEAR + DAYS_IN_YEAR - 1)
-    : undefined;
+  years !== undefined ? Math.ceil(years * DAYS_IN_YEAR) : undefined;
 
 export const AgeDisplay = (
   ageInDays: number,
@@ -277,20 +275,61 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
-export const adjustAgeRange = (
+export const ageInYearsFromDays = (
   op: ">" | ">=" | "<" | "<=",
-  value: number,
-  units: string,
+  ageInDays: number,
 ): number => {
-  if (units !== "years") return value;
   switch (op) {
     case ">":
-      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+      return getLowerAgeYears(ageInDays);
+    case ">=":
+      return getLowerAgeYears(ageInDays);
+    case "<":
+      return getUpperAgeYears(ageInDays);
+    case "<=":
+      return getUpperAgeYears(ageInDays);
+  }
+};
+
+/**
+ * Used to adjust the day values for ages to support
+ * both inclusive and exclusive ranges.
+ * @param op one of ">" , ">=" , "<" , "<="
+ * @param ageInYears age in years
+ */
+export const ageInDaysFromYears = (
+  op: ">" | ">=" | "<" | "<=",
+  ageInYears: number,
+): number => {
+  switch (op) {
+    case ">":
+      return getLowerAgeFromYears(ageInYears);
     case ">=":
       return getLowerAgeFromYears(ageInYears);
     case "<":
-      return getLowerAgeFromYears(ageInYears);
+      return getUpperAgeFromYears(ageInYears);
     case "<=":
-      return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
+      return getUpperAgeFromYears(ageInYears);
   }
 };
+
+export const adjustAgeInYearsToDays = (
+  op: ">" | ">=" | "<" | "<=",
+  value: number,
+  units: string,
+): number => (units == "years" ? ageInDaysFromYears(op, value) : value);
+
+export const adjustAgeInDaysToYears = (
+  op: ">" | ">=" | "<" | "<=",
+  value: number,
+  units: string,
+): number => (units == "days" ? value : ageInYearsFromDays(op, value));
+
+export const leapThenPair = (years: number, days: number): number[] =>
+  days === 365 ? [years + 1, 0] : [years, days];
+
+export const ageInYearsAndDaysFromDays = (ageInDays: number): number[] =>
+  leapThenPair(
+    Math.floor(ageInDays / DAYS_IN_YEAR),
+    Math.ceil(ageInDays % DAYS_IN_YEAR),
+  );

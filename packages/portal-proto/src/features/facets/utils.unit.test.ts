@@ -2,7 +2,7 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustAgeInDaysToDays,
+  adjustAgeInYearsToDays,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -500,15 +500,14 @@ describe("Build Bucket Range Test", () => {
   });
 });
 
-describe("test adjust age range", () => {
-  test("testing year age ranges", () => {
-    expect(adjustAgeInDaysToDays("<", 14974, "year")).toEqual(14610);
-    expect(adjustAgeInDaysToDays("<=", 14974, "year")).toEqual(14974);
-    expect(adjustAgeInDaysToDays("<=", 7305, "year")).toEqual(7669);
-    expect(adjustAgeInDaysToDays(">", 7305, "year")).toEqual(7305);
-    expect(adjustAgeInDaysToDays(">", 7669, "year")).toEqual(7305);
-    expect(adjustAgeInDaysToDays(">=", 6940, "year")).toEqual(6939);
-    expect(adjustAgeInDaysToDays(">=", 20140, "year")).toEqual(20088);
-    expect(adjustAgeInDaysToDays(">", 20140, "year")).toEqual(20453);
+describe("test years to days conversion", () => {
+  test("years to days", () => {
+    expect(adjustAgeInYearsToDays("<", 2, "years")).toEqual(731);
+    expect(adjustAgeInYearsToDays("<=", 0, "years")).toEqual(0);
+    expect(adjustAgeInYearsToDays("<=", 7305, "days")).toEqual(7305);
+    expect(adjustAgeInYearsToDays(">", 80, "years")).toEqual(29220);
+    expect(adjustAgeInYearsToDays(">", -90, "years")).toEqual(-32873);
+    expect(adjustAgeInYearsToDays("<=", -70, "years")).toEqual(-25567);
+    expect(adjustAgeInYearsToDays("<", 90, "years")).toEqual(32873);
   });
 });
