@@ -24,17 +24,24 @@ export const getSubrowQuery = (ids: string[]) => {
   return subrowAliases;
 };
 
-export const getAliasGraphQLQuery = (
-  ids: string[],
-  version: "genes" | "ssms",
-) => {
+export const getVersion = (version: string) => {
   switch (version) {
     case "genes": {
-      const query = `
-  query GenesTableSubrows(
+      return "$filters_genes";
+    }
+    case "ssms": {
+      return "$filters_mutations";
+    }
+  }
+  return;
+};
+
+export const getAliasGraphQLQuery = (ids: string[], version: string) => {
+  const query = `
+  query ${version.toUpperCase()}${ids.length > 1 && "s"}Query(
       $filters_case: FiltersArgument
       ${`${ids.map((id) => {
-        return `$filters_gene_${`${id}`}: FiltersArgument`;
+        return `${getVersion(version)}_${`${id}`}: FiltersArgument`;
       })}`}
   ) {
       explore {
@@ -47,7 +54,9 @@ export const getAliasGraphQLQuery = (
               }
           }
         } ${`${ids.map((id) => {
-          return `filters_gene_${id}: aggregations(filters: $filters_gene_${`${id}`}) {
+          return `filters_gene_${id}: aggregations(filters: ${getVersion(
+            version,
+          )}_${`${id}`}) {
             project__project_id {
               buckets {
                 key
@@ -56,38 +65,7 @@ export const getAliasGraphQLQuery = (
             }
           }`;
         })}`}}}}`;
-      return query.replaceAll(",", " ");
-    }
-    case "ssms": {
-      const query = ` query SomaticMutationsTableSubrows(
-          $filters_case: FiltersArgument
-          ${`${ids.map((id) => {
-            return `$filters_mutation_${`${id}`}: FiltersArgument`;
-          })}`}
-        ) {
-          explore {
-            cases {
-              denominators: aggregations(filters: $filters_case) {
-                project__project_id {
-                    buckets {
-                        key
-                        doc_count
-                    }
-                }
-              }
-            } ${`${ids.map((id) => {
-              return `filters_mutation_${id}: aggregations(filters: $filters_mutations_${`${id}`}) {
-                  project__project_id {
-                    buckets {
-                      key
-                      doc_count
-                    }
-                  }
-                }`;
-            })}`}}}}`;
-    }
-  }
-  return;
+  return query.replaceAll(",", " ");
 };
 
 export const caseFilter = {
