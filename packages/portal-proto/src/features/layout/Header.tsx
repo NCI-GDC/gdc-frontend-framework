@@ -84,14 +84,14 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-row">
+    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
         href="#main"
         className="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
       >
         Skip Navigation
       </a>
-      <div className="flex flex-col w-1/2">
+      <div className="flex flex-row justify-between">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
@@ -106,28 +106,8 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
           </Link>
         </div>
-        <div className="flex flex-row flex-wrap items-center divide-x divide-gray-300 mt-2 ">
-          {headerElements.map((element, i) => (
-            <div
-              key={i}
-              className={`${i === 0 ? "pr-2" : "px-2"}`}
-              data-testid={`headerElement${i}`}
-            >
-              {typeof element === "string" ? (
-                <span className="font-semibold">{element}</span>
-              ) : (
-                element
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="flex-grow"></div>
-        <div>
-          <Options />
-        </div>
-      </div>
-      <div className="flex flex-col justify-around w-1/2">
-        <div className="flex flex-row justify-between items-center text-primary-darkest font-heading text-sm font-medium">
+
+        <div className="flex flex-row justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
             className="flex items-center gap-1"
@@ -387,9 +367,29 @@ export const Header: React.FC<HeaderProps> = ({
             </Menu.Dropdown>
           </Menu>
         </div>
-        <div className="mt-4">
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-row flex-wrap items-center divide-x divide-gray-300">
+          {headerElements.map((element, i) => (
+            <div
+              key={i}
+              className={`${i === 0 ? "pr-2" : "pl-4"}`}
+              data-testid={`headerElement${i}`}
+            >
+              {typeof element === "string" ? (
+                <span className="font-semibold">{element}</span>
+              ) : (
+                element
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="w-1/2">
           <QuickSearch />
         </div>
+      </div>
+      <div className="flex flex-grow">
+        <Options />
       </div>
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
