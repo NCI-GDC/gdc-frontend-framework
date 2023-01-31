@@ -184,6 +184,68 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             unknown
           >,
         });
+        console.log("result", result);
+        const { genes, cnvCases, filteredCases, mutationCounts } =
+          arg?.tableData;
+
+        const { denominators, ...remaining } =
+          result?.data?.data?.explore?.cases;
+
+        const mutatedGenes = genes.map(
+          ({
+            gene_id,
+            symbol,
+            name,
+            cytoband,
+            biotype,
+            numCases,
+            case_cnv_gain,
+            case_cnv_loss,
+            annotations,
+          }: {
+            gene_id: string;
+            symbol: string;
+            name: string;
+            cytoband: string[];
+            biotype: string;
+            numCases: number;
+            case_cnv_gain: number;
+            case_cnv_loss: number;
+            annotations: boolean;
+          }) => {
+            return {
+              gene_id,
+              symbol,
+              name,
+              cytoband: cytoband.join(", "),
+              biotype,
+              ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
+                100 *
+                (numCases / filteredCases)
+              ).toFixed(2)}%)`,
+              // todo:
+              // ssmsAffectedCasesAcrossGDC: remaining[`filters_gene_${gene_id}`],
+
+              cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
+                100 *
+                (case_cnv_gain / cnvCases)
+              ).toFixed(2)}%)`,
+              cnvLoss: `${case_cnv_loss} / ${cnvCases} (${(
+                100 *
+                (case_cnv_loss / cnvCases)
+              ).toFixed(2)}%)`,
+              ...(mutationCounts[gene_id] && {
+                mutations: mutationCounts[gene_id],
+              }),
+              ...(annotations
+                ? { annotations: "Cancer Gene Cencus" }
+                : { annotations: "" }),
+            };
+          },
+        );
+
+        console.log("remaining", remaining, mutatedGenes); // { filters_gene_ENG2343424, filters_gene_ENGL90123, ...]
+        debugger;
         // const {
         //   numerators = { project__project_id: { buckets: [] } },
         //   denominators = { project__project_id: { buckets: [] } },
@@ -192,8 +254,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         //   numerators?.project__project_id?.buckets,
         //   denominators?.project__project_id?.buckets,
         // ];
-        // const { genes, cnvCases, filteredCases, mutationCounts } =
-        //   arg?.tableData;
 
         // const casesAcrossGDC = n.map(
         //   ({
@@ -217,58 +277,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         //   ({ gene_id }: { gene_id: string }) => gene_id === geneId,
         // );
 
-        // const mutatedGene = [gene].map(
-        //   ({
-        //     gene_id,
-        //     symbol,
-        //     name,
-        //     cytoband,
-        //     biotype,
-        //     numCases,
-        //     case_cnv_gain,
-        //     case_cnv_loss,
-        //     annotations,
-        //   }: {
-        //     gene_id: string;
-        //     symbol: string;
-        //     name: string;
-        //     cytoband: string[];
-        //     biotype: string;
-        //     numCases: number;
-        //     case_cnv_gain: number;
-        //     case_cnv_loss: number;
-        //     annotations: boolean;
-        //   }) => {
-        //     return {
-        //       gene_id,
-        //       symbol,
-        //       name,
-        //       cytoband: cytoband.join(", "),
-        //       biotype,
-        //       ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
-        //         100 *
-        //         (numCases / filteredCases)
-        //       ).toFixed(2)}%)`,
-        //       ...(gene_id === geneId
-        //         ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
-        //         : {}),
-        //       cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
-        //         100 *
-        //         (case_cnv_gain / cnvCases)
-        //       ).toFixed(2)}%)`,
-        //       cnvLoss: `${case_cnv_loss} / ${cnvCases} (${(
-        //         100 *
-        //         (case_cnv_loss / cnvCases)
-        //       ).toFixed(2)}%)`,
-        //       ...(mutationCounts[geneId] && {
-        //         mutations: mutationCounts[geneId],
-        //       }),
-        //       ...(annotations
-        //         ? { annotations: "Cancer Gene Cencus" }
-        //         : { annotations: "" }),
-        //     };
-        //   },
-        // );
         // todo handle errors
         // if (error) {
         //   return { error };
