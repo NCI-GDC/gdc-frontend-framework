@@ -190,6 +190,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   type="radio"
                   id={`${field}_${rangeKey}_${i}`}
                   name={`${field}_range_selection`}
+                  aria-label={rangeLabelsAndValues[rangeKey].valueLabel}
                   value={rangeKey}
                   checked={rangeKey === selected}
                   className={RadioStyle}
@@ -520,6 +521,7 @@ const RangeInputWithPrefixedRanges: React.FC<
       <div className="flex flex-col w-100 space-y-2 mt-1 ">
         <div className="flex flex-row  justify-items-stretch items-center">
           <input
+            aria-label="custom range"
             type="radio"
             className={RadioStyle}
             id={`${field}_custom`}
