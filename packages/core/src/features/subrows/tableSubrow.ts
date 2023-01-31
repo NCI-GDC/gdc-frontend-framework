@@ -181,7 +181,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         //   return { error };
         const result = await fetchWithBQ({
           graphQLQuery: getAliasGraphQLQuery(arg.geneIds, "genes") as string,
-          graphQLFilters: getAliasFilters(arg.geneIds) as Record<
+          graphQLFilters: getAliasFilters(arg.geneIds, "genes") as Record<
             string,
             unknown
           >,
@@ -361,40 +361,12 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         for (const ssmsId of arg.ssmsIds) {
           const result = await fetchWithBQ({
             graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
-            graphQLFilters: {
-              filters_case: {
-                content: [
-                  {
-                    content: {
-                      field: "cases.available_variation_data",
-                      value: ["ssm"],
-                    },
-                    op: "in",
-                  },
-                ],
-                op: "and",
-              },
-              filters_mutation: {
-                content: [
-                  {
-                    content: {
-                      field: "ssms.ssm_id",
-                      value: [ssmsId],
-                    },
-                    op: "in",
-                  },
-                  {
-                    content: {
-                      field: "cases.gene.ssm.observation.observation_id",
-                      value: "MISSING",
-                    },
-                    op: "NOT",
-                  },
-                ],
-                op: "and",
-              },
-            },
+            graphQLFilters: getAliasFilters(arg.ssmsIds, "ssms"),
           });
+
+          console.log("ssms result:", result);
+          debugger;
+
           const {
             numerators = { project__project_id: { buckets: [] } },
             denominators = { project__project_id: { buckets: [] } },
