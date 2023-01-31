@@ -24,10 +24,13 @@ export const getSubrowQuery = (ids: string[]) => {
   return subrowAliases;
 };
 
-export const getAliasGraphQLQuery = (ids: string[]) => {
-  // geneIds: string[], filters: string
-  // ${filters}
-  const query = `
+export const getAliasGraphQLQuery = (
+  ids: string[],
+  version: "genes" | "ssms",
+) => {
+  switch (version) {
+    case "genes": {
+      const query = `
   query GenesTableSubrows(
       $filters_case: FiltersArgument
       ${`${ids.map((id) => {
@@ -52,11 +55,39 @@ export const getAliasGraphQLQuery = (ids: string[]) => {
               }
             }
           }`;
-        })}`}
+        })}`}}}}`;
+      return query.replaceAll(",", " ");
+    }
+    case "ssms": {
+      const query = ` query SomaticMutationsTableSubrows(
+          $filters_case: FiltersArgument
+          ${`${ids.map((id) => {
+            return `$filters_mutation_${`${id}`}: FiltersArgument`;
+          })}`}
+        ) {
+          explore {
+            cases {
+              denominators: aggregations(filters: $filters_case) {
+                project__project_id {
+                    buckets {
+                        key
+                        doc_count
+                    }
+                }
+              }
+            } ${`${ids.map((id) => {
+              return `filters_mutation_${id}: aggregations(filters: $filters_mutations_${`${id}`}) {
+                  project__project_id {
+                    buckets {
+                      key
+                      doc_count
+                    }
+                  }
+                }`;
+            })}`}}}}`;
+    }
   }
-}
-}`;
-  return query.replaceAll(",", " ");
+  return;
 };
 
 export const caseFilter = {

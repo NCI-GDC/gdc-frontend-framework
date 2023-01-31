@@ -176,15 +176,16 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: MutatedGenesFreqTransformedItem[] = [];
+        // todo handle errors
+        // if (error) {
+        //   return { error };
         const result = await fetchWithBQ({
-          graphQLQuery: getAliasGraphQLQuery(arg.geneIds),
+          graphQLQuery: getAliasGraphQLQuery(arg.geneIds, "genes") as string,
           graphQLFilters: getAliasFilters(arg.geneIds) as Record<
             string,
             unknown
           >,
         });
-        console.log("result", result);
         const { genes, cnvCases, filteredCases, mutationCounts } =
           arg?.tableData;
 
@@ -261,46 +262,8 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             };
           },
         );
-        debugger;
-        // todo handle errors
-        // if (error) {
-        //   return { error };
-        // } else {
-        // results.push(mutatedGene[0] as MutatedGenesFreqTransformedItem);
-        // }
-        // }
-        // console.log(
-        //   "test modifying query",
-        //   `
-        // query GeneTableSubrow(
-        //     $filters_case: FiltersArgument
-        //     $filters_gene: FiltersArgument
-        // ) {
-        //     explore {
-        //         cases {
-        //           denominators: aggregations(filters: $filters_case) {
-        //             project__project_id {
-        //                 buckets {
-        //                     key
-        //                     doc_count
-        //                 }
-        //             }
-        //           }
-        //             numerators: aggregations(filters: $filters_gene) {
-        //                 project__project_id {
-        //                     buckets {
-        //                         doc_count
-        //                         key
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        // `,
-        // );
         return {
-          data: { results: results as any[] },
+          data: { results: mutatedGenes as MutatedGenesFreqTransformedItem[] },
         };
       },
     }),

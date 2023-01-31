@@ -118,6 +118,7 @@ const slice = createSlice({
             };
           },
         );
+        console.log("mtns", mtns);
         // state.mutations = ssmsMutation;
         return state;
       })
