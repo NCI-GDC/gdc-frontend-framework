@@ -223,9 +223,27 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 100 *
                 (numCases / filteredCases)
               ).toFixed(2)}%)`,
-              // todo:
-              // ssmsAffectedCasesAcrossGDC: remaining[`filters_gene_${gene_id}`],
-
+              ssmsAffectedCasesAcrossGDC: remaining[
+                `filters_gene_${gene_id}`
+              ]?.project__project_id?.buckets
+                ?.map(
+                  ({
+                    doc_count: n,
+                    key: projectName,
+                  }: {
+                    doc_count: number;
+                    key: string;
+                  }) => {
+                    const d = denominators?.project__project_id?.buckets.find(
+                      ({ key }: { key: string }) => key === projectName,
+                    )?.doc_count;
+                    return `${projectName}: ${n} / ${d} (${(
+                      100 *
+                      (n / d)
+                    ).toFixed(2)}%)`;
+                  },
+                )
+                .join(", "),
               cnvGain: `${case_cnv_gain} / ${cnvCases} (${(
                 100 *
                 (case_cnv_gain / cnvCases)
@@ -243,40 +261,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             };
           },
         );
-
-        console.log("remaining", remaining, mutatedGenes); // { filters_gene_ENG2343424, filters_gene_ENGL90123, ...]
         debugger;
-        // const {
-        //   numerators = { project__project_id: { buckets: [] } },
-        //   denominators = { project__project_id: { buckets: [] } },
-        // } = result?.data?.data?.explore?.cases;
-        // const [n, d] = [
-        //   numerators?.project__project_id?.buckets,
-        //   denominators?.project__project_id?.buckets,
-        // ];
-
-        // const casesAcrossGDC = n.map(
-        //   ({
-        //     doc_count: count,
-        //     key: projectName,
-        //   }: {
-        //     doc_count: number;
-        //     key: string;
-        //   }) => {
-        //     const countComplement = d.find(
-        //       ({ key }: { key: string }) => key === projectName,
-        //     )?.doc_count;
-        //     return `${projectName}: ${count} / ${countComplement} (${(
-        //       100 *
-        //       (count / countComplement)
-        //     ).toFixed(2)}%)`;
-        //   },
-        // );
-
-        // const gene = genes.find(
-        //   ({ gene_id }: { gene_id: string }) => gene_id === geneId,
-        // );
-
         // todo handle errors
         // if (error) {
         //   return { error };
