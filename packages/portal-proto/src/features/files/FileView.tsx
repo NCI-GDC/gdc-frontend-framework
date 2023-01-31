@@ -211,13 +211,14 @@ const AssociatedCB = ({
       );
 
       if (
-        associatedCBSearchTerm === "" ||
-        entity.entity_submitter_id
-          .toLowerCase()
-          .includes(associatedCBSearchTerm.toLowerCase()) ||
-        caseData?.submitter_id
-          .toLowerCase()
-          .includes(associatedCBSearchTerm.toLowerCase())
+        caseData?.submitter_id &&
+        (associatedCBSearchTerm === "" ||
+          entity.entity_submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase()) ||
+          caseData?.submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase()))
       ) {
         tableRows.push({
           entity_id: (
