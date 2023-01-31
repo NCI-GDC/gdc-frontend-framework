@@ -112,6 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="https://portal.gdc.cancer.gov/annotations"
             className="flex items-center gap-1"
             target="_blank"
+            rel="noreferrer"
           >
             <PencilIcon size="24px" />
             Browse Annotations
