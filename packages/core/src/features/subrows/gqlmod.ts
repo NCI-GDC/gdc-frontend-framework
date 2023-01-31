@@ -1,3 +1,5 @@
+import { startCase } from "lodash";
+
 export const getSubrowQuery = (ids: string[]) => {
   // const aliasFragments = `{
   //     ${ids.join("\r\n")}
@@ -25,24 +27,37 @@ export const getSubrowQuery = (ids: string[]) => {
 };
 
 export const getVersion = (version: string) => {
+  console.log("getVersion", version);
   switch (version) {
     case "genes": {
       return { filters: "$filters_genes", id: "gene_id" };
     }
     case "ssms": {
-      return { filters: "$ssms", id: "ssm_id" };
+      return { filters: "$filters_ssms", id: "ssm_id" };
     }
   }
-  return { filters: "$baseCase", id: "no_id" };
+  return { filters: "", id: "" };
+};
+
+export const getGQLParams = (ids: string[], version: string) => {
+  const params = `
+  $filters_case: FiltersArgument,
+  ${`${ids
+    .map((id) => {
+      return `${getVersion(version).filters}_${`${id.replaceAll(
+        "-",
+        "_",
+      )}`}: FiltersArgument`;
+    })
+    .join(",\r\n")}`}`;
+  console.log("params", params);
+  debugger;
+  return params;
 };
 
 export const getAliasGraphQLQuery = (ids: string[], version: string) => {
   const query = `
-  query ${version.replace("$", "").toUpperCase()}${ids.length > 1 && "s"}Query(
-      $filters_case: FiltersArgument
-      ${`${ids.map((id) => {
-        return `${getVersion(version).filters}_${`${id}`}: FiltersArgument`;
-      })}`}
+  query ${startCase(version)}Query(${getGQLParams(ids, version)}
   ) {
       explore {
         cases {
@@ -53,10 +68,16 @@ export const getAliasGraphQLQuery = (ids: string[], version: string) => {
                   doc_count
               }
           }
-        } ${`${ids.map((id) => {
-          return `filters_gene_${id}: aggregations(filters: ${
-            getVersion(version).filters
-          }_${`${id}`}) {
+        }
+         ${
+           version
+             ? `${ids.map((id) => {
+                 return `${getVersion(version).filters.replace(
+                   "$",
+                   "",
+                 )}_${`${id.replaceAll("-", "_")}`}: aggregations(filters: ${
+                   getVersion(version).filters
+                 }_${`${id.replaceAll("-", "_")}`}) {
             project__project_id {
               buckets {
                 key
@@ -64,8 +85,15 @@ export const getAliasGraphQLQuery = (ids: string[], version: string) => {
               }
             }
           }`;
-        })}`}}}}`;
-  return query.replaceAll(",", " ");
+               })}`
+             : ``
+         }
+      }
+    }
+  }`;
+  console.log("query", query);
+  debugger;
+  return query;
 };
 
 export const caseFilter = {
@@ -85,13 +113,38 @@ export const caseFilter = {
 
 export const getAliasFilters = (ids: string[], version: string) => {
   let filters = { ...caseFilter } as Record<string, unknown>;
+  // filters_mutation: {
+  //   content: [
+  //     {
+  //       content: {
+  //         field: "ssms.ssm_id",
+  //         value: [request.id],
+  //       },
+  //       op: "in",
+  //     },
+  //     {
+  //       content: {
+  //         field: "cases.gene.ssm.observation.observation_id",
+  //         value: "MISSING",
+  //       },
+  //       op: "NOT",
+  //     },
+  //   ],
+  //   op: "and",
+  // },
   for (const id of ids) {
-    filters[`${getVersion(version).filters?.replace("$", "")}_${id}`] = {
+    // getVersion(version).filters => "$filters_ssms"
+    filters[
+      `${getVersion(version).filters.replace("$", "")}_${id.replaceAll(
+        "-",
+        "_",
+      )}`
+    ] = {
       op: "and",
       content: [
         {
           content: {
-            field: `${getVersion(version).filters.split("_").at(-1)}${
+            field: `${getVersion(version).filters.split("_").at(-1)}.${
               getVersion(version).id
             }`,
             value: [id],
@@ -108,6 +161,7 @@ export const getAliasFilters = (ids: string[], version: string) => {
       ],
     };
   }
+  console.log("ssms filters", filters);
   return filters;
 };
 
