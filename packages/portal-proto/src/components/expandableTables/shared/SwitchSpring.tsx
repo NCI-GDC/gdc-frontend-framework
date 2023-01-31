@@ -1,11 +1,13 @@
 import React, { ReactNode } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Tooltip } from "@mantine/core";
+import classNames from "classnames";
 
 interface SwitchSpringProps {
   isActive: boolean;
   icon: ReactNode;
   selected: string | Record<string, any>;
+  disabled?: boolean;
   handleSwitch: any;
   tooltip: string;
   margin: string;
@@ -18,6 +20,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   isActive,
   icon,
   selected,
+  disabled = false,
   handleSwitch,
   tooltip = undefined,
   margin,
@@ -36,14 +39,33 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   const { plot } = survivalProps ?? { plot: "" };
 
   return (
-    <Tooltip label={`${tooltip}`} disabled={!tooltip}>
-      <animated.div className={`text-center items-center`}>
+    <Tooltip
+      label={tooltip}
+      disabled={!tooltip}
+      data-testid="tooltipSwitchSpring"
+    >
+      <animated.div
+        className={`text-center items-center`}
+        aria-disabled={disabled}
+        role="switch"
+        data-testid="top-div-switchSpring"
+      >
         <animated.div
           style={sliderSpring}
-          className={`border border-lightgray h-5 ${icon ? `` : `rounded-xl`} ${
-            isActive ? `bg-activeColor` : `bg-gray-300`
-          } m-auto align-middle`}
+          data-testid="middle-div-switchSpring"
+          className={classNames(
+            "border border-lightgray h-5",
+            {
+              "rounded-xl": icon,
+              "cursor-not-allowed": disabled,
+            },
+            isActive ? "bg-activeColor" : "bg-gray-300",
+            "m-auto align-middle",
+          )}
           onClick={() => {
+            if (disabled) {
+              return;
+            }
             // todo: if used for > 2 icons refactor to use switch(icon) statement
             icon
               ? handleSwitch(selected[`symbol`], selected[`name`], plot)
@@ -52,11 +74,13 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         >
           <animated.div
             style={ballSpring}
-            className={`border ${
-              isActive ? `border-activeColor` : ``
-            } bg-white ${icon ? `` : `rounded-xl`} ${
-              isActive ? `bg-lightgray` : ``
+            className={`border-2 rounded-sm ${
+              disabled ? "border-gray-300" : "border-activeColor"
+            }
+             bg-white ${icon && `rounded-xl`} ${
+              isActive && `bg-lightgray`
             } text-xs h-5`}
+            data-testid="bottom-div-switchSpring"
           >
             <div className={margin}>{icon}</div>
           </animated.div>

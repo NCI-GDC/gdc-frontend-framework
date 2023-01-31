@@ -3,20 +3,22 @@ import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
-export const SaveModal = ({
+export const SaveOrCreateCohortModal = ({
   entity,
+  action = "Save",
   initialName,
   opened,
   onClose,
-  onSaveClick,
+  onActionClick,
   onNameChange,
   additionalDuplicateMessage,
 }: {
   entity: string;
+  action?: string;
   initialName: string;
   opened: boolean;
   onClose: () => void;
-  onSaveClick: (name: string) => void;
+  onActionClick: (name: string) => void;
   onNameChange: (name: string) => boolean;
   additionalDuplicateMessage?: string;
 }): JSX.Element => {
@@ -56,7 +58,7 @@ export const SaveModal = ({
 
   return (
     <Modal
-      title={`Save ${upperFirst(entity)}`}
+      title={`${upperFirst(action)} ${upperFirst(entity)}`}
       opened={opened}
       padding={0}
       radius="md"
@@ -109,6 +111,8 @@ export const SaveModal = ({
           }}
           inputWrapperOrder={["label", "input", "error", "description"]}
           {...form.getInputProps("name")}
+          aria-required
+          data-testid="input-field"
         />
       </Box>
       <Box
@@ -139,12 +143,13 @@ export const SaveModal = ({
             aria-label={`Save button to add a ${entity}`}
             onClick={() => {
               if (form.validate().hasErrors) return;
-              onSaveClick(form.values.name);
+              onActionClick(form.values.name);
               form.reset();
               onClose();
             }}
+            data-testid="action-button"
           >
-            Save
+            {upperFirst(action)}
           </Button>
         </Group>
       </Box>

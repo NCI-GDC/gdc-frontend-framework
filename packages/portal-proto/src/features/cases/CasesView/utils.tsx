@@ -1,4 +1,4 @@
-import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { ArraySeparatedSpan } from "@/features/shared/ArraySeparatedSpan";
 import { Columns } from "@/features/shared/VerticalTable";
 import { AnnotationDefaults } from "@gff/core";
 import { Row, TableInstance } from "react-table";
@@ -61,20 +61,11 @@ export const columnListOrder: Columns[] = [
   { id: "ethnicity", columnName: "Ethnicity", visible: false },
   { id: "files", columnName: "Files", visible: true },
   {
-    id: "data_categories",
-    columnName: "Data Category",
-    visible: true,
-    Cell: ({ value, row }: CellProps): JSX.Element => (
-      <CollapsibleRow value={value} row={row} label="Data Categories" />
-    ),
-    disableSortBy: true,
-  },
-  {
     id: "experimental_strategies",
     columnName: "Experimental Strategy",
     visible: false,
-    Cell: ({ value, row }: CellProps): JSX.Element => (
-      <CollapsibleRow value={value} row={row} label="Experimental Strategies" />
+    Cell: ({ value }: CellProps): JSX.Element => (
+      <ArraySeparatedSpan data={value} />
     ),
     disableSortBy: true,
   },
@@ -115,3 +106,5 @@ ${(p: { $count?: number }) =>
   font-heading
   rounded-md
 `;
+
+export const MAX_CASE_IDS = 100000;

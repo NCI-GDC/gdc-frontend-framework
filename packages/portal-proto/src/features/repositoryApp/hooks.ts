@@ -16,6 +16,7 @@ import {
   NumericFromTo,
   selectRangeFacetByField,
   fetchFacetContinuousAggregation,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
@@ -38,6 +39,7 @@ import {
   selectFiltersByName,
   updateRepositoryFilter,
   removeRepositoryFilter,
+  clearRepositoryFilters,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
 
 /**
@@ -247,7 +249,61 @@ export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
   };
 };
 
+export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string) => {
+    dispatch(removeRepositoryFilter(field));
+  };
+};
+
 //  Selector Hooks for getting repository filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectFiltersByName(state, field));
+};
+
+export const useClearLocalFilterWhenCohortChanges = (): void => {
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+
+  const appDispatch = useAppDispatch();
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevId = usePrevious(cohortId);
+
+  useEffect(() => {
+    if (
+      (prevCohortFilters && !isEqual(prevCohortFilters, cohortFilters)) ||
+      (prevId && !isEqual(prevId, cohortId))
+    ) {
+      appDispatch(clearRepositoryFilters());
+    }
+  }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
+};
+
+export const createUseAppDataHook = (fetchDataActionCreator, dataSelector) => {
+  return (...params) => {
+    const appDispatch = useAppDispatch();
+    const { data, status, error } = useAppSelector(dataSelector);
+    const action = fetchDataActionCreator(...params);
+    const prevParams = usePrevious(params);
+
+    useEffect(() => {
+      if (status === "uninitialized" || !isEqual(prevParams, params)) {
+        // createDispatchHook types forces the input to AnyAction, which is
+        // not compatible with thunk actions. hence, the `as any` cast. ;(
+        appDispatch(action); // eslint-disable-line
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, appDispatch, action, params, prevParams]);
+    return {
+      data,
+      error,
+      isUninitialized: status === "uninitialized",
+      isFetching: status === "pending",
+      isSuccess: status === "fulfilled",
+      isError: status === "rejected",
+    };
+  };
 };

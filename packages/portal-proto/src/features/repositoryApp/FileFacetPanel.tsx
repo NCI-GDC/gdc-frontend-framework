@@ -3,7 +3,6 @@ import {
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
-  selectCurrentCohortFilters,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -42,7 +41,6 @@ import {
   useTotalCounts,
 } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
-import { clearRepositoryFilters } from "./repositoryFiltersSlice";
 import { FacetRequiredHooks } from "@/features/facets/types";
 
 const useRepositoryEnumData = (
@@ -71,13 +69,6 @@ export const FileFacetPanel = (): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const dispatch = useAppDispatch();
 
-  // Global cohort filters
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const prevCohortFilters = usePrevious(cohortFilters);
-
   const handleFilterSelected = useCallback(
     (filter: string) => {
       setOpened(false);
@@ -105,13 +96,6 @@ export const FileFacetPanel = (): JSX.Element => {
     }
   }, [facets, isDictionaryReady, prevCustomFacets]);
 
-  // Clear filters if Cohort Changes
-  useEffect(() => {
-    if (!isEqual(prevCohortFilters, cohortFilters)) {
-      dispatch(clearRepositoryFilters());
-    }
-  }, [dispatch, cohortFilters, prevCohortFilters, prevCustomFacets]);
-
   const showReset = facetDefinitions.some(
     (facetDef) => !getDefaultFacets().includes(facetDef.full),
   );
@@ -133,9 +117,14 @@ export const FileFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 mr-3 w-1/5  ">
+    <div className="flex flex-col gap-y-4 mr-3">
       <Group position="apart">
-        <Text size="lg" weight={700} className="text-primary-content-darker">
+        <Text
+          size="lg"
+          weight={700}
+          className="text-primary-content-darker"
+          data-testid="filters-title"
+        >
           Filters
         </Text>
         {showReset && (
@@ -154,6 +143,7 @@ export const FileFacetPanel = (): JSX.Element => {
       <Button
         variant="outline"
         aria-label="Add a file filter"
+        data-testid="button-add-a-file-filter"
         className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
         onClick={() => setOpened(true)}
       >
@@ -163,8 +153,14 @@ export const FileFacetPanel = (): JSX.Element => {
           Add a File Filter
         </Text>
       </Button>
-      <div className="flex flex-col gap-y-4 mr-3 h-screen overflow-y-scroll">
-        <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
+      <div className="flex flex-col gap-y-4" data-testid="filters-facets">
+        <Modal
+          size="lg"
+          opened={opened}
+          onClose={() => setOpened(false)}
+          closeButtonLabel="button-close-modal"
+          zIndex={400}
+        >
           <FacetSelection
             title={"Add a File Filter"}
             facetType="files"

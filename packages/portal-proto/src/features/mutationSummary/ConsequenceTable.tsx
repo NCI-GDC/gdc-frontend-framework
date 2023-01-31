@@ -36,6 +36,8 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
           () => null,
           () => null,
           [],
+          "",
+          false,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -65,6 +65,71 @@ export const buildGraphGLBucketQuery = (
   `;
 };
 
+export interface AliasedFieldQuery {
+  facetName: string;
+  alias?: string;
+}
+
+/**
+ * Builds a GraphQL request for a set of Fields. This is an improvement on the above
+ * as it requested the number of GDC API requests.
+ * @param facetNames - array of { facetNames, and optionally an alias}
+ * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
+ * @param index - which GraphQL index to query
+ */
+export const buildGraphGLBucketsQuery = (
+  facetNames: ReadonlyArray<AliasedFieldQuery>,
+  docType: GQLDocType,
+  index: GQLIndexType = "explore",
+): string => {
+  const queriedFacets = facetNames.map((facet: AliasedFieldQuery) => {
+    return facet.alias !== undefined
+      ? `${convertFacetNameToGQL(facet.alias)} : ${convertFacetNameToGQL(
+          facet.facetName,
+        )}`
+      : convertFacetNameToGQL(facet.facetName);
+  });
+
+  if (docType == "projects")
+    return `
+    query QueryBucketCounts($filters_0: FiltersArgument!) {
+     viewer {
+             ${docType} {
+              aggregations(
+                filters: $filters_0
+                aggregations_filter_themselves: false
+              ) {
+                 ${queriedFacets
+                   .map((x) => {
+                     return x + "{buckets { doc_count key }}";
+                   })
+                   .join(", ")}
+                }
+           }
+        }
+     }`;
+  else
+    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
+      viewer {
+          ${index} {
+            ${docType} {
+              aggregations(
+                filters: $filters_0
+                aggregations_filter_themselves: false
+              ) {
+                 ${queriedFacets
+                   .map((x) => {
+                     return x + "{buckets { doc_count key }}";
+                   })
+                   .join(", ")}
+              }
+            }
+          }
+        }
+      }
+  `;
+};
+
 /**
  * Defines the function signature for Processing GQL Aggregation Responses
  * into FacetBuckets

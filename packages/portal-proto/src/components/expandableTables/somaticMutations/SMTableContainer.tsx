@@ -1,4 +1,4 @@
-import { useSsmsTable, GDCSsmsTable, FilterSet } from "@gff/core";
+import { useSsmsTable, GDCSsmsTable, FilterSet, usePrevious } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -16,6 +16,7 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
+import isEqual from "lodash/isEqual";
 
 export const SelectedRowContext =
   createContext<
@@ -33,10 +34,12 @@ export interface SMTableContainerProps {
     field: string,
   ) => void;
   genomicFilters?: FilterSet;
+  cohortFilters?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
+  isDemoMode?: boolean;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -46,8 +49,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   genomicFilters = { mode: "and", root: {} },
+  cohortFilters = { mode: "and", root: {} },
   handleSsmToggled = () => null,
   toggledSsms = [],
+  isDemoMode = false,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -69,6 +74,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     ssms: [],
   });
 
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
+
   const handleSearch = (term: string) => {
     setSearchTerm(term);
   };
@@ -80,6 +88,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
   }, [columnListOrder]);
+
+  useEffect(() => {
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(0);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
@@ -135,6 +151,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
     genomicFilters: genomicFilters,
     geneSymbol: geneSymbol,
+    isDemoMode: isDemoMode,
+    overwritingDemoFilter: cohortFilters,
   });
 
   useEffect(() => {
@@ -229,6 +247,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 searchTerm={searchTerm}
                 handleSsmToggled={handleSsmToggled}
                 toggledSsms={toggledSsms}
+                isDemoMode={isDemoMode}
               />
             </div>
           )}
@@ -239,9 +258,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           >
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
               <div className={"grow-0"}>
-                <span className=" mx-1 text-xs">Show</span>
-                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                <span className="my-auto mx-1 text-xs">Entries</span>
+                <div className="flex flex-row items-center text-sm ml-0">
+                  <span className="my-auto mx-1 ">Show</span>
+                  <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                  <span className="my-auto mx-1 ">Entries</span>
+                </div>
               </div>
             </div>
             <div

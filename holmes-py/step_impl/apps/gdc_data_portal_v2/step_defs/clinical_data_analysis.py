@@ -4,16 +4,11 @@ from step_impl.base.webdriver import WebDriver
 from step_impl.apps.gdc_data_portal_v2.app import GDCDataPortalV2App
 
 
-@step("Clinical Data Analysis - On GDC Data Portal V2 app")
-def navigate_to_app():
+@step("Navigate to CDAVE page")
+def navigate_to_cdave_page():
     global APP
-    WebDriver.page = WebDriver.instance.new_page()
     APP = GDCDataPortalV2App(WebDriver.page)
     APP.clinical_data_analysis.visit()
-
-
-@step("Navigate to clinical data analysis page")
-def navigate_to_cdave_page():
     APP.clinical_data_analysis.navigate_to_cdave_page()
 
 

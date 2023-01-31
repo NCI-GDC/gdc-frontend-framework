@@ -24,7 +24,7 @@ export const GenericCohortModal = ({
       padding={0}
       radius="md"
       onClose={onClose}
-      zIndex={450}
+      zIndex={400}
       styles={(theme) => ({
         header: {
           color: theme.colors.primary[8],
@@ -91,7 +91,6 @@ export const GenericCohortModal = ({
                 backgroundColor: "white",
               },
             })}
-            // aria
             color="primary.5"
             onClick={onClose}
           >

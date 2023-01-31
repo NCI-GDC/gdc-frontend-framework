@@ -69,7 +69,7 @@ interface CasesResponse {
 export const buildCasesTableSearchFilters = (
   term?: string,
 ): Union | undefined => {
-  if (term !== undefined) {
+  if (term !== undefined && term.length > 0) {
     return {
       operator: "or",
       operands: [
@@ -95,7 +95,7 @@ interface FetchAllCasesRequestProps {
   readonly size?: number;
   readonly from?: number;
   readonly sortBy?: ReadonlyArray<SortBy>;
-  searchTerm: string;
+  searchTerm?: string;
 }
 export const fetchAllCases = createAsyncThunk<
   CasesResponse,

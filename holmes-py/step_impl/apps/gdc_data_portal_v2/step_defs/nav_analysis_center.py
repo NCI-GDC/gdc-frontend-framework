@@ -1,14 +1,16 @@
-from getgauge.python import step
+from getgauge.python import step, before_spec
 
 from step_impl.base.webdriver import WebDriver
 from step_impl.apps.gdc_data_portal_v2.app import GDCDataPortalV2App
 
 
-@step("On GDC Data Portal V2 app")
-def navigate_to_app():
+@before_spec
+def start_app():
     global APP
-    WebDriver.page = WebDriver.instance.new_page()
     APP = GDCDataPortalV2App(WebDriver.page)
+
+@step("Navigate to clinical data analysis page")
+def navigate_to_analysis_center():
     APP.nav_analysis_center.visit()
 
 

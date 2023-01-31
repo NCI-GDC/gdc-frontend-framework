@@ -12,7 +12,9 @@ export const NewCohortNotification: React.FC<CohortNotificationProps> = ({
 }: CohortNotificationProps) => {
   return (
     <>
-      <p>{cohortName} has been created. This is now your current cohort.</p>
+      <p>
+        <b>{cohortName}</b> has been created. This is now your current cohort.
+      </p>
     </>
   );
 };
@@ -30,7 +32,7 @@ export const NewCohortNotificationWithSetAsCurrent: React.FC<
   return (
     <>
       <p>
-        {cohortName} has been created.
+        <b>{cohortName}</b> has been created.
         <Button
           variant="white"
           onClick={() => {

@@ -8,12 +8,12 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Menu } from "@mantine/core";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { CasesCohortButton, CountsIcon } from "../CasesCohortButton";
+import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
 import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
@@ -30,8 +30,8 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 const useStyles = createStyles((theme) => ({
   item: {
     "&[data-hovered]": {
-      backgroundColor:
-        theme.colors[theme.primaryColor][theme.fn.primaryShade()],
+      // TODO: remove with theme color other than blue
+      backgroundColor: theme.colors.blue[3],
       color: theme.white,
     },
   },
@@ -108,6 +108,10 @@ export const ContextualCasesView: React.FC = () => {
     searchTerm,
   });
 
+  useEffect(() => {
+    setOffset(0);
+  }, [cohortFilters]);
+
   const cases = useMemo(
     () =>
       data?.map((datum) => {
@@ -139,7 +143,6 @@ export const ContextualCasesView: React.FC = () => {
                     className={`mt-0.5 ${
                       slideCount === 0 && "text-base-contrast-lightest"
                     }`}
-                    size="1.25em"
                   />
                 }
                 size="xs"
@@ -166,7 +169,6 @@ export const ContextualCasesView: React.FC = () => {
                   }
                   rightIcon={
                     <Dropdown
-                      size="1.25rem"
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
@@ -239,10 +241,6 @@ export const ContextualCasesView: React.FC = () => {
           race: datum?.race ?? "--",
           ethnicity: datum?.ethnicity ?? "--",
           files: datum?.filesCount?.toLocaleString(),
-          data_categories: extractToArray(
-            datum?.data_categories,
-            "data_category",
-          ),
           experimental_strategies: extractToArray(
             datum?.experimental_strategies,
             "experimental_strategy",
@@ -338,7 +336,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Biospecimen
                 </Button>
@@ -360,7 +358,7 @@ export const ContextualCasesView: React.FC = () => {
                       </CountsIcon>
                     ) : null
                   }
-                  rightIcon={<Dropdown size="1.25rem" />}
+                  rightIcon={<Dropdown />}
                 >
                   Clinical
                 </Button>
@@ -382,7 +380,7 @@ export const ContextualCasesView: React.FC = () => {
             </ButtonTooltip>
           </div>
         }
-        tableTitle={`Total of ${pagination?.total?.toLocaleString()} ${
+        tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
           pagination?.total > 1 ? "Cases" : "Case"
         }`}
         showControls={true}

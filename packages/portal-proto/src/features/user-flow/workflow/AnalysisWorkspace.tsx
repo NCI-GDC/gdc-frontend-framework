@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -21,6 +21,7 @@ import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -43,7 +44,7 @@ const ALL_OTHER_APPS = Object.keys(initialApps).filter(
 );
 
 interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string) => void;
+  readonly onAppSelected?: (id: string, demoMode?: boolean) => void;
 }
 
 const AnalysisGrid: React.FC<AnalysisGridProps> = ({
@@ -83,8 +84,11 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
     filterAppsByTagsAndSort();
   }, [filterAppsByTagsAndSort]);
 
-  const handleOpenAppClicked = (x: AppRegistrationEntry) => {
-    onAppSelected(x.id);
+  const handleOpenAppClicked = (
+    x: AppRegistrationEntry,
+    demoMode?: boolean,
+  ) => {
+    onAppSelected(x.id, demoMode);
   };
 
   return (
@@ -277,20 +281,23 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
-
+  const isDemoMode = useIsDemoApp();
+  const appInfo = useMemo(
+    () => REGISTERED_APPS.find((a) => a.id === app),
+    [app],
+  );
   useEffect(() => {
-    const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-    setCohortSelectionOpen(appInfo?.selectAdditionalCohort);
+    setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
 
     if (app) {
       scrollIntoView();
     } else {
       clearComparisonCohorts();
     }
-  }, [app, scrollIntoView]);
+  }, [app, isDemoMode, appInfo, scrollIntoView]);
 
-  const handleAppSelected = (app: string) => {
-    router.push({ query: { app } });
+  const handleAppSelected = (app: string, demoMode?: boolean) => {
+    router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
 
   const handleAppLoaded = useCallback(() => {
@@ -318,6 +325,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setCohortSelectionOpen={setCohortSelectionOpen}
               cohortSelectionOpen={cohortSelectionOpen}
               setActiveApp={handleAppSelected}
+              onDemoApp={isDemoMode}
             />
             <AdditionalCohortSelection
               app={app}
@@ -334,7 +342,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setCohortSelectionOpen={setCohortSelectionOpen}
             cohortSelectionOpen={cohortSelectionOpen}
             setActiveApp={handleAppSelected}
-            rightComponent={app === "CohortBuilder" ? <SearchInput /> : null}
+            onDemoApp={isDemoMode}
+            rightComponent={
+              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
+            }
           />
           <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
         </>

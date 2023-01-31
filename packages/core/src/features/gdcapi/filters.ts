@@ -489,5 +489,28 @@ export const isIntersectionOrUnion = (
 export const isIncludes = (o: Operation): o is Includes =>
   (o as Includes).operator === "includes";
 
+export const isUnion = (o: Operation): o is Union =>
+  (o as Union).operator === "or";
+
+export const isIntersection = (o: Operation): o is Intersection =>
+  (o as Intersection).operator === "and";
+
 export const isExcludeIfAny = (o: Operation): o is Includes =>
   (o as ExcludeIfAny).operator === "excludeifany";
+
+export const parseJSONParam: any = (str?: string, defaults = {}) => {
+  if (str) {
+    try {
+      return JSON.parse(str) || defaults;
+    } catch (err) {
+      return defaults;
+    }
+  } else {
+    return defaults;
+  }
+};
+
+export const stringifyJSONParam = (
+  obj?: Record<string, any>,
+  defaults = "{}",
+): string => (obj ? JSON.stringify(obj) : defaults);

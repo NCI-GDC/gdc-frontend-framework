@@ -15,7 +15,7 @@ const CartSizeLimitModal = ({
       }
       closeButtonLabel="Close"
       openModal={openModal}
-      buttons={[{ title: "Accept" }]}
+      buttons={[{ title: "Accept", dataTestId: "button-cart-modal-accept" }]}
     >
       <div>
         <p>Your cart contains more than 5 GBs of data.</p>

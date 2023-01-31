@@ -19,7 +19,7 @@ class ClinicalDataAnalysisLocators:
 
 class ClinicalDataAnalysisPage:
     def __init__(self, driver: Page, url):
-        self.URL = "{}/".format(url)
+        self.URL = "{}/analysis_page?app=CDave".format(url)
         self.driver = driver  # driver is PW page
 
     def visit(self):

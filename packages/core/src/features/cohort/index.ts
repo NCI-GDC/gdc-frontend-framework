@@ -48,6 +48,13 @@ import {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  selectCurrentCohortGroups,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
+  addNewCohortGroups,
+  removeCohortGroup,
+  selectCohortFilterSetById,
+  selectCurrentCohortFiltersByNames,
 } from "./availableCohortsSlice";
 
 import {
@@ -66,6 +73,7 @@ import {
   selectCohortCountsByName,
   useCohortCounts,
   useFilteredCohortCounts,
+  CountsData,
 } from "./countSlice";
 
 import {
@@ -73,6 +81,7 @@ import {
   clearComparisonCohorts,
   selectComparisonCohorts,
 } from "./comparisonCohortsSlice";
+import { defaultCohortNameGenerator } from "./utils";
 
 export {
   DEFAULT_COHORT_ID,
@@ -136,4 +145,13 @@ export {
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
+  selectCurrentCohortGroups,
+  selectCurrentCohortGroupsByField,
+  FilterGroup,
+  addNewCohortGroups,
+  removeCohortGroup,
+  selectCohortFilterSetById,
+  selectCurrentCohortFiltersByNames,
+  CountsData,
+  defaultCohortNameGenerator,
 };

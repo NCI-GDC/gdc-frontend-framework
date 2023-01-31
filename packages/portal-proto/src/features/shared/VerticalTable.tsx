@@ -75,6 +75,7 @@ export interface Columns {
    */
   columns?: Columns[];
   width?: number;
+  highlighted?: boolean;
 }
 
 interface VerticalTableProps {
@@ -115,6 +116,10 @@ interface VerticalTableProps {
    * @defaultValue true
    */
   showControls?: boolean;
+  /**
+   * optional disable page size for pagination
+   */
+  disablePageSize?: boolean;
   /**
    * optional pagination controls at bottom of table
    */
@@ -193,6 +198,7 @@ export interface Column {
   width?: number;
   Cell?: (value: any) => JSX.Element;
   columns?: Column[];
+  highlighted?: boolean;
 }
 
 interface TableProps {
@@ -205,6 +211,7 @@ const mapColumn = (obj: Columns): Column => {
     Header: obj.columnName,
     accessor: obj.id,
     disableSortBy: obj.disableSortBy || false,
+    highlighted: obj.highlighted || false,
   };
 
   if (obj.Cell) {
@@ -255,6 +262,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   showControls = true,
   pagination,
   status = "fulfilled",
+  disablePageSize = false,
   handleChange = (a) => {
     console.error("handleChange was not set and called with:", a);
   },
@@ -351,7 +359,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className="font-heading text-xs font-bold bg-base-max text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md"
+              className={`font-heading text-xs font-bold text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -359,7 +367,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className="px-2 pt-3 pb-1 font-heading"
+                    className={`px-2 pt-3 pb-1 font-heading  ${
+                      column.highlighted
+                        ? "bg-nci-purple-lightest"
+                        : "bg-base-max"
+                    }`}
                     key={`hcolumn-${key}`}
                   >
                     {column.render("Header")}
@@ -367,9 +379,17 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold bg-base-max text-base-contrast-max whitespace-nowrap ${
+                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold ${
+                      column.highlighted
+                        ? "bg-nci-purple-lightest"
+                        : "bg-base-max"
+                    } text-base-contrast-max whitespace-nowrap ${
                       column.canSort &&
-                      "hover:bg-primary-lightest focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5"
+                      `${
+                        column.highlighted
+                          ? "hover:bg-nci-purple-lighter"
+                          : "hover:bg-primary-lightest"
+                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5`
                     }`}
                     key={`hcolumn-${key}`}
                     aria-sort={
@@ -380,7 +400,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         : "none"
                     }
                     tabIndex={column.canSort === false ? -1 : 0}
-                    onKeyPress={(event) => {
+                    onKeyDown={(event) => {
                       if (
                         column.canSort !== false &&
                         (event.key === "Enter" || event.key === " ")
@@ -436,6 +456,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         ? "bg-base-max border-1"
                         : "bg-slate-50 border-1"
                     }
+                    key={`row-${index}`}
                   >
                     {row.cells.map((cell, key) => {
                       return (
@@ -494,29 +515,30 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   const ShowingCount: FC = () => {
-    let outputString = " --";
+    let outputString: JSX.Element;
     if (!isNaN(pagination.from) && status === "fulfilled") {
-      outputString = ` ${
-        pagination.from >= 0 && tableData.length > 0 ? pagination.from + 1 : 0
-      } - `;
+      const paginationFrom =
+        pagination.from >= 0 && tableData.length > 0 ? pagination.from + 1 : 0;
 
-      const paginationTo = pagination.from + pageSize;
-      if (paginationTo < pagination.total) {
-        outputString += paginationTo;
-      } else {
-        outputString += pagination.total;
-      }
-      outputString += ` of ${pagination.total.toLocaleString()}`;
+      const defaultPaginationTo = pagination.from + pageSize;
 
-      if (pagination.label) {
-        outputString += ` ${pagination.label}`;
-      }
+      const paginationTo =
+        defaultPaginationTo < pagination.total
+          ? defaultPaginationTo
+          : pagination.total;
+
+      const totalValue = pagination.total.toLocaleString();
+
+      outputString = (
+        <span>
+          <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
+          {pagination.label && ` ${pagination.label}`}
+        </span>
+      );
     }
 
     return (
-      <p className={"text-heading text-medium text-sm"}>
-        Showing {outputString}
-      </p>
+      <p className={"text-heading text-sm"}>Showing {outputString ?? "--"}</p>
     );
   };
 
@@ -619,29 +641,31 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-start border-base-light pt-2 mx-4">
-          <div className="flex flex-row items-center m-auto ml-0">
-            <span className="my-auto mx-1 text-xs">Show</span>
-            <Select
-              size="xs"
-              radius="md"
-              onChange={handlePageSizeChange}
-              value={pageSize?.toString()}
-              data={[
-                { value: "10", label: "10" },
-                { value: "20", label: "20" },
-                { value: "40", label: "40" },
-                { value: "100", label: "100" },
-              ]}
-              classNames={{
-                root: "w-16 font-heading",
-              }}
-            />
-            <span className="my-auto mx-1 text-xs">Entries</span>
-          </div>
-          <div className="m-auto">
-            <ShowingCount />
-          </div>
+        <div className="flex flex-row items-center text-content justify-between	border-base-light pt-2 mx-4">
+          {!disablePageSize && (
+            <div className="flex flex-row items-center m-auto ml-0">
+              <span className="my-auto mx-1 text-xs">Show</span>
+              <Select
+                size="xs"
+                radius="md"
+                onChange={handlePageSizeChange}
+                value={pageSize?.toString()}
+                data={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "40", label: "40" },
+                  { value: "100", label: "100" },
+                ]}
+                classNames={{
+                  root: "w-16 font-heading",
+                }}
+              />
+              <span className="my-auto mx-1 text-xs">Entries</span>
+            </div>
+          )}
+
+          <ShowingCount />
+
           <Pagination
             color="accent"
             className="ml-auto"

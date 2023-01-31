@@ -11,6 +11,7 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
+  FilterSet,
   filterSetToOperation,
   selectCurrentCohortFilters,
   selectCurrentCohortFilterSet,
@@ -164,6 +165,8 @@ export const buildSSMSTableSearchFilters = (
 
 export interface SsmsTableRequestParameters extends GenomicTableProps {
   readonly geneSymbol?: string;
+  isDemoMode: boolean;
+  overwritingDemoFilter: FilterSet;
 }
 
 export const fetchSsmsTable = createAsyncThunk<
@@ -179,6 +182,8 @@ export const fetchSsmsTable = createAsyncThunk<
       searchTerm,
       genomicFilters,
       geneSymbol,
+      isDemoMode,
+      overwritingDemoFilter,
     }: SsmsTableRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
@@ -194,6 +199,8 @@ export const fetchSsmsTable = createAsyncThunk<
               },
             },
           }
+        : isDemoMode
+        ? overwritingDemoFilter
         : selectCurrentCohortFilters(thunkAPI.getState()),
     );
     const cohortFiltersContent = cohortFilters?.content
@@ -219,15 +226,24 @@ export const fetchSsmsTable = createAsyncThunk<
       : localPlusCohortFilters;
 
     const searchFilters = buildSSMSTableSearchFilters(searchTerm);
-    const tableFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(
-        filterSetToOperation(geneAndCohortFilters) as
-          | Union
-          | Intersection
-          | undefined,
-        searchFilters,
-      ),
-    );
+    const tableFilters = isDemoMode
+      ? convertFilterToGqlFilter(
+          appendFilterToOperation(
+            filterSetToOperation(
+              joinFilters(overwritingDemoFilter, genomicFilters),
+            ) as Union | Intersection | undefined,
+            searchFilters,
+          ),
+        )
+      : convertFilterToGqlFilter(
+          appendFilterToOperation(
+            filterSetToOperation(geneAndCohortFilters) as
+              | Union
+              | Intersection
+              | undefined,
+            searchFilters,
+          ),
+        );
 
     const graphQlFilters = {
       ssmTested: {

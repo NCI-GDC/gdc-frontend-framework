@@ -21,7 +21,6 @@ export const SummaryCard = ({
           <Icon
             className="inline-block mt-1 align-baseline"
             color="primary-content"
-            size="1.25rem"
           />
         )}
         <h2 className="text-lg tracking-wide uppercase font-medium">{title}</h2>

@@ -84,7 +84,7 @@ const getAnnotationsLinkParams = (
 //temp table component until global one is done
 interface TempTableProps {
   readonly tableData: {
-    readonly headers: string[];
+    readonly headers: string[] | JSX.Element[];
     readonly tableRows: any[];
   };
 }
@@ -211,13 +211,14 @@ const AssociatedCB = ({
       );
 
       if (
-        associatedCBSearchTerm === "" ||
-        entity.entity_submitter_id
-          .toLowerCase()
-          .includes(associatedCBSearchTerm.toLowerCase()) ||
-        caseData.submitter_id
-          .toLowerCase()
-          .includes(associatedCBSearchTerm.toLowerCase())
+        caseData?.submitter_id &&
+        (associatedCBSearchTerm === "" ||
+          entity.entity_submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase()) ||
+          caseData?.submitter_id
+            .toLowerCase()
+            .includes(associatedCBSearchTerm.toLowerCase()))
       ) {
         tableRows.push({
           entity_id: (
@@ -229,10 +230,10 @@ const AssociatedCB = ({
           ),
           entity_type: entity.entity_type,
           sample_type: sample_type,
-          case_id: () => (
+          case_id: (
             <GenericLink
               path={`/cases/${entity.case_id}`}
-              text={caseData.submitter_id}
+              text={caseData?.submitter_id}
             />
           ),
           annotations: annotationsLink,

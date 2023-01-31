@@ -37,6 +37,7 @@ export const createTableColumn = (
   handleSsmToggled: SsmToggledHandler,
   toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
+  isDemoMode: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -48,13 +49,16 @@ export const createTableColumn = (
             accessorKey: accessor,
             header: () => (
               <div className="ml-0">
-                {" "}
-                <TableHeader title={startCase(accessor)} tooltip={""} />{" "}
+                <TableHeader
+                  title={startCase(accessor)}
+                  tooltip={""}
+                  className="ml-1 mr-2"
+                />
               </div>
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <div className="ml-1.5 mr-2">
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -81,22 +85,30 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex justify-start w-12"
+                className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start">
+                <div className="flex justify-start ml-3">
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
                       margin={`my-0.5 ml-0`}
                       icon={
-                        <Image
-                          src={"/user-flow/icons/cohort-dna.svg"}
-                          width={16}
-                          height={16}
-                        />
+                        isDemoMode ? (
+                          <Image
+                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        ) : (
+                          <Image
+                            src={"/user-flow/icons/cohort-dna.svg"}
+                            width={16}
+                            height={16}
+                          />
+                        )
                       }
                       selected={row.original["cohort"]}
                       handleSwitch={() =>
@@ -105,7 +117,10 @@ export const createTableColumn = (
                           symbol: row.original?.DNAChange,
                         })
                       }
-                      tooltip={""}
+                      tooltip={
+                        isDemoMode && "Feature not available in demo mode"
+                      }
+                      disabled={isDemoMode}
                     />
                   )}
                 </div>
@@ -129,6 +144,21 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              if (row.depth > 0) {
+                // this is an expanded row
+                return null;
+              }
+              const { numerator } = row?.original["affectedCasesInCohort"] ?? {
+                numerator: 0,
+              };
+              const disabled = numerator < 10;
+              const selected = row.original["survival"];
+              const isActive = selected.checked;
+              const tooltip = disabled
+                ? `Not enough data`
+                : isActive
+                ? `Click to remove ${selected.name} from plot`
+                : `Click to plot ${selected.name}`;
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
@@ -137,9 +167,10 @@ export const createTableColumn = (
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}
-                      selected={row.original["survival"]}
+                      selected={selected}
+                      disabled={disabled}
                       handleSwitch={handleSurvivalPlotToggled}
-                      tooltip={`Click icon to plot ${row.original["survival"].symbol}`}
+                      tooltip={tooltip}
                     />
                   )}
                 </div>
@@ -719,7 +750,7 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      label: gene.symbol + " " + aa_change,
+      label: aa_change ? gene.symbol + " " + aa_change : gene.symbol,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,
