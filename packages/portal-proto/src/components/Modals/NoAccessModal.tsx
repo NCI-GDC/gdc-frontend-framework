@@ -27,7 +27,6 @@ export const NoAccessModal = ({
     >
       <div className="border-y border-y-base p-4">
         <Text size="sm">
-          {" "}
           You don&apos;t have access to this file. Please login.
         </Text>
       </div>
