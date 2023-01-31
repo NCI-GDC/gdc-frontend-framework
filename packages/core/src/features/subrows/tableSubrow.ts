@@ -357,140 +357,101 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       { ssmsIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        let results: MutationsFreqTransformedItem[] = [];
-        for (const ssmsId of arg.ssmsIds) {
-          const result = await fetchWithBQ({
-            graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
-            graphQLFilters: getAliasFilters(arg.ssmsIds, "ssms"),
-          });
+        const result = await fetchWithBQ({
+          graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
+          graphQLFilters: getAliasFilters(arg.ssmsIds, "ssms"),
+        });
+        const { cases, filteredCases, ssms } = arg?.tableData;
+        const { denominators, ...remaining } =
+          result?.data?.data?.explore?.cases;
 
-          console.log("ssms result:", result);
-          debugger;
-
-          const {
-            numerators = { project__project_id: { buckets: [] } },
-            denominators = { project__project_id: { buckets: [] } },
-          } = result?.data?.data?.explore?.cases;
-          const [n, d] = [
-            numerators?.project__project_id?.buckets,
-            denominators?.project__project_id?.buckets,
-          ];
-
-          const { cases, filteredCases, ssms } = arg?.tableData;
-
-          const casesAcrossGDC = n.map(
-            ({
-              doc_count: count,
-              key: projectName,
-            }: {
-              doc_count: number;
-              key: string;
-            }) => {
-              const countComplement = d.find(
-                ({ key }: { key: string }) => key === projectName,
-              )?.doc_count;
-              return `${projectName}: ${count} / ${countComplement} (${(
+        const mutationsFreq = ssms.map(
+          ({
+            genomic_dna_change,
+            ssm_id,
+            filteredOccurrences,
+            mutation_subtype,
+            consequence,
+            case_cnv_gain,
+            case_cnv_loss,
+          }: {
+            genomic_dna_change: string;
+            ssm_id: string;
+            filteredOccurrences: number;
+            mutation_subtype: string;
+            consequence: Consequence[];
+            case_cnv_gain: number;
+            case_cnv_loss: number;
+          }) => {
+            return {
+              dnaChange: genomic_dna_change,
+              proteinChange: !consequence?.length
+                ? consequence.map(({ gene, aa_change }) => {
+                    return `${aa_change} / ${gene.symbol}`;
+                  })[0]
+                : "",
+              mutationId: ssm_id,
+              type: [
+                "Oligo-nucleotide polymorphism",
+                "Tri-nucleotide polymorphism",
+              ].includes(mutation_subtype)
+                ? mutation_subtype
+                : startCase(mutation_subtype.split(" ").at(-1)),
+              consequences: !consequence?.length
+                ? consequence[0]?.consequence_type
+                : "consequence fail",
+              // ? consequence[0]?.consequence_type
+              //     .replace("_variant", "")
+              //     .replace("_", " ")
+              // : ``,
+              ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                 100 *
-                (count / countComplement)
-              ).toFixed(2)}%)`;
-            },
-          );
-
-          // todo: destructure needed vars prior in mtn, then clean up map
-
-          const mtn = ssms.find(
-            ({ ssm_id }: { ssm_id: string }) => ssm_id === ssmsId,
-          );
-
-          const mutation = [mtn].map(
-            ({
-              genomic_dna_change,
-              ssm_id,
-              filteredOccurrences,
-              mutation_subtype,
-              consequence,
-              case_cnv_gain,
-              case_cnv_loss,
-            }: {
-              genomic_dna_change: string;
-              ssm_id: string;
-              filteredOccurrences: number;
-              mutation_subtype: string;
-              consequence: Consequence[];
-              case_cnv_gain: number;
-              case_cnv_loss: number;
-            }) => {
-              console.log("consequence", consequence);
-              debugger;
-
-              return {
-                dnaChange: genomic_dna_change,
-                proteinChange: !consequence?.length
-                  ? consequence.map(({ gene, aa_change }) => {
-                      return `${aa_change} / ${gene.symbol}`;
-                    })[0]
-                  : "",
-                mutationId: ssm_id,
-                type: [
-                  "Oligo-nucleotide polymorphism",
-                  "Tri-nucleotide polymorphism",
-                ].includes(mutation_subtype)
-                  ? mutation_subtype
-                  : startCase(mutation_subtype.split(" ").at(-1)),
-                consequences: !consequence?.length
-                  ? consequence[0]?.consequence_type
-                  : "consequence fail",
-                // ? consequence[0]?.consequence_type
-                //     .replace("_variant", "")
-                //     .replace("_", " ")
-                // : ``,
-                ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
-                  100 *
-                  (filteredOccurrences / filteredCases)
-                ).toFixed(2)}%)`,
-                ...(ssm_id === ssmsId
-                  ? { ssmsAffectedCasesAcrossGDC: casesAcrossGDC.join(", ") }
-                  : {}),
-                cnvGain: case_cnv_gain / cases,
-                cnvLoss: case_cnv_loss / cases,
-                impact: !consequence?.length
-                  ? consequence.map(
-                      ({
-                        annotation: {
-                          vep_impact,
-                          sift_impact,
-                          sift_score,
-                          polyphen_impact,
-                          polyphen_score,
-                        },
-                      }) => {
-                        return `VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`;
+                (filteredOccurrences / filteredCases)
+              ).toFixed(2)}%)`,
+              ssmsAffectedCasesAcrossGDC: remaining[
+                `filters_ssms_${ssm_id}`
+              ]?.project__project_id?.buckets
+                ?.map(
+                  ({
+                    doc_count: n,
+                    key: projectName,
+                  }: {
+                    doc_count: number;
+                    key: string;
+                  }) => {
+                    const d = denominators?.project__project_id?.buckets.find(
+                      ({ key }: { key: string }) => key === projectName,
+                    )?.doc_count;
+                    return `${projectName}: ${n} / ${d} (${(
+                      100 *
+                      (n / d)
+                    ).toFixed(2)}%)`;
+                  },
+                )
+                .join(", "),
+              cnvGain: case_cnv_gain / cases,
+              cnvLoss: case_cnv_loss / cases,
+              impact: !consequence?.length
+                ? consequence.map(
+                    ({
+                      annotation: {
+                        vep_impact,
+                        sift_impact,
+                        sift_score,
+                        polyphen_impact,
+                        polyphen_score,
                       },
-                    )[0]
-                  : "",
-              };
-            },
-          );
-          results.push(mutation[0] as MutationsFreqTransformedItem);
-          // console.table([
-          //   `cases:${cases}`,
-          //   `filtered${filteredCases}`,
-          //   casesAcrossGDC,
-          //   ssms,
-          //   mutation,
-          //   result,
-          // ]);
-          // debugger;
-
-          // todo handle errors
-          // if (error) {
-          //   return { error };
-          // } else {
-          // }
-        }
-        console.log("results", results);
-        debugger;
-        return { data: { results: results as MutationsFreqTransformedItem[] } };
+                    }) => {
+                      return `VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`;
+                    },
+                  )[0]
+                : "",
+            };
+          },
+        );
+        return {
+          data: { results: mutationsFreq as MutationsFreqTransformedItem[] },
+        };
       },
     }),
   }),

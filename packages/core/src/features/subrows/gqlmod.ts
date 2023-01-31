@@ -56,6 +56,7 @@ export const getGQLParams = (ids: string[], version: string) => {
 };
 
 export const getAliasGraphQLQuery = (ids: string[], version: string) => {
+  // hyphens not allowed in gql aliases
   const query = `
   query ${startCase(version)}Query(${getGQLParams(ids, version)}
   ) {
