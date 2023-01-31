@@ -326,15 +326,9 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             // units are always days
-            value={adjustAgeInDaysToYears(
-              fromOp as RangeFromOp,
-              fromValue,
-              units,
-            )}
+            value={adjustAgeInDaysToYears(fromValue, units)}
             onChange={(value) => {
-              setFromValue(
-                adjustAgeInYearsToDays(fromOp as RangeFromOp, value, units),
-              );
+              setFromValue(adjustAgeInYearsToDays(value, units));
               changedCallback();
             }}
             hideControls
@@ -363,12 +357,10 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
-              setToValue(
-                adjustAgeInYearsToDays(toOp as RangeToOp, value, units),
-              );
+              setToValue(adjustAgeInYearsToDays(value, units));
               changedCallback();
             }}
-            value={adjustAgeInDaysToYears(toOp as RangeToOp, toValue, units)}
+            value={adjustAgeInDaysToYears(toValue, units)}
             hideControls
             aria-label="input to value"
           />
@@ -623,8 +615,8 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // set up a fixed range -90 to 90 years over 19 buckets
-  const rangeMinimum = -32872.5;
-  const rangeMaximum = 32872.5;
+  const rangeMinimum = -32873;
+  const rangeMaximum = 32873;
   const numBuckets = 19;
 
   return (
@@ -635,7 +627,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
           { label: "Years", value: "years" },
         ]}
         value={units}
-        color={"primary.2"}
+        color={"primary"}
         onChange={setUnits}
       />
       <RangeInputWithPrefixedRanges
