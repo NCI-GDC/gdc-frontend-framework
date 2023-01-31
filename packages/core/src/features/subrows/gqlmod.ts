@@ -30,7 +30,7 @@ export const getVersion = (version: string) => {
       return { filters: "$filters_genes", id: "gene_id" };
     }
     case "ssms": {
-      return { filters: "$filters_mutations", id: "ssm_id" };
+      return { filters: "$ssms", id: "ssm_id" };
     }
   }
   return { filters: "$baseCase", id: "no_id" };
