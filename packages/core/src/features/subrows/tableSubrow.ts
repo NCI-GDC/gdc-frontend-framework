@@ -360,33 +360,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
         let results: MutationsFreqTransformedItem[] = [];
         for (const ssmsId of arg.ssmsIds) {
           const result = await fetchWithBQ({
-            graphQLQuery: `
-                    query SomaticMutationTableSubrow(
-                      $filters_case: FiltersArgument
-                      $filters_mutation: FiltersArgument
-                    ) {
-                      explore {
-                        cases {
-                          denominators: aggregations(filters: $filters_case) {
-                            project__project_id {
-                                buckets {
-                                    key
-                                    doc_count
-                                }
-                            }
-                          }
-                          numerators: aggregations(filters: $filters_mutation) {
-                            project__project_id {
-                              buckets {
-                                doc_count
-                                key
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  `,
+            graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
             graphQLFilters: {
               filters_case: {
                 content: [
