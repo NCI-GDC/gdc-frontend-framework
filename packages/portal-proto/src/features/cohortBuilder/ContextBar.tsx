@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Menu, Tabs } from "@mantine/core";
-import { ContextualCasesView } from "../cases/CasesView";
+import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
@@ -15,17 +15,18 @@ import {
 } from "@/features/cohortBuilder/CohortNotifications";
 import {
   useCoreDispatch,
-  setCurrentCohortId,
   useCoreSelector,
   selectAvailableCohorts,
   DEFAULT_COHORT_ID,
   selectCurrentCohortId,
+  setActiveCohort,
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
   setCohortList,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
+  setActiveCohortList,
   DataStatus,
 } from "@gff/core";
 
@@ -68,13 +69,14 @@ const ContextBar: React.FC = () => {
           status: "fulfilled" as DataStatus,
         },
       }));
-      coreDispatch(setCohortList(updatedList));
+      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+      // TODO determine if setActiveCohortList is really needed
     } else if ((getCohortError as Error)?.status === 400) {
       const noGdcContext =
         ((getCohortError as Error)?.data.message as string) ===
         "Bad Request: [400] - Context id not provided.";
       if (noGdcContext) {
-        coreDispatch(setCohortList(undefined));
+        coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
       }
     }
   }, [getCohortError, coreDispatch, cohortsListData]);
@@ -83,7 +85,7 @@ const ContextBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
 
   const setCohort = (id: string) => {
-    coreDispatch(setCurrentCohortId(id));
+    coreDispatch(setActiveCohort(id));
   };
   const handleCohortSelection = (idx: string) => {
     setCohort(idx);
@@ -179,19 +181,13 @@ const ContextBar: React.FC = () => {
     },
     {
       field: "cases.project.program.name",
-      name: "Program Name",
+      name: "Program",
       docType: "cases",
       indexType: "repository",
     },
     {
       field: "cases.demographic.gender",
       name: "Gender",
-      docType: "cases",
-      indexType: "repository",
-    },
-    {
-      field: "cases.demographic.race",
-      name: "Race",
       docType: "cases",
       indexType: "repository",
     },
@@ -211,7 +207,7 @@ const ContextBar: React.FC = () => {
 
   return (
     <div
-      className="font-heading bg-base-lightest flex flex-col"
+      className="font-heading bg-base-max flex flex-col"
       data-tour="context_bar"
     >
       <CollapsibleContainer
@@ -263,6 +259,7 @@ const ContextBar: React.FC = () => {
               }}
               data-tour="cohort_summary"
               defaultValue="summary"
+              keepMounted={false}
             >
               <Tabs.List position="right">
                 <Tabs.Tab
@@ -282,9 +279,9 @@ const ContextBar: React.FC = () => {
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="summary">
-                <SummaryFacets fields={summaryFields} />{" "}
+                <SummaryFacets fields={summaryFields} />
               </Tabs.Panel>
-              <Tabs.Panel value={"table"}>
+              <Tabs.Panel value="table">
                 <ContextualCasesView />
               </Tabs.Panel>
             </Tabs>

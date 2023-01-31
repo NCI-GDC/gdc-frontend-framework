@@ -1,8 +1,12 @@
 import os
 
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.nav_analysis_center import NavAnalysisCenterPage
-from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import ClinicalDataAnalysisPage
+from step_impl.apps.gdc_data_portal_v2.pages.nav_analysis_center import (
+    NavAnalysisCenterPage,
+)
+from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
+    ClinicalDataAnalysisPage,
+)
 
 
 class GDCDataPortalV2App:

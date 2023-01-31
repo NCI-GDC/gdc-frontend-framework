@@ -7,12 +7,13 @@ import {
 import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
+import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
+import { mergeGenomicAndCohortFilters } from "./genomicFilters";
+import { GenomicTableProps } from "./types";
 import {
-  GraphQLApiResponse,
-  graphqlAPI,
-  TablePageOffsetProps,
-} from "../gdcapi/gdcgraphql";
-import { selectGenomicAndCohortGqlFilters } from "./genomicFilters";
+  buildCohortGqlOperator,
+  selectCurrentCohortFilterSet,
+} from "../cohort";
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
@@ -63,15 +64,17 @@ export interface GenesFrequencyChart {
 
 export const fetchGeneFrequencies = createAsyncThunk<
   GraphQLApiResponse,
-  TablePageOffsetProps,
+  GenomicTableProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/geneFrequencyChart",
   async (
-    { pageSize = 20, offset = 0 }: TablePageOffsetProps,
+    { pageSize = 20, offset = 0, genomicFilters }: GenomicTableProps,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const filters = selectGenomicAndCohortGqlFilters(thunkAPI.getState());
+    const filters = buildCohortGqlOperator(
+      mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
+    );
 
     const graphQlVariables = {
       geneFrequencyChart_filters: filters ?? {},
@@ -158,5 +161,5 @@ export const selectGeneFrequencyChartData = (
 export const useGeneFrequencyChart = createUseFiltersCoreDataHook(
   fetchGeneFrequencies,
   selectGeneFrequencyChartData,
-  selectGenomicAndCohortGqlFilters,
+  selectCurrentCohortFilterSet,
 );

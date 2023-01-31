@@ -3,7 +3,7 @@ import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 import { some, includes } from "lodash";
 
 const FieldNameOverrides: Record<string, string> = {
-  "cases.project.program.name": "Program Name",
+  "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
 };
 

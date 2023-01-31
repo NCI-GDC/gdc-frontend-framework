@@ -165,8 +165,10 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
             </div>
             <div className="mt-4">
               <div className="flex items-center gap-2">
-                <BarChartIcon size={20} />
-                <h2 className="text-xl">Cancer Distribution</h2>
+                <BarChartIcon size={20} className="text-accent" />
+                <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
+                  Cancer Distribution
+                </h2>
               </div>
               <Grid>
                 <SSMPlot page={"gene"} gene={gene_id} height={200} />
@@ -178,8 +180,10 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
               />
               <div className="mt-4">
                 <div className="flex items-center gap-2">
-                  <BarChartIcon size={20} />
-                  <h2 className="text-xl">Most Frequent Somatic Mutations</h2>
+                  <BarChartIcon size={20} className="text-accent" />
+                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
+                    Most Frequent Somatic Mutations
+                  </h2>
                 </div>
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}

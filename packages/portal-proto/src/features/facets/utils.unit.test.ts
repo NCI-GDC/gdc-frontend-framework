@@ -2,7 +2,7 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustAgeRange,
+  adjustAgeInDaysToDays,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -501,12 +501,14 @@ describe("Build Bucket Range Test", () => {
 });
 
 describe("test adjust age range", () => {
-  test("testing all age ranges", () => {
-    expect(adjustAgeRange("<", 14974, "years")).toEqual(14610);
-    expect(adjustAgeRange("<=", 14974, "years")).toEqual(14974);
-    expect(adjustAgeRange("<=", 7305, "years")).toEqual(7669);
-    expect(adjustAgeRange(">", 7305, "years")).toEqual(7669);
-    expect(adjustAgeRange("<", 6940, "years")).toEqual(6940);
-    expect(adjustAgeRange(">=", 6940, "years")).toEqual(6940);
+  test("testing year age ranges", () => {
+    expect(adjustAgeInDaysToDays("<", 14974, "year")).toEqual(14610);
+    expect(adjustAgeInDaysToDays("<=", 14974, "year")).toEqual(14974);
+    expect(adjustAgeInDaysToDays("<=", 7305, "year")).toEqual(7669);
+    expect(adjustAgeInDaysToDays(">", 7305, "year")).toEqual(7305);
+    expect(adjustAgeInDaysToDays(">", 7669, "year")).toEqual(7305);
+    expect(adjustAgeInDaysToDays(">=", 6940, "year")).toEqual(6939);
+    expect(adjustAgeInDaysToDays(">=", 20140, "year")).toEqual(20088);
+    expect(adjustAgeInDaysToDays(">", 20140, "year")).toEqual(20453);
   });
 });

@@ -67,7 +67,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
 
   return (
     <Paper p="md" className="min-w-[600px]">
-      <h2 className="text-lg font-semibold">Survival Analysis</h2>
+      <h2 className="font-heading text-lg font-semibold">Survival Analysis</h2>
       {data?.survivalData.length === 0 ? (
         <div className="p-1">
           {"No Survival data available for this Cohort Comparison"}
@@ -81,36 +81,38 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
           ) : (
             <SurvivalPlot data={data} hideLegend />
           )}
-          <table className="bg-base-lightest w-full text-left text-primary-content-darker">
-            <thead>
-              <tr className="bg-accent-warm-lightest">
-                <th>
-                  <Tooltip label={tooltipLabel}>
-                    <span className="underline decoration-dashed">
-                      {"Cases included in Analysis"}
-                    </span>
-                  </Tooltip>
-                </th>
-                <th>
-                  # Cases S<sub>1</sub>
-                </th>
-                <th>%</th>
-                <th>
-                  # Cases S<sub>2</sub>
-                </th>
-                <th>%</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Overall Survival Analysis</td>
-                <td>{cohort1Count.toLocaleString()}</td>
-                <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
-                <td>{cohort2Count.toLocaleString()}</td>
-                <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="font-heading mt-[1.5rem]">
+            <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
+              <thead>
+                <tr className="bg-base-lightest border-b-base-light border-b-2">
+                  <th>
+                    <Tooltip label={tooltipLabel}>
+                      <span className="underline decoration-dashed pl-2">
+                        {"Cases included in Analysis"}
+                      </span>
+                    </Tooltip>
+                  </th>
+                  <th>
+                    # Cases S<sub>1</sub>
+                  </th>
+                  <th>%</th>
+                  <th>
+                    # Cases S<sub>2</sub>
+                  </th>
+                  <th>%</th>
+                </tr>
+              </thead>
+              <tbody className="font-content text-md">
+                <tr>
+                  <td className="pl-2">Overall Survival Analysis</td>
+                  <td>{cohort1Count.toLocaleString()}</td>
+                  <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
+                  <td>{cohort2Count.toLocaleString()}</td>
+                  <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </Paper>

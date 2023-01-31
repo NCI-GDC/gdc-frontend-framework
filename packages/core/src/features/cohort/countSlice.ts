@@ -5,12 +5,15 @@ import {
   createUseFiltersCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
-import { buildCohortGqlOperator } from "./filters";
+import { buildCohortGqlOperator, joinFilters } from "./filters";
 
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortFilterSet } from "./availableCohortsSlice";
+import {
+  selectCurrentCohortFilterOrCaseSet,
+  selectCurrentCohortFilterSet,
+} from "./availableCohortsSlice";
 
 export interface CountsState {
   readonly counts: Record<string, number>;
@@ -24,6 +27,8 @@ const initialState: CountsState = {
     fileCounts: -1,
     genesCounts: -1,
     mutationCounts: -1,
+    ssmCaseCounts: -1,
+    sequenceReadCaseCounts: -1,
     casesMax: -1,
   },
   status: "uninitialized",
@@ -35,7 +40,9 @@ export interface CountsState {
 }
 
 const CountsGraphQLQuery = `
-  query countsQuery($filters: FiltersArgument) {
+  query countsQuery($filters: FiltersArgument,
+  $ssmCaseFilter: FiltersArgument,
+  $sequenceReadsCaseFilter: FiltersArgument) {
   viewer {
     repository {
       cases {
@@ -45,6 +52,11 @@ const CountsGraphQLQuery = `
       },
       files {
         hits(filters: $filters, first: 0) {
+          total
+        }
+      },
+      sequenceReads : cases {
+        hits(filters: $sequenceReadsCaseFilter, first: 0) {
           total
         }
       }
@@ -65,6 +77,11 @@ const CountsGraphQLQuery = `
           total
         }
       }
+     ssmsCases : cases {
+        hits(filters: $ssmCaseFilter, first: 0) {
+          total
+        }
+      }
     }
   }
 }`;
@@ -74,10 +91,50 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFilters = buildCohortGqlOperator(
-    selectCurrentCohortFilterSet(thunkAPI.getState()),
+  const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
+    thunkAPI.getState(),
   );
-  const graphQlFilters = cohortFilters ? { filters: cohortFilters } : {};
+  const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
+  const caseSSMFilter = buildCohortGqlOperator(
+    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+      mode: "and",
+      root: {
+        "cases.available_variation_data": {
+          operator: "includes",
+          field: "cases.available_variation_data",
+          operands: ["ssm"],
+        },
+      },
+    }),
+  );
+  const sequenceReadsFilters = buildCohortGqlOperator(
+    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+      mode: "and",
+      root: {
+        "files.index_files.data_format": {
+          operator: "=",
+          field: "files.index_files.data_format",
+          operand: "bai",
+        },
+        "files.data_type": {
+          operator: "=",
+          field: "files.data_type",
+          operand: "Aligned Reads",
+        },
+        "files.data_format": {
+          operator: "=",
+          field: "files.data_format",
+          operand: "bam",
+        },
+      },
+    }),
+  );
+  const cohortFiltersGQL = buildCohortGqlOperator(cohortFiltersWithCaseSet);
+  const graphQlFilters = {
+    filters: cohortFiltersGQL ?? {},
+    ssmCaseFilter: caseSSMFilter,
+    sequenceReadsCaseFilter: sequenceReadsFilters,
+  };
   return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
 });
 
@@ -95,10 +152,14 @@ const slice = createSlice({
         } else {
           // copy the counts for explore and repository
           state.counts = {
+            // TODO rename **Counts to count
             caseCounts: response.data.viewer.explore.cases.hits.total,
             genesCounts: response.data.viewer.explore.genes.hits.total,
             mutationCounts: response.data.viewer.explore.ssms.hits.total,
             fileCounts: response.data.viewer.repository.files.hits.total,
+            ssmCaseCounts: response.data.viewer.explore.ssmsCases.hits.total,
+            sequenceReadCaseCounts:
+              response.data.viewer.repository.sequenceReads.hits.total,
             repositoryCaseCounts:
               response.data.viewer.repository.cases.hits.total,
             casesMax: Math.max(

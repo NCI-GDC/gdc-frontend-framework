@@ -9,7 +9,7 @@ import { StudyView } from "../../studies/StudyView";
 import { Image } from "@/components/Image";
 import { FacetChart } from "../../charts/FacetChart";
 import ReactModal from "react-modal";
-import { Case, ContextualCasesView } from "../../cases/CasesView";
+import { ContextualCasesView } from "../../cases/CasesView/CasesView";
 import {
   ClinicalFilters,
   GeneExpression,
@@ -42,6 +42,16 @@ export interface BaseExplorationPageProps {
   readonly headerElements: ReadonlyArray<React.ReactNode>;
   readonly indexPath: string;
   readonly isCohortAppDisplayed: boolean;
+}
+
+export interface Case {
+  readonly id: string;
+  readonly submitterId: string;
+  readonly primarySite: string;
+  readonly projectId: string;
+  readonly gender: string;
+  readonly primaryDiagnosis: string;
+  readonly tissueOrOrganOfOrigin: string;
 }
 
 export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
@@ -159,13 +169,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
           ref={topOfApps}
         >
           {currentApp === "cohort-viewer" ? (
-            <CohortViewer
-              goBack={() => setCurrentApp("appSelector")}
-              handleCaseSelected={(patient: Case) => {
-                setCurrentCase(patient);
-                setCaseModalOpen(true);
-              }}
-            />
+            <CohortViewer goBack={() => setCurrentApp("appSelector")} />
           ) : currentApp === "studies" ? (
             <AllAppsStudies
               returnToAllApps={() => setCurrentApp("appSelector")}
@@ -288,19 +292,17 @@ const Apps: React.FC<AppsProps> = ({
 
 interface CohortViewerProps {
   readonly goBack: () => void;
-  readonly handleCaseSelected?: (patient: Case) => void;
 }
 
 const CohortViewer: React.FC<CohortViewerProps> = ({
   goBack,
-  handleCaseSelected,
 }: PropsWithChildren<CohortViewerProps>) => {
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex flex-row">
         <button onClick={goBack}>&lt; All Apps</button>
       </div>
-      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
+      <ContextualCasesView />
     </div>
   );
 };

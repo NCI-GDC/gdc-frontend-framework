@@ -260,33 +260,33 @@ const download = async ({
     return value;
   };
 
-  if (queryParams === undefined) {
-    if ((options?.method || "GET") === "POST") {
-      queryParams = JSON.stringify(
-        {
-          ...params,
-          ...(params.filters
-            ? { filters: JSON.stringify(params.filters) }
-            : {}),
-        },
-        replacer,
-      );
-    } else {
+  if ((options?.method || "GET") === "POST") {
+    const body = JSON.stringify(
+      {
+        ...params,
+        ...(params.filters ? { filters: JSON.stringify(params.filters) } : {}),
+      },
+      replacer,
+    );
+    fetch(
+      `${GDC_APP_API_AUTH}/${endpoint}${queryParams ? `?${queryParams}` : ""}`,
+      {
+        ...options,
+        body,
+      },
+    ).then(handleDownloadResponse);
+  } else {
+    if (queryParams === undefined) {
       queryParams = Object.keys(params)
         .map((key) => key + "=" + params[key])
         .join("&");
     }
-  }
-
-  if ((options?.method || "GET") === "POST") {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
-      ...options,
-      body: queryParams,
-    }).then(handleDownloadResponse);
-  } else {
-    fetch(`${GDC_APP_API_AUTH}/${endpoint}?${queryParams}`, {
-      ...options,
-    }).then(handleDownloadResponse);
+    fetch(
+      `${GDC_APP_API_AUTH}/${endpoint}${queryParams ? `?${queryParams}` : ""}`,
+      {
+        ...options,
+      },
+    ).then(handleDownloadResponse);
   }
 };
 

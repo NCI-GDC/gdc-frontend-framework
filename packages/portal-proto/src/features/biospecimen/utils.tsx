@@ -118,7 +118,7 @@ export const formatEntityInfo = (
         <Tooltip label="View Slide Image">
           <div>
             <Link
-              href={`/user-flow/workbench/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+              href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
                 <FaMicroscope className="text-primary-content" />

@@ -11,10 +11,12 @@ def navigate_to_app():
     APP = GDCDataPortalV2App(WebDriver.page)
     APP.nav_analysis_center.visit()
 
+
 @step("Navigation Bar Icon Checks")
 def navigation_bar_icon_check():
     Result = APP.nav_analysis_center.navigation_bar_card_check()
     assert Result, f"FAILED: Navigation bar"
+
 
 @step("Navigation Home Screen Center Icon Checks")
 def navigation_default_view_icon_check():

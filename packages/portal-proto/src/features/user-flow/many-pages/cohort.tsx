@@ -16,13 +16,13 @@ import classNames from "classnames";
 import { Image } from "@/components/Image";
 import ReactModal from "react-modal";
 import { Select } from "../../../components/Select";
-import { Case, ContextualCasesView } from "../../cases/CasesView";
-//import { ContextualFilesView } from "../../files/FilesView";
+import { ContextualCasesView } from "../../cases/CasesView/CasesView";
 import { CohortGroup } from "../../cohortBuilder/CohortGroup";
 import { SummaryCharts } from "../../cohortBuilder/SummaryCharts";
 import { CohortTabbedFacets } from "../../cohortBuilder/FacetGroup";
 import { GdcFile } from "@gff/core";
 import { Button } from "@mantine/core";
+import { Case } from "../all-apps/baseExploration";
 
 // this is an example of where composition makes it hards to read and understand the code
 export type CohortManagerProps = Partial<ModalOrExpandProps> &
@@ -191,7 +191,7 @@ interface CollapsibleCasesProps {
 const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
   props: CollapsibleCasesProps,
 ) => {
-  const { show, handleCaseSelected = () => void 0 } = props;
+  const { show } = props;
 
   return (
     <div
@@ -200,7 +200,7 @@ const CollapsibleCases: React.FC<CollapsibleCasesProps> = (
         flex: show,
       })}
     >
-      <ContextualCasesView handleCaseSelected={handleCaseSelected} />
+      <ContextualCasesView />
     </div>
   );
 };

@@ -31,7 +31,7 @@ export const getLowerAgeFromYears = (years?: number): number | undefined =>
   years !== undefined ? Math.floor(years * DAYS_IN_YEAR) : undefined;
 export const getUpperAgeFromYears = (years?: number): number | undefined =>
   years !== undefined
-    ? Math.floor(years * DAYS_IN_YEAR + (DAYS_IN_YEAR - 1))
+    ? Math.floor(years * DAYS_IN_YEAR + DAYS_IN_YEAR - 1)
     : undefined;
 
 export const AgeDisplay = (
@@ -287,11 +287,9 @@ export const adjustAgeRange = (
     case ">":
       return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
     case ">=":
-      return getLowerAgeFromYears().floor(
-        (value / DAYS_IN_YEAR) * DAYS_IN_YEAR,
-      );
+      return getLowerAgeFromYears(ageInYears);
     case "<":
-      return Math.ceil((value / DAYS_IN_YEAR - 1) * DAYS_IN_YEAR + 1);
+      return getLowerAgeFromYears(ageInYears);
     case "<=":
       return getUpperAgeFromYears(Math.floor(value / DAYS_IN_YEAR));
   }

@@ -1,7 +1,10 @@
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { isObject } from "../../ts-utils";
 import { GqlOperation } from "./filters";
 import "isomorphic-fetch";
 import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
+import { coreCreateApi } from "src/coreCreateApi";
+import { caseSummaryDefaults } from "../cases/types";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -189,7 +192,7 @@ export interface CaseDefaults {
 
 export const fetchGdcCases = async (
   request?: GdcApiRequest,
-): Promise<GdcApiResponse<CaseDefaults>> => {
+): Promise<GdcApiResponse<caseSummaryDefaults>> => {
   return fetchGdcEntities("cases", request);
 };
 
@@ -425,6 +428,25 @@ export interface FileDefaults {
   }>;
 }
 
+export interface GenesDefaults {
+  readonly biotype: string;
+  readonly symbol: string;
+  readonly cytoband: ReadonlyArray<string>;
+  readonly synonyms: ReadonlyArray<string>;
+  readonly description: string;
+  readonly canonical_transcript_id: string;
+  readonly canonical_transcript_length: number;
+  readonly canonical_transcript_length_cds: number;
+  readonly canonical_transcript_length_genomic: string;
+  readonly gene_chromosome: string;
+  readonly gene_end: string;
+  readonly gene_id: string;
+  readonly gene_start: number;
+  readonly gene_strand: string;
+  readonly is_cancer_gene_census: boolean;
+  readonly name: string;
+}
+
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
@@ -442,6 +464,7 @@ export const fetchGdcSsms = async (
 ): Promise<GdcApiResponse<SSMSDefaults>> => {
   return fetchGdcEntities("ssms", request);
 };
+
 export const fetchGdcFiles = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<FileDefaults>> => {
@@ -541,3 +564,53 @@ export const getGdcInstance = async <T>(
  *   - convert mapping field to nested structure
  * - add auth header
  */
+
+const endpointSlice = coreCreateApi({
+  reducerPath: "entities",
+  baseQuery: async ({
+    request,
+    endpoint,
+  }: {
+    request: GdcApiRequest;
+    endpoint: gdcEndpoint;
+  }) => {
+    let results;
+
+    try {
+      results = await fetchGdcEntities(endpoint, request, true);
+    } catch (e) {
+      return { error: e };
+    }
+
+    return { data: results };
+  },
+  endpoints: (builder) => ({
+    getGenes: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "genes",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+    getCases: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "cases",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+    getSsms: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "ssms",
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+  }),
+});
+
+export const { useGetGenesQuery, useGetCasesQuery, useGetSsmsQuery } =
+  endpointSlice;
+export const endpointSliceMiddleware = endpointSlice.middleware as Middleware;
+export const endpointSliceReducerPath: string = endpointSlice.reducerPath;
+export const endpointReducer: Reducer = endpointSlice.reducer as Reducer;
