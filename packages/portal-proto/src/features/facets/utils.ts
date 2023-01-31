@@ -20,18 +20,18 @@ import {
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
 
-const symetricalRound = (x: number): number =>
+const symmetricalRound = (x: number): number =>
   x < 0 ? Math.round(Math.abs(x)) * -1 : Math.round(x);
 
 // TODO write unit test for these
 export const getLowerAgeYears = (days?: number): number | undefined =>
-  days !== undefined ? symetricalRound(days / DAYS_IN_YEAR) : undefined;
+  days !== undefined ? symmetricalRound(days / DAYS_IN_YEAR) : undefined;
 export const getUpperAgeYears = (days?: number): number | undefined =>
   days !== undefined
     ? Math.ceil((days + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR)
     : undefined;
 export const getLowerAgeFromYears = (years?: number): number | undefined =>
-  years !== undefined ? symetricalRound(years * DAYS_IN_YEAR) : undefined;
+  years !== undefined ? symmetricalRound(years * DAYS_IN_YEAR) : undefined;
 export const getUpperAgeFromYears = (years?: number): number | undefined =>
   years !== undefined ? Math.ceil(years * DAYS_IN_YEAR) : undefined;
 
