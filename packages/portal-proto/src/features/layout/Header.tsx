@@ -386,7 +386,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           ))}
         </div>
-        <div className="w-1/2">
+        <div className="w-1/3">
           <QuickSearch />
         </div>
       </div>
