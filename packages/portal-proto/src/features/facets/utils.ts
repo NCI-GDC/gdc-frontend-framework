@@ -1,5 +1,4 @@
 import {
-  DAYS_IN_DECADE,
   DAYS_IN_YEAR,
   EnumOperandValue,
   GreaterThan,
@@ -26,14 +25,8 @@ const symmetricalRound = (x: number): number =>
 // TODO write unit test for these
 export const getLowerAgeYears = (days?: number): number | undefined =>
   days !== undefined ? symmetricalRound(days / DAYS_IN_YEAR) : undefined;
-export const getUpperAgeYears = (days?: number): number | undefined =>
-  days !== undefined
-    ? Math.ceil((days + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR)
-    : undefined;
 export const getLowerAgeFromYears = (years?: number): number | undefined =>
   years !== undefined ? symmetricalRound(years * DAYS_IN_YEAR) : undefined;
-export const getUpperAgeFromYears = (years?: number): number | undefined =>
-  years !== undefined ? Math.ceil(years * DAYS_IN_YEAR) : undefined;
 
 export const AgeDisplay = (
   ageInDays: number,
@@ -168,25 +161,26 @@ export const updateFacetEnum = (
  * returns the range [from to] for a "bucket"
  * @param x - current bucket index
  * @param units - custom units for this range: "years" or "days"
- * @param minimum - starting value of range
+ * @param minimum - starting value of range must be in years
  */
-const buildDayYearRangeBucket = (
+export const buildDayYearRangeBucket = (
   x: number,
   units: string,
   minimum: number,
 ): RangeBucketElement => {
-  const from = Math.round(minimum + x * DAYS_IN_DECADE);
-  const to = Math.round(minimum + (x + 1) * DAYS_IN_DECADE);
-  const denom = units == "years" ? DAYS_IN_YEAR : 1;
+  const from = minimum + x * 10;
+  const to = minimum + (x + 1) * 10;
+  const fromDays = symmetricalRound(from * DAYS_IN_YEAR);
+  const toDays = symmetricalRound(to * DAYS_IN_YEAR);
+  const fromLabel = (units === "years" ? from : fromDays).toFixed(0);
+  const toLabel = (units === "years" ? to : toDays).toFixed(0);
   return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(RANGE_DECIMAL_PRECISION)}-${to.toFixed(
+    from: fromDays,
+    to: toDays,
+    key: `${fromDays.toFixed(RANGE_DECIMAL_PRECISION)}-${toDays.toFixed(
       RANGE_DECIMAL_PRECISION,
     )}`,
-    label: `\u2265 ${Math.round(from / denom).toFixed(0)} to < ${Math.round(
-      to / denom,
-    ).toFixed(0)} ${units}`,
+    label: `\u2265 ${fromLabel} to < ${toLabel} ${units}`,
   };
 };
 
@@ -240,7 +234,13 @@ const buildRanges = (
       return r;
     }, {} as Record<string, RangeBucketElement>);
 };
-
+/**
+ * Builds a Dictionary like object contain the range and label for each "bucket" in the range
+ * @param numBuckets
+ * @param units
+ * @param minimum
+ * @returns [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>]
+ */
 export const buildRangeBuckets = (
   numBuckets: number,
   units: string,
@@ -250,25 +250,29 @@ export const buildRangeBuckets = (
     days: {
       builder: buildDayYearRangeBucket,
       label: "days",
+      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), // convert to years
     },
     years: {
       builder: buildDayYearRangeBucket,
       label: "years",
+      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), //
     },
     percent: {
       builder: build10UnitRange,
       label: "%",
+      startRange: minimum,
     },
     year: {
       builder: build10UnitRange,
       label: "",
+      startRange: minimum,
     },
   };
 
   const bucketEntries = buildRanges(
     numBuckets,
     RangeBuilder[units].label,
-    minimum,
+    RangeBuilder[units].startRange,
     RangeBuilder[units].builder,
   );
   // build ranges for continuous range query
@@ -278,10 +282,10 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
-export const adjustAgeInYearsToDays = (value: number, units: string): number =>
+export const adjustYearsToDays = (value: number, units: string): number =>
   units == "years" ? getLowerAgeFromYears(value) : value;
 
-export const adjustAgeInDaysToYears = (value: number, units: string): number =>
+export const adjustDaysToYears = (value: number, units: string): number =>
   units == "days" ? value : getLowerAgeYears(value);
 
 export const leapThenPair = (years: number, days: number): number[] =>

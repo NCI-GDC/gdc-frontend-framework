@@ -2,7 +2,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustAgeInYearsToDays,
+  adjustYearsToDays,
+  buildDayYearRangeBucket,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -301,59 +302,59 @@ describe("Build Bucket Range Test", () => {
 
   test("test to build -90/90 years range", () => {
     const expectedBucketRanges = {
-      "-10957.0--7305.0": {
-        from: -10957,
-        key: "-10957.0--7305.0",
-        label: "≥ -10957 to < -7305 days",
+      "-10958.0--7305.0": {
+        from: -10958,
+        key: "-10958.0--7305.0",
+        label: "≥ -10958 to < -7305 days",
         to: -7305,
       },
-      "-14610.0--10957.0": {
+      "-14610.0--10958.0": {
         from: -14610,
-        key: "-14610.0--10957.0",
-        label: "≥ -14610 to < -10957 days",
-        to: -10957,
+        key: "-14610.0--10958.0",
+        label: "≥ -14610 to < -10958 days",
+        to: -10958,
       },
-      "-18262.0--14610.0": {
-        from: -18262,
-        key: "-18262.0--14610.0",
-        label: "≥ -18262 to < -14610 days",
+      "-18263.0--14610.0": {
+        from: -18263,
+        key: "-18263.0--14610.0",
+        label: "≥ -18263 to < -14610 days",
         to: -14610,
       },
-      "-21915.0--18262.0": {
+      "-21915.0--18263.0": {
         from: -21915,
-        key: "-21915.0--18262.0",
-        label: "≥ -21915 to < -18262 days",
-        to: -18262,
+        key: "-21915.0--18263.0",
+        label: "≥ -21915 to < -18263 days",
+        to: -18263,
       },
-      "-25567.0--21915.0": {
-        from: -25567,
-        key: "-25567.0--21915.0",
-        label: "≥ -25567 to < -21915 days",
+      "-25568.0--21915.0": {
+        from: -25568,
+        key: "-25568.0--21915.0",
+        label: "≥ -25568 to < -21915 days",
         to: -21915,
       },
-      "-29220.0--25567.0": {
+      "-29220.0--25568.0": {
         from: -29220,
-        key: "-29220.0--25567.0",
-        label: "≥ -29220 to < -25567 days",
-        to: -25567,
+        key: "-29220.0--25568.0",
+        label: "≥ -29220 to < -25568 days",
+        to: -25568,
       },
-      "-32872.0--29220.0": {
-        from: -32872,
-        key: "-32872.0--29220.0",
-        label: "≥ -32872 to < -29220 days",
+      "-32873.0--29220.0": {
+        from: -32873,
+        key: "-32873.0--29220.0",
+        label: "≥ -32873 to < -29220 days",
         to: -29220,
       },
-      "-3652.0-0.0": {
-        from: -3652,
-        key: "-3652.0-0.0",
-        label: "≥ -3652 to < 0 days",
+      "-3653.0-0.0": {
+        from: -3653,
+        key: "-3653.0-0.0",
+        label: "≥ -3653 to < 0 days",
         to: 0,
       },
-      "-7305.0--3652.0": {
+      "-7305.0--3653.0": {
         from: -7305,
-        key: "-7305.0--3652.0",
-        label: "≥ -7305 to < -3652 days",
-        to: -3652,
+        key: "-7305.0--3653.0",
+        label: "≥ -7305 to < -3653 days",
+        to: -3653,
       },
       "0.0-3653.0": {
         from: 0,
@@ -397,12 +398,6 @@ describe("Build Bucket Range Test", () => {
         label: "≥ 29220 to < 32873 days",
         to: 32873,
       },
-      "32873.0-36525.0": {
-        from: 32873,
-        key: "32873.0-36525.0",
-        label: "≥ 32873 to < 36525 days",
-        to: 36525,
-      },
       "3653.0-7305.0": {
         from: 3653,
         key: "3653.0-7305.0",
@@ -418,39 +413,39 @@ describe("Build Bucket Range Test", () => {
     };
     const expectedRanges = [
       {
-        from: -32872,
+        from: -32873,
         to: -29220,
       },
       {
         from: -29220,
-        to: -25567,
+        to: -25568,
       },
       {
-        from: -25567,
+        from: -25568,
         to: -21915,
       },
       {
         from: -21915,
-        to: -18262,
+        to: -18263,
       },
       {
-        from: -18262,
+        from: -18263,
         to: -14610,
       },
       {
         from: -14610,
-        to: -10957,
+        to: -10958,
       },
       {
-        from: -10957,
+        from: -10958,
         to: -7305,
       },
       {
         from: -7305,
-        to: -3652,
+        to: -3653,
       },
       {
-        from: -3652,
+        from: -3653,
         to: 0,
       },
       {
@@ -489,12 +484,8 @@ describe("Build Bucket Range Test", () => {
         from: 29220,
         to: 32873,
       },
-      {
-        from: 32873,
-        to: 36525,
-      },
     ];
-    const [bucketRanges, ranges] = buildRangeBuckets(19, "days", -32872.5);
+    const [bucketRanges, ranges] = buildRangeBuckets(18, "days", -32873);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
   });
@@ -502,12 +493,26 @@ describe("Build Bucket Range Test", () => {
 
 describe("test years to days conversion", () => {
   test("years to days", () => {
-    expect(adjustAgeInYearsToDays(2, "years")).toEqual(731);
-    expect(adjustAgeInYearsToDays(0, "years")).toEqual(0);
-    expect(adjustAgeInYearsToDays(7305, "days")).toEqual(7305);
-    expect(adjustAgeInYearsToDays(80, "years")).toEqual(29220);
-    expect(adjustAgeInYearsToDays(-90, "years")).toEqual(-32873);
-    expect(adjustAgeInYearsToDays(-70, "years")).toEqual(-25568);
-    expect(adjustAgeInYearsToDays(90, "years")).toEqual(32873);
+    expect(adjustYearsToDays(2, "years")).toEqual(731);
+    expect(adjustYearsToDays(0, "years")).toEqual(0);
+    expect(adjustYearsToDays(7305, "days")).toEqual(7305);
+    expect(adjustYearsToDays(80, "years")).toEqual(29220);
+    expect(adjustYearsToDays(-90, "years")).toEqual(-32873);
+    expect(adjustYearsToDays(-70, "years")).toEqual(-25568);
+    expect(adjustYearsToDays(90, "years")).toEqual(32873);
+  });
+});
+
+// unit test for buildDayYearRangeBucket  function
+describe("test buildDayYearRangeBucket", () => {
+  // test case for buildDayYearRangeBucket function
+  test("test for days", () => {
+    const results = buildDayYearRangeBucket(19, "days", -32873);
+    console.log(results);
+  });
+
+  test("test for years", () => {
+    const results = buildDayYearRangeBucket(19, "years", -32873);
+    console.log(results);
   });
 });

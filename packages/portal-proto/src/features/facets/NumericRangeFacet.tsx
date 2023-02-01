@@ -20,8 +20,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustAgeInYearsToDays,
-  adjustAgeInDaysToYears,
+  adjustYearsToDays,
+  adjustDaysToYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -326,9 +326,9 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             // units are always days
-            value={adjustAgeInDaysToYears(fromValue, units)}
+            value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
-              setFromValue(adjustAgeInYearsToDays(value, units));
+              setFromValue(adjustYearsToDays(value, units));
               changedCallback();
             }}
             hideControls
@@ -357,10 +357,10 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
-              setToValue(adjustAgeInYearsToDays(value, units));
+              setToValue(adjustYearsToDays(value, units));
               changedCallback();
             }}
-            value={adjustAgeInDaysToYears(toValue, units)}
+            value={adjustDaysToYears(toValue, units)}
             hideControls
             aria-label="input to value"
           />
@@ -617,7 +617,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
   const rangeMaximum = 32873;
-  const numBuckets = 19;
+  const numBuckets = 18;
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
