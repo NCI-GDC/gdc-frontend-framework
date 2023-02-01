@@ -20,7 +20,8 @@ import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonToolti
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import { useMutatedGenesFreqDLQuery } from "@gff/core";
-// import { convertDateToString } from "src/utils/date";
+import { saveAs } from "file-saver";
+import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
   createContext<
@@ -68,7 +69,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
 
-  const [dls, setDls] = useState({});
+  const [exportMutatedGenesPending, setExportMutatedGenesPending] =
+    useState(false);
+  const [exportMutatedGenesTSVPending, setExportMutatedGenesTSVPending] =
+    useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -164,31 +168,79 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const handleMutatedGenesDl = (extension: "json" | "tsv") => {
-    // todo
-  };
+  const {
+    data: mutatedGenesFreqData,
+    isFetching: mutatedGenesFreqFetching,
+    isError: mutatedGenesFreqError,
+  } = useMutatedGenesFreqData({
+    currentFilters: genomicFilters,
+    size: initialData?.genes_total,
+  });
 
-  const { data: mutatedGenesFreqData, isFetching: mutatedGenesFreqFetching } =
-    useMutatedGenesFreqData({
-      currentFilters: genomicFilters,
-      size: initialData?.genes_total,
+  useEffect(() => {
+    if (mutatedGenesFreqError) {
+      setExportMutatedGenesPending(false);
+    } else if (exportMutatedGenesPending && !mutatedGenesFreqFetching) {
+      exportMutatedGenes();
+      setExportMutatedGenesPending(false);
+    }
+  }, [
+    mutatedGenesFreqFetching,
+    mutatedGenesFreqError,
+    exportMutatedGenesPending,
+  ]);
+
+  const exportMutatedGenes = () => {
+    const now = new Date();
+    const fileName = `genes.${convertDateToString(now)}.json`;
+    const blob = new Blob([JSON.stringify(mutatedGenesFreqData, null, 2)], {
+      type: "text/json",
     });
+    saveAs(blob, fileName);
+  };
 
   const {
     data: mutatedGenesFreqTSVData,
     isFetching: mutatedGenesFreqTSVFetching,
+    isError: mutatedGenesFreqTSVError,
   } = useMutatedGenesFreqDLQuery({
     tableData,
     geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
   });
 
+  useEffect(() => {
+    if (mutatedGenesFreqTSVError) {
+      setExportMutatedGenesTSVPending(false);
+    } else if (exportMutatedGenesTSVPending && !mutatedGenesFreqTSVFetching) {
+      exportMutatedGenesTSV();
+      setExportMutatedGenesTSVPending(false);
+    }
+  }, [
+    mutatedGenesFreqFetching,
+    mutatedGenesFreqError,
+    exportMutatedGenesPending,
+  ]);
+
   // useEffect(() => {
   //   console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
   // }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
 
-  // useEffect(() => {
-  //   console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
-  // }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
+  const exportMutatedGenesTSV = () => {
+    const now = new Date();
+    const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
+    const tsv = mutatedGenesFreqTSVData?.data
+      .map(({ gene_id }) => {
+        // todo: add /t's, /n's, headers
+        return `${gene_id}`;
+      })
+      .join("/t");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
+  useEffect(() => {
+    console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
+  }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
 
   return (
     <>
@@ -212,37 +264,33 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     comingSoon={true}
                   >
                     <Button
-                      onClick={
-                        () => {
-                          if (!Object.keys(dls).includes("json")) {
-                            setDls((dls) => {
-                              return {
-                                ...dls,
-                                json: "isFetching",
-                              };
-                            });
-                            handleMutatedGenesDl("json");
-                          }
+                      onClick={() => () => {
+                        if (mutatedGenesFreqFetching) {
+                          setExportMutatedGenesPending(true);
+                        } else {
+                          exportMutatedGenes();
                         }
-                        // else {
-                        //   // exportMutatedGenes(extension, genomicFilters);
-                        // }
-                      }
+                      }}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      {/* {dl === "json" ? <Loader /> : "JSON"} */}
                       {"JSON"}
                     </Button>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
                     <Button
+                      onClick={() => () => {
+                        if (mutatedGenesFreqTSVFetching) {
+                          setExportMutatedGenesTSVPending(true);
+                        } else {
+                          exportMutatedGenesTSV();
+                        }
+                      }}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
-                      {/* {dl === "tsv" ? <Loader /> : "TSV"} */}
                       {"TSV"}
                     </Button>
                   </ButtonTooltip>
