@@ -1,20 +1,18 @@
 import { Image } from "@/components/Image";
-import { Button, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 
-const NavButton = tw(Button)`
+const NavLink = tw(NextLink)`
 text-sm
 font-heading
-hover:bg-primary-lighter
-transition-colors
-text-primary-content-darkest
-p-2
-rounded
-inline-flex
-flex-nowrap
+flex
 items-center
-shadow-lg
+gap-1
+font-heading
+text-md
+text-base-darker
+pr-4
 `;
 
 export const headerElements = [
@@ -28,14 +26,11 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: undefined },
       }}
-      className=" "
       data-testid="button-header-analysis"
       aria-label="analysis center button"
     >
@@ -45,7 +40,8 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Analysis Center
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Studies"
@@ -57,9 +53,7 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "Projects" },
@@ -73,7 +67,8 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Projects
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Cohort"
@@ -85,9 +80,7 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "CohortBuilder" },
@@ -101,7 +94,8 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Cohort Builder
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Download"
@@ -113,9 +107,7 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "Downloads" },
@@ -129,6 +121,7 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Repository
+    </NavLink>
   </Tooltip>,
 ];

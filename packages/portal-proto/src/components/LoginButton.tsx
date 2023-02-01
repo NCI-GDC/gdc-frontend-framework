@@ -10,17 +10,20 @@ import { MdOutlineLogin as LoginIcon } from "react-icons/md";
 import { theme } from "tailwind.config";
 export const LoginButton = ({
   fromSession,
+  fromHeader,
 }: {
   fromSession?: boolean;
+  fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   return (
     <Button
-      className={`flex flex-row ${
-        fromSession
-          ? "opacity-80 text-primary-dark ml-0 hover:text-primary-darkest"
-          : "opacity-60 text-inherit font-normal"
-      } hover:opacity-100 hover:bg-transparent transition-opacity cursor-pointer px-0 mx-0`}
+      classNames={{
+        root: !fromHeader ? "hover:bg-primary-darker" : "",
+        label: fromHeader
+          ? "text-primary-darkest font-header text-sm font-medium"
+          : "",
+      }}
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();
@@ -28,18 +31,16 @@ export const LoginButton = ({
         await dispatch(fetchNotifications());
       }}
       leftIcon={
-        <LoginIcon
-          className="mr-1"
-          size="24px"
-          color={fromSession && theme.extend.colors["nci-blue"].darkest}
-        />
+        fromHeader ? (
+          <LoginIcon
+            className="m-0"
+            size="24px"
+            color={theme.extend.colors["nci-blue"].darkest}
+          />
+        ) : undefined
       }
-      variant="subtle"
-      compact
-      size="md"
-      classNames={{
-        leftIcon: `mr-0 ml-1 ${fromSession && "opacity-90"}`,
-      }}
+      variant={fromHeader ? "subtle" : "filled"}
+      compact={fromHeader}
       data-testid="loginButton"
     >
       Login
