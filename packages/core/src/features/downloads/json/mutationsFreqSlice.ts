@@ -49,7 +49,7 @@ export interface MutationsFreqData {
 
 export interface MutationsFreqInitialState {
   status: DataStatus;
-  mutations?: MutationsFreqData[];
+  mutationsFreq?: MutationsFreqData[];
 }
 
 const initialState: MutationsFreqInitialState = {
@@ -57,7 +57,7 @@ const initialState: MutationsFreqInitialState = {
 };
 
 const slice = createSlice({
-  name: "mutations",
+  name: "mutationsFreq",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -67,8 +67,30 @@ const slice = createSlice({
         state.status = "fulfilled";
 
         const edges = response?.data?.viewer?.explore?.ssms?.hits?.edges;
+        console.log("edges", edges);
 
         if (edges?.length === 0) return undefined;
+
+        // genomic_dna_change: string;
+        // mutation_subtype: string;
+        // consequence: {
+        //   transcript: {
+        //     is_canonical: boolean;
+        //     annotation: {
+        //       vep_impact: string;
+        //       polyphen_impact: string;
+        //       sift_impact: string;
+        //     };
+        //     consequence_type: string;
+        //     gene: {
+        //       gene_id: string;
+        //       symbol: string;
+        //     };
+        //     aa_change: string;
+        //   };
+        // };
+        // biotype: string;
+        // gene_id: string;
 
         const mtns = edges.map(
           ({
@@ -119,7 +141,8 @@ const slice = createSlice({
           },
         );
         console.log("mtns", mtns);
-        // state.mutations = ssmsMutation;
+        debugger;
+        // state.mutationsFreq = mtns;
         return state;
       })
       .addCase(fetchMutationsFreq.pending, (state) => {
@@ -136,11 +159,11 @@ export const mutationsFreqReducer = slice.reducer;
 export const selectMutationsFreqData = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
-  mutations: MutationsFreqData[] | undefined;
+  mutationsFreq: MutationsFreqData[] | undefined;
 }> => {
   return {
     data: {
-      mutations: state.downloads.mutationsFreq.mutations,
+      mutationsFreq: state.downloads.mutationsFreq.mutationsFreq,
     },
     status: state.downloads.mutationsFreq.status,
   };

@@ -361,7 +361,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
           graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
           graphQLFilters: getAliasFilters(arg.ssmsIds, "ssms"),
         });
-        const { cases, filteredCases, ssms } = arg?.tableData;
+        const { filteredCases, ssms } = arg?.tableData;
         const { denominators, ...remaining } =
           result?.data?.data?.explore?.cases;
 
@@ -372,22 +372,18 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             filteredOccurrences,
             mutation_subtype,
             consequence,
-            case_cnv_gain,
-            case_cnv_loss,
           }: {
             genomic_dna_change: string;
             ssm_id: string;
             filteredOccurrences: number;
             mutation_subtype: string;
             consequence: Consequence[];
-            case_cnv_gain: number;
-            case_cnv_loss: number;
           }) => {
             return {
               dnaChange: genomic_dna_change,
-              proteinChange: !consequence?.length
+              proteinChange: consequence?.length
                 ? consequence.map(({ gene, aa_change }) => {
-                    return `${aa_change} / ${gene.symbol}`;
+                    return `${aa_change} ${gene.symbol}`;
                   })[0]
                 : "",
               mutationId: ssm_id,
@@ -397,19 +393,15 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               ].includes(mutation_subtype)
                 ? mutation_subtype
                 : startCase(mutation_subtype.split(" ").at(-1)),
-              consequences: !consequence?.length
+              consequences: consequence?.length
                 ? consequence[0]?.consequence_type
-                : "consequence fail",
-              // ? consequence[0]?.consequence_type
-              //     .replace("_variant", "")
-              //     .replace("_", " ")
-              // : ``,
+                : "",
               ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                 100 *
                 (filteredOccurrences / filteredCases)
               ).toFixed(2)}%)`,
               ssmsAffectedCasesAcrossGDC: remaining[
-                `filters_ssms_${ssm_id}`
+                `filters_ssms_${ssm_id}`.replaceAll("-", "_")
               ]?.project__project_id?.buckets
                 ?.map(
                   ({
@@ -429,9 +421,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                 )
                 .join(", "),
-              cnvGain: case_cnv_gain / cases,
-              cnvLoss: case_cnv_loss / cases,
-              impact: !consequence?.length
+              impact: consequence?.length
                 ? consequence.map(
                     ({
                       annotation: {
