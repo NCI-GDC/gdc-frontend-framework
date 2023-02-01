@@ -32,6 +32,24 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 ReactModal.setAppElement("#__next");
 
+import { datadogRum } from "@datadog/browser-rum";
+datadogRum.init({
+  applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
+  clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
+  site: "datadoghq.com",
+  service: "portal-2.0",
+
+  // Specify a version number to identify the deployed version of your application in Datadog
+  // version: '1.0.0',
+  sessionSampleRate: 100,
+  sessionReplaySampleRate: 0,
+  trackUserInteractions: true,
+  trackFrustrations: true,
+  trackResources: true,
+  trackLongTasks: true,
+  defaultPrivacyLevel: "mask",
+});
+
 type TenStringArray = [
   string?,
   string?,
