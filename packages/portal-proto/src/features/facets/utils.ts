@@ -168,7 +168,7 @@ export const buildDayYearRangeBucket = (
   units: string,
   minimum: number,
 ): RangeBucketElement => {
-  const from = minimum + x * 10;
+  const from = minimum + x * 10; // in years
   const to = minimum + (x + 1) * 10;
   const fromDays = symmetricalRound(from * DAYS_IN_YEAR);
   const toDays = symmetricalRound(to * DAYS_IN_YEAR);
@@ -236,9 +236,9 @@ const buildRanges = (
 };
 /**
  * Builds a Dictionary like object contain the range and label for each "bucket" in the range
- * @param numBuckets
- * @param units
- * @param minimum
+ * @param numBuckets - number of buckets to create
+ * @param units - units such as days or percent
+ * @param minimum - start value of range
  * @returns [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>]
  */
 export const buildRangeBuckets = (
@@ -255,17 +255,17 @@ export const buildRangeBuckets = (
     years: {
       builder: buildDayYearRangeBucket,
       label: "years",
-      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), //
+      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), // convert to years
     },
     percent: {
       builder: build10UnitRange,
       label: "%",
-      startRange: minimum,
+      startRange: minimum, // no conversion
     },
     year: {
       builder: build10UnitRange,
       label: "",
-      startRange: minimum,
+      startRange: minimum, // no conversion
     },
   };
 
