@@ -177,6 +177,18 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     size: initialData?.genes_total,
   });
 
+  const exportMutatedGenes = () => {
+    const now = new Date();
+    const fileName = `genes.${convertDateToString(now)}.json`;
+    const blob = new Blob(
+      [JSON.stringify(mutatedGenesFreqData?.mutatedGenes, null, 2)],
+      {
+        type: "text/json",
+      },
+    );
+    saveAs(blob, fileName);
+  };
+
   useEffect(() => {
     if (mutatedGenesFreqError) {
       setExportMutatedGenesPending(false);
@@ -188,16 +200,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     mutatedGenesFreqFetching,
     mutatedGenesFreqError,
     exportMutatedGenesPending,
+    exportMutatedGenes,
   ]);
-
-  const exportMutatedGenes = () => {
-    const now = new Date();
-    const fileName = `genes.${convertDateToString(now)}.json`;
-    const blob = new Blob([JSON.stringify(mutatedGenesFreqData, null, 2)], {
-      type: "text/json",
-    });
-    saveAs(blob, fileName);
-  };
 
   const {
     data: mutatedGenesFreqTSVData,
@@ -216,19 +220,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       setExportMutatedGenesTSVPending(false);
     }
   }, [
-    mutatedGenesFreqFetching,
-    mutatedGenesFreqError,
-    exportMutatedGenesPending,
+    mutatedGenesFreqTSVFetching,
+    mutatedGenesFreqTSVError,
+    exportMutatedGenesTSVPending,
   ]);
-
-  // useEffect(() => {
-  //   console.log("data", mutatedGenesFreqData, mutatedGenesFreqFetching);
-  // }, [mutatedGenesFreqData, initialData, mutatedGenesFreqFetching]);
 
   const exportMutatedGenesTSV = () => {
     const now = new Date();
     const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
-    const tsv = mutatedGenesFreqTSVData?.data
+    const tsv = mutatedGenesFreqTSVData?.mutations
       .map(({ gene_id }) => {
         // todo: add /t's, /n's, headers
         return `${gene_id}`;
@@ -259,12 +259,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">
-                  <ButtonTooltip
-                    label="Export All Except #Cases and #Mutations"
-                    comingSoon={true}
-                  >
+                  <ButtonTooltip label="Export All Except #Cases and #Mutations">
                     <Button
-                      onClick={() => () => {
+                      onClick={() => {
                         if (mutatedGenesFreqFetching) {
                           setExportMutatedGenesPending(true);
                         } else {
