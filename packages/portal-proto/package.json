@@ -12,6 +12,7 @@
     "test:all": "jest"
   },
   "dependencies": {
+    "@datadog/browser-rum": "^4.32.0",
     "@gff/core": "0.0.1",
     "@mantine/core": "^5.2.4",
     "@mantine/dates": "^5.2.4",
