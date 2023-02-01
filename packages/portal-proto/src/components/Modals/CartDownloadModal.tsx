@@ -53,39 +53,31 @@ const CartDownloadModal = ({
           </div>
         </div>
       )}
-      {!user.username ? (
-        <div className="flex items-center">
-          Please <LoginButton />
+      {numFilesCannotAccess > 0 && (
+        <p
+          data-testid="cart-download-modal-project-access"
+          className="text-[15px] my-4"
+        >
+          Please request dbGaP Access to the project (
+          <a
+            href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-utility-link underline"
+          >
+            click here for more information
+          </a>
+          ).
+        </p>
+      )}
+      {dbGapList.length > 0 && (
+        <div className="my-4">
+          <DownloadAccessAgreement
+            checked={checked}
+            setChecked={setChecked}
+            dbGapList={dbGapList}
+          />
         </div>
-      ) : (
-        <>
-          {numFilesCannotAccess > 0 && (
-            <p
-              data-testid="cart-download-modal-project-access"
-              className="text-[15px]"
-            >
-              Please request dbGaP Access to the project (
-              <a
-                href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-utility-link underline"
-              >
-                click here for more information
-              </a>
-              ).
-            </p>
-          )}
-          {dbGapList.length > 0 && (
-            <div className="my-4">
-              <DownloadAccessAgreement
-                checked={checked}
-                setChecked={setChecked}
-                dbGapList={dbGapList}
-              />
-            </div>
-          )}
-        </>
       )}
       <hr />
       <div className="flex justify-end gap-2 mt-4">
@@ -122,6 +114,7 @@ const CartDownloadModal = ({
           }}
           setActive={setActive}
         />
+        {!user.username && <LoginButton />}
       </div>
     </BaseModal>
   );
