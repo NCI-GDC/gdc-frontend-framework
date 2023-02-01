@@ -228,12 +228,55 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const exportMutatedGenesTSV = () => {
     const now = new Date();
     const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
-    const tsv = mutatedGenesFreqTSVData?.mutations
-      .map(({ gene_id }) => {
-        // todo: add /t's, /n's, headers
-        return `${gene_id}`;
-      })
-      .join("/t");
+    const headers = [
+      "Gene ID",
+      "Symbol",
+      "Name",
+      "Cytoband",
+      "Type",
+      "# SSM Affected Cases in Cohort",
+      "# SSM Affected Cases Across the GDC",
+      "# CNV Gain",
+      "# CNV Loss",
+      "# Mutations",
+      "Annotations",
+    ];
+    const body = mutatedGenesFreqTSVData?.results
+      .map(
+        ({
+          gene_id,
+          symbol,
+          name,
+          cytoband,
+          biotype,
+          ssmsAffectedCasesInCohort,
+          ssmsAffectedCasesAcrossGDC,
+          cnvGain,
+          cnvLoss,
+          mutations,
+          annotations,
+        }) => {
+          return [
+            gene_id,
+            symbol,
+            name,
+            cytoband,
+            biotype,
+            ssmsAffectedCasesInCohort,
+            ssmsAffectedCasesAcrossGDC,
+            cnvGain,
+            cnvLoss,
+            mutations,
+            annotations,
+          ].join("/t");
+        },
+      )
+      .join("/n");
+    console.log("body", body);
+    debugger;
+    const tsv = [headers.join("/t"), body].join("/n");
+    console.log("tsv", tsv);
+    debugger;
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
     saveAs(blob, fileName);
   };
@@ -275,9 +318,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       {"JSON"}
                     </Button>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view" comingSoon={true}>
+                  <ButtonTooltip label="Export current view">
                     <Button
-                      onClick={() => () => {
+                      onClick={() => {
                         if (mutatedGenesFreqTSVFetching) {
                           setExportMutatedGenesTSVPending(true);
                         } else {
