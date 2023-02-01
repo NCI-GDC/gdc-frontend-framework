@@ -241,10 +241,6 @@ export const ContextualCasesView: React.FC = () => {
           race: datum?.race ?? "--",
           ethnicity: datum?.ethnicity ?? "--",
           files: datum?.filesCount?.toLocaleString(),
-          data_categories: extractToArray(
-            datum?.data_categories,
-            "data_category",
-          ),
           experimental_strategies: extractToArray(
             datum?.experimental_strategies,
             "experimental_strategy",

@@ -409,7 +409,10 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Target>
               <div className="flex">
                 <Tooltip label="Download SurvivalPlot data or image">
-                  <button className="px-1.5 min-h-[28px] nim-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors ">
+                  <button
+                    className="px-1.5 min-h-[28px] min-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors"
+                    aria-label="Download button with an icon"
+                  >
                     <DownloadIcon size="1.25em" />
                   </button>
                 </Tooltip>
@@ -436,8 +439,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Menu>
           <Tooltip label="Reset SurvivalPlot Zoom">
             <button
-              className="px-1.5 min-h-[28px] nim-w-[40px] border-base-light border rounded-[4px] transition-colors "
+              className="px-1.5 min-h-[28px] min-w-[40px] border-base-light border rounded-[4px] transition-colors"
               onClick={() => setXDomain(undefined)}
+              aria-label="reset button with an icon"
             >
               <ResetIcon size="1.15rem"></ResetIcon>
             </button>
