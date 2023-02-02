@@ -1,33 +1,34 @@
-import { FilterSet } from "src";
+import { FilterSet, Intersection, Union } from "src";
 import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CoreDispatch } from "src/store";
 import { CoreState } from "src/reducers";
 import {
-  selectCurrentCohortFilters,
+  // selectCurrentCohortFilters,
   mergeGenomicAndCohortFilters,
+  // filterSetToOperation,
+  // convertFilterToGqlFilter,
+  // buildCohortGqlOperator,
 } from "@gff/core";
 
 export const getMutationsFreqQuery = (size: number) => {
+  //         $filters_ssms: FiltersArgument
   return `query MutationsFreq(
-        $ssmTested: FiltersArgument
-        $ssmCaseFilter: FiltersArgument
-        $consequenceFilters: FiltersArgument
-        $ssmsTable_offset: Int
-        $ssmsTable_filters: FiltersArgument
+        $filters_ssms_case: FiltersArgument
+        $filters_consequence: FiltersArgument
         $sort: [Sort]
         ) {
         viewer {
           explore {
             ssms {
-              hits(first:  ${`${size}`}, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {
+              hits(first: ${`${size}`}, filters: $filters_ssms_case sort: $sort) {
                 edges {
                   node {
                     genomic_dna_change
                     mutation_subtype
                     ssm_id
                     consequence {
-                      hits(first: 1, filters: $consequenceFilters) {
+                      hits(first: 1, filters: $filters_consequence) {
                         edges {
                           node {
                             transcript {
@@ -96,21 +97,28 @@ export interface MutationsFreqResponse {
   };
 }
 
-export const getMutationsFreqFilters = (cohortFilters: object) => {
+export const getMutationsFreqFilters = () => {
   const mutationsFreqFilters = {
-    ssmTested: {
+    filters_ssms: {
+      op: "and",
       content: [
         {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
           op: "in",
+          content: {
+            field: "cases.case_id",
+            value: ["set_id:genes-ALL-GDC-COHORT"],
+          },
+        },
+        {
+          op: "in",
+          content: {
+            field: "genes.is_cancer_gene_census",
+            value: ["true"],
+          },
         },
       ],
-      op: "and",
     },
-    ssmCaseFilter: {
+    filters_ssms_case: {
       content: [
         ...[
           {
@@ -121,11 +129,17 @@ export const getMutationsFreqFilters = (cohortFilters: object) => {
             op: "in",
           },
         ],
-        ...[cohortFilters],
+        {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: ["set_id:genes-ALL-GDC-COHORT"],
+          },
+        },
       ],
       op: "and",
     },
-    consequenceFilters: {
+    filters_consequence: {
       content: [
         {
           content: {
@@ -167,18 +181,16 @@ export const fetchMutationsFreq = createAsyncThunk<
     { size, genomicFilters }: MutationsFreqRequestParameters,
     thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const cohortFilters = selectCurrentCohortFilters(
-      thunkAPI.getState() as any,
-    );
+    console.log("genomic", genomicFilters);
+    console.log("hmm", thunkAPI.getState());
+    // const graphQlFilters = convertFilterToGqlFilter(geneAndCohortFilters);
     // const cohortFiltersContent = cohortFilters?.content
     //   ? Object(cohortFilters?.content)
     //   : [];
-    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
-      cohortFilters as any,
-      genomicFilters,
-    );
-    const graphQlFilters = getMutationsFreqFilters(geneAndCohortFilters);
 
-    return await graphqlAPI(getMutationsFreqQuery(size), graphQlFilters);
+    return await graphqlAPI(
+      getMutationsFreqQuery(size),
+      getMutationsFreqFilters(),
+    );
   },
 );
