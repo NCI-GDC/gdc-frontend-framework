@@ -556,7 +556,7 @@ export const createTableColumn = (
                         toolTipLabel={"transcript_id"}
                       />
                       {isC ? (
-                        <Tooltip label={"Canconical"}>
+                        <Tooltip label={"Canonical"}>
                           <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
                             C
                           </div>
