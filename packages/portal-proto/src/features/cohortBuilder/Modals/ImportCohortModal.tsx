@@ -12,7 +12,7 @@ import {
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import GenericInputModal from "@/components/Modals/GenericInputModal";
-import InputSet from "@/components/Modals/SetModals/InputSet";
+import InputEntityList from "@/components/Modals/SetModals/InputEntityList";
 import { SaveOrCreateModal } from "@/components/Modals/SaveOrCreateModal";
 
 interface SubmitButtonProps {
@@ -86,7 +86,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 const ImportCohortModal: React.FC = () => {
   return (
     <GenericInputModal modalTitle="Import a New Cohort">
-      <InputSet
+      <InputEntityList
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to import a new cohort."
         identifierToolTip={
           <div>
@@ -108,8 +108,8 @@ const ImportCohortModal: React.FC = () => {
         textInputPlaceholder={
           "e.g. TCGA-DD-AAVP, TCGA-DD-AAVP-10A-01D-A40U-10, 0004d251-3f70-4395-b175-c94c2f5b1b81"
         }
-        setType="cases"
-        setTypeLabel="case"
+        entityType="cases"
+        entityLabel="case"
         hooks={{
           query: useGetCasesQuery,
         }}

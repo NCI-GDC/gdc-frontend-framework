@@ -330,7 +330,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showSaveCohort && (
-        <SaveOrCreateModal
+        <SaveOrCreateCohortModal
           initialName={cohortName}
           entity="cohort"
           opened
@@ -377,7 +377,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showCreateCohort && (
-        <SaveOrCreateModal
+        <SaveOrCreateCohortModal
           initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"

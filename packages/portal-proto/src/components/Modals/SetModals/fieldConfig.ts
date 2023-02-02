@@ -18,7 +18,7 @@ export default {
       "external_db_ids.uniprotkb_swissprot": "UniProtKB/Swiss-Prot",
       "external_db_ids.omim_gene": "OMIM",
     },
-    createSetField: "gene_id",
+    outputField: "gene_id",
     facetField: "genes.gene_id",
   },
   cases: {
@@ -54,7 +54,7 @@ export default {
       "samples.portions.analytes.aliquots.submitter_id": "Aliquot ID",
     },
     facetField: "cases.case_id",
-    createSetField: "case_id",
+    outputField: "case_id",
   },
   ssms: {
     searchField: "ssm_autocomplete.lowercase",
@@ -64,7 +64,7 @@ export default {
       ssm_id: "Mutation UUID",
       genomic_dna_change: "DNA Change",
     },
-    createSetField: "ssm_id",
+    outputField: "ssm_id",
     facetField: "ssms.ssm_id",
   },
 };

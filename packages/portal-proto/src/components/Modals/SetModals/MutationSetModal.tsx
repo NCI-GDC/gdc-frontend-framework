@@ -8,7 +8,7 @@ import {
   useCreateSsmsSetMutation,
   useSsmSetCountQuery,
 } from "@gff/core";
-import InputSet from "./InputSet";
+import InputEntityList from "./InputEntityList";
 import SavedSets from "./SavedSets";
 import GenericInputModal from "../GenericInputModal";
 import { SavedSetModalProps } from "./types";
@@ -33,11 +33,11 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
       ]}
     >
       <Tabs.Panel value="input" className="pt-4">
-        <InputSet
+        <InputEntityList
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-          setType="ssms"
-          setTypeLabel="mutation"
+          entityType="ssms"
+          entityLabel="mutation"
           identifierToolTip={
             <div>
               <p>- Mutation identifiers accepted: Mutation UUID, DNA Change</p>

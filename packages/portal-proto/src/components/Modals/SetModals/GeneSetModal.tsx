@@ -8,7 +8,7 @@ import {
   useCreateGeneSetMutation,
   useGeneSetCountQuery,
 } from "@gff/core";
-import InputSet from "./InputSet";
+import InputEntityList from "./InputEntityList";
 import SavedSets from "./SavedSets";
 import GenericInputModal from "../GenericInputModal";
 import { SavedSetModalProps } from "./types";
@@ -32,11 +32,11 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
       ]}
     >
       <Tabs.Panel value="input" className="pt-4">
-        <InputSet
+        <InputEntityList
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
-          setType="genes"
-          setTypeLabel="gene"
+          entityType="genes"
+          entityLabel="gene"
           identifierToolTip={
             <div>
               <p>

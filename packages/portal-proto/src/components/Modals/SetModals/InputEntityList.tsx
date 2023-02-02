@@ -33,12 +33,12 @@ import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
 
-interface InputSetProps {
+interface InputEntityListProps {
   readonly inputInstructions: string;
   readonly identifierToolTip: React.ReactNode;
   readonly textInputPlaceholder: string;
-  readonly setType: SetTypes;
-  readonly setTypeLabel: string;
+  readonly entityType: SetTypes;
+  readonly entityLabel: string;
   readonly hooks: {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
     readonly updateFilters?: (
@@ -53,15 +53,15 @@ interface InputSetProps {
   readonly SubmitButton: React.ElementType;
 }
 
-const InputSet: React.FC<InputSetProps> = ({
+const InputEntityList: React.FC<InputEntityListProps> = ({
   inputInstructions,
   identifierToolTip,
   textInputPlaceholder,
-  setType,
-  setTypeLabel,
+  entityType,
+  entityLabel,
   hooks,
   SubmitButton,
-}: InputSetProps) => {
+}: InputEntityListProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
@@ -75,10 +75,10 @@ const InputSet: React.FC<InputSetProps> = ({
     mappedToFields,
     matchAgainstIdentifiers,
     searchField,
-    createSetField,
+    outputField,
     fieldDisplay,
     facetField,
-  } = fieldConfig[setType];
+  } = fieldConfig[entityType];
 
   const { data, isSuccess } = hooks.query({
     filters: {
@@ -100,7 +100,7 @@ const InputSet: React.FC<InputSetProps> = ({
             mappedToFields,
             matchAgainstIdentifiers,
             tokens,
-            createSetField,
+            outputField,
           )
         : [],
     [
@@ -108,7 +108,7 @@ const InputSet: React.FC<InputSetProps> = ({
       mappedToFields,
       matchAgainstIdentifiers,
       tokens,
-      createSetField,
+      outputField,
       isSuccess,
     ],
   );
@@ -119,10 +119,8 @@ const InputSet: React.FC<InputSetProps> = ({
   const unmatched = tokens
     .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
-  const createSetIds = matched
-    .map(
-      (match) => match.createSet.find((m) => m.field === createSetField)?.value,
-    )
+  const outputIds = matched
+    .map((match) => match.createSet.find((m) => m.field === outputField)?.value)
     .filter((match) => match !== null);
 
   useEffect(() => {
@@ -144,16 +142,16 @@ const InputSet: React.FC<InputSetProps> = ({
   }, [file, input, setUserEnteredInput]);
 
   useEffect(() => {
-    if (matched.length > MATCH_LIMIT && setType !== "cases") {
+    if (matched.length > MATCH_LIMIT && entityType !== "cases") {
       setScreenReaderMessage(
         `${
           matched.length
-        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${setTypeLabel}s can be applied at one time.`,
+        } matches found. A maximum of ${MATCH_LIMIT.toLocaleString()} ${entityLabel}s can be applied at one time.`,
       );
 
       inputRef.current.focus();
     }
-  }, [matched, setTypeLabel, setType]);
+  }, [matched, entityLabel, entityType]);
 
   return (
     <>
@@ -162,7 +160,7 @@ const InputSet: React.FC<InputSetProps> = ({
           <p className="mb-2 text-sm">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
             <label className="font-bold text-sm" htmlFor="indentifier-input">
-              Type or copy-and-paste a list of {setTypeLabel} identifiers
+              Type or copy-and-paste a list of {entityLabel} identifiers
             </label>
             <Tooltip
               label={identifierToolTip}
@@ -182,7 +180,7 @@ const InputSet: React.FC<InputSetProps> = ({
             id="identifier-input"
             placeholder={textInputPlaceholder}
             error={
-              matched.length > MATCH_LIMIT && setType !== "cases"
+              matched.length > MATCH_LIMIT && entityType !== "cases"
                 ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
                 : undefined
             }
@@ -224,7 +222,7 @@ const InputSet: React.FC<InputSetProps> = ({
             matched={matched}
             unmatched={unmatched}
             numberInput={tokens.length}
-            setTypeLabel={setTypeLabel}
+            entityLabel={entityLabel}
             fieldDisplay={fieldDisplay}
           />
         )}
@@ -233,8 +231,8 @@ const InputSet: React.FC<InputSetProps> = ({
         {hooks.createSet && (
           <SaveSetButton
             disabled={matched.length === 0}
-            setValues={createSetIds}
-            setType={setType}
+            setValues={outputIds}
+            setType={entityType}
             createSetHook={hooks.createSet}
           />
         )}
@@ -254,7 +252,7 @@ const InputSet: React.FC<InputSetProps> = ({
           label={"Clear"}
         />
         <SubmitButton
-          ids={createSetIds}
+          ids={outputIds}
           disabled={matched.length === 0}
           hooks={hooks}
           facetField={facetField}
@@ -264,4 +262,4 @@ const InputSet: React.FC<InputSetProps> = ({
   );
 };
 
-export default InputSet;
+export default InputEntityList;

@@ -1,15 +1,16 @@
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
-import InputSet from "./InputSet";
+import InputEntityList from "./InputEntityList";
 import { MantineProvider } from "@mantine/core";
 import tailwindConfig from "tailwind.config";
 import { UserInputContext } from "../GenericInputModal";
+import UpdateCohortButton from "./UpdateFiltersButton";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());
 
-describe("<InputSet />", () => {
+describe("<InputEntityList />", () => {
   it("create set with matched ids", async () => {
     const createSet = jest.fn();
     const createSetHook = jest.fn().mockReturnValue([createSet, {}]);
@@ -30,12 +31,12 @@ describe("<InputSet />", () => {
         }}
       >
         <UserInputContext.Provider value={[false, jest.fn()]}>
-          <InputSet
+          <InputEntityList
             inputInstructions="do stuff to have stuff happen"
             identifierToolTip="ids"
             textInputPlaceholder="ex. TCGA"
-            setType="ssms"
-            setTypeLabel="mutation"
+            entityType="ssms"
+            entityLabel="mutation"
             hooks={{
               query: jest.fn().mockReturnValue({
                 data: [
@@ -47,8 +48,9 @@ describe("<InputSet />", () => {
               updateFilters: jest.fn(),
               createSet: createSetHook,
               getExistingFilters: jest.fn(),
+              useAddNewFilterGroups: jest.fn().mockReturnValue(jest.fn()),
             }}
-            useAddNewFilterGroups={jest.fn().mockReturnValue(jest.fn())}
+            SubmitButton={UpdateCohortButton}
           />
           ,
         </UserInputContext.Provider>
