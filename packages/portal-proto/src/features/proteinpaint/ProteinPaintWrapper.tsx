@@ -8,7 +8,7 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
 } from "@gff/core";
-import { isEqual } from "lodash";
+import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
@@ -62,7 +62,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       const arg = Object.assign(
         { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-        JSON.parse(JSON.stringify(data)),
+        cloneDeep(data),
       ) as PpArg;
 
       if (ppRef.current) {
@@ -120,6 +120,7 @@ interface Track {
   type: string;
   dslabel: string;
   filter0: FilterSet;
+  allow2selectSamples?: SelectSamples;
 }
 
 interface mds3_isoform {
@@ -133,6 +134,16 @@ interface PpApi {
   update(arg: any): null;
 }
 
+interface SelectSamples {
+  buttonText: string;
+  attributes: string[];
+  callback(samples: string[]): void;
+}
+
+function selectSamplesCallBack(samples: string[]) {
+  console.log("selected", samples);
+}
+
 function getLollipopTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
@@ -144,6 +155,11 @@ function getLollipopTrack(props: PpProps, filter0: any) {
         type: "mds3",
         dslabel: "GDC",
         filter0,
+        allow2selectSamples: {
+          buttonText: "Select samples",
+          attributes: ["sample_id"],
+          callback: selectSamplesCallBack,
+        },
       },
     ],
   };
