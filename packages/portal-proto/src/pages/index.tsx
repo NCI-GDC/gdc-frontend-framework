@@ -7,7 +7,7 @@ import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
-import SummaryTotalsPanel from "@/features/summary/SummaryTotalsPanel";
+import SummaryTotalsPanel from "@/features/homepage/SummaryTotalsPanel";
 
 export const HomePageButton = tw(Button)`
 bg-accent-lightest text-accent-contrast-lighter border-base-light border-1
