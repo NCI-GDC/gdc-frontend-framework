@@ -821,6 +821,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearFilters(field);
                 setClearValues(true);
               }}
+              aria-label="clear selection"
             >
               <UndoIcon size="1.15em" />
             </FacetIconButton>
