@@ -225,7 +225,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 (numCases / filteredCases)
               ).toFixed(2)}%)`,
               ssmsAffectedCasesAcrossGDC: remaining[
-                `filters_gene_${gene_id}`
+                `filters_genes_${gene_id}`
               ]?.project__project_id?.buckets
                 ?.map(
                   ({
