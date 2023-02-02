@@ -191,6 +191,21 @@ describe("test facet types", () => {
         type: "long",
         expected_type: "range",
       },
+      {
+        field: "cases.diagnoses.figo_staging_edition_year",
+        type: "keyword",
+        expected_type: "enum",
+      },
+      {
+        field: "cases.exposures.alcohol_days_per_week",
+        type: "double",
+        expected_type: "range",
+      },
+      {
+        field: "cases.exposures.pack_years_smoked",
+        type: "double",
+        expected_type: "range",
+      },
     ];
 
     TO_TEST.map((x) => {

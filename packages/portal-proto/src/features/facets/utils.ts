@@ -1,5 +1,4 @@
 import {
-  DAYS_IN_DECADE,
   DAYS_IN_YEAR,
   EnumOperandValue,
   GreaterThan,
@@ -20,19 +19,14 @@ import {
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
 
+const symmetricalRound = (x: number): number =>
+  x < 0 ? Math.round(Math.abs(x)) * -1 : Math.round(x);
+
 // TODO write unit test for these
 export const getLowerAgeYears = (days?: number): number | undefined =>
-  days !== undefined ? Math.ceil(days / DAYS_IN_YEAR) : undefined;
-export const getUpperAgeYears = (days?: number): number | undefined =>
-  days !== undefined
-    ? Math.ceil((days + 1 - DAYS_IN_YEAR) / DAYS_IN_YEAR)
-    : undefined;
+  days !== undefined ? symmetricalRound(days / DAYS_IN_YEAR) : undefined;
 export const getLowerAgeFromYears = (years?: number): number | undefined =>
-  years !== undefined ? Math.floor(years * DAYS_IN_YEAR) : undefined;
-export const getUpperAgeFromYears = (years?: number): number | undefined =>
-  years !== undefined
-    ? Math.floor(years * DAYS_IN_YEAR + DAYS_IN_YEAR - 1)
-    : undefined;
+  years !== undefined ? symmetricalRound(years * DAYS_IN_YEAR) : undefined;
 
 export const AgeDisplay = (
   ageInDays: number,
@@ -167,25 +161,26 @@ export const updateFacetEnum = (
  * returns the range [from to] for a "bucket"
  * @param x - current bucket index
  * @param units - custom units for this range: "years" or "days"
- * @param minimum - starting value of range
+ * @param minimum - starting value of range must be in years
  */
 const buildDayYearRangeBucket = (
   x: number,
   units: string,
   minimum: number,
 ): RangeBucketElement => {
-  const from = minimum + x * DAYS_IN_DECADE;
-  const to = minimum + (x + 1) * DAYS_IN_DECADE;
-  const denom = units == "years" ? DAYS_IN_YEAR : 1;
+  const from = minimum + x * 10; // in years
+  const to = minimum + (x + 1) * 10;
+  const fromDays = symmetricalRound(from * DAYS_IN_YEAR);
+  const toDays = symmetricalRound(to * DAYS_IN_YEAR);
+  const fromLabel = (units === "years" ? from : fromDays).toFixed(0);
+  const toLabel = (units === "years" ? to : toDays).toFixed(0);
   return {
-    from: from,
-    to: to,
-    key: `${from.toFixed(RANGE_DECIMAL_PRECISION)}-${to.toFixed(
+    from: fromDays,
+    to: toDays,
+    key: `${fromDays.toFixed(RANGE_DECIMAL_PRECISION)}-${toDays.toFixed(
       RANGE_DECIMAL_PRECISION,
     )}`,
-    label: `\u2265 ${(from / denom).toFixed(RANGE_DECIMAL_PRECISION)} to < ${(
-      to / denom
-    ).toFixed(RANGE_DECIMAL_PRECISION)} ${units}`,
+    label: `\u2265 ${fromLabel} to < ${toLabel} ${units}`,
   };
 };
 
@@ -239,7 +234,13 @@ const buildRanges = (
       return r;
     }, {} as Record<string, RangeBucketElement>);
 };
-
+/**
+ * Builds a Dictionary like object contain the range and label for each "bucket" in the range
+ * @param numBuckets - number of buckets to create
+ * @param units - units such as days or percent
+ * @param minimum - start value of range
+ * @returns [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>]
+ */
 export const buildRangeBuckets = (
   numBuckets: number,
   units: string,
@@ -249,25 +250,29 @@ export const buildRangeBuckets = (
     days: {
       builder: buildDayYearRangeBucket,
       label: "days",
+      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), // convert to years
     },
     years: {
       builder: buildDayYearRangeBucket,
       label: "years",
+      startRange: symmetricalRound(minimum / DAYS_IN_YEAR), // convert to years
     },
     percent: {
       builder: build10UnitRange,
       label: "%",
+      startRange: minimum, // no conversion
     },
     year: {
       builder: build10UnitRange,
       label: "",
+      startRange: minimum, // no conversion
     },
   };
 
   const bucketEntries = buildRanges(
     numBuckets,
     RangeBuilder[units].label,
-    minimum,
+    RangeBuilder[units].startRange,
     RangeBuilder[units].builder,
   );
   // build ranges for continuous range query
@@ -276,3 +281,18 @@ export const buildRangeBuckets = (
   });
   return [bucketEntries, r];
 };
+
+export const adjustYearsToDays = (value: number, units: string): number =>
+  units == "years" ? getLowerAgeFromYears(value) : value;
+
+export const adjustDaysToYears = (value: number, units: string): number =>
+  units == "days" ? value : getLowerAgeYears(value);
+
+export const leapThenPair = (years: number, days: number): number[] =>
+  days === 365 ? [years + 1, 0] : [years, days];
+
+export const ageInYearsAndDaysFromDays = (ageInDays: number): number[] =>
+  leapThenPair(
+    Math.floor(ageInDays / DAYS_IN_YEAR),
+    Math.ceil(ageInDays % DAYS_IN_YEAR),
+  );

@@ -5,7 +5,7 @@ import { VerticalTable } from "@/features/shared/VerticalTable";
 const columnListOrder = [
   { id: "level", columnName: "Level", visible: true },
   { id: "files", columnName: "Files", visible: true },
-  { id: "file_size", columnName: "File Name", visible: true },
+  { id: "file_size", columnName: "File Size", visible: true },
 ];
 
 interface AuthorizationTableProps {

@@ -45,7 +45,7 @@ export const headerElements = [
   </Tooltip>,
   <Tooltip
     key="Studies"
-    label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
+    label="View the projects available within the GDC and select them for further exploration and analysis."
     classNames={{
       tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
     }}
