@@ -652,6 +652,11 @@ module.exports = {
           complete: "#249c4f",
           label: "#111111",
         },
+        summarybar: {
+          text: "#42346F",
+          "icon-background": "#FBD5C7",
+          border: "#C5E3DF",
+        },
       },
       height: {
         "nci-logo": "54px",

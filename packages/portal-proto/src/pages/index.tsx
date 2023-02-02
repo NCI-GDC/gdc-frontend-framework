@@ -7,7 +7,7 @@ import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { Button, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
-import SummaryTotalsPanel from "@/features/summary/SummaryTotalsPanel";
+import HorizontalSummaryTotalsPanel from "@/features/summary/HorizontalSummaryTotalsPanel";
 
 export const HomePageButton = tw(Button)`
 bg-accent-lightest text-accent-contrast-lighter border-base-light border-1
@@ -187,7 +187,7 @@ const IndexPage: NextPage = () => {
                 />
               </div>
             </div>
-            <SummaryTotalsPanel />
+            <HorizontalSummaryTotalsPanel />
           </div>
           <div className="m-auto">
             <Image src="/user-flow/sapien.svg" height={400} width={500} />
