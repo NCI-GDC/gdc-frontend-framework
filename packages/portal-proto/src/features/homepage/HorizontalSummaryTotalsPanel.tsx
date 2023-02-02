@@ -1,4 +1,4 @@
-import { SummaryStatsItem } from "@/features/summary/SummaryStatsItem";
+import { SummaryStatsItem } from "@/features/homepage/SummaryStatsItem";
 import { useTotalCounts, useVersionInfoDetails } from "@gff/core";
 import { AnchorLink } from "@/components/AnchorLink";
 
