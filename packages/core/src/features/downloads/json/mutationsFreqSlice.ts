@@ -1,28 +1,11 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   CoreDataSelectorResponse,
   DataStatus,
   createUseCoreDataHook,
 } from "src/dataAccess";
-import { GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 import { CoreState } from "src/reducers";
-import {
-  fetchMutationsFreqQuery,
-  MutationsFreqResponse,
-} from "./mutationsFreqApi";
-
-export const fetchMutationsFreq = createAsyncThunk(
-  "MutationsFreq/fetchMutationsFreq",
-  async ({
-    currentFilters,
-    size,
-  }: {
-    currentFilters: any;
-    size: number;
-  }): Promise<GraphQLApiResponse<MutationsFreqResponse>> => {
-    return await fetchMutationsFreqQuery({ currentFilters, size });
-  },
-);
+import { fetchMutationsFreq } from "./mutationsFreqApi";
 
 export interface MutationsFreqData {
   genomic_dna_change: string;
@@ -49,7 +32,7 @@ export interface MutationsFreqData {
 
 export interface MutationsFreqInitialState {
   status: DataStatus;
-  mutationsFreq?: MutationsFreqData[];
+  mutations?: MutationsFreqData[];
 }
 
 const initialState: MutationsFreqInitialState = {
@@ -65,7 +48,7 @@ const slice = createSlice({
       .addCase(fetchMutationsFreq.fulfilled, (state, action) => {
         const response = action.payload;
         state.status = "fulfilled";
-
+        console.log("response", response);
         const edges = response?.data?.viewer?.explore?.ssms?.hits?.edges;
         console.log("edges", edges);
 
@@ -92,57 +75,57 @@ const slice = createSlice({
         // biotype: string;
         // gene_id: string;
 
-        const mtns = edges.map(
-          ({
-            node: {
-              genomic_dna_change,
-              mutation_subtype,
-              consequence,
-              biotype,
-              gene_id,
-            },
-          }) => {
-            return {
-              genomic_dna_change,
-              mutation_subtype,
-              consequence: consequence?.edges.map(
-                ({
-                  node: {
-                    transcript: {
-                      is_canonical,
-                      annotation: { vep_impact, polyphen_impact, sift_impact },
-                      consequence_type,
-                      gene: { gene_id, symbol },
-                      aa_change,
-                    },
-                  },
-                }) => {
-                  return {
-                    transcript: {
-                      is_canonical,
-                      annotation: {
-                        vep_impact,
-                        polyphen_impact,
-                        sift_impact,
-                      },
-                      consequence_type,
-                      gene: {
-                        gene_id,
-                        symbol,
-                      },
-                      aa_change,
-                    },
-                  };
-                },
-              ),
-              biotype,
-              gene_id,
-            };
-          },
-        );
-        console.log("mtns", mtns);
+        // const mtns = edges.map(
+        //   ({
+        //     node: {
+        //       genomic_dna_change,
+        //       mutation_subtype,
+        //       consequence,
+        //       biotype,
+        //       gene_id,
+        //     },
+        //   }) => {
+        //     return {
+        //       genomic_dna_change,
+        //       mutation_subtype,
+        //       consequence: consequence?.edges.map(
+        //         ({
+        //           node: {
+        //             transcript: {
+        //               is_canonical,
+        //               annotation: { vep_impact, polyphen_impact, sift_impact },
+        //               consequence_type,
+        //               gene: { gene_id, symbol },
+        //               aa_change,
+        //             },
+        //           },
+        //         }) => {
+        //           return {
+        //             transcript: {
+        //               is_canonical,
+        //               annotation: {
+        //                 vep_impact,
+        //                 polyphen_impact,
+        //                 sift_impact,
+        //               },
+        //               consequence_type,
+        //               gene: {
+        //                 gene_id,
+        //                 symbol,
+        //               },
+        //               aa_change,
+        //             },
+        //           };
+        //         },
+        //       ),
+        //       biotype,
+        //       gene_id,
+        //     };
+        //   },
+        // );
+        // console.log("mtns", mtns);
         debugger;
-        // state.mutationsFreq = mtns;
+        state.mutations = [];
         return state;
       })
       .addCase(fetchMutationsFreq.pending, (state) => {
@@ -159,11 +142,11 @@ export const mutationsFreqReducer = slice.reducer;
 export const selectMutationsFreqData = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
-  mutationsFreq: MutationsFreqData[] | undefined;
+  mutations: MutationsFreqData[] | undefined;
 }> => {
   return {
     data: {
-      mutationsFreq: state.downloads.mutationsFreq.mutationsFreq,
+      mutations: state.downloads.mutationsFreq.mutations,
     },
     status: state.downloads.mutationsFreq.status,
   };
