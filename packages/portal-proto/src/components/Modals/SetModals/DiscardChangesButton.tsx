@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import DiscardChangesModal from "./DiscardChangesModal";
-import { UserInputContext } from "./GenericSetModal";
+import DiscardChangesModal from "../DiscardChangesModal";
+import { UserInputContext } from "../GenericInputModal";
 
 interface DiscardChangesButtonProps {
   readonly action: () => void;

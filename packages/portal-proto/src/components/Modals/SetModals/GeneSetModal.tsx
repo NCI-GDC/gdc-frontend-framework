@@ -10,8 +10,9 @@ import {
 } from "@gff/core";
 import InputSet from "./InputSet";
 import SavedSets from "./SavedSets";
-import GenericSetModal from "./GenericSetModal";
+import GenericInputModal from "../GenericInputModal";
 import { SavedSetModalProps } from "./types";
+import UpdateCohortButton from "./UpdateFiltersButton";
 
 const GeneSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
@@ -23,7 +24,13 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
-    <GenericSetModal modalTitle={modalTitle} tabLabel="Genes" tabbed>
+    <GenericInputModal
+      modalTitle={modalTitle}
+      tabs={[
+        { label: "Enter Genes", value: "input" },
+        { label: "Saved Sets", value: "saved" },
+      ]}
+    >
       <Tabs.Panel value="input" className="pt-4">
         <InputSet
           inputInstructions={inputInstructions}
@@ -48,8 +55,9 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
             createSet: useCreateGeneSetMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
+            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
-          useAddNewFilterGroups={useAddNewFilterGroups}
+          SubmitButton={UpdateCohortButton}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -79,7 +87,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
-    </GenericSetModal>
+    </GenericInputModal>
   );
 };
 

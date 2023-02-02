@@ -1,8 +1,9 @@
 import React from "react";
 import { useGetCasesQuery } from "@gff/core";
 import InputSet from "./InputSet";
-import GenericSetModal from "./GenericSetModal";
+import GenericInputModal from "../GenericInputModal";
 import { InputModalProps } from "./types";
+import UpdateCohortButton from "./UpdateFiltersButton";
 
 const CaseSetModal: React.FC<InputModalProps> = ({
   updateFilters,
@@ -10,10 +11,7 @@ const CaseSetModal: React.FC<InputModalProps> = ({
   useAddNewFilterGroups,
 }: InputModalProps) => {
   return (
-    <GenericSetModal
-      modalTitle={"Filter Current Cohort by Cases"}
-      tabbed={false}
-    >
+    <GenericInputModal modalTitle={"Filter Current Cohort by Cases"}>
       <InputSet
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to filter your cohort."
         identifierToolTip={
@@ -42,10 +40,11 @@ const CaseSetModal: React.FC<InputModalProps> = ({
           query: useGetCasesQuery,
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
+          useAddNewFilterGroups: useAddNewFilterGroups,
         }}
-        useAddNewFilterGroups={useAddNewFilterGroups}
+        SubmitButton={UpdateCohortButton}
       />
-    </GenericSetModal>
+    </GenericInputModal>
   );
 };
 

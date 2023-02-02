@@ -23,7 +23,7 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { ButtonContainer } from "./styles";
 import DiscardChangesButton from "./DiscardChangesButton";
-import { UserInputContext } from "./GenericSetModal";
+import { UserInputContext } from "../GenericInputModal";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });

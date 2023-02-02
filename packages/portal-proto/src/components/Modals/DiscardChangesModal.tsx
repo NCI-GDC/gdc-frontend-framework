@@ -2,7 +2,7 @@ import React from "react";
 import { Modal } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import { ButtonContainer, modalStyles } from "./styles";
+import { ButtonContainer, modalStyles } from "./SetModals/styles";
 
 interface DiscardChangesModalProps {
   readonly action: () => void;

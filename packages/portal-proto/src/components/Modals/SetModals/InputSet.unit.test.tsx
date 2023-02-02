@@ -4,7 +4,7 @@ import * as core from "@gff/core";
 import InputSet from "./InputSet";
 import { MantineProvider } from "@mantine/core";
 import tailwindConfig from "tailwind.config";
-import { UserInputContext } from "./GenericSetModal";
+import { UserInputContext } from "../GenericInputModal";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());

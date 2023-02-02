@@ -63,6 +63,7 @@ import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
+import ImportCohortModal from "./Modals/ImportCohortModal";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -329,7 +330,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showSaveCohort && (
-        <SaveOrCreateCohortModal
+        <SaveOrCreateModal
           initialName={cohortName}
           entity="cohort"
           opened
@@ -376,7 +377,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
+        <SaveOrCreateModal
           initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
@@ -389,6 +390,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         />
       )}
 
+      {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
         <CaseSetModal
           updateFilters={updateCohortFilters}
@@ -496,7 +498,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             >
               <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>
-            <CohortGroupButton data-testid="uploadButton">
+            <CohortGroupButton
+              data-testid="uploadButton"
+              onClick={() =>
+                coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
+              }
+            >
               <UploadIcon size="1.5em" aria-label="Upload cohort" />
             </CohortGroupButton>
             <CohortGroupButton

@@ -1,29 +1,27 @@
 import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
-import { modalStyles, tabStyles } from "./styles";
+import { modalStyles, tabStyles } from "./SetModals/styles";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
 
-interface GenericSetModalProps {
+interface GenericInputModalProps {
   readonly modalTitle: string;
-  readonly tabbed: boolean;
   readonly children: React.ReactNode;
-  readonly tabLabel?: string;
+  readonly tabs?: { label: string; value: string }[];
 }
 
-const GenericSetModal: React.FC<GenericSetModalProps> = ({
+const GenericInputModal: React.FC<GenericInputModalProps> = ({
   modalTitle,
-  tabbed,
   children,
-  tabLabel,
-}: GenericSetModalProps) => {
+  tabs,
+}: GenericInputModalProps) => {
   const dispatch = useCoreDispatch();
   const [showDiscardModal, setShowDiscardModal] = useState<
     "close" | "tabChange" | null
   >(null);
-  const [activeTab, setActiveTab] = useState<string | null>("input");
+  const [activeTab, setActiveTab] = useState<string | null>(tabs?.[0]?.value);
   const [activeTabInWaiting, setActiveTabInWaiting] = useState<string | null>(
     null,
   );
@@ -62,7 +60,7 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
       <UserInputContext.Provider
         value={[userEnteredInput, setUserEnteredInput]}
       >
-        {tabbed ? (
+        {tabs ? (
           <Tabs
             value={activeTab}
             classNames={tabStyles}
@@ -70,8 +68,11 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
             onTabChange={onTabChange}
           >
             <Tabs.List>
-              <Tabs.Tab value="input">Enter {tabLabel}</Tabs.Tab>
-              <Tabs.Tab value="saved">Saved Sets</Tabs.Tab>
+              {tabs.map((tab) => (
+                <Tabs.Tab value={tab.value} key={tab.value}>
+                  {tab.label}
+                </Tabs.Tab>
+              ))}
             </Tabs.List>
             {children}
           </Tabs>
@@ -83,4 +84,4 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
   );
 };
 
-export default GenericSetModal;
+export default GenericInputModal;

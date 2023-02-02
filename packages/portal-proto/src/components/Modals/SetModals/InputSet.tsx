@@ -12,7 +12,6 @@ import {
   Loader,
 } from "@mantine/core";
 import { flatten } from "lodash";
-import { v4 as uuidv4 } from "uuid";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import {
@@ -22,14 +21,13 @@ import {
   Operation,
   FilterSet,
   FilterGroup,
-  isIncludes,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
 import DiscardChangesButton from "./DiscardChangesButton";
-import { UserInputContext } from "./GenericSetModal";
+import { UserInputContext } from "../GenericInputModal";
 import { ButtonContainer } from "./styles";
 import fieldConfig from "./fieldConfig";
 
@@ -43,15 +41,16 @@ interface InputSetProps {
   readonly setTypeLabel: string;
   readonly hooks: {
     readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
-    readonly updateFilters: (
+    readonly updateFilters?: (
       field: string,
       op: Operation,
       groups?: FilterGroup[],
     ) => void;
     readonly createSet?: UseMutation<any>;
-    readonly getExistingFilters: () => FilterSet;
+    readonly getExistingFilters?: () => FilterSet;
+    readonly useAddNewFilterGroups?: () => (groups: FilterGroup[]) => void;
   };
-  readonly useAddNewFilterGroups: () => (groups: FilterGroup[]) => void;
+  readonly SubmitButton: React.ElementType;
 }
 
 const InputSet: React.FC<InputSetProps> = ({
@@ -61,7 +60,7 @@ const InputSet: React.FC<InputSetProps> = ({
   setType,
   setTypeLabel,
   hooks,
-  useAddNewFilterGroups,
+  SubmitButton,
 }: InputSetProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -71,8 +70,6 @@ const InputSet: React.FC<InputSetProps> = ({
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
-  const existingFilters = hooks.getExistingFilters();
-  const addNewFilterGroups = useAddNewFilterGroups();
 
   const {
     mappedToFields,
@@ -82,8 +79,6 @@ const InputSet: React.FC<InputSetProps> = ({
     fieldDisplay,
     facetField,
   } = fieldConfig[setType];
-
-  const existingOperation = existingFilters?.root?.[facetField];
 
   const { data, isSuccess } = hooks.query({
     filters: {
@@ -149,7 +144,7 @@ const InputSet: React.FC<InputSetProps> = ({
   }, [file, input, setUserEnteredInput]);
 
   useEffect(() => {
-    if (matched.length > MATCH_LIMIT) {
+    if (matched.length > MATCH_LIMIT && setType !== "cases") {
       setScreenReaderMessage(
         `${
           matched.length
@@ -158,7 +153,7 @@ const InputSet: React.FC<InputSetProps> = ({
 
       inputRef.current.focus();
     }
-  }, [matched, setTypeLabel]);
+  }, [matched, setTypeLabel, setType]);
 
   return (
     <>
@@ -187,7 +182,7 @@ const InputSet: React.FC<InputSetProps> = ({
             id="identifier-input"
             placeholder={textInputPlaceholder}
             error={
-              matched.length > MATCH_LIMIT
+              matched.length > MATCH_LIMIT && setType !== "cases"
                 ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
                 : undefined
             }
@@ -258,29 +253,12 @@ const InputSet: React.FC<InputSetProps> = ({
           }}
           label={"Clear"}
         />
-        <DarkFunctionButton
+        <SubmitButton
+          ids={createSetIds}
           disabled={matched.length === 0}
-          onClick={() => {
-            hooks.updateFilters(facetField, {
-              field: facetField,
-              operator: "includes",
-              operands: [
-                ...(existingOperation && isIncludes(existingOperation)
-                  ? existingOperation?.operands
-                  : []),
-                ...createSetIds,
-              ],
-            });
-            if (createSetIds.length > 1) {
-              addNewFilterGroups([
-                { ids: createSetIds, field: facetField, groupId: uuidv4() },
-              ]);
-            }
-            dispatch(hideModal());
-          }}
-        >
-          Submit
-        </DarkFunctionButton>
+          hooks={hooks}
+          facetField={facetField}
+        />
       </ButtonContainer>
     </>
   );
