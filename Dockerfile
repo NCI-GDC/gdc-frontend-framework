@@ -6,9 +6,12 @@ WORKDIR /app
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
-
+ARG CI_COMMIT_SHA
+ENV SHA_VERSION=${CI_COMMIT_SHA}
+RUN echo "SHA_VERSION" ${SHA_VERSION}
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
+
 RUN npm install --location=global lerna
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
