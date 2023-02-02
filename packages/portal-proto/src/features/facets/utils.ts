@@ -163,7 +163,7 @@ export const updateFacetEnum = (
  * @param units - custom units for this range: "years" or "days"
  * @param minimum - starting value of range must be in years
  */
-export const buildDayYearRangeBucket = (
+const buildDayYearRangeBucket = (
   x: number,
   units: string,
   minimum: number,

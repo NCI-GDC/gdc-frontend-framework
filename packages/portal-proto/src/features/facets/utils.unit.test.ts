@@ -3,7 +3,6 @@ import {
   extractRangeValues,
   buildRangeBuckets,
   adjustYearsToDays,
-  buildDayYearRangeBucket,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
