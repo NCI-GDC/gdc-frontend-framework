@@ -502,17 +502,3 @@ describe("test years to days conversion", () => {
     expect(adjustYearsToDays(90, "years")).toEqual(32873);
   });
 });
-
-// unit test for buildDayYearRangeBucket  function
-describe("test buildDayYearRangeBucket", () => {
-  // test case for buildDayYearRangeBucket function
-  test("test for days", () => {
-    const results = buildDayYearRangeBucket(19, "days", -32873);
-    console.log(results);
-  });
-
-  test("test for years", () => {
-    const results = buildDayYearRangeBucket(19, "years", -32873);
-    console.log(results);
-  });
-});
