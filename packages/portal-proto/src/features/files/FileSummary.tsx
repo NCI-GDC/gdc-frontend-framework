@@ -5,17 +5,19 @@ import { FileView } from "./FileView";
 
 export interface ContextualFileViewProps {
   readonly setCurrentFile: string;
+  isModal?: boolean;
 }
 
-export const ContextualFileView: React.FC<ContextualFileViewProps> = (
-  props: ContextualFileViewProps,
-) => {
+export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
+  setCurrentFile,
+  isModal,
+}: ContextualFileViewProps) => {
   const { data, isFetching } = useFiles({
     filters: {
       op: "=",
       content: {
         field: "file_id",
-        value: props.setCurrentFile,
+        value: setCurrentFile,
       },
     },
     expand: [
@@ -37,18 +39,17 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
     ],
     size: 1,
   });
-  const hystory = useFileHistory(props.setCurrentFile);
+  const history = useFileHistory(setCurrentFile);
 
-  const title = data?.[0]
-    ? data[0].file_name
-    : `${props.setCurrentFile} not found`;
+  const title = data?.[0] ? data[0].file_name : `${setCurrentFile} not found`;
   return (
     <div>
       {data && !isFetching ? (
         <>
-          <SummaryHeader iconText="FL" headerTitle={title} />
+          {!isModal && <SummaryHeader iconText="FL" headerTitle={title} />}
+
           {data?.[0] ? (
-            <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
+            <FileView file={data?.[0]} fileHistory={history?.data?.[0]} />
           ) : (
             <SummaryErrorHeader label="File Not Found" />
           )}

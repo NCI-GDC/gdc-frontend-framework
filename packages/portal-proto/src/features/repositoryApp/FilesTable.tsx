@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
 import {
@@ -33,6 +33,7 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
+import { SummaryModalContext } from "src/pages/analysis_page";
 
 const FilesTables: React.FC = () => {
   const columnListOrder: Columns[] = [
@@ -99,20 +100,42 @@ const FilesTables: React.FC = () => {
     ]}]},"op":"in"}],"op":"and"}`;
   };
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   if (status === "fulfilled") {
     tempPagination = pagination;
     formattedTableData = data.map((file) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
-        <Link href={`/files/${file.file_id}`}>
-          <a className="text-utility-link underline">{file.file_id}</a>
-        </Link>
+        // <Link href={`/files/${file.file_id}`}>
+        <span
+          className="text-utility-link underline cursor-pointer"
+          onClick={() =>
+            setEntityMetadata({
+              entity: "case",
+              entity_id: file.file_id,
+            })
+          }
+        >
+          {file.file_id}
+        </span>
+        // </Link>
       ),
       access: <FileAccessBadge access={file.access} />,
       file_name: (
-        <Link href={`/files/${file.id}`}>
-          <a className="text-utility-link underline">{file.file_name}</a>
-        </Link>
+        // <Link href={`/files/${file.id}`}>
+        <span
+          className="text-utility-link underline cursor-pointer"
+          onClick={() =>
+            setEntityMetadata({
+              entity: "case",
+              entity_id: file.file_id,
+            })
+          }
+        >
+          {file.file_name}{" "}
+        </span>
+        // </Link>
       ),
       cases: file.cases?.length.toLocaleString() || 0,
       project_id: (

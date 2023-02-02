@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
-import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
+import { Chip, Menu, Grid, ActionIcon, Modal } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import { MdSort as SortIcon } from "react-icons/md";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
@@ -22,6 +22,8 @@ import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { ProjectSummary } from "@/features/projects/ProjectSummary";
+import { CaseSummary } from "@/features/cases/CaseSummary";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -275,6 +277,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
 }
+
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {

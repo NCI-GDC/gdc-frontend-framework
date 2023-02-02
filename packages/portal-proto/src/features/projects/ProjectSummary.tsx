@@ -52,10 +52,12 @@ rounded-sm`;
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
+  readonly isModal?: boolean;
 }
 
 export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
+  isModal = false,
 }: ContextualProjectViewProps) => {
   const { data: projectsData, isFetching: isProjectFetching } = useProjects({
     filters: {
@@ -113,6 +115,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     ...projectData,
     annotation: annotationCountData,
     hasControlledAccess,
+    isModal,
   };
 
   return (
@@ -134,6 +137,7 @@ export interface ProjectViewProps extends ProjectDefaults {
     count: number;
   };
   hasControlledAccess: boolean;
+  isModal?: boolean;
 }
 
 export const ProjectView: React.FC<ProjectViewProps> = (
@@ -365,7 +369,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   };
   return (
     <div>
-      <SummaryHeader iconText="PR" headerTitle={projectData.project_id} />
+      {!projectData.isModal && (
+        <SummaryHeader iconText="PR" headerTitle={projectData.project_id} />
+      )}
       <div className="flex flex-col mx-auto mt-20 w-10/12">
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">

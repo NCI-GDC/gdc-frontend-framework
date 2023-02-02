@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Divider, Menu } from "@mantine/core";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -27,6 +27,7 @@ import {
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { SummaryModalContext } from "src/pages/analysis_page";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -112,6 +113,8 @@ export const ContextualCasesView: React.FC = () => {
   useEffect(() => {
     setOffset(0);
   }, [cohortFilters]);
+
+  const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const cases = useMemo(
     () =>
@@ -216,9 +219,19 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              <Link href={`/cases/${datum.case_uuid}`}>
-                <a className="text-utility-link underline">{datum.case_id}</a>
-              </Link>
+              {/* <Link href={`/cases/${datum.case_uuid}`}> */}
+              <span
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity: "case",
+                    entity_id: datum.case_uuid,
+                  })
+                }
+              >
+                {datum.case_id}
+              </span>
+              {/* </Link> */}
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,

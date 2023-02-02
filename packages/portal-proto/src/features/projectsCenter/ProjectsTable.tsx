@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   VerticalTable,
   HandleChangeInput,
@@ -31,6 +31,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
+import { SummaryModalContext } from "src/pages/analysis_page";
 
 interface CellProps {
   value: string[];
@@ -49,6 +50,8 @@ const ProjectsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "summary.case_count", direction: "desc" },
   ]);
+
+  const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
   const { data, pagination, isSuccess, isFetching, isError } = useProjects({
@@ -184,9 +187,19 @@ const ProjectsTable: React.FC = () => {
             selected: project_id,
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
-                <Link href={`/projects/${project_id}`}>
-                  <a className="text-utility-link underline">{project_id}</a>
-                </Link>
+                {/* <Link href={`/projects/${project_id}`}> */}
+                <span
+                  className="text-utility-link underline cursor-pointer"
+                  onClick={() =>
+                    setEntityMetadata({
+                      entity: "project",
+                      entity_id: project_id,
+                    })
+                  }
+                >
+                  {project_id}
+                </span>
+                {/* </Link> */}
               </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,

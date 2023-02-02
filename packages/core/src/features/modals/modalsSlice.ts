@@ -10,7 +10,7 @@ export enum Modals {
   "NoAccessToProjectModal" = "NoAccessToProjectModal",
   "CartSizeLimitModal" = "CartSizeLimitModal",
   "CartDownloadModal" = "CartDownloadModal",
-  "AgreementModal" = " AgreementModal",
+  "AgreementModal" = "AgreementModal",
   "GeneralErrorModal" = " GeneralErrorModal",
   "GlobalCaseSetModal" = "GlobalCaseSetModal",
   "GlobalGeneSetModal" = "GlobalGeneSetModal",

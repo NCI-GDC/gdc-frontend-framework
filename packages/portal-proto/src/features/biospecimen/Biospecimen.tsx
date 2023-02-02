@@ -22,11 +22,13 @@ import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 interface BiospecimenProps {
   caseId: string;
   bioId: string;
+  isModal?: boolean;
 }
 
 export const Biospecimen = ({
   caseId,
   bioId,
+  isModal = false,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
 
@@ -87,16 +89,18 @@ export const Biospecimen = ({
       setTreeStatusOverride(null);
     }
 
-    router.push(
-      {
-        query: {
-          ...router.query,
-          bioId: entity[`${type.s}_id`],
+    if (!isModal) {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            bioId: entity[`${type.s}_id`],
+          },
         },
-      },
-      undefined,
-      { shallow: true },
-    );
+        undefined,
+        { shallow: true },
+      );
+    }
   };
 
   const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
