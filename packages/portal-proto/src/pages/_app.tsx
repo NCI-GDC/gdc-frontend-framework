@@ -64,7 +64,18 @@ type TenStringArray = [
 ];
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
-const appendCache = createEmotionCache({ key: "mantine", prepend: false });
+
+const getCache = () => {
+  // Insert mantine styles after global styles
+  const insertionPoint =
+    typeof document !== "undefined"
+      ? document.querySelectorAll<HTMLElement>(
+          'style[data-emotion="css-global"]',
+        )?.[-1]
+      : undefined;
+
+  return createEmotionCache({ key: "mantine", insertionPoint });
+};
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -84,7 +95,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionCache={appendCache}
+          emotionCache={getCache()}
           theme={{
             // Override default blue color until styles are determined
             colors: {

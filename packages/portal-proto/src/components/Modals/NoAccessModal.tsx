@@ -1,4 +1,5 @@
 import { Text } from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
 import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
 
@@ -21,17 +22,13 @@ export const NoAccessModal = ({
           title: "Close",
           dataTestId: "button-no-access-modal-access-alert-close",
         },
+        <LoginButton fromSession key={uuidv4()} />,
       ]}
     >
       <div className="border-y border-y-base p-4">
-        <Text size="sm"> You don&apos;t have access to this file.</Text>
-
-        <div className="flex content-center">
-          <Text size="sm" className="mt-1">
-            Please
-          </Text>{" "}
-          <LoginButton fromSession />
-        </div>
+        <Text size="sm">
+          You don&apos;t have access to this file. Please login.
+        </Text>
       </div>
     </BaseModal>
   );
