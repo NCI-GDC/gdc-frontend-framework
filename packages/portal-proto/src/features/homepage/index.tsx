@@ -38,7 +38,6 @@ const Homepage = (): JSX.Element => {
               query: { app: undefined },
             }}
             data-testid="button-homepage-explore-datasets"
-            aria-label="explore our datasets button"
           >
             Explore Our Cancer Datasets
           </HomepageButton>
