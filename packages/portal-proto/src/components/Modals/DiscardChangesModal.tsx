@@ -2,7 +2,8 @@ import React from "react";
 import { Modal } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import { ButtonContainer, modalStyles } from "./SetModals/styles";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { modalStyles } from "./styles";
 
 interface DiscardChangesModalProps {
   readonly action: () => void;
@@ -28,7 +29,7 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
       <p>Are you sure you want to permanently discard the unsaved changes?</p>
       <p className="text-sm">You cannot undo this action.</p>
     </div>
-    <ButtonContainer>
+    <ModalButtonContainer>
       <FunctionButton onClick={onClose}>Cancel</FunctionButton>
       <DarkFunctionButton
         onClick={() => {
@@ -38,7 +39,7 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
       >
         Discard
       </DarkFunctionButton>
-    </ButtonContainer>
+    </ModalButtonContainer>
   </Modal>
 );
 

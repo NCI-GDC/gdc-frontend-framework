@@ -20,10 +20,10 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { ButtonContainer } from "./styles";
-import DiscardChangesButton from "./DiscardChangesButton";
-import { UserInputContext } from "../GenericInputModal";
+import DiscardChangesButton from "../DiscardChangesButton";
+import { UserInputContext } from "../UserInputModal";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });

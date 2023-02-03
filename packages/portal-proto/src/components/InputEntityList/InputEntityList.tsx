@@ -23,12 +23,12 @@ import {
   FilterGroup,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { UserInputContext } from "@/components/Modals/UserInputModal";
+import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
+import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
-import DiscardChangesButton from "./DiscardChangesButton";
-import { UserInputContext } from "../GenericInputModal";
-import { ButtonContainer } from "./styles";
 import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;

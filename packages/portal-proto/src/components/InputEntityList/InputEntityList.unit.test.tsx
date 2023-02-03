@@ -4,8 +4,8 @@ import * as core from "@gff/core";
 import InputEntityList from "./InputEntityList";
 import { MantineProvider } from "@mantine/core";
 import tailwindConfig from "tailwind.config";
-import { UserInputContext } from "../GenericInputModal";
-import UpdateCohortButton from "./UpdateFiltersButton";
+import { UserInputContext } from "@/components/Modals/UserInputModal";
+import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButton";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());

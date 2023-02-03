@@ -11,7 +11,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { tabStyles } from "./styles";
+import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
 
 interface MatchTablesProps {
   readonly matched: {
@@ -168,13 +168,9 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         Summary Table
       </span>
       <Collapse in={showTable}>
-        <Tabs
-          value={activeTab}
-          onTabChange={setActiveTab}
-          classNames={tabStyles}
-        >
-          <Tabs.List>
-            <Tabs.Tab value="matched">
+        <Tabs value={activeTab} onTabChange={setActiveTab}>
+          <StyledTabsList>
+            <StyledTab value="matched">
               Matched
               <Badge
                 variant="filled"
@@ -185,8 +181,8 @@ const MatchTables: React.FC<MatchTablesProps> = ({
               >
                 {numMatched}
               </Badge>
-            </Tabs.Tab>
-            <Tabs.Tab value="unmatched">
+            </StyledTab>
+            <StyledTab value="unmatched">
               Unmatched
               <Badge
                 variant="filled"
@@ -197,8 +193,8 @@ const MatchTables: React.FC<MatchTablesProps> = ({
               >
                 {unmatched.length}
               </Badge>
-            </Tabs.Tab>
-          </Tabs.List>
+            </StyledTab>
+          </StyledTabsList>
           <Tabs.Panel value="matched">
             <div className="m-4">
               <p className="text-sm mb-2">

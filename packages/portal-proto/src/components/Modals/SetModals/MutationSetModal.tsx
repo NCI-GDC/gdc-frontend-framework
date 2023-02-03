@@ -8,9 +8,9 @@ import {
   useCreateSsmsSetMutation,
   useSsmSetCountQuery,
 } from "@gff/core";
-import InputEntityList from "./InputEntityList";
+import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
-import GenericInputModal from "../GenericInputModal";
+import UserInputModal from "../UserInputModal";
 import { SavedSetModalProps } from "./types";
 import UpdateCohortButton from "./UpdateFiltersButton";
 
@@ -25,7 +25,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   const dispatch = useCoreDispatch();
 
   return (
-    <GenericInputModal
+    <UserInputModal
       modalTitle={modalTitle}
       tabs={[
         { label: "Enter Mutations", value: "input" },
@@ -85,7 +85,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
-    </GenericInputModal>
+    </UserInputModal>
   );
 };
 

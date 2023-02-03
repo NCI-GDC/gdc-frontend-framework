@@ -11,9 +11,9 @@ import {
   hideModal,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import GenericInputModal from "@/components/Modals/GenericInputModal";
-import InputEntityList from "@/components/Modals/SetModals/InputEntityList";
-import { SaveOrCreateModal } from "@/components/Modals/SaveOrCreateModal";
+import UserInputModal from "@/components/Modals/UserInputModal";
+import InputEntityList from "@/components/InputEntityList/InputEntityList";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 interface SubmitButtonProps {
   readonly ids: string[];
@@ -61,7 +61,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   return (
     <>
       {showCreateCohort && (
-        <SaveOrCreateModal
+        <SaveOrCreateCohortModal
           initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
@@ -85,7 +85,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
 const ImportCohortModal: React.FC = () => {
   return (
-    <GenericInputModal modalTitle="Import a New Cohort">
+    <UserInputModal modalTitle="Import a New Cohort">
       <InputEntityList
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to import a new cohort."
         identifierToolTip={
@@ -115,7 +115,7 @@ const ImportCohortModal: React.FC = () => {
         }}
         SubmitButton={SubmitButton}
       />
-    </GenericInputModal>
+    </UserInputModal>
   );
 };
 
