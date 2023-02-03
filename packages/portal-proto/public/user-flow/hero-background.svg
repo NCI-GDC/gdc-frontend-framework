@@ -6,31 +6,8 @@
    version="1.1"
    id="svg301"
    preserveAspectRatio="none"
-   sodipodi:docname="hero-background.svg"
-   inkscape:version="1.2.2 (b0a84865, 2022-12-01)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview770"
-     pagecolor="#505050"
-     bordercolor="#eeeeee"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#505050"
-     showgrid="false"
-     inkscape:zoom="0.91215227"
-     inkscape:cx="515.26485"
-     inkscape:cy="276.26966"
-     inkscape:window-width="1390"
-     inkscape:window-height="954"
-     inkscape:window-x="183"
-     inkscape:window-y="44"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg301" />
   <defs
      id="defs292">
     <clipPath
@@ -49,6 +26,13 @@
      id="Group_478"
      data-name="Group 478"
      transform="translate(0 1)">
+    <rect
+       id="Rectangle_286"
+       data-name="Rectangle 286"
+       width="1366"
+       height="729"
+       transform="translate(0 -1)"
+       fill="#f9f9f9" />
     <g
        id="Mask_Group_5"
        data-name="Mask Group 5"
