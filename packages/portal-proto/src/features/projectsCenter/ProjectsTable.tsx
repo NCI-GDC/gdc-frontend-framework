@@ -7,7 +7,6 @@ import {
 } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
-import Link from "next/link";
 import {
   useProjects,
   buildCohortGqlOperator,
@@ -187,19 +186,18 @@ const ProjectsTable: React.FC = () => {
             selected: project_id,
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
-                {/* <Link href={`/projects/${project_id}`}> */}
                 <span
                   className="text-utility-link underline cursor-pointer"
                   onClick={() =>
                     setEntityMetadata({
-                      entity: "project",
+                      entity_type: "project",
                       entity_id: project_id,
+                      entity_name: project_id,
                     })
                   }
                 >
                   {project_id}
                 </span>
-                {/* </Link> */}
               </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,
@@ -232,7 +230,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data, pagination]);
+  }, [isSuccess, data, pagination, setEntityMetadata]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {

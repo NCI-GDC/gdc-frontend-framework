@@ -156,7 +156,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
                   strategy="afterInteractive"
                 />
-                {/* </TourProvider> */}
               </NotificationsProvider>
             </URLContext.Provider>
           </div>

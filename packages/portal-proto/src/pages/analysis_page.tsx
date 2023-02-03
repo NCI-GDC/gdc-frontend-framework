@@ -5,26 +5,30 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import ContextBar from "@/features/cohortBuilder/ContextBar";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
-import { createContext, useState } from "react";
-import { Modal } from "@mantine/core";
-import { CaseSummary } from "@/features/cases/CaseSummary";
-import { ProjectSummary } from "@/features/projects/ProjectSummary";
-import { ContextualFileView } from "@/features/files/FileSummary";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
+import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 
-export const SummaryModalContext = createContext(null);
+export type entityType = null | "project" | "case" | "file";
+export interface entityMetadataType {
+  entity_type: entityType;
+  entity_id: string;
+  entity_name: string;
+}
+export const SummaryModalContext = createContext<{
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+}>(null);
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
   const {
     query: { app },
   } = router;
-  const [entityMetadata, setEntityMetadata] = useState<{
-    entity: null | string;
-    entity_id: string;
-  }>({
-    entity: null,
-    entity_id: "",
+  const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
+    entity_type: null,
+    entity_id: null,
+    entity_name: null,
   });
+
   return (
     <UserFlowVariedPages {...{ indexPath: "/", headerElements }}>
       <SummaryModalContext.Provider
@@ -46,30 +50,18 @@ const SingleAppsPage: NextPage = () => {
         />
       </SummaryModalContext.Provider>
 
-      {entityMetadata.entity !== null && (
-        <Modal
+      {entityMetadata.entity_type !== null && (
+        <SummaryModal
           opened
-          onClose={() => setEntityMetadata({ entity: null, entity_id: "" })}
-          size="xl"
-          withinPortal={false}
-          zIndex={400}
-          classNames={
-            {
-              // root: "w-96",
-            }
+          onClose={() =>
+            setEntityMetadata({
+              entity_type: null,
+              entity_id: null,
+              entity_name: null,
+            })
           }
-        >
-          {/* <ProjectSummary projectId={entityMetadata.entity_id} isModal={true} /> */}
-          {/* <CaseSummary
-            case_id={entityMetadata.entity_id}
-            bio_id=""
-            isModal={true}
-          /> */}
-          <ContextualFileView
-            setCurrentFile={entityMetadata.entity_id}
-            isModal={true}
-          />
-        </Modal>
+          entityMetadata={entityMetadata}
+        />
       )}
     </UserFlowVariedPages>
   );

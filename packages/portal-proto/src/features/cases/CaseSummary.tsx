@@ -454,10 +454,14 @@ export const CaseSummary = ({
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
           {!isModal && (
-            <SummaryHeader iconText="CA" headerTitle={headerTitle} />
+            <SummaryHeader iconText="ca" headerTitle={headerTitle} />
           )}
 
-          <div className="flex flex-col mx-auto mt-20 w-10/12">
+          <div
+            className={`flex flex-col mx-auto ${
+              isModal ? "mt-5" : "mt-20"
+            } w-10/12`}
+          >
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}

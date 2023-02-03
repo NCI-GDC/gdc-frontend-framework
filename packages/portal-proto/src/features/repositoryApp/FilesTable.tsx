@@ -107,35 +107,33 @@ const FilesTables: React.FC = () => {
     formattedTableData = data.map((file) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
-        // <Link href={`/files/${file.file_id}`}>
         <span
           className="text-utility-link underline cursor-pointer"
           onClick={() =>
             setEntityMetadata({
-              entity: "case",
+              entity_type: "file",
               entity_id: file.file_id,
+              entity_name: file.file_name,
             })
           }
         >
           {file.file_id}
         </span>
-        // </Link>
       ),
       access: <FileAccessBadge access={file.access} />,
       file_name: (
-        // <Link href={`/files/${file.id}`}>
         <span
           className="text-utility-link underline cursor-pointer"
           onClick={() =>
             setEntityMetadata({
-              entity: "case",
+              entity_type: "file",
               entity_id: file.file_id,
+              entity_name: file.file_name,
             })
           }
         >
           {file.file_name}{" "}
         </span>
-        // </Link>
       ),
       cases: file.cases?.length.toLocaleString() || 0,
       project_id: (

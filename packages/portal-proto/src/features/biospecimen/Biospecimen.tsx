@@ -143,8 +143,8 @@ export const Biospecimen = ({
             </Menu>
           </div>
 
-          <div className="flex mt-2">
-            <div className="mr-5">
+          <div className="flex mt-2 gap-4">
+            <div className="basis-1/4">
               <div className="flex mb-4">
                 <Input
                   icon={<MdOutlineSearch size={24} />}
@@ -215,7 +215,7 @@ export const Biospecimen = ({
                   />
                 )}
             </div>
-            <div className="flex-1">
+            <div className="basis-3/4">
               <HorizontalTable
                 tableData={formatEntityInfo(
                   selectedEntity,

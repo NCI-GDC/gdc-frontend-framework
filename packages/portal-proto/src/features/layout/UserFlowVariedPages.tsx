@@ -19,6 +19,10 @@ import { Button } from "@mantine/core";
 import { Header } from "./Header";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { Footer } from "./Footer";
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -61,6 +65,12 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         id="main"
       >
         {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
+        {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
+        {modal === Modals.SessionExpireModal && (
+          <SessionExpireModal openModal />
+        )}
+        {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
+        {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
         {children}
       </main>
       <footer className="flex-none">

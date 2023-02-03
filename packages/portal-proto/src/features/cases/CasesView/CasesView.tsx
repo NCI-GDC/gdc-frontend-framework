@@ -219,19 +219,19 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              {/* <Link href={`/cases/${datum.case_uuid}`}> */}
+              {/* Use TW*/}
               <span
-                className="text-utility-link underline"
+                className="text-utility-link underline cursor-pointer"
                 onClick={() =>
                   setEntityMetadata({
-                    entity: "case",
+                    entity_type: "case",
                     entity_id: datum.case_uuid,
+                    entity_name: `${datum?.project_id} / ${datum?.submitter_id}`,
                   })
                 }
               >
                 {datum.case_id}
               </span>
-              {/* </Link> */}
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,

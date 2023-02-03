@@ -9,7 +9,6 @@ import {
   Modals,
   selectUserDetailsInfo,
   fetchToken,
-  selectCurrentModal,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
 import { ReactNode, useEffect } from "react";
@@ -30,10 +29,6 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import urlJoin from "url-join";
 import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
-import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
-import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
-import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import {
@@ -70,7 +65,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
-  const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
 
@@ -393,10 +387,6 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-grow">
         <Options />
       </div>
-      {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
-      {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
-      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
-      {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
     </div>
   );
 };

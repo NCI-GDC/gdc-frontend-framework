@@ -370,9 +370,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   return (
     <div>
       {!projectData.isModal && (
-        <SummaryHeader iconText="PR" headerTitle={projectData.project_id} />
+        <SummaryHeader iconText="pr" headerTitle={projectData.project_id} />
       )}
-      <div className="flex flex-col mx-auto mt-20 w-10/12">
+      <div
+        className={`flex flex-col mx-auto ${
+          projectData.isModal ? "mt-5" : "mt-20"
+        } w-10/12`}
+      >
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
             <Menu width="target">

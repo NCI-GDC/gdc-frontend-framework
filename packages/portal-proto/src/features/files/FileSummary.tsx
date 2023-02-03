@@ -46,10 +46,14 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
     <div>
       {data && !isFetching ? (
         <>
-          {!isModal && <SummaryHeader iconText="FL" headerTitle={title} />}
+          {!isModal && <SummaryHeader iconText="fl" headerTitle={title} />}
 
           {data?.[0] ? (
-            <FileView file={data?.[0]} fileHistory={history?.data?.[0]} />
+            <FileView
+              file={data?.[0]}
+              fileHistory={history?.data?.[0]}
+              isModal={isModal}
+            />
           ) : (
             <SummaryErrorHeader label="File Not Found" />
           )}
