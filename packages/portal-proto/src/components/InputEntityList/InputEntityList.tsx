@@ -120,7 +120,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
     .map((t) => t.toUpperCase());
   const outputIds = matched
-    .map((match) => match.createSet.find((m) => m.field === outputField)?.value)
+    .map((match) => match.output.find((m) => m.field === outputField)?.value)
     .filter((match) => match !== null);
 
   useEffect(() => {
