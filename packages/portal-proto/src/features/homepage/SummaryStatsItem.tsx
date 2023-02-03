@@ -14,14 +14,14 @@ export const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
   size = 24,
 }: SummaryStatsItemProp) => {
   return (
-    <div className="flex flex-col flex-nowrap font-heading text-summarybar-text justify-start ` items-center">
-      <div className="rounded-full bg-summarybar-icon-background flex flex-row items-center p-2 mb-1">
+    <div className="flex flex-col mt-1 flex-nowrap font-heading text-summarybar-text justify-start items-center">
+      <div>
         <Image src={icon} width={size} height={size} />
       </div>
-      <div className="-mb-1">
+      <div className="-mb-1 -mt-1 text-[1.1rem] font-medium tracking-tight">
         {count && count >= 0 ? count.toLocaleString() : ""}
       </div>
-      <div className="text-[0.7rem] font-bold">{title}</div>
+      <div className="text-[0.75rem] font-semibold">{title}</div>
     </div>
   );
 };

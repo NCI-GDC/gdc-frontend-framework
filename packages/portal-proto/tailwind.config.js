@@ -682,6 +682,10 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
         content: ["Montserrat", "sans-serif"],
+        "content-noto": ["Noto Sans", "sans-serif"],
+      },
+      backgroundImage: {
+        "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",

@@ -6,11 +6,11 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
     useVersionInfoDetails();
   const { data: countsInfo } = useTotalCounts();
-
+  const ICON_SIZE = 40;
   return (
-    <div className="flex flex-col p-4 shadow-md hover:shadow-lg">
+    <div className="flex flex-col mt-11">
       <div className="flex flex-col">
-        <p className="font-heading text-lg text-summarybar-text pr-2">
+        <p className="font-heading text-md font-bold text-summarybar-text">
           Data Portal Summary
         </p>
         <AnchorLink
@@ -18,42 +18,42 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
         />
       </div>
-      <div className="grid grid-cols-6 divide-x py-3  bg-base-max rounded-md border-2 border-summarybar-borber shadow-lg justify-between">
+      <div className="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max w-[95%] rounded-md border-1 border-summarybar-border shadow-lg justify-between">
         <SummaryStatsItem
           title="Projects"
           count={countsInfo.projectsCounts}
-          size={24}
-          icon="/user-flow/icons/projects.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/projects.svg"
         />
         <SummaryStatsItem
           title="Primary Sites"
           count={countsInfo.primarySiteCounts}
-          size={24}
-          icon="/user-flow/icons/primary_sites.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/primary-sites.svg"
         />
         <SummaryStatsItem
           title="Cases"
           count={countsInfo.repositoryCaseCounts}
-          size={24}
-          icon="/user-flow/icons/user.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/users.svg"
         />
         <SummaryStatsItem
           title="Files"
           count={countsInfo.fileCounts}
-          size={24}
-          icon="/user-flow/icons/files.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/files.svg"
         />
         <SummaryStatsItem
           title="Genes"
           count={countsInfo.genesCounts}
-          size={24}
-          icon="/user-flow/icons/genes.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/genes.svg"
         />
         <SummaryStatsItem
           title="Mutations"
           count={countsInfo.mutationCounts}
-          size={24}
-          icon="/user-flow/icons/gene-mutation.svg"
+          size={ICON_SIZE}
+          icon="/user-flow/icons/summary/gene-mutation.svg"
         />
       </div>
     </div>
