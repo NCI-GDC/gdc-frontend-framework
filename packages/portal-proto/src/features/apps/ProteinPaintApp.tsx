@@ -9,7 +9,7 @@ const ProteinPaintApp: FC = () => {
   return isDemoMode ? (
     <DemoUtil text="Coming Soon!" />
   ) : (
-    <ProteinPaintWrapper track="lollipop" />
+    <ProteinPaintWrapper />
   );
 };
 
