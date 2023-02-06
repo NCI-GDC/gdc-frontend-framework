@@ -3,6 +3,7 @@ import { TypeIcon } from "@/components/TypeIcon";
 import { CaseSummary } from "@/features/cases/CaseSummary";
 import { ContextualFileView } from "@/features/files/FileSummary";
 import { entityMetadataType } from "@/features/layout/UserFlowVariedPages";
+import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { Modal } from "@mantine/core";
 import React from "react";
@@ -41,11 +42,13 @@ export const SummaryModal = ({
         bio_id=""
         isModal={true}
       />
-    ) : (
+    ) : entityMetadata.entity_type === "file" ? (
       <ContextualFileView
         setCurrentFile={entityMetadata.entity_id}
         isModal={true}
       />
+    ) : (
+      <SSMSSummary ssm_id={entityMetadata.entity_id} isModal={true} />
     );
 
   const HeaderTitle =
@@ -59,9 +62,14 @@ export const SummaryModal = ({
         iconText="ca"
         headerTitle={entityMetadata.entity_name}
       />
-    ) : (
+    ) : entityMetadata.entity_type === "file" ? (
       <SummaryModalHeader
         iconText="fl"
+        headerTitle={entityMetadata.entity_name}
+      />
+    ) : (
+      <SummaryModalHeader
+        iconText="mu"
         headerTitle={entityMetadata.entity_name}
       />
     );

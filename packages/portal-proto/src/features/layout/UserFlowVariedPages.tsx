@@ -39,7 +39,7 @@ interface UserFlowVariedPagesProps {
   readonly Options?: React.FC<unknown>;
 }
 
-export type entityType = null | "project" | "case" | "file";
+export type entityType = null | "project" | "case" | "file" | "ssms";
 export interface entityMetadataType {
   entity_type: entityType;
   entity_id: string;

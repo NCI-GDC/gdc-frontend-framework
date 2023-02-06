@@ -23,6 +23,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks } from "../../../utils";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { entityMetadataType } from "@/features/layout/UserFlowVariedPages";
 
 export const createTableColumn = (
   accessor: string,
@@ -38,6 +39,7 @@ export const createTableColumn = (
   toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
   isDemoMode: boolean,
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -208,7 +210,18 @@ export const createTableColumn = (
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
-                      <div className="text-xs">{label}</div>
+                      <button
+                        className="text-utility-link underline"
+                        onClick={() =>
+                          setEntityMetadata({
+                            entity_type: "ssms",
+                            entity_id: row.original["select"],
+                            entity_name: originalLabel,
+                          })
+                        }
+                      >
+                        {label}
+                      </button>
                     </Tooltip>
                   ) : (
                     <div className="text-lg ml-3">{"--"}</div>

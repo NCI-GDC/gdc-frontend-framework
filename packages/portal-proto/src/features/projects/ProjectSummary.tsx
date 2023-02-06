@@ -28,7 +28,7 @@ relative
 bg-percentage-bar-base
 rounded-sm
 px-1
-w-14
+w-16
 h-full`;
 
 const PercentBarLabel = tw.div`

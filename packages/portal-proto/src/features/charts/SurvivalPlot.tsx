@@ -83,7 +83,6 @@ export const useSurvival: survival = (
           xDomain: xDomain,
           onDomainChange: setXDomain,
           minimumDonors: MINIMUM_CASES,
-          //   onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }), //TODO: Add when case summary is working
           getSetSymbol: (curve, curves) =>
             curves.length === 1
               ? ""
