@@ -172,6 +172,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [pageSize]);
 
   const { status, ssms: initialData } = data;
+  const { ssmsTotal } = initialData;
 
   useEffect(() => {
     if (status === "fulfilled") {
@@ -232,7 +233,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     isFetching: mutationsFreqFetching,
     isError: mutationsFreqError,
   } = useMutationsFreqData({
-    size: initialData?.ssmsTotal,
+    size: 111, // ssmsTotal
     genomicFilters,
   });
 

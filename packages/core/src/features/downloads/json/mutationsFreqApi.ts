@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CoreDispatch } from "src/store";
 import { CoreState } from "src/reducers";
 
-export const getMutationsFreqQuery = (size: number) => {
+export const getMutationsFreqQuery = () => {
   return `query MutationsFreqQuery(
   $filters_ssms_tested: FiltersArgument 
   $filters_ssms_cases: FiltersArgument
@@ -12,6 +12,8 @@ export const getMutationsFreqQuery = (size: number) => {
   $filters_ssms_table: FiltersArgument
   $score: String
   $sort: [Sort]
+  $offset: Int
+  $size: Int
   ) {
     viewer {
       explore {
@@ -26,7 +28,7 @@ export const getMutationsFreqQuery = (size: number) => {
           }
         }
         ssms {
-          hits(first: ${size}, filters: $filters_ssms_table, score: $score, sort: $sort) {
+          hits(first: $size, offset: $offset, filters: $filters_ssms_table, score: $score, sort: $sort) {
             total
             edges {
               node {
@@ -115,8 +117,10 @@ export interface MutationsFreqResponse {
   };
 }
 
-export const getMutationsFreqFilters = () => {
+export const getMutationsFreqFilters = (size: number) => {
   const mutationFreqFilters = {
+    size: size,
+    offset: 0,
     filters_ssms_tested: {
       content: [
         {
@@ -195,8 +199,8 @@ export const fetchMutationsFreq = createAsyncThunk<
     size,
   }: MutationsFreqRequestParameters): Promise<GraphQLApiResponse> => {
     return await graphqlAPI(
-      getMutationsFreqQuery(size),
-      getMutationsFreqFilters(),
+      getMutationsFreqQuery(),
+      getMutationsFreqFilters(size),
     );
   },
 );
