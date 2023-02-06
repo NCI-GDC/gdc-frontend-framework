@@ -27,4 +27,5 @@ module.exports = withTM({
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
   },
+  productionBrowserSourceMaps: true,
 });
