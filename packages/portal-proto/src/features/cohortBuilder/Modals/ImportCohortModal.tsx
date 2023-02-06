@@ -43,11 +43,14 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
         filters: filters,
         message: "newCasesCohort",
         name,
-        group: {
-          ids: [...ids],
-          field: "cases.case_id",
-          groupId: uuidv4(),
-        },
+        group:
+          ids.length > 1
+            ? {
+                ids: [...ids],
+                field: "cases.case_id",
+                groupId: uuidv4(),
+              }
+            : undefined,
       }),
     );
 
