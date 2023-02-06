@@ -61,6 +61,7 @@ const useCohortCentricFiles = () => {
           expand: [
             "annotations", //annotations
             "cases.project", //project_id
+            "cases",
           ],
           size: 20,
         }),

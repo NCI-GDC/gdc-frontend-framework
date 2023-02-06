@@ -1,4 +1,12 @@
-import { MutableRefObject, useLayoutEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import {
@@ -10,6 +18,10 @@ import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+} from "../layout/UserFlowVariedPages";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -42,6 +54,7 @@ type survival = (
   setXDomain: any,
   height: number,
   setTooltip?: (x?: any) => any,
+  setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>,
 ) => MutableRefObject<any>;
 
 export const useSurvival: survival = (
@@ -51,6 +64,7 @@ export const useSurvival: survival = (
   height,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setTooltip = (x?) => null,
+  setEntityMetadata,
 ) => {
   const [ref, rect] = useResizeObserver();
 
@@ -92,10 +106,27 @@ export const useSurvival: survival = (
               </div>,
             );
           },
+          onClickDonor: (e, { project_id, submitter_id, id }) => {
+            setEntityMetadata({
+              entity_type: "case",
+              entity_id: id,
+              entity_name: `${project_id} / ${submitter_id}`,
+            });
+          },
+
           onMouseLeaveDonor: () => setTooltip(undefined),
         })
       : null;
-  }, [ref, data, xDomain, setXDomain, setTooltip, height, rect]);
+  }, [
+    ref,
+    data,
+    xDomain,
+    setXDomain,
+    setTooltip,
+    height,
+    rect,
+    setEntityMetadata,
+  ]);
 
   return ref;
 };
@@ -291,6 +322,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       ? enoughDataOnSomeCurves(plotData)
       : enoughData(plotData);
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
   // hook to call renderSurvivalPlot
   const container = useSurvival(
     hasEnoughData ? plotData : [],
@@ -298,6 +330,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     setXDomain,
     height,
     setSurvivalPlotLineTooltipContent,
+    setEntityMetadata,
   );
 
   const containerForDownload = useSurvival(

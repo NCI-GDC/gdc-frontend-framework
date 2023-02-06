@@ -30,7 +30,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
-import { SummaryModalContext } from "src/pages/analysis_page";
+import { SummaryModalContext } from "../layout/UserFlowVariedPages";
 
 interface CellProps {
   value: string[];
@@ -186,8 +186,8 @@ const ProjectsTable: React.FC = () => {
             selected: project_id,
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
-                <span
-                  className="text-utility-link underline cursor-pointer"
+                <button
+                  className="text-utility-link underline"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "project",
@@ -197,7 +197,7 @@ const ProjectsTable: React.FC = () => {
                   }
                 >
                   {project_id}
-                </span>
+                </button>
               </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,

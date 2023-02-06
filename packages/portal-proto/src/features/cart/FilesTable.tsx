@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
 import fileSize from "filesize";
 import { capitalize } from "lodash";
 import {
@@ -21,6 +20,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { SummaryModalContext } from "../layout/UserFlowVariedPages";
 
 const initialVisibleColumns: Columns[] = [
   { id: "remove", columnName: "Remove", visible: true },
@@ -90,27 +90,80 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     expand: ["annotations", "cases", "cases.project"],
   });
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   useEffect(() => {
     setTableData(
       isSuccess
         ? data.map((file) => ({
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
-              <Link href={`/files/${file.file_id}`}>
-                <a className="text-utility-link underline">{file.file_id}</a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "file",
+                    entity_id: file.file_id,
+                    entity_name: file.file_name,
+                  })
+                }
+              >
+                {file.file_id}
+              </button>
             ),
             access: <FileAccessBadge access={file.access} />,
             name: (
-              <Link href={`/files/${file.file_id}`}>
-                <a className="text-utility-link underline">{file.file_name}</a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "file",
+                    entity_id: file.file_id,
+                    entity_name: file.file_name,
+                  })
+                }
+              >
+                {file.file_name}
+              </button>
             ),
-            cases: file.cases?.length.toLocaleString() || 0,
+            cases: (
+              <button
+                className={`${
+                  file.cases?.length > 0
+                    ? "text-utility-link underline"
+                    : "cursor-default"
+                }`}
+                onClick={() => {
+                  if (file.cases?.length === 0) return;
+                  setEntityMetadata({
+                    entity_type: file.cases?.length === 1 ? "case" : "file",
+                    entity_id:
+                      file.cases?.length === 1
+                        ? file.cases?.[0].case_id
+                        : file.file_id,
+                    entity_name:
+                      file.cases?.length === 1
+                        ? `${file?.cases?.[0].project.project_id} / ${file?.cases?.[0].submitter_id}`
+                        : file.file_name,
+                  });
+                }}
+              >
+                {file.cases?.length.toLocaleString() || 0}
+              </button>
+            ),
             project: (
-              <Link href={`/projects/${file.project_id}`}>
-                <a className="text-utility-link underline">{file.project_id}</a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "project",
+                    entity_id: file.project_id,
+                    entity_name: file.project_id,
+                  })
+                }
+              >
+                {file.project_id}
+              </button>
             ),
             data_category: file.data_category,
             data_format: file.data_format,
@@ -122,7 +175,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           }))
         : [],
     );
-  }, [isSuccess, data]);
+  }, [isSuccess, data, setEntityMetadata]);
 
   const handleDownloadJSON = async () => {
     await download({

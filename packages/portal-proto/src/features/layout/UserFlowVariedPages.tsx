@@ -1,4 +1,12 @@
-import { PropsWithChildren, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 // TODO: uncomment during PEAR-845
 // import { useRouter } from "next/router";
 import {
@@ -23,12 +31,23 @@ import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
+import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
 }
+
+export type entityType = null | "project" | "case" | "file";
+export interface entityMetadataType {
+  entity_type: entityType;
+  entity_id: string;
+  entity_name: string;
+}
+export const SummaryModalContext = createContext<{
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+}>(null);
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   headerElements,
@@ -51,32 +70,61 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   }, []);
 
   const banners = useCoreSelector((state) => selectBanners(state));
+  const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
+    entity_type: null,
+    entity_id: null,
+    entity_name: null,
+  });
+
   return (
-    <div className="flex flex-col min-h-screen min-w-full bg-base-max">
-      <header className="flex-none bg-base-max sticky top-0 z-[300]">
-        {banners.map((banner) => (
-          <Banner {...banner} key={banner.id} />
-        ))}
-        <Header {...{ headerElements, indexPath, Options }} />
-      </header>
-      <main
-        data-tour="full_page_content"
-        className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
-        id="main"
-      >
-        {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
-        {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
-        {modal === Modals.SessionExpireModal && (
-          <SessionExpireModal openModal />
-        )}
-        {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
-        {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
-        {children}
-      </main>
-      <footer className="flex-none">
-        <Footer />
-      </footer>
-    </div>
+    <SummaryModalContext.Provider
+      value={{
+        setEntityMetadata,
+      }}
+    >
+      <div className="flex flex-col min-h-screen min-w-full bg-base-max">
+        <header className="flex-none bg-base-max sticky top-0 z-[300]">
+          {banners.map((banner) => (
+            <Banner {...banner} key={banner.id} />
+          ))}
+          <Header {...{ headerElements, indexPath, Options }} />
+        </header>
+        <main
+          data-tour="full_page_content"
+          className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
+          id="main"
+        >
+          {modal === Modals.GeneralErrorModal && (
+            <GeneralErrorModal openModal />
+          )}
+          {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
+          {modal === Modals.SessionExpireModal && (
+            <SessionExpireModal openModal />
+          )}
+          {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
+          {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
+
+          {entityMetadata.entity_type !== null && (
+            <SummaryModal
+              opened
+              onClose={() =>
+                setEntityMetadata({
+                  entity_type: null,
+                  entity_id: null,
+                  entity_name: null,
+                })
+              }
+              entityMetadata={entityMetadata}
+            />
+          )}
+
+          {children}
+        </main>
+        <footer className="flex-none">
+          <Footer />
+        </footer>
+      </div>
+    </SummaryModalContext.Provider>
   );
 };
 

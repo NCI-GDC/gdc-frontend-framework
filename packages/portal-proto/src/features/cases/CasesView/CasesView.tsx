@@ -27,7 +27,7 @@ import {
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { SummaryModalContext } from "src/pages/analysis_page";
+import { SummaryModalContext } from "@/features/layout/UserFlowVariedPages";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -219,9 +219,8 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              {/* Use TW*/}
-              <span
-                className="text-utility-link underline cursor-pointer"
+              <button
+                className="text-utility-link underline"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "case",
@@ -231,17 +230,24 @@ export const ContextualCasesView: React.FC = () => {
                 }
               >
                 {datum.case_id}
-              </span>
+              </button>
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,
           project_id: (
             <OverflowTooltippedLabel label={datum.project_id}>
-              <Link href={`/projects/${datum.project_id}`}>
-                <a className="text-utility-link underline">
-                  {datum.project_id}
-                </a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "project",
+                    entity_id: datum.project_id,
+                    entity_name: datum.project_id,
+                  })
+                }
+              >
+                {datum.project_id}
+              </button>
             </OverflowTooltippedLabel>
           ),
           program: datum.program,
@@ -279,7 +285,7 @@ export const ContextualCasesView: React.FC = () => {
           ),
         };
       }),
-    [data, currentCart, classes, dispatch],
+    [data, currentCart, classes, dispatch, setEntityMetadata],
   );
 
   const sortByActions = (sortByObj) => {

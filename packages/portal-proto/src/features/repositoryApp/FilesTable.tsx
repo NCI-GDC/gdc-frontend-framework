@@ -33,7 +33,7 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import { SummaryModalContext } from "src/pages/analysis_page";
+import { SummaryModalContext } from "../layout/UserFlowVariedPages";
 
 const FilesTables: React.FC = () => {
   const columnListOrder: Columns[] = [
@@ -107,8 +107,8 @@ const FilesTables: React.FC = () => {
     formattedTableData = data.map((file) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
-        <span
-          className="text-utility-link underline cursor-pointer"
+        <button
+          className="text-utility-link underline"
           onClick={() =>
             setEntityMetadata({
               entity_type: "file",
@@ -118,12 +118,12 @@ const FilesTables: React.FC = () => {
           }
         >
           {file.file_id}
-        </span>
+        </button>
       ),
       access: <FileAccessBadge access={file.access} />,
       file_name: (
-        <span
-          className="text-utility-link underline cursor-pointer"
+        <button
+          className="text-utility-link underline"
           onClick={() =>
             setEntityMetadata({
               entity_type: "file",
@@ -132,14 +132,48 @@ const FilesTables: React.FC = () => {
             })
           }
         >
-          {file.file_name}{" "}
-        </span>
+          {file.file_name}
+        </button>
       ),
-      cases: file.cases?.length.toLocaleString() || 0,
+      cases: (
+        <button
+          className={`${
+            file.cases?.length > 0
+              ? "text-utility-link underline"
+              : "cursor-default"
+          }`}
+          onClick={() => {
+            if (file.cases?.length === 0) return;
+            setEntityMetadata({
+              entity_type: file.cases?.length === 1 ? "case" : "file",
+              entity_id:
+                file.cases?.length === 1
+                  ? file.cases?.[0].case_id
+                  : file.file_id,
+              entity_name:
+                file.cases?.length === 1
+                  ? `${file?.cases?.[0].project.project_id} / ${file?.cases?.[0].submitter_id}`
+                  : file.file_name,
+            });
+          }}
+        >
+          {file.cases?.length.toLocaleString() || 0}
+        </button>
+      ),
+
       project_id: (
-        <Link href={`/projects/${file.project_id}`}>
-          <a className="text-utility-link underline">{file.project_id}</a>
-        </Link>
+        <button
+          className="text-utility-link underline"
+          onClick={() =>
+            setEntityMetadata({
+              entity_type: "project",
+              entity_id: file.project_id,
+              entity_name: file.project_id,
+            })
+          }
+        >
+          {file.project_id}
+        </button>
       ),
       data_category: file.data_category,
       data_type: file.data_type,
@@ -184,6 +218,7 @@ const FilesTables: React.FC = () => {
         expand: [
           "annotations", //annotations
           "cases.project", //project_id
+          "cases",
         ],
         size: pageSize,
         from: offset * pageSize,
