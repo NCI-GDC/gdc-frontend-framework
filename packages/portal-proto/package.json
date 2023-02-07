@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
+    "@oncojs/sapien": "git+https://github.com/NCI-GDC/sapien.git",
     "@gff/core": "0.0.1",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.10.2",
