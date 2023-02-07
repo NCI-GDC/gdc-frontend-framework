@@ -22,7 +22,7 @@ describe("</Footer>", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue(mockData);
     const { getByText } = render(<Footer />);
     expect(
-      getByText("NIH... Turning Discovery Into Health ®"),
+      getByText("NIH... Turning Discovery Into Health"),
     ).toBeInTheDocument();
   });
 
