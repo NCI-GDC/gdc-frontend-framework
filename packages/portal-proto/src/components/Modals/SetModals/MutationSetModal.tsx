@@ -8,10 +8,11 @@ import {
   useCreateSsmsSetMutation,
   useSsmSetCountQuery,
 } from "@gff/core";
-import InputSet from "./InputSet";
+import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
-import GenericSetModal from "./GenericSetModal";
+import UserInputModal from "../UserInputModal";
 import { SavedSetModalProps } from "./types";
+import UpdateCohortButton from "./UpdateFiltersButton";
 
 const MutationSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
@@ -24,13 +25,19 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   const dispatch = useCoreDispatch();
 
   return (
-    <GenericSetModal modalTitle={modalTitle} tabbed tabLabel={"Mutations"}>
+    <UserInputModal
+      modalTitle={modalTitle}
+      tabs={[
+        { label: "Enter Mutations", value: "input" },
+        { label: "Saved Sets", value: "saved" },
+      ]}
+    >
       <Tabs.Panel value="input" className="pt-4">
-        <InputSet
+        <InputEntityList
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
-          setType="ssms"
-          setTypeLabel="mutation"
+          entityType="ssms"
+          entityLabel="mutation"
           identifierToolTip={
             <div>
               <p>- Mutation identifiers accepted: Mutation UUID, DNA Change</p>
@@ -46,8 +53,9 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
             createSet: useCreateSsmsSetMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
+            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
-          useAddNewFilterGroups={useAddNewFilterGroups}
+          SubmitButton={UpdateCohortButton}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -77,7 +85,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
-    </GenericSetModal>
+    </UserInputModal>
   );
 };
 

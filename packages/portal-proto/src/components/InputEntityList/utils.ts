@@ -6,7 +6,7 @@ interface Match {
 /**
   Parses through the API response to figure out what fields our matched values correspond to
   @param data: API response for the matches
-  @param mappedToFields: fields we mapped to, will be used to create set
+  @param mappedToFields: fields we mapped to
   @param givenIdentifierFields: fields that we accept from the user
   @param tokens: the list of identifiers the user input
 **/
@@ -16,16 +16,16 @@ export const getMatchedIdentifiers = (
   mappedToFields: string[],
   givenIdentifierFields: string[],
   tokens: string[],
-  createSetField: string,
-): { mappedTo: Match[]; createSet: Match[]; givenIdentifiers: Match[] }[] => {
+  outputField: string,
+): { mappedTo: Match[]; output: Match[]; givenIdentifiers: Match[] }[] => {
   const matchedData = [];
   data.forEach((d) => {
     const mappedTo: Match[] = [];
     // fields we are mapping to don't need to be compared to user input
     findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
 
-    const createSet: Match[] = [];
-    findAllIdentifiers(d, [createSetField], undefined, "", createSet);
+    const output: Match[] = [];
+    findAllIdentifiers(d, [outputField], undefined, "", output);
 
     const givenIdentifiers: Match[] = [];
     findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
@@ -33,7 +33,7 @@ export const getMatchedIdentifiers = (
     if (givenIdentifiers.length > 0) {
       matchedData.push({
         mappedTo,
-        createSet,
+        output,
         givenIdentifiers,
       });
     }

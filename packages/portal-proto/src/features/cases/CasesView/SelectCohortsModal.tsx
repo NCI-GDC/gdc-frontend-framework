@@ -1,6 +1,6 @@
 import FunctionButton from "@/components/FunctionButton";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
-import { modalStyles } from "@/components/Modals/SetModals/styles";
+import { modalStyles } from "@/components/Modals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   Columns,

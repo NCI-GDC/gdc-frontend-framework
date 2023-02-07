@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useCoreSelector,
   selectSelectedCases,
-  selectCohortMessage,
   useCoreDispatch,
   FilterSet,
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
-  clearCohortMessage,
   selectAvailableCohorts,
   defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
-import { showNotification } from "@mantine/notifications";
-import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
 import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
@@ -45,7 +41,6 @@ export const CasesCohortButton = (): JSX.Element => {
     selectSelectedCases(state),
   );
 
-  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
 
@@ -77,29 +72,6 @@ export const CasesCohortButton = (): JSX.Element => {
       }),
     );
   };
-
-  useEffect(() => {
-    if (cohortMessage) {
-      const cmdAndParam = cohortMessage.split("|", 3);
-      if (cmdAndParam.length == 3) {
-        if (cmdAndParam[0] === "newCasesCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-      }
-      coreDispatch(clearCohortMessage());
-    }
-  }, [cohortMessage, coreDispatch]);
 
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
   const [showCreateCohort, setShowCreateCohort] = useState(false);

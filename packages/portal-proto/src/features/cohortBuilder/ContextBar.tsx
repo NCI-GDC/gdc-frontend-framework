@@ -12,6 +12,7 @@ import {
   ErrorCohortNotification,
   NewCohortNotification,
   SavedCohortNotification,
+  NewCohortNotificationWithSetAsCurrent,
 } from "@/features/cohortBuilder/CohortNotifications";
 import {
   useCoreDispatch,
@@ -149,6 +150,20 @@ const ContextBar: React.FC = () => {
         if (cmdAndParam[0] === "error") {
           showNotification({
             message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "newCasesCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
