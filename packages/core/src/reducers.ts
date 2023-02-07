@@ -4,7 +4,10 @@ import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
 import { fileCaseGenesMutationsFacetReducers } from "./features/facets/facetSliceGQL";
 import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
-import { filesReducer } from "./features/files/filesSlice";
+import {
+  filesApiReducer,
+  filesApiSliceReducerPath,
+} from "./features/files/filesSlice";
 import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import { historyReducer } from "./features/history/historySlice";
 import {
@@ -28,8 +31,8 @@ import {
   cohortApiSliceReducerPath,
 } from "./features/api/cohortApiSlice";
 import {
-  filesAllApiReducer,
-  filesApiSliceReducerPath,
+  allFilesApiReducer,
+  allFilesApiSliceReducerPath,
 } from "./features/files/allFilesMutation";
 import {
   survivalApiSliceReducerPath,
@@ -62,11 +65,8 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  files: filesReducer,
   filesSize: filesSizeReducer,
-  [filesApiSliceReducerPath]: filesAllApiReducer,
   history: historyReducer,
-  [projectsApiSliceReducerPath]: projectsApiReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
@@ -86,6 +86,9 @@ export const reducers = combineReducers({
   userInfo: userDetailsReducer,
   modals: modalReducer,
   quickSearch: quickSearchReducer,
+  [filesApiSliceReducerPath]: filesApiReducer,
+  [allFilesApiSliceReducerPath]: allFilesApiReducer,
+  [projectsApiSliceReducerPath]: projectsApiReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,

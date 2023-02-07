@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, Middleware, Reducer } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
-import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
+import { DataStatus } from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
@@ -9,6 +9,7 @@ import {
   GdcApiResponse,
   FileDefaults,
   Pagination,
+  endpointSlice,
 } from "../gdcapi/gdcapi";
 
 const accessTypes = ["open", "controlled"] as const;
@@ -537,57 +538,30 @@ export const fetchFiles = createAsyncThunk<
   return await fetchGdcFiles(request);
 });
 
-const initialState: FilesState = {
-  status: "uninitialized",
-};
+export const filesApiSlice = endpointSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getFiles: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "files",
+        fetchAll: false,
+      }),
+      transformResponse: (response: GdcApiResponse<FileDefaults>) => {
+        if (response.warnings && Object.keys(response.warnings).length > 0)
+          return {
+            files: [],
+          };
 
-const slice = createSlice({
-  name: "files",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchFiles.fulfilled, (state, action) => {
-        const response = action.payload;
-        if (response.warnings && Object.keys(response.warnings).length > 0) {
-          state.files = [];
-          state.status = "rejected";
-          state.error = Object.values(response.warnings)[0]; // TODO add better errors parsing
-        } else {
-          state.files = castDraft(mapFileData(response.data.hits));
-          state.pagination = response.data.pagination;
-          state.status = "fulfilled";
-          state.error = undefined;
-        }
-      })
-      .addCase(fetchFiles.pending, (state) => {
-        state.files = [];
-        state.status = "pending";
-        state.error = undefined;
-      })
-      .addCase(fetchFiles.rejected, (state) => {
-        state.files = [];
-        state.status = "rejected";
-        state.error = undefined; // TODO - extract error message from object or error
-      });
-  },
+        return {
+          files: castDraft(mapFileData(response.data.hits)),
+          pagination: response.data.pagination,
+        };
+      },
+    }),
+  }),
 });
+export const { useGetFilesQuery } = filesApiSlice;
 
-export const filesReducer = slice.reducer;
-
-export const selectFilesState = (state: CoreState): FilesState => state.files;
-
-export const selectFiles = (
-  state: CoreState,
-): ReadonlyArray<GdcFile> | undefined => state.files.files;
-
-export const selectFilesData = (
-  state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<GdcFile> | undefined> => {
-  return {
-    data: state.files.files,
-    pagination: state.files.pagination,
-    status: state.files.status,
-    error: state.files.error,
-  };
-};
+export const filesApiSliceMiddleware = filesApiSlice.middleware as Middleware;
+export const filesApiSliceReducerPath: string = filesApiSlice.reducerPath;
+export const filesApiReducer: Reducer = filesApiSlice.reducer as Reducer;

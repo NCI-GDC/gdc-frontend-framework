@@ -8,10 +8,10 @@ import {
 } from "react-icons/md";
 import {
   GdcFile,
-  useFilteredFiles,
   useCoreSelector,
   useCoreDispatch,
   selectCart,
+  useGetFilesQuery,
 } from "@gff/core";
 import EnumFacet from "../facets/EnumFacet";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
@@ -19,7 +19,6 @@ import Link from "next/link";
 import { mapGdcFileToCartFile } from "./utils";
 import tw from "tailwind-styled-components";
 import FilesTables from "../repositoryApp/FilesTable";
-
 import {
   useClearFilters,
   useEnumFacet,
@@ -76,7 +75,7 @@ const buttonStyle =
   "mx-1 text-primary-contrast bg-primary hover:bg-primary-darker transition-colors ";
 
 export const ContextualFilesView: React.FC = () => {
-  const { data } = useFilteredFiles();
+  const { data } = useGetFilesQuery({});
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [selectedFiles] = useState<GdcFile[]>([]);
@@ -159,13 +158,8 @@ export const ContextualFilesView: React.FC = () => {
             );
           })}
         </div>
-        <FilesView />
+        <FilesTables />
       </div>
     </div>
   );
-};
-
-// TODO eliminate this??
-export const FilesView: React.FC = () => {
-  return <FilesTables />;
 };

@@ -36,7 +36,7 @@ describe("<Cart />", () => {
       },
     ]);
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-    jest.spyOn(core, "useFiles").mockReturnValue({} as any);
+    jest.spyOn(core, "useGetFilesQuery").mockReturnValue({} as any);
 
     const { getByTestId } = render(<Cart />);
     expect(getByTestId("cart-header").textContent).toContain("1 File");

@@ -1,33 +1,20 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
-import { coreCreateApi } from "src/coreCreateApi";
-import { GDC_APP_API_AUTH } from "src/constants";
+import {
+  endpointSlice,
+  GdcApiRequest,
+  GdcApiResponse,
+  ProjectDefaults,
+} from "../gdcapi/gdcapi";
 
-export const projectsApiSlice = coreCreateApi({
-  reducerPath: "projectApi",
-  baseQuery: async ({ request }) => {
-    const res = await fetch(`${GDC_APP_API_AUTH}/projects/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...request,
-        fields: request?.fields?.join(","),
-        expand: request?.expand?.join(","),
-      }),
-    });
-    if (res.ok) {
-      return { data: await res.json() };
-    }
-
-    return { error: { status: res.status, data: await res.text() } };
-  },
+export const projectsApiSlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProjects: builder.query({
-      query: (request) => ({
+      query: (request: GdcApiRequest) => ({
         request,
+        endpoint: "projects",
+        fetchAll: false,
       }),
-      transformResponse: (response) => {
+      transformResponse: (response: GdcApiResponse<ProjectDefaults>) => {
         if (response.data.hits)
           return {
             projectData: [...response.data.hits],

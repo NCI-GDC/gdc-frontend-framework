@@ -1,6 +1,6 @@
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { useFiles, useFileHistory } from "@gff/core";
+import { useGetFilesQuery, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
 export interface ContextualFileViewProps {
@@ -12,7 +12,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
   setCurrentFile,
   isModal,
 }: ContextualFileViewProps) => {
-  const { data, isFetching } = useFiles({
+  const { data, isFetching } = useGetFilesQuery({
     filters: {
       op: "=",
       content: {
@@ -41,16 +41,18 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
   });
   const history = useFileHistory(setCurrentFile);
 
-  const title = data?.[0] ? data[0].file_name : `${setCurrentFile} not found`;
+  const title = data?.files[0]
+    ? data?.files[0].file_name
+    : `${setCurrentFile} not found`;
   return (
     <div>
       {data && !isFetching ? (
         <>
           {!isModal && <SummaryHeader iconText="fl" headerTitle={title} />}
 
-          {data?.[0] ? (
+          {data?.files[0] ? (
             <FileView
-              file={data?.[0]}
+              file={data?.files[0]}
               fileHistory={history?.data?.[0]}
               isModal={isModal}
             />

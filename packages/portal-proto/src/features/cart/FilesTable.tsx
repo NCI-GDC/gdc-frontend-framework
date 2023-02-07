@@ -4,7 +4,7 @@ import { capitalize } from "lodash";
 import {
   useCoreSelector,
   selectCart,
-  useFiles,
+  useGetFilesQuery,
   useCoreDispatch,
   CartFile,
 } from "@gff/core";
@@ -72,7 +72,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
 
   const dispatch = useCoreDispatch();
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data, isFetching, isSuccess, isError, pagination } = useFiles({
+  const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
     filters: {
@@ -95,7 +95,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   useEffect(() => {
     setTableData(
       isSuccess
-        ? data.map((file) => ({
+        ? data?.files.map((file) => ({
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <button
@@ -226,7 +226,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
 
   const handleDownloadTSV = () => {
     downloadTSV(
-      data,
+      data?.files,
       visibleColumns,
       `files-table.${convertDateToString(new Date())}.tsv`,
       {
@@ -270,10 +270,10 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       columns={columns}
       selectableRow={false}
       tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-        activePage * pageSize < pagination?.total
+        activePage * pageSize < data?.pagination?.total
           ? activePage * pageSize
-          : pagination?.total
-      } of ${pagination?.total} files`}
+          : data?.pagination?.total
+      } of ${data?.pagination?.total} files`}
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
@@ -281,7 +281,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         </div>
       }
       pagination={{
-        ...pagination,
+        ...data?.pagination,
         label: "files",
       }}
       handleChange={handleChange}

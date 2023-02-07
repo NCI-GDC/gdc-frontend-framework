@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
 import {
@@ -14,13 +14,12 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectCurrentCohortFilters,
-  selectFilesData,
-  fetchFiles,
   buildCohortGqlOperator,
   joinFilters,
   useFilesSize,
   GdcFile,
   Operation,
+  useGetFilesQuery,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -36,6 +35,31 @@ import {
 import { SummaryModalContext } from "../layout/UserFlowVariedPages";
 
 const FilesTables: React.FC = () => {
+  //This if for hanadling pagination changes
+  const repositoryFilters = useAppSelector((state) => selectFilters(state));
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+  const allFilters = joinFilters(cohortFilters, repositoryFilters);
+  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
+
+  const [sortBy, setSortBy] = useState([]);
+  const [pageSize, setPageSize] = useState(20);
+  const [offset, setOffset] = useState(0);
+
+  const coreDispatch = useCoreDispatch();
+  const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
+    filters: cohortGqlOperator,
+    expand: [
+      "annotations", //annotations
+      "cases.project", //project_id
+      "cases",
+    ],
+    size: pageSize,
+    from: offset * pageSize,
+    sortBy: sortBy,
+  });
+
   const columnListOrder: Columns[] = [
     {
       id: "cart",
@@ -82,8 +106,6 @@ const FilesTables: React.FC = () => {
       total: undefined,
     };
 
-  const { data, pagination, status } = useCoreSelector(selectFilesData);
-
   const getAnnotationsLinkParams = (file: GdcFile): string | null => {
     // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
     // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
@@ -102,9 +124,9 @@ const FilesTables: React.FC = () => {
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
-  if (status === "fulfilled") {
-    tempPagination = pagination;
-    formattedTableData = data.map((file) => ({
+  if (!isFetching && isSuccess) {
+    tempPagination = data?.pagination;
+    formattedTableData = data?.files.map((file: GdcFile) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
         <button
@@ -197,36 +219,22 @@ const FilesTables: React.FC = () => {
     }));
   }
 
-  //This if for hanadling pagination changes
-  const repositoryFilters = useAppSelector((state) => selectFilters(state));
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-  const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
-
-  const [sortBy, setSortBy] = useState([]);
-  const [pageSize, setPageSize] = useState(20);
-  const [offset, setOffset] = useState(0);
-
-  const coreDispatch = useCoreDispatch();
-
-  useEffect(() => {
-    coreDispatch(
-      fetchFiles({
-        filters: cohortGqlOperator,
-        expand: [
-          "annotations", //annotations
-          "cases.project", //project_id
-          "cases",
-        ],
-        size: pageSize,
-        from: offset * pageSize,
-        sortBy: sortBy,
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageSize, offset, sortBy]);
+  // useEffect(() => {
+  //   coreDispatch(
+  //     fetchFiles({
+  //       filters: cohortGqlOperator,
+  //       expand: [
+  //         "annotations", //annotations
+  //         "cases.project", //project_id
+  //         "cases",
+  //       ],
+  //       size: pageSize,
+  //       from: offset * pageSize,
+  //       sortBy: sortBy,
+  //     }),
+  //   );
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
     const tempSortBy = sortByObj.map((sortObj) => {
@@ -339,7 +347,7 @@ const FilesTables: React.FC = () => {
 
   const handleDownloadTSV = () => {
     downloadTSV(
-      data,
+      data.files,
       columnCells,
       `files-table.${convertDateToString(new Date())}.tsv`,
       {
@@ -434,7 +442,15 @@ const FilesTables: React.FC = () => {
         ...tempPagination,
         label: "files",
       }}
-      status={status}
+      status={
+        isFetching
+          ? "pending"
+          : isSuccess
+          ? "fulfilled"
+          : isError
+          ? "rejected"
+          : "uninitialized"
+      }
       handleChange={handleChange}
       search={{
         enabled: true,
