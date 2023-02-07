@@ -1,7 +1,9 @@
 import { Image } from "@/components/Image";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
+import { sapien } from "@nci-gdc/bodyplot/packages/sapien";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
+import React from "react";
 
 export const HomepageButton = tw(NextLink)`
 bg-primary text-base-max border-base-light grow-0 border-1
@@ -46,6 +48,7 @@ const Homepage = (): JSX.Element => {
         </div>
         <div className="m-auto">
           <Image src="/user-flow/sapien.svg" height={600} width={700} />
+          <div> {sapien()}</div>
         </div>
       </div>
     </div>
