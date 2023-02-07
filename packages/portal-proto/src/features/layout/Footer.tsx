@@ -6,6 +6,7 @@ import {
   useCoreDispatch,
   selectVersionInfo,
   fetchVersionInfo,
+  PUBLIC_APP_INFO,
 } from "@gff/core";
 
 export const Footer: React.FC = () => {
@@ -132,8 +133,12 @@ export const Footer: React.FC = () => {
           <h4 className="font-bold">at the National Institutes of Health</h4>
           {/* TODO: fill in Placeholders */}
           <ul className="py-4 text-sm space-y-1">
-            <li>Placeholder UI v1.30.0 @ 9fbb447b</li>
-            <li>Placeholder API v3.0.0 @ 4dd36805</li>
+            <li>
+              UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
+            </li>
+            <li>
+              API v{PUBLIC_APP_INFO?.api_version} @ {PUBLIC_APP_INFO?.api_hash}
+            </li>
             {status === "fulfilled" && (
               <li>
                 <ExternalLink
