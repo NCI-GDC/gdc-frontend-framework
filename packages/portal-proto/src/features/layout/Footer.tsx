@@ -144,7 +144,6 @@ export const Footer: React.FC = () => {
                 <ExternalLink
                   dataTestId="ftr-release-notes"
                   href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-                  separator={false}
                   className="underline"
                 >
                   {data.data_release}
@@ -162,7 +161,7 @@ export const Footer: React.FC = () => {
                   {linkData.normalLink ? (
                     <Link href={linkData.url}>{linkData.title}</Link>
                   ) : (
-                    <ExternalLink href={linkData.url} separator={false}>
+                    <ExternalLink href={linkData.url}>
                       {linkData.title}
                     </ExternalLink>
                   )}
@@ -176,9 +175,7 @@ export const Footer: React.FC = () => {
         <ul className="divide-x divide-solid p-8">
           {footerLinkCloud.map((linkData, index) => (
             <li className="inline-block px-1 leading-none" key={index}>
-              <ExternalLink href={linkData.url} separator={false}>
-                {linkData.title}
-              </ExternalLink>
+              <ExternalLink href={linkData.url}>{linkData.title}</ExternalLink>
             </li>
           ))}
         </ul>
