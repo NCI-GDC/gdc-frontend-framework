@@ -1,5 +1,5 @@
 import {
-  useProjects,
+  useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
@@ -59,21 +59,22 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
   isModal = false,
 }: ContextualProjectViewProps) => {
-  const { data: projectsData, isFetching: isProjectFetching } = useProjects({
-    filters: {
-      op: "=",
-      content: {
-        field: "project_id",
-        value: projectId,
+  const { data: projectsData, isFetching: isProjectFetching } =
+    useGetProjectsQuery({
+      filters: {
+        op: "=",
+        content: {
+          field: "project_id",
+          value: projectId,
+        },
       },
-    },
-    expand: [
-      "summary",
-      "summary.data_categories",
-      "summary.experimental_strategies",
-      "program",
-    ],
-  });
+      expand: [
+        "summary",
+        "summary.data_categories",
+        "summary.experimental_strategies",
+        "program",
+      ],
+    });
   const { data: annotationCountData, isFetching: isAnnotationFetching } =
     useAnnotations({
       filters: {
@@ -110,7 +111,9 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     );
 
   const projectData =
-    projectsData && projectsData.length > 0 ? projectsData[0] : undefined;
+    projectsData?.projectData && projectsData?.projectData.length > 0
+      ? projectsData?.projectData[0]
+      : undefined;
   const projectWithAnnotation = {
     ...projectData,
     annotation: annotationCountData,
@@ -154,7 +157,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       dbgap_accession_number,
       disease_type,
       name: project_name,
-    } = projectData;
+    } = projectData || {};
 
     const dbGaP_study_accession =
       program_dbgap_accession_number || dbgap_accession_number;
@@ -422,6 +425,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
 Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
+              multiline
               withArrow
             >
               <Button

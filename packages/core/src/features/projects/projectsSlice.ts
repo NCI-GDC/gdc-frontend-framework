@@ -1,80 +1,49 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DataStatus, CoreDataSelectorResponse } from "../../dataAccess";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import {
-  fetchGdcProjects,
-  GdcApiRequest,
-  GdcApiResponse,
-  ProjectDefaults,
-  Pagination,
-} from "../gdcapi/gdcapi";
+import { Middleware, Reducer } from "@reduxjs/toolkit";
+import { coreCreateApi } from "src/coreCreateApi";
+import { GDC_APP_API_AUTH } from "src/constants";
 
-export const fetchProjects = createAsyncThunk<
-  GdcApiResponse<ProjectDefaults>,
-  GdcApiRequest,
-  { dispatch: CoreDispatch; state: CoreState }
->("facet/fetchProjects", async (request?: GdcApiRequest) => {
-  return await fetchGdcProjects(request);
-});
+export const projectsApiSlice = coreCreateApi({
+  reducerPath: "projectApi",
+  baseQuery: async ({ request }) => {
+    const res = await fetch(`${GDC_APP_API_AUTH}/projects/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...request,
+        fields: request?.fields?.join(","),
+        expand: request?.expand?.join(","),
+      }),
+    });
+    if (res.ok) {
+      return { data: await res.json() };
+    }
 
-export interface ProjectsState {
-  readonly projectData?: ProjectDefaults[];
-  readonly pagination?: Pagination;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
-
-const initialState: ProjectsState = {
-  projectData: undefined,
-  status: "uninitialized",
-};
-
-const slice = createSlice({
-  name: "projects",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchProjects.fulfilled, (state, action) => {
-        const response = action.payload;
-
-        if (response.warnings && Object.keys(response.warnings).length > 0) {
-          state.status = "rejected";
-          state.error = response.warnings.facets;
-        } else {
-          if (response.data.hits) {
-            state.projectData = [...response.data.hits];
-            state.pagination = response.data.pagination;
-          } else {
-            state.projectData = undefined;
-          }
-          state.status = "fulfilled";
-        }
-      })
-      .addCase(fetchProjects.pending, (state) => {
-        state.projectData = undefined;
-        state.status = "pending";
-        state.error = undefined;
-      })
-      .addCase(fetchProjects.rejected, (state) => {
-        state.status = "rejected";
-        state.projectData = undefined;
-        // TODO get error from action
-        state.error = undefined;
-      });
+    return { error: { status: res.status, data: await res.text() } };
   },
+  endpoints: (builder) => ({
+    getProjects: builder.query({
+      query: (request) => ({
+        request,
+      }),
+      transformResponse: (response) => {
+        if (response.data.hits)
+          return {
+            projectData: [...response.data.hits],
+            pagination: response.data.pagination,
+          };
+        return {
+          projectData: undefined,
+        };
+      },
+    }),
+  }),
 });
 
-export const projectsReducer = slice.reducer;
+export const { useGetProjectsQuery } = projectsApiSlice;
 
-export const selectProjectsData = (
-  state: CoreState,
-): CoreDataSelectorResponse<ProjectDefaults[]> => {
-  return {
-    data: state.projects.projectData,
-    pagination: state.projects.pagination,
-    status: state.projects.status,
-    error: state.projects.error,
-  };
-};
+export const projectApiSliceMiddleware =
+  projectsApiSlice.middleware as Middleware;
+export const projectsApiSliceReducerPath: string = projectsApiSlice.reducerPath;
+export const projectsApiReducer: Reducer = projectsApiSlice.reducer as Reducer;

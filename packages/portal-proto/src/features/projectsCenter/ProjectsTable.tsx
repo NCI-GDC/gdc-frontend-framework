@@ -8,7 +8,7 @@ import {
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
 import {
-  useProjects,
+  useGetProjectsQuery,
   buildCohortGqlOperator,
   ProjectDefaults,
   useCoreDispatch,
@@ -53,7 +53,7 @@ const ProjectsTable: React.FC = () => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
+  const { data, isSuccess, isFetching, isError } = useGetProjectsQuery({
     filters:
       searchTerm.length > 0
         ? buildCohortGqlOperator(
@@ -175,7 +175,7 @@ const ProjectsTable: React.FC = () => {
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (isSuccess) {
       return [
-        data.map(
+        data?.projectData?.map(
           ({
             project_id,
             disease_type,
@@ -203,19 +203,19 @@ const ProjectsTable: React.FC = () => {
             disease_type: disease_type,
             primary_site: primary_site,
             program: (
-              <OverflowTooltippedLabel label={program.name}>
-                {program.name}
+              <OverflowTooltippedLabel label={program?.name}>
+                {program?.name}
               </OverflowTooltippedLabel>
             ),
-            cases: summary.case_count.toLocaleString().padStart(9),
+            cases: summary?.case_count.toLocaleString().padStart(9),
             experimental_strategies: extractToArray(
-              summary.experimental_strategies,
+              summary?.experimental_strategies,
               "experimental_strategy",
             ),
-            files: summary.file_count.toLocaleString(),
+            files: summary?.file_count.toLocaleString(),
           }),
         ),
-        pagination,
+        data.pagination,
       ];
     } else
       return [
@@ -230,7 +230,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data, pagination, setEntityMetadata]);
+  }, [isSuccess, data, setEntityMetadata]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -289,7 +289,7 @@ const ProjectsTable: React.FC = () => {
 
   const handleDownloadTSV = () => {
     downloadTSV(
-      data,
+      data.projectData,
       filterColumnCells(columns),
       `projects-table.${convertDateToString(new Date())}.tsv`,
       {

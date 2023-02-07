@@ -7,7 +7,10 @@ import { gdcAppReducer } from "./features/gdcapps/gdcAppsSlice";
 import { filesReducer } from "./features/files/filesSlice";
 import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import { historyReducer } from "./features/history/historySlice";
-import { projectsReducer } from "./features/projects/projectsSlice";
+import {
+  projectsApiReducer,
+  projectsApiSliceReducerPath,
+} from "./features/projects/projectsSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
@@ -63,7 +66,7 @@ export const reducers = combineReducers({
   filesSize: filesSizeReducer,
   [filesApiSliceReducerPath]: filesAllApiReducer,
   history: historyReducer,
-  projects: projectsReducer,
+  [projectsApiSliceReducerPath]: projectsApiReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
