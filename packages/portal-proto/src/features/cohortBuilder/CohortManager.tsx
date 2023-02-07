@@ -44,6 +44,7 @@ import {
   FilterGroup,
   addNewCohortGroups,
   defaultCohortNameGenerator,
+  showModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -53,6 +54,7 @@ import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
+import ImportCohortModal from "./Modals/ImportCohortModal";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -379,6 +381,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         />
       )}
 
+      {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
         <CaseSetModal
           updateFilters={updateCohortFilters}
@@ -468,89 +471,91 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           </div>
         )}
       </div>
-      {
-        // TODO: add tooltips with all functions are complete
-        !hide_controls ? (
-          <>
-            <Tooltip label="Save Cohort" position="bottom" withArrow>
-              <CohortGroupButton
-                onClick={() => {
-                  if (isDefaultCohort) return;
-                  !currentCohort?.saved
-                    ? setShowSaveCohort(true)
-                    : setShowUpdateCohort(true);
-                }}
-                $buttonDisabled={isDefaultCohort}
-                data-testid="saveButton"
-                className={`${
-                  isDefaultCohort && "cursor-not-allowed bg-gray-400"
-                }`}
-              >
-                <SaveIcon size="1.5em" aria-label="Save cohort" />
-              </CohortGroupButton>
-            </Tooltip>
+      {!hide_controls ? (
+        <>
+          <Tooltip label="Save Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              onClick={() => {
+                if (isDefaultCohort) return;
+                !currentCohort?.saved
+                  ? setShowSaveCohort(true)
+                  : setShowUpdateCohort(true);
+              }}
+              $buttonDisabled={isDefaultCohort}
+              data-testid="saveButton"
+              className={`${
+                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+              }`}
+            >
+              <SaveIcon size="1.5em" aria-label="Save cohort" />
+            </CohortGroupButton>
+          </Tooltip>
 
-            <Tooltip label="Add New Cohort" position="bottom" withArrow>
-              <CohortGroupButton
-                onClick={() => setShowCreateCohort(true)}
-                data-testid="addButton"
-              >
-                <AddIcon size="1.5em" aria-label="Add cohort" />
-              </CohortGroupButton>
-            </Tooltip>
+          <Tooltip label="Add New Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              onClick={() => setShowCreateCohort(true)}
+              data-testid="addButton"
+            >
+              <AddIcon size="1.5em" aria-label="Add cohort" />
+            </CohortGroupButton>
+          </Tooltip>
 
-            <Tooltip label="Delete Cohort" position="bottom" withArrow>
-              <CohortGroupButton
-                onClick={() => {
-                  if (isDefaultCohort) return;
-                  setShowDelete(true);
-                }}
-                className={`${
-                  isDefaultCohort && "cursor-not-allowed bg-gray-400"
-                }`}
-                $buttonDisabled={isDefaultCohort}
-                data-testid="deleteButton"
-              >
-                <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-              </CohortGroupButton>
-            </Tooltip>
+          <Tooltip label="Delete Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              onClick={() => {
+                if (isDefaultCohort) return;
+                setShowDelete(true);
+              }}
+              className={`${
+                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+              }`}
+              $buttonDisabled={isDefaultCohort}
+              data-testid="deleteButton"
+            >
+              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+            </CohortGroupButton>
+          </Tooltip>
 
-            <Tooltip label="Import New Cohort" position="bottom" withArrow>
-              <CohortGroupButton data-testid="uploadButton">
-                <UploadIcon size="1.5em" aria-label="Upload cohort" />
-              </CohortGroupButton>
-            </Tooltip>
+          <Tooltip label="Import New Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              data-testid="uploadButton"
+              onClick={() =>
+                coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
+              }
+            >
+              <UploadIcon size="1.5em" aria-label="Upload cohort" />
+            </CohortGroupButton>
+          </Tooltip>
 
-            <Tooltip label="Export Cohort" position="bottom" withArrow>
-              <CohortGroupButton
-                data-testid="downloadButton"
-                className={`${
-                  isErrorCaseIds && "cursor-not-allowed bg-gray-400"
-                }`}
-                $buttonDisabled={isErrorCaseIds}
-                onClick={() => {
-                  if (isErrorCaseIds) {
-                    return;
-                  }
-                  if (isFetchingCaseIds) {
-                    setExportCohortPending(true);
-                  } else {
-                    exportCohort(caseIds, cohortName);
-                  }
-                }}
-              >
-                {exportCohortPending ? (
-                  <Loader />
-                ) : (
-                  <DownloadIcon size="1.5em" aria-label="Download cohort" />
-                )}
-              </CohortGroupButton>
-            </Tooltip>
-          </>
-        ) : (
-          <div />
-        )
-      }
+          <Tooltip label="Export Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              data-testid="downloadButton"
+              className={`${
+                isErrorCaseIds && "cursor-not-allowed bg-gray-400"
+              }`}
+              $buttonDisabled={isErrorCaseIds}
+              onClick={() => {
+                if (isErrorCaseIds) {
+                  return;
+                }
+                if (isFetchingCaseIds) {
+                  setExportCohortPending(true);
+                } else {
+                  exportCohort(caseIds, cohortName);
+                }
+              }}
+            >
+              {exportCohortPending ? (
+                <Loader />
+              ) : (
+                <DownloadIcon size="1.5em" aria-label="Download cohort" />
+              )}
+            </CohortGroupButton>
+          </Tooltip>
+        </>
+      ) : (
+        <div />
+      )}
 
       <CountButton
         countName="casesMax"

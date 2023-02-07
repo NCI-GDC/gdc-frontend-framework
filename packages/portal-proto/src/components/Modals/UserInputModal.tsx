@@ -1,29 +1,33 @@
 import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
-import { modalStyles, tabStyles } from "./styles";
+import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
+import { modalStyles } from "./styles";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
 
-interface GenericSetModalProps {
+interface UserInputModalProps {
   readonly modalTitle: string;
-  readonly tabbed: boolean;
   readonly children: React.ReactNode;
-  readonly tabLabel?: string;
+  readonly tabs?: { label: string; value: string }[];
 }
 
-const GenericSetModal: React.FC<GenericSetModalProps> = ({
+/***
+ * Modal that handles displaying the discard changes modal when certain actions are taken
+ * (user changes tabs, tries to closes the modal, etc) and the user has entered some input.
+ * Children should use `UserInputContext` to set when the user has entered input.
+ */
+const UserInputModal: React.FC<UserInputModalProps> = ({
   modalTitle,
-  tabbed,
   children,
-  tabLabel,
-}: GenericSetModalProps) => {
+  tabs,
+}: UserInputModalProps) => {
   const dispatch = useCoreDispatch();
   const [showDiscardModal, setShowDiscardModal] = useState<
     "close" | "tabChange" | null
   >(null);
-  const [activeTab, setActiveTab] = useState<string | null>("input");
+  const [activeTab, setActiveTab] = useState<string | null>(tabs?.[0]?.value);
   const [activeTabInWaiting, setActiveTabInWaiting] = useState<string | null>(
     null,
   );
@@ -62,17 +66,15 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
       <UserInputContext.Provider
         value={[userEnteredInput, setUserEnteredInput]}
       >
-        {tabbed ? (
-          <Tabs
-            value={activeTab}
-            classNames={tabStyles}
-            keepMounted={false}
-            onTabChange={onTabChange}
-          >
-            <Tabs.List>
-              <Tabs.Tab value="input">Enter {tabLabel}</Tabs.Tab>
-              <Tabs.Tab value="saved">Saved Sets</Tabs.Tab>
-            </Tabs.List>
+        {tabs ? (
+          <Tabs value={activeTab} keepMounted={false} onTabChange={onTabChange}>
+            <StyledTabsList>
+              {tabs.map((tab) => (
+                <StyledTab value={tab.value} key={tab.value}>
+                  {tab.label}
+                </StyledTab>
+              ))}
+            </StyledTabsList>
             {children}
           </Tabs>
         ) : (
@@ -83,4 +85,4 @@ const GenericSetModal: React.FC<GenericSetModalProps> = ({
   );
 };
 
-export default GenericSetModal;
+export default UserInputModal;
