@@ -27,6 +27,9 @@ export const getGQLParams = (ids: string[], version: string) => {
 };
 
 export const getAliasGraphQLQuery = (ids: string[], version: string) => {
+  // todo, destructure function results and pass those vars inside the loop for readability
+  // const { filter, alias, ...others } = getVersion(version);
+
   // hyphens not allowed in gql aliases
   const query = `
   query ${startCase(version)}Query(${getGQLParams(ids, version)}
@@ -82,7 +85,10 @@ export const caseFilter = {
 };
 
 export const getAliasFilters = (ids: string[], version: string) => {
-  let filters = { ...caseFilter } as Record<string, unknown>;
+  // todo, destructure function results and pass those vars inside the loop for readability
+  // const { filter, alias, ...others } = getVersion(version);
+
+  const filters = { ...caseFilter } as Record<string, unknown>;
   for (const id of ids) {
     filters[
       `${getVersion(version).filters.replace("$", "")}_${id.replaceAll(

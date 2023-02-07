@@ -50,7 +50,7 @@ const slice = createSlice({
       .addCase(fetchMutatedGenesFreq.fulfilled, (state, action) => {
         const response = action.payload;
         state.status = "fulfilled";
-        const edges = response?.data?.viewer?.explore?.genes?.hits?.edges;
+        const { edges = [] } = response?.data?.viewer?.explore?.genes?.hits;
 
         if (edges?.length === 0) return undefined;
 

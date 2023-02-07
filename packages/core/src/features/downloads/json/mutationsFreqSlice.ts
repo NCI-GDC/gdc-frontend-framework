@@ -59,8 +59,11 @@ const slice = createSlice({
       .addCase(fetchMutationsFreq.fulfilled, (state, action) => {
         const response = action.payload;
         state.status = "fulfilled";
-        const { edges: ssmsEdges } =
+        const { edges: ssmsEdges = [] } =
           response?.data?.viewer?.explore?.ssms?.hits;
+
+        if (ssmsEdges?.length === 0) return undefined;
+
         const mtns = ssmsEdges.map(
           ({
             node: {
@@ -68,7 +71,7 @@ const slice = createSlice({
               ssm_id,
               genomic_dna_change,
               consequence: {
-                hits: { edges: consequenceEdges },
+                hits: { edges: consequenceEdges = [] },
               },
             },
           }: any) => {

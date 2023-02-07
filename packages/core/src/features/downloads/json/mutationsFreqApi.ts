@@ -1,4 +1,3 @@
-import { FilterSet } from "src";
 import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CoreDispatch } from "src/store";
@@ -185,8 +184,6 @@ export const getMutationsFreqFilters = (size: number) => {
 
 export interface MutationsFreqRequestParameters {
   size: number;
-  genomicFilters: FilterSet;
-  geneSymbol: string;
 }
 
 export const fetchMutationsFreq = createAsyncThunk<
