@@ -22,7 +22,7 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
         title={title ? title : href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${className}`}
+        className={className}
       >
         {children}
       </a>
