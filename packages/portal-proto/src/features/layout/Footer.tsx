@@ -128,6 +128,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="flex flex-col bg-accent-darkest justify-center text-center p-10 text-accent-contrast-darkest text-sm">
       <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-5 border-b border-[#5D7A8D]">
+        {/**TODO place color value in global store */}
         <div>
           <h3 className="font-bold text-lg">National Cancer Institute</h3>
           <h4 className="font-bold">at the National Institutes of Health</h4>
@@ -181,7 +182,8 @@ export const Footer: React.FC = () => {
         </ul>
       </div>
       <div className="text-sm leading-none">
-        NIH... Turning Discovery Into Health &reg;
+        NIH... Turning Discovery Into Health{" "}
+        <span className="text-[1rem]">&reg;</span>
       </div>
     </footer>
   );
