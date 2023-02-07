@@ -1,5 +1,9 @@
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import {
+  cohortDemo1 as mockDemo1,
+  cohortDemo2 as mockDemo2,
+} from "../apps/CohortComparisonApp";
 import CohortComparison from "./CohortComparison";
 
 jest.mock("@gff/core", () => {
@@ -25,7 +29,12 @@ jest.mock("@gff/core", () => {
 describe("<CohortComparison />", () => {
   it("Cards show and hide", async () => {
     const { getByLabelText, queryByRole } = render(
-      <CohortComparison cohortNames={["Cohort 1", "Cohort 2"]} />,
+      <CohortComparison
+        cohorts={{
+          primary_cohort: mockDemo1,
+          comparison_cohort: mockDemo2,
+        }}
+      />,
     );
     expect(
       queryByRole("heading", { name: "Survival Analysis" }),

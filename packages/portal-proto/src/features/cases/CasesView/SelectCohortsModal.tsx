@@ -153,7 +153,7 @@ export const SelectCohortsModal = ({
 
   const description = `Select an existing cohort, then click Submit. This will create a new
     cohort that contains all the cases from your selected cohort ${
-      isWithCohort ? "and" : "expect"
+      isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
   const onNameChange = (name: string) =>

@@ -155,7 +155,7 @@ export const REGISTERED_APPS = [
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
-    countsField: "ssmCaseCounts",
+    countsField: "ssmCaseCount",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:

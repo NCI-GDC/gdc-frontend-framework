@@ -61,8 +61,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           />
         ),
         name: <label htmlFor={cohort.name}>{cohort.name}</label>,
-        // TODO - add counts?
-        //count: cohort?.counts,
+        count: cohort?.caseCount,
       })),
     [cohorts, selectedCohort],
   );
