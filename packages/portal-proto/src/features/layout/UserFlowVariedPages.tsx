@@ -58,6 +58,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       <main
         data-tour="full_page_content"
         className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
+        id="main"
       >
         {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
         {children}

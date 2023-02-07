@@ -9,12 +9,13 @@ export interface CollapsibleContainerProps {
   readonly isCollapsed: boolean;
   readonly toggle: () => void;
   readonly Top: React.FC<unknown>;
+  readonly onlyIcon?: boolean;
 }
 
 export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
   props: PropsWithChildren<CollapsibleContainerProps>,
 ) => {
-  const { Top, isCollapsed, toggle, children } = props;
+  const { Top, isCollapsed, toggle, children, onlyIcon = true } = props;
 
   return (
     <div className="flex flex-col">
@@ -26,10 +27,26 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
           <Button
             className="bg-base-lightest text-base-contrast-lightest p-2 hover:bg-primary hover:text-primary-contrast"
             onClick={toggle}
+            classNames={{ leftIcon: `${!onlyIcon && "mr-0"} ` }}
             aria-expanded={!isCollapsed}
             aria-label="expand/collapse container"
+            leftIcon={
+              !onlyIcon ? (
+                isCollapsed ? (
+                  <ExpandMoreIcon size="1.75em" />
+                ) : (
+                  <ExpandLessIcon size="1.75em" />
+                )
+              ) : null
+            }
           >
-            {isCollapsed ? (
+            {!onlyIcon ? (
+              isCollapsed ? (
+                "Expand"
+              ) : (
+                "Collapse"
+              )
+            ) : isCollapsed ? (
               <ExpandMoreIcon size="1.75em" />
             ) : (
               <ExpandLessIcon size="1.75em" />

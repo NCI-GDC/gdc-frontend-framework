@@ -7,7 +7,7 @@ import {
   SortBy,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { Button, createStyles, Menu } from "@mantine/core";
+import { Button, createStyles, Divider, Menu } from "@mantine/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
@@ -26,6 +26,7 @@ import {
 } from "./utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -316,6 +317,7 @@ export const ContextualCasesView: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full ml-2 mr-8">
+      <Divider color="#C5C5C5" className="mb-3 mr-4" />
       <VerticalTable
         tableData={cases || []}
         columns={columns}
@@ -324,50 +326,37 @@ export const ContextualCasesView: React.FC = () => {
         additionalControls={
           <div className="flex gap-2">
             <CasesCohortButton />
-            <Menu width="target" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  color="primary"
-                  leftIcon={
-                    pickedCases.length ? (
-                      <CountsIcon $count={pickedCases.length}>
-                        {pickedCases.length}{" "}
-                      </CountsIcon>
-                    ) : null
-                  }
-                  rightIcon={<Dropdown />}
-                >
-                  Biospecimen
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item>JSON (Coming Soon)</Menu.Item>
-                <Menu.Item>TSV (Coming Soon)</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-            <Menu width="target" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  color="primary"
-                  leftIcon={
-                    pickedCases.length ? (
-                      <CountsIcon $count={pickedCases.length}>
-                        {pickedCases.length}{" "}
-                      </CountsIcon>
-                    ) : null
-                  }
-                  rightIcon={<Dropdown />}
-                >
-                  Clinical
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
-                <Menu.Item>TSV (Coming soon) </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+
+            <DropdownWithIcon
+              dropdownElements={[
+                { title: "JSON (Coming Soon)" },
+                { title: "TSV (Coming Soon)" },
+              ]}
+              TargetButtonChildren="Biospecimen"
+              LeftIcon={
+                pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : null
+              }
+            />
+
+            <DropdownWithIcon
+              dropdownElements={[
+                { title: "JSON (Coming Soon)" },
+                { title: "TSV (Coming Soon)" },
+              ]}
+              TargetButtonChildren="Clinical"
+              LeftIcon={
+                pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : null
+              }
+            />
+
             <ButtonTooltip label=" " comingSoon={true}>
               <Button variant="outline" color="primary">
                 JSON
