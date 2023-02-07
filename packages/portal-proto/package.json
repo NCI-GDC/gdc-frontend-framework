@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
-    "@oncojs/sapien": "git+https://github.com/NCI-GDC/sapien.git",
     "@gff/core": "0.0.1",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.10.2",
@@ -52,6 +51,7 @@
     "@iconify/react": "^3.1.2",
     "@oncojs/react-survivalplot": "^0.6.0",
     "@oncojs/survivalplot": "^0.8.3",
+    "@oncojs/sapien": "github:NCI-GDC/sapien",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/line-clamp": "^0.3.1",
