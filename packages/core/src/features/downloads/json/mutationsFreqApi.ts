@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CoreDispatch } from "src/store";
 import { CoreState } from "src/reducers";
 
-export const getMutationsFreqQuery = () => {
+export const getMutationsFreqQuery = (): string => {
   return `query MutationsFreqQuery(
   $filters_ssms_tested: FiltersArgument 
   $filters_ssms_cases: FiltersArgument
@@ -116,7 +116,7 @@ export interface MutationsFreqResponse {
   };
 }
 
-export const getMutationsFreqFilters = (size: number) => {
+export const getMutationsFreqFilters = (size: number): Record<string, any> => {
   const mutationFreqFilters = {
     size: size,
     offset: 0,

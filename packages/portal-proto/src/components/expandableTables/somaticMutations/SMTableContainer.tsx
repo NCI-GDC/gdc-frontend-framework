@@ -6,7 +6,13 @@ import {
   useMutationsFreqData,
   useMutationsFreqDLQuery,
 } from "@gff/core";
-import { useEffect, useState, useReducer, createContext } from "react";
+import {
+  useEffect,
+  useState,
+  useReducer,
+  useCallback,
+  createContext,
+} from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
 import { Button } from "@mantine/core";
@@ -180,64 +186,27 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  // const handleJSON = () => {
-  //   const content = tableData.ssms.map(
-  //     ({
-  //       consequence: consequences = [
-  //         {
-  //           annotation: {
-  //             polyphen_impact: "",
-  //             sift_impact: "",
-  //             vep_impact: "",
-  //           },
-  //         },
-  //       ],
-  //       genomic_dna_change,
-  //       mutation_subtype,
-  //       ssm_id,
-  //     }) => {
-  //       return {
-  //         consequence: consequences.map(
-  //           ({
-  //             annotation: {
-  //               polyphen_impact = "",
-  //               sift_impact = "",
-  //               vep_impact = "",
-  //             },
-  //           }) => {
-  //             return {
-  //               transcript: {
-  //                 annotation: {
-  //                   polyphen_impact,
-  //                   sift_impact,
-  //                   vep_impact,
-  //                 },
-  //               },
-  //             };
-  //           },
-  //         ),
-  //         genomic_dna_change,
-  //         mutation_subtype,
-  //         ssm_id,
-  //       };
-  //     },
-  //   );
-  //   const blob = new Blob([JSON.stringify(content, null, 2)], {
-  //     type: "text/json",
-  //   });
-  //   saveAs(blob, fileName);
-  // };
+  // todo: refactor to use REST endpt for json
 
   const {
     data: mutationsFreqData,
     isFetching: mutationsFreqFetching,
     isError: mutationsFreqError,
   } = useMutationsFreqData({
-    size: 111, // ssmsTotal
+    size: pageSize,
     genomicFilters,
   });
 
-  const exportMutationsFreq = () => {
+  const {
+    data: mutationsFreqTSVData,
+    isFetching: mutationsFreqTSVFetching,
+    isError: mutationsFreqTSVError,
+  } = useMutationsFreqDLQuery({
+    tableData,
+    ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
+  });
+
+  const exportMutationsFreq = useCallback(() => {
     const now = new Date();
     const fileName = `mutations.${convertDateToString(now)}.json`;
     if (mutationsFreqData?.mutations) {
@@ -249,32 +218,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       );
       saveAs(blob, fileName);
     }
-  };
+  }, [mutationsFreqData?.mutations]);
 
-  useEffect(() => {
-    if (mutationsFreqError) {
-      setExportMutationsFreqPending(false);
-    } else if (exportMutationsFreqPending && !mutationsFreqFetching) {
-      exportMutationsFreq();
-      setExportMutationsFreqPending(false);
-    }
-  }, [
-    mutationsFreqFetching,
-    mutationsFreqError,
-    exportMutationsFreqPending,
-    exportMutationsFreq,
-  ]);
-
-  const {
-    data: mutationsFreqTSVData,
-    isFetching: mutationsFreqTSVFetching,
-    isError: mutationsFreqTSVError,
-  } = useMutationsFreqDLQuery({
-    tableData,
-    ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
-  });
-
-  const exportMutationsFreqTSV = () => {
+  const exportMutationsFreqTSV = useCallback(() => {
     const now = new Date();
     const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
     const headers = [
@@ -318,7 +264,22 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
 
     saveAs(blob, fileName);
-  };
+  }, [mutationsFreqTSVData?.results]);
+
+  useEffect(() => {
+    if (mutationsFreqError) {
+      setExportMutationsFreqPending(false);
+    } else if (exportMutationsFreqPending && !mutationsFreqFetching) {
+      exportMutationsFreq();
+      setExportMutationsFreqPending(false);
+    }
+  }, [
+    exportMutationsFreqTSV,
+    mutationsFreqFetching,
+    mutationsFreqError,
+    exportMutationsFreqPending,
+    exportMutationsFreq,
+  ]);
 
   useEffect(() => {
     if (mutationsFreqTSVError) {
@@ -328,6 +289,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setExportMutationsFreqTSVPending(false);
     }
   }, [
+    exportMutationsFreqTSV,
     mutationsFreqTSVFetching,
     mutationsFreqTSVError,
     exportMutationsFreqTSVPending,

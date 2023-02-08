@@ -5,7 +5,13 @@ import {
   usePrevious,
   useMutatedGenesFreqData,
 } from "@gff/core";
-import { createContext, useEffect, useReducer, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
@@ -178,7 +184,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     size: initialData?.genes_total,
   });
 
-  const exportMutatedGenes = () => {
+  const {
+    data: mutatedGenesFreqTSVData,
+    isFetching: mutatedGenesFreqTSVFetching,
+    isError: mutatedGenesFreqTSVError,
+  } = useMutatedGenesFreqDLQuery({
+    tableData,
+    geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
+  });
+
+  const exportMutatedGenes = useCallback(() => {
     const now = new Date();
     const fileName = `genes.${convertDateToString(now)}.json`;
     const blob = new Blob(
@@ -188,7 +203,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       },
     );
     saveAs(blob, fileName);
-  };
+  }, [mutatedGenesFreqData?.mutatedGenes]);
 
   useEffect(() => {
     if (mutatedGenesFreqError) {
@@ -204,29 +219,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     exportMutatedGenes,
   ]);
 
-  const {
-    data: mutatedGenesFreqTSVData,
-    isFetching: mutatedGenesFreqTSVFetching,
-    isError: mutatedGenesFreqTSVError,
-  } = useMutatedGenesFreqDLQuery({
-    tableData,
-    geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
-  });
-
-  useEffect(() => {
-    if (mutatedGenesFreqTSVError) {
-      setExportMutatedGenesTSVPending(false);
-    } else if (exportMutatedGenesTSVPending && !mutatedGenesFreqTSVFetching) {
-      exportMutatedGenesTSV();
-      setExportMutatedGenesTSVPending(false);
-    }
-  }, [
-    mutatedGenesFreqTSVFetching,
-    mutatedGenesFreqTSVError,
-    exportMutatedGenesTSVPending,
-  ]);
-
-  const exportMutatedGenesTSV = () => {
+  const exportMutatedGenesTSV = useCallback(() => {
     const now = new Date();
     const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
     const headers = [
@@ -279,7 +272,21 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
 
     saveAs(blob, fileName);
-  };
+  }, [mutatedGenesFreqTSVData?.results]);
+
+  useEffect(() => {
+    if (mutatedGenesFreqTSVError) {
+      setExportMutatedGenesTSVPending(false);
+    } else if (exportMutatedGenesTSVPending && !mutatedGenesFreqTSVFetching) {
+      exportMutatedGenesTSV();
+      setExportMutatedGenesTSVPending(false);
+    }
+  }, [
+    exportMutatedGenesTSV,
+    mutatedGenesFreqTSVFetching,
+    mutatedGenesFreqTSVError,
+    exportMutatedGenesTSVPending,
+  ]);
 
   return (
     <>

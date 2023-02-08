@@ -1,6 +1,6 @@
 import { graphqlAPI, GraphQLApiResponse } from "src/features/gdcapi/gdcgraphql";
 
-export const getMutatedGenesFreqQuery = (size: number) => {
+export const getMutatedGenesFreqQuery = (size: number): string => {
   return `
   query MutatedGenesFreq(
     $genesTable_offset: Int

@@ -91,7 +91,9 @@ const ListSpring: React.FC<ListSpringProps> = ({
           <div className={"columns-4 gap-x-0 font-content text-sm"}>
             {subDataSorted.map((item, i) => {
               return (
-                <div className={`p-0.25`}>{renderItems({ ...item }, i)}</div>
+                <div key={`list-item-${i}`} className={`p-0.25`}>
+                  {renderItems({ ...item }, i)}
+                </div>
               );
             })}
           </div>
