@@ -20,6 +20,7 @@ const config: InitialOptionsTsJest = {
     "^@/components(.*)$": "<rootDir>/src/components/$1",
     "^@/features/(.*)$": "<rootDir>/src/features/$1",
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
+    "react-markdown": "<rootDir>/__mocks__/react-markdown.tsx",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
