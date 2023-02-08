@@ -193,7 +193,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     isFetching: mutationsFreqFetching,
     isError: mutationsFreqError,
   } = useMutationsFreqData({
-    size: pageSize,
+    size: pageSize * (page + 1),
     genomicFilters,
   });
 

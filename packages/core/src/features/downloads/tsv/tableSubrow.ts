@@ -1,5 +1,5 @@
-import { Buckets } from "../gdcapi/gdcapi";
-import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { Buckets } from "../../gdcapi/gdcapi";
+import { GraphQLApiResponse, graphqlAPISlice } from "../../gdcapi/gdcgraphql";
 import { startCase } from "lodash";
 import { getAliasFilters, getAliasGraphQLQuery } from "./gqlmod";
 
