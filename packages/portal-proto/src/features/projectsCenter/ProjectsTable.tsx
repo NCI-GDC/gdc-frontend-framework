@@ -30,7 +30,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
-import { SummaryModalContext } from "../layout/UserFlowVariedPages";
+import { SummaryModalContext } from "src/pages/_app";
 
 interface CellProps {
   value: string[];

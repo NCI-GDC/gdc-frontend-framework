@@ -18,11 +18,7 @@ import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
-import {
-  entityMetadataType,
-  SummaryModalContext,
-} from "../layout/UserFlowVariedPages";
-
+import { entityMetadataType, SummaryModalContext } from "src/pages/_app";
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
 const textColors = [

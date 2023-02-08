@@ -23,7 +23,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks } from "../../../utils";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
-import { entityMetadataType } from "@/features/layout/UserFlowVariedPages";
+import { entityMetadataType } from "src/pages/_app";
 
 export const createTableColumn = (
   accessor: string,

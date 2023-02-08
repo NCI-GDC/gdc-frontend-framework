@@ -32,7 +32,7 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import { SummaryModalContext } from "../layout/UserFlowVariedPages";
+import { SummaryModalContext } from "src/pages/_app";
 
 const FilesTables: React.FC = () => {
   //This if for hanadling pagination changes

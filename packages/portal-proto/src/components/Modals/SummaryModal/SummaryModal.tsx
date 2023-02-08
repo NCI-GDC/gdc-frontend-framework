@@ -2,11 +2,11 @@ import { SummaryHeaderProps } from "@/components/Summary/SummaryHeader";
 import { TypeIcon } from "@/components/TypeIcon";
 import { CaseSummary } from "@/features/cases/CaseSummary";
 import { ContextualFileView } from "@/features/files/FileSummary";
-import { entityMetadataType } from "@/features/layout/UserFlowVariedPages";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { Modal } from "@mantine/core";
 import React from "react";
+import { entityMetadataType } from "src/pages/_app";
 
 export const SummaryModalHeader = ({
   iconText,

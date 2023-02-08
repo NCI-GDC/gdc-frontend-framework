@@ -20,7 +20,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import { SummaryModalContext } from "../layout/UserFlowVariedPages";
+import { SummaryModalContext } from "src/pages/_app";
 
 const initialVisibleColumns: Columns[] = [
   { id: "remove", columnName: "Remove", visible: true },
