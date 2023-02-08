@@ -1,7 +1,10 @@
 import { Image } from "@/components/Image";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
+import { sapien } from "@nci-gdc/sapien";
+import { useRef } from "react";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
+import { Bodyplot } from "@/features/homepage/Bodyplot";
 
 export const HomepageButton = tw(NextLink)`
 bg-primary text-base-max border-base-light grow-0 border-1
@@ -10,6 +13,7 @@ font-medium font-heading rounded flex flex-col justify-center items-center text-
 `;
 
 const Homepage = (): JSX.Element => {
+  const ref = useRef(null);
   return (
     <div className="flex flex-col w-100 h-100 bg-base-max">
       <div className="flex flex-row bg-hero-pattern bg-no-repeat bg-cover">
@@ -45,7 +49,9 @@ const Homepage = (): JSX.Element => {
           <div className="py-10" />
         </div>
         <div className="m-auto">
-          <Image src="/user-flow/sapien.svg" height={600} width={700} />
+          <div ref={ref}>
+            <Bodyplot />
+          </div>
         </div>
       </div>
     </div>
