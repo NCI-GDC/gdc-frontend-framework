@@ -29,6 +29,22 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
     denominator === 0 ? 0 : numerator,
     denominator === 0 ? 1 : denominator,
   ];
+  const fraction = (
+    <>
+      <div className={`text-activeColor mx-0.5`}>
+        {numerator.toLocaleString("en-US")}
+      </div>
+      <div className={`text-black mx-0.5`}> / </div>
+      <div className={`text-activeColor`}>
+        {denominator.toLocaleString("en-US")}
+      </div>
+    </>
+  );
+
+  const percentage = (
+    <div className={`ml-1`}>({((n * 100) / d).toFixed(2)}%)</div>
+  );
+
   return (
     <>
       <animated.ul style={staggeredSpring} className={`py-2 px-0 text-xs`}>
@@ -40,20 +56,16 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
               {project && (
                 <div className={`font-bold text-black mx-0.5`}>{project}:</div>
               )}{" "}
-              <div className={`text-activeColor mx-0.5`}>
-                {numerator.toLocaleString("en-US")}
-              </div>
-              <div className={`text-black mx-0.5`}> / </div>
-              <div className={`text-activeColor`}>
-                {denominator.toLocaleString("en-US")}
-              </div>
-              {orientation === "horizontal" && (
-                <div className={`ml-1`}>({((n * 100) / d).toFixed(2)}%)</div>
+              {project?.length < 15 && (
+                <>
+                  {fraction}
+                  {orientation === "horizontal" && fraction}
+                </>
               )}
             </div>
-            {orientation === "vertical" && (
-              <div className={`w-max mx-auto`}>
-                ({((n * 100) / d).toFixed(2)}%)
+            {(orientation === "vertical" || project?.length > 15) && (
+              <div className={`flex flex-row w-max mx-auto`}>
+                {fraction} {percentage}
               </div>
             )}
           </li>
