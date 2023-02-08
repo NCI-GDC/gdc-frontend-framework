@@ -132,7 +132,6 @@ export const Footer: React.FC = () => {
         <div>
           <h3 className="font-bold text-lg">National Cancer Institute</h3>
           <h4 className="font-bold">at the National Institutes of Health</h4>
-          {/* TODO: fill in Placeholders */}
           <ul className="py-4 text-sm space-y-1">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
