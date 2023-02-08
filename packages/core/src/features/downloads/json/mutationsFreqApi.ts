@@ -5,8 +5,6 @@ import { CoreState } from "src/reducers";
 
 export const getMutationsFreqQuery = (): string => {
   return `query MutationsFreqQuery(
-  $filters_ssms_tested: FiltersArgument 
-  $filters_ssms_cases: FiltersArgument
   $filters_consequence: FiltersArgument
   $filters_ssms_table: FiltersArgument
   $score: String
@@ -16,16 +14,6 @@ export const getMutationsFreqQuery = (): string => {
   ) {
     viewer {
       explore {
-        cases {
-          hits(first: 0, filters: $filters_ssms_tested) {
-            total
-          }
-        }
-        filteredCases: cases {
-          hits(first: 0, filters: $filters_ssms_cases) {
-            total
-          }
-        }
         ssms {
           hits(first: $size, offset: $offset, filters: $filters_ssms_table, score: $score, sort: $sort) {
             total
@@ -56,16 +44,6 @@ export const getMutationsFreqQuery = (): string => {
                         }
                       }
                     }
-                  }
-                }
-                filteredOccurences: occurrence {
-                  hits(first: 0, filters: $filters_ssms_cases) {
-                    total
-                  }
-                }
-                what: occurrence {
-                  hits(first: 0, filters: $filters_ssms_tested) {
-                    total
                   }
                 }
               }
@@ -120,31 +98,6 @@ export const getMutationsFreqFilters = (size: number): Record<string, any> => {
   const mutationFreqFilters = {
     size: size,
     offset: 0,
-    filters_ssms_tested: {
-      content: [
-        {
-          content: { field: "cases.available_variation_data", value: ["ssm"] },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
-    filters_ssms_cases: {
-      content: [
-        {
-          content: { field: "available_variation_data", value: ["ssm"] },
-          op: "in",
-        },
-        {
-          op: "in",
-          content: {
-            field: "cases.case_id",
-            value: ["set_id:genes-ALL-GDC-COHORT"],
-          },
-        },
-      ],
-      op: "and",
-    },
     filters_consequence: {
       content: [
         {
