@@ -5,7 +5,6 @@ WORKDIR /app
 
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
-RUN apk add --no-cache git
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 WORKDIR /app
