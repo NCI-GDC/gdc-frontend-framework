@@ -3,6 +3,10 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
+  useCreateGeneSetMutation,
+  useCoreSelector,
+  selectSetsByType,
+  useGeneSetCountQuery,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -18,6 +22,8 @@ import { default as PageSize } from "@/components/expandableTables/shared/PageSi
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 
 export const SelectedRowContext =
   createContext<
@@ -67,6 +73,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
+  const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -159,9 +166,30 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
+        {showSaveModal && (
+          <SaveSelectionAsSetModal
+            selection={Object.keys(selectedGenes)}
+            setType={"genes"}
+            createSetHook={useCreateGeneSetMutation}
+            closeModal={() => setShowSaveModal(false)}
+          />
+        )}
+        {showAddModal && (
+          <AddToSetModal
+            selection={Object.keys(selectedGenes)}
+            setType={"genes"}
+            countHook={useGeneSetCountQuery}
+            closeModal={() => setShowAddModal(false)}
+          />
+        )}
+
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
@@ -170,9 +198,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               label={`Gene`}
               options={[
                 { label: "Save/Edit Gene Set", value: "placeholder" },
-                { label: "Save as new gene set", value: "save" },
-                { label: "Add to existing gene set", value: "add" },
-                { label: "Remove from existing gene set", value: "remove" },
+                {
+                  label: "Save as new gene set",
+                  value: "save",
+                  onClick: () => setShowSaveModal(true),
+                },
+                {
+                  label: "Add to existing gene set",
+                  value: "add",
+                  disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowAddModal(true),
+                },
+                {
+                  label: "Remove from existing gene set",
+                  value: "remove",
+                  disabled: Object.keys(sets).length === 0,
+                },
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">

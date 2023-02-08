@@ -5,6 +5,8 @@ import { Box, Group, Menu, Button, Text } from "@mantine/core";
 interface ControlOption {
   label: string;
   value: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 interface TableControlsProps {
@@ -49,11 +51,17 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
               ? `1 ${label}`
               : `${numSelected.toLocaleString()} ${label}s`}
           </Menu.Label>
-          {options.map(({ value, label }: ControlOption) => {
-            if (value !== "placeholder") {
-              return <Menu.Item key={label}>{label}</Menu.Item>;
-            }
-          })}
+          {options.map(
+            ({ value, label, onClick, disabled = false }: ControlOption) => {
+              if (value !== "placeholder") {
+                return (
+                  <Menu.Item key={label} onClick={onClick} disabled={disabled}>
+                    {label}
+                  </Menu.Item>
+                );
+              }
+            },
+          )}
         </Menu.Dropdown>
       </Menu>
       <Group className="mx-2">{additionalControls}</Group>
