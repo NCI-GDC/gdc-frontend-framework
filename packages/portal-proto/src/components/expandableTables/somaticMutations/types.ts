@@ -115,7 +115,6 @@ export interface SomaticMutationsTableProps {
   page: number;
   selectedMutations: SelectedReducer<SomaticMutations>;
   setSelectedMutations: (action: SelectReducerAction<SomaticMutations>) => void;
-  handleSMTotal: (smTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];
   searchTerm: string;

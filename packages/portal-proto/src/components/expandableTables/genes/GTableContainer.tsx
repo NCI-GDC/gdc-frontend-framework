@@ -144,7 +144,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     gReducer,
     {} as SelectedReducer<Genes>,
   );
-  const [gTotal, setGTotal] = useState(0);
 
   const { data } = useGenesTable({
     pageSize: pageSize,
@@ -161,6 +160,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   }, [pageSize]);
 
   const { status, genes: initialData } = data;
+
+  const { genes_total: genesTotal } = initialData;
 
   useEffect(() => {
     if (status === "fulfilled") {
@@ -280,17 +281,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     saveAs(blob, fileName);
   };
 
-  useEffect(() => {
-    console.log("data", mutatedGenesFreqTSVData, mutatedGenesFreqTSVFetching);
-  }, [mutatedGenesFreqTSVData, initialData, mutatedGenesFreqTSVFetching]);
-
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
-              total={gTotal}
+              total={genesTotal}
               numSelected={Object.keys(selectedGenes).length ?? 0}
               label={`Gene`}
               options={[
@@ -373,7 +370,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 toggledGenes={toggledGenes}
                 selectedGenes={selectedGenes}
                 setSelectedGenes={setSelectedGenes}
-                handleGTotal={setGTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
@@ -400,13 +396,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
-                  {` ${((page + 1) * pageSize < gTotal
+                  {` ${((page + 1) * pageSize < genesTotal
                     ? (page + 1) * pageSize
-                    : gTotal
+                    : genesTotal
                   ).toLocaleString("en-US")} `}
                 </span>
                 of
-                <span className="font-bold">{` ${gTotal.toLocaleString(
+                <span className="font-bold">{` ${genesTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 genes
@@ -415,7 +411,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             <div className="grow-0 mr-0">
               <PageStepper
                 page={page}
-                totalPages={Math.ceil(gTotal / pageSize)}
+                totalPages={Math.ceil(genesTotal / pageSize)}
                 handlePage={handleSetPage}
               />
             </div>

@@ -17,7 +17,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   page,
   selectedMutations,
   setSelectedMutations,
-  handleSMTotal,
   columnListOrder,
   visibleColumns,
   searchTerm,
@@ -50,14 +49,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   );
 
   const transformResponse = useSomaticMutationsTableFormat(initialData);
-
-  useEffect(() => {
-    if (transformResponse[0]?.ssmsTotal)
-      handleSMTotal(transformResponse[0].ssmsTotal);
-    else handleSMTotal(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);

@@ -155,7 +155,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     smReducer,
     {} as SelectedReducer<SomaticMutations>,
   );
-  const [smTotal, setSMTotal] = useState(0);
 
   const { data } = useSsmsTable({
     pageSize: pageSize,
@@ -342,7 +341,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
-              total={smTotal}
+              total={ssmsTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
               label={`Somatic Mutation`}
               options={[
@@ -422,7 +421,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 page={page}
                 selectedMutations={selectedMutations}
                 setSelectedMutations={setSelectedMutations}
-                handleSMTotal={setSMTotal}
                 columnListOrder={columnListOrder}
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
@@ -457,12 +455,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className={`font-bold`}>{` ${((page + 1) * pageSize <
-                smTotal
+                ssmsTotal
                   ? (page + 1) * pageSize
-                  : smTotal
+                  : ssmsTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
-                <span className={`font-bold`}>{` ${smTotal.toLocaleString(
+                <span className={`font-bold`}>{` ${ssmsTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 somatic mutations
@@ -471,7 +469,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <div className={`m-auto mr-0`}>
               <PageStepper
                 page={page}
-                totalPages={Math.ceil(smTotal / pageSize)}
+                totalPages={Math.ceil(ssmsTotal / pageSize)}
                 handlePage={handleSetPage}
               />
             </div>
