@@ -1,10 +1,4 @@
-interface RawSvgProps {
-  height?: string;
-  width?: string;
-  title?: string;
-}
-
-export const RawSvg = ({ height, width, title }: RawSvgProps) => `
+export const RawSvg = (height, width, title) => `
   <span id="human-body-svg-container">
     <div id="title">${title}</div>
     <svg id="male" width="${width || `226px`}" height="${

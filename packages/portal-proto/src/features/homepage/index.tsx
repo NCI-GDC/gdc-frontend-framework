@@ -1,7 +1,5 @@
-import { Image } from "@/components/Image";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
-import { sapien } from "@nci-gdc/sapien";
 import { useRef } from "react";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";

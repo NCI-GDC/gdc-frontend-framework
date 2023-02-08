@@ -48,9 +48,12 @@ export const Bodyplot = () => {
           width: 700,
           height: 600,
           data: data,
+          labelSize: "10px",
+          fileCountKey: "_file_count",
+          clickHandler: (d) => console.dir(d),
         })
       : null;
-  }, [ref]);
+  }, [data, ref]);
 
   return <div id="human-body-root" ref={ref}></div>;
 };

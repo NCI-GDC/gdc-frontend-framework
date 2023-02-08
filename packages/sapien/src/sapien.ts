@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import * as d3 from "d3";
-import RawSvg from "./raw-svg";
+import RawSvg from "./raw-svg.js";
 import colorCodes from "./colorCodes";
 import { TConfig } from "./types";
 
@@ -32,7 +32,7 @@ export const createHumanBody: TCreateHumanBody = ({
 
   if (!root) throw "Must select an existing element!";
 
-  root.innerHTML = RawSvg({ title });
+  root.innerHTML = RawSvg("400", "520", title);
 
   width = width || 400;
   height = height || 520;
