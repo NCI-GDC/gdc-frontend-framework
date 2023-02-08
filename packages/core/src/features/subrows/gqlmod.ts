@@ -13,6 +13,7 @@ export const getVersion = (version: string) => {
 };
 
 export const getGQLParams = (ids: string[], version: string) => {
+  // todo  // const { filter, alias, ...others } = getVersion(version);
   const params = `
   $filters_case: FiltersArgument,
   ${`${ids

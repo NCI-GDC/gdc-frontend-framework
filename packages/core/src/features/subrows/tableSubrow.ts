@@ -220,7 +220,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               name,
               cytoband: cytoband.join(", "),
               biotype,
-              ssmsAffectedInCohort: `${numCases} / ${filteredCases} (${(
+              ssmsAffectedCasesInCohort: `${numCases} / ${filteredCases} (${(
                 100 *
                 (numCases / filteredCases)
               ).toFixed(2)}%)`,

@@ -4,6 +4,7 @@ import {
   FilterSet,
   usePrevious,
   useMutationsFreqData,
+  useMutationsFreqDLQuery,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -265,67 +266,73 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     exportMutationsFreq,
   ]);
 
-  // const {
-  //   data: mutationsFreqTSVData,
-  //   isFetching: mutationsFreqTSVFetching,
-  //   isError: mutationsFreqTSVError,
-  // } = useMutationsFreqDLQuery({
-  //   tableData,
-  //   ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
-  // });
+  const {
+    data: mutationsFreqTSVData,
+    isFetching: mutationsFreqTSVFetching,
+    isError: mutationsFreqTSVError,
+  } = useMutationsFreqDLQuery({
+    tableData,
+    ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
+  });
 
-  // const exportMutationsFreqTSV = () => {
-  //   const now = new Date();
-  //   const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
-  //   const headers = [
-  //     "DNA Change",
-  //     "Protein Change",
-  //     "Mutation ID",
-  //     "Type",
-  //     "Consequences",
-  //     "# Affected Cases in Cohort",
-  //     "# Affected Cases Across the GDC",
-  //     "Impact",
-  //   ];
-  //   const body = mutationsFreqTSVData?.results
-  //     .map(
-  //       (
-  //         {
-  //           // todo
-  //         },
-  //       ) => {
-  //         return [
-  //           // todo
-  //         ].join("/t");
-  //       },
-  //     )
-  //     .join("/n");
-  //   console.log("body", body);
-  //   debugger;
-  //   const tsv = [headers.join("/t"), body].join("/n");
-  //   console.log("tsv", tsv);
-  //   debugger;
-  //   const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
-  //   saveAs(blob, fileName);
-  // };
+  const exportMutationsFreqTSV = () => {
+    const now = new Date();
+    const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
+    const headers = [
+      "DNA Change",
+      "Protein Change",
+      "Mutation ID",
+      "Type",
+      "Consequences",
+      "# Affected Cases in Cohort",
+      "# Affected Cases Across the GDC",
+      "Impact",
+    ];
+    const body = mutationsFreqTSVData?.results
+      .map(
+        ({
+          dnaChange,
+          proteinChange,
+          mutationId,
+          type,
+          consequences,
+          ssmsAffectedCasesInCohort,
+          ssmsAffectedCasesAcrossGDC,
+          impact,
+        }) => {
+          return [
+            dnaChange,
+            proteinChange,
+            mutationId,
+            type,
+            consequences,
+            ssmsAffectedCasesInCohort,
+            ssmsAffectedCasesAcrossGDC,
+            impact,
+          ].join("\t");
+        },
+      )
+      .join("\n");
 
-  // useEffect(() => {
-  //   if (mutationsFreqTSVError) {
-  //     setExportMutationsFreqTSVPending(false);
-  //   } else if (exportMutationsFreqTSVPending && !mutationsFreqTSVFetching) {
-  //     exportMutationsFreqTSV();
-  //     setExportMutationsFreqTSVPending(false);
-  //   }
-  // }, [
-  //   mutationsFreqTSVFetching,
-  //   mutationsFreqTSVError,
-  //   exportMutationsFreqTSVPending,
-  // ]);
+    const tsv = [headers.join("\t"), body].join("\n");
 
-  // useEffect(() => {
-  //   console.log("tsv ssm", mutationsFreqTSVData, mutationsFreqTSVFetching);
-  //   console.log("json", "ssm", mutationsFreqData, mutationsFreqFetching);
-  // }, [mutationsFreqData, mutationsFreqFetching, mutationsFreqTSVData, initialData, mutationsFreqTSVFetching]);
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+
+    saveAs(blob, fileName);
+  };
+
+  useEffect(() => {
+    if (mutationsFreqTSVError) {
+      setExportMutationsFreqTSVPending(false);
+    } else if (exportMutationsFreqTSVPending && !mutationsFreqTSVFetching) {
+      exportMutationsFreqTSV();
+      setExportMutationsFreqTSVPending(false);
+    }
+  }, [
+    mutationsFreqTSVFetching,
+    mutationsFreqTSVError,
+    exportMutationsFreqTSVPending,
+  ]);
 
   return (
     <>
@@ -364,13 +371,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view">
                     <Button
-                      // onClick={() => {
-                      //   if (mutationsFreqTSVFetching) {
-                      //     setExportMutationsFreqTSVPending(true);
-                      //   } else {
-                      //     exportMutationsFreqTSV();
-                      //   }
-                      // }}
+                      onClick={() => {
+                        if (mutationsFreqTSVFetching) {
+                          setExportMutationsFreqTSVPending(true);
+                        } else {
+                          exportMutationsFreqTSV();
+                        }
+                      }}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -449,7 +456,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{`${((page + 1) * pageSize <
+                <span className={`font-bold`}>{` ${((page + 1) * pageSize <
                 smTotal
                   ? (page + 1) * pageSize
                   : smTotal

@@ -268,14 +268,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             cnvLoss,
             mutations,
             annotations,
-          ].join("/t");
+          ].join("\t");
         },
       )
-      .join("/n");
-    console.log("body", body);
-    const tsv = [headers.join("/t"), body].join("/n");
-    console.log("tsv", tsv);
-    // debugger;
+      .join("\n");
+
+    const tsv = [headers.join("\t"), body].join("\n");
 
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
 
@@ -402,7 +400,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
-                  {`${((page + 1) * pageSize < gTotal
+                  {` ${((page + 1) * pageSize < gTotal
                     ? (page + 1) * pageSize
                     : gTotal
                   ).toLocaleString("en-US")} `}
