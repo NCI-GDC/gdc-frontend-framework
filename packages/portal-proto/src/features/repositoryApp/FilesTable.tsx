@@ -48,7 +48,12 @@ const FilesTables: React.FC = () => {
   const [offset, setOffset] = useState(0);
 
   const coreDispatch = useCoreDispatch();
-  const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
+  const {
+    data: { files, pagination } = {},
+    isFetching,
+    isError,
+    isSuccess,
+  } = useGetFilesQuery({
     filters: cohortGqlOperator,
     expand: [
       "annotations", //annotations
@@ -125,8 +130,8 @@ const FilesTables: React.FC = () => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   if (!isFetching && isSuccess) {
-    tempPagination = data?.pagination;
-    formattedTableData = data?.files.map((file: GdcFile) => ({
+    tempPagination = pagination;
+    formattedTableData = files.map((file: GdcFile) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
         <button
@@ -347,7 +352,7 @@ const FilesTables: React.FC = () => {
 
   const handleDownloadTSV = () => {
     downloadTSV(
-      data.files,
+      files,
       columnCells,
       `files-table.${convertDateToString(new Date())}.tsv`,
       {

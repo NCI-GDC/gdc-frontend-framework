@@ -550,6 +550,7 @@ export const filesApiSlice = endpointSlice.injectEndpoints({
         if (response.warnings && Object.keys(response.warnings).length > 0)
           return {
             files: [],
+            pagination: undefined,
           };
 
         return {

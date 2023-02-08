@@ -12,7 +12,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
   setCurrentFile,
   isModal,
 }: ContextualFileViewProps) => {
-  const { data, isFetching } = useGetFilesQuery({
+  const { data: { files } = {}, isFetching } = useGetFilesQuery({
     filters: {
       op: "=",
       content: {
@@ -37,22 +37,21 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
       "downstream_analyses.output_files",
       "index_files",
     ],
-    size: 1,
   });
   const history = useFileHistory(setCurrentFile);
 
-  const title = data?.files[0]
-    ? data?.files[0].file_name
+  const title = files?.[0]
+    ? files?.[0].file_name
     : `${setCurrentFile} not found`;
   return (
     <div>
-      {data && !isFetching ? (
+      {files?.[0] && !isFetching ? (
         <>
           {!isModal && <SummaryHeader iconText="fl" headerTitle={title} />}
 
-          {data?.files[0] ? (
+          {files[0] ? (
             <FileView
-              file={data?.files[0]}
+              file={files?.[0]}
               fileHistory={history?.data?.[0]}
               isModal={isModal}
             />
