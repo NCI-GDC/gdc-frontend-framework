@@ -9,7 +9,7 @@ export interface SubrowResponse {
       denominators: {
         project__project_id: Buckets;
       };
-      numerators: {
+      [x: string]: {
         project__project_id: Buckets;
       };
     };
@@ -88,86 +88,37 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneTableSubrow: builder.query({
       query: (request: { id: string }) => ({
-        graphQLQuery: `
-                    query GeneTableSubrow(
-                        $filters_case: FiltersArgument
-                        $filters_gene: FiltersArgument
-                    ) {
-                        explore {
-                            cases {
-                              denominators: aggregations(filters: $filters_case) {
-                                project__project_id {
-                                    buckets {
-                                        key
-                                        doc_count
-                                    }
-                                }
-                              }
-                                numerators: aggregations(filters: $filters_gene) {
-                                    project__project_id {
-                                        buckets {
-                                            doc_count
-                                            key
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    `,
-        graphQLFilters: {
-          filters_case: {
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["ssm"],
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          },
-          filters_gene: {
-            op: "and",
-            content: [
-              {
-                content: {
-                  field: "genes.gene_id",
-                  value: [request.id],
-                },
-                op: "in",
-              },
-              {
-                op: "NOT",
-                content: {
-                  field: "cases.gene.ssm.observation.observation_id",
-                  value: "MISSING",
-                },
-              },
-            ],
-          },
-        },
+        graphQLQuery: getAliasGraphQLQuery([request.id], "genes") as string,
+        graphQLFilters: getAliasFilters([request.id], "genes") as Record<
+          string,
+          unknown
+        >,
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
         const { cases } = response?.data?.explore;
+
         const {
-          numerators: {
-            project__project_id: { buckets: nBuckets = [] },
-          },
           denominators: {
-            project__project_id: { buckets: dBuckets = [] },
+            project__project_id: { buckets: d = [] },
+          },
+          ...filter
+        } = cases;
+
+        const {
+          [`${Object.keys(filter)[0]}`]: {
+            project__project_id: { buckets: n = [] },
           },
         } = cases;
-        const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+        const transformedBuckets = n.map(({ doc_count, key }) => {
           return {
             project: key,
             numerator: doc_count,
-            denominator: dBuckets.find((d) => d.key === key)?.doc_count,
+            denominator: d.find(({ key }) => key === key)?.doc_count,
           };
         });
+
         return transformedBuckets as TableSubrowData[];
       },
     }),
@@ -225,7 +176,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 (numCases / filteredCases)
               ).toFixed(2)}%)`,
               ssmsAffectedCasesAcrossGDC: remaining[
-                `filters_genes_${gene_id}`
+                `filters_genes_${gene_id}`.replaceAll("-", "_")
               ]?.project__project_id?.buckets
                 ?.map(
                   ({
@@ -269,86 +220,40 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
     }),
     getSomaticMutationTableSubrow: builder.query({
       query: (request: { id: string }) => ({
-        graphQLQuery: `
-                query SomaticMutationTableSubrow(
-                  $filters_case: FiltersArgument
-                  $filters_mutation: FiltersArgument
-                ) {
-                  explore {
-                    cases {
-                      denominators: aggregations(filters: $filters_case) {
-                        project__project_id {
-                            buckets {
-                                key
-                                doc_count
-                            }
-                        }
-                      }
-                      numerators: aggregations(filters: $filters_mutation) {
-                        project__project_id {
-                          buckets {
-                            doc_count
-                            key
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              `,
-        graphQLFilters: {
-          filters_case: {
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["ssm"],
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          },
-          filters_mutation: {
-            content: [
-              {
-                content: {
-                  field: "ssms.ssm_id",
-                  value: [request.id],
-                },
-                op: "in",
-              },
-              {
-                content: {
-                  field: "cases.gene.ssm.observation.observation_id",
-                  value: "MISSING",
-                },
-                op: "NOT",
-              },
-            ],
-            op: "and",
-          },
-        },
+        graphQLQuery: getAliasGraphQLQuery(
+          [request.id.replaceAll("-", "_")],
+          "ssms",
+        ) as string,
+        graphQLFilters: getAliasFilters(
+          [request.id.replaceAll("-", "_")],
+          "ssms",
+        ) as Record<string, unknown>,
       }),
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
         const { cases } = response?.data?.explore;
+
         const {
-          numerators: {
-            project__project_id: { buckets: nBuckets = [] },
-          },
           denominators: {
-            project__project_id: { buckets: dBuckets = [] },
+            project__project_id: { buckets: d = [] },
+          },
+          ...filter
+        } = cases;
+
+        const {
+          [`${Object.keys(filter)[0]}`]: {
+            project__project_id: { buckets: n = [] },
           },
         } = cases;
-        const transformedBuckets = nBuckets.map(({ doc_count, key }) => {
+        const transformedBuckets = n.map(({ doc_count, key }) => {
           return {
             project: key,
             numerator: doc_count,
-            denominator: dBuckets.find((d) => d.key === key)?.doc_count,
+            denominator: d.find(({ key }) => key === key)?.doc_count,
           };
         });
+
         return transformedBuckets as TableSubrowData[];
       },
     }),
@@ -358,8 +263,14 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         const result = await fetchWithBQ({
-          graphQLQuery: getAliasGraphQLQuery(arg.ssmsIds, "ssms"),
-          graphQLFilters: getAliasFilters(arg.ssmsIds, "ssms"),
+          graphQLQuery: getAliasGraphQLQuery(
+            arg.ssmsIds.map((id) => id.replaceAll("-", "_")),
+            "ssms",
+          ),
+          graphQLFilters: getAliasFilters(
+            arg.ssmsIds.map((id) => id.replaceAll("-", "_")),
+            "ssms",
+          ),
         });
         const { filteredCases, ssms } = arg?.tableData;
         const { denominators, ...remaining } =

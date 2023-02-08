@@ -18,7 +18,7 @@ export const getGQLParams = (ids: string[], version: string): string => {
   $filters_case: FiltersArgument,
   ${`${ids
     .map((id) => {
-      return `${filters}_${`${id.replaceAll("-", "_")}`}: FiltersArgument`;
+      return `${filters}_${`${id}`}: FiltersArgument`;
     })
     .join(",\r\n")}`}`;
   return params;
@@ -31,7 +31,7 @@ export const getAliasGraphQLQuery = (
   const { filters } = getVersion(version);
   // hyphens not allowed in gql aliases
   const query = `
-  query ${startCase(version)}Query(${getGQLParams(ids, version)}
+  query ${startCase(version)}QueryMod(${getGQLParams(ids, version)}
   ) {
       explore {
         cases {
@@ -46,13 +46,10 @@ export const getAliasGraphQLQuery = (
          ${
            version
              ? `${ids.map((id) => {
-                 return `${filters.replace("$", "")}_${`${id.replaceAll(
-                   "-",
-                   "_",
-                 )}`}: aggregations(filters: ${filters}_${`${id.replaceAll(
-                   "-",
-                   "_",
-                 )}`}) {
+                 return `${filters.replace(
+                   "$",
+                   "",
+                 )}_${`${id}`}: aggregations(filters: ${filters}_${`${id}`}) {
               project__project_id {
               buckets {
                 key
@@ -92,13 +89,13 @@ export const getAliasFilters = (
 
   const filters = { ...caseFilter } as Record<string, unknown>;
   for (const id of ids) {
-    filters[`${aliasFilter.replace("$", "")}_${id.replaceAll("-", "_")}`] = {
+    filters[`${aliasFilter.replace("$", "")}_${id}`] = {
       op: "and",
       content: [
         {
           content: {
             field: `${aliasFilter.split("_").at(-1)}.${aliasId}`,
-            value: [id],
+            value: [id.replaceAll("_", "-")],
           },
           op: "in",
         },
