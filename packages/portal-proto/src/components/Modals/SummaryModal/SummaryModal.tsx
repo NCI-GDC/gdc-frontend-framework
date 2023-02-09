@@ -42,7 +42,7 @@ export const SummaryModal = ({
       setOpened(false);
       onClose();
     }
-  }, [prevPath, currentPath]);
+  }, [prevPath, currentPath, onClose]);
 
   const renderChild =
     entityMetadata.entity_type === "project" ? (
