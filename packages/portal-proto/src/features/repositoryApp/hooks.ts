@@ -17,7 +17,6 @@ import {
   selectRangeFacetByField,
   fetchFacetContinuousAggregation,
   selectCurrentCohortId,
-  AppDataSelectorResponse,
   FetchDataActionCreator,
   UseAppDataHook,
   UseAppDataResponse,
@@ -33,6 +32,7 @@ import {
 } from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
 import { extractValue } from "@/features/facets/hooks";
+import { AppDataSelector } from "@/features/repositoryApp/appApi";
 
 import {
   useAppSelector,
@@ -288,19 +288,19 @@ export const useClearLocalFilterWhenCohortChanges = (): void => {
 
 export const createUseAppDataHook = <P, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, A>,
-  dataSelector: AppDataSelectorResponse<T>,
-): UseAppDataHook<T> => {
-  return (...params): UseAppDataResponse<T> => {
+  dataSelector: AppDataSelector<T>,
+): UseAppDataHook<P, T> => {
+  return (...params: P[]): UseAppDataResponse<T> => {
     const appDispatch = useAppDispatch();
     const { data, status, error } = useAppSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious(params);
+    const prevParams = usePrevious<P[]>(params);
 
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
         // createDispatchHook types forces the input to AnyAction, which is
         // not compatible with thunk actions. hence, the `as any` cast. ;(
-        appDispatch(action); // eslint-disable-line
+        appDispatch(action as any); // eslint-disable-line
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, appDispatch, action, params, prevParams]);
