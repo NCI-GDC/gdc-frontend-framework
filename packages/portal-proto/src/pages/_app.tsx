@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
+import "@nci-gdc/sapien/dist/bodyplot.css";
 import { createContext, useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";

@@ -30,4 +30,4 @@ export default {
   Thymus: "rgb(61, 223, 204)",
   Thyroid: "rgb(224, 75, 123)",
   Uterus: "rgb(245, 97, 154)",
-};
+} as Record<string, string>;

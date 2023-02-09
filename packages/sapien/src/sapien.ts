@@ -1,16 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import * as d3 from "d3";
-import RawSvg from "./raw-svg.js";
+import RawSvg from "./raw-svg";
 import colorCodes from "./colorCodes";
 import { TConfig } from "./types";
+
+export type BodyplotDataEntry = Record<string, string | number>;
 
 const toClassName = (key: string) => key.split(" ").join("-");
 const halfPixel = 0.5;
 
 type TCreateHumanBody = (c: TConfig) => void;
 export const createHumanBody: TCreateHumanBody = ({
-  clickHandler,
+  clickHandler = () => null,
   mouseOverHandler,
   mouseOutHandler,
   data,
@@ -18,7 +18,7 @@ export const createHumanBody: TCreateHumanBody = ({
   height,
   width,
   labelSize,
-  tickInterval,
+  tickInterval = 1000,
   title = "Cases by Primary Site",
   offsetLeft = 0,
   offsetTop = 0,
@@ -32,17 +32,18 @@ export const createHumanBody: TCreateHumanBody = ({
 
   if (!root) throw "Must select an existing element!";
 
-  root.innerHTML = RawSvg("400", "520", title);
+  root.innerHTML = RawSvg(title);
 
   width = width || 400;
   height = height || 520;
   labelSize = labelSize || "12px";
-  tickInterval = tickInterval || 1000;
 
   const plotHeight = height - 20;
   const barStartOffset = 110;
   const barWidth = width - barStartOffset;
-  const maxCases = Math.max(...data.map((d) => d[caseCountKey]));
+  const maxCases = Math.max(
+    ...data.map((d: BodyplotDataEntry) => d[caseCountKey]),
+  );
   const numberOfVerticalAxis = Math.floor(maxCases / tickInterval) + 1;
 
   // The Bar Chart
@@ -129,11 +130,11 @@ export const createHumanBody: TCreateHumanBody = ({
 
       d3.select(`.bar-${toClassName(d[primarySiteKey])}`)
         .transition("300")
-        .attr("fill", (d: any) => {
+        .attr("fill", (d: any): string => {
           const hsl = d3.hsl(d.color);
           hsl.s = 1;
           hsl.l = 0.7;
-          return d3.hsl(hsl);
+          return d3.hsl(hsl).toString();
         });
 
       d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
@@ -183,7 +184,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .select(selector)
     .append("div")
     .style("position", "absolute")
-    .style("opacity", 0)
+    .style("opacity", "0")
     .style("background-color", "white")
     .style("padding", "10px")
     .style(
@@ -213,23 +214,23 @@ export const createHumanBody: TCreateHumanBody = ({
       return d.color;
     })
     .attr("class", (d: any) => `bar-${toClassName(d[primarySiteKey])}`)
-    .on("mouseover", function (d) {
-      const organSelector = toClassName(d[primarySiteKey]);
+    .on("mouseover", function (d: any) {
+      const organSelector = toClassName(d[primarySiteKey] as string);
       const organ = document.getElementById(organSelector);
       if (organ) organ.style.opacity = "1";
 
       d3.select(this)
         .attr("cursor", "pointer")
         .transition("300")
-        .attr("fill", (d: any) => {
+        .attr("fill", (d: any): string => {
           const hsl = d3.hsl(d.color);
           hsl.s = 1;
           hsl.l = 0.7;
-          return d3.hsl(hsl);
+          return d3.hsl(hsl).toString();
         });
 
       d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
-        .transition(300)
+        .transition("300")
         .attr("fill", "white");
 
       if (mouseOverHandler) mouseOverHandler(d);
@@ -253,7 +254,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("z-index", "99999");
       }
     })
-    .on("mouseout", function (d) {
+    .on("mouseout", function (d: any) {
       // needs `this`
       const organSelector = toClassName(d[primarySiteKey]);
       const organ = document.getElementById(organSelector);
@@ -261,7 +262,7 @@ export const createHumanBody: TCreateHumanBody = ({
 
       d3.select(this)
         .transition("300")
-        .attr("fill", (d) => d.color);
+        .attr("fill", (d: any) => d.color);
 
       d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
         .transition("300")
@@ -276,12 +277,14 @@ export const createHumanBody: TCreateHumanBody = ({
 
   [].forEach.call(svgs, (svg: any) => {
     svg.addEventListener("click", function () {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       clickHandler({ _key: this.id });
     });
 
-    svg.addEventListener("mouseover", function (event) {
+    svg.addEventListener("mouseover", function (this: SVGElement, event: any) {
       // needs `this`
-      this.style.opacity = "";
+      this.style.opacity = "1";
 
       d3.select(`.primary-site-label-${this.id}`)
         .transition("300")
@@ -290,7 +293,7 @@ export const createHumanBody: TCreateHumanBody = ({
       d3.select(`.bar-${this.id}`)
         .attr("cursor", "pointer")
         .transition("300")
-        .attr("fill", (d) => {
+        .attr("fill", (d: any): any => {
           // hacks
           if (mouseOverHandler) mouseOverHandler(d);
           else {
@@ -319,9 +322,9 @@ export const createHumanBody: TCreateHumanBody = ({
         });
     });
 
-    svg.addEventListener("mouseout", function () {
+    svg.addEventListener("mouseout", function (this: SVGElement) {
       // needs `this`
-      this.style.opacity = 0;
+      this.style.opacity = "0";
 
       d3.select(`.primary-site-label-${this.id}`)
         .transition("300")
@@ -329,7 +332,7 @@ export const createHumanBody: TCreateHumanBody = ({
 
       d3.select(`.bar-${this.id}`)
         .transition("300")
-        .attr("fill", (d) => {
+        .attr("fill", (d: any): string => {
           if (mouseOutHandler) mouseOutHandler(d);
           else tooltip.style("opacity", 0);
           return d.color;

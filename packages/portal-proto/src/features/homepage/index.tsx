@@ -1,6 +1,5 @@
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
-import { useRef } from "react";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
 
@@ -11,11 +10,10 @@ font-medium font-heading rounded flex flex-col justify-center items-center text-
 `;
 
 const Homepage = (): JSX.Element => {
-  const ref = useRef(null);
   return (
     <div className="flex flex-col w-100 h-100 bg-base-max">
       <div className="flex flex-row bg-hero-pattern bg-no-repeat bg-cover">
-        <div className="flex flex-col pl-7">
+        <div className="flex flex-col pl-7 basis-1/2">
           <div className="flex flex-col mt-12">
             <div className="font-heading tracking-[.03em] font-bold text-primary-darkest text-[2.4rem] pt-5">
               Genomic Data Commons
@@ -46,8 +44,9 @@ const Homepage = (): JSX.Element => {
           <HorizontalSummaryTotalsPanel />
           <div className="py-10" />
         </div>
-        <div className="m-auto">
-          <div ref={ref}>
+        <div className="flex flex-row basis-1/2">
+          <div className="relative basis-5/6 mt-12 " id="human-body-parent">
+            <div className="flex flex-col basis-1/6" />
             <Bodyplot />
           </div>
         </div>

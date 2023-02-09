@@ -2,6 +2,7 @@ import babel from "@rollup/plugin-babel";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import copy from "rollup-plugin-copy";
 import dts from "rollup-plugin-dts";
 
 const globals = {
@@ -43,6 +44,9 @@ const config = [
         presets: ["@babel/preset-react"],
         exclude: "**/node_modules/**",
         babelHelpers: "bundled",
+      }),
+      copy({
+        targets: [{ src: "style/bodyplot.css", dest: "dist" }],
       }),
     ],
   },
