@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, useState, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
@@ -14,18 +14,17 @@ const basepath = PROTEINPAINT_API;
 
 interface PpProps {
   basepath?: string;
-  geneId?: string;
-  gene2canonicalisoform?: string;
-  ssm_id?: string;
-  mds3_ssm2canonicalisoform?: mds3_isoform;
-  geneSearch4GDCmds3?: boolean;
 }
 
-export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
+export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
   );
+
   const { data: userDetails } = useUserDetails();
+  const [alertDisplay, setAlertDisplay] = useState("none");
+  const [rootDisplay, setRootDisplay] = useState("none");
+
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
@@ -33,7 +32,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = getLollipopTrack(props, filter0);
+      const isAuthorized = userDetails.username && true;
+      setAlertDisplay(isAuthorized ? "none" : "block");
+      setRootDisplay(isAuthorized ? "block" : "none");
+      if (!isAuthorized) return;
+
+      const data = userDetails?.username ? getBamTrack(props, filter0) : null;
 
       if (!data) return;
       if (isEqual(prevArg.current, data)) return;
@@ -46,7 +50,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const arg = Object.assign(
         { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
         cloneDeep(data),
-      ) as Mds3Arg;
+      ) as BamArg;
 
       if (ppRef.current) {
         ppRef.current.update(arg);
@@ -59,97 +63,59 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      props.gene2canonicalisoform,
-      props.mds3_ssm2canonicalisoform,
-      props.geneSearch4GDCmds3,
-      filter0,
-      userDetails,
-    ],
+    [filter0, userDetails],
   );
 
+  const alertRef = useRef();
   const divRef = useRef();
   return (
     <div>
       <div
+        ref={alertRef}
+        style={{ margin: "32px", display: `${alertDisplay}` }}
+        className="sjpp-wrapper-alert-div"
+      >
+        <b>Access alert</b>
+        <hr />
+        <p>Please login to access the Sequence Read visualization tool.</p>
+      </div>
+      <div
         ref={divRef}
-        style={{ margin: "32px" }}
+        style={{ margin: "32px", display: `${rootDisplay}` }}
         className="sjpp-wrapper-root-div"
-      />
+      ></div>
     </div>
   );
 };
-
-interface Mds3Arg {
-  holder?: HTMLElement;
-  noheader?: boolean;
-  nobox?: boolean;
-  hide_dsHandles?: boolean;
-  host: string;
-  genome: string;
-  gene2canonicalisoform?: string;
-  mds3_ssm2canonicalisoform?: mds3_isoform;
-  geneSearch4GDCmds3?: boolean;
-  tracks: Track[];
-}
-
-interface Track {
-  type: string;
-  dslabel: string;
-  filter0: FilterSet;
-  allow2selectSamples?: SelectSamples;
-}
-
-interface mds3_isoform {
-  ssm_id: string;
-  dslabel: string;
-}
 
 interface PpApi {
   update(arg: any): null;
 }
 
-interface SelectSamples {
-  buttonText: string;
-  attributes: string[];
-  callback(samples: string[]): void;
+interface BamArg {
+  holder?: HTMLElement;
+  noheader?: boolean;
+  nobox?: boolean;
+  hide_dsHandles?: boolean;
+  host: string;
+  gdcbamslice: GdcBamSlice;
+  filter0: FilterSet;
 }
 
-function selectSamplesCallBack(samples: string[]) {
-  /*** TODO: create a new cohort using the case set id list (samples) ***/
-  console.log("selected", samples);
-}
+type GdcBamSlice = {
+  hideTokenInput: boolean;
+};
 
-function getLollipopTrack(props: PpProps, filter0: any) {
+function getBamTrack(props: PpProps, filter0: any) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
-  const arg: Mds3Arg = {
+  const arg: BamArg = {
     host: props.basepath || (basepath as string),
-    genome: "hg38", // hardcoded for gdc
-    tracks: [
-      {
-        type: "mds3",
-        dslabel: "GDC",
-        filter0,
-        allow2selectSamples: {
-          buttonText: "Select samples",
-          attributes: ["sample_id"],
-          callback: selectSamplesCallBack,
-        },
-      },
-    ],
+    gdcbamslice: {
+      hideTokenInput: true,
+    },
+    filter0,
   };
-
-  if (props.geneId) {
-    arg.gene2canonicalisoform = props.geneId;
-  } else if (props.ssm_id) {
-    arg.mds3_ssm2canonicalisoform = {
-      dslabel: "GDC",
-      ssm_id: props.ssm_id,
-    };
-  } else {
-    arg.geneSearch4GDCmds3 = true;
-  }
 
   return arg;
 }

@@ -1,6 +1,6 @@
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
-import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
+import { SequenceReadWrapper } from "../proteinpaint/SequenceReadWrapper";
 import { DemoUtil } from "./DemoUtil";
 
 const SequenceReadApp: FC = () => {
@@ -11,7 +11,7 @@ const SequenceReadApp: FC = () => {
       {isDemoMode ? (
         <DemoUtil text="Demo mode is not available for this app" />
       ) : (
-        <ProteinPaintWrapper track="bam" />
+        <SequenceReadWrapper />
       )}
     </>
   );
