@@ -36,11 +36,14 @@ const apiBuildInfo = fetch(`${process.env.NEXT_PUBLIC_GDC_API}/status`)
       hash: "",
     };
   });
+
+// This gets the git info from the git directory by checking what the head is set to then getting that branches hash
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
 const buildHash = require("child_process")
-  .execSync("git rev-parse --short HEAD")
+  .execSync("(cd ../../.git; head=$(cat HEAD); cat ${head##*: })")
   .toString()
-  .trim();
+  .trim()
+  .slice(0, 8);
 
 module.exports = () => {
   return apiBuildInfo.then((apiInfo) =>
