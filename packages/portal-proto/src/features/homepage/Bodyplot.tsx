@@ -1,6 +1,13 @@
+import {
+  MutableRefObject,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { createHumanBody } from "@nci-gdc/sapien";
-import { useResizeObserver } from "@mantine/hooks";
-import { MutableRefObject, useLayoutEffect, useMemo } from "react";
+import { useMouse, useResizeObserver } from "@mantine/hooks";
+import { Box, Tooltip } from "@mantine/core";
 
 export interface BodyplotDataEntry {
   _key: string;
@@ -8,7 +15,17 @@ export interface BodyplotDataEntry {
   _file_count: number;
 }
 
-export const useBodyplot = (): MutableRefObject<any> => {
+interface BodyplotProps {
+  clickHandler?: (key: string) => void;
+  mouseOverHandler?: (e: any) => void;
+  mouseOutHandler?: (e: any) => void;
+}
+
+export const useBodyplot = ({
+  clickHandler = () => null,
+  mouseOverHandler = undefined,
+  mouseOutHandler = undefined,
+}: BodyplotProps): MutableRefObject<any> => {
   const [ref] = useResizeObserver();
 
   // sample data until we have real data
@@ -64,7 +81,9 @@ export const useBodyplot = (): MutableRefObject<any> => {
           tickInterval: 250,
           offsetLeft: root ? root.offsetLeft : 0,
           offsetTop: root ? root.offsetTop : 0,
-          clickHandler: () => null,
+          clickHandler: clickHandler,
+          mouseOverHandler: mouseOverHandler,
+          mouseOutHandler: mouseOutHandler,
         })
       : null;
   }, [data, ref, root]);
@@ -73,6 +92,23 @@ export const useBodyplot = (): MutableRefObject<any> => {
 };
 
 export const Bodyplot = (): JSX.Element => {
-  const container = useBodyplot();
-  return <div id="human-body-root" ref={container} />;
+  const { ref: mouseRef, x, y } = useMouse(); // for bodyplot tooltip
+  const clickHandler = useCallback(() => () => null, []);
+
+  const container = useBodyplot({
+    clickHandler: clickHandler,
+  });
+  return (
+    <div id="human-body-root" ref={container}>
+      <div ref={mouseRef} className="relative">
+        <Box
+          className="bg-base-lightest min-w-[150px]"
+          sx={{ left: x + 20, top: y - 20, position: "absolute" }}
+        >
+          {survivalPlotLineTooltipContent}
+        </Box>
+        <div className="survival-plot" ref={container} />
+      </div>
+    </div>
+  );
 };
