@@ -5,8 +5,9 @@ import { ContextualFileView } from "@/features/files/FileSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { Modal } from "@mantine/core";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { entityMetadataType } from "src/pages/_app";
+import { URLContext } from "src/pages/_app";
 
 export const SummaryModalHeader = ({
   iconText,
@@ -33,6 +34,16 @@ export const SummaryModal = ({
   entityMetadata: entityMetadataType;
   onClose: () => void;
 }): JSX.Element => {
+  const { prevPath, currentPath } = useContext(URLContext);
+  const [modalOpened, setOpened] = useState(opened);
+
+  useEffect(() => {
+    if (prevPath !== currentPath) {
+      setOpened(false);
+      onClose();
+    }
+  }, [prevPath, currentPath]);
+
   const renderChild =
     entityMetadata.entity_type === "project" ? (
       <ProjectSummary projectId={entityMetadata.entity_id} isModal={true} />
@@ -76,7 +87,7 @@ export const SummaryModal = ({
 
   return (
     <Modal
-      opened={opened}
+      opened={modalOpened}
       onClose={onClose}
       size="calc(100vw - 100px)"
       withinPortal={false}
