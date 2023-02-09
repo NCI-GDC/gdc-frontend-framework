@@ -17,6 +17,10 @@ import {
   selectRangeFacetByField,
   fetchFacetContinuousAggregation,
   selectCurrentCohortId,
+  AppDataSelectorResponse,
+  FetchDataActionCreator,
+  UseAppDataHook,
+  UseAppDataResponse,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
@@ -282,8 +286,11 @@ export const useClearLocalFilterWhenCohortChanges = (): void => {
   }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
 };
 
-export const createUseAppDataHook = (fetchDataActionCreator, dataSelector) => {
-  return (...params) => {
+export const createUseAppDataHook = <P, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+  dataSelector: AppDataSelectorResponse<T>,
+): UseAppDataHook<T> => {
+  return (...params): UseAppDataResponse<T> => {
     const appDispatch = useAppDispatch();
     const { data, status, error } = useAppSelector(dataSelector);
     const action = fetchDataActionCreator(...params);
