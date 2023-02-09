@@ -87,7 +87,7 @@ export const useBodyplot = ({
           mouseOutHandler: mouseOutHandler,
         })
       : null;
-  }, [clickHandler, data, mouseOutHandler, mouseOverHandler, ref, root]);
+  }, [clickHandler, data]);
 
   return ref;
 };
