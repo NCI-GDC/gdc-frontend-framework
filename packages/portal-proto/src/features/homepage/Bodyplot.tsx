@@ -1,13 +1,14 @@
 import {
   MutableRefObject,
   useCallback,
+  useRef,
   useLayoutEffect,
   useMemo,
   useState,
 } from "react";
 import { createHumanBody } from "@nci-gdc/sapien";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
-import { Box, Tooltip } from "@mantine/core";
+import { Text } from "@mantine/core";
 
 export interface BodyplotDataEntry {
   _key: string;
@@ -86,29 +87,97 @@ export const useBodyplot = ({
           mouseOutHandler: mouseOutHandler,
         })
       : null;
-  }, [data, ref, root]);
+  }, [clickHandler, data, mouseOutHandler, mouseOverHandler, ref, root]);
 
   return ref;
 };
 
+interface PopupContentProps {
+  label: string | number;
+  caseCount: string | number;
+  fileCount: string | number;
+  setSize: (_1: number[]) => void;
+}
+
+/**
+ * PopupContent is the content that appears when a user hovers over a body part
+ * @param label the name of the body part
+ * @param caseCount the number of cases that have data for this body part
+ * @param fileCount the number of files that have data for this body part
+ * @param setSize a function that sets the size of the popup
+ */
+const PopupContent = ({
+  label,
+  caseCount,
+  fileCount,
+  setSize,
+}: PopupContentProps): JSX.Element => {
+  // get the size of the content, so we can position the popup
+  const contentRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const { width, height } = contentRef.current.getBoundingClientRect();
+    setSize([width, height]);
+  }, [setSize]);
+
+  return (
+    <div
+      ref={contentRef}
+      className="flex flex-col border-2 rounded border-base-lighter bg-base-max p-2"
+    >
+      <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-r border-t border-base-lighter"></div>
+      <Text size="xl" color="red">
+        {label}
+      </Text>
+      <div className="flex flex-row">
+        <Text size="md">{caseCount} cases </Text>
+        <Text size="md" className="px-2">
+          {" "}
+          ({fileCount} files)
+        </Text>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Bodyplot is the component that renders the bodyplot
+ */
 export const Bodyplot = (): JSX.Element => {
-  const { ref: mouseRef, x, y } = useMouse(); // for bodyplot tooltip
+  const [extents, setExtents] = useState([0, 0]);
+  const [bodyplotTooltipContent, setBodyplotTooltipContent] =
+    useState(undefined);
+
+  const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
   const clickHandler = useCallback(() => () => null, []);
 
   const container = useBodyplot({
     clickHandler: clickHandler,
+    mouseOverHandler: (d: Record<string, string | number>): void => {
+      // handler for mouseover to show tooltip
+      setBodyplotTooltipContent(
+        <PopupContent
+          label={d._key}
+          caseCount={d._count}
+          fileCount={d._file_count}
+          setSize={setExtents}
+        />,
+      );
+    },
+    mouseOutHandler: () => setBodyplotTooltipContent(undefined), // handler for mouseout to hide tooltip
   });
+
   return (
-    <div id="human-body-root" ref={container}>
-      <div ref={mouseRef} className="relative">
-        <Box
-          className="bg-base-lightest min-w-[150px]"
-          sx={{ left: x + 20, top: y - 20, position: "absolute" }}
-        >
-          {survivalPlotLineTooltipContent}
-        </Box>
-        <div className="survival-plot" ref={container} />
+    <div ref={mouseRef} className="relative">
+      <div
+        className={`${
+          bodyplotTooltipContent ? "opacity-100" : "opacity-0"
+        }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
+        style={{ left: x - extents[0] - 20, top: y - extents[1] / 2 }}
+      >
+        {bodyplotTooltipContent}
       </div>
+      <div id="human-body-root" ref={container}></div>
     </div>
   );
 };

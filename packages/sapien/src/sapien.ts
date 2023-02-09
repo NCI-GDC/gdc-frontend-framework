@@ -27,7 +27,7 @@ export const createHumanBody: TCreateHumanBody = ({
   fileCountKey = "fileCount",
 }: TConfig) => {
   // Similar to a React target element
-
+  const DEFAULT_ZINDEX = "400";
   const root = selector;
 
   if (!root) throw "Must select an existing element!";
@@ -71,7 +71,7 @@ export const createHumanBody: TCreateHumanBody = ({
   // Horizontal Axis
   svg
     .append("line")
-    .attr("stroke", "rgba(255, 255, 255, 0.8)")
+    .attr("stroke", "rgba(11, 11, 11, 0.8)")
     .attr("x1", barStartOffset)
     .attr("x2", width)
     .attr("y1", plotHeight + halfPixel)
@@ -83,7 +83,7 @@ export const createHumanBody: TCreateHumanBody = ({
   for (let i = 0; i < numberOfVerticalAxis; i++) {
     svg
       .append("line")
-      .attr("stroke", `rgba(255, 255, 255, 0.5)`)
+      .attr("stroke", `rgba(11, 11, 11, 0.5)`)
       .attr("x1", x(tickInterval) * i + barStartOffset)
       .attr("x2", x(tickInterval) * i + barStartOffset)
       .attr("y1", 0)
@@ -157,7 +157,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("top", `${d3.event.pageY - offsetTop - 86}px`)
           .style("transform", "translateX(-50%)")
           .style("transform", "translateX(-50%)")
-          .style("z-index", "99999");
+          .style("z-index", DEFAULT_ZINDEX);
       }
     })
     .on("mouseout", (d: any) => {
@@ -251,7 +251,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("top", `${d3.event.pageY - offsetTop - 86}px`)
           .style("transform", "translateX(-50%)")
           .style("transform", "translateX(-50%)")
-          .style("z-index", "99999");
+          .style("z-index", DEFAULT_ZINDEX);
       }
     })
     .on("mouseout", function (d: any) {
@@ -312,7 +312,7 @@ export const createHumanBody: TCreateHumanBody = ({
               .style("left", `${event.clientX - offsetLeft}px`)
               .style("top", `${event.clientY - offsetTop - 86}px`)
               .style("transform", "translateX(-50%)")
-              .style("z-index", "99999");
+              .style("z-index", DEFAULT_ZINDEX);
           }
 
           const hsl = d3.hsl(d.color);
