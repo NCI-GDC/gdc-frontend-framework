@@ -373,7 +373,7 @@ CyEIsVEQZMpufxU3uw7XkJbCYz0VfVaaz2MYhmEYhmEYhmEYhmkM/z+emES3/U2RuAAAAABJRU5E
 rkJggg==
 "
  /></g></svg>
-    <svg id="male" width="226px" height="500px" 
+    <svg id="male" width="226px" height="500px"
     viewBox="0 0 226 917" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;">
       <g transform="matrix(1,0,0,1,-70.6928,-106.95)">
           <g>
