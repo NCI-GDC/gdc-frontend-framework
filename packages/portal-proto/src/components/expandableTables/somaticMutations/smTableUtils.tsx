@@ -241,16 +241,21 @@ export const createTableColumn = (
                 "affectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex flex-col items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <div
+                      className={`flex flex-col font-content text-xs text-center items-center`}
+                    >
+                      <div className={`flex flex-row`}>
+                        {`${numerator} / ${denominator}`}
+                      </div>
+                      <div className={`flex flex-row`}>
+                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
+                      </div>
+                    </div>
                   )}
                   {row.getCanExpand() && (
-                    <div className="text-center content-center mr-6">
+                    <div className="text-center content-center items-center">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -300,17 +305,20 @@ export const createTableColumn = (
                 "affectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <>
                   {row.getCanExpand() && (
-                    <>
-                      <RatioSpring
-                        index={0}
-                        item={{ numerator, denominator }}
-                        orientation="horizontal"
-                      />
-                    </>
+                    <div
+                      className={`flex flex-col items-center text-center font-content text-xs`}
+                    >
+                      <div className={`flex flex-row`}>
+                        {`${numerator} / ${denominator}`}
+                      </div>
+                      <div className={`flex flex-row`}>
+                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
+                      </div>
+                    </div>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -355,12 +363,12 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={"Consequences for canonical transcript"}
-                className="flex flex-row justify-start mr-2"
+                className="flex flex-row justify-start items-center text-center"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start font-content text-sx">
+                <div className="flex flex-row items-center text-center font-content text-xs">
                   {row.getCanExpand() && (
                     <Consequences consequences={row.original["consequences"]} />
                   )}

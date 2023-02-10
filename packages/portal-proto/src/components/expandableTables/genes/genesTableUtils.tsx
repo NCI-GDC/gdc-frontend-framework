@@ -15,6 +15,7 @@ import { Image } from "@/components/Image";
 import { startCase } from "lodash";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { ItemTypes } from "@/features/shared/ItemTypes";
 
 export const createTableColumn = (
   accessor: string,
@@ -232,15 +233,20 @@ export const createTableColumn = (
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className={`flex flex-row justify-start`}>
+                <>
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <div
+                      className={`flex flex-col items-center text-center font-content text-xs`}
+                    >
+                      <div className={`flex flex-row`}>
+                        {`${numerator} / ${denominator}`}
+                      </div>
+                      <div className={`flex flex-row`}>
+                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
+                      </div>
+                    </div>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -267,16 +273,21 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex flex-col items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <div
+                      className={`flex flex-col font-content text-xs text-center items-center`}
+                    >
+                      <div className={`flex flex-row`}>
+                        {`${numerator} / ${denominator}`}
+                      </div>
+                      <div className={`flex flex-row`}>
+                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
+                      </div>
+                    </div>
                   )}
                   {row.getCanExpand() && (
-                    <div className="text-center content-center mr-6">
+                    <div className="text-center items-center content-center">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
