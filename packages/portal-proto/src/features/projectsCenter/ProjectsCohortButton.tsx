@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mantine/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectPickedProjects } from "@/features/projectsCenter/pickedProjectsSlice";
@@ -10,10 +10,12 @@ import {
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
   resetSelectedCases,
+  selectAvailableCohorts,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
 import tw from "tailwind-styled-components";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 interface CountsIconProps {
   $count?: number;
@@ -39,8 +41,10 @@ const ProjectsCohortButton = (): JSX.Element => {
   );
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
   const coreDispatch = useCoreDispatch();
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
-  const createCohortFromProjects = () => {
+  const createCohortFromProjects = (name: string) => {
     const filters: FilterSet = {
       mode: "and",
       root: {
@@ -55,6 +59,7 @@ const ProjectsCohortButton = (): JSX.Element => {
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: filters,
+        name,
         message: "newProjectsCohort",
       }),
     );
@@ -83,23 +88,40 @@ const ProjectsCohortButton = (): JSX.Element => {
     }
   }, [cohortMessage, coreDispatch]);
 
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
   return (
-    <Button
-      variant="outline"
-      color="primary"
-      disabled={pickedProjects.length == 0}
-      leftIcon={
-        pickedProjects.length ? (
-          <CountsIcon $count={pickedProjects.length}>
-            {" "}
-            {pickedProjects.length}{" "}
-          </CountsIcon>
-        ) : null
-      }
-      onClick={() => createCohortFromProjects()}
-    >
-      Create New Cohort
-    </Button>
+    <>
+      <Button
+        variant="outline"
+        color="primary"
+        disabled={pickedProjects.length == 0}
+        leftIcon={
+          pickedProjects.length ? (
+            <CountsIcon $count={pickedProjects.length}>
+              {" "}
+              {pickedProjects.length}{" "}
+            </CountsIcon>
+          ) : null
+        }
+        onClick={() => setShowCreateCohort(true)}
+      >
+        Create New Cohort
+      </Button>
+      {showCreateCohort && (
+        <SaveOrCreateCohortModal
+          entity="cohort"
+          action="create"
+          opened
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohortFromProjects(newName);
+          }}
+          onNameChange={onNameChange}
+        />
+      )}
+    </>
   );
 };
 

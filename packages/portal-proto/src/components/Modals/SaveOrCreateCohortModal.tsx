@@ -6,7 +6,7 @@ import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 export const SaveOrCreateCohortModal = ({
   entity,
   action = "Save",
-  initialName,
+  initialName = "",
   opened,
   onClose,
   onActionClick,
@@ -15,7 +15,7 @@ export const SaveOrCreateCohortModal = ({
 }: {
   entity: string;
   action?: string;
-  initialName: string;
+  initialName?: string;
   opened: boolean;
   onClose: () => void;
   onActionClick: (name: string) => void;

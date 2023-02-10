@@ -180,7 +180,6 @@ export const SelectCohortsModal = ({
         >
           {showCreateCohort && (
             <SaveOrCreateCohortModal
-              initialName={defaultCohortNameGenerator()}
               entity="cohort"
               action="create"
               opened={showCreateCohort}

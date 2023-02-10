@@ -129,7 +129,6 @@ export const CasesCohortButton = (): JSX.Element => {
       )}
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

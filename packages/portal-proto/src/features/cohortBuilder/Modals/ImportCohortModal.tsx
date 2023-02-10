@@ -65,7 +65,6 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <>
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened
