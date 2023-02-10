@@ -28,9 +28,9 @@ describe("gql mod helper functions", () => {
       const params = getGQLParams(["gene1", "gene2", "gene3"], "genes");
       const queryParams = `
             $filters_case: FiltersArgument,
-            $filters_gene1: FiltersArgument,
-            $filters_gene2: FiltersArgument,
-            $filters_gene3: FiltersArgument
+            $filters_genes_gene1: FiltersArgument,
+            $filters_genes_gene2: FiltersArgument,
+            $filters_genes_gene3: FiltersArgument
             `;
       expect(params).toEqual(queryParams);
     });
@@ -38,7 +38,7 @@ describe("gql mod helper functions", () => {
       const params = getGQLParams(["ssms9"], "ssms");
       const queryParams = `
             $filters_case: FiltersArgument,
-            $filters_ssms9: FiltersArgument
+            $filters_ssms_ssms9: FiltersArgument
             `;
       expect(params).toEqual(queryParams);
     });
