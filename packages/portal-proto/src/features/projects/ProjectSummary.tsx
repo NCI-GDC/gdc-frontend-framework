@@ -23,15 +23,15 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import tw from "tailwind-styled-components";
 
-const PercentBar = tw.div`
+export const PercentBar = tw.div`
 relative
 bg-percentage-bar-base
 rounded-sm
 px-1
-w-14
+w-16
 h-full`;
 
-const PercentBarLabel = tw.div`
+export const PercentBarLabel = tw.div`
 absolute
 z-10
 left-0
@@ -41,7 +41,7 @@ h-full
 text-percentage-bar-label
 text-center`;
 
-const PercentBarComplete = tw.div`
+export const PercentBarComplete = tw.div`
 absolute
 left-0
 top-0
