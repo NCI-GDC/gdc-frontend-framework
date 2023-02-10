@@ -5,6 +5,7 @@ import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
 import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
+import { SummaryModalContext } from "src/pages/_app";
 
 jest.mock("src/hooks/useIsDemoApp");
 
@@ -32,7 +33,18 @@ describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
     );
     const { getByText } = render(
       <CoreProvider>
-        <GenesAndMutationFrequencyAnalysisTool />
+        <SummaryModalContext.Provider
+          value={{
+            entityMetadata: {
+              entity_type: null,
+              entity_id: null,
+              entity_name: null,
+            },
+            setEntityMetadata: jest.fn(),
+          }}
+        >
+          <GenesAndMutationFrequencyAnalysisTool />
+        </SummaryModalContext.Provider>
       </CoreProvider>,
     );
 
@@ -49,7 +61,18 @@ describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
     );
     const { queryByText } = render(
       <CoreProvider>
-        <GenesAndMutationFrequencyAnalysisTool />
+        <SummaryModalContext.Provider
+          value={{
+            entityMetadata: {
+              entity_type: null,
+              entity_id: null,
+              entity_name: null,
+            },
+            setEntityMetadata: jest.fn(),
+          }}
+        >
+          <GenesAndMutationFrequencyAnalysisTool />
+        </SummaryModalContext.Provider>
       </CoreProvider>,
     );
     expect(

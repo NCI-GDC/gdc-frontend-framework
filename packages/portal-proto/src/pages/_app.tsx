@@ -27,7 +27,8 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-ReactModal.setAppElement("#__next");
+
+if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
 import { datadogRum } from "@datadog/browser-rum";
 datadogRum.init({
