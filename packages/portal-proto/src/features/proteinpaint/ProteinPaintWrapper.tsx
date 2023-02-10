@@ -1,5 +1,6 @@
 import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
+import { v4 as uuidv4 } from "uuid";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -7,6 +8,8 @@ import {
   FilterSet,
   PROTEINPAINT_API,
   useUserDetails,
+  useCoreDispatch,
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -21,6 +24,10 @@ interface PpProps {
   geneSearch4GDCmds3?: boolean;
 }
 
+interface SampleData {
+  sample_id?: string;
+}
+
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
@@ -30,10 +37,41 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
 
+  const coreDispatch = useCoreDispatch();
+
+  const selectSamplesCallBack = function (samples: string[]): void {
+    const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "occurrence.case.case_id": {
+          operator: "includes",
+          field: "occurrence.case.case_id",
+          operands: ids,
+        },
+      },
+    };
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        message: "newCasesCohort",
+        name: "test",
+        group:
+          ids.length > 1
+            ? {
+                ids: [...ids],
+                field: "occurrence.case.case_id",
+                groupId: uuidv4(),
+              }
+            : undefined,
+      }),
+    );
+  };
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = getLollipopTrack(props, filter0);
+      const data = getLollipopTrack(props, filter0, selectSamplesCallBack);
 
       if (!data) return;
       if (isEqual(prevArg.current, data)) return;
@@ -109,18 +147,19 @@ interface PpApi {
   update(arg: any): null;
 }
 
+type SampleLstCallback = (samples: string[]) => void;
+
 interface SelectSamples {
   buttonText: string;
   attributes: string[];
-  callback(samples: string[]): void;
+  callback: SampleLstCallback;
 }
 
-function selectSamplesCallBack(samples: string[]) {
-  /*** TODO: create a new cohort using the case set id list (samples) ***/
-  console.log("selected", samples);
-}
-
-function getLollipopTrack(props: PpProps, filter0: any) {
+function getLollipopTrack(
+  props: PpProps,
+  filter0: any,
+  selectSamplesCallBack: SampleLstCallback,
+) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
@@ -132,8 +171,8 @@ function getLollipopTrack(props: PpProps, filter0: any) {
         dslabel: "GDC",
         filter0,
         allow2selectSamples: {
-          buttonText: "Select samples",
-          attributes: ["sample_id"],
+          buttonText: "Create Cohort",
+          attributes: ["case.case_id"],
           callback: selectSamplesCallBack,
         },
       },

@@ -9,9 +9,11 @@ code as a node_module within the GFF dependencies.
 From the gdc-frontend-framework directory,
 
 ```bash
-npm link path/to/proteinpaint/client
-rm -rf packages/portal-proto/node_modules/@stjude
-rm -rf packages/portal-proto/.next
+./packages/portal-proto/src/features/proteinpaint/dev.sh
+# the above script performs the following and more, see the script:
+# npm link path/to/proteinpaint/client
+# rm -rf packages/portal-proto/node_modules/@stjude
+# rm -rf packages/portal-proto/.next
 
 # NOTES for above:
 #
