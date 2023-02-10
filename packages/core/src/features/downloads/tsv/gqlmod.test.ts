@@ -20,26 +20,26 @@ describe("gql mod helper functions", () => {
     test("returns ssms version", () => {
       const { filters, id } = getVersion("ssms");
       expect(filters).toEqual("$filters_ssms");
-      expect(id).toEqual("ssms_id");
+      expect(id).toEqual("ssm_id");
     });
   });
   describe("returns correct gql query string params", () => {
     test("returns correct params for 3 gene ids", () => {
       const params = getGQLParams(["gene1", "gene2", "gene3"], "genes");
-      const queryParams = `
-            $filters_case: FiltersArgument,
-            $filters_genes_gene1: FiltersArgument,
-            $filters_genes_gene2: FiltersArgument,
-            $filters_genes_gene3: FiltersArgument
-            `;
+      const queryParams = [
+        "$filters_case: FiltersArgument",
+        "$filters_genes_gene1: FiltersArgument",
+        "$filters_genes_gene2: FiltersArgument",
+        "$filters_genes_gene3: FiltersArgument",
+      ].join(",\r\n");
       expect(params).toEqual(queryParams);
     });
     test("returns correct params for 1 ssms id", () => {
       const params = getGQLParams(["ssms9"], "ssms");
-      const queryParams = `
-            $filters_case: FiltersArgument,
-            $filters_ssms_ssms9: FiltersArgument
-            `;
+      const queryParams = [
+        "$filters_case: FiltersArgument",
+        "$filters_ssms_ssms9: FiltersArgument",
+      ].join(",\r\n");
       expect(params).toEqual(queryParams);
     });
   });
