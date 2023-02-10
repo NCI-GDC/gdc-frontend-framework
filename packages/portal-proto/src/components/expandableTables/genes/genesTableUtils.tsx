@@ -4,7 +4,6 @@ import { Tooltip } from "@mantine/core";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { AnnotationsIcon } from "../shared/sharedTableUtils";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
@@ -15,7 +14,6 @@ import { Image } from "@/components/Image";
 import { startCase } from "lodash";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
-import { ItemTypes } from "@/features/shared/ItemTypes";
 
 export const createTableColumn = (
   accessor: string,

@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
