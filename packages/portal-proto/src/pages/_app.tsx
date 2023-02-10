@@ -67,7 +67,7 @@ type TenStringArray = [
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
 
-export const getCache = (): EmotionCache => {
+const getCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
     typeof document !== "undefined"

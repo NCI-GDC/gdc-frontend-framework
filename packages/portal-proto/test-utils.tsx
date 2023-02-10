@@ -3,7 +3,7 @@ import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
 import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
-import { getCache, SummaryModalContext, URLContext } from "src/pages/_app";
+import { SummaryModalContext, URLContext } from "src/pages/_app";
 import { NotificationsProvider } from "@mantine/notifications";
 import store from "@/app/store";
 
@@ -11,12 +11,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          emotionCache={getCache()}
-          theme={{}}
-        >
+        <MantineProvider>
           <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
             <NotificationsProvider position="top-center" zIndex={400}>
               <SummaryModalContext.Provider
