@@ -118,7 +118,8 @@ const PopupContent = ({
   const contentRef = useRef(null);
 
   useEffect(() => {
-    const { width, height } = contentRef.current.getBoundingClientRect();
+    const { width = 0, height = 0 } =
+      contentRef?.current?.getBoundingClientRect();
     setSize([width, height]);
   }, [setSize]);
 

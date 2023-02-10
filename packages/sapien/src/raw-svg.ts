@@ -9,8 +9,7 @@ export const RawSvg = (title = ""): string => `
    id="body-outline-background"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><g transform="matrix(1.0,0,0,1.0,124.9865,24.9311)
-     id="layer1"><image
+   xmlns:svg="http://www.w3.org/2000/svg"><g><image
        width="68.791664px"
        height="150.28334px"
        id="body-outline-background-image"
