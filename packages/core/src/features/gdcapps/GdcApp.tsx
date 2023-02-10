@@ -25,6 +25,7 @@ import {
 import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
+import { Pagination } from "../gdcapi/gdcapi";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";
@@ -91,6 +92,20 @@ export interface AppDataSelectorResponse<T> {
   readonly data?: T;
   readonly status: DataStatus;
   readonly error?: string;
+}
+
+export interface UseAppDataResponse<T> {
+  readonly data?: T;
+  readonly error?: string;
+  readonly pagination?: Pagination;
+  readonly isUninitialized: boolean;
+  readonly isFetching: boolean;
+  readonly isSuccess: boolean;
+  readonly isError: boolean;
+}
+
+export interface UseAppDataHook<P, T> {
+  (...params: P[]): UseAppDataResponse<T>;
 }
 
 export interface CreateGDCAppStore {

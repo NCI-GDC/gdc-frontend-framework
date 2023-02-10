@@ -3,7 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
-import { createAppStore } from "@gff/core";
+import { createAppStore, AppDataSelectorResponse } from "@gff/core";
 import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
 
 const REPOSITORY_APP_NAME = "DownloadApp";
@@ -33,3 +33,7 @@ export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   });
 
 export type AppState = ReturnType<typeof downloadAppReducers>;
+
+export interface AppDataSelector<T> {
+  (state: AppState): AppDataSelectorResponse<T>;
+}
