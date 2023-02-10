@@ -1,4 +1,3 @@
-export type NamedColor = Record<string, string>;
 export interface TConfig {
   caseCountKey?: string;
   clickHandler?: (e: any) => void;

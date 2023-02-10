@@ -30,7 +30,7 @@ export const createHumanBody: TCreateHumanBody = ({
   const DEFAULT_ZINDEX = "400";
   const root = selector;
 
-  if (!root) throw "Must select an existing element!";
+  if (!root) throw new Error("Must select an existing element!");
 
   root.innerHTML = RawSvg(title);
 

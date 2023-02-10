@@ -1,5 +1,3 @@
-/* @flow */
-
 export default {
   "Adrenal Gland": "rgb(190, 48, 44)",
   "Bile Duct": "rgb(213, 141, 0)",
