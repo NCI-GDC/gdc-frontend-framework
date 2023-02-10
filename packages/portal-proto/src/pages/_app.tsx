@@ -7,7 +7,11 @@ import type { AppProps } from "next/app";
 import Script from "next/script";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import {
+  MantineProvider,
+  createEmotionCache,
+  EmotionCache,
+} from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
@@ -63,7 +67,7 @@ type TenStringArray = [
 
 export const URLContext = createContext({ prevPath: "", currentPath: "" });
 
-const getCache = () => {
+export const getCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
     typeof document !== "undefined"

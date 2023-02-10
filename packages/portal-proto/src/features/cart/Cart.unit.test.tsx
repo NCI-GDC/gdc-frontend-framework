@@ -1,7 +1,6 @@
-import { render } from "@testing-library/react";
 import * as core from "@gff/core";
+import { render } from "test-utils";
 import Cart from "./Cart";
-import { SummaryModalContext } from "src/pages/_app";
 
 describe("<Cart />", () => {
   beforeEach(() => {
@@ -12,20 +11,7 @@ describe("<Cart />", () => {
     jest.spyOn(core, "useCartSummary").mockReturnValue({} as any);
     jest.spyOn(core, "useCoreSelector").mockReturnValue([]);
 
-    const { getByText } = render(
-      <SummaryModalContext.Provider
-        value={{
-          entityMetadata: {
-            entity_type: null,
-            entity_id: null,
-            entity_name: null,
-          },
-          setEntityMetadata: jest.fn(),
-        }}
-      >
-        <Cart />
-      </SummaryModalContext.Provider>,
-    );
+    const { getByText } = render(<Cart />);
     expect(getByText("Your cart is empty.")).toBeInTheDocument();
   });
 
@@ -52,20 +38,7 @@ describe("<Cart />", () => {
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
     jest.spyOn(core, "useGetFilesQuery").mockReturnValue({} as any);
 
-    const { getByTestId } = render(
-      <SummaryModalContext.Provider
-        value={{
-          entityMetadata: {
-            entity_type: null,
-            entity_id: null,
-            entity_name: null,
-          },
-          setEntityMetadata: jest.fn(),
-        }}
-      >
-        <Cart />
-      </SummaryModalContext.Provider>,
-    );
+    const { getByTestId } = render(<Cart />);
     expect(getByTestId("cart-header").textContent).toContain("1 File");
     expect(getByTestId("cart-header").textContent).toContain("30 Cases");
   });

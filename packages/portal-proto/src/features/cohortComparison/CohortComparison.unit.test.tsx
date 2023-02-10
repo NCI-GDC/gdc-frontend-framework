@@ -1,6 +1,5 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import { SummaryModalContext } from "src/pages/_app";
 import {
   cohortDemo1 as mockDemo1,
   cohortDemo2 as mockDemo2,
@@ -30,23 +29,12 @@ jest.mock("@gff/core", () => {
 describe("<CohortComparison />", () => {
   it("Cards show and hide", async () => {
     const { getByLabelText, queryByRole } = render(
-      <SummaryModalContext.Provider
-        value={{
-          entityMetadata: {
-            entity_type: null,
-            entity_id: null,
-            entity_name: null,
-          },
-          setEntityMetadata: jest.fn(),
+      <CohortComparison
+        cohorts={{
+          primary_cohort: mockDemo1,
+          comparison_cohort: mockDemo2,
         }}
-      >
-        <CohortComparison
-          cohorts={{
-            primary_cohort: mockDemo1,
-            comparison_cohort: mockDemo2,
-          }}
-        />
-      </SummaryModalContext.Provider>,
+      />,
     );
     expect(
       queryByRole("heading", { name: "Survival Analysis" }),
