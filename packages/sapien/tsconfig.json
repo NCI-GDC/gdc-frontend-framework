@@ -3,7 +3,6 @@
   "exclude": ["node_modules", "src/**/*.spec.ts*"],
   "compilerOptions": {
     "outDir": "dist/dts",
-    "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "declaration": true,
