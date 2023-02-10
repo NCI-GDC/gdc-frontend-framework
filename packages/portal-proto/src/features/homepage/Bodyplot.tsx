@@ -72,6 +72,7 @@ export const useBodyplot = ({
   useLayoutEffect(() => {
     ref.current
       ? createHumanBody({
+          title: "Cases by Major Primary Site",
           selector: ref.current,
           width: 400,
           height: 500,
@@ -79,7 +80,7 @@ export const useBodyplot = ({
           labelSize: "10px",
           fileCountKey: "_file_count",
           caseCountKey: "_count",
-          tickInterval: 250,
+          tickInterval: 1000,
           offsetLeft: root ? root.offsetLeft : 0,
           offsetTop: root ? root.offsetTop : 0,
           clickHandler: clickHandler,
@@ -126,15 +127,12 @@ const PopupContent = ({
       className="flex flex-col border-2 rounded border-base-lighter bg-base-max p-2"
     >
       <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 bg-white border-r border-t border-base-lighter"></div>
-      <Text size="xl" color="red">
+      <Text size="lg" color="red">
         {label}
       </Text>
       <div className="flex flex-row">
-        <Text size="md">{caseCount} cases </Text>
-        <Text size="md" className="px-2">
-          {" "}
-          ({fileCount} files)
-        </Text>
+        <Text size="sm">{caseCount.toLocaleString()} cases </Text>
+        <Text size="sm"> ({fileCount.toLocaleString()} files)</Text>
       </div>
     </div>
   );

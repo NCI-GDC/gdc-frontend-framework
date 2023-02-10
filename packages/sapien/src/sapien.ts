@@ -139,7 +139,7 @@ export const createHumanBody: TCreateHumanBody = ({
 
       d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
         .transition("300")
-        .attr("fill", "white");
+        .attr("fill", "red");
 
       if (mouseOverHandler) mouseOverHandler(d);
       else {
