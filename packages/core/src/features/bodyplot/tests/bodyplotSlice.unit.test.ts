@@ -1,5 +1,21 @@
-import { HUMAN_BODY_MAPPER } from "./constants";
-// write unit test for HUMAN_BODY_MAPPER
+import { HUMAN_BODY_MAPPER } from "../constants";
+import { processData } from "../bodyplotSlice";
+import {
+  receivedBodyplotData,
+  expectedProcessedData,
+} from "./bodtplotSlice.test.data";
+
+describe("test processData for Bodyplot response", () => {
+  test("processData", () => {
+    const results = processData(
+      receivedBodyplotData.data.viewer.repository.cases.aggregations
+        .diagnoses__tissue_or_organ_of_origin.buckets,
+      receivedBodyplotData.data.viewer.repository.files.aggregations
+        .cases__diagnoses__tissue_or_organ_of_origin.buckets,
+    );
+    expect(results).toEqual(expectedProcessedData);
+  });
+});
 
 describe("test indexing human body mapper", () => {
   test("indexing human body mapper byPrimarySite", () => {

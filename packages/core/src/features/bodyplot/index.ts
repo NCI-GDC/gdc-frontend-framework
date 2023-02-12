@@ -1,3 +1,6 @@
-import { useBodyplotCountsQuery, bodyplotReducer } from "./bodyplotSlice";
+import {
+  useBodyplotCountsQuery,
+  type BodyplotCountsData,
+} from "./bodyplotSlice";
 
-export { bodyplotReducer, useBodyplotCountsQuery };
+export { useBodyplotCountsQuery, type BodyplotCountsData };

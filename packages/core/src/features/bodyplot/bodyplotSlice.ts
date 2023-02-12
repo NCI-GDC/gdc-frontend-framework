@@ -5,26 +5,27 @@ import {
   HUMAN_BODY_ALL_ALLOWED_SITES,
 } from "./constants";
 import { groupBy, map } from "lodash";
-import { CoreState } from "../../reducers";
 
 interface Bucket {
   key: string;
   doc_count: number;
 }
 
-interface BodyplotData {
-  allPrimarySites: string[];
-  allTissuesOrOrgansOfOrigin: string[];
+export interface BodyplotCountsData {
   docCount: number;
   fileCount: number;
   key: string;
 }
+interface BodyplotData extends BodyplotCountsData {
+  allPrimarySites: string[];
+  allTissuesOrOrgansOfOrigin: string[];
+}
 
-const processData = (
+export const processData = (
   casesBuckets: Bucket[],
   filesBuckets: Bucket[],
 ): BodyplotData[] => {
-  return map(
+  const results = map(
     groupBy(
       casesBuckets,
       // cases.aggregations.primary_site.buckets,
@@ -36,6 +37,7 @@ const processData = (
         byTissueOrOrganOfOrigin: allTissuesOrOrgansOfOrigin,
       } = HUMAN_BODY_MAPPINGS[majorPrimarySite];
 
+      console.log("group", group, majorPrimarySite);
       return {
         allPrimarySites,
         allTissuesOrOrgansOfOrigin,
@@ -53,6 +55,8 @@ const processData = (
       };
     },
   ).filter(({ key }) => HUMAN_BODY_ALL_ALLOWED_SITES.includes(key));
+  console.log("results", results);
+  return results;
 };
 
 export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
@@ -103,17 +107,13 @@ export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (response) =>
         processData(
-          response.data.viewer.repository.cases,
-          response.data.viewer.repository.files,
+          response.data.viewer.repository.cases.aggregations
+            .diagnoses__tissue_or_organ_of_origin.buckets,
+          response.data.viewer.repository.files.aggregations
+            .cases__diagnoses__tissue_or_organ_of_origin.buckets,
         ),
     }),
   }),
 });
-
-export const selectBodyplotCounts = (
-  state: CoreState,
-): Record<string, string> => state.bodyplot.bodyplotCounts;
-
-export const bodyplotReducer = bodyplotSlice.reducer;
 
 export const { useBodyplotCountsQuery } = bodyplotSlice;

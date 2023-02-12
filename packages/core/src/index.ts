@@ -60,4 +60,5 @@ export * from "./features/versionInfo/versionInfoSlice";
 export * from "./features/api/cohortApiTypes";
 export * from "./features/sets";
 export * from "./features/cases/selectedCasesSlice";
+export * from "./features/bodyplot";
 export { CoreState } from "./reducers";

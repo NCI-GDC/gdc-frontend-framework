@@ -20,6 +20,7 @@ import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
+
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
