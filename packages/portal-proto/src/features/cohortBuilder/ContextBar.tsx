@@ -170,7 +170,6 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
-
         if (cmdAndParam[0] === "newProjectsCohort") {
           showNotification({
             message: (
