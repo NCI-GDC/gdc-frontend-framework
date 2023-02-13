@@ -22,8 +22,8 @@ export const createHumanBody: TCreateHumanBody = ({
   title = "Cases by Primary Site",
   offsetLeft = 0,
   offsetTop = 0,
-  primarySiteKey = "_key",
-  caseCountKey = "_count",
+  primarySiteKey = "key",
+  caseCountKey = "count",
   fileCountKey = "fileCount",
 }: TConfig) => {
   // Similar to a React target element
@@ -33,6 +33,8 @@ export const createHumanBody: TCreateHumanBody = ({
   if (!root) throw new Error("Must select an existing element!");
 
   root.innerHTML = RawSvg(title);
+
+  console.log("data", data);
 
   width = width || 400;
   height = height || 520;

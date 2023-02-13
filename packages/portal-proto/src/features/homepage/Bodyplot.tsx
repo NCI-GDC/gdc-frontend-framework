@@ -5,17 +5,12 @@ import {
   useLayoutEffect,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 import { createHumanBody } from "@nci-gdc/sapien";
 import { useMouse } from "@mantine/hooks";
 import { Text } from "@mantine/core";
 import { useBodyplotCountsQuery, BodyplotCountsData } from "@gff/core";
-
-export interface BodyplotDataEntry {
-  _key: string;
-  _count: number;
-  _file_count: number;
-}
 
 interface BodyplotProps {
   data: BodyplotCountsData[];
@@ -25,7 +20,6 @@ interface BodyplotProps {
 }
 
 export const useBodyplot = ({
-  data,
   clickHandler = () => null,
   mouseOverHandler = undefined,
   mouseOutHandler = undefined,
@@ -34,45 +28,51 @@ export const useBodyplot = ({
 
   // sample data until we have real data
   // TODO replace with real data
-  // const data: BodyplotDataEntry[] = useMemo(
+  // const data: BodyplotCountsData[] = useMemo(
   //   () =>
   //     [
-  //       { _key: "Kidney", _count: 1692, _file_count: 1692 },
-  //       { _key: "Brain", _count: 1133, _file_count: 1133 },
-  //       { _key: "Nervous System", _count: 1120, _file_count: 1120 },
-  //       { _key: "Breast", _count: 1098, _file_count: 1098 },
-  //       { _key: "Lung", _count: 1089, _file_count: 1089 },
-  //       { _key: "Blood", _count: 923, _file_count: 923 },
-  //       { _key: "Colorectal", _count: 635, _file_count: 635 },
-  //       { _key: "Uterus", _count: 617, _file_count: 617 },
-  //       { _key: "Ovary", _count: 608, _file_count: 608 },
-  //       { _key: "Head and Neck", _count: 528, _file_count: 528 },
-  //       { _key: "Thyroid", _count: 507, _file_count: 507 },
-  //       { _key: "Prostate", _count: 500, _file_count: 500 },
-  //       { _key: "Stomach", _count: 478, _file_count: 478 },
-  //       { _key: "Skin", _count: 470, _file_count: 470 },
-  //       { _key: "Bladder", _count: 412, _file_count: 412 },
-  //       { _key: "Bone", _count: 384, _file_count: 384 },
-  //       { _key: "Liver", _count: 377, _file_count: 377 },
-  //       { _key: "Cervix", _count: 308, _file_count: 308 },
-  //       { _key: "Adrenal Gland", _count: 271, _file_count: 271 },
-  //       { _key: "Soft Tissue", _count: 261, _file_count: 261 },
-  //       { _key: "Bone Marrow", _count: 200, _file_count: 200 },
-  //       { _key: "Pancreas", _count: 185, _file_count: 185 },
-  //       { _key: "Esophagus", _count: 185, _file_count: 185 },
-  //       { _key: "Testis", _count: 150, _file_count: 150 },
-  //       { _key: "Thymus", _count: 124, _file_count: 124 },
-  //       { _key: "Pleura", _count: 87, _file_count: 87 },
-  //       { _key: "Eye", _count: 80, _file_count: 80 },
-  //       { _key: "Lymph Nodes", _count: 58, _file_count: 58 },
-  //       { _key: "Bile Duct", _count: 51, _file_count: 51 },
-  //     ].sort((a, b) => (a._key > b._key ? 1 : -1)),
+  //       { key: "Kidney", caseCount: 1692, fileCount: 1692 },
+  //       { key: "Brain", caseCount: 1133, fileCount: 1133 },
+  //       { key: "Nervous System", caseCount: 1120, fileCount: 1120 },
+  //       { key: "Breast", caseCount: 1098, fileCount: 1098 },
+  //       { key: "Lung", caseCount: 1089, fileCount: 1089 },
+  //       { key: "Blood", caseCount: 923, fileCount: 923 },
+  //       { key: "Colorectal", caseCount: 635, fileCount: 635 },
+  //       { key: "Uterus", caseCount: 617, fileCount: 617 },
+  //       { key: "Ovary", caseCount: 608, fileCount: 608 },
+  //       { key: "Head and Neck", caseCount: 528, fileCount: 528 },
+  //       { key: "Thyroid", caseCount: 507, fileCount: 507 },
+  //       { key: "Prostate", caseCount: 500, fileCount: 500 },
+  //       { key: "Stomach", caseCount: 478, fileCount: 478 },
+  //       { key: "Skin", caseCount: 470, fileCount: 470 },
+  //       { key: "Bladder", caseCount: 412, fileCount: 412 },
+  //       { key: "Bone", caseCount: 384, fileCount: 384 },
+  //       { key: "Liver", caseCount: 377, fileCount: 377 },
+  //       { key: "Cervix", caseCount: 308, fileCount: 308 },
+  //       { key: "Adrenal Gland", caseCount: 271, fileCount: 271 },
+  //       { key: "Soft Tissue", caseCount: 261, fileCount: 261 },
+  //       { key: "Bone Marrow", caseCount: 200, fileCount: 200 },
+  //       { key: "Pancreas", caseCount: 185, fileCount: 185 },
+  //       { key: "Esophagus", caseCount: 185, fileCount: 185 },
+  //       { key: "Testis", caseCount: 150, fileCount: 150 },
+  //       { key: "Thymus", caseCount: 124, fileCount: 124 },
+  //       { key: "Pleura", caseCount: 87, fileCount: 87 },
+  //       { key: "Eye", caseCount: 80, fileCount: 80 },
+  //       { key: "Lymph Nodes", caseCount: 58, fileCount: 58 },
+  //       { key: "Bile Duct", caseCount: 51, fileCount: 51 },
+  //     ].sort((a, b) => (a.key > b.key ? 1 : -1)),
   //   [],
   // );
 
   const root = document.getElementById("human-body-parent");
 
-  console.log("data", data);
+  const data3 = data2
+    .map((d) => ({
+      ...d,
+      color: "rgb(190, 48, 44)",
+    }))
+    .sort((a, b) => (a.key > b.key ? 1 : -1));
+
   useLayoutEffect(() => {
     data
       ? createHumanBody({
@@ -80,11 +80,11 @@ export const useBodyplot = ({
           selector: ref.current,
           width: 400,
           height: 500,
-          data: data,
+          data: data3,
           labelSize: "10px",
           primarySiteKey: "key",
-          fileCountKey: "file_count",
-          caseCountKey: "count",
+          fileCountKey: "fileCount",
+          caseCountKey: "caseCount",
           tickInterval: 1000,
           offsetLeft: root ? root.offsetLeft : 0,
           offsetTop: root ? root.offsetTop : 0,
@@ -154,6 +154,8 @@ export const Bodyplot = (): JSX.Element => {
 
   const { data } = useBodyplotCountsQuery({});
 
+  console.log("before data", data);
+
   const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
   const clickHandler = useCallback(() => () => null, []);
   const mouseOutHandler = useCallback(
@@ -161,7 +163,7 @@ export const Bodyplot = (): JSX.Element => {
     [],
   );
   const container = useBodyplot({
-    data: data,
+    data: data ?? [],
     clickHandler: clickHandler,
     mouseOverHandler: setBodyplotTooltipContent,
     mouseOutHandler: mouseOutHandler, // handler for mouseout to hide tooltip
@@ -177,9 +179,9 @@ export const Bodyplot = (): JSX.Element => {
       >
         {bodyplotTooltipContent && (
           <PopupContent
-            label={bodyplotTooltipContent?._key}
-            caseCount={bodyplotTooltipContent?._count}
-            fileCount={bodyplotTooltipContent?._file_count}
+            label={bodyplotTooltipContent?.key}
+            caseCount={bodyplotTooltipContent?.caseCount}
+            fileCount={bodyplotTooltipContent?.fileCount}
             setSize={setExtents}
           />
         )}

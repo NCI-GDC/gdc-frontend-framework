@@ -12,7 +12,7 @@ interface Bucket {
 }
 
 export interface BodyplotCountsData {
-  docCount: number;
+  caseCount: number;
   fileCount: number;
   key: string;
 }
@@ -37,11 +37,10 @@ export const processData = (
         byTissueOrOrganOfOrigin: allTissuesOrOrgansOfOrigin,
       } = HUMAN_BODY_MAPPINGS[majorPrimarySite];
 
-      console.log("group", group, majorPrimarySite);
       return {
         allPrimarySites,
         allTissuesOrOrgansOfOrigin,
-        docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
+        caseCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
         fileCount: group.reduce(
           (sumFiles, { key }) =>
             (
@@ -55,7 +54,6 @@ export const processData = (
       };
     },
   ).filter(({ key }) => HUMAN_BODY_ALL_ALLOWED_SITES.includes(key));
-  console.log("results", results);
   return results;
 };
 
