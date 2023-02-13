@@ -126,7 +126,7 @@ export const Footer: React.FC = () => {
             </li>
             {isSuccess && (
               <>
-                <li>
+                <li data-testid="ftr-api-release">
                   API v{data.tag} @ {data.commit?.slice(0, 8)}
                 </li>
                 <li>
