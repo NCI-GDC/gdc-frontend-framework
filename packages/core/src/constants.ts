@@ -11,6 +11,4 @@ export const CART_LIMIT = 10000;
 export const PUBLIC_APP_INFO = {
   version: process.env.NEXT_PUBLIC_APP_VERSION,
   hash: process.env.NEXT_PUBLIC_APP_HASH,
-  api_version: process.env.NEXT_PUBLIC_API_VERSION,
-  api_hash: process.env.NEXT_PUBLIC_API_HASH,
 };

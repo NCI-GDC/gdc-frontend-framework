@@ -1,21 +1,9 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import Link from "next/link";
-import { useEffect } from "react";
-import {
-  useCoreSelector,
-  useCoreDispatch,
-  selectVersionInfo,
-  fetchVersionInfo,
-  PUBLIC_APP_INFO,
-} from "@gff/core";
+import { useVersionInfoDetails, PUBLIC_APP_INFO } from "@gff/core";
 
 export const Footer: React.FC = () => {
-  const { status, data } = useCoreSelector((state) => selectVersionInfo(state));
-  const dispatch = useCoreDispatch();
-
-  useEffect(() => {
-    dispatch(fetchVersionInfo());
-  }, [dispatch]);
+  const { data, isSuccess } = useVersionInfoDetails();
 
   interface footerLink {
     readonly title: string;
@@ -136,19 +124,21 @@ export const Footer: React.FC = () => {
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
             </li>
-            <li>
-              API v{PUBLIC_APP_INFO?.api_version} @ {PUBLIC_APP_INFO?.api_hash}
-            </li>
-            {status === "fulfilled" && (
-              <li>
-                <ExternalLink
-                  dataTestId="ftr-release-notes"
-                  href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-                  className="underline"
-                >
-                  {data.data_release}
-                </ExternalLink>
-              </li>
+            {isSuccess && (
+              <>
+                <li>
+                  API v{data.tag} @ {data.commit?.slice(0, 8)}
+                </li>
+                <li>
+                  <ExternalLink
+                    dataTestId="ftr-release-notes"
+                    href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
+                    className="underline"
+                  >
+                    {data.data_release}
+                  </ExternalLink>
+                </li>
+              </>
             )}
           </ul>
         </div>
