@@ -34,8 +34,6 @@ export const createHumanBody: TCreateHumanBody = ({
 
   root.innerHTML = RawSvg(title);
 
-  console.log("data", data);
-
   width = width || 400;
   height = height || 520;
   labelSize = labelSize || "12px";
@@ -149,7 +147,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("opacity", 1)
           .html(
             `
-            <div style="color: #bb0e3d">${d._key}</div>
+            <div style="color: #bb0e3d">${d.key}</div>
             <div style="font-size: 12px; color: rgb(20, 20, 20)">
               ${d[caseCountKey]} cases (${d[fileCountKey] || 100} files)
             </div>
@@ -241,7 +239,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("opacity", 1)
           .html(
             `
-            <div style="color: #bb0e3d">${d._key}</div>
+            <div style="color: #bb0e3d">${d.key}</div>
             <div style="font-size: 12px; color: rgb(20, 20, 20)">
               ${d[caseCountKey].toLocaleString()} cases, (${
               d[fileCountKey].toLocaleString() || 100
@@ -281,7 +279,7 @@ export const createHumanBody: TCreateHumanBody = ({
     svg.addEventListener("click", function () {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      clickHandler({ _key: this.id });
+      clickHandler({ key: this.id });
     });
 
     svg.addEventListener("mouseover", function (this: SVGElement, event: any) {

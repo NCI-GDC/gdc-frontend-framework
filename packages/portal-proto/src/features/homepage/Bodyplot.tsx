@@ -1,102 +1,10 @@
-import {
-  MutableRefObject,
-  useCallback,
-  useRef,
-  useLayoutEffect,
-  useEffect,
-  useState,
-  useMemo,
-} from "react";
-import { createHumanBody } from "@nci-gdc/sapien";
+import { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
 import { useMouse } from "@mantine/hooks";
 import { Text } from "@mantine/core";
-import { useBodyplotCountsQuery, BodyplotCountsData } from "@gff/core";
+import { useBodyplotCountsQuery } from "@gff/core";
 
-interface BodyplotProps {
-  data: BodyplotCountsData[];
-  clickHandler?: (key: string) => void;
-  mouseOverHandler?: (e: any) => void;
-  mouseOutHandler?: (e: any) => void;
-}
-
-export const useBodyplot = ({
-  clickHandler = () => null,
-  mouseOverHandler = undefined,
-  mouseOutHandler = undefined,
-}: BodyplotProps): MutableRefObject<any> => {
-  const ref = useRef(undefined);
-
-  // sample data until we have real data
-  // TODO replace with real data
-  // const data: BodyplotCountsData[] = useMemo(
-  //   () =>
-  //     [
-  //       { key: "Kidney", caseCount: 1692, fileCount: 1692 },
-  //       { key: "Brain", caseCount: 1133, fileCount: 1133 },
-  //       { key: "Nervous System", caseCount: 1120, fileCount: 1120 },
-  //       { key: "Breast", caseCount: 1098, fileCount: 1098 },
-  //       { key: "Lung", caseCount: 1089, fileCount: 1089 },
-  //       { key: "Blood", caseCount: 923, fileCount: 923 },
-  //       { key: "Colorectal", caseCount: 635, fileCount: 635 },
-  //       { key: "Uterus", caseCount: 617, fileCount: 617 },
-  //       { key: "Ovary", caseCount: 608, fileCount: 608 },
-  //       { key: "Head and Neck", caseCount: 528, fileCount: 528 },
-  //       { key: "Thyroid", caseCount: 507, fileCount: 507 },
-  //       { key: "Prostate", caseCount: 500, fileCount: 500 },
-  //       { key: "Stomach", caseCount: 478, fileCount: 478 },
-  //       { key: "Skin", caseCount: 470, fileCount: 470 },
-  //       { key: "Bladder", caseCount: 412, fileCount: 412 },
-  //       { key: "Bone", caseCount: 384, fileCount: 384 },
-  //       { key: "Liver", caseCount: 377, fileCount: 377 },
-  //       { key: "Cervix", caseCount: 308, fileCount: 308 },
-  //       { key: "Adrenal Gland", caseCount: 271, fileCount: 271 },
-  //       { key: "Soft Tissue", caseCount: 261, fileCount: 261 },
-  //       { key: "Bone Marrow", caseCount: 200, fileCount: 200 },
-  //       { key: "Pancreas", caseCount: 185, fileCount: 185 },
-  //       { key: "Esophagus", caseCount: 185, fileCount: 185 },
-  //       { key: "Testis", caseCount: 150, fileCount: 150 },
-  //       { key: "Thymus", caseCount: 124, fileCount: 124 },
-  //       { key: "Pleura", caseCount: 87, fileCount: 87 },
-  //       { key: "Eye", caseCount: 80, fileCount: 80 },
-  //       { key: "Lymph Nodes", caseCount: 58, fileCount: 58 },
-  //       { key: "Bile Duct", caseCount: 51, fileCount: 51 },
-  //     ].sort((a, b) => (a.key > b.key ? 1 : -1)),
-  //   [],
-  // );
-
-  const root = document.getElementById("human-body-parent");
-
-  const data3 = data2
-    .map((d) => ({
-      ...d,
-      color: "rgb(190, 48, 44)",
-    }))
-    .sort((a, b) => (a.key > b.key ? 1 : -1));
-
-  useLayoutEffect(() => {
-    data
-      ? createHumanBody({
-          title: "Cases by Major Primary Site",
-          selector: ref.current,
-          width: 400,
-          height: 500,
-          data: data3,
-          labelSize: "10px",
-          primarySiteKey: "key",
-          fileCountKey: "fileCount",
-          caseCountKey: "caseCount",
-          tickInterval: 1000,
-          offsetLeft: root ? root.offsetLeft : 0,
-          offsetTop: root ? root.offsetTop : 0,
-          clickHandler: clickHandler,
-          mouseOverHandler: mouseOverHandler,
-          mouseOutHandler: mouseOutHandler,
-        })
-      : null;
-  }, [clickHandler, data, mouseOutHandler, mouseOverHandler, ref, root]);
-
-  return ref;
-};
+const SCALE_CASE_COUNT = 1000;
 
 interface PopupContentProps {
   label: string | number;
@@ -138,7 +46,9 @@ const PopupContent = ({
       </Text>
       <div className="flex flex-row">
         <Text size="sm">{caseCount.toLocaleString()} cases </Text>
-        <Text size="sm"> ({fileCount.toLocaleString()} files)</Text>
+        <Text size="sm" className="pl-1">
+          ({fileCount.toLocaleString()} files)
+        </Text>
       </div>
     </div>
   );
@@ -153,21 +63,49 @@ export const Bodyplot = (): JSX.Element => {
     useState(undefined);
 
   const { data } = useBodyplotCountsQuery({});
+  const root = document.getElementById("human-body-parent");
 
-  console.log("before data", data);
+  const processedData = useMemo(() => {
+    return data
+      ? data
+          .map((d) => ({
+            ...d,
+            caseCount: d.caseCount / SCALE_CASE_COUNT,
+            color: colorCodes[d.key],
+          }))
+          .sort((a, b) => (a.key > b.key ? 1 : -1))
+      : [];
+  }, [data]);
 
+  const bodyplotRef = useRef(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
   const clickHandler = useCallback(() => () => null, []);
   const mouseOutHandler = useCallback(
     () => setBodyplotTooltipContent(undefined),
     [],
   );
-  const container = useBodyplot({
-    data: data ?? [],
-    clickHandler: clickHandler,
-    mouseOverHandler: setBodyplotTooltipContent,
-    mouseOutHandler: mouseOutHandler, // handler for mouseout to hide tooltip
-  });
+
+  useMemo(() => {
+    if (bodyplotRef?.current) {
+      createHumanBody({
+        title: "Cases by Major Primary Site",
+        selector: bodyplotRef.current,
+        width: 400,
+        height: 500,
+        data: processedData ?? [],
+        labelSize: "10px",
+        primarySiteKey: "key",
+        fileCountKey: "fileCount",
+        caseCountKey: "caseCount",
+        tickInterval: 1,
+        offsetLeft: root ? root.offsetLeft : 0,
+        offsetTop: root ? root.offsetTop : 0,
+        clickHandler: clickHandler,
+        mouseOverHandler: setBodyplotTooltipContent,
+        mouseOutHandler: mouseOutHandler,
+      });
+    }
+  }, [clickHandler, mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
     <div ref={mouseRef} className="relative">
@@ -180,13 +118,13 @@ export const Bodyplot = (): JSX.Element => {
         {bodyplotTooltipContent && (
           <PopupContent
             label={bodyplotTooltipContent?.key}
-            caseCount={bodyplotTooltipContent?.caseCount}
+            caseCount={bodyplotTooltipContent?.caseCount * SCALE_CASE_COUNT}
             fileCount={bodyplotTooltipContent?.fileCount}
             setSize={setExtents}
           />
         )}
       </div>
-      <div id="human-body-root" ref={container}></div>
+      <div id="human-body-root" ref={bodyplotRef}></div>
     </div>
   );
 };
