@@ -36,7 +36,7 @@ export const SummaryModal = ({
 }): JSX.Element => {
   const { prevPath, currentPath } = useContext(URLContext);
   const [modalOpened, setOpened] = useState(opened);
-
+  const { entity_type, entity_id, entity_name } = entityMetadata;
   useEffect(() => {
     if (prevPath !== currentPath) {
       setOpened(false);
@@ -44,46 +44,38 @@ export const SummaryModal = ({
     }
   }, [prevPath, currentPath, onClose]);
 
-  const renderChild =
-    entityMetadata.entity_type === "project" ? (
-      <ProjectSummary projectId={entityMetadata.entity_id} isModal={true} />
-    ) : entityMetadata.entity_type === "case" ? (
-      <CaseSummary
-        case_id={entityMetadata.entity_id}
-        bio_id=""
-        isModal={true}
-      />
-    ) : entityMetadata.entity_type === "file" ? (
-      <ContextualFileView
-        setCurrentFile={entityMetadata.entity_id}
-        isModal={true}
-      />
-    ) : (
-      <SSMSSummary ssm_id={entityMetadata.entity_id} isModal={true} />
-    );
-
-  const HeaderTitle =
-    entityMetadata.entity_type === "project" ? (
-      <SummaryModalHeader
-        iconText="pr"
-        headerTitle={entityMetadata.entity_name}
-      />
-    ) : entityMetadata.entity_type === "case" ? (
-      <SummaryModalHeader
-        iconText="ca"
-        headerTitle={entityMetadata.entity_name}
-      />
-    ) : entityMetadata.entity_type === "file" ? (
-      <SummaryModalHeader
-        iconText="fl"
-        headerTitle={entityMetadata.entity_name}
-      />
-    ) : (
-      <SummaryModalHeader
-        iconText="mu"
-        headerTitle={entityMetadata.entity_name}
-      />
-    );
+  const { SummaryPage, HeaderTitle } =
+    entity_type === "project"
+      ? {
+          SummaryPage: <ProjectSummary projectId={entity_id} isModal={true} />,
+          HeaderTitle: (
+            <SummaryModalHeader iconText="pr" headerTitle={entity_name} />
+          ),
+        }
+      : entity_type === "case"
+      ? {
+          SummaryPage: (
+            <CaseSummary case_id={entity_id} bio_id="" isModal={true} />
+          ),
+          HeaderTitle: (
+            <SummaryModalHeader iconText="ca" headerTitle={entity_name} />
+          ),
+        }
+      : entity_type === "file"
+      ? {
+          SummaryPage: (
+            <ContextualFileView setCurrentFile={entity_id} isModal={true} />
+          ),
+          HeaderTitle: (
+            <SummaryModalHeader iconText="fl" headerTitle={entity_name} />
+          ),
+        }
+      : {
+          SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
+          HeaderTitle: (
+            <SummaryModalHeader iconText="mu" headerTitle={entity_name} />
+          ),
+        };
 
   return (
     <Modal
@@ -101,7 +93,7 @@ export const SummaryModal = ({
       title={HeaderTitle}
       overlayOpacity={0.3}
     >
-      {renderChild}
+      {SummaryPage}
     </Modal>
   );
 };

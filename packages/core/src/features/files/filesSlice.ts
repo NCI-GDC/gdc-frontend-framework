@@ -554,7 +554,7 @@ export const filesApiSlice = endpointSlice.injectEndpoints({
           };
 
         return {
-          files: castDraft(mapFileData(response.data.hits)),
+          files: castDraft(mapFileData(response?.data?.hits ?? [])),
           pagination: response.data.pagination,
         };
       },

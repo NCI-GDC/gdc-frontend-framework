@@ -143,7 +143,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                         : file.file_id,
                     entity_name:
                       file.cases?.length === 1
-                        ? `${file?.cases?.[0].project.project_id} / ${file?.cases?.[0].submitter_id}`
+                        ? `${file?.cases?.[0]?.project.project_id} / ${file?.cases?.[0]?.submitter_id}`
                         : file.file_name,
                   });
                 }}
