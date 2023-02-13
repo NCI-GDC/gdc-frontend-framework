@@ -14,7 +14,7 @@
 }
 #human-body-root .chart {
   position: absolute;
-  left: 312px;
+  left: 300px;
   margin-top: 20px;
   color: #fff;
 }
@@ -198,7 +198,7 @@
   top: 383px;
   left: 212px;
 }
-#human-body-root #Bone-Marrow {
+#human-body-root #Bone-Marrow-and-Blood {
   height: 114px;
   width: 30px;
   top: 371px;

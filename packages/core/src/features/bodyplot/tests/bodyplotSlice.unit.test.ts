@@ -3,7 +3,7 @@ import { processData } from "../bodyplotSlice";
 import {
   receivedBodyplotData,
   expectedProcessedData,
-} from "./bodtplotSlice.test.data";
+} from "./bodyplotSlice.test.data";
 
 describe("test processData for Bodyplot response", () => {
   test("processData", () => {
@@ -41,7 +41,7 @@ describe("test indexing human body mapper", () => {
       gallbladder: "Other and Ill-defined Sites",
       gum: "Head and Neck",
       "heart, mediastinum, and pleura": "Pleura",
-      "hematopoietic and reticuloendothelial systems": "Bone Marrow",
+      "hematopoietic and reticuloendothelial systems": "Bone Marrow and Blood",
       hypopharynx: "Head and Neck",
       kidney: "Kidney",
       larynx: "Head and Neck",
@@ -127,11 +127,11 @@ describe("test indexing human body mapper", () => {
       "biliary tract, nos": "Bile Duct",
       "bladder neck": "Bladder",
       "bladder, nos": "Bladder",
-      blood: "Bone Marrow",
+      blood: "Bone Marrow and Blood",
       "body of pancreas": "Pancreas",
       "body of penis": "Other and Ill-defined Sites",
       "body of stomach": "Stomach",
-      "bone marrow": "Bone Marrow",
+      "bone marrow": "Bone Marrow and Blood",
       "bone of limb, nos": "Bone",
       "bone, nos": "Bone",
       "bones of skull and face and associated joints": "Bone",
@@ -216,7 +216,7 @@ describe("test indexing human body mapper", () => {
       "head of pancreas": "Pancreas",
       "head, face or neck, nos": "Head and Neck",
       heart: "Pleura",
-      "hematopoietic system, nos": "Bone Marrow",
+      "hematopoietic system, nos": "Bone Marrow and Blood",
       "hepatic flexure of colon": "Colorectal",
       "hypopharyngeal aspect of aryepiglottic fold": "Head and Neck",
       "hypopharynx, nos": "Head and Neck",
@@ -392,7 +392,7 @@ describe("test indexing human body mapper", () => {
       "rectosigmoid junction": "Colorectal",
       "rectum, nos": "Colorectal",
       "renal pelvis": "Other and Ill-defined Sites",
-      "reticuloendothelial system, nos": "Bone Marrow",
+      "reticuloendothelial system, nos": "Bone Marrow and Blood",
       retina: "Eye",
       "retromolar area": "Head and Neck",
       retroperitoneum: "Other and Ill-defined Sites",
@@ -416,7 +416,7 @@ describe("test indexing human body mapper", () => {
       "sphenoid sinus": "Head and Neck",
       "spinal cord": "Nervous System",
       "spinal meninges": "Nervous System",
-      spleen: "Bone Marrow",
+      spleen: "Bone Marrow and Blood",
       "splenic flexure of colon": "Colorectal",
       "stomach, nos": "Stomach",
       subglottis: "Head and Neck",

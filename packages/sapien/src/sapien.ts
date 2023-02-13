@@ -39,7 +39,7 @@ export const createHumanBody: TCreateHumanBody = ({
   labelSize = labelSize || "12px";
 
   const plotHeight = height - 20;
-  const barStartOffset = 110;
+  const barStartOffset = 125;
   const barWidth = width - barStartOffset;
   const maxCases = Math.max(
     ...data.map((d: BodyplotDataEntry) => d[caseCountKey]),

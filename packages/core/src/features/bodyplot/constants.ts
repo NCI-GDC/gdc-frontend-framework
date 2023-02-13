@@ -62,7 +62,7 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
       "Vertebral column",
     ],
   },
-  "Bone Marrow": {
+  "Bone Marrow and Blood": {
     byPrimarySite: ["Hematopoietic and reticuloendothelial systems"],
     byTissueOrOrganOfOrigin: [
       "Blood",
