@@ -4,6 +4,7 @@ import { SaveOrCreateCohortModal } from "../SaveOrCreateCohortModal";
 import tailwindConfig from "tailwind.config";
 import userEvent from "@testing-library/user-event";
 import * as mantine_form from "@mantine/form";
+import { mantineFormErrorObj, mantineFormNoErrorObj } from "test-utils";
 
 beforeAll(() => {
   jest.clearAllMocks();
@@ -15,14 +16,8 @@ describe("<SaveOrCreateCohortModal />", () => {
       <MantineProvider
         theme={{
           colors: {
-            ...(Object.fromEntries(
-              Object.entries(
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                  .extend.colors,
-              ).map(([key, values]) => [key, Object.values(values)]),
-            ) as any),
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           },
         }}
       >
@@ -45,14 +40,8 @@ describe("<SaveOrCreateCohortModal />", () => {
       <MantineProvider
         theme={{
           colors: {
-            ...(Object.fromEntries(
-              Object.entries(
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                  .extend.colors,
-              ).map(([key, values]) => [key, Object.values(values)]),
-            ) as any),
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           },
         }}
       >
@@ -113,14 +102,8 @@ describe("<SaveOrCreateCohortModal />", () => {
       <MantineProvider
         theme={{
           colors: {
-            ...(Object.fromEntries(
-              Object.entries(
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                  .extend.colors,
-              ).map(([key, values]) => [key, Object.values(values)]),
-            ) as any),
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           },
         }}
       >
@@ -142,49 +125,15 @@ describe("<SaveOrCreateCohortModal />", () => {
   });
 
   it("onActionClick should NOT be called if there is any error", async () => {
-    jest.spyOn(mantine_form, "useForm").mockReturnValue({
-      errors: { error1: "error" } as mantine_form.FormErrors,
-      values: "s",
-      setValues: jest.fn(),
-      setErrors: jest.fn(),
-      setFieldValue: jest.fn(),
-      setFieldError: jest.fn(),
-      clearFieldError: jest.fn(),
-      clearErrors: jest.fn(),
-      reset: jest.fn(),
-      validate: jest.fn().mockReturnValue({
-        hasErrors: true,
-        errors: { error1: "error" } as mantine_form.FormErrors,
-      }),
-      validateField: jest.fn(),
-      reorderListItem: jest.fn(),
-      removeListItem: jest.fn(),
-      insertListItem: jest.fn(),
-      getInputProps: jest.fn(),
-      onSubmit: jest.fn(),
-      onReset: jest.fn(),
-      isDirty: jest.fn(),
-      isTouched: jest.fn(),
-      setTouched: jest.fn(),
-      setDirty: jest.fn(),
-      resetTouched: jest.fn(),
-      resetDirty: jest.fn(),
-      isValid: jest.fn(),
-    });
+    jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormErrorObj);
 
     const mockActionClick = jest.fn();
     const { getByTestId } = render(
       <MantineProvider
         theme={{
           colors: {
-            ...(Object.fromEntries(
-              Object.entries(
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                  .extend.colors,
-              ).map(([key, values]) => [key, Object.values(values)]),
-            ) as any),
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           },
         }}
       >
@@ -206,48 +155,14 @@ describe("<SaveOrCreateCohortModal />", () => {
   });
 
   it("onActionClick SHOULD be called if there is NO any error", async () => {
-    jest.spyOn(mantine_form, "useForm").mockReturnValue({
-      errors: {} as mantine_form.FormErrors,
-      values: "s",
-      setValues: jest.fn(),
-      setErrors: jest.fn(),
-      setFieldValue: jest.fn(),
-      setFieldError: jest.fn(),
-      clearFieldError: jest.fn(),
-      clearErrors: jest.fn(),
-      reset: jest.fn(),
-      validate: jest.fn().mockReturnValue({
-        hasErrors: false,
-        errors: {} as mantine_form.FormErrors,
-      }),
-      validateField: jest.fn(),
-      reorderListItem: jest.fn(),
-      removeListItem: jest.fn(),
-      insertListItem: jest.fn(),
-      getInputProps: jest.fn(),
-      onSubmit: jest.fn(),
-      onReset: jest.fn(),
-      isDirty: jest.fn(),
-      isTouched: jest.fn(),
-      setTouched: jest.fn(),
-      setDirty: jest.fn(),
-      resetTouched: jest.fn(),
-      resetDirty: jest.fn(),
-      isValid: jest.fn(),
-    });
+    jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
     const mockActionClick = jest.fn();
     const { getByTestId } = render(
       <MantineProvider
         theme={{
           colors: {
-            ...(Object.fromEntries(
-              Object.entries(
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                  .extend.colors,
-              ).map(([key, values]) => [key, Object.values(values)]),
-            ) as any),
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           },
         }}
       >

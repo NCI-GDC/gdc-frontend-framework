@@ -18,7 +18,6 @@ import {
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
-  defaultCohortNameGenerator,
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";

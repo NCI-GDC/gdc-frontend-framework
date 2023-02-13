@@ -170,6 +170,21 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+
+        if (cmdAndParam[0] === "newProjectsCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
       }
 
       coreDispatch(clearCohortMessage());

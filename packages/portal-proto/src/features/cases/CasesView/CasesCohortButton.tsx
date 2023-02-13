@@ -8,7 +8,6 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
-  defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import {
