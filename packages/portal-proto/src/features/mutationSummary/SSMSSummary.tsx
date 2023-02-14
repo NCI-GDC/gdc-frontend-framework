@@ -187,8 +187,8 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
             </div>
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <BarChartIcon size={20} />
-                <h2 className="text-xl">Consequences</h2>
+                <BarChartIcon size={20} className="text-accent" />
+                <h2 className="text-lg text-accent uppercase">Consequences</h2>
               </div>
               <SMSConsequenceTableContainer
                 columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
@@ -196,6 +196,12 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               />
             </div>
             <div className="mt-4">
+              <div className="flex items-center gap-2">
+                <BarChartIcon size={20} className="text-accent" />
+                <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
+                  Cancer Distribution
+                </h2>
+              </div>
               <Grid>
                 <SSMPlot page={"ssms"} ssms={ssm_id} />
               </Grid>

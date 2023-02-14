@@ -21,6 +21,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 
 const initialVisibleColumns: Columns[] = [
   { id: "remove", columnName: "Remove", visible: true },
@@ -115,7 +116,19 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             data_category: file.data_category,
             data_format: file.data_format,
             file_size: fileSize(file.file_size),
-            annotations: file.annotations?.length || 0,
+            annotations: (
+              <>
+                {getAnnotationsLinkParamsFromFiles(file) ? (
+                  <Link href={getAnnotationsLinkParamsFromFiles(file)} passHref>
+                    <a className="text-utility-link underline" target="_blank">
+                      {file.annotations.length}
+                    </a>
+                  </Link>
+                ) : (
+                  file?.annotations?.length ?? 0
+                )}
+              </>
+            ),
             data_type: file.data_type,
             experimental_strategy: file.experimental_strategy || "--",
             platform: file.platform || "--",

@@ -33,6 +33,7 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
+import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 
 const FilesTables: React.FC = () => {
   const columnListOrder: Columns[] = [
@@ -83,22 +84,6 @@ const FilesTables: React.FC = () => {
 
   const { data, pagination, status } = useCoreSelector(selectFilesData);
 
-  const getAnnotationsLinkParams = (file: GdcFile): string | null => {
-    // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
-    // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
-    // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758
-    const MAX_ANNOATATION_COUNT = 150;
-    if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
-      return null;
-
-    if (file?.annotations?.length === 1) {
-      return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
-    }
-    return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
-      file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
-    ]}]},"op":"in"}],"op":"and"}`;
-  };
-
   if (status === "fulfilled") {
     tempPagination = pagination;
     formattedTableData = data.map((file) => ({
@@ -128,9 +113,9 @@ const FilesTables: React.FC = () => {
       file_size: fileSize(file.file_size),
       annotations: (
         <>
-          {getAnnotationsLinkParams(file) ? (
-            <Link href={getAnnotationsLinkParams(file)} passHref>
-              <a className="text-utility-link underline" target={"_blank"}>
+          {getAnnotationsLinkParamsFromFiles(file) ? (
+            <Link href={getAnnotationsLinkParamsFromFiles(file)} passHref>
+              <a className="text-utility-link underline" target="_blank">
                 {file.annotations.length}
               </a>
             </Link>
