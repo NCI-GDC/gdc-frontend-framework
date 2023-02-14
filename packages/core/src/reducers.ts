@@ -52,6 +52,10 @@ import {
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
 import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
+import {
+  bodyplotCountsReducer,
+  bodyplotCountsReducerPath,
+} from "./features/bodyplot/bodyplotSlice";
 
 export const reducers = combineReducers({
   cohort: cohortReducers,
@@ -88,6 +92,7 @@ export const reducers = combineReducers({
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
+  [bodyplotCountsReducerPath]: bodyplotCountsReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
   selectedCases: selectedCasesReducer,
