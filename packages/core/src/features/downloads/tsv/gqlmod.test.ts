@@ -89,7 +89,7 @@ describe("gql mod helper functions", () => {
                 }
             }
         }`;
-      expect(params).toEqual(queryBody);
+      expect(params).toBe(queryBody);
     });
     test("returns correct body for 1 ssms ids", () => {
       const params = getAliasGraphQLQuery(["ssms9"], "ssms");
@@ -117,7 +117,7 @@ describe("gql mod helper functions", () => {
                 }
             }
         }`;
-      expect(params).toEqual(queryBody);
+      expect(params).toBe(queryBody);
     });
     describe("returns correct gql aliased filters", () => {
       test("returns gql filters for 4 gene ids", () => {
