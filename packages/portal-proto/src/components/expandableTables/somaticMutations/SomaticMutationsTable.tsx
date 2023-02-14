@@ -32,6 +32,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   toggledSsms = [],
   geneSymbol = undefined,
   isDemoMode = false,
+  isModal = false,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -112,6 +113,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           geneSymbol,
           isDemoMode,
           setEntityMetadata,
+          isModal,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

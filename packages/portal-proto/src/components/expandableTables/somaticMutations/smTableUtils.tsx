@@ -40,6 +40,7 @@ export const createTableColumn = (
   geneSymbol: string = undefined,
   isDemoMode: boolean,
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
+  isModal: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -203,6 +204,7 @@ export const createTableColumn = (
               const label = originalLabel
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
+              const ssmsId = row.original["select"];
               return (
                 <div className="font-content flex justify-start">
                   {label !== "" ? (
@@ -210,18 +212,24 @@ export const createTableColumn = (
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
-                      <button
-                        className="text-utility-link underline"
-                        onClick={() =>
-                          setEntityMetadata({
-                            entity_type: "ssms",
-                            entity_id: row.original["select"],
-                            entity_name: originalLabel,
-                          })
-                        }
-                      >
-                        {label}
-                      </button>
+                      {isModal ? (
+                        <button
+                          className="text-utility-link underline"
+                          onClick={() =>
+                            setEntityMetadata({
+                              entity_type: "ssms",
+                              entity_id: ssmsId,
+                              entity_name: originalLabel,
+                            })
+                          }
+                        >
+                          {label}
+                        </button>
+                      ) : (
+                        <Link href={`/ssms/${ssmsId}`}>
+                          <a className="underline text-utility-link">{label}</a>
+                        </Link>
+                      )}
                     </Tooltip>
                   ) : (
                     <div className="text-lg ml-3">{"--"}</div>
