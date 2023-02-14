@@ -1,0 +1,14 @@
+{
+  "label": "Repository Default",
+  "facets": [
+    "files.data_category",
+    "files.data_type",
+    "files.experimental_strategy",
+    "files.analysis.workflow_type",
+    "files.data_format",
+    "files.platform",
+    "files.access"
+  ],
+  "docType": "files",
+  "index": "repository"
+}

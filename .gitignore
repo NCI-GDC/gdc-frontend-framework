@@ -1,0 +1,7 @@
+node_modules
+.vscode
+venv
+.idea
+*.tsbuildinfo
+.env.local
+.DS_Store

@@ -1,0 +1,145 @@
+{
+  "config": {
+    "general": {
+      "label": "General",
+      "facets": [
+        "cases.project.program.name",
+        "cases.project.project_id",
+        "cases.disease_type",
+        "cases.diagnoses.primary_diagnosis",
+        "cases.primary_site",
+        "cases.diagnoses.tissue_or_organ_of_origin"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "demographic": {
+      "label": "Demographic",
+      "facets": [
+        "cases.demographic.gender",
+        "cases.demographic.race",
+        "cases.demographic.ethnicity",
+        "cases.diagnoses.age_at_diagnosis",
+        "cases.demographic.vital_status"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "general_diagnosis": {
+      "label": "General Diagnosis",
+      "facets": [
+        "cases.diagnoses.morphology",
+        "cases.diagnoses.year_of_diagnosis",
+        "cases.diagnoses.site_of_resection_or_biopsy",
+        "cases.diagnoses.laterality"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "disease_status": {
+      "label": "Disease Status and History",
+      "facets": [
+        "cases.diagnoses.prior_malignancy",
+        "cases.diagnoses.prior_treatment",
+        "cases.diagnoses.synchronous_malignancy",
+        "cases.diagnoses.progression_or_recurrence",
+        "cases.diagnoses.residual_disease"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "stage_classification": {
+      "label": "Stage Classification",
+      "facets": [
+        "cases.diagnoses.ajcc_clinical_stage",
+        "cases.diagnoses.ajcc_pathologic_stage",
+        "cases.diagnoses.ann_arbor_clinical_stage",
+        "cases.diagnoses.ann_arbor_pathologic_stage",
+        "cases.diagnoses.cog_renal_stage",
+        "cases.diagnoses.figo_stage",
+        "cases.diagnoses.igcccg_stage",
+        "cases.diagnoses.inss_stage",
+        "cases.diagnoses.iss_stage",
+        "cases.diagnoses.masaoka_stage"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "grade_classification": {
+      "label": "Grade Classification",
+      "facets": ["cases.diagnoses.tumor_grade"],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "other_classification": {
+      "label": "Other Classification",
+      "facets": [
+        "cases.diagnoses.eln_risk_classification",
+        "cases.diagnoses.international_prognostic_index",
+        "cases.diagnoses.wilms_tumor_histologic_subtype"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "treatment": {
+      "label": "Treatment",
+      "facets": [
+        "cases.diagnoses.best_overall_response",
+        "cases.diagnoses.treatments.therapeutic_agents",
+        "cases.diagnoses.treatments.treatment_intent_type",
+        "cases.diagnoses.treatments.treatment_outcome",
+        "cases.diagnoses.treatments.treatment_type"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "exposure": {
+      "label": "Exposure",
+      "facets": [
+        "cases.exposures.alcohol_history",
+        "cases.exposures.alcohol_intensity",
+        "cases.exposures.tobacco_smoking_status",
+        "cases.exposures.cigarettes_per_day",
+        "cases.exposures.pack_years_smoked",
+        "cases.exposures.tobacco_smoking_onset_year"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "biospecimen": {
+      "label": "Biospecimen",
+      "facets": [
+        "cases.samples.sample_type",
+        "cases.samples.tissue_type",
+        "cases.samples.biospecimen_anatomic_site",
+        "cases.samples.composition",
+        "cases.samples.preservation_method",
+        "cases.samples.tumor_code",
+        "cases.samples.tumor_descriptor",
+        "cases.samples.portions.analytes.aliquots.analyte_type"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "available_data": {
+      "label": "Available Data",
+      "facets": [
+        "files.data_category",
+        "files.data_type",
+        "files.experimental_strategy",
+        "files.analysis.workflow_type",
+        "files.data_format",
+        "files.platform",
+        "files.access"
+      ],
+      "docType": "cases",
+      "index": "repository"
+    },
+    "custom": {
+      "label": "Custom Filters",
+      "facets": [],
+      "docType": "cases",
+      "index": "repository"
+    }
+  }
+}
