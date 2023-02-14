@@ -35,5 +35,13 @@ module.exports = withTM({
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
     NEXT_PUBLIC_APP_HASH: buildHash,
+    NEXT_PUBLIC_DEPLOY_TEST_HASH: process.env.DEPLOY_TEST_HASH,
   },
 });
+
+console.log(
+  "testing",
+  process.env,
+  process.env.NEXT_PUBLIC_DEPLOY_SERVICE_TAG,
+  process.env.DEPLOY_TEST_HASH,
+);

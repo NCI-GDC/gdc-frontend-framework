@@ -12,3 +12,11 @@ export const PUBLIC_APP_INFO = {
   version: process.env.NEXT_PUBLIC_APP_VERSION,
   hash: process.env.NEXT_PUBLIC_APP_HASH,
 };
+
+console.log(
+  "testing2",
+  process.env,
+  process.env.NEXT_PUBLIC_DEPLOY_SERVICE_TAG,
+  process.env.NEXT_PUBLIC_DEPLOY_TEST_HASH,
+  process.env.DEPLOY_TEST_HASH,
+);

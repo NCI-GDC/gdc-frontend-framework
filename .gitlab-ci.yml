@@ -123,6 +123,9 @@ Run unit tests:
 
 Build and push container:
   stage: release
+  variables:
+    DEPLOY_TEST_HASH: test
+    NEXT_PUBLIC_DEPLOY_TEST_HASH: testtoo
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
