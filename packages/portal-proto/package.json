@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
-    "@gff/core": "0.0.1",
+    "@gff/core": "2.1.0",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.10.2",
     "@mantine/form": "^5.10.2",
