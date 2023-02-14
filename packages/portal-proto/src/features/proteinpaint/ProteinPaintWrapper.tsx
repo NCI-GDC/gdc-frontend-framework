@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, FC } from "react";
+import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
@@ -8,12 +8,11 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
 } from "@gff/core";
-import { isEqual } from "lodash";
+import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
 interface PpProps {
-  track: string;
   basepath?: string;
   geneId?: string;
   gene2canonicalisoform?: string;
@@ -26,11 +25,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
   );
-
   const { data: userDetails } = useUserDetails();
-  const [alertDisplay, setAlertDisplay] = useState("none");
-  const [rootDisplay, setRootDisplay] = useState("none");
-
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
@@ -38,19 +33,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const isAuthorized = props.track != "bam" || userDetails.username;
-      setAlertDisplay(isAuthorized ? "none" : "block");
-      setRootDisplay(isAuthorized ? "block" : "none");
-      if (!isAuthorized) return;
-
-      const data =
-        props.track == "lollipop"
-          ? getLollipopTrack(props, filter0)
-          : props.track == "bam" && userDetails?.username
-          ? getBamTrack(props, filter0)
-          : props.track == "matrix"
-          ? getMatrixTrack(props, filter0)
-          : null;
+      const data = getLollipopTrack(props, filter0);
 
       if (!data) return;
       if (isEqual(prevArg.current, data)) return;
@@ -62,8 +45,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       const arg = Object.assign(
         { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-        JSON.parse(JSON.stringify(data)),
-      ) as PpArg;
+        cloneDeep(data),
+      ) as Mds3Arg;
 
       if (ppRef.current) {
         ppRef.current.update(arg);
@@ -85,29 +68,23 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     ],
   );
 
-  const alertRef = useRef();
   const divRef = useRef();
   return (
     <div>
       <div
-        ref={alertRef}
-        style={{ margin: "32px", display: `${alertDisplay}` }}
-        className="sjpp-wrapper-alert-div"
-      >
-        <b>Access alert</b>
-        <hr />
-        <p>Please login to access the Sequence Read visualization tool.</p>
-      </div>
-      <div
         ref={divRef}
-        style={{ margin: "32px", display: `${rootDisplay}` }}
+        style={{ margin: "32px" }}
         className="sjpp-wrapper-root-div"
-      ></div>
+      />
     </div>
   );
 };
 
 interface Mds3Arg {
+  holder?: HTMLElement;
+  noheader?: boolean;
+  nobox?: boolean;
+  hide_dsHandles?: boolean;
   host: string;
   genome: string;
   gene2canonicalisoform?: string;
@@ -120,6 +97,7 @@ interface Track {
   type: string;
   dslabel: string;
   filter0: FilterSet;
+  allow2selectSamples?: SelectSamples;
 }
 
 interface mds3_isoform {
@@ -127,10 +105,19 @@ interface mds3_isoform {
   dslabel: string;
 }
 
-interface PpArg extends Mds3Arg, BamArg {}
-
 interface PpApi {
   update(arg: any): null;
+}
+
+interface SelectSamples {
+  buttonText: string;
+  attributes: string[];
+  callback(samples: string[]): void;
+}
+
+function selectSamplesCallBack(samples: string[]) {
+  /*** TODO: create a new cohort using the case set id list (samples) ***/
+  console.log("selected", samples);
 }
 
 function getLollipopTrack(props: PpProps, filter0: any) {
@@ -144,6 +131,11 @@ function getLollipopTrack(props: PpProps, filter0: any) {
         type: "mds3",
         dslabel: "GDC",
         filter0,
+        allow2selectSamples: {
+          buttonText: "Select samples",
+          attributes: ["sample_id"],
+          callback: selectSamplesCallBack,
+        },
       },
     ],
   };
@@ -158,69 +150,6 @@ function getLollipopTrack(props: PpProps, filter0: any) {
   } else {
     arg.geneSearch4GDCmds3 = true;
   }
-
-  return arg;
-}
-
-interface BamArg {
-  host: string;
-  gdcbamslice: GdcBamSlice;
-  filter0: FilterSet;
-}
-
-type GdcBamSlice = {
-  hideTokenInput: boolean;
-};
-
-function getBamTrack(props: PpProps, filter0: any) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  const arg: BamArg = {
-    host: props.basepath || (basepath as string),
-    gdcbamslice: {
-      hideTokenInput: true,
-    },
-    filter0,
-  };
-
-  return arg;
-}
-
-interface MatrixArg {
-  host: string;
-  launchGdcMatrix: boolean;
-  filter0: FilterSet;
-}
-
-function getMatrixTrack(props: PpProps, filter0: any) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  const defaultFilter = {
-    op: "and",
-    content: [
-      {
-        op: "in",
-        content: {
-          field: "cases.primary_site",
-          value: ["breast", "bronchus and lung"],
-        },
-      },
-      {
-        op: ">=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 10000 },
-      },
-      {
-        op: "<=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 20000 },
-      },
-    ],
-  };
-
-  const arg: MatrixArg = {
-    host: props.basepath || (basepath as string),
-    launchGdcMatrix: true,
-    filter0: filter0 || defaultFilter,
-  };
 
   return arg;
 }

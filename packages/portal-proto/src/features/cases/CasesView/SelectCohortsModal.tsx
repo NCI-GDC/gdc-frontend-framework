@@ -1,6 +1,6 @@
 import FunctionButton from "@/components/FunctionButton";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
-import { modalStyles } from "@/components/Modals/SetModals/styles";
+import { modalStyles } from "@/components/Modals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   Columns,
@@ -153,7 +153,7 @@ export const SelectCohortsModal = ({
 
   const description = `Select an existing cohort, then click Submit. This will create a new
     cohort that contains all the cases from your selected cohort ${
-      isWithCohort ? "and" : "expect"
+      isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
   const onNameChange = (name: string) =>

@@ -652,6 +652,11 @@ module.exports = {
           complete: "#249c4f",
           label: "#111111",
         },
+        summarybar: {
+          text: "#42346F",
+          "icon-background": "#FBD5C7",
+          border: "#C5E3DF",
+        },
       },
       height: {
         "nci-logo": "54px",
@@ -677,6 +682,10 @@ module.exports = {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
         content: ["Montserrat", "sans-serif"],
+        "content-noto": ["Noto Sans", "sans-serif"],
+      },
+      backgroundImage: {
+        "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",

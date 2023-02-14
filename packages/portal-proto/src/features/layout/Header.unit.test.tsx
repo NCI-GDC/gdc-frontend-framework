@@ -3,6 +3,7 @@ import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
+import { CoreProvider } from "@gff/core";
 
 describe("<Header />", () => {
   beforeEach(() => {
@@ -48,7 +49,9 @@ describe("<Header />", () => {
       .mockReturnValueOnce(null);
 
     const { getByTestId, queryByTestId } = render(
-      <Header {...{ headerElements, indexPath: "/" }} />,
+      <CoreProvider>
+        <Header {...{ headerElements, indexPath: "/" }} />
+      </CoreProvider>,
     );
     expect(getByTestId("loginButton")).toBeInTheDocument();
     expect(queryByTestId("userdropdown")).toBeNull();
@@ -68,7 +71,9 @@ describe("<Header />", () => {
       .mockReturnValueOnce(null);
 
     const { getByTestId, queryByTestId } = render(
-      <Header {...{ headerElements, indexPath: "/" }} />,
+      <CoreProvider>
+        <Header {...{ headerElements, indexPath: "/" }} />
+      </CoreProvider>,
     );
     expect(queryByTestId("loginButton")).toBeNull();
     expect(getByTestId("userdropdown")).toBeInTheDocument();
@@ -93,7 +98,9 @@ describe("<Header />", () => {
       .spyOn(core, "fetchToken")
       .mockReturnValue(Promise.resolve({ text: "", status: 401 }));
     const { getByTestId } = render(
-      <Header {...{ headerElements, indexPath: "/" }} />,
+      <CoreProvider>
+        <Header {...{ headerElements, indexPath: "/" }} />
+      </CoreProvider>,
     );
 
     await fireEvent.click(getByTestId("userdropdown"));
@@ -128,7 +135,9 @@ test("should show User Profile Modal when fetch token returns 401", async () => 
     .spyOn(core, "fetchToken")
     .mockReturnValue(Promise.resolve({ text: "", status: 200 }));
   const { getByTestId } = render(
-    <Header {...{ headerElements, indexPath: "/" }} />,
+    <CoreProvider>
+      <Header {...{ headerElements, indexPath: "/" }} />
+    </CoreProvider>,
   );
 
   await fireEvent.click(getByTestId("userdropdown"));

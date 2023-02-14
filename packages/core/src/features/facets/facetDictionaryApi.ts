@@ -68,6 +68,10 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
 
 export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   const fieldName = f.field;
+  // NOTE: put exceptional cases first
+  if (fieldName.includes("alcohol_days_per_week")) return "range";
+  if (fieldName.includes("is_cancer_gene_census")) return "toggle";
+  if (fieldName.includes("figo")) return "enum";
   if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent")) return "percent";
@@ -75,10 +79,9 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   if (fieldName.includes("_age_")) return "age";
   if (fieldName.endsWith("_age")) return "age";
   if (fieldName.includes("days")) return "days";
-  if (fieldName.includes("years")) return "years";
+  if (fieldName.includes("years")) return "range";
   if (fieldName.includes("year")) return "year";
   if (fieldName.includes("project_id")) return "enum";
-  if (fieldName.includes("is_cancer_gene_census")) return "toggle";
 
   if (f.type === "long" || f.type === "float" || f.type === "double")
     return "range";

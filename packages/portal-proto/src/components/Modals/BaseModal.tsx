@@ -3,18 +3,24 @@ import { Button, Modal } from "@mantine/core";
 import { ReactNode } from "react";
 import { theme } from "tailwind.config";
 
+interface ButtonOptions {
+  onClick?: () => void;
+  hideModalOnClick?: boolean;
+  title: string;
+  dataTestId: string;
+}
+
+const isButtonOptions = (button): button is ButtonOptions => {
+  return typeof button === "object" && button.title;
+};
+
 interface Props {
   openModal: boolean;
   title: ReactNode;
   closeButtonLabel: string;
   size?: string | number;
   children: ReactNode;
-  buttons?: Array<{
-    onClick?: () => void;
-    hideModalOnClick?: boolean;
-    title: string;
-    dataTestId: string;
-  }>;
+  buttons?: Array<ButtonOptions | JSX.Element>;
   withCloseButton?: boolean;
   onClose?: () => void;
   closeOnClickOutside?: boolean;
@@ -63,26 +69,32 @@ export const BaseModal: React.FC<Props> = ({
       {children}
       {buttons && (
         <div className="flex justify-end mt-2.5 gap-2">
-          {buttons.map(({ onClick, title, hideModalOnClick, dataTestId }) => (
-            <Button
-              data-testid={dataTestId}
-              key={title}
-              onClick={() => {
-                if (onClick) {
-                  onClick();
+          {buttons.map((button) => {
+            if (isButtonOptions(button)) {
+              const { onClick, title, hideModalOnClick, dataTestId } = button;
 
-                  if (hideModalOnClick) {
-                    dispatch(hideModal());
-                  }
-                } else {
-                  dispatch(hideModal());
-                }
-              }}
-              className="!bg-primary hover:!bg-primary-darker"
-            >
-              {title}
-            </Button>
-          ))}
+              return (
+                <Button
+                  data-testid={dataTestId}
+                  key={title}
+                  onClick={() => {
+                    if (onClick) {
+                      onClick();
+
+                      if (hideModalOnClick) {
+                        dispatch(hideModal());
+                      }
+                    } else {
+                      dispatch(hideModal());
+                    }
+                  }}
+                  className="!bg-primary hover:!bg-primary-darker"
+                >
+                  {title}
+                </Button>
+              );
+            } else return button;
+          })}
         </div>
       )}
     </Modal>
