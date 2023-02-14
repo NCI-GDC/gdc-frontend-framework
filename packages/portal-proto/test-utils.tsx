@@ -3,7 +3,7 @@ import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
 import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
-import { SummaryModalContext, URLContext } from "src/pages/_app";
+import { SummaryModalContext, URLContext } from "src/utils/contexts";
 import { NotificationsProvider } from "@mantine/notifications";
 import store from "@/app/store";
 

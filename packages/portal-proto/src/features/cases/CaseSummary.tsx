@@ -23,7 +23,6 @@ import {
   FaEdit,
   FaTable,
 } from "react-icons/fa";
-import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -44,6 +43,7 @@ import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
+import { URLContext } from "src/utils/contexts";
 
 // TODO: break it down
 

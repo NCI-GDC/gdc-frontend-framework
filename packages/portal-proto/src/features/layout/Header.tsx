@@ -42,7 +42,7 @@ import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
-import { SummaryModalContext } from "src/pages/_app";
+import { SummaryModalContext } from "src/utils/contexts";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer

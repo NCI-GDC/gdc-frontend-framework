@@ -12,7 +12,7 @@ import { getMutation, createTableColumn } from "./smTableUtils";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
-import { SummaryModalContext } from "src/pages/_app";
+import { SummaryModalContext } from "src/utils/contexts";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,

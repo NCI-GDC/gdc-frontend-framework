@@ -5,7 +5,7 @@ import { ExpTable } from "@/components/expandableTables/shared/ExpTable";
 import { createTableColumn } from "@/components/expandableTables/somaticMutations/smTableUtils";
 import { Column } from "@/components/expandableTables/shared/types";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
-import { entityMetadataType } from "src/pages/_app";
+import { entityMetadataType } from "src/utils/contexts";
 
 export interface ConsequenceTableProps {
   ssmsId: string;

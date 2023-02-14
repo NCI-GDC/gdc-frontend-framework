@@ -32,7 +32,7 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import { SummaryModalContext } from "src/pages/_app";
+import { SummaryModalContext } from "src/utils/contexts";
 
 const FilesTables: React.FC = () => {
   //This if for hanadling pagination changes
@@ -223,23 +223,6 @@ const FilesTables: React.FC = () => {
       ),
     }));
   }
-
-  // useEffect(() => {
-  //   coreDispatch(
-  //     fetchFiles({
-  //       filters: cohortGqlOperator,
-  //       expand: [
-  //         "annotations", //annotations
-  //         "cases.project", //project_id
-  //         "cases",
-  //       ],
-  //       size: pageSize,
-  //       from: offset * pageSize,
-  //       sortBy: sortBy,
-  //     }),
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [pageSize, offset, sortBy]);
 
   const sortByActions = (sortByObj) => {
     const tempSortBy = sortByObj.map((sortObj) => {

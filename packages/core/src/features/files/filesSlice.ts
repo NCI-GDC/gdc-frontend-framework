@@ -1,10 +1,7 @@
-import { createAsyncThunk, Middleware, Reducer } from "@reduxjs/toolkit";
+import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
 import { DataStatus } from "../../dataAccess";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
 import {
-  fetchGdcFiles,
   GdcApiRequest,
   GdcApiResponse,
   FileDefaults,
@@ -529,14 +526,6 @@ export interface FilesState {
   readonly status: DataStatus;
   readonly error?: string;
 }
-
-export const fetchFiles = createAsyncThunk<
-  GdcApiResponse<FileDefaults>,
-  GdcApiRequest,
-  { dispatch: CoreDispatch; state: CoreState }
->("files/fetchFiles", async (request?: GdcApiRequest) => {
-  return await fetchGdcFiles(request);
-});
 
 export const filesApiSlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({

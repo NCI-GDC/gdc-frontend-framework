@@ -27,7 +27,7 @@ import {
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { SummaryModalContext } from "src/pages/_app";
+import { SummaryModalContext } from "src/utils/contexts";
 
 const useStyles = createStyles((theme) => ({
   item: {

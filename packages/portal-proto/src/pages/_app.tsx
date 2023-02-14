@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import Script from "next/script";
@@ -35,6 +35,11 @@ import React, { useEffect } from "react";
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
 import { datadogRum } from "@datadog/browser-rum";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+  URLContext,
+} from "src/utils/contexts";
 datadogRum.init({
   applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
   clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
@@ -65,8 +70,6 @@ type TenStringArray = [
   string?,
 ];
 
-export const URLContext = createContext({ prevPath: "", currentPath: "" });
-
 const getCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
@@ -78,17 +81,6 @@ const getCache = (): EmotionCache => {
 
   return createEmotionCache({ key: "mantine", insertionPoint });
 };
-
-export type entityType = null | "project" | "case" | "file" | "ssms";
-export interface entityMetadataType {
-  entity_type: entityType;
-  entity_id: string;
-  entity_name: string;
-}
-export const SummaryModalContext = createContext<{
-  entityMetadata: entityMetadataType;
-  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
-}>(null);
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();

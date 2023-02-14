@@ -6,8 +6,7 @@ import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { Modal } from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
-import { entityMetadataType } from "src/pages/_app";
-import { URLContext } from "src/pages/_app";
+import { entityMetadataType, URLContext } from "src/utils/contexts";
 
 export const SummaryModalHeader = ({
   iconText,
