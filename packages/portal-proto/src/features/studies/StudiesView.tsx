@@ -1,4 +1,4 @@
-import { ProjectDefaults, useProjects } from "@gff/core";
+import { ProjectDefaults, useGetProjectsQuery } from "@gff/core";
 import { Option, Select } from "../../components/Select";
 import { Image } from "@/components/Image";
 import { Button } from "@mantine/core";
@@ -39,9 +39,12 @@ export interface ContextualStudiesViewProps {
 export const ContextualStudiesView: React.FC<ContextualStudiesViewProps> = (
   props: ContextualStudiesViewProps,
 ) => {
-  const { data } = useProjects({ size: 100 });
+  const { data } = useGetProjectsQuery({ size: 100 });
   return (
-    <StudiesView projects={data ? [{ ...DLBCL, ...data }] : []} {...props} />
+    <StudiesView
+      projects={data.projectData ? [{ ...DLBCL, ...data.projectData }] : []}
+      {...props}
+    />
   );
 };
 

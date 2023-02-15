@@ -11,14 +11,15 @@ import {
   REGISTER,
 } from "redux-persist";
 import { reducers } from "./reducers";
-import { filesApiSliceMiddleware } from "./features/files/allFilesMutation";
+import { allFilesApiSliceMiddleware } from "./features/files/allFilesMutation";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
-import { caseSetListenerMiddleware } from "./listeners";
-
-import storage from "./storage-persist";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
+import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
+import { filesApiSliceMiddleware } from "./features/files/filesSlice";
+import { caseSetListenerMiddleware } from "./listeners";
+import storage from "./storage-persist";
 
 const persistConfig = {
   key: "root",
@@ -39,11 +40,13 @@ export const coreStore = configureStore({
       },
     })
       .concat(
+        allFilesApiSliceMiddleware,
         filesApiSliceMiddleware,
         cohortApiSliceMiddleware,
         survivalApiSliceMiddleware,
         graphqlAPISliceMiddleware,
         endpointSliceMiddleware,
+        projectApiSliceMiddleware,
       )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });

@@ -89,6 +89,10 @@ export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
       name: "Section_location",
     },
     {
+      field: "percent_granulocyte_infiltration",
+      name: "Percent_granulocyte_infiltration",
+    },
+    {
       field: "percent_necrosis",
       name: "Percent_necrosis",
     },

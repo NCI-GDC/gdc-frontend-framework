@@ -86,6 +86,8 @@ Build core and compile portal:
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
+    - cd ${CI_PROJECT_DIR}/packages/sapien
+    - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
   cache:
