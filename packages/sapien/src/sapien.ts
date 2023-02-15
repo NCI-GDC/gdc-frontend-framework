@@ -179,7 +179,7 @@ export const createHumanBody: TCreateHumanBody = ({
     })
     .on("click", clickHandler);
 
-  // Bar Chart Tootlip
+  // Bar Chart Tooltip
   const tooltip = d3
     .select(selector)
     .append("div")
@@ -275,10 +275,8 @@ export const createHumanBody: TCreateHumanBody = ({
 
   const svgs = document.querySelectorAll("#human-body-highlights svg");
 
-  [].forEach.call(svgs, (svg: any) => {
-    svg.addEventListener("click", function () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+  [].forEach.call(svgs, (svg: SVGElement) => {
+    svg.addEventListener("click", function (this: SVGElement) {
       clickHandler({ key: this.id });
     });
 
