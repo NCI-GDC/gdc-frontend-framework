@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
 import * as core from "@gff/core";
+import { render } from "test-utils";
 import Cart from "./Cart";
 
 describe("<Cart />", () => {
@@ -36,7 +36,7 @@ describe("<Cart />", () => {
       },
     ]);
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-    jest.spyOn(core, "useFiles").mockReturnValue({} as any);
+    jest.spyOn(core, "useGetFilesQuery").mockReturnValue({} as any);
 
     const { getByTestId } = render(<Cart />);
     expect(getByTestId("cart-header").textContent).toContain("1 File");

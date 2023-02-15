@@ -19,7 +19,7 @@ export const TypeIcon = ({
         </Tooltip>
       ) : (
         <span
-          className={`w-9 h-9 shrink-0 grow-0 aspect-square rounded-full ${
+          className={`w-9 h-9 shrink-0 grow-0 aspect-square uppercase rounded-full ${
             changeOnHover
               ? "bg-primary-contrast-darker text-primary-darker"
               : "bg-primary-darker text-primary-contrast-darker"

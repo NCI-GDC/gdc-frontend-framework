@@ -62,7 +62,7 @@ export const Bodyplot = (): JSX.Element => {
   const [bodyplotTooltipContent, setBodyplotTooltipContent] =
     useState(undefined);
 
-  const { data } = useBodyplotCountsQuery({});
+  const { data } = useBodyplotCountsQuery();
   const root = document.getElementById("human-body-parent");
 
   const processedData = useMemo(() => {

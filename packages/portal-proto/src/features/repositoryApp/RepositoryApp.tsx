@@ -2,21 +2,19 @@ import {
   buildCohortGqlOperator,
   CART_LIMIT,
   createGdcAppWithOwnStore,
-  fetchFiles,
   FilterSet,
   GdcFileIds,
   GqlOperation,
   joinFilters,
   selectCart,
   selectCurrentCohortFilters,
-  selectFilesData,
   stringifyJSONParam,
   useCoreDispatch,
   useCoreSelector,
   useGetAllFilesMutation,
-  usePrevious,
+  useGetFilesQuery,
 } from "@gff/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AppContext, AppStore, id, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
@@ -27,22 +25,17 @@ import {
 } from "@/features/cart/updateCart";
 import Link from "next/link";
 import { FileFacetPanel } from "./FileFacetPanel";
-import { FilesView } from "@/features/files/FilesView";
 import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
-import { isEqual } from "lodash";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
 import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
+import FilesTables from "../repositoryApp/FilesTable";
 
 const useCohortCentricFiles = () => {
-  const coreDispatch = useCoreDispatch();
-
-  const { pagination, status } = useCoreSelector(selectFilesData);
-
   const repositoryFilters = useAppSelector((state) =>
     selectFilters(state),
   ) as FilterSet;
@@ -51,26 +44,24 @@ const useCohortCentricFiles = () => {
   );
 
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const prevFilters = usePrevious(allFilters);
-
-  useEffect(() => {
-    if (status === "uninitialized" || !isEqual(allFilters, prevFilters)) {
-      coreDispatch(
-        fetchFiles({
-          filters: buildCohortGqlOperator(allFilters),
-          expand: [
-            "annotations", //annotations
-            "cases.project", //project_id
-          ],
-          size: 20,
-        }),
-      );
-    }
-  }, [status, coreDispatch, allFilters, prevFilters]);
+  const { data: fileData } = useGetFilesQuery({
+    filters: buildCohortGqlOperator(allFilters),
+    expand: [
+      "annotations", //annotations
+      "cases.project", //project_id
+      "cases",
+    ],
+    size: 20,
+  });
 
   const { data: imagesCount } = useImageCounts(allFilters);
 
-  return { allFilters, pagination, repositoryFilters, imagesCount };
+  return {
+    allFilters,
+    pagination: fileData?.pagination,
+    repositoryFilters,
+    imagesCount,
+  };
 };
 
 const RepositoryApp = () => {
@@ -206,7 +197,7 @@ const RepositoryApp = () => {
             </FunctionButtonRemove>
           </div>
         </div>
-        <FilesView />
+        <FilesTables />
       </div>
     </div>
   );

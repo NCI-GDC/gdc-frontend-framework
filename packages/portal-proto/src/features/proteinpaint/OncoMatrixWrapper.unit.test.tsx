@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
+import { OncoMatrixWrapper } from "./OncoMatrixWrapper";
 
 let filter, runpparg, userDetails;
 
@@ -19,29 +19,14 @@ jest.mock("@stjude/proteinpaint-client", () => ({
   }),
 }));
 
-test("SSM lolliplot arguments", () => {
-  userDetails = { data: { username: "test" } };
-  filter = { abc: "xyz" };
-  const { unmount } = render(<ProteinPaintWrapper />);
+test("OncoMatrix arguments", () => {
+  const { unmount } = render(<OncoMatrixWrapper />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
-  expect(runpparg.genome).toEqual("hg38");
-  expect(runpparg.tracks).toEqual([
-    {
-      type: "mds3",
-      dslabel: "GDC",
-      filter0: { abc: "xyz" },
-      allow2selectSamples: {
-        buttonText: "Select samples",
-        attributes: ["sample_id"],
-        callback: runpparg.tracks[0]?.allow2selectSamples?.callback,
-      },
-    },
-  ]);
-  expect(runpparg.geneSearch4GDCmds3).toEqual(true);
+  expect(runpparg.launchGdcMatrix).toEqual(true);
   unmount();
 });

@@ -1,9 +1,8 @@
-import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import {
+  HUMAN_BODY_ALL_ALLOWED_SITES,
   HUMAN_BODY_MAPPINGS,
   HUMAN_BODY_TOOS_MAP,
-  HUMAN_BODY_ALL_ALLOWED_SITES,
 } from "./constants";
 import { groupBy, map } from "lodash";
 
@@ -26,7 +25,7 @@ export const processData = (
   casesBuckets: Bucket[],
   filesBuckets: Bucket[],
 ): BodyplotData[] => {
-  const results = map(
+  return map(
     groupBy(
       casesBuckets,
       // cases.aggregations.primary_site.buckets,
@@ -55,12 +54,11 @@ export const processData = (
       };
     },
   ).filter(({ key }) => HUMAN_BODY_ALL_ALLOWED_SITES.includes(key));
-  return results;
 };
 
 export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    bodyplotCounts: builder.query({
+    bodyplotCounts: builder.query<BodyplotData[], void>({
       query: () => ({
         graphQLQuery: `query HumanBody {
   viewer {
@@ -116,6 +114,3 @@ export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
 });
 
 export const { useBodyplotCountsQuery } = bodyplotSlice;
-export const bodyplotCountsMiddleware = bodyplotSlice.middleware as Middleware;
-export const bodyplotCountsReducerPath: string = bodyplotSlice.reducerPath;
-export const bodyplotCountsReducer: Reducer = bodyplotSlice.reducer as Reducer;
