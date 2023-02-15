@@ -565,19 +565,21 @@ export const getGdcInstance = async <T>(
  * - add auth header
  */
 
-const endpointSlice = coreCreateApi({
+export const endpointSlice = coreCreateApi({
   reducerPath: "entities",
   baseQuery: async ({
     request,
     endpoint,
+    fetchAll = true,
   }: {
     request: GdcApiRequest;
     endpoint: gdcEndpoint;
+    fetchAll?: boolean;
   }) => {
     let results;
 
     try {
-      results = await fetchGdcEntities(endpoint, request, true);
+      results = await fetchGdcEntities(endpoint, request, fetchAll);
     } catch (e) {
       return { error: e };
     }
