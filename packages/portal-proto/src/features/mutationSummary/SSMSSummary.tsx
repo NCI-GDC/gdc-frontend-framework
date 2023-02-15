@@ -14,6 +14,7 @@ import SSMPlot from "../charts/SSMPlot";
 import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
@@ -200,9 +201,7 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
             <div className="mt-4">
               <div className="flex items-center gap-2">
                 <BarChartIcon size={20} className="text-accent" />
-                <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                  Cancer Distribution
-                </h2>
+                <HeaderTitle>Cancer Distribution</HeaderTitle>
               </div>
               <Grid>
                 <SSMPlot page={"ssms"} ssms={ssm_id} />

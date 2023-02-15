@@ -44,6 +44,7 @@ import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 // TODO: break it down
 
@@ -529,9 +530,7 @@ export const CaseSummary = ({
             {clinicalFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Clinical Supplement File
-                  </h2>
+                  <HeaderTitle>Clinical Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForClinicalFiles()} />
               </div>
@@ -543,9 +542,7 @@ export const CaseSummary = ({
             {biospecimenFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Biospecimen Supplement File
-                  </h2>
+                  <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForBioSpecimenFiles()} />
               </div>
