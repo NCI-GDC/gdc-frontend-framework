@@ -6,6 +6,7 @@ WORKDIR /app
 # ==================================================================
 FROM node:16-alpine3.15 AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
+ENV NEXT_PUBLIC_TESTNONSENCE="why would this work"
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
