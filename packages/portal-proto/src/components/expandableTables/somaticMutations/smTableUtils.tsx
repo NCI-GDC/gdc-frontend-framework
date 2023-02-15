@@ -41,6 +41,7 @@ export const createTableColumn = (
   isDemoMode: boolean,
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
   isModal: boolean,
+  isConsequenceTable?: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -204,7 +205,7 @@ export const createTableColumn = (
               const label = originalLabel
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
-              const ssmsId = row.original["select"];
+              const ssmsId = row.original[`mutationID`];
               return (
                 <div className="font-content flex justify-start">
                   {label !== "" ? (
@@ -212,9 +213,11 @@ export const createTableColumn = (
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
-                      {isModal ? (
+                      {isConsequenceTable ? (
+                        <span className="text-xs">{label}</span>
+                      ) : isModal ? (
                         <button
-                          className="text-utility-link underline"
+                          className="text-utility-link underline text-xs"
                           onClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
@@ -227,7 +230,9 @@ export const createTableColumn = (
                         </button>
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link">{label}</a>
+                          <a className="underline text-utility-link text-xs">
+                            {label}
+                          </a>
                         </Link>
                       )}
                     </Tooltip>

@@ -41,6 +41,7 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
           false,
           {} as Dispatch<SetStateAction<entityMetadataType>>,
           false,
+          true,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

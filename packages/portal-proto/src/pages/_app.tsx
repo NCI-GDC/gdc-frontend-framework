@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
+import "@nci-gdc/sapien/dist/bodyplot.css";
 import { useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
@@ -31,15 +32,15 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-
-if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
-
 import { datadogRum } from "@datadog/browser-rum";
 import {
   entityMetadataType,
   SummaryModalContext,
   URLContext,
 } from "src/utils/contexts";
+
+if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
+
 datadogRum.init({
   applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
   clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
