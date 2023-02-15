@@ -36,10 +36,6 @@ module.exports = withTM({
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
     NEXT_PUBLIC_APP_HASH: buildHash,
-    NEXT_PUBLIC_REACT_APP_DEPLOY_TEST_HASH:
-      process.env.NEXT_PUBLIC_DEPLOY_TEST_HASH,
-    NEXT_PUBLIC_DEPLOY_TEST_WORD: process.env.NEXT_PUBLIC_DEPLOY_TEST_WORD,
+    NEXT_PUBLIC_BUILD_SHORT_SHA_TEST: process.env.NEXT_PUBLIC_BUILD_SHORT_SHA,
   },
 });
-
-console.log("testing", process.env);

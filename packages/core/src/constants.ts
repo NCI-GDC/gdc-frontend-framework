@@ -14,7 +14,7 @@ export const PUBLIC_APP_INFO = {
 };
 
 console.log(
-  "testing4",
-  process.env.NEXT_PUBLIC_DEPLOY_TEST_HASH,
-  process.env.NEXT_PUBLIC_DEPLOY_TEST_WORD,
+  "testing5",
+  process.env.NEXT_PUBLIC_BUILD_SHORT_SHA_TEST,
+  process.env.NEXT_PUBLIC_BUILD_SHORT_SHA,
 );

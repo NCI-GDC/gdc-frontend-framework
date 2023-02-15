@@ -29,8 +29,6 @@ variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
-  NEXT_PUBLIC_DEPLOY_TEST_HASH: $CI_COMMIT_SHORT_SHA
-  NEXT_PUBLIC_DEPLOY_TEST_WORD: test
 
 workflow:
   rules:
@@ -133,7 +131,7 @@ Build and push container:
   before_script:
     - apk add bash
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
+    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
 Push latest container:
