@@ -105,6 +105,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   onSelectionChanged,
   startingId,
   hide_controls = false,
+  cohortAction = undefined,
 }: CohortManagerProps) => {
   const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
@@ -187,7 +188,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const [showCreateCohort, setShowCreateCohort] = useState(
+    cohortAction?.command === "create",
+  );
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 

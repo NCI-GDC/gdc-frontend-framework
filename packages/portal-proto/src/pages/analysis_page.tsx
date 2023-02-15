@@ -9,7 +9,7 @@ import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
   const {
-    query: { app },
+    query: { app, cmd, filters },
   } = router;
 
   return (
@@ -22,7 +22,7 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-      <ContextBar />
+      <ContextBar cohortCommand={} />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
       />

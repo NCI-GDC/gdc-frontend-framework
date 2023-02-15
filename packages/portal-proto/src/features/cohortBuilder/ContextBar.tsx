@@ -234,7 +234,14 @@ const ContextBar: React.FC = () => {
       data-tour="context_bar"
     >
       <CollapsibleContainer
-        Top={CohortBarWithProps}
+        Top={() => (
+          <CohortManager
+            // TODO: need to connect to cohort persistence
+            cohorts={cohorts}
+            onSelectionChanged={handleCohortSelection}
+            startingId={currentIndex}
+          />
+        )}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
         onlyIcon={false}
