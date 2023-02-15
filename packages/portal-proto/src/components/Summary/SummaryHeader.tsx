@@ -1,7 +1,7 @@
 import { HeaderTitle } from "@/features/shared/tailwindComponents";
 import { TypeIcon } from "../TypeIcon";
 
-interface SummaryHeaderProps {
+export interface SummaryHeaderProps {
   iconText: string;
   headerTitle: string | number;
 }

@@ -145,7 +145,7 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
     <div>
       {data?.genes && (
         <>
-          <SummaryHeader iconText="GN" headerTitle={data.genes.symbol} />
+          <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
           <div className="mx-auto mt-20 w-9/12 pt-4">
             <div className="text-primary-content">
               <div className="flex gap-6">

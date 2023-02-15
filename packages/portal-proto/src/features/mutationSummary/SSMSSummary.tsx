@@ -16,7 +16,13 @@ import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
 
-export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
+export const SSMSSummary = ({
+  ssm_id,
+  isModal = false,
+}: {
+  ssm_id: string;
+  isModal?: boolean;
+}): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
     filters: {
       content: {
@@ -167,8 +173,10 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
     <div>
       {!isFetching && summaryData ? (
         <>
-          <SummaryHeader iconText="MU" headerTitle={summaryData.dna_change} />
-          <div className="mx-auto mt-20 w-9/12 pt-4">
+          {!isModal && (
+            <SummaryHeader iconText="mu" headerTitle={summaryData.dna_change} />
+          )}
+          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
