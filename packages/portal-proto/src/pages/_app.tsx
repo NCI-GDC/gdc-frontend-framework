@@ -2,17 +2,18 @@ import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
 import "@nci-gdc/sapien/dist/bodyplot.css";
-import { createContext, useState } from "react";
+import { useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import Script from "next/script";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import {
+  MantineProvider,
+  createEmotionCache,
+  EmotionCache,
+} from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-// TODO: uncomment during PEAR-845
-// import { TourProvider } from "@reactour/tour";
-// import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
 
@@ -31,9 +32,15 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-ReactModal.setAppElement("#__next");
-
 import { datadogRum } from "@datadog/browser-rum";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+  URLContext,
+} from "src/utils/contexts";
+
+if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
+
 datadogRum.init({
   applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
   clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
@@ -64,9 +71,7 @@ type TenStringArray = [
   string?,
 ];
 
-export const URLContext = createContext({ prevPath: "", currentPath: "" });
-
-const getCache = () => {
+const getCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
     typeof document !== "undefined"
@@ -90,6 +95,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
+
+  const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
+    entity_type: null,
+    entity_id: null,
+    entity_name: null,
+  });
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -150,14 +161,19 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
               <NotificationsProvider position="top-center" zIndex={400}>
-                {/* TODO: uncomment during PEAR-845 */}
-                {/* <TourProvider steps={[]} components={{ Badge }}> */}
-                <Component {...pageProps} />
-                <Script
-                  src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                  strategy="afterInteractive"
-                />
-                {/* </TourProvider> */}
+                <SummaryModalContext.Provider
+                  value={{
+                    entityMetadata,
+                    setEntityMetadata,
+                  }}
+                >
+                  <Component {...pageProps} />
+
+                  <Script
+                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                    strategy="afterInteractive"
+                  />
+                </SummaryModalContext.Provider>
               </NotificationsProvider>
             </URLContext.Provider>
           </div>

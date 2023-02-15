@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   VerticalTable,
   HandleChangeInput,
@@ -7,9 +7,8 @@ import {
 } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
-import Link from "next/link";
 import {
-  useProjects,
+  useGetProjectsQuery,
   buildCohortGqlOperator,
   ProjectDefaults,
   useCoreDispatch,
@@ -31,6 +30,7 @@ import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
+import { SummaryModalContext } from "src/utils/contexts";
 
 interface CellProps {
   value: string[];
@@ -50,8 +50,10 @@ const ProjectsTable: React.FC = () => {
     { field: "summary.case_count", direction: "desc" },
   ]);
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   const projectFilters = useAppSelector((state) => selectFilters(state));
-  const { data, pagination, isSuccess, isFetching, isError } = useProjects({
+  const { data, isSuccess, isFetching, isError } = useGetProjectsQuery({
     filters:
       searchTerm.length > 0
         ? buildCohortGqlOperator(
@@ -173,7 +175,7 @@ const ProjectsTable: React.FC = () => {
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (isSuccess) {
       return [
-        data.map(
+        data?.projectData?.map(
           ({
             project_id,
             disease_type,
@@ -184,27 +186,36 @@ const ProjectsTable: React.FC = () => {
             selected: project_id,
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
-                <Link href={`/projects/${project_id}`}>
-                  <a className="text-utility-link underline">{project_id}</a>
-                </Link>
+                <button
+                  className="text-utility-link underline"
+                  onClick={() =>
+                    setEntityMetadata({
+                      entity_type: "project",
+                      entity_id: project_id,
+                      entity_name: project_id,
+                    })
+                  }
+                >
+                  {project_id}
+                </button>
               </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,
             primary_site: primary_site,
             program: (
-              <OverflowTooltippedLabel label={program.name}>
-                {program.name}
+              <OverflowTooltippedLabel label={program?.name}>
+                {program?.name}
               </OverflowTooltippedLabel>
             ),
-            cases: summary.case_count.toLocaleString().padStart(9),
+            cases: summary?.case_count.toLocaleString().padStart(9),
             experimental_strategies: extractToArray(
-              summary.experimental_strategies,
+              summary?.experimental_strategies,
               "experimental_strategy",
             ),
-            files: summary.file_count.toLocaleString(),
+            files: summary?.file_count.toLocaleString(),
           }),
         ),
-        pagination,
+        data.pagination,
       ];
     } else
       return [
@@ -219,7 +230,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data, pagination]);
+  }, [isSuccess, data, setEntityMetadata]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -278,7 +289,7 @@ const ProjectsTable: React.FC = () => {
 
   const handleDownloadTSV = () => {
     downloadTSV(
-      data,
+      data.projectData,
       filterColumnCells(columns),
       `projects-table.${convertDateToString(new Date())}.tsv`,
       {

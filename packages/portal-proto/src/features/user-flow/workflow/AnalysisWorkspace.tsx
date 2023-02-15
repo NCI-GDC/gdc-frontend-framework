@@ -275,6 +275,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
 }
+
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {

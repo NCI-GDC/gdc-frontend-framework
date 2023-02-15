@@ -1,4 +1,3 @@
-import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import {
   HUMAN_BODY_ALL_ALLOWED_SITES,
@@ -115,6 +114,3 @@ export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
 });
 
 export const { useBodyplotCountsQuery } = bodyplotSlice;
-export const bodyplotCountsMiddleware = bodyplotSlice.middleware as Middleware;
-export const bodyplotCountsReducerPath: string = bodyplotSlice.reducerPath;
-export const bodyplotCountsReducer: Reducer = bodyplotSlice.reducer as Reducer;

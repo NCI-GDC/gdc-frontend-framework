@@ -25,6 +25,7 @@ import { appendFilterToOperation } from "../genomic/utils";
 interface CaseSliceResponseData {
   case_id: string;
   case_uuid: string;
+  submitter_id: string;
   project_id: string;
   program: string;
   primary_site: string;
@@ -198,6 +199,7 @@ const slice = createSlice({
         const map = action.payload.data.map((datum) => ({
           case_id: datum.submitter_id,
           case_uuid: datum.case_id,
+          submitter_id: datum.submitter_id,
           project_id: datum.project.project_id,
           program: datum.project.program.name,
           primary_site: datum.primary_site,
