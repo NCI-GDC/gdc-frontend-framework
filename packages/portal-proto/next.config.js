@@ -15,11 +15,12 @@ const basePath = "/v2";
 
 // This gets the git info from the git directory by checking what the head is set to then getting that branches hash
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
-const buildHash = require("child_process")
-  .execSync("(cd ../../.git; head=$(cat HEAD); cat ${head##*: })")
-  .toString()
-  .trim()
-  .slice(0, 8);
+const buildHash = () =>
+  require("child_process")
+    .execSync("(cd ../../.git; head=$(cat HEAD); cat ${head##*: })")
+    .toString()
+    .trim()
+    .slice(0, 8);
 
 module.exports = withTM({
   i18n: {
@@ -35,7 +36,7 @@ module.exports = withTM({
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
-    NEXT_PUBLIC_APP_HASH: buildHash,
-    NEXT_PUBLIC_BUILD_SHORT_SHA_TEST: process.env.NEXT_PUBLIC_BUILD_SHORT_SHA,
+    NEXT_PUBLIC_APP_HASH:
+      process.env.NEXT_PUBLIC_BUILD_SHORT_SHA || buildHash(),
   },
 });
