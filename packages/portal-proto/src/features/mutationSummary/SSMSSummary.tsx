@@ -197,9 +197,7 @@ export const SSMSSummary = ({
             <div className="mt-4">
               <div className="flex items-center gap-2 mb-2">
                 <BarChartIcon size={20} className="text-accent" />
-                <h2 className="text-lg text-accent uppercase font-medium">
-                  Consequences
-                </h2>
+                <HeaderTitle>Consequences</HeaderTitle>
               </div>
               <SMSConsequenceTableContainer
                 columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
