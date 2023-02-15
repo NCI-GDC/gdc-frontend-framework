@@ -2,6 +2,7 @@ import {
   GraphQLApiResponse,
   graphqlAPISlice,
 } from "../../../gdcapi/gdcgraphql";
+import { cdFilters } from "./cdFilters";
 
 // CD = Cancer Distribution
 
@@ -15,19 +16,57 @@ export interface CDTableMutationSummaryData {
   // mtn fields
 }
 
+const getCDQuery = (id: string, entity: string): string => {
+  switch (entity) {
+    case "genes": {
+      const {
+        ssmsTestedFilter,
+        cnvLossFilters,
+        cnvGainFilters,
+        ...otherFilters
+      } = cdFilters(id);
+      console.log("otherFilters", otherFilters);
+      // todo
+      return ``;
+    }
+    case "ssms": {
+      // todo
+      return ``;
+    }
+    default: {
+      return "";
+    }
+  }
+};
+
+const getCDFilters = (id: string, entity: string): Record<string, any> => {
+  switch (entity) {
+    case "genes": {
+      return { id: id };
+    }
+    case "ssms": {
+      return {};
+    }
+    default: {
+      return {};
+    }
+  }
+};
+
 export const cancerDistributionDownloadSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getCDTableGeneSummaryDL: builder.query({
-      query: (request: { id: string }) => ({
-        graphQLQuery: `${request.id}` as string,
-        graphQLFilters: {} as Record<string, unknown>,
+      query: (request: { gene: string }) => ({
+        graphQLQuery: getCDQuery(request.gene, "genes") as string,
+        graphQLFilters: getCDFilters(request.gene, "genes") as Record<
+          string,
+          unknown
+        >,
       }),
       transformResponse: (
         response: GraphQLApiResponse<any>,
       ): CDTableGeneSummaryData[] => {
-        // response?.data?.?...
-        console.log("response", response);
-
+        debugger;
         return [] as CDTableGeneSummaryData[];
       },
     }),

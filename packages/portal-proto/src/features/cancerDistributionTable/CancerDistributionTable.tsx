@@ -7,6 +7,7 @@ import {
   useGetSSMSCancerDistributionTableQuery,
   useProjects,
   CancerDistributionTableData,
+  useGetCDTableGeneSummaryDLQuery,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -23,6 +24,12 @@ interface GeneCancerDistributionTableProps {
 export const GeneCancerDistributionTable: React.FC<
   GeneCancerDistributionTableProps
 > = ({ gene, symbol }: GeneCancerDistributionTableProps) => {
+  const {
+    data: downloadData,
+    isFetching: downloadFetching,
+    isError: downloadError,
+    isSuccess: downloadSuccess,
+  } = useGetCDTableGeneSummaryDLQuery({ gene });
   const { data, isFetching, isError, isSuccess } =
     useGetGeneCancerDistributionTableQuery({ gene });
   return (
