@@ -14,9 +14,7 @@ export const PUBLIC_APP_INFO = {
 };
 
 console.log(
-  "testing2",
-  process.env,
-  process.env.NEXT_PUBLIC_DEPLOY_SERVICE_TAG,
-  process.env.NEXT_PUBLIC_DEPLOY_TEST_HASH,
-  process.env.DEPLOY_TEST_HASH,
+  "testing3",
+  process.env.NEXT_PUBLIC_REACT_APP_DEPLOY_TEST_HASH,
+  process.env.REACT_APP_DEPLOY_TEST_WORD,
 );

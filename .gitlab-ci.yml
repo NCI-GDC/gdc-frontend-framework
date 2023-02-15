@@ -29,6 +29,8 @@ variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
+  REACT_APP_DEPLOY_TEST_HASH: $CI_COMMIT_SHORT_SHA
+  REACT_APP_DEPLOY_TEST_WORD: test
 
 workflow:
   rules:
@@ -123,9 +125,6 @@ Run unit tests:
 
 Build and push container:
   stage: release
-  variables:
-    DEPLOY_TEST_HASH: test
-    NEXT_PUBLIC_DEPLOY_TEST_HASH: testtoo
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
