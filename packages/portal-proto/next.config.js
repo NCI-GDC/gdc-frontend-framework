@@ -13,7 +13,7 @@ const withTM = require("next-transpile-modules")([
  */
 const basePath = "/v2";
 
-// This gets the git info from the git directory by checking what the head is set to then getting that branches hash
+// Fallback if Docker is not run: This retrieves the git info from the git directory by checking what the head is set to then getting that branches hash
 const buildHash = () =>
   require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
     .execSync("(cd ../../.git; head=$(cat HEAD); cat ${head##*: })")
