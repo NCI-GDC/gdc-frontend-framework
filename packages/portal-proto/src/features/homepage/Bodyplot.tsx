@@ -61,18 +61,19 @@ const PopupContent = ({
 };
 
 const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
+  const toLowerCaseAll = (arr) => arr.map((item) => item.toLowerCase());
   return {
     mode: "and",
     root: {
       "cases.primary_site": {
         operator: "includes",
         field: "cases.primary_site",
-        operands: [...data.byPrimarySite],
+        operands: [...toLowerCaseAll(data.byPrimarySite)],
       },
       "cases.diagnoses.tissue_or_organ_of_origin": {
         operator: "includes",
         field: "cases.diagnoses.tissue_or_organ_of_origin",
-        operands: [...data.byTissueOrOrganOfOrigin],
+        operands: [...toLowerCaseAll(data.byTissueOrOrganOfOrigin)],
       },
     },
   };
@@ -108,6 +109,7 @@ export const Bodyplot = (): JSX.Element => {
     Router.push({
       pathname: "/analysis_page",
       query: {
+        app: "",
         operation: "createCohort",
         filters: JSON.stringify(buildBodyplotFilter(e)),
       },

@@ -5,8 +5,6 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import ContextBar from "@/features/cohortBuilder/ContextBar";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
-import { ContextManagerOperation } from "@/features/cohortBuilder/types";
-import { JSONObject } from "@/features/types";
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
