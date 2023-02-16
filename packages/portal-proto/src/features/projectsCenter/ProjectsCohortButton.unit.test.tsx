@@ -6,7 +6,7 @@ import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
 import { MantineProvider } from "@mantine/core";
 import * as mantine_form from "@mantine/form";
-import { mantineFormNoErrorObj } from "test-utils";
+import { mantineFormNoErrorObj } from "__mocks__/sharedMockData";
 
 jest.mock("@mantine/notifications");
 const mockedShowNotification = showNotification as jest.Mock<

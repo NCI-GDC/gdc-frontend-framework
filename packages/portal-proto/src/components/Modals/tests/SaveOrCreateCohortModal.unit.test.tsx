@@ -4,7 +4,10 @@ import { SaveOrCreateCohortModal } from "../SaveOrCreateCohortModal";
 import tailwindConfig from "tailwind.config";
 import userEvent from "@testing-library/user-event";
 import * as mantine_form from "@mantine/form";
-import { mantineFormErrorObj, mantineFormNoErrorObj } from "test-utils";
+import {
+  mantineFormErrorObj,
+  mantineFormNoErrorObj,
+} from "__mocks__/sharedMockData";
 
 beforeAll(() => {
   jest.clearAllMocks();
