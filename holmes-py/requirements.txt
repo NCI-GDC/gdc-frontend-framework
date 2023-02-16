@@ -28,7 +28,7 @@ mouseinfo==0.1.3
     # via pyautogui
 nodeenv==1.7.0
     # via pre-commit
-pillow
+pillow==9.3.0
     # via pyscreeze
 platformdirs==2.5.2
     # via virtualenv
