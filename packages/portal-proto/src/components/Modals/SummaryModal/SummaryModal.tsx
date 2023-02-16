@@ -2,6 +2,7 @@ import { SummaryHeaderProps } from "@/components/Summary/SummaryHeader";
 import { TypeIcon } from "@/components/TypeIcon";
 import { CaseSummary } from "@/features/cases/CaseSummary";
 import { ContextualFileView } from "@/features/files/FileSummary";
+import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { Modal } from "@mantine/core";
@@ -69,10 +70,17 @@ export const SummaryModal = ({
             <SummaryModalHeader iconText="fl" headerTitle={entity_name} />
           ),
         }
-      : {
+      : entity_type === "ssms"
+      ? {
           SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
           HeaderTitle: (
             <SummaryModalHeader iconText="mu" headerTitle={entity_name} />
+          ),
+        }
+      : {
+          SummaryPage: <GeneSummary gene_id={entity_id} isModal={true} />,
+          HeaderTitle: (
+            <SummaryModalHeader iconText="gn" headerTitle={entity_name} />
           ),
         };
 

@@ -4,7 +4,15 @@ import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { useGenesSummaryData, GeneSummaryData } from "@gff/core";
+import {
+  useGenesSummaryData,
+  GeneSummaryData,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  FilterSet,
+  buildCohortGqlOperator,
+  joinFilters,
+} from "@gff/core";
 import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
@@ -21,9 +29,20 @@ interface GeneViewProps {
     genes: GeneSummaryData;
   };
   gene_id: string;
+  isModal: boolean;
 }
 
-export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
+export const GeneSummary = ({
+  gene_id,
+  isModal = false,
+}: {
+  gene_id: string;
+  isModal?: boolean;
+}): JSX.Element => {
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   const { data, isFetching } = useGenesSummaryData({ gene_id });
 
   return (
@@ -31,7 +50,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
       {isFetching ? (
         <LoadingOverlay visible />
       ) : data && data.genes ? (
-        <GeneView data={data} gene_id={gene_id} />
+        <GeneView data={data} gene_id={gene_id} isModal={isModal} />
       ) : (
         <SummaryErrorHeader label="Gene Not Found" />
       )}
@@ -39,7 +58,7 @@ export const GeneSummary = ({ gene_id }: { gene_id: string }): JSX.Element => {
   );
 };
 
-const GeneView = ({ data, gene_id }: GeneViewProps) => {
+const GeneView = ({ data, gene_id, isModal }: GeneViewProps) => {
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -144,8 +163,10 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
     <div>
       {data?.genes && (
         <>
-          <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
-          <div className="mx-auto mt-20 w-9/12 pt-4">
+          {!isModal && (
+            <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
+          )}
+          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">

@@ -160,6 +160,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     overwritingDemoFilter: cohortFilters,
   });
 
+  console.log({ data });
+
   useEffect(() => {
     setPage(0);
   }, [pageSize]);

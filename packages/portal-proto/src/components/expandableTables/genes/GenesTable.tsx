@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext,
+} from "react";
 import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
@@ -6,6 +12,7 @@ import { getGene, createTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
+import { SummaryModalContext } from "src/utils/contexts";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   status,
@@ -100,6 +107,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
     return visibleColumns
@@ -114,6 +123,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           toggledGenes,
           setGeneID,
           isDemoMode,
+          setEntityMetadata,
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

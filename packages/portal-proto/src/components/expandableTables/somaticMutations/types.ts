@@ -81,6 +81,7 @@ export interface SomaticMutations {
   proteinChange: {
     symbol: string;
     aaChange: string;
+    geneId: string;
   };
   affectedCasesInCohort: {
     numerator: number;

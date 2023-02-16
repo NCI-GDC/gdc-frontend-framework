@@ -362,6 +362,8 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
+                      isModal={isModal}
+                      setEntityMetadata={setEntityMetadata}
                     />
                   )}
                 </div>
@@ -716,6 +718,7 @@ export type MutationsColumn = {
   proteinChange: {
     symbol: string;
     aaChange: string;
+    geneId: string;
   };
   affectedCasesInCohort: {
     numerator: number;
@@ -743,6 +746,7 @@ export const getMutation = (
     gene = {
       symbol: "",
       name: "",
+      geneId: "",
     },
     annotation = {
       polyphen_impact: "",
@@ -762,6 +766,7 @@ export const getMutation = (
     consequences: consequence_type,
     proteinChange: {
       symbol: gene.symbol,
+      geneId: gene.gene_id,
       aaChange: aa_change,
     },
     affectedCasesInCohort: {
