@@ -17,6 +17,9 @@ class BasePage:
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
 
+    def is_visible(self, locator):
+        return self.driver.locator(locator).is_visible()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
