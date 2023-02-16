@@ -23,7 +23,6 @@ import {
   FaEdit,
   FaTable,
 } from "react-icons/fa";
-import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -49,14 +48,18 @@ import {
   PercentBarComplete,
   PercentBarLabel,
 } from "../shared/tailwindComponents";
+import { URLContext } from "src/utils/contexts";
+
 // TODO: break it down
 
 export const CaseSummary = ({
   case_id,
   bio_id,
+  isModal = false,
 }: {
   case_id: string;
   bio_id: string;
+  isModal?: boolean;
 }): JSX.Element => {
   const { data, isFetching } = useCaseSummary({
     filters: {
@@ -507,8 +510,15 @@ export const CaseSummary = ({
         <LoadingOverlay visible data-testid="loading" />
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
-          <SummaryHeader iconText="CA" headerTitle={headerTitle} />
-          <div className="flex flex-col mx-auto mt-20 w-10/12">
+          {!isModal && (
+            <SummaryHeader iconText="ca" headerTitle={headerTitle} />
+          )}
+
+          <div
+            className={`flex flex-col mx-auto ${
+              isModal ? "mt-5" : "mt-20"
+            } w-10/12`}
+          >
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
@@ -594,7 +604,7 @@ export const CaseSummary = ({
             )}
 
             <div ref={targetRef} id="biospecimen">
-              <Biospecimen caseId={case_id} bioId={bio_id} />
+              <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
             </div>
             {biospecimenFilteredFiles?.length > 0 && (
               <div className="my-5">

@@ -28,18 +28,18 @@ information about the failure.
 ### Avalible Hooks
 
 - `useAnnotations(Query Params defined below)`
-- `useFiles(Query Params defined below)`
+- `useGetFilesQuery(Query Params defined below)`
 - `useFileHistory(String: uuid of file)`
-- `useProjects(Query Params defined below)`
+- `useGetProjectsQuery(Query Params defined below)`
 
 Example: Fetch project data
 
 ```jsx
-import { useProjects } from "@gff/core";
+import { useGetProjectsQuery } from "@gff/core";
 
 const myComponent = () => {
   const { data, error, isUninitialized, isFetching, isSuccess, isError } =
-    useProjects();
+    useGetProjectsQuery();
   return (
     <ul>
       {data.map((project) => (
@@ -50,7 +50,7 @@ const myComponent = () => {
 };
 ```
 
-In this example, the component call the `useProjects` hook to obtain an array of projects.
+In this example, the component call the `useGetProjectsQuery` hook to obtain an array of projects.
 The hook returns the following:
 
 - `data` - The requested data. This will be `undefined` if the request has not successfully completd.
@@ -70,11 +70,11 @@ end up populating the `filter` parameter of the api.
 Example:
 
 ```jsx
-import { useProjects } from "@gff/core";
+import { useGetProjectsQuery } from "@gff/core";
 
 const myComponent = () => {
   const { data, error, isUninitialized, isFetching, isSuccess, isError } =
-    useProjects({
+    useGetProjectsQuery({
       filters: {
         op: "=",
         content: {
@@ -86,7 +86,7 @@ const myComponent = () => {
     });
   return (
     <ul>
-      {data.map((project) => (
+      {data?.projectData.map((project) => (
         <li key={project.project_id}>{project.project_id}</li>
       ))}
     </ul>
@@ -293,5 +293,5 @@ Allow the cases to be sorted and filtered.
 ### Dynamic Context
 
 Dynamic contexts could allow us to define the context (or context id) at render time.
-Then, any contextual data can be retrieved based on the contents of that context.  
+Then, any contextual data can be retrieved based on the contents of that context.
 Possible context contents include cohort id, case filters, file filters, etc.

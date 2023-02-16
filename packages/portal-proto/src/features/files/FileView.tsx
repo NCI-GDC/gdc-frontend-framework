@@ -55,6 +55,7 @@ const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
 export interface FileViewProps {
   readonly file?: GdcFile;
   readonly fileHistory?: HistoryDefaults[];
+  readonly isModal?: boolean;
 }
 
 const FullWidthDiv = tw.div`
@@ -303,6 +304,7 @@ const AssociatedCB = ({
 export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
+  isModal,
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
@@ -403,7 +405,11 @@ export const FileView: React.FC<FileViewProps> = ({
   };
 
   return (
-    <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
+    <div
+      className={`p-4 text-primary-content w-10/12 ${
+        isModal ? "mt-5" : "mt-20"
+      } m-auto`}
+    >
       <div className="flex justify-end pb-5 gap-2">
         {!isFileInCart ? (
           <AddToCartButton files={mapGdcFileToCartFile([file])} />

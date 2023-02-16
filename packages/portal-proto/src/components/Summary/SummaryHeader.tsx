@@ -1,6 +1,6 @@
 import { TypeIcon } from "../TypeIcon";
 
-interface SummaryHeaderProps {
+export interface SummaryHeaderProps {
   iconText: string;
   headerTitle: string | number;
 }

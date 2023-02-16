@@ -1,5 +1,5 @@
 import {
-  useProjects,
+  useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
@@ -29,26 +29,29 @@ import {
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
+  readonly isModal?: boolean;
 }
 
 export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
+  isModal = false,
 }: ContextualProjectViewProps) => {
-  const { data: projectsData, isFetching: isProjectFetching } = useProjects({
-    filters: {
-      op: "=",
-      content: {
-        field: "project_id",
-        value: projectId,
+  const { data: projectsData, isFetching: isProjectFetching } =
+    useGetProjectsQuery({
+      filters: {
+        op: "=",
+        content: {
+          field: "project_id",
+          value: projectId,
+        },
       },
-    },
-    expand: [
-      "summary",
-      "summary.data_categories",
-      "summary.experimental_strategies",
-      "program",
-    ],
-  });
+      expand: [
+        "summary",
+        "summary.data_categories",
+        "summary.experimental_strategies",
+        "program",
+      ],
+    });
   const { data: annotationCountData, isFetching: isAnnotationFetching } =
     useAnnotations({
       filters: {
@@ -85,11 +88,14 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     );
 
   const projectData =
-    projectsData && projectsData.length > 0 ? projectsData[0] : undefined;
+    projectsData?.projectData && projectsData?.projectData.length > 0
+      ? projectsData?.projectData[0]
+      : undefined;
   const projectWithAnnotation = {
     ...projectData,
     annotation: annotationCountData,
     hasControlledAccess,
+    isModal,
   };
 
   return (
@@ -111,6 +117,7 @@ export interface ProjectViewProps extends ProjectDefaults {
     count: number;
   };
   hasControlledAccess: boolean;
+  isModal?: boolean;
 }
 
 export const ProjectView: React.FC<ProjectViewProps> = (
@@ -127,7 +134,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       dbgap_accession_number,
       disease_type,
       name: project_name,
-    } = projectData;
+    } = projectData || {};
 
     const dbGaP_study_accession =
       program_dbgap_accession_number || dbgap_accession_number;
@@ -342,8 +349,14 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   };
   return (
     <div>
-      <SummaryHeader iconText="PR" headerTitle={projectData.project_id} />
-      <div className="flex flex-col mx-auto mt-20 w-10/12">
+      {!projectData.isModal && (
+        <SummaryHeader iconText="pr" headerTitle={projectData.project_id} />
+      )}
+      <div
+        className={`flex flex-col mx-auto ${
+          projectData.isModal ? "mt-5" : "mt-20"
+        } w-10/12`}
+      >
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
             <Menu width="target">
@@ -389,6 +402,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
 Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
+              multiline
               withArrow
             >
               <Button
