@@ -1,6 +1,4 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
-// TODO: uncomment during PEAR-845
-// import { useRouter } from "next/router";
 import {
   isString,
   useCoreSelector,
@@ -8,16 +6,10 @@ import {
   fetchNotifications,
   selectBanners,
   fetchUserDetails,
-  selectCurrentModal,
-  Modals,
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
-// TODO: uncomment during PEAR-845
-// import { useTour } from "@reactour/tour";
-// import steps from "../../features/tour/steps";
 import { Header } from "./Header";
-import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { Footer } from "./Footer";
 
 interface UserFlowVariedPagesProps {
@@ -32,21 +24,16 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
-  // TODO: uncomment during PEAR-845
-  // const { setSteps } = useTour();
-  // const router = useRouter();
   const dispatch = useCoreDispatch();
-  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   useEffect(() => {
-    // TODO: uncomment during PEAR-845
-    // setSteps(steps[router.pathname]);
     dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const banners = useCoreSelector((state) => selectBanners(state));
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header className="flex-none bg-base-max sticky top-0 z-[300]">
@@ -60,7 +47,6 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
         id="main"
       >
-        {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
         {children}
       </main>
       <footer className="flex-none">

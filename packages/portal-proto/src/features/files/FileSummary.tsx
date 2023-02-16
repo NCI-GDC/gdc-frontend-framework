@@ -1,21 +1,23 @@
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { useFiles, useFileHistory } from "@gff/core";
+import { useGetFilesQuery, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
 
 export interface ContextualFileViewProps {
   readonly setCurrentFile: string;
+  isModal?: boolean;
 }
 
-export const ContextualFileView: React.FC<ContextualFileViewProps> = (
-  props: ContextualFileViewProps,
-) => {
-  const { data, isFetching } = useFiles({
+export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
+  setCurrentFile,
+  isModal,
+}: ContextualFileViewProps) => {
+  const { data: { files } = {}, isFetching } = useGetFilesQuery({
     filters: {
       op: "=",
       content: {
         field: "file_id",
-        value: props.setCurrentFile,
+        value: setCurrentFile,
       },
     },
     expand: [
@@ -35,20 +37,24 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = (
       "downstream_analyses.output_files",
       "index_files",
     ],
-    size: 1,
   });
-  const hystory = useFileHistory(props.setCurrentFile);
+  const history = useFileHistory(setCurrentFile);
 
-  const title = data?.[0]
-    ? data[0].file_name
-    : `${props.setCurrentFile} not found`;
+  const title = files?.[0]
+    ? files?.[0].file_name
+    : `${setCurrentFile} not found`;
   return (
     <div>
-      {data && !isFetching ? (
+      {files?.[0] && !isFetching ? (
         <>
-          <SummaryHeader iconText="FL" headerTitle={title} />
-          {data?.[0] ? (
-            <FileView file={data?.[0]} fileHistory={hystory?.data?.[0]} />
+          {!isModal && <SummaryHeader iconText="fl" headerTitle={title} />}
+
+          {files[0] ? (
+            <FileView
+              file={files?.[0]}
+              fileHistory={history?.data?.[0]}
+              isModal={isModal}
+            />
           ) : (
             <SummaryErrorHeader label="File Not Found" />
           )}
