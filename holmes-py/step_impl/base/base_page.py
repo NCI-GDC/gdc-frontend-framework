@@ -20,6 +20,9 @@ class BasePage:
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
 
+    def is_visible(self, locator):
+        return self.driver.locator(locator).is_visible()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 

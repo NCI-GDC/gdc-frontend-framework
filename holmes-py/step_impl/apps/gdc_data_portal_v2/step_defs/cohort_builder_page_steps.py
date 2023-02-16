@@ -30,7 +30,7 @@ def is_checkbox_checked(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         is_checkbox_enabeled = APP.cohort_builder_page.is_checkbox_checked(v[0], v[1])
-        assert is_checkbox_enabeled == True, f"In facet '{v[0]}', the value '{v[1]}' is NOT checked"
+        assert is_checkbox_enabeled, f"In facet '{v[0]}', the value '{v[1]}' is NOT checked"
         time.sleep(0.1)
 
 @step("Is checkbox not checked from <tab_name> tab on the Cohort Builder page <table>")
@@ -81,4 +81,11 @@ def add_custom_filter_card(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         APP.cohort_builder_page.add_custom_filter(v[0])
+        time.sleep(0.1)
+
+@step("Check text displayed in the cohort query expression area <table>")
+def check_text_in_cohort_query_expression(table):
+    for k, v in enumerate(table):
+        is_text_present = APP.cohort_builder_page.is_text_present(v[0])
+        assert is_text_present, f"The text '{v[0]}' is NOT present in the Query Expression Area"
         time.sleep(0.1)

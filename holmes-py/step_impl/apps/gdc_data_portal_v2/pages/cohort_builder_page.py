@@ -17,6 +17,7 @@ class CohortBuilderPageLocators:
     FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
     FACET_GROUP_NAMED_OBJECT_IDENT = lambda group_name, object_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//div >> text="{object_name}"'
 
+    QUERY_EXPRESSION_TEXT = lambda text: f'div:text("{text}")'
 
 
 class CohortBuilderPage(BasePage):
@@ -48,13 +49,13 @@ class CohortBuilderPage(BasePage):
         self.click(locator)
 
     # Clicks the show more or show less object
-    def click_show_more_less_within_filter_card(self, facet_group_name, action):
-        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, action)
+    def click_show_more_less_within_filter_card(self, facet_group_name, label):
+        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
         self.click(locator)
 
     # Send keys in the search textbox area
-    def send_text_keys(self, facet_group_name, action, text):
-        locator = CohortBuilderPageLocators.FACET_GROUP_TEXT_AREA_IDENT(facet_group_name, action)
+    def send_text_keys(self, facet_group_name, label, text):
+        locator = CohortBuilderPageLocators.FACET_GROUP_TEXT_AREA_IDENT(facet_group_name, label)
         self.send_keys(locator, text)
 
     def is_checkbox_checked(self, facet_group_name, selection):
@@ -62,11 +63,16 @@ class CohortBuilderPage(BasePage):
         result = self.is_checked(locator)
         return result
 
+    def is_text_present(self, text):
+        locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
+        result = self.is_visible(locator)
+        return result
+
     def click_named_item_in_facet_group(self, facet_group_name, object_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(facet_group_name, object_name)
         self.click(locator)
 
-    def add_custom_filter(self,facet_to_add):
+    def add_custom_filter(self, facet_to_add):
         add_custom_filter = CohortBuilderPageLocators.CUSTOM_FILTER_ADD_BUTTON
         self.click(add_custom_filter)
         self.driver.wait_for_selector(CohortBuilderPageLocators.CUSTOM_FILTER_TABLE_PAGE, state="visible")

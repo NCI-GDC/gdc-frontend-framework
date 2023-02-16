@@ -14,14 +14,6 @@ tags: regression, smoke, cohort-builder
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
-## Cohort Builder - Date Card Functions
-
-* Add a custom filter from "Custom Filters" tab on the Cohort Builder page
-  |filter_name      |
-  |-----------------|
-  |created_datetime |
-
-
 ## Cohort Builder - General Card Functions
 tags: cohort-selections
 
@@ -74,7 +66,7 @@ tags: cohort-selections
   |Morphology       |Flip between form and chart  |
 
 * Enter text in a filter card from "General Diagnosis" tab on the Cohort Builder page
-  |facet_name       |action               |text  |
+  |facet_name       |label               |text  |
   |-----------------|---------------------|------|
   |Morphology       |search values        |9950/3|
 
@@ -85,7 +77,7 @@ tags: cohort-selections
   |Morphology       |9950/3               |
 
 * Click the show more or show less button from "Available Data" tab on the Cohort Builder page
-  |facet_name       |action               |
+  |facet_name       |label               |
   |-----------------|---------------------|
   |Data Format      |plus-icon            |
 
@@ -95,21 +87,19 @@ tags: cohort-selections
   |Data Format       |xlsx                |
 
 * Click the show more or show less button from "Available Data" tab on the Cohort Builder page
-  |facet_name       |action               |
+  |facet_name       |label               |
   |-----------------|---------------------|
   |Data Format      |minus-icon           |
 
 * Perform the following actions from "Available Data" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
-  |Data Format |clear selection      |
-
-* Pause "1" seconds
+  |Data Format      |clear selection      |
 
 ## Cohort Builder - Range Card Functions
 
 * Enter text in a filter card from "Demographic" tab on the Cohort Builder page
-  |Age at Diagnosis |action               |text  |
+  |Age at Diagnosis |label               |text  |
   |-----------------|---------------------|------|
   |Age at Diagnosis |input from value     |59    |
   |Age at Diagnosis |input to value       |71    |
@@ -128,3 +118,27 @@ tags: cohort-selections
   |facet_name       |action               |
   |-----------------|---------------------|
   |Age at Diagnosis |clear selection      |
+
+## Cohort Builder - Date Card Functions
+
+* Add a custom filter from "Custom Filters" tab on the Cohort Builder page
+  |filter_name      |
+  |-----------------|
+  |created_datetime |
+
+* Enter text in a filter card from "Custom Filters" tab on the Cohort Builder page
+  |facet_name       |label                  |text      |
+  |-----------------|-----------------------|----------|
+  |Created Datetime |Set the since value    |1959-09-22|
+  |Created Datetime |Set the through value  |11/30/95  |
+
+* Check text displayed in the cohort query expression area
+  |text      |
+  |----------|
+  |1959-09-22|
+  |1995-11-30|
+
+* Perform the following actions from "Custom Filters" tab on the Cohort Builder page
+  |facet_name       |action               |
+  |-----------------|---------------------|
+  |Created Datetime |clear selection      |
