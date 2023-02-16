@@ -1,44 +1,40 @@
 import { useEffect } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { upperFirst } from "lodash";
 import { TextInput, NumberInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 import {
   addSet,
   useCoreDispatch,
   SetTypes,
   useCoreSelector,
   selectSetsByType,
+  FilterSet,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import WarningMessage from "@/components/WarningMessage";
+import ErrorMessage from "@/components/ErrorMessage";
 import { modalStyles } from "../styles";
-
-const EmptyMessage = () => (
-  <span className="flex items-center mt-2">
-    <WarningIcon className="mr-1" />
-    Please fill out this field.
-  </span>
-);
-
-const SetNameMessage = () => (
-  <span className="flex items-center mt-2 text-[#976F21]">
-    <WarningIcon className="mr-1 " />A set with the same name already exists.
-  </span>
-);
+import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
-  readonly selection: string[];
+  readonly filters: FilterSet;
+  readonly saveCount: number;
   readonly setType: SetTypes;
+  readonly setTypeLabel: string;
   readonly createSetHook: UseMutation<any>;
   readonly closeModal: () => void;
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
-  selection,
+  filters,
+  saveCount,
   setType,
+  setTypeLabel,
   createSetHook,
   closeModal,
 }: SaveSelectionAsSetModalProps) => {
@@ -46,19 +42,20 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const [createSet, response] = createSetHook();
 
-  const max = selection.length > 50000 ? 50000 : selection.length;
+  const max = saveCount > SET_COUNT_LIMIT ? SET_COUNT_LIMIT : saveCount;
   const form = useForm({
     initialValues: {
       top: max,
-      name: `Custom ${setType} Selection`,
+      name: `Custom ${upperFirst(setTypeLabel)} Selection`,
     },
     validate: {
-      top: (value) => (value === undefined ? <EmptyMessage /> : null),
+      top: (value) =>
+        value === undefined ? (
+          <ErrorMessage message="Please fill out this field." />
+        ) : null,
       name: (value) =>
         value === "" ? (
-          <EmptyMessage />
-        ) : Object.values(sets).includes(value) ? (
-          <SetNameMessage />
+          <ErrorMessage message="Please fill out this field." />
         ) : null,
     },
     validateInputOnChange: true,
@@ -82,7 +79,9 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
 
   return (
     <Modal
-      title={`Save ${selection.length} ${setType} as a new set`}
+      title={`Save ${max.toLocaleString()} ${setTypeLabel}${
+        max > 1 ? "s" : ""
+      } as a new set`}
       closeButtonLabel="close"
       opened
       onClose={closeModal}
@@ -99,10 +98,14 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           {...form.getInputProps("top")}
         />
         <p className="text-sm pb-2 pt-1">
-          Up to the top {max} {setType} can be saved.
+          Up to the top {max.toLocaleString()} {setTypeLabel}
+          {max > 1 ? "s" : ""} can be saved.
         </p>
         <TextInput required label="Name" {...form.getInputProps("name")} />
-        {form.errors?.name === undefined && (
+        {form.errors?.name === undefined &&
+        Object.values(sets).includes(form.values.name) ? (
+          <WarningMessage message="A set with the same name already exists." />
+        ) : (
           <p className="text-sm pt-1">Maximum 100 characters</p>
         )}
       </div>
@@ -110,7 +113,10 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           onClick={() =>
-            createSet({ values: selection.slice(0, form.values.top) })
+            createSet({
+              filters: buildCohortGqlOperator(filters),
+              size: form.values.top,
+            })
           }
           disabled={!form.isValid() || response.isLoading}
         >

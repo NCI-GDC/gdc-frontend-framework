@@ -3,10 +3,13 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
-  useCreateGeneSetMutation,
+  useCreateGeneSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
   useGeneSetCountQuery,
+  useAppendToGeneSetMutation,
+  useRemoveFromGeneSetMutation,
+  useGeneSetValuesQuery,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -24,6 +27,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
+import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 
 export const SelectedRowContext =
   createContext<
@@ -170,23 +174,68 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
+  const setFilters =
+    Object.keys(selectedGenes).length > 0
+      ? ({
+          root: {
+            "genes.gene_id": {
+              field: "genes.gene_id",
+              operands: selectedGenes,
+              operator: "includes",
+            },
+          },
+          mode: "and",
+        } as FilterSet)
+      : genomicFilters;
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
         {showSaveModal && (
           <SaveSelectionAsSetModal
-            selection={Object.keys(selectedGenes)}
+            filters={setFilters}
+            saveCount={
+              Object.keys(selectedGenes).length === 0
+                ? gTotal
+                : Object.keys(selectedGenes).length
+            }
             setType={"genes"}
-            createSetHook={useCreateGeneSetMutation}
+            setTypeLabel="gene"
+            createSetHook={useCreateGeneSetFromFiltersMutation}
             closeModal={() => setShowSaveModal(false)}
           />
         )}
         {showAddModal && (
           <AddToSetModal
-            selection={Object.keys(selectedGenes)}
+            filters={setFilters}
+            addToCount={
+              Object.keys(selectedGenes).length === 0
+                ? gTotal
+                : Object.keys(selectedGenes).length
+            }
+            setType={"genes"}
+            setTypeLabel="gene"
+            countHook={useGeneSetCountQuery}
+            valuesHook={useGeneSetValuesQuery}
+            appendSetHook={useAppendToGeneSetMutation}
+            closeModal={() => setShowAddModal(false)}
+            field={"genes.gene_id"}
+            index={"gene"}
+          />
+        )}
+        {showRemoveModal && (
+          <RemoveFromSetModal
+            filters={setFilters}
+            removeFromCount={
+              Object.keys(selectedGenes).length === 0
+                ? gTotal
+                : Object.keys(selectedGenes).length
+            }
             setType={"genes"}
             countHook={useGeneSetCountQuery}
-            closeModal={() => setShowAddModal(false)}
+            closeModal={() => setShowRemoveModal(false)}
+            removeFromSetHook={useRemoveFromGeneSetMutation}
+            index={"gene"}
           />
         )}
 
@@ -213,6 +262,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   label: "Remove from existing gene set",
                   value: "remove",
                   disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowRemoveModal(true),
                 },
               ]}
               additionalControls={

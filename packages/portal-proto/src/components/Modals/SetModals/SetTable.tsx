@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { upperFirst } from "lodash";
-import { Checkbox, Radio } from "@mantine/core";
+import { Checkbox, Radio, Tooltip } from "@mantine/core";
 import { useCoreSelector, selectSetsByType, SetTypes } from "@gff/core";
 import {
   VerticalTable,
@@ -11,7 +11,48 @@ import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });
-  return isSuccess ? data : "";
+  return isSuccess ? data.toLocaleString() : "";
+};
+
+const SelectCell = ({
+  countHook,
+  set,
+  multiselect,
+  disableEmpty,
+  selectedSets,
+  setSelectedSets,
+}) => {
+  const [setId, _] = set;
+  const { data, isSuccess } = countHook({ setId });
+  const empty = isSuccess && data === 0 && disableEmpty;
+  const selected = selectedSets.map((s) => s[0]).includes(set[0]);
+
+  return (
+    <Tooltip label={"The set is empty"} disabled={!empty}>
+      <span>
+        {multiselect ? (
+          <Checkbox
+            value={setId}
+            checked={selected}
+            onChange={() =>
+              selectedSets.includes(set)
+                ? setSelectedSets(
+                    selectedSets.filter((set) => set[0] !== setId),
+                  )
+                : setSelectedSets([...selectedSets, set])
+            }
+          />
+        ) : (
+          <Radio
+            value={setId}
+            disabled={empty}
+            checked={selected}
+            onChange={() => setSelectedSets([set])}
+          />
+        )}
+      </span>
+    </Tooltip>
+  );
 };
 
 interface SetTable {
@@ -20,32 +61,36 @@ interface SetTable {
   readonly countHook: UseMutation<any>;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
+  readonly multiSelect?: boolean;
+  readonly disableEmpty?: boolean;
 }
 
+// TODO: disable empty tooltip
 const SetTable = ({
   selectedSets,
   setSelectedSets,
   countHook,
   setType,
   setTypeLabel,
+  multiselect = true,
+  disableEmpty = false,
 }) => {
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
   const tableData = useMemo(() => {
-    return Object.entries(sets).map(([setId, name]) => ({
+    return Object.entries(sets).map((set) => ({
       select: (
-        <Radio
-          value={setId}
-          checked={selectedSets.includes(setId)}
-          onChange={() =>
-            selectedSets.includes(setId)
-              ? setSelectedSets(selectedSets.filter((id) => id !== setId))
-              : setSelectedSets([...selectedSets, setId])
-          }
+        <SelectCell
+          countHook={countHook}
+          set={set}
+          multiselect={multiselect}
+          disableEmpty={disableEmpty}
+          selectedSets={selectedSets}
+          setSelectedSets={setSelectedSets}
         />
       ),
-      name,
-      count: <CountCell countHook={countHook} setId={setId} />,
+      name: set[1],
+      count: <CountCell countHook={countHook} setId={set[0]} />,
     }));
   }, [sets, selectedSets, countHook]);
 
