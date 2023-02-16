@@ -14,12 +14,17 @@ const withTM = require("next-transpile-modules")([
 const basePath = "/v2";
 
 // Fallback if Docker is not run: This retrieves the git info from the git directory by checking what the head is set to then getting that branches hash
-const buildHash = () =>
-  require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
-    .execSync("(cd ../../.git; head=$(cat HEAD); cat ${head##*: })")
-    .toString()
-    .trim()
-    .slice(0, 8);
+const buildHash = () => {
+  try {
+    return require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
+      .execSync("git rev-parse --short HEAD")
+      .toString()
+      .trim();
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
 
 module.exports = withTM({
   i18n: {
