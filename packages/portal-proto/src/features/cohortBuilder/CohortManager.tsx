@@ -105,7 +105,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   onSelectionChanged,
   startingId,
   hide_controls = false,
-  cohortAction = undefined,
 }: CohortManagerProps) => {
   const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
@@ -188,9 +187,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(
-    cohortAction?.command === "create",
-  );
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -241,7 +238,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             setShowDelete(false);
             // only delete cohort from BE if it's been saved before
             if (currentCohort?.saved) {
-              // dont delete it from the local adapter if not able to delete from the BE
+              // don't delete it from the local adapter if not able to delete from the BE
               await deleteCohortFromBE(cohortId)
                 .unwrap()
                 .then(() => deleteCohort())

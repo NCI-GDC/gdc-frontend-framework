@@ -1,12 +1,12 @@
-type BodyPlotDataElement = {
+export type BodyplotDataElement = {
   [key: string]: string[];
   byPrimarySite: string[];
   byTissueOrOrganOfOrigin: string[];
 };
 
-type BodyPlotData = Record<string, BodyPlotDataElement>;
+type BodyplotData = Record<string, BodyplotDataElement>;
 
-export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
+export const HUMAN_BODY_MAPPINGS: BodyplotData = {
   "Adrenal Gland": {
     byPrimarySite: ["Adrenal gland"],
     byTissueOrOrganOfOrigin: [

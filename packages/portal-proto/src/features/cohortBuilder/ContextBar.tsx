@@ -215,17 +215,6 @@ const ContextBar: React.FC = () => {
   ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
-
-  const CohortBarWithProps = () => (
-    <CohortManager
-      // TODO: need to connect to cohort persistence
-      // eslint-disable-next-line react/prop-types
-      cohorts={cohorts}
-      onSelectionChanged={handleCohortSelection}
-      startingId={currentIndex}
-    />
-  );
-
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (

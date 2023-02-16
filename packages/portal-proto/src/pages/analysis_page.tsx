@@ -5,11 +5,13 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import ContextBar from "@/features/cohortBuilder/ContextBar";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
+import { ContextManagerOperation } from "@/features/cohortBuilder/types";
+import { JSONObject } from "@/features/types";
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
   const {
-    query: { app, cmd, filters },
+    query: { app },
   } = router;
 
   return (
@@ -22,7 +24,7 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-      <ContextBar cohortCommand={} />
+      <ContextBar />
       <AnalysisWorkspace
         app={app && app.length > 0 ? app.toString() : undefined}
       />

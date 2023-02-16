@@ -1,8 +1,14 @@
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
 import { useMouse } from "@mantine/hooks";
 import { Text } from "@mantine/core";
-import { useBodyplotCountsQuery } from "@gff/core";
+import {
+  useBodyplotCountsQuery,
+  FilterSet,
+  BodyplotDataElement,
+  HUMAN_BODY_MAPPINGS,
+} from "@gff/core";
 
 const SCALE_CASE_COUNT = 1000;
 
@@ -54,6 +60,24 @@ const PopupContent = ({
   );
 };
 
+const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
+  return {
+    mode: "and",
+    root: {
+      "cases.primary_site": {
+        operator: "includes",
+        field: "cases.primary_site",
+        operands: [...data.byPrimarySite],
+      },
+      "cases.diagnoses.tissue_or_organ_of_origin": {
+        operator: "includes",
+        field: "cases.diagnoses.tissue_or_organ_of_origin",
+        operands: [...data.byTissueOrOrganOfOrigin],
+      },
+    },
+  };
+};
+
 /**
  * Bodyplot is the component that renders the bodyplot
  */
@@ -79,7 +103,16 @@ export const Bodyplot = (): JSX.Element => {
 
   const bodyplotRef = useRef(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
-  const clickHandler = useCallback(() => () => null, []);
+  const clickHandler = useCallback((data: { key: string }) => {
+    const e = HUMAN_BODY_MAPPINGS[data.key];
+    Router.push({
+      pathname: "/analysis_page",
+      query: {
+        operation: "createCohort",
+        filters: JSON.stringify(buildBodyplotFilter(e)),
+      },
+    });
+  }, []);
   const mouseOutHandler = useCallback(
     () => setBodyplotTooltipContent(undefined),
     [],
@@ -100,7 +133,7 @@ export const Bodyplot = (): JSX.Element => {
         tickInterval: 1,
         offsetLeft: root ? root.offsetLeft : 0,
         offsetTop: root ? root.offsetTop : 0,
-        clickHandler: clickHandler,
+        clickHandler: (e) => clickHandler(e),
         mouseOverHandler: setBodyplotTooltipContent,
         mouseOutHandler: mouseOutHandler,
       });
