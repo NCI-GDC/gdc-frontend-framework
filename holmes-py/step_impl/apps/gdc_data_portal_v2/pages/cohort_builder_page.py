@@ -34,6 +34,7 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.BUTTON_IDENT(self.normalize_button_identifier(button_name))
         self.click(locator)
 
+    # Clicks a radio button in a filter card
     def click_radio_button(self, facet_group_name, radio_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_RADIO_BUTTON_IDENT(facet_group_name, radio_name)
         self.click(locator)
@@ -58,20 +59,24 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.FACET_GROUP_TEXT_AREA_IDENT(facet_group_name, label)
         self.send_keys(locator, text)
 
+    # Returns if a filter card enum checkbox is checked
     def is_checkbox_checked(self, facet_group_name, selection):
         locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
         result = self.is_checked(locator)
         return result
 
+    # Used to check the text displayed in the query expression area
     def is_text_present(self, text):
         locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
         result = self.is_visible(locator)
         return result
 
+    # Clicks a filter card object using its visible, displayed name
     def click_named_item_in_facet_group(self, facet_group_name, object_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(facet_group_name, object_name)
         self.click(locator)
 
+    # Adds a custom filter from the Custom Filters tab
     def add_custom_filter(self, facet_to_add):
         add_custom_filter = CohortBuilderPageLocators.CUSTOM_FILTER_ADD_BUTTON
         self.click(add_custom_filter)

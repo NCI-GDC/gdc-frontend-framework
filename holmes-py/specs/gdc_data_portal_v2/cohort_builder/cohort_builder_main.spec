@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - card functions
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder
+tags: gdc-data-portal-v2, cohort-builder, filter-card
 
 ## Navigate to Cohort Builder
 
@@ -99,7 +99,7 @@ tags: cohort-selections
 ## Cohort Builder - Range Card Functions
 
 * Enter text in a filter card from "Demographic" tab on the Cohort Builder page
-  |Age at Diagnosis |label               |text  |
+  |facet_name       |label                |text  |
   |-----------------|---------------------|------|
   |Age at Diagnosis |input from value     |59    |
   |Age at Diagnosis |input to value       |71    |
@@ -141,4 +141,23 @@ tags: cohort-selections
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
-  |Created Datetime |clear selection      |
+  |Created Datetime |Remove the facet     |
+
+* Pause "1" seconds
+
+## Cohort Builder - String Card Functions
+
+* Add a custom filter from "Custom Filters" tab on the Cohort Builder page
+  |filter_name      |
+  |-----------------|
+  |case_id |
+
+* Enter text in a filter card from "Custom Filters" tab on the Cohort Builder page
+  |facet_name       |label                         |text                                   |
+  |-----------------|------------------------------|---------------------------------------|
+  |Case Id          |enter value to add filter     |9e15d908-12c2-5a1b-b1c4-c328242d474a   |
+
+* Perform the following actions from "Custom Filters" tab on the Cohort Builder page
+  |facet_name       |label                         |
+  |-----------------|------------------------------|
+  |Case Id          |add string value              |
