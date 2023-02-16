@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { SetStateAction, useMemo, Dispatch } from "react";
 import { SomaticMutations } from "@/components/expandableTables/somaticMutations/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "@/components/expandableTables/shared/ExpTable";
 import { createTableColumn } from "@/components/expandableTables/somaticMutations/smTableUtils";
 import { Column } from "@/components/expandableTables/shared/types";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
+import { entityMetadataType } from "src/utils/contexts";
 
 export interface ConsequenceTableProps {
   ssmsId: string;
@@ -38,6 +39,9 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
           [],
           "",
           false,
+          {} as Dispatch<SetStateAction<entityMetadataType>>,
+          false,
+          true,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

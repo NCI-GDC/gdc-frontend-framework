@@ -22,6 +22,11 @@ jobs:
           cd ${{github.workspace}}/packages/core
           npm run build:clean
 
+      - name: Compilation/Type Check for sapien
+        run: |
+          cd ${{github.workspace}}/packages/sapien
+          npm run build:clean
+
       - name: Compilation/Type Check for portal-proto
         run: |
           cd ${{github.workspace}}/packages/portal-proto
