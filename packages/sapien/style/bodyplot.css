@@ -14,12 +14,12 @@
 }
 #human-body-root .chart {
   position: absolute;
-  left: 312px;
+  left: 300px;
   margin-top: 20px;
   color: #fff;
 }
 #human-body-root .chart g {
-  color: #000;
+  color: rgba(182, 182, 182, 0.93);
 }
 #human-body-root #human-body-svg-container {
   position: absolute;
@@ -31,7 +31,7 @@
   position: absolute;
   font-family: "Montserrat", "sans-serif";
   width: 275px;
-  left: 400px;
+  left: 480px;
   top: -5px;
 }
 #human-body-root #male {
@@ -198,7 +198,7 @@
   top: 383px;
   left: 212px;
 }
-#human-body-root #Bone-Marrow {
+#human-body-root #Bone-Marrow-and-Blood {
   height: 114px;
   width: 30px;
   top: 371px;
