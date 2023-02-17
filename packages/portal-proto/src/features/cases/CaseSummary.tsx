@@ -31,7 +31,7 @@ import {
 } from "../files/utils";
 import {
   allFilesInCart,
-  calculatePercentageAsString,
+  calculatePercentageAsNumber,
   fileInCart,
   humanify,
   sortByPropertyAsc,
@@ -43,6 +43,11 @@ import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
+import {
+  PercentBar,
+  PercentBarComplete,
+  PercentBarLabel,
+} from "../shared/tailwindComponents";
 import { URLContext } from "src/utils/contexts";
 
 // TODO: break it down
@@ -356,19 +361,44 @@ export const CaseSummary = ({
       "data_category",
     );
 
-    const rows = sortedDataCategories.map((data_c) => ({
-      data_category: data_c.data_category,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentageAsString(
+    const rows = sortedDataCategories.map((data_c) => {
+      const fileCountPercentage = calculatePercentageAsNumber(
         data_c.file_count,
         filesCountTotal,
-      )})`,
-    }));
+      );
+
+      return {
+        data_category: data_c.data_category,
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <div className="basis-1/3 text-right">
+              {data_c.file_count.toLocaleString()}
+            </div>
+            <div className="basis-2/3 pl-1">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
-        "Data Category",
-        `Files (n=${filesCountTotal.toLocaleString()})`,
+        <div key="case_summary_data_table_data_category">Data Category</div>,
+        <div key="case_summary_data_table_file_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={filesCountTotal.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
@@ -380,19 +410,46 @@ export const CaseSummary = ({
       "experimental_strategy",
     );
 
-    const rows = sortedExpCategories.map((exp_c) => ({
-      experimental_strategy: exp_c.experimental_strategy,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentageAsString(
+    const rows = sortedExpCategories.map((exp_c) => {
+      const fileCountPercentage = calculatePercentageAsNumber(
         exp_c.file_count,
         filesCountTotal,
-      )})`,
-    }));
+      );
+
+      return {
+        experimental_strategy: exp_c.experimental_strategy,
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <div className="basis-1/3 text-right">
+              {exp_c.file_count.toLocaleString()}
+            </div>
+            <div className="basis-2/3 pl-1">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
-        "Experimental Strategy",
-        `Files (n=${filesCountTotal.toLocaleString()})`,
+        <div key="case_summary_data_exp_table_exp_title">
+          Experimental Strategy
+        </div>,
+        <div key="case_summary_data_exp_table_file_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={filesCountTotal.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
