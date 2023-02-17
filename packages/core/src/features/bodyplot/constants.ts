@@ -4,7 +4,7 @@ type BodyPlotDataElement = {
   byTissueOrOrganOfOrigin: string[];
 };
 
-type BodyPlotDataKey =
+export type BodyPlotDataKey =
   | "Adrenal Gland"
   | "Bile Duct"
   | "Bladder"
@@ -36,7 +36,8 @@ type BodyPlotDataKey =
   | "Thyroid"
   | "Uterus";
 
-type BodyPlotData = Record<BodyPlotDataKey, BodyPlotDataElement>;
+// TODO replace below with BodyPlotDataKey
+type BodyPlotData = Record<string, BodyPlotDataElement>;
 
 export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   "Adrenal Gland": {
