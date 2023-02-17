@@ -8,7 +8,7 @@ jest.mock("@gff/core", () => ({
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useUserDetails: jest.fn(() => userDetails),
-  useCoreDispatch: jest.fn(() => {}),
+  useCoreDispatch: jest.fn(() => null),
   PROTEINPAINT_API: "host:port/basepath",
 }));
 

@@ -9,22 +9,9 @@ code as a node_module within the GFF dependencies.
 From the gdc-frontend-framework directory,
 
 ```bash
+# this creates a fresh symlink to the local proteinpaint/client workspace,
+# to avoid issues with the GDC bundle not updating when pp-client code changes
 ./packages/portal-proto/src/features/proteinpaint/dev.sh
-# the above script performs the following and more, see the script:
-# npm link path/to/proteinpaint/client
-# rm -rf packages/portal-proto/node_modules/@stjude
-# rm -rf packages/portal-proto/.next
-
-# NOTES for above:
-#
-# An issue with npm link and workspaces: the non-linked @stjude/proteinpaint-client package
-# may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
-# must ensure only the linked module is used for bundling so delete
-#
-# also not able to do a simpler
-# `cd packages/portal-proto && npm link path/to/proteinpaint/client`,
-# where the linked module would be in portal-proto/node_modules instead of the
-# other way around
 ```
 
 ## Login testing

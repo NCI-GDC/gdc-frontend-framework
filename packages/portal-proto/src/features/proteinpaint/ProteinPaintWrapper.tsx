@@ -24,10 +24,6 @@ interface PpProps {
   geneSearch4GDCmds3?: boolean;
 }
 
-interface SampleData {
-  sample_id?: string;
-}
-
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
@@ -39,7 +35,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
   const coreDispatch = useCoreDispatch();
 
-  const selectSamplesCallBack = function (samples: string[]): void {
+  const callback = function (arg: SelectSamplesCallBackArg): void {
+    const { samples, source } = arg;
     const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
     const filters: FilterSet = {
       mode: "and",
@@ -52,10 +49,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       },
     };
     coreDispatch(
+      // TODO: option to edit a cohort using ImportCohortModal???
       addNewCohortWithFilterAndMessage({
         filters: filters,
         message: "newCasesCohort",
-        name: "test",
+        // TODO: improve cohort name constructor
+        name: source + ` (n=${samples.length})`,
         group:
           ids.length > 1
             ? {
@@ -71,7 +70,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = getLollipopTrack(props, filter0, selectSamplesCallBack);
+      const data = getLollipopTrack(props, filter0, callback);
 
       if (!data) return;
       if (isEqual(prevArg.current, data)) return;
@@ -147,18 +146,27 @@ interface PpApi {
   update(arg: any): null;
 }
 
-type SampleLstCallback = (samples: string[]) => void;
+type SampleData = {
+  "case.case_id"?: string;
+};
+
+interface SelectSamplesCallBackArg {
+  samples: SampleData[];
+  source: string;
+}
+
+type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
 
 interface SelectSamples {
   buttonText: string;
   attributes: string[];
-  callback: SampleLstCallback;
+  callback: SelectSamplesCallback;
 }
 
 function getLollipopTrack(
   props: PpProps,
   filter0: any,
-  selectSamplesCallBack: SampleLstCallback,
+  callback: SelectSamplesCallback,
 ) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
@@ -173,7 +181,7 @@ function getLollipopTrack(
         allow2selectSamples: {
           buttonText: "Create Cohort",
           attributes: ["case.case_id"],
-          callback: selectSamplesCallBack,
+          callback,
         },
       },
     ],
