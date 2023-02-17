@@ -2,7 +2,6 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useGetCasesQuery,
-  defaultCohortNameGenerator,
   useCoreSelector,
   useCoreDispatch,
   selectAvailableCohorts,
@@ -65,7 +64,6 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <>
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

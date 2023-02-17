@@ -14,4 +14,5 @@ export interface TConfig {
   width?: number;
   tickInterval?: number;
   title?: string;
+  xAxisLabel?: string;
 }

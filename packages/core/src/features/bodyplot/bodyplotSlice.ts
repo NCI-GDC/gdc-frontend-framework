@@ -28,7 +28,6 @@ export const processData = (
   return map(
     groupBy(
       casesBuckets,
-      // cases.aggregations.primary_site.buckets,
       (b) => HUMAN_BODY_TOOS_MAP[b.key.toLowerCase()] || b.key.toLowerCase(),
     ),
     (group, majorPrimarySite) => {
@@ -43,11 +42,8 @@ export const processData = (
         caseCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
         fileCount: group.reduce(
           (sumFiles, { key }) =>
-            (
-              filesBuckets
-                // files.aggregations.cases__primary_site.buckets
-                .find((f) => f.key === key) || { doc_count: 0 }
-            ).doc_count + sumFiles,
+            (filesBuckets.find((f) => f.key === key) || { doc_count: 0 })
+              .doc_count + sumFiles,
           0,
         ),
         key: majorPrimarySite,

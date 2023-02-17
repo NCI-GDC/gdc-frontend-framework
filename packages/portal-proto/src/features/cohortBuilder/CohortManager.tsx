@@ -44,7 +44,6 @@ import {
   updateActiveCohortFilter,
   FilterGroup,
   addNewCohortGroups,
-  defaultCohortNameGenerator,
   addNewCohortWithFilterAndMessage,
   showModal,
   CoreDispatch,
@@ -150,7 +149,6 @@ const CreateCohortFromBodyplot: React.FC<CreateCohortFromBodyplotProps> = ({
 
   return cohortOperation.operation == "createCohort" ? (
     <SaveOrCreateCohortModal
-      initialName={defaultCohortNameGenerator()}
       entity="cohort"
       action="create"
       opened
@@ -202,13 +200,16 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
 
-  // util function to check for names while saving the cohort
+  // util function to check for duplicate names while saving the cohort
+  // here we filter the current cohort id so as not to so duplicate name warning
   // passed to SavingCohortModal as a prop
   const onSaveCohort = (name: string) =>
     cohorts
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
 
+  // util function to check for duplicate names while creating the cohort
+  // passed to SavingCohortModal as a prop
   const onCreateCohort = useCallback(
     (name: string) => cohorts.every((cohort) => cohort.name !== name),
     [cohorts],
@@ -324,7 +325,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             setShowDelete(false);
             // only delete cohort from BE if it's been saved before
             if (currentCohort?.saved) {
-              // dont delete it from the local adapter if not able to delete from the BE
+              // don't delete it from the local adapter if not able to delete from the BE
               await deleteCohortFromBE(cohortId)
                 .unwrap()
                 .then(() => deleteCohort())
@@ -460,7 +461,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

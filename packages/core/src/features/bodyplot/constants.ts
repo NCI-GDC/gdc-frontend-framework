@@ -4,9 +4,42 @@ export type BodyplotDataElement = {
   byTissueOrOrganOfOrigin: string[];
 };
 
-type BodyplotData = Record<string, BodyplotDataElement>;
+export type BodyPlotDataKey =
+  | "Adrenal Gland"
+  | "Bile Duct"
+  | "Bladder"
+  | "Bone"
+  | "Bone Marrow and Blood"
+  | "Brain"
+  | "Breast"
+  | "Cervix"
+  | "Colorectal"
+  | "Esophagus"
+  | "Eye"
+  | "Head and Neck"
+  | "Kidney"
+  | "Liver"
+  | "Lung"
+  | "Lymph Nodes"
+  | "Nervous System"
+  | "Not Reported"
+  | "Other and Ill-defined Sites"
+  | "Ovary"
+  | "Pancreas"
+  | "Pleura"
+  | "Prostate"
+  | "Skin"
+  | "Soft Tissue"
+  | "Stomach"
+  | "Testis"
+  | "Thymus"
+  | "Thyroid"
+  | "Uterus";
 
-export const HUMAN_BODY_MAPPINGS: BodyplotData = {
+// TODO replace below with BodyPlotDataKey
+type BodyPlotData = Record<string, BodyplotDataElement>;
+
+export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   "Adrenal Gland": {
     byPrimarySite: ["Adrenal gland"],
     byTissueOrOrganOfOrigin: [

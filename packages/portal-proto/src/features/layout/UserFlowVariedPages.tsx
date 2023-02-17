@@ -49,9 +49,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
       >
         {children}
       </main>
-      <footer className="flex-none">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 };

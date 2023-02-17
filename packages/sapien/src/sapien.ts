@@ -20,6 +20,7 @@ export const createHumanBody: TCreateHumanBody = ({
   labelSize,
   tickInterval = 1000,
   title = "Cases by Primary Site",
+  xAxisLabel = "1000s of Cases",
   offsetLeft = 0,
   offsetTop = 0,
   primarySiteKey = "key",
@@ -52,8 +53,8 @@ export const createHumanBody: TCreateHumanBody = ({
     .append("svg")
     .attr("class", "chart")
     .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("height", height + 15)
+    .attr("viewBox", `0 0 ${width} ${height + 15}`)
     .append("g");
 
   // Bar Heights
@@ -83,7 +84,7 @@ export const createHumanBody: TCreateHumanBody = ({
   for (let i = 0; i < numberOfVerticalAxis; i++) {
     svg
       .append("line")
-      .attr("stroke", `rgba(11, 11, 11, 0.5)`)
+      .attr("stroke", `rgba(147, 147, 147, 0.5)`)
       .attr("x1", x(tickInterval) * i + barStartOffset)
       .attr("x2", x(tickInterval) * i + barStartOffset)
       .attr("y1", 0)
@@ -95,10 +96,20 @@ export const createHumanBody: TCreateHumanBody = ({
         .append("text")
         .attr("y", plotHeight + 13)
         .attr("x", x(tickInterval) * i + barStartOffset)
-        .attr("fill", "rgb(10, 10, 10)")
+        .attr("fill", "rgba(40,40,40,0.7)")
         .attr("font-size", "12px")
         .style("text-anchor", "middle")
         .text(() => (tickInterval * i).toLocaleString());
+    }
+    if (xAxisLabel) {
+      xAxisLabels
+        .append("text")
+        .attr("y", plotHeight + 26)
+        .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
+        .attr("fill", "rgba(94,94,94,0.7)")
+        .attr("font-size", "11px")
+        .style("text-anchor", "middle")
+        .text(() => xAxisLabel);
     }
   }
 
