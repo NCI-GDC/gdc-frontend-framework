@@ -239,7 +239,6 @@ const ContextBar: React.FC = () => {
       <CollapsibleContainer
         Top={() => (
           <CohortManager
-            // TODO: need to connect to cohort persistence
             cohorts={cohorts}
             onSelectionChanged={handleCohortSelection}
             startingId={currentIndex}
