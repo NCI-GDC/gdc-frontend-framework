@@ -17,6 +17,9 @@ class BasePage:
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
 
+    def is_visible(self, locator):
+        return self.driver.locator(locator).is_visible()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
@@ -31,3 +34,6 @@ class BasePage:
             filter_name = filter_name[2:]
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
+
+    def wait_for_selector(self, locator):
+        self.driver.wait_for_selector(locator)
