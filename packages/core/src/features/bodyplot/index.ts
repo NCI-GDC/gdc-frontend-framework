@@ -1,6 +1,15 @@
 import {
   useBodyplotCountsQuery,
-  type BodyplotCountsData,
+  BodyplotCountsData,
+  BodyplotData,
 } from "./bodyplotSlice";
 
-export { useBodyplotCountsQuery, type BodyplotCountsData };
+import { HUMAN_BODY_MAPPINGS, BodyplotDataElement } from "./constants";
+
+export {
+  useBodyplotCountsQuery,
+  HUMAN_BODY_MAPPINGS,
+  type BodyplotCountsData,
+  type BodyplotData,
+  type BodyplotDataElement,
+};
