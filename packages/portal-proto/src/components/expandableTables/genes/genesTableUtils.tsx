@@ -13,7 +13,6 @@ import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
-import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 

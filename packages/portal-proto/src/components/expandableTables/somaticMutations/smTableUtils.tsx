@@ -7,12 +7,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import {
-  SingleSomaticMutation,
-  SomaticMutations,
-  Impact,
-  SsmToggledHandler,
-} from "./types";
+import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { TableColumnDefinition } from "../shared/types";
@@ -20,10 +15,11 @@ import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
-import { externalLinks } from "../../../utils";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
+import { SSMSData } from "@gff/core";
+import { externalLinks } from "src/utils";
 
 export const createTableColumn = (
   accessor: string,
@@ -735,63 +731,70 @@ export type MutationsColumn = {
 };
 
 export const getMutation = (
-  sm: SingleSomaticMutation,
+  sm: SSMSData,
   selectedSurvivalPlot: Record<string, string>,
   filteredCases: number,
   cases: number,
   ssmsTotal: number,
 ): SomaticMutations => {
-  const { ssm_id, genomic_dna_change } = sm;
   const {
-    gene = {
-      symbol: "",
-      name: "",
-      geneId: "",
+    ssm_id,
+    genomic_dna_change,
+    mutation_subtype,
+    consequence,
+    filteredOccurrences,
+    occurrence,
+  } = sm;
+
+  const {
+    transcript: {
+      consequence_type,
+      gene: { gene_id, symbol },
+      aa_change,
+      annotation: {
+        polyphen_impact,
+        polyphen_score,
+        sift_impact,
+        sift_score,
+        vep_impact,
+      },
     },
-    annotation = {
-      polyphen_impact: "",
-      polyphen_score: "",
-      sift_impact: "",
-      sift_score: "",
-      vep_impact: "",
-    },
-    aa_change = "",
-    consequence_type = "",
-  } = sm.consequence[0] ?? {};
+  } = consequence[0];
+
   return {
-    select: sm.ssm_id,
-    mutationID: sm.ssm_id,
-    DNAChange: sm.genomic_dna_change,
-    type: filterMutationType(sm.mutation_subtype),
+    select: ssm_id,
+    mutationID: ssm_id,
+    DNAChange: genomic_dna_change,
+    type: filterMutationType(mutation_subtype),
     consequences: consequence_type,
     proteinChange: {
-      symbol: gene.symbol,
-      geneId: gene.gene_id,
+      symbol: symbol,
+      geneId: gene_id,
       aaChange: aa_change,
     },
     affectedCasesInCohort: {
-      numerator: sm.filteredOccurrences,
+      numerator: filteredOccurrences,
       denominator: filteredCases,
     },
     affectedCasesAcrossTheGDC: {
-      numerator: sm.occurrence,
+      numerator: occurrence,
       denominator: cases,
     },
     cohort: {
       checked: true,
     },
     survival: {
-      label: aa_change ? gene.symbol + " " + aa_change : gene.symbol,
+      label: aa_change ? symbol + " " + aa_change : symbol,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,
     },
     impact: {
-      polyphenImpact: annotation.polyphen_impact,
-      polyphenScore: annotation.polyphen_score,
-      siftImpact: annotation.sift_impact,
-      siftScore: annotation.sift_score,
-      vepImpact: annotation.vep_impact,
+      polyphenImpact: polyphen_impact,
+      polyphenScore: polyphen_score,
+      siftImpact: sift_impact,
+      siftScore: sift_score,
+      vepImpact: vep_impact,
     },
     // do not remove subRows key, it's needed for row.getCanExpand() to be true
     subRows: " ",

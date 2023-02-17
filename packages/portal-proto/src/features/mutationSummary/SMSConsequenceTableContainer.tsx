@@ -59,44 +59,57 @@ export const SMSConsequenceTableContainer: React.FC<
     setColumnListOrder(columnUpdate);
   };
 
-  const { data } = useSsmsConsequenceTable({
+  const {
+    data: { status, ssmsConsequence: initialData },
+  } = useSsmsConsequenceTable({
     pageSize: 99, // get max 100 entries
     offset: 0,
     mutationId: ssmsId,
   });
-  const { status, ssmsConsequence: initialData } = data;
 
   useEffect(() => {
     if (status === "fulfilled") {
       // need to sort the table data and then store all entries in tableData
       const sortedData: ConsequenceTableData[] = [
-        ...initialData.consequence.filter((x) => x.is_canonical),
+        ...initialData.consequence.filter((x) => x.transcript.is_canonical),
         ...initialData.consequence
-          .filter((x) => !x.is_canonical)
+          .filter((x) => !x.transcript.is_canonical)
           .sort((a, b) => {
-            if (a.aa_change !== null && b.aa_change == null) return -1;
-            if (a.aa_change == null && b.aa_change !== null) return 1;
-            if (a.aa_change == null && b.aa_change == null) return 0;
-            if (a.aa_change > b.aa_change) return 1;
-            if (a.aa_change == b.aa_change) return 0;
+            if (
+              a.transcript.aa_change !== null &&
+              b.transcript.aa_change == null
+            )
+              return -1;
+            if (
+              a.transcript.aa_change == null &&
+              b.transcript.aa_change !== null
+            )
+              return 1;
+            if (
+              a.transcript.aa_change == null &&
+              b.transcript.aa_change == null
+            )
+              return 0;
+            if (a.transcript.aa_change > b.transcript.aa_change) return 1;
+            if (a.transcript.aa_change == b.transcript.aa_change) return 0;
             return -1;
           }),
       ].map((c) => {
         return {
-          gene: c.gene.symbol,
-          gene_id: c.gene.gene_id,
-          aa_change: c.aa_change,
-          DNAChange: c.annotation.hgvsc,
-          consequences: c.consequence_type,
-          transcript_id: c.transcript_id,
-          is_canonical: c.is_canonical,
-          gene_strand: c.gene.gene_strand,
+          gene: c.transcript.gene.symbol,
+          gene_id: c.transcript.gene.gene_id,
+          aa_change: c.transcript.aa_change,
+          DNAChange: c.transcript.annotation.hgvsc,
+          consequences: c.transcript.consequence_type,
+          transcript_id: c.transcript.transcript_id,
+          is_canonical: c.transcript.is_canonical,
+          gene_strand: c.transcript.gene.gene_strand,
           impact: {
-            polyphenImpact: c.annotation.polyphen_impact,
-            polyphenScore: c.annotation.polyphen_score,
-            siftImpact: c.annotation.sift_impact,
-            siftScore: c.annotation.sift_score,
-            vepImpact: c.annotation.vep_impact,
+            polyphenImpact: c.transcript.annotation.polyphen_impact,
+            polyphenScore: c.transcript.annotation.polyphen_score,
+            siftImpact: c.transcript.annotation.sift_impact,
+            siftScore: c.transcript.annotation.sift_score,
+            vepImpact: c.transcript.annotation.vep_impact,
           },
           subRows: " ",
         };

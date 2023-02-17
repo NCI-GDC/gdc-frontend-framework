@@ -1,4 +1,12 @@
-import { useSsmsTable, GDCSsmsTable, FilterSet, usePrevious } from "@gff/core";
+import {
+  GDCSsmsTable,
+  FilterSet,
+  usePrevious,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  mergeGenomicAndCohortFilters,
+  useGetSssmTableDataQuery,
+} from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
@@ -62,7 +70,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -149,30 +157,40 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
   const [smTotal, setSMTotal] = useState(0);
 
-  const { data } = useSsmsTable({
+  const localPlusCohortFilters = useCoreSelector((state) =>
+    mergeGenomicAndCohortFilters(state, genomicFilters),
+  );
+
+  const currentCohortFilter = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
+  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
-      debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     genomicFilters: genomicFilters,
     geneSymbol: geneSymbol,
     isDemoMode: isDemoMode,
     overwritingDemoFilter: cohortFilters,
+    currentCohortFilter: currentCohortFilter,
+    localPlusCohortFilters: localPlusCohortFilters,
   });
-
-  console.log({ data });
 
   useEffect(() => {
     setPage(0);
   }, [pageSize]);
 
-  const { status, ssms: initialData } = data;
-
   useEffect(() => {
-    if (status === "fulfilled") {
-      setTableData(initialData);
+    if (!isFetching && isSuccess) {
+      setTableData({
+        ...data,
+        pageSize: pageSize,
+        offset: pageSize * page,
+      });
     }
-  }, [status, initialData]);
+  }, [isFetching, isSuccess, data, pageSize, page]);
 
   return (
     <>
@@ -189,7 +207,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 { label: "Save/Edit Mutation Set", value: "placeholder" },
                 { label: "Save as new mutation set", value: "save" },
                 { label: "Add to existing mutation set", value: "add" },
-                { label: "Remove from existing mutation set", value: "remove" },
+                {
+                  label: "Remove from existing mutation set",
+                  value: "remove",
+                },
               ]}
               additionalControls={
                 <div className="flex gap-2">
@@ -239,7 +260,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           ) : (
             <div ref={ref}>
               <SomaticMutationsTable
-                status={status}
+                status={
+                  isFetching
+                    ? "pending"
+                    : isSuccess
+                    ? "fulfilled"
+                    : isError
+                    ? "rejected"
+                    : "uninitialized"
+                }
                 initialData={tableData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}

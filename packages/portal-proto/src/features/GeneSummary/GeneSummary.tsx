@@ -7,11 +7,11 @@ import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import {
   useGenesSummaryData,
   GeneSummaryData,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  FilterSet,
-  buildCohortGqlOperator,
-  joinFilters,
+  // useCoreSelector,
+  // selectCurrentCohortFilters,
+  // FilterSet,
+  // buildCohortGqlOperator,
+  // joinFilters,
 } from "@gff/core";
 import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
@@ -39,9 +39,9 @@ export const GeneSummary = ({
   gene_id: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  // const cohortFilters = useCoreSelector((state) =>
+  //   selectCurrentCohortFilters(state),
+  // );
 
   const { data, isFetching } = useGenesSummaryData({ gene_id });
 

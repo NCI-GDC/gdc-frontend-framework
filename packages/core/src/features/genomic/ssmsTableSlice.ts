@@ -1,20 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseFiltersCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { castDraft } from "immer";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { mergeGenomicAndCohortFilters } from "./genomicFilters";
+import { DataStatus } from "../../dataAccess";
+import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import {
   buildCohortGqlOperator,
   FilterSet,
   filterSetToOperation,
-  selectCurrentCohortFilters,
-  selectCurrentCohortFilterSet,
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -24,6 +13,7 @@ import {
 import { appendFilterToOperation } from "./utils";
 import { GenomicTableProps } from "./types";
 import { joinFilters } from "../cohort";
+import { Reducer } from "@reduxjs/toolkit";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
@@ -102,23 +92,25 @@ $sort: [Sort]
 
 export interface SSMSConsequence {
   readonly id: string;
-  readonly aa_change: string;
-  readonly annotation: {
-    readonly polyphen_impact: string;
-    readonly polyphen_score: number;
-    readonly sift_impact: string;
-    readonly sift_score: string;
-    readonly vep_impact: string;
-    readonly hgvsc?: string;
+  readonly transcript: {
+    readonly aa_change: string;
+    readonly annotation: {
+      readonly polyphen_impact: string;
+      readonly polyphen_score: number;
+      readonly sift_impact: string;
+      readonly sift_score: string;
+      readonly vep_impact: string;
+      readonly hgvsc?: string;
+    };
+    readonly consequence_type: string;
+    readonly gene: {
+      readonly gene_id: string;
+      readonly symbol: string;
+      readonly gene_strand?: number;
+    };
+    readonly is_canonical: boolean;
+    readonly transcript_id?: string;
   };
-  consequence_type: string;
-  readonly gene: {
-    readonly gene_id: string;
-    readonly symbol: string;
-    readonly gene_strand?: number;
-  };
-  readonly is_canonical: boolean;
-  readonly transcript_id?: string;
 }
 export interface SSMSData {
   readonly ssm_id: string;
@@ -167,53 +159,78 @@ export interface SsmsTableRequestParameters extends GenomicTableProps {
   readonly geneSymbol?: string;
   isDemoMode: boolean;
   overwritingDemoFilter: FilterSet;
+  localPlusCohortFilters: FilterSet;
+  currentCohortFilter: FilterSet;
 }
 
-export const fetchSsmsTable = createAsyncThunk<
-  GraphQLApiResponse,
-  SsmsTableRequestParameters,
-  { dispatch: CoreDispatch; state: CoreState }
->(
-  "genomic/ssmsTable",
-  async (
-    {
-      pageSize,
-      offset,
-      searchTerm,
-      genomicFilters,
-      geneSymbol,
-      isDemoMode,
-      overwritingDemoFilter,
-    }: SsmsTableRequestParameters,
-    thunkAPI,
-  ): Promise<GraphQLApiResponse> => {
-    const cohortFilters = buildCohortGqlOperator(
-      geneSymbol // if gene symbol use all GDC
-        ? {
-            mode: "and",
-            root: {
-              "genes.symbol": {
-                field: "genes.symbol",
-                operator: "includes",
-                operands: [geneSymbol],
-              },
-            },
-          }
-        : isDemoMode
-        ? overwritingDemoFilter
-        : selectCurrentCohortFilters(thunkAPI.getState()),
-    );
-    const cohortFiltersContent = cohortFilters?.content
-      ? Object(cohortFilters?.content)
-      : [];
+interface ssmtableResponse {
+  viewer: {
+    explore: {
+      cases: {
+        hits: {
+          total: number;
+        };
+      };
+      filteredCases: {
+        hits: {
+          total: number;
+        };
+      };
+      ssms: {
+        hits: {
+          edges: ReadonlyArray<{
+            node: {
+              readonly consequence: {
+                hits: {
+                  edges: ReadonlyArray<{
+                    node: SSMSConsequence;
+                  }>;
+                };
+              };
+              filteredOccurences: {
+                hits: {
+                  total: number;
+                };
+              };
+              genomic_dna_change: string;
+              id: string;
+              mutation_subtype: string;
+              occurrence: {
+                hits: {
+                  total: number;
+                };
+              };
+              score: number;
+              ssm_id: string;
+            };
+          }>;
+          total: number;
+        };
+      };
+    };
+  };
+}
 
-    const localPlusCohortFilters = mergeGenomicAndCohortFilters(
-      thunkAPI.getState(),
-      genomicFilters,
-    );
+export interface SsmsTableState {
+  readonly ssms: GDCSsmsTable;
+  readonly status: DataStatus;
+  readonly error?: string;
+}
 
-    const geneAndCohortFilters = geneSymbol
-      ? joinFilters(localPlusCohortFilters, {
+const generateFilter = ({
+  pageSize,
+  offset,
+  searchTerm,
+  genomicFilters,
+  geneSymbol,
+  isDemoMode,
+  overwritingDemoFilter,
+  currentCohortFilter,
+  localPlusCohortFilters,
+}: SsmsTableRequestParameters) => {
+  const cohortFilters = buildCohortGqlOperator(
+    geneSymbol // if gene symbol use all GDC
+      ? {
           mode: "and",
           root: {
             "genes.symbol": {
@@ -222,185 +239,157 @@ export const fetchSsmsTable = createAsyncThunk<
               operands: [geneSymbol],
             },
           },
-        })
-      : localPlusCohortFilters;
+        }
+      : isDemoMode
+      ? overwritingDemoFilter
+      : currentCohortFilter,
+  );
+  const cohortFiltersContent = cohortFilters?.content
+    ? Object(cohortFilters?.content)
+    : [];
 
-    const searchFilters = buildSSMSTableSearchFilters(searchTerm);
-    const tableFilters = isDemoMode
-      ? convertFilterToGqlFilter(
-          appendFilterToOperation(
-            filterSetToOperation(
-              joinFilters(overwritingDemoFilter, genomicFilters),
-            ) as Union | Intersection | undefined,
-            searchFilters,
-          ),
-        )
-      : convertFilterToGqlFilter(
-          appendFilterToOperation(
-            filterSetToOperation(geneAndCohortFilters) as
-              | Union
-              | Intersection
-              | undefined,
-            searchFilters,
-          ),
-        );
+  const geneAndCohortFilters = geneSymbol
+    ? joinFilters(localPlusCohortFilters, {
+        mode: "and",
+        root: {
+          "genes.symbol": {
+            field: "genes.symbol",
+            operator: "includes",
+            operands: [geneSymbol],
+          },
+        },
+      })
+    : localPlusCohortFilters;
 
-    const graphQlFilters = {
-      ssmTested: {
-        content: [
+  const searchFilters = buildSSMSTableSearchFilters(searchTerm);
+  const tableFilters = isDemoMode
+    ? convertFilterToGqlFilter(
+        appendFilterToOperation(
+          filterSetToOperation(
+            joinFilters(overwritingDemoFilter, genomicFilters),
+          ) as Union | Intersection | undefined,
+          searchFilters,
+        ),
+      )
+    : convertFilterToGqlFilter(
+        appendFilterToOperation(
+          filterSetToOperation(geneAndCohortFilters) as
+            | Union
+            | Intersection
+            | undefined,
+          searchFilters,
+        ),
+      );
+
+  const graphQlFilters = {
+    ssmTested: {
+      content: [
+        {
+          content: {
+            field: "cases.available_variation_data",
+            value: ["ssm"],
+          },
+          op: "in",
+        },
+      ],
+      op: "and",
+    },
+    ssmCaseFilter: {
+      content: [
+        ...[
           {
             content: {
-              field: "cases.available_variation_data",
+              field: "available_variation_data",
               value: ["ssm"],
             },
             op: "in",
           },
         ],
-        op: "and",
-      },
-      ssmCaseFilter: {
-        content: [
-          ...[
-            {
-              content: {
-                field: "available_variation_data",
-                value: ["ssm"],
-              },
-              op: "in",
-            },
-          ],
-          ...cohortFiltersContent,
-        ],
-        op: "and",
-      },
-      ssmsTable_size: pageSize,
-      consequenceFilters: {
-        content: [
-          {
-            content: {
-              field: "consequence.transcript.is_canonical",
-              value: ["true"],
-            },
-            op: "in",
+        ...cohortFiltersContent,
+      ],
+      op: "and",
+    },
+    ssmsTable_size: pageSize,
+    consequenceFilters: {
+      content: [
+        {
+          content: {
+            field: "consequence.transcript.is_canonical",
+            value: ["true"],
           },
-        ],
-        op: "and",
-      },
-      ssmsTable_offset: offset,
-      ssmsTable_filters: tableFilters ? tableFilters : {},
-      score: "occurrence.case.project.project_id",
-      sort: [
-        {
-          field: "_score",
-          order: "desc",
-        },
-        {
-          field: "_uid",
-          order: "asc",
+          op: "in",
         },
       ],
-    };
+      op: "and",
+    },
+    ssmsTable_offset: offset,
+    ssmsTable_filters: tableFilters ? tableFilters : {},
+    score: "occurrence.case.project.project_id",
+    sort: [
+      {
+        field: "_score",
+        order: "desc",
+      },
+      {
+        field: "_uid",
+        order: "asc",
+      },
+    ],
+  };
 
-    return await graphqlAPI(SSMSTableGraphQLQuery, graphQlFilters);
-  },
-);
-
-export interface SsmsTableState {
-  readonly ssms: GDCSsmsTable;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
-
-const initialState: SsmsTableState = {
-  ssms: {
-    cases: 0,
-    filteredCases: 0,
-    ssmsTotal: 0,
-    ssms: [],
-    pageSize: 0,
-    offset: 0,
-  },
-  status: "uninitialized",
+  return graphQlFilters;
 };
 
-const slice = createSlice({
-  name: "ssmsTable",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchSsmsTable.fulfilled, (state, action) => {
-        const response = action.payload;
-        if (response.errors) {
-          state = castDraft(initialState);
-          state.status = "rejected";
-          state.error = response.errors.filters;
-        }
-        const data = action.payload.data.viewer.explore;
-        state.ssms.ssmsTotal = data.ssms.hits.total;
-        state.ssms.cases = data.cases.hits.total;
-        state.ssms.filteredCases = data.filteredCases.hits.total;
-        state.ssms.ssms = data.ssms.hits.edges.map(
-          ({ node }: Record<any, any>): SSMSData => {
-            return {
-              ssm_id: node.ssm_id,
-              score: node.score,
-              id: node.id,
-              mutation_subtype: node.mutation_subtype,
-              genomic_dna_change: node.genomic_dna_change,
-              occurrence: node.occurrence.hits.total,
-              filteredOccurrences: node.filteredOccurences.hits.total,
-              consequence: node.consequence.hits.edges.map(
-                (y: Record<any, any>) => {
-                  const transcript = y.node.transcript;
-                  return {
-                    id: y.node.id,
-                    is_canonical: transcript.is_canonical,
-                    aa_change: transcript.aa_change,
-                    consequence_type: transcript.consequence_type,
-                    annotation: { ...transcript.annotation },
-                    gene: { ...transcript.gene },
-                  };
+export const smtableslice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getSssmTableData: builder.query({
+      query: (request: SsmsTableRequestParameters) => {
+        console.log({ request });
+        return {
+          graphQLQuery: SSMSTableGraphQLQuery,
+          graphQLFilters: generateFilter(request),
+        };
+      },
+      transformResponse: (response: GraphQLApiResponse<ssmtableResponse>) => {
+        const data = response.data.viewer.explore;
+        const ssmsTotal = data.ssms.hits.total;
+        const cases = data.cases.hits.total;
+        const filteredCases = data.filteredCases.hits.total;
+        const ssms = data.ssms.hits.edges.map(({ node }): SSMSData => {
+          return {
+            ssm_id: node.ssm_id,
+            score: node.score,
+            id: node.id,
+            mutation_subtype: node.mutation_subtype,
+            genomic_dna_change: node.genomic_dna_change,
+            occurrence: node.occurrence.hits.total,
+            filteredOccurrences: node.filteredOccurences.hits.total,
+            consequence: node.consequence.hits.edges.map(({ node }) => {
+              const transcript = node.transcript;
+              return {
+                id: node.id,
+                transcript: {
+                  aa_change: node.transcript.aa_change,
+                  annotation: { ...node.transcript.annotation },
+                  consequence_type: transcript.consequence_type,
+                  gene: { ...transcript.gene },
+                  is_canonical: transcript.is_canonical,
                 },
-              ),
-            };
-          },
-        );
-        state.status = "fulfilled";
-        state.error = undefined;
-        return state;
-      })
-      .addCase(fetchSsmsTable.pending, (state) => {
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchSsmsTable.rejected, (state, action) => {
-        state.status = "rejected";
-        if (action.error) {
-          state.error = action.error.message;
-        }
-        return state;
-      });
-  },
+              };
+            }),
+          };
+        });
+
+        return {
+          ssmsTotal,
+          cases,
+          filteredCases,
+          ssms,
+        };
+      },
+    }),
+  }),
 });
 
-export const ssmsTableReducer = slice.reducer;
-
-export const selectSsmsTableState = (state: CoreState): GDCSsmsTable =>
-  state.genomic.ssmsTable.ssms;
-
-export const selectSsmsTableData = (
-  state: CoreState,
-): CoreDataSelectorResponse<SsmsTableState> => {
-  return {
-    data: state.genomic.ssmsTable,
-    status: state.genomic.ssmsTable.status,
-    error: state.genomic.ssmsTable.error,
-  };
-};
-
-export const useSsmsTable = createUseFiltersCoreDataHook(
-  fetchSsmsTable,
-  selectSsmsTableData,
-  selectCurrentCohortFilterSet, // used only to trigger a fetch
-);
+export const { useGetSssmTableDataQuery } = smtableslice;
+export const ssmsTableReducer: Reducer = smtableslice.reducer as Reducer;
