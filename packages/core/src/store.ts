@@ -13,12 +13,12 @@ import {
 import { reducers } from "./reducers";
 import { allFilesApiSliceMiddleware } from "./features/files/allFilesMutation";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
+import { caseSetListenerMiddleware } from "./listeners";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
 import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
 import { filesApiSliceMiddleware } from "./features/files/filesSlice";
-import { caseSetListenerMiddleware } from "./listeners";
 import storage from "./storage-persist";
 
 const persistConfig = {

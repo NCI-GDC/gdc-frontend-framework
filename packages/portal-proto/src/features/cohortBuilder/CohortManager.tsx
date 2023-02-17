@@ -43,7 +43,6 @@ import {
   updateActiveCohortFilter,
   FilterGroup,
   addNewCohortGroups,
-  defaultCohortNameGenerator,
   showModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
@@ -118,13 +117,16 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
 
-  // util function to check for names while saving the cohort
+  // util function to check for duplicate names while saving the cohort
+  // here we filter the current cohort id so as not to so duplicate name warning
   // passed to SavingCohortModal as a prop
   const onSaveCohort = (name: string) =>
     cohorts
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
 
+  // util function to check for duplicate names while creating the cohort
+  // passed to SavingCohortModal as a prop
   const onCreateCohort = (name: string) =>
     cohorts.every((cohort) => cohort.name !== name);
 
@@ -369,7 +371,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

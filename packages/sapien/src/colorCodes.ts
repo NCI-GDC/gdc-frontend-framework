@@ -4,7 +4,7 @@ export default {
   Bladder: "rgb(105, 161, 236)",
   Blood: "rgb(246, 40, 12)",
   Bone: "rgb(156, 156, 156)",
-  "Bone Marrow": "rgb(240, 238, 55)",
+  "Bone Marrow and Blood": "rgb(240, 238, 55)",
   Brain: "rgb(23, 153, 227)",
   Breast: "rgb(223, 46, 189)",
   Cervix: "rgb(215, 33, 93)",
