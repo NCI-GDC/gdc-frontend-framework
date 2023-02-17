@@ -13,7 +13,9 @@
     "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
     "pack": "npm pack",
     "build:watch": "npm run compile && npm run build -- --watch",
-    "dev": "npm run build:watch"
+    "dev": "npm run build:watch",
+    "test": "echo No tests yet",
+    "test:all": "echo No tests yet"
   },
   "dependencies": {
     "@babel/preset-react": "^7.18.6",
