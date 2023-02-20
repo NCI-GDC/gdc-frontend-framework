@@ -1,5 +1,8 @@
 from typing import List
 
+class GenericLocators:
+    RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
+    CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -9,6 +12,7 @@ class BasePage:
         self.driver.goto(url)
 
     def click(self, locator):
+        self.wait_for_selector(locator)
         self.driver.locator(locator).click()
 
     def get_text(self, locator):
@@ -37,3 +41,17 @@ class BasePage:
             filter_name = filter_name[2:]
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
+
+    def wait_for_selector(self, locator):
+        self.driver.wait_for_selector(locator)
+
+    # Clicks a radio button in a filter card
+    def click_radio_button(self, radio_name):
+        locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
+    # Returns if a filter card enum checkbox is checked
+    def is_facet_card_enum_checkbox_checked(self, checkbox_id):
+        locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
+        result = self.is_checked(locator)
+        return result

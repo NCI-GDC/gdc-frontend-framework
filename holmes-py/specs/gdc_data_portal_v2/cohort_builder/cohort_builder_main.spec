@@ -22,20 +22,20 @@ tags: cohort-selections
   |-----------------|---------------------|
   |Morphology       |8010/3               |
 
-* Is checkbox checked from "General Diagnosis" tab on the Cohort Builder page
-  |facet_name       |selection            |
-  |-----------------|---------------------|
-  |Morphology       |8010/3               |
+* Is checkbox checked
+  |checkbox_id          |
+  |---------------------|
+  |8010/3               |
 
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Morphology       |8010/3               |
 
-* Is checkbox not checked from "General Diagnosis" tab on the Cohort Builder page
-  |facet_name       |selection            |
-  |-----------------|---------------------|
-  |Morphology       |8010/3               |
+* Is checkbox not checked
+  |checkbox_id          |
+  |---------------------|
+  |8010/3               |
 
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |action               |
@@ -109,10 +109,10 @@ tags: cohort-selections
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |
 
-* Click the following radio buttons from "Demographic" tab on the Cohort Builder page
-  |facet_name       |selection            |
-  |-----------------|---------------------|
-  |Age at Diagnosis |diagnoses.age_at_diagnosis_21915.0-25568.0_1|
+* Click the following radio buttons
+  |radio_id                                           |
+  |---------------------------------------------------|
+  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_1 |
 
   * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |

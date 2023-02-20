@@ -119,3 +119,23 @@ def verify_file_has_expected_field_names(file_type, field_name):
     elif "TSV" in file_type:
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
+
+@step("Click the following radio buttons <table>")
+def click_radio_buttons(table):
+    for k, v in enumerate(table):
+        APP.home_page.click_radio_button(v[0])
+        time.sleep(0.1)
+
+@step("Is checkbox checked <table>")
+def is_checkbox_checked(table):
+    for k, v in enumerate(table):
+        is_checkbox_enabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
+        time.sleep(0.1)
+
+@step("Is checkbox not checked <table>")
+def is_checkbox_not_checked(table):
+    for k, v in enumerate(table):
+        is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
+        time.sleep(0.1)
