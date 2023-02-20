@@ -16,7 +16,7 @@ export interface BodyplotCountsData {
   fileCount: number;
   key: string;
 }
-interface BodyplotData extends BodyplotCountsData {
+export interface BodyplotData extends BodyplotCountsData {
   allPrimarySites: string[];
   allTissuesOrOrgansOfOrigin: string[];
 }

@@ -383,12 +383,14 @@ describe("add, update, and remove cohort", () => {
     .spyOn(cohortSlice, "createCohortId")
     .mockReturnValueOnce("000-000-000-1")
     .mockReturnValueOnce("000-000-000-2")
-    .mockReturnValueOnce("000-000-000-3");
+    .mockReturnValueOnce("000-000-000-3")
+    .mockReturnValueOnce("000-000-000-4");
   jest
     .spyOn(cohortSlice, "createCohortName")
     .mockReturnValueOnce("New Cohort")
     .mockReturnValueOnce("New Cohort 2")
-    .mockReturnValueOnce("New Cohort 3");
+    .mockReturnValueOnce("New Cohort 3")
+    .mockReturnValueOnce("New Cohort 4");
   const mockedDate = new Date("2020-11-01T00:00:00.000Z");
   // Override the correct Date function, see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/42067#issuecomment-643674689
   type PatchedGlobal = {
@@ -692,6 +694,86 @@ describe("add, update, and remove cohort", () => {
       removeCohort({ shouldShowMessage: true }),
     );
     expect(availableCohorts).toEqual(removeState);
+  });
+
+  test("should add new cohort with filter and message, and make current cohort", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "000-000-000-1",
+        message: undefined,
+        ids: ["000-000-000-1"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              status: "uninitialized",
+              caseSetIds: undefined,
+              filters: undefined,
+            },
+            modified: true,
+            modified_datetime: new Date().toISOString(),
+          },
+        },
+      },
+      addNewCohortWithFilterAndMessage({
+        filters: {
+          mode: "and",
+          root: {
+            "cases.primary_site": {
+              operator: "includes",
+              field: "cases.primary_site",
+              operands: ["breast", "bronchus and lung"],
+            },
+          },
+        },
+        message: "newProjectsCohort",
+        name: "New Cohort 2",
+        makeCurrent: true,
+      }),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "000-000-000-4",
+      message: "newProjectsCohort|New Cohort 2|000-000-000-4",
+      ids: ["000-000-000-1", "000-000-000-4"],
+      entities: {
+        "000-000-000-1": {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
+          },
+          modified: true,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
+        },
+        "000-000-000-4": {
+          filters: {
+            mode: "and",
+            root: {
+              "cases.primary_site": {
+                field: "cases.primary_site",
+                operands: ["breast", "bronchus and lung"],
+                operator: "includes",
+              },
+            },
+          },
+          id: "000-000-000-4",
+          caseSet: {
+            status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
+          },
+          modified: true,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
+          name: "New Cohort 2",
+          saved: false,
+        },
+      },
+    });
   });
 });
 

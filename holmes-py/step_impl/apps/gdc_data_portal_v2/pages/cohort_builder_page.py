@@ -9,7 +9,7 @@ class CohortBuilderPageLocators:
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
-    FACET_GROUP_IDENT = lambda group_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}"]'
+    FACET_GROUP_IDENT = lambda group_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]'
     FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
     FACET_GROUP_RADIO_BUTTON_IDENT = lambda group_name, radio_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/..//input[@id="cases.{radio_name}"]'
     FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
@@ -43,6 +43,12 @@ class CohortBuilderPage(BasePage):
     def make_selection_within_facet_group(self, facet_group_name, selection):
         locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
         self.click(locator)
+
+    # Checks to see if specified facet card is present
+    def check_facet_card_presence(self, facet_group_name):
+        locator = CohortBuilderPageLocators.FACET_GROUP_IDENT(facet_group_name)
+        result = self.is_visible(locator)
+        return result
 
     # Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc.
     def perform_action_within_filter_card(self, facet_group_name, action):

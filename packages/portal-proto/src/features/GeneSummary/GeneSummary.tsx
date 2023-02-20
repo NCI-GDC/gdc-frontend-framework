@@ -15,6 +15,7 @@ import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 interface GeneViewProps {
   data: {
@@ -166,9 +167,7 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
             <div className="mt-4">
               <div className="flex items-center gap-2">
                 <BarChartIcon size={20} className="text-accent" />
-                <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                  Cancer Distribution
-                </h2>
+                <HeaderTitle>Cancer Distribution</HeaderTitle>
               </div>
               <Grid>
                 <SSMPlot page={"gene"} gene={gene_id} height={200} />
@@ -181,9 +180,7 @@ const GeneView = ({ data, gene_id }: GeneViewProps) => {
               <div className="mt-4">
                 <div className="flex items-center gap-2">
                   <BarChartIcon size={20} className="text-accent" />
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Most Frequent Somatic Mutations
-                  </h2>
+                  <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
