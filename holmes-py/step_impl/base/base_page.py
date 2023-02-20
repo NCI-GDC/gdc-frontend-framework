@@ -9,6 +9,7 @@ class BasePage:
         self.driver.goto(url)
 
     def click(self, locator):
+        self.wait_for_selector(locator)
         self.driver.locator(locator).click()
 
     def get_text(self, locator):

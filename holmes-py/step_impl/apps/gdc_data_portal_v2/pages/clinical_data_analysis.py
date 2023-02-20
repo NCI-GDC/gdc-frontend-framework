@@ -25,8 +25,7 @@ class ClinicalDataAnalysisPage:
     def visit(self):
         self.driver.goto(self.URL)
 
-    def navigate_to_cdave_page(self):
-        self.driver.locator(HomePageLocators.NAV_BAR_ANALYSIS_ICON).click()
+    def click_on_cdave_play_button(self):
         self.driver.locator(
             ClinicalDataAnalysisLocators.CLINICAL_DATA_ANALYSIS_PLAY_BUTTON
         ).click()

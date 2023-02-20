@@ -22,7 +22,6 @@ def make_cohort_builder_selections(tab_name: str, table):
 def enter_text_into_search_bar(table):
     for k, v in enumerate(table):
         APP.cohort_builder_page.send_text_into_search_bar(v[0])
-        time.sleep(0.1)
 
 @step("Validate search bar results on the Cohort Builder page <table>")
 def validate_search_bar_result_text(table):
@@ -45,6 +44,7 @@ def add_custom_filter_card(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         APP.cohort_builder_page.add_custom_filter(v[0])
+
 @step("Validate presence of facet cards on the <tab_name> tab on the Cohort Builder page <table>")
 def make_cohort_builder_selections(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
