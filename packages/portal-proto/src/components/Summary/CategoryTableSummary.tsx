@@ -1,4 +1,5 @@
 import { TempTable } from "@/features/files/FileView";
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 
 interface CategoryTableSummaryProps {
   title: string;
@@ -16,9 +17,7 @@ export const CategoryTableSummary = ({
 }: CategoryTableSummaryProps): JSX.Element => (
   <div className="flex-1">
     <div className="bg-base-lightest text-base-contrast-lighter p-2">
-      <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-        {title}
-      </h2>
+      <HeaderTitle>{title}</HeaderTitle>
       {!dataObject && (
         <span className="block text-center text-sm pt-4">No results found</span>
       )}
