@@ -14,6 +14,7 @@ const pickedProjectsSlice = createSlice({
   name: "projectApp/pickedProjects",
   initialState: pickedProjectsAdapter.getInitialState(),
   reducers: {
+    resetPickedProjects: () => pickedProjectsAdapter.getInitialState(),
     addProject: pickedProjectsAdapter.addOne,
     addProjects: pickedProjectsAdapter.addMany,
     removeProject: pickedProjectsAdapter.removeOne,
@@ -22,8 +23,13 @@ const pickedProjectsSlice = createSlice({
 });
 
 export const pickedProjectsReducer = pickedProjectsSlice.reducer;
-export const { addProject, addProjects, removeProject, removeProjects } =
-  pickedProjectsSlice.actions;
+export const {
+  addProject,
+  addProjects,
+  removeProject,
+  removeProjects,
+  resetPickedProjects,
+} = pickedProjectsSlice.actions;
 
 const pickedProjectsSelectors = pickedProjectsAdapter.getSelectors<AppState>(
   (state) => state.selected,

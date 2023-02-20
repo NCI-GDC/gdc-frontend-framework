@@ -1,19 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@mantine/core";
-import { useAppSelector } from "@/features/projectsCenter/appApi";
-import { selectPickedProjects } from "@/features/projectsCenter/pickedProjectsSlice";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/features/projectsCenter/appApi";
+import {
+  resetPickedProjects,
+  selectPickedProjects,
+} from "@/features/projectsCenter/pickedProjectsSlice";
 import {
   FilterSet,
-  clearCohortMessage,
-  selectCohortMessage,
   useCoreSelector,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
-  resetSelectedCases,
+  selectAvailableCohorts,
 } from "@gff/core";
-import { showNotification } from "@mantine/notifications";
-import { NewCohortNotificationWithSetAsCurrent } from "@/features/cohortBuilder/CohortNotifications";
 import tw from "tailwind-styled-components";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 interface CountsIconProps {
   $count?: number;
@@ -37,10 +40,12 @@ const ProjectsCohortButton = (): JSX.Element => {
   const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>
     selectPickedProjects(state),
   );
-  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
   const coreDispatch = useCoreDispatch();
+  const appDispatch = useAppDispatch();
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
-  const createCohortFromProjects = () => {
+  const createCohortFromProjects = (name: string) => {
     const filters: FilterSet = {
       mode: "and",
       root: {
@@ -51,55 +56,49 @@ const ProjectsCohortButton = (): JSX.Element => {
         },
       },
     };
-    coreDispatch(resetSelectedCases());
+    appDispatch(resetPickedProjects());
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: filters,
+        name,
         message: "newProjectsCohort",
       }),
     );
   };
 
-  useEffect(() => {
-    if (cohortMessage) {
-      const cmdAndParam = cohortMessage.split("|", 3);
-      if (cmdAndParam.length == 3) {
-        if (cmdAndParam[0] === "newProjectsCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-      }
-      coreDispatch(clearCohortMessage());
-    }
-  }, [cohortMessage, coreDispatch]);
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
 
   return (
-    <Button
-      variant="outline"
-      color="primary"
-      disabled={pickedProjects.length == 0}
-      leftIcon={
-        pickedProjects.length ? (
-          <CountsIcon $count={pickedProjects.length}>
-            {" "}
-            {pickedProjects.length}{" "}
-          </CountsIcon>
-        ) : null
-      }
-      onClick={() => createCohortFromProjects()}
-    >
-      Create New Cohort
-    </Button>
+    <>
+      <Button
+        variant="outline"
+        color="primary"
+        disabled={pickedProjects.length == 0}
+        leftIcon={
+          pickedProjects.length ? (
+            <CountsIcon $count={pickedProjects.length}>
+              {pickedProjects.length}{" "}
+            </CountsIcon>
+          ) : null
+        }
+        onClick={() => setShowCreateCohort(true)}
+      >
+        Create New Cohort
+      </Button>
+      {showCreateCohort && (
+        <SaveOrCreateCohortModal
+          entity="cohort"
+          action="create"
+          opened
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohortFromProjects(newName);
+          }}
+          onNameChange={onNameChange}
+        />
+      )}
+    </>
   );
 };
 

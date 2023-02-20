@@ -1,4 +1,4 @@
 import { createHumanBody } from "./sapien";
 import { TConfig } from "./types";
-
-export { createHumanBody, type TConfig };
+import colorCodes from "./colorCodes";
+export { createHumanBody, colorCodes, type TConfig };

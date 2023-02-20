@@ -20,10 +20,11 @@ export const createHumanBody: TCreateHumanBody = ({
   labelSize,
   tickInterval = 1000,
   title = "Cases by Primary Site",
+  xAxisLabel = "1000s of Cases",
   offsetLeft = 0,
   offsetTop = 0,
-  primarySiteKey = "_key",
-  caseCountKey = "_count",
+  primarySiteKey = "key",
+  caseCountKey = "count",
   fileCountKey = "fileCount",
 }: TConfig) => {
   // Similar to a React target element
@@ -39,7 +40,7 @@ export const createHumanBody: TCreateHumanBody = ({
   labelSize = labelSize || "12px";
 
   const plotHeight = height - 20;
-  const barStartOffset = 110;
+  const barStartOffset = 125;
   const barWidth = width - barStartOffset;
   const maxCases = Math.max(
     ...data.map((d: BodyplotDataEntry) => d[caseCountKey]),
@@ -52,8 +53,8 @@ export const createHumanBody: TCreateHumanBody = ({
     .append("svg")
     .attr("class", "chart")
     .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("height", height + 15)
+    .attr("viewBox", `0 0 ${width} ${height + 15}`)
     .append("g");
 
   // Bar Heights
@@ -83,7 +84,7 @@ export const createHumanBody: TCreateHumanBody = ({
   for (let i = 0; i < numberOfVerticalAxis; i++) {
     svg
       .append("line")
-      .attr("stroke", `rgba(11, 11, 11, 0.5)`)
+      .attr("stroke", `rgba(147, 147, 147, 0.5)`)
       .attr("x1", x(tickInterval) * i + barStartOffset)
       .attr("x2", x(tickInterval) * i + barStartOffset)
       .attr("y1", 0)
@@ -95,10 +96,20 @@ export const createHumanBody: TCreateHumanBody = ({
         .append("text")
         .attr("y", plotHeight + 13)
         .attr("x", x(tickInterval) * i + barStartOffset)
-        .attr("fill", "rgb(10, 10, 10)")
+        .attr("fill", "rgba(40,40,40,0.7)")
         .attr("font-size", "12px")
         .style("text-anchor", "middle")
         .text(() => (tickInterval * i).toLocaleString());
+    }
+    if (xAxisLabel) {
+      xAxisLabels
+        .append("text")
+        .attr("y", plotHeight + 26)
+        .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
+        .attr("fill", "rgba(94,94,94,0.7)")
+        .attr("font-size", "11px")
+        .style("text-anchor", "middle")
+        .text(() => xAxisLabel);
     }
   }
 
@@ -147,7 +158,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("opacity", 1)
           .html(
             `
-            <div style="color: #bb0e3d">${d._key}</div>
+            <div style="color: #bb0e3d">${d.key}</div>
             <div style="font-size: 12px; color: rgb(20, 20, 20)">
               ${d[caseCountKey]} cases (${d[fileCountKey] || 100} files)
             </div>
@@ -179,7 +190,7 @@ export const createHumanBody: TCreateHumanBody = ({
     })
     .on("click", clickHandler);
 
-  // Bar Chart Tootlip
+  // Bar Chart Tooltip
   const tooltip = d3
     .select(selector)
     .append("div")
@@ -239,7 +250,7 @@ export const createHumanBody: TCreateHumanBody = ({
           .style("opacity", 1)
           .html(
             `
-            <div style="color: #bb0e3d">${d._key}</div>
+            <div style="color: #bb0e3d">${d.key}</div>
             <div style="font-size: 12px; color: rgb(20, 20, 20)">
               ${d[caseCountKey].toLocaleString()} cases, (${
               d[fileCountKey].toLocaleString() || 100
@@ -275,11 +286,9 @@ export const createHumanBody: TCreateHumanBody = ({
 
   const svgs = document.querySelectorAll("#human-body-highlights svg");
 
-  [].forEach.call(svgs, (svg: any) => {
-    svg.addEventListener("click", function () {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      clickHandler({ _key: this.id });
+  [].forEach.call(svgs, (svg: SVGElement) => {
+    svg.addEventListener("click", function (this: SVGElement) {
+      clickHandler({ key: this.id });
     });
 
     svg.addEventListener("mouseover", function (this: SVGElement, event: any) {

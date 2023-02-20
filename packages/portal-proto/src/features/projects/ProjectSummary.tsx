@@ -21,34 +21,11 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
-import tw from "tailwind-styled-components";
-
-const PercentBar = tw.div`
-relative
-bg-percentage-bar-base
-rounded-sm
-px-1
-w-16
-h-full`;
-
-const PercentBarLabel = tw.div`
-absolute
-z-10
-left-0
-top-0
-w-full
-h-full
-text-percentage-bar-label
-text-center`;
-
-const PercentBarComplete = tw.div`
-absolute
-left-0
-top-0
-w-full
-h-full
-bg-percentage-bar-complete
-rounded-sm`;
+import {
+  PercentBar,
+  PercentBarComplete,
+  PercentBarLabel,
+} from "../shared/tailwindComponents";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
