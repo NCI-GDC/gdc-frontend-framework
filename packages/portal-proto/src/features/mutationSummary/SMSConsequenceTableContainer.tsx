@@ -71,9 +71,11 @@ export const SMSConsequenceTableContainer: React.FC<
     if (status === "fulfilled") {
       // need to sort the table data and then store all entries in tableData
       const sortedData: ConsequenceTableData[] = [
-        ...initialData.consequence.filter((x) => x.transcript.is_canonical),
+        ...initialData.consequence.filter(
+          ({ transcript: { is_canonical } }) => is_canonical,
+        ),
         ...initialData.consequence
-          .filter((x) => !x.transcript.is_canonical)
+          .filter(({ transcript: { is_canonical } }) => !is_canonical)
           .sort((a, b) => {
             if (
               a.transcript.aa_change !== null &&
@@ -94,26 +96,44 @@ export const SMSConsequenceTableContainer: React.FC<
             if (a.transcript.aa_change == b.transcript.aa_change) return 0;
             return -1;
           }),
-      ].map((c) => {
-        return {
-          gene: c.transcript.gene.symbol,
-          gene_id: c.transcript.gene.gene_id,
-          aa_change: c.transcript.aa_change,
-          DNAChange: c.transcript.annotation.hgvsc,
-          consequences: c.transcript.consequence_type,
-          transcript_id: c.transcript.transcript_id,
-          is_canonical: c.transcript.is_canonical,
-          gene_strand: c.transcript.gene.gene_strand,
-          impact: {
-            polyphenImpact: c.transcript.annotation.polyphen_impact,
-            polyphenScore: c.transcript.annotation.polyphen_score,
-            siftImpact: c.transcript.annotation.sift_impact,
-            siftScore: c.transcript.annotation.sift_score,
-            vepImpact: c.transcript.annotation.vep_impact,
+      ].map(
+        ({
+          transcript: {
+            gene: { gene_id, symbol, gene_strand },
+            aa_change,
+            consequence_type,
+            is_canonical,
+            transcript_id,
+            annotation: {
+              hgvsc,
+              polyphen_impact,
+              polyphen_score,
+              sift_impact,
+              sift_score,
+              vep_impact,
+            },
           },
-          subRows: " ",
-        };
-      });
+        }) => {
+          return {
+            gene: symbol,
+            gene_id: gene_id,
+            aa_change: aa_change,
+            DNAChange: hgvsc,
+            consequences: consequence_type,
+            transcript_id: transcript_id,
+            is_canonical: is_canonical,
+            gene_strand: gene_strand,
+            impact: {
+              polyphenImpact: polyphen_impact,
+              polyphenScore: polyphen_score,
+              siftImpact: sift_impact,
+              siftScore: sift_score,
+              vepImpact: vep_impact,
+            },
+            subRows: " ",
+          };
+        },
+      );
       setTableData(sortedData);
     }
   }, [status, initialData]);

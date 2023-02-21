@@ -149,7 +149,7 @@ const slice = createSlice({
         state.ssmsConsequence.id = data.id;
         state.ssmsConsequence.consequenceTotal = data.consequence.hits.total;
         (state.ssmsConsequence.consequence = data.consequence.hits.edges.map(
-          ({ node }: { node: any }) => {
+          ({ node }: { node: SSMSConsequence }) => {
             const transcript = node.transcript;
             return {
               id: node.id,

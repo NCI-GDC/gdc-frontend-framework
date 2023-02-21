@@ -59,8 +59,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const transformResponse = useSomaticMutationsTableFormat(initialData);
 
-  console.log({ transformResponse });
-
   useEffect(() => {
     if (transformResponse[0]?.ssmsTotal)
       handleSMTotal(transformResponse[0].ssmsTotal);

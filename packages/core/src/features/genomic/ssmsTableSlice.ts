@@ -1,4 +1,3 @@
-import { DataStatus } from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import {
   buildCohortGqlOperator,
@@ -14,6 +13,7 @@ import { appendFilterToOperation } from "./utils";
 import { GenomicTableProps } from "./types";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
+import { DataStatus } from "src/dataAccess";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
@@ -343,13 +343,10 @@ const generateFilter = ({
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getSssmTableData: builder.query({
-      query: (request: SsmsTableRequestParameters) => {
-        console.log({ request });
-        return {
-          graphQLQuery: SSMSTableGraphQLQuery,
-          graphQLFilters: generateFilter(request),
-        };
-      },
+      query: (request: SsmsTableRequestParameters) => ({
+        graphQLQuery: SSMSTableGraphQLQuery,
+        graphQLFilters: generateFilter(request),
+      }),
       transformResponse: (response: GraphQLApiResponse<ssmtableResponse>) => {
         const data = response.data.viewer.explore;
         const ssmsTotal = data.ssms.hits.total;
