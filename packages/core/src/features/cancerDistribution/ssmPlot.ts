@@ -44,7 +44,7 @@ const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument
 const fetchSsmAnalysisQuery = async (
   gene: string,
   ssms: string,
-  contextFilters?: FilterSet,
+  contextFilters: FilterSet | undefined,
 ) => {
   const gqlContextFilter = buildCohortGqlOperator(contextFilters);
   const graphqlFilters = gene
@@ -161,7 +161,7 @@ export const fetchSsmPlot = createAsyncThunk(
   }: {
     gene: string;
     ssms: string;
-    contextFilters?: FilterSet;
+    contextFilters: FilterSet | undefined;
   }) => {
     return await fetchSsmAnalysisQuery(gene, ssms, contextFilters);
   },

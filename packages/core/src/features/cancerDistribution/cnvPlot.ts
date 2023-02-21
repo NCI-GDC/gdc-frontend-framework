@@ -58,7 +58,7 @@ const graphQLQuery = `query CancerDistributionCNV(
 
 const fetchCnvAnalysisQuery = async (
   gene: string,
-  contextFilters?: FilterSet,
+  contextFilters: FilterSet | undefined,
 ): Promise<GraphQLApiResponse> => {
   const gqlContextFilter = buildCohortGqlOperator(contextFilters);
   const graphQLFilters = {
@@ -199,7 +199,7 @@ export const fetchCnvPlot = createAsyncThunk(
     contextFilters,
   }: {
     gene: string;
-    contextFilters?: FilterSet;
+    contextFilters: FilterSet | undefined;
   }): Promise<GraphQLApiResponse> => {
     return await fetchCnvAnalysisQuery(gene, contextFilters);
   },

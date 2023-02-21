@@ -64,7 +64,10 @@ export interface CancerDistributionTableData {
 export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneCancerDistributionTable: builder.query({
-      query: (request: { gene: string; contextFilters?: FilterSet }) => {
+      query: (request: {
+        gene: string;
+        contextFilters: FilterSet | undefined;
+      }) => {
         const gqlContextFilter = buildCohortGqlOperator(request.contextFilters);
         return {
           graphQLQuery: `
