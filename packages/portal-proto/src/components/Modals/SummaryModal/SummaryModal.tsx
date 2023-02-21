@@ -36,7 +36,13 @@ export const SummaryModal = ({
 }): JSX.Element => {
   const { prevPath, currentPath } = useContext(URLContext);
   const [modalOpened, setOpened] = useState(opened);
-  const { entity_type, entity_id, entity_name } = entityMetadata;
+  const {
+    entity_type,
+    entity_id,
+    entity_name,
+    contextSensitive = false,
+    contextFilters = undefined,
+  } = entityMetadata;
   useEffect(() => {
     if (prevPath !== currentPath) {
       setOpened(false);
@@ -78,7 +84,14 @@ export const SummaryModal = ({
           ),
         }
       : {
-          SummaryPage: <GeneSummary gene_id={entity_id} isModal={true} />,
+          SummaryPage: (
+            <GeneSummary
+              gene_id={entity_id}
+              isModal={true}
+              contextSensitive={contextSensitive}
+              contextFilters={contextFilters}
+            />
+          ),
           HeaderTitle: (
             <SummaryModalHeader iconText="gn" headerTitle={entity_name} />
           ),

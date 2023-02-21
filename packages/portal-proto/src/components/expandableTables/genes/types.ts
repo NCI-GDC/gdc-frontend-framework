@@ -1,3 +1,4 @@
+import { FilterSet } from "@gff/core";
 import { Row } from "@tanstack/react-table";
 import { SelectReducerAction, Survival, Column } from "../shared/types";
 
@@ -84,6 +85,7 @@ export interface GenesTableProps {
   visibleColumns: Column[];
   searchTerm: string;
   isDemoMode?: boolean;
+  genomicFilters: FilterSet;
 }
 
 export const DEFAULT_GTABLE_ORDER = [

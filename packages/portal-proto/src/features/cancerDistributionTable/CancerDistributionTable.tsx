@@ -7,6 +7,8 @@ import {
   useGetSSMSCancerDistributionTableQuery,
   useGetProjectsQuery,
   CancerDistributionTableData,
+  FilterSet,
+  joinFilters,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -19,12 +21,28 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
   readonly symbol: string;
+  readonly genomicFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 export const GeneCancerDistributionTable: React.FC<
   GeneCancerDistributionTableProps
-> = ({ gene, symbol }: GeneCancerDistributionTableProps) => {
+> = ({
+  gene,
+  symbol,
+  genomicFilters = undefined,
+  cohortFilters = undefined,
+}: GeneCancerDistributionTableProps) => {
+  const contextFilters =
+    !genomicFilters && !cohortFilters
+      ? undefined
+      : genomicFilters && !cohortFilters
+      ? genomicFilters
+      : !genomicFilters && cohortFilters
+      ? cohortFilters
+      : joinFilters(cohortFilters, genomicFilters);
+
   const { data, isFetching, isError, isSuccess } =
-    useGetGeneCancerDistributionTableQuery({ gene });
+    useGetGeneCancerDistributionTableQuery({ gene, contextFilters });
   return (
     <CancerDistributionTable
       data={data}

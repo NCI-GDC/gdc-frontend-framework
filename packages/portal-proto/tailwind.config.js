@@ -657,6 +657,8 @@ module.exports = {
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
         },
+        warningColor: "#FFAD0D", //orangish
+        warningColorText: "#976F21", //lighter orangish
       },
       height: {
         "nci-logo": "54px",

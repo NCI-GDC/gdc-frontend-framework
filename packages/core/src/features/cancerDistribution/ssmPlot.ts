@@ -6,6 +6,7 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { CoreState } from "../../reducers";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
@@ -39,12 +40,18 @@ const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument
 }
 `;
 
-const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
+const fetchSsmAnalysisQuery = async (
+  gene: string,
+  ssms: string,
+  contextFilters?: FilterSet,
+) => {
+  const convert = buildCohortGqlOperator(contextFilters);
   const graphqlFilters = gene
     ? {
         caseAggsFilters: {
           op: "and",
           content: [
+            // need here
             {
               op: "in",
               content: {
@@ -66,11 +73,13 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
                 value: "MISSING",
               },
             },
+            ...(convert ? (convert?.content as any) : []),
           ],
         },
         ssmFilters: {
           op: "and",
           content: [
+            // need here
             {
               op: "in",
               content: {
@@ -85,6 +94,7 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
                 value: [gene],
               },
             },
+            ...(convert ? (convert?.content as any) : []),
           ],
         },
         ssmTested: {
@@ -141,8 +151,16 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
 
 export const fetchSsmPlot = createAsyncThunk(
   "cancerDistribution/ssmPlot",
-  async ({ gene, ssms }: { gene: string; ssms: string }) => {
-    return await fetchSsmAnalysisQuery(gene, ssms);
+  async ({
+    gene,
+    ssms,
+    contextFilters,
+  }: {
+    gene: string;
+    ssms: string;
+    contextFilters?: FilterSet;
+  }) => {
+    return await fetchSsmAnalysisQuery(gene, ssms, contextFilters);
   },
 );
 

@@ -15,6 +15,7 @@ import { Image } from "@/components/Image";
 import { startCase } from "lodash";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
+import { FilterSet } from "@gff/core";
 
 export const createTableColumn = (
   accessor: string,
@@ -30,6 +31,7 @@ export const createTableColumn = (
   setGeneID: Dispatch<SetStateAction<string>>,
   isDemoMode: boolean,
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
+  genomicFilters: FilterSet,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -464,6 +466,8 @@ export const createTableColumn = (
                       entity_type: "genes",
                       entity_id: row.original?.geneID,
                       entity_name: label,
+                      contextSensitive: true,
+                      contextFilters: genomicFilters,
                     })
                   }
                 >

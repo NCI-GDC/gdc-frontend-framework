@@ -31,6 +31,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   visibleColumns,
   searchTerm,
   isDemoMode = false,
+  genomicFilters,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -124,6 +125,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           setGeneID,
           isDemoMode,
           setEntityMetadata,
+          genomicFilters,
         );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

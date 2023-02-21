@@ -7,11 +7,9 @@ import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import {
   useGenesSummaryData,
   GeneSummaryData,
-  // useCoreSelector,
-  // selectCurrentCohortFilters,
-  // FilterSet,
-  // buildCohortGqlOperator,
-  // joinFilters,
+  FilterSet,
+  useCoreSelector,
+  selectCurrentCohortFilterSet,
 } from "@gff/core";
 import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
@@ -23,6 +21,7 @@ import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
+import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
 
 interface GeneViewProps {
   data: {
@@ -30,27 +29,37 @@ interface GeneViewProps {
   };
   gene_id: string;
   isModal: boolean;
+  contextSensitive: boolean;
+  contextFilters: FilterSet;
 }
 
 export const GeneSummary = ({
   gene_id,
   isModal = false,
+  contextSensitive = false,
+  contextFilters = undefined,
 }: {
   gene_id: string;
   isModal?: boolean;
+  contextSensitive?: boolean;
+  contextFilters?: FilterSet;
 }): JSX.Element => {
-  // const cohortFilters = useCoreSelector((state) =>
-  //   selectCurrentCohortFilters(state),
-  // );
-
-  const { data, isFetching } = useGenesSummaryData({ gene_id });
+  const { data, isFetching } = useGenesSummaryData({
+    gene_id,
+  });
 
   return (
     <>
       {isFetching ? (
         <LoadingOverlay visible />
       ) : data && data.genes ? (
-        <GeneView data={data} gene_id={gene_id} isModal={isModal} />
+        <GeneView
+          data={data}
+          gene_id={gene_id}
+          isModal={isModal}
+          contextSensitive={contextSensitive}
+          contextFilters={contextFilters}
+        />
       ) : (
         <SummaryErrorHeader label="Gene Not Found" />
       )}
@@ -58,7 +67,16 @@ export const GeneSummary = ({
   );
 };
 
-const GeneView = ({ data, gene_id, isModal }: GeneViewProps) => {
+const GeneView = ({
+  data,
+  gene_id,
+  isModal,
+  contextFilters = undefined,
+  contextSensitive = false,
+}: GeneViewProps) => {
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilterSet(state),
+  );
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -166,7 +184,9 @@ const GeneView = ({ data, gene_id, isModal }: GeneViewProps) => {
           {!isModal && (
             <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
           )}
-          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
+
+          <div className={`mx-auto ${isModal ? "mt-2" : "mt-20"} w-9/12 pt-4`}>
+            {contextSensitive && <ContextSensitiveBanner />}
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -192,12 +212,25 @@ const GeneView = ({ data, gene_id, isModal }: GeneViewProps) => {
                 </h2>
               </div>
               <Grid>
-                <SSMPlot page={"gene"} gene={gene_id} height={200} />
-                <CNVPlot gene={gene_id} height={200} />
+                <SSMPlot
+                  page="gene"
+                  gene={gene_id}
+                  height={200}
+                  genomicFilters={contextSensitive ? contextFilters : undefined}
+                  cohortFilters={contextSensitive ? cohortFilters : undefined}
+                />
+                <CNVPlot
+                  gene={gene_id}
+                  height={200}
+                  genomicFilters={contextSensitive ? contextFilters : undefined}
+                  cohortFilters={contextSensitive ? cohortFilters : undefined}
+                />
               </Grid>
               <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}
+                genomicFilters={contextSensitive ? contextFilters : undefined}
+                cohortFilters={contextSensitive ? cohortFilters : undefined}
               />
               <div className="mt-4">
                 <div className="flex items-center gap-2">
@@ -209,6 +242,8 @@ const GeneView = ({ data, gene_id, isModal }: GeneViewProps) => {
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
+                  genomicFilters={contextSensitive ? contextFilters : undefined}
+                  cohortFilters={contextSensitive ? cohortFilters : undefined}
                 />
               </div>
             </div>
