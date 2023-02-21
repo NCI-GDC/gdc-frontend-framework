@@ -4,7 +4,7 @@ import chromeLauncher from "chrome-launcher";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 
-/* 
+/*
   These configs are based on these desktop configs
   https://github.com/GoogleChrome/lighthouse/blob/c9584689210c4fff8398e7a124f0819a5d91a4e8/core/config/lr-desktop-config.js
 */
