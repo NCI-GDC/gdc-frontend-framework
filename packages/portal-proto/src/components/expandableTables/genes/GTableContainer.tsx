@@ -180,7 +180,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           root: {
             "genes.gene_id": {
               field: "genes.gene_id",
-              operands: selectedGenes,
+              operands: Object.keys(selectedGenes),
               operator: "includes",
             },
           },
@@ -232,6 +232,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 : Object.keys(selectedGenes).length
             }
             setType={"genes"}
+            setTypeLabel="gene"
             countHook={useGeneSetCountQuery}
             closeModal={() => setShowRemoveModal(false)}
             removeFromSetHook={useRemoveFromGeneSetMutation}

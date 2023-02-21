@@ -193,7 +193,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           root: {
             "ssms.ssm_id": {
               field: "ssms.ssm_id",
-              operands: selectedMutations,
+              operands: Object.keys(selectedMutations),
               operator: "includes",
             },
           },
@@ -247,6 +247,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 : Object.keys(selectedMutations).length
             }
             setType={"ssms"}
+            setTypeLabel="mutation"
             countHook={useSsmSetCountQuery}
             closeModal={() => setShowRemoveModal(false)}
             removeFromSetHook={useRemoveFromSsmSetMutation}
@@ -276,7 +277,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   label: "Remove from existing mutation set",
                   value: "remove",
                   disabled: Object.keys(sets).length === 0,
-                  onClick: () => setShowAddModal(true),
+                  onClick: () => setShowRemoveModal(true),
                 },
               ]}
               additionalControls={

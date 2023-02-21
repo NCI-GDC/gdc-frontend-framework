@@ -22,26 +22,24 @@ interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
   readonly removeFromCount: number;
   readonly setType: SetTypes;
+  readonly setTypeLabel: string;
   readonly index: string;
-  //readonly field: string;
   readonly closeModal: () => void;
   readonly countHook: UseQuery<any>;
   readonly removeFromSetHook: UseMutation<any>;
 }
 
-// check query
-
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   filters,
   removeFromCount,
   setType,
+  setTypeLabel,
   index,
-  //field,
   closeModal,
   countHook,
   removeFromSetHook,
 }: RemoveFromSetModalProps) => {
-  const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
   const [removeFromSet, response] = removeFromSetHook();
 
@@ -61,11 +59,22 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
     } else if (response.isError) {
       showNotification({ message: "Problem modifiying set.", color: "red" });
     }
-  }, [response.isSuccess, response.isError, response.data, setType]);
+  }, [
+    response.isSuccess,
+    response.isError,
+    response.data,
+    setType,
+    dispatch,
+    index,
+    closeModal,
+    selectedSets,
+  ]);
 
   return (
     <Modal
-      title={`Remove ${removeFromCount} ${setType} from an existing set`}
+      title={`Remove ${removeFromCount} ${setTypeLabel}${
+        removeFromCount > 1 ? "s" : ""
+      } from an existing set`}
       closeButtonLabel="close"
       opened
       onClose={closeModal}
@@ -79,9 +88,11 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           setSelectedSets={setSelectedSets}
           countHook={countHook}
           setType={setType}
-          setTypeLabel={setType}
+          setTypeLabel={setTypeLabel}
           multiselect={false}
-          disableEmpty={true}
+          shouldDisable={(value: number) =>
+            value === 0 ? "Set is empty." : undefined
+          }
         />
       </div>
       <ModalButtonContainer>
@@ -93,7 +104,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
                 content: [buildCohortGqlOperator(filters)],
                 op: "and",
               },
-              setId: selectedSets[0],
+              setId: selectedSets[0][0],
             })
           }
         >

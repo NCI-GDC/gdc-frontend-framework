@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { upperFirst } from "lodash";
 import { Checkbox, Radio, Tooltip } from "@mantine/core";
 import { useCoreSelector, selectSetsByType, SetTypes } from "@gff/core";
@@ -7,35 +8,43 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 
 const CountCell = ({ countHook, setId }) => {
   const { data, isSuccess } = countHook({ setId });
   return isSuccess ? data.toLocaleString() : "";
 };
 
-const SelectCell = ({
+interface SelectCellProps {
+  readonly countHook: UseQuery<any>;
+  readonly set: string[];
+  readonly multiselect: boolean;
+  readonly selectedSets: string[][];
+  readonly setSelectedSets: (sets: string[][]) => void;
+  readonly shouldDisable?: (value: number) => string;
+}
+
+const SelectCell: React.FC<SelectCellProps> = ({
   countHook,
   set,
   multiselect,
-  disableEmpty,
   selectedSets,
   setSelectedSets,
-}) => {
-  const [setId, _] = set;
+  shouldDisable,
+}: SelectCellProps) => {
+  const [setId] = set;
   const { data, isSuccess } = countHook({ setId });
-  const empty = isSuccess && data === 0 && disableEmpty;
+  const disabledMessage = isSuccess ? shouldDisable(data) : undefined;
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
 
   return (
-    <Tooltip label={"The set is empty"} disabled={!empty}>
+    <Tooltip label={disabledMessage} disabled={!disabledMessage}>
       <span>
         {multiselect ? (
           <Checkbox
             value={setId}
             checked={selected}
             onChange={() =>
-              selectedSets.includes(set)
+              selected
                 ? setSelectedSets(
                     selectedSets.filter((set) => set[0] !== setId),
                   )
@@ -45,7 +54,7 @@ const SelectCell = ({
         ) : (
           <Radio
             value={setId}
-            disabled={empty}
+            disabled={disabledMessage !== undefined}
             checked={selected}
             onChange={() => setSelectedSets([set])}
           />
@@ -55,26 +64,25 @@ const SelectCell = ({
   );
 };
 
-interface SetTable {
-  readonly selectedSets: string[];
-  readonly setSelectedSets: (sets: string[]) => void;
-  readonly countHook: UseMutation<any>;
+interface SetTableProps {
+  readonly selectedSets: string[][];
+  readonly setSelectedSets: (sets: string[][]) => void;
+  readonly countHook: UseQuery<any>;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly multiSelect?: boolean;
-  readonly disableEmpty?: boolean;
+  readonly multiselect?: boolean;
+  readonly shouldDisable?: (value: number) => string;
 }
 
-// TODO: disable empty tooltip
-const SetTable = ({
+const SetTable: React.FC<SetTableProps> = ({
   selectedSets,
   setSelectedSets,
   countHook,
   setType,
   setTypeLabel,
   multiselect = true,
-  disableEmpty = false,
-}) => {
+  shouldDisable,
+}: SetTableProps) => {
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
   const tableData = useMemo(() => {
@@ -84,7 +92,7 @@ const SetTable = ({
           countHook={countHook}
           set={set}
           multiselect={multiselect}
-          disableEmpty={disableEmpty}
+          shouldDisable={shouldDisable}
           selectedSets={selectedSets}
           setSelectedSets={setSelectedSets}
         />
@@ -92,7 +100,14 @@ const SetTable = ({
       name: set[1],
       count: <CountCell countHook={countHook} setId={set[0]} />,
     }));
-  }, [sets, selectedSets, countHook]);
+  }, [
+    sets,
+    selectedSets,
+    countHook,
+    multiselect,
+    setSelectedSets,
+    shouldDisable,
+  ]);
 
   const columns = useMemo(() => {
     return [

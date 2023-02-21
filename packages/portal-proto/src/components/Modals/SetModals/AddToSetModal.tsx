@@ -80,7 +80,16 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
     } else if (response.isError) {
       showNotification({ message: "Problem modifiying set.", color: "red" });
     }
-  }, [response.isSuccess, response.isError, response.data, setType]);
+  }, [
+    response.isSuccess,
+    response.isError,
+    response.data,
+    setType,
+    dispatch,
+    index,
+    closeModal,
+    selectedSets,
+  ]);
 
   return (
     <Modal
@@ -102,11 +111,17 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           setType={setType}
           setTypeLabel={setTypeLabel}
           multiselect={false}
+          shouldDisable={(value: number) =>
+            value >= SET_COUNT_LIMIT
+              ? `The set cannot exceed ${SET_COUNT_LIMIT.toLocaleString()} ${setTypeLabel}s.`
+              : undefined
+          }
         />
         {isSuccessCount &&
+          selectedSets.length > 0 &&
           addToCount + (setCount as number) > SET_COUNT_LIMIT && (
             <WarningMessage
-              message={`The set cannot exceed ${SET_COUNT_LIMIT.toLocaleString()} ${setTypeLabel}. Only the top ${(
+              message={`The set cannot exceed ${SET_COUNT_LIMIT.toLocaleString()} ${setTypeLabel}s. Only the top ${(
                 SET_COUNT_LIMIT - (setCount as number)
               ).toLocaleString()} ${setTypeLabel} will be added to the set.`}
             />
@@ -132,7 +147,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
                 ],
                 op: "and",
               },
-              size: SET_COUNT_LIMIT,
+              size: SET_COUNT_LIMIT - (setCount as number),
             });
           }}
         >

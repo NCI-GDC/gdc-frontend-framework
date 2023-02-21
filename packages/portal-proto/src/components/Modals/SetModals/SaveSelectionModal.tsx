@@ -75,7 +75,15 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     } else if (response.isError) {
       showNotification({ message: "Problem saving set.", color: "red" });
     }
-  }, [response.isSuccess, response.isError, response.data, dispatch, setType]);
+  }, [
+    response.isSuccess,
+    response.isError,
+    response.data,
+    dispatch,
+    setType,
+    closeModal,
+    form.values.name,
+  ]);
 
   return (
     <Modal
