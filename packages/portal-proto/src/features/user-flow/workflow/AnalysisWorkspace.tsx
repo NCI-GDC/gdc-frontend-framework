@@ -92,7 +92,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col font-montserrat">
+    <div className="flex flex-col font-heading">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-primary-lightest"
@@ -249,7 +249,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                       md={4}
                       lg={3}
                       xl={2}
-                      style={{ minHeight: 130, maxWidth: 170 }}
+                      style={{ minHeight: 130, maxWidth: 200 }}
                     >
                       <AnalysisCard
                         entry={{ ...{ applicable: true, ...x } }}

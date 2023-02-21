@@ -454,7 +454,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     className={
                       index % 2 === 1
                         ? "bg-base-max border-1"
-                        : "bg-slate-50 border-1"
+                        : "bg-base-lightest border-1"
                     }
                     key={`row-${index}`}
                   >
@@ -463,7 +463,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-1 text-xs text-content"
+                          className="px-2 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>

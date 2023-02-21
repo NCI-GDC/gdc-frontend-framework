@@ -564,6 +564,58 @@ const pastelChart = {
   },
 };
 
+const V2Secondary = {
+  max: "#E8F3F6",
+  lightest: "#C0DDE5",
+  lighter: "#98C6D3",
+  light: "#71AFC0",
+  DEFAULT: "#267F98",
+  vivid: "#4B97AC",
+  dark: "#1B6478",
+  darker: "#124857",
+  darkest: "#00314c",
+  min: "#030D10",
+};
+
+const V2SecondaryContrast = {
+  max: "#030D10",
+  lightest: "#0A2B34",
+  lighter: "#333333",
+  light: "#414141",
+  DEFAULT: "#2c2c2c",
+  vivid: "#c4c4c4",
+  dark: "#71AFC0",
+  darker: "#98C6D3",
+  darkest: "#ffffff",
+  min: "#ffffff",
+};
+
+const V2Accent = {
+  max: "#FBEDE6",
+  lightest: "#F3CDBB",
+  lighter: "#EAAD91",
+  light: "#E08D68",
+  DEFAULT: "#D46E40",
+  vivid: "#C7501A",
+  dark: "#9E3D11",
+  darker: "#722A0A",
+  darkest: "#451804",
+  min: "#160701",
+};
+
+const V2AccentCool = {
+  max: "#E9F4F1",
+  lightest: "#C1DED6",
+  lighter: "#9BC8BC",
+  light: "#74B2A1",
+  DEFAULT: "#4F9B86",
+  vivid: "#2A836A",
+  dark: "#1F6753",
+  darker: "#154B3B",
+  darkest: "#0C2D23",
+  min: "#030E0B",
+};
+
 module.exports = {
   important: "#__next",
   content: [
@@ -775,10 +827,10 @@ module.exports = {
             primary: nciBlue,
             "primary-content": nciGrayContent,
             "primary-contrast": nciBlueContrast,
-            secondary: nciRed,
+            secondary: V2Secondary,
             "secondary-content": nciGrayContent,
-            "secondary-contrast": nciRedContrast,
-            accent: nciBlumine,
+            "secondary-contrast": V2SecondaryContrast,
+            accent: V2Accent,
             "accent-content": nciGrayContent,
             "accent-contrast": nciBlumineContrast,
             "accent-warm": nciYellow,

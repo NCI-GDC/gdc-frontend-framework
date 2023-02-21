@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon, useMantineTheme } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -22,9 +22,9 @@ const QueryExpressionContainer = tw.div`
   items-center
   bg-white
   shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
-  border-primary-darkest
+  border-secondary-darkest
+  border-1
   border-l-4
-  p-4
   mt-3
 `;
 
@@ -107,6 +107,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const dispatch = useCoreDispatch();
 
+  const theme = useMantineTheme();
+  console.log("theme", theme);
+
   const clearAllFilters = () => {
     dispatch(clearCohortFilters());
     setExpandedState({ type: "clear", cohortId: currentCohortId });
@@ -161,20 +164,20 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         <QueryExpressionsExpandedContext.Provider
           value={[expandedState[currentCohortId], setExpandedState]}
         >
-          <div className="flex flex-col w-full">
-            <div className="flex mb-2 items-center">
+          <div className="flex flex-col w-full bg-primary">
+            <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
               <OverflowTooltippedLabel
                 label={currentCohortName}
-                className="font-bold text-primary-darkest pr-4 max-w-[260px]"
+                className="font-bold text-secondary-contrast-darkest pl-2 max-w-[260px]"
               >
                 {currentCohortName}
               </OverflowTooltippedLabel>
               <>
                 <button
-                  className={`text-sm font-montserrat ${
+                  className={`text-sm font-montserrat pl-2 ${
                     noFilters
-                      ? "cursor-not-allowed text-base-content"
-                      : "cursor-pointer text-primary-darkest"
+                      ? "cursor-not-allowed text-secondary-contrast-darkest"
+                      : "cursor-pointer text-secondary-contrast-darkest"
                   }`}
                   onClick={clearAllFilters}
                   disabled={noFilters}
@@ -186,7 +189,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     variant={
                       allQueryExpressionsCollapsed ? "filled" : "outline"
                     }
-                    color="primary.9"
+                    color="white"
                     onClick={() =>
                       allQueryExpressionsCollapsed
                         ? setExpandedState({
@@ -204,19 +207,19 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {allQueryExpressionsCollapsed ? (
                       <>
-                        <LeftArrowIcon size={20} color="white" />
-                        <RightArrowIcon size={20} color="white" />
+                        <LeftArrowIcon size={20} className="text-primary" />
+                        <RightArrowIcon size={20} className="text-primary" />
                       </>
                     ) : (
                       <>
-                        <RightArrowIcon size={20} color="primary.9" />
-                        <LeftArrowIcon size={20} color="primary.9" />
+                        <RightArrowIcon size={20} className="text-white" />
+                        <LeftArrowIcon size={20} className="text-white" />
                       </>
                     )}
                   </ActionIcon>
                   <ActionIcon
                     variant={filtersSectionCollapsed ? "outline" : "filled"}
-                    color={"primary.9"}
+                    color="white"
                     onClick={() =>
                       setFiltersSectionCollapsed(!filtersSectionCollapsed)
                     }
@@ -226,11 +229,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {filtersSectionCollapsed ? (
                       <>
-                        <DownArrowIcon size={30} color="primary.9" />
+                        <DownArrowIcon size={30} className="text-primary" />
                       </>
                     ) : (
                       <>
-                        <UpArrowIcon size={30} color="white" />
+                        <UpArrowIcon size={30} className="text-white" />
                       </>
                     )}
                   </ActionIcon>
@@ -238,7 +241,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </>
             </div>
             <div
-              className={`flex flex-wrap bg-base-lightest w-full p-2 pb-0 rounded-md overflow-x-hidden ${
+              className={`flex flex-wrap bg-base-lightest w-full p-2 pb-0 overflow-x-hidden ${
                 filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
               }`}
               style={
@@ -259,7 +262,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
         </QueryExpressionsExpandedContext.Provider>
       ) : (
-        <span className="text-md text-primary-darkest ">
+        <span className="text-md p-3 text-primary-darkest ">
           Currently viewing all cases in the GDC. Further refine your cohort
           with tools such as the Cohort Builder.
         </span>

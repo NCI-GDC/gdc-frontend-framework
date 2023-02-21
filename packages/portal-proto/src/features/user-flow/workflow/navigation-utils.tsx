@@ -4,13 +4,12 @@ import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 
 const NavLink = tw(NextLink)`
-text-sm
-font-heading
 flex
 items-center
 gap-1
 font-heading
-text-md
+text-sm
+font-medium
 text-base-darker
 pr-4
 `;

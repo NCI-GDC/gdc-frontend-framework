@@ -81,15 +81,15 @@ interface CohortGroupButtonProps {
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
 ${(p: CohortGroupButtonProps) =>
   p.$buttonDisabled
-    ? "text-primary-content-darkest"
-    : "hover:bg-primary hover:text-primary-content-lightest"}
+    ? "text-primary"
+    : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 h-10
 w-10
 flex
 justify-center
 items-center
-bg-base-lightest
+bg-base-max
 transition-colors
 disabled:opacity-50
 `;
@@ -301,7 +301,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary"
     >
       {(isAddCohortLoading ||
         isCohortIdFetching ||
@@ -518,7 +518,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   setShowDiscard(true);
                 }}
                 className={`mr-0.5 ${
-                  !cohortModified && "cursor-not-allowed bg-gray-400"
+                  !cohortModified && "cursor-not-allowed bg-base-light"
                 }`}
                 $buttonDisabled={!cohortModified}
                 $isDiscard={true}
@@ -575,7 +575,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               $buttonDisabled={isDefaultCohort}
               data-testid="saveButton"
               className={`${
-                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+                isDefaultCohort && "cursor-not-allowed bg-base-light"
               }`}
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
@@ -598,7 +598,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 setShowDelete(true);
               }}
               className={`${
-                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+                isDefaultCohort && "cursor-not-allowed bg-base-light"
               }`}
               $buttonDisabled={isDefaultCohort}
               data-testid="deleteButton"
@@ -622,7 +622,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton
               data-testid="downloadButton"
               className={`${
-                isErrorCaseIds && "cursor-not-allowed bg-gray-400"
+                isErrorCaseIds && "cursor-not-allowed bg-base-light"
               }`}
               $buttonDisabled={isErrorCaseIds}
               onClick={() => {
