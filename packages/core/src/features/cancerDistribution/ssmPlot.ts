@@ -7,6 +7,7 @@ import {
 } from "../../dataAccess";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
@@ -45,13 +46,12 @@ const fetchSsmAnalysisQuery = async (
   ssms: string,
   contextFilters?: FilterSet,
 ) => {
-  const convert = buildCohortGqlOperator(contextFilters);
+  const gqlContextFilter = buildCohortGqlOperator(contextFilters);
   const graphqlFilters = gene
     ? {
         caseAggsFilters: {
           op: "and",
           content: [
-            // need here
             {
               op: "in",
               content: {
@@ -73,13 +73,14 @@ const fetchSsmAnalysisQuery = async (
                 value: "MISSING",
               },
             },
-            ...(convert ? (convert?.content as any) : []),
+            ...(gqlContextFilter
+              ? (gqlContextFilter as GqlIntersection)?.content
+              : []),
           ],
         },
         ssmFilters: {
           op: "and",
           content: [
-            // need here
             {
               op: "in",
               content: {
@@ -94,7 +95,9 @@ const fetchSsmAnalysisQuery = async (
                 value: [gene],
               },
             },
-            ...(convert ? (convert?.content as any) : []),
+            ...(gqlContextFilter
+              ? (gqlContextFilter as GqlIntersection)?.content
+              : []),
           ],
         },
         ssmTested: {

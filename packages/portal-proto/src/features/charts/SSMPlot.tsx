@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Grid } from "@mantine/core";
 import { FilterSet, joinFilters, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
+import { processFilters } from "src/utils";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -27,14 +28,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: SSMPlotProps) => {
-  const contextFilters =
-    !genomicFilters && !cohortFilters
-      ? undefined
-      : genomicFilters && !cohortFilters
-      ? genomicFilters
-      : !genomicFilters && cohortFilters
-      ? cohortFilters
-      : joinFilters(cohortFilters, genomicFilters);
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
 
   const router = useRouter();
 

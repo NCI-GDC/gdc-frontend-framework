@@ -1,5 +1,5 @@
 import { KeyboardEventHandler } from "react";
-import { CartFile, DAYS_IN_YEAR } from "@gff/core";
+import { CartFile, DAYS_IN_YEAR, FilterSet, joinFilters } from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
 
@@ -199,3 +199,12 @@ export const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
   nodeKey: string,
 ): (string | number)[] => data?.map((x) => x[nodeKey]);
+
+export const processFilters = (filter_A: FilterSet, filter_B: FilterSet) =>
+  !filter_A && !filter_B
+    ? undefined
+    : filter_A && !filter_B
+    ? filter_A
+    : !filter_A && filter_B
+    ? filter_B
+    : joinFilters(filter_B, filter_A);

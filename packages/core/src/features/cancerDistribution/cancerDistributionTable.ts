@@ -1,4 +1,5 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection } from "../gdcapi/filters";
 import { Buckets, Bucket } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
@@ -64,7 +65,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneCancerDistributionTable: builder.query({
       query: (request: { gene: string; contextFilters?: FilterSet }) => {
-        const convert = buildCohortGqlOperator(request.contextFilters);
+        const gqlContextFilter = buildCohortGqlOperator(request.contextFilters);
         return {
           graphQLQuery: `
         query CancerDistributionTable(
@@ -146,7 +147,6 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
               ],
               op: "and",
             },
-            // needed here
             ssmCountsFilters: {
               op: "and",
               content: [
@@ -164,10 +164,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: [request.gene],
                   },
                 },
-                ...(convert ? (convert?.content as any) : []),
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
               ],
             },
-            // needed here
             caseAggsFilter: {
               op: "and",
               content: [
@@ -192,10 +193,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: [request.gene],
                   },
                 },
-                ...(convert ? (convert?.content as any) : []),
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
               ],
             },
-            // needed here
             cnvGainFilter: {
               op: "and",
               content: [
@@ -220,10 +222,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: [request.gene],
                   },
                 },
-                ...(convert ? (convert?.content as any) : []),
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
               ],
             },
-            // needed here
             cnvLossFilter: {
               op: "and",
               content: [
@@ -248,7 +251,9 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: [request.gene],
                   },
                 },
-                ...(convert ? (convert?.content as any) : []),
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
               ],
             },
             cnvTested: {

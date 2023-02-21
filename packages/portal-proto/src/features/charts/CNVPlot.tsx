@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { FilterSet, joinFilters, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { Grid } from "@mantine/core";
+import { processFilters } from "src/utils";
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -26,14 +27,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: CNVPlotProps) => {
-  const contextFilters =
-    !genomicFilters && !cohortFilters
-      ? undefined
-      : genomicFilters && !cohortFilters
-      ? genomicFilters
-      : !genomicFilters && cohortFilters
-      ? cohortFilters
-      : joinFilters(cohortFilters, genomicFilters);
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
 
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);

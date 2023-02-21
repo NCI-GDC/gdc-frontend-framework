@@ -17,6 +17,7 @@ import {
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { processFilters } from "src/utils";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -32,14 +33,7 @@ export const GeneCancerDistributionTable: React.FC<
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: GeneCancerDistributionTableProps) => {
-  const contextFilters =
-    !genomicFilters && !cohortFilters
-      ? undefined
-      : genomicFilters && !cohortFilters
-      ? genomicFilters
-      : !genomicFilters && cohortFilters
-      ? cohortFilters
-      : joinFilters(cohortFilters, genomicFilters);
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
 
   const { data, isFetching, isError, isSuccess } =
     useGetGeneCancerDistributionTableQuery({ gene, contextFilters });
