@@ -2,7 +2,7 @@ import { useState } from "react";
 import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FilterSet, joinFilters, useCnvPlot } from "@gff/core";
+import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { Grid } from "@mantine/core";
 import { processFilters } from "src/utils";

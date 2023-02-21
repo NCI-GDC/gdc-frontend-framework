@@ -200,7 +200,10 @@ export const extractToArray = (
   nodeKey: string,
 ): (string | number)[] => data?.map((x) => x[nodeKey]);
 
-export const processFilters = (filter_A: FilterSet, filter_B: FilterSet) =>
+export const processFilters = (
+  filter_A: FilterSet,
+  filter_B: FilterSet,
+): FilterSet | undefined =>
   !filter_A && !filter_B
     ? undefined
     : filter_A && !filter_B

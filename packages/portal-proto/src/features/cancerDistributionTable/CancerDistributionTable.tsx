@@ -8,7 +8,6 @@ import {
   useGetProjectsQuery,
   CancerDistributionTableData,
   FilterSet,
-  joinFilters,
 } from "@gff/core";
 import {
   VerticalTable,
