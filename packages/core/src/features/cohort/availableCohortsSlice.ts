@@ -409,10 +409,11 @@ const newCohort = ({
 };
 
 interface NewCohortParams {
-  filters?: FilterSet;
-  message?: string;
-  name?: string;
-  group?: FilterGroup;
+  filters?: FilterSet; // set the filters for the new cohort
+  message?: string; // set message to show when
+  name?: string; // set the name for the new cohort
+  group?: FilterGroup; // add a group to the new cohort
+  makeCurrent?: boolean; // if true, the new cohort will be set as the current cohort
 }
 
 interface CopyCohortParams {
@@ -489,6 +490,9 @@ const slice = createSlice({
             groups: [action.payload.group],
           },
         });
+      }
+      if (action.payload.makeCurrent === true) {
+        state.currentCohort = cohort.id;
       }
       state.message = `${action.payload.message}|${cohort.name}|${cohort.id}`;
     },

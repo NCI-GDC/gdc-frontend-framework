@@ -22,6 +22,7 @@ import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDi
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 interface GeneViewProps {
   data: {
@@ -207,9 +208,7 @@ const GeneView = ({
             <div className="mt-4">
               <div className="flex items-center gap-2">
                 <BarChartIcon size={20} className="text-accent" />
-                <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                  Cancer Distribution
-                </h2>
+                <HeaderTitle>Cancer Distribution</HeaderTitle>
               </div>
               <Grid>
                 <SSMPlot
@@ -235,9 +234,7 @@ const GeneView = ({
               <div className="mt-4">
                 <div className="flex items-center gap-2">
                   <BarChartIcon size={20} className="text-accent" />
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Most Frequent Somatic Mutations
-                  </h2>
+                  <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
