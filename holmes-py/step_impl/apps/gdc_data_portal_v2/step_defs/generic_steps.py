@@ -119,3 +119,25 @@ def verify_file_has_expected_field_names(file_type, field_name):
     elif "TSV" in file_type:
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
+
+@step("Is text present on the page <table>")
+def is_text_present_on_the_page(table):
+    for k, v in enumerate(table):
+        is_text_present = APP.home_page.is_text_present(v[0])
+        assert is_text_present, f"The text '{v[0]}' is NOT present"
+
+@step("Is data testid not present on the page <table>")
+def is_data_testid_not_present_on_the_page(table):
+    for k, v in enumerate(table):
+        is_data_testid_present = APP.home_page.is_data_testid_present(v[0])
+        assert is_data_testid_present == False, f"The data-testid '{v[0]}' IS present"
+
+@step("Click button with data-testid <table>")
+def click_button_with_data_testid(table):
+    for k, v in enumerate(table):
+        APP.home_page.click_button_data_testid(v[0])
+
+@step("Enter text in the <aria_label> search bar <table>")
+def send_text_into_search_bar(aria_label: str, table):
+    for k, v in enumerate(table):
+        APP.home_page.send_text_into_search_bar(aria_label, v[0])

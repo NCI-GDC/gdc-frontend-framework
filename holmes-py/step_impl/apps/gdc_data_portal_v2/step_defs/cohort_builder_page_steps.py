@@ -25,3 +25,26 @@ def make_cohort_builder_selections(tab_name: str, table):
         is_facet_visible = APP.cohort_builder_page.check_facet_card_presence(v[0])
         assert is_facet_visible, f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
         time.sleep(0.1)
+
+@step("Add a custom filter from <tab_name> tab on the Cohort Builder page <table>")
+def add_custom_filter_card(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.add_custom_filter(v[0])
+        time.sleep(0.1)
+
+@step("Click the <tab_name> tab on the Cohort Builder page")
+def click_cohort_builder_tab(tab_name: str):
+    APP.cohort_builder_page.click_button(tab_name)
+
+@step("Perform the following actions from <tab_name> tab on the Cohort Builder page <table>")
+def perform_filter_card_action(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.perform_action_within_filter_card(v[0], v[1])
+        time.sleep(0.1)
+
+@step("Click aria checkbox with spinner wait <table>")
+def click_aria_checkbox_with_wait(table):
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.click_aria_checkbox_with_wait(v[0])
