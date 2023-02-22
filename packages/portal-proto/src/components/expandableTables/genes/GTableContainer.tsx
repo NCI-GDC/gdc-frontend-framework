@@ -258,13 +258,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 {
                   label: "Add to existing gene set",
                   value: "add",
-                  disabled: Object.keys(sets).length === 0,
+                  disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowAddModal(true),
                 },
                 {
                   label: "Remove from existing gene set",
                   value: "remove",
-                  disabled: Object.keys(sets).length === 0,
+                  disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowRemoveModal(true),
                 },
               ]}

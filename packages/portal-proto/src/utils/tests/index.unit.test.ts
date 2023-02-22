@@ -1,4 +1,9 @@
-import { ageDisplay, capitalize, calculatePercentageAsString } from "../index";
+import {
+  ageDisplay,
+  capitalize,
+  calculatePercentageAsString,
+  filtersToName,
+} from "../index";
 
 describe("capitalize", () => {
   it("should captalize a string", () => {
@@ -45,5 +50,179 @@ describe("ageDisplay", () => {
 
   it("should return correct value for leap years day", () => {
     expect(ageDisplay(36890)).toEqual("101 years");
+  });
+});
+
+const filterEq = {
+  mode: "in",
+  content: { field: "field", value: ["one"] },
+};
+
+const filterIn6 = {
+  op: "in",
+  content: {
+    field: "field",
+    value: ["one", "two", "three", "four", "five", "six"],
+  },
+};
+
+const filterIn7 = {
+  op: "in",
+  content: {
+    field: "field",
+    value: ["one", "two", "three", "four", "five", "six", "seven"],
+  },
+};
+
+describe("filtersToName", () => {
+  it("should return an empty string when passed empty filters", () => {
+    expect(filtersToName(undefined)).toEqual("");
+    expect(
+      filtersToName({
+        mode: "and",
+        root: { field: { operands: [], operator: "and" } },
+      }),
+    ).toEqual("");
+  });
+
+  it("should join same value by '/', different values by ','", () => {
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field1",
+          },
+        },
+      }),
+    ).toEqual("one / two");
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field1",
+          },
+          field2: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field2",
+          },
+        },
+      }),
+    ).toEqual("one / two, one / two");
+  });
+
+  it("should handle ops with single value", () => {
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: { operands: ["one"], operator: "includes", field: "field1" },
+        },
+      }),
+    ).toEqual("one");
+
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: { operands: ["one"], operator: "includes", field: "field1" },
+          field2: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field2",
+          },
+        },
+      }),
+    ).toEqual("one, one / two");
+  });
+
+  it("should truncate to 6 values", () => {
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two", "three", "four", "five", "six"],
+            operator: "includes",
+            field: "field1",
+          },
+        },
+      }),
+    ).toEqual("one / two / three / four / five / six");
+
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two", "three", "four", "five", "six", "seven"],
+            operator: "includes",
+            field: "field1",
+          },
+        },
+      }),
+    ).toEqual("one / two / three / four / five / six...");
+
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field1",
+          },
+          field2: {
+            operands: ["one"],
+            operator: "includes",
+            field: "field2",
+          },
+          field3: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field3",
+          },
+          field4: {
+            operands: ["one"],
+            operator: "includes",
+            field: "field4",
+          },
+        },
+      }),
+    ).toEqual("one / two, one, one / two, one");
+
+    expect(
+      filtersToName({
+        mode: "and",
+        root: {
+          field1: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field1",
+          },
+          field2: {
+            operands: ["one"],
+            operator: "includes",
+            field: "field2",
+          },
+          field3: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field3",
+          },
+          field4: {
+            operands: ["one", "two"],
+            operator: "includes",
+            field: "field4",
+          },
+        },
+      }),
+    ).toEqual("one / two, one, one / two, one...");
   });
 });

@@ -1,5 +1,11 @@
 import { KeyboardEventHandler } from "react";
-import { CartFile, DAYS_IN_YEAR, FilterSet } from "@gff/core";
+import {
+  CartFile,
+  DAYS_IN_YEAR,
+  FilterSet,
+  Includes,
+  isIncludes,
+} from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
 
@@ -209,15 +215,14 @@ const MAX_VALUE_COUNT = 6;
 export const filtersToName = (filters: FilterSet): string => {
   const filterValues = [];
   let valueCount = 0;
-  for (const filter of Object.values(filters.root)) {
-    const filtersForField = filter?.operands || [];
+  for (const filter of Object.values(filters?.root || {})) {
+    const filtersForField = isIncludes(filter) ? filter?.operands : [];
     if (valueCount + filtersForField.length > MAX_VALUE_COUNT) {
       const filtersToAdd = filtersForField.slice(
         0,
         MAX_VALUE_COUNT - valueCount,
       );
-      const lastValue = filtersToAdd.pop();
-      filterValues.push(filtersToAdd.join(" / ") + lastValue + "...");
+      filterValues.push(filtersToAdd.join(" / ") + "...");
       break;
     } else {
       filterValues.push(filtersForField.join(" / "));
