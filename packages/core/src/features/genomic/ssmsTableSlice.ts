@@ -230,16 +230,19 @@ const generateFilter = ({
 }: SsmsTableRequestParameters) => {
   const cohortFilters = buildCohortGqlOperator(
     geneSymbol // if gene symbol use all GDC
-      ? {
-          mode: "and",
-          root: {
-            "genes.symbol": {
-              field: "genes.symbol",
-              operator: "includes",
-              operands: [geneSymbol],
+      ? joinFilters(
+          {
+            mode: "and",
+            root: {
+              "genes.symbol": {
+                field: "genes.symbol",
+                operator: "includes",
+                operands: [geneSymbol],
+              },
             },
           },
-        }
+          localPlusCohortFilters,
+        )
       : isDemoMode
       ? overwritingDemoFilter
       : currentCohortFilter,
