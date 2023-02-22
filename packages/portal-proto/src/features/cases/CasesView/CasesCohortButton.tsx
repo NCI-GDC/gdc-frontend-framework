@@ -23,13 +23,13 @@ interface CountsIconProps {
 
 export const CountsIcon = tw.div<CountsIconProps>`
 ${(p: CountsIconProps) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-transparent"}
+  p.$count !== undefined && p.$count > 0 ? "bg-accent" : "bg-transparent"}
 inline-flex
 items-center
 justify-center
 w-8
 h-5
-text-primary-contrast
+text-accent-contrast
 font-heading
 rounded-md
 

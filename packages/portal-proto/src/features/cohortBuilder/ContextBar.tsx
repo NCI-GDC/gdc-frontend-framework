@@ -298,6 +298,7 @@ const ContextBar: React.FC = () => {
                   />
                 }
                 menuLabelText="Filter your cohort by:"
+                menuLabelCustomClass="font-bold text-primary"
               />
 
               {activeTab === "summary" && (

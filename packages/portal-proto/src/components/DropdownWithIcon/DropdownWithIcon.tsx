@@ -86,7 +86,7 @@ export const DropdownWithIcon = ({
           {TargetButtonChildren}
         </Button>
       </Menu.Target>
-      <Menu.Dropdown>
+      <Menu.Dropdown className="border-1 border-secondary">
         {menuLabelText && (
           <>
             <Menu.Label
@@ -105,6 +105,7 @@ export const DropdownWithIcon = ({
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
+            className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
           >
             {title}
           </Menu.Item>

@@ -122,7 +122,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-base-lightest">
+      <div className="bg-base-max">
         <Grid columns={12} className="p-3 my-2" gutter="md">
           <Grid.Col
             data-tour="analysis_tool_filters"
@@ -216,7 +216,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     value={x.value}
                     classNames={{
                       label:
-                        "text-primary-content-darker font-medium border border-solid border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
+                        "text-primary font-medium border border-solid border-primary hover:bg-primary-darker hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
                       checkIcon: "text-white",
                       iconWrapper: "text-primary-content-min",
                     }}

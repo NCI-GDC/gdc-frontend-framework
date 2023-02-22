@@ -32,18 +32,12 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
 
   return (
     <div>
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 gap-2">
         {fields.map((entry, index) => {
-          const style =
-            index == 4
-              ? "xl:grid  w-fit"
-              : index == 5
-              ? "2xl:grid hidden"
-              : "grid w-fit ";
           return (
             <div
               key={`summary-chart-${entry.field}-{${index}`}
-              className={style}
+              className="grid w-fit"
             >
               <EnumFacet
                 field={entry.field}

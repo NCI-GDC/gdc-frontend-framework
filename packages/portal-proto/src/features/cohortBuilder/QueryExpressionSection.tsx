@@ -238,7 +238,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </>
             </div>
             <div
-              className={`flex flex-wrap bg-base-lightest w-full p-2 pb-0 overflow-x-hidden ${
+              className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
                 filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
               }`}
               style={

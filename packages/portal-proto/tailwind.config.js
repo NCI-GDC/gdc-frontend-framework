@@ -33,6 +33,19 @@ const nciGrayContent = {
   min: "#000000",
 };
 
+const nciBlueContent = {
+  max: "#FFFFFF",
+  lightest: "#f1f1f1",
+  lighter: "#c5c5c5",
+  light: "#9b9b9b",
+  DEFAULT: "#706f6f",
+  dark: "#606060",
+  darker: "#414150",
+  darkest: "#00334D",
+  ink: "#1b1b1b",
+  min: "#000000",
+};
+
 const nciGrayContrast = {
   min: "#FFFFFF",
   darkest: "#f1f1f1",
@@ -603,17 +616,43 @@ const V2Accent = {
   min: "#160701",
 };
 
+const V2AccentContrast = {
+  max: "#111111",
+  lightest: "#111111",
+  lighter: "#111111",
+  light: "#111111",
+  DEFAULT: "#ffffff",
+  vivid: "#FFFFFF",
+  dark: "#FFFFFF",
+  darker: "#FFFFFF",
+  darkest: "#FFFFFF",
+  min: "#FFFFFF",
+};
+
 const V2AccentCool = {
   max: "#E9F4F1",
   lightest: "#C1DED6",
   lighter: "#9BC8BC",
   light: "#74B2A1",
-  DEFAULT: "#4F9B86",
+  DEFAULT: "#2A836A",
   vivid: "#2A836A",
   dark: "#1F6753",
   darker: "#154B3B",
   darkest: "#0C2D23",
   min: "#030E0B",
+};
+
+const v2AccentCoolContent = {
+  max: "#EBF8FB",
+  lightest: "#D5EBF1",
+  lighter: "#A5DBE8",
+  light: "#84CCDD",
+  DEFAULT: "#64BCD2",
+  vivid: "#44acc5",
+  dark: "#32879B",
+  darker: "#226170",
+  darkest: "#133A43",
+  min: "#061215",
 };
 
 module.exports = {
@@ -825,19 +864,19 @@ module.exports = {
             "base-content": nciGrayContent,
             "base-contrast": nciGrayContrast,
             primary: nciBlue,
-            "primary-content": nciGrayContent,
+            "primary-content": nciBlueContent,
             "primary-contrast": nciBlueContrast,
             secondary: V2Secondary,
             "secondary-content": nciGrayContent,
             "secondary-contrast": V2SecondaryContrast,
             accent: V2Accent,
             "accent-content": nciGrayContent,
-            "accent-contrast": nciBlumineContrast,
+            "accent-contrast": V2AccentContrast,
             "accent-warm": nciYellow,
             "accent-warm-content": nciGrayContent,
             "accent-warm-contrast": nciYellowContrast,
-            "accent-cool": nciCyan,
-            "accent-cool-content": nciGrayContent,
+            "accent-cool": V2AccentCool,
+            "accent-cool-content": v2AccentCoolContent,
             "accent-cool-contrast": nciCyanContrast,
             chart: nciTeal,
             "chart-contrast": nciTealContrast,
