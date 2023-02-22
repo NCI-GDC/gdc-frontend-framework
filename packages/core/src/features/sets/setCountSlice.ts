@@ -5,7 +5,7 @@ export const setCountSlice = graphqlAPISlice
   .injectEndpoints({
     endpoints: (builder) => ({
       geneSetCount: builder.query({
-        query: ({ setId }) => ({
+        query: ({ setId, additionalFilters }) => ({
           graphQLQuery: `query geneSetCounts(
           $filters: FiltersArgument
         ) {
@@ -20,15 +20,31 @@ export const setCountSlice = graphqlAPISlice
           }
         }
         `,
-          graphQLFilters: {
-            filters: {
-              op: "=",
-              content: {
-                field: "genes.gene_id",
-                value: `set_id:${setId}`,
+          graphQLFilters: additionalFilters
+            ? {
+                filters: {
+                  content: [
+                    {
+                      op: "=",
+                      content: {
+                        field: "genes.gene_id",
+                        value: `set_id:${setId}`,
+                      },
+                    },
+                    additionalFilters,
+                  ],
+                  op: "and",
+                },
+              }
+            : {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "genes.gene_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
               },
-            },
-          },
         }),
         transformResponse: (response) =>
           response.data.viewer.explore.genes.hits.total,

@@ -235,7 +235,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             appendSetHook={useAppendToSsmSetMutation}
             closeModal={() => setShowAddModal(false)}
             field={"ssms.ssm_id"}
-            index={"ssm"}
           />
         )}
         {showRemoveModal && (
@@ -251,7 +250,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             countHook={useSsmSetCountQuery}
             closeModal={() => setShowRemoveModal(false)}
             removeFromSetHook={useRemoveFromSsmSetMutation}
-            index={"ssm"}
           />
         )}
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">

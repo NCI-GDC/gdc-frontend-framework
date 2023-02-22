@@ -30,6 +30,8 @@ export const modifySetSlice = graphqlAPISlice
             },
           },
         }),
+        transformResponse: (response) =>
+          response?.data?.sets?.append?.explore?.gene?.set_id,
         invalidatesTags: (_result, _error, arg) => [
           { type: "geneSets", id: arg.setId },
         ],
@@ -59,6 +61,8 @@ export const modifySetSlice = graphqlAPISlice
             },
           },
         }),
+        transformResponse: (response) =>
+          response?.data?.sets?.append?.explore?.ssm?.set_id,
         invalidatesTags: (_result, _error, arg) => [
           { type: "ssmsSets", id: arg.setId },
         ],
@@ -88,6 +92,8 @@ export const modifySetSlice = graphqlAPISlice
             },
           },
         }),
+        transformResponse: (response) =>
+          response?.data?.sets?.remove_from?.explore?.gene?.set_id,
         invalidatesTags: (_result, _error, arg) => [
           { type: "geneSets", id: arg.setId },
         ],
@@ -119,6 +125,8 @@ export const modifySetSlice = graphqlAPISlice
             },
           },
         }),
+        transformResponse: (response) =>
+          response?.data?.sets?.remove_from?.explore?.ssm?.set_id,
         invalidatesTags: (_result, _error, arg) => [
           { type: "ssmsSets", id: arg.setId },
         ],

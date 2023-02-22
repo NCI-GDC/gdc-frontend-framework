@@ -3,6 +3,10 @@ import {
   UseMutation,
   UseQuery,
 } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import {
+  QueryDefinition,
+  MutationDefinition,
+} from "@reduxjs/toolkit/dist/query";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -23,10 +27,11 @@ interface RemoveFromSetModalProps {
   readonly removeFromCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly index: string;
   readonly closeModal: () => void;
-  readonly countHook: UseQuery<any>;
-  readonly removeFromSetHook: UseMutation<any>;
+  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly removeFromSetHook: UseMutation<
+    MutationDefinition<any, any, any, string, string>
+  >;
 }
 
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
@@ -34,7 +39,6 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   removeFromCount,
   setType,
   setTypeLabel,
-  index,
   closeModal,
   countHook,
   removeFromSetHook,
@@ -45,8 +49,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
 
   useEffect(() => {
     if (response.isSuccess) {
-      const newSetId =
-        response?.data?.data?.sets?.remove_from?.explore?.[index]?.set_id;
+      const newSetId = response?.data;
       if (newSetId === undefined) {
         showNotification({ message: "Problem modifiying set.", color: "red" });
       } else {
@@ -65,7 +68,6 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
     response.data,
     setType,
     dispatch,
-    index,
     closeModal,
     selectedSets,
   ]);

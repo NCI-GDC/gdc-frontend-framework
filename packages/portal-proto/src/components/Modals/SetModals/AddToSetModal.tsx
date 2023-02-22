@@ -3,6 +3,10 @@ import {
   UseMutation,
   UseQuery,
 } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import {
+  QueryDefinition,
+  MutationDefinition,
+} from "@reduxjs/toolkit/dist/query";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -15,10 +19,11 @@ import {
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
+import WarningMessage from "@/components/WarningMessage";
+import ErrorMessage from "@/components/ErrorMessage";
 import SetTable from "./SetTable";
 import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
-import WarningMessage from "@/components/WarningMessage";
 
 interface AddToSetModalProps {
   readonly filters: FilterSet;
@@ -26,11 +31,12 @@ interface AddToSetModalProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly field: string;
-  readonly index: string;
   readonly closeModal: () => void;
-  readonly countHook: UseQuery<any>;
+  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
   readonly valuesHook: UseQuery<any>;
-  readonly appendSetHook: UseMutation<any>;
+  readonly appendSetHook: UseMutation<
+    MutationDefinition<any, any, any, string, string>
+  >;
 }
 
 const AddToSetModal: React.FC<AddToSetModalProps> = ({
@@ -39,31 +45,32 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
   setType,
   setTypeLabel,
   field,
-  index,
   closeModal,
   countHook,
   appendSetHook,
 }: AddToSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
-  const { data: setCount, isSuccess: isSuccessCount } = countHook({
-    setId: selectedSets?.[0]?.[0],
-    skip: selectedSets.length === 0,
-  });
+  const { data: setCount, isSuccess: isSuccessCount } = countHook(
+    {
+      setId: selectedSets?.[0]?.[0],
+    },
+    { skip: selectedSets.length === 0 },
+  );
+  const { data: countInBoth, isSuccess: isCountBothSuccess } = countHook(
+    {
+      setId: selectedSets?.[0]?.[0],
+      additionalFilters: buildCohortGqlOperator(filters),
+    },
+    { skip: selectedSets.length === 0 },
+  );
   const [appendToSet, response] = appendSetHook();
 
-  // TODO - "All <entities> are already in the set." error
-  /*
-  const { data: setValues, isSuccess: isSuccessValues } = valuesHook({
-    setId: selectedSets?.[0]?.[0],
-    skip: selectedSets.length === 0,
-  });
-  */
+  const nothingToAdd = isCountBothSuccess && addToCount === countInBoth;
 
   useEffect(() => {
     if (response.isSuccess) {
-      const newSetId =
-        response?.data?.data?.sets?.append?.explore?.[index]?.set_id;
+      const newSetId = response.data;
       if (newSetId === undefined) {
         showNotification({
           message: "Problem modifiying set.",
@@ -86,7 +93,6 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
     response.data,
     setType,
     dispatch,
-    index,
     closeModal,
     selectedSets,
   ]);
@@ -119,18 +125,23 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
         />
         {isSuccessCount &&
           selectedSets.length > 0 &&
-          addToCount + (setCount as number) > SET_COUNT_LIMIT && (
+          addToCount + setCount > SET_COUNT_LIMIT && (
             <WarningMessage
               message={`The set cannot exceed ${SET_COUNT_LIMIT.toLocaleString()} ${setTypeLabel}s. Only the top ${(
-                SET_COUNT_LIMIT - (setCount as number)
+                SET_COUNT_LIMIT - setCount
               ).toLocaleString()} ${setTypeLabel} will be added to the set.`}
             />
           )}
+        {nothingToAdd && (
+          <ErrorMessage
+            message={`All ${setTypeLabel}s are already in the set.`}
+          />
+        )}
       </div>
       <ModalButtonContainer>
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
-          disabled={selectedSets.length === 0}
+          disabled={selectedSets.length === 0 || nothingToAdd}
           onClick={() => {
             appendToSet({
               setId: selectedSets[0][0],
@@ -147,7 +158,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
                 ],
                 op: "and",
               },
-              size: SET_COUNT_LIMIT - (setCount as number),
+              size: SET_COUNT_LIMIT - setCount,
             });
           }}
         >

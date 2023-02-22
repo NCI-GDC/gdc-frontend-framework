@@ -18,7 +18,6 @@ import {
   useRemoveFromGeneSetMutation,
   useRemoveFromSsmSetMutation,
 } from "./modifySetSlice";
-import { useGeneSetValuesQuery, useSsmSetValuesQuery } from "./setValuesSlice";
 
 export {
   useCreateGeneSetFromValuesMutation,
@@ -36,6 +35,4 @@ export {
   useAppendToSsmSetMutation,
   useRemoveFromGeneSetMutation,
   useRemoveFromSsmSetMutation,
-  useGeneSetValuesQuery,
-  useSsmSetValuesQuery,
 };
