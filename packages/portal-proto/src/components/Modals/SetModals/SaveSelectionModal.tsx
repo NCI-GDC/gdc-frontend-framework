@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { upperFirst } from "lodash";
 import { TextInput, NumberInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -23,6 +22,7 @@ import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
   readonly filters: FilterSet;
+  readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
@@ -32,6 +32,7 @@ interface SaveSelectionAsSetModalProps {
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   filters,
+  initialSetName,
   saveCount,
   setType,
   setTypeLabel,
@@ -46,7 +47,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   const form = useForm({
     initialValues: {
       top: max,
-      name: `Custom ${upperFirst(setTypeLabel)} Selection`,
+      name: initialSetName,
     },
     validate: {
       top: (value) =>

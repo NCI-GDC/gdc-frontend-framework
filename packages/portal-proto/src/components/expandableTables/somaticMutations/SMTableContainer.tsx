@@ -6,7 +6,6 @@ import {
   useSsmSetCountQuery,
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
-  useSsmSetValuesQuery,
   useCreateSsmsSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
@@ -32,6 +31,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
+import { filtersToName } from "src/utils";
 
 export const SelectedRowContext =
   createContext<
@@ -209,6 +209,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         {showSaveModal && (
           <SaveSelectionAsSetModal
             filters={setFilters}
+            initialSetName={
+              Object.keys(selectedMutations).length === 0
+                ? filtersToName(genomicFilters)
+                : "Custom Mutation Selection"
+            }
             saveCount={
               Object.keys(selectedMutations).length === 0
                 ? smTotal
@@ -231,7 +236,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             setType={"ssms"}
             setTypeLabel="mutation"
             countHook={useSsmSetCountQuery}
-            valuesHook={useSsmSetValuesQuery}
             appendSetHook={useAppendToSsmSetMutation}
             closeModal={() => setShowAddModal(false)}
             field={"ssms.ssm_id"}

@@ -33,7 +33,6 @@ interface AddToSetModalProps {
   readonly field: string;
   readonly closeModal: () => void;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
-  readonly valuesHook: UseQuery<any>;
   readonly appendSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;

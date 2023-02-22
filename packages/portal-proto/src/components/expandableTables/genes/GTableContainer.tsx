@@ -9,7 +9,6 @@ import {
   useGeneSetCountQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
-  useGeneSetValuesQuery,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -28,6 +27,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
+import { filtersToName } from "src/utils";
 
 export const SelectedRowContext =
   createContext<
@@ -194,6 +194,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {showSaveModal && (
           <SaveSelectionAsSetModal
             filters={setFilters}
+            initialSetName={
+              Object.keys(selectedGenes).length === 0
+                ? filtersToName(genomicFilters)
+                : "Custom Gene Selection"
+            }
             saveCount={
               Object.keys(selectedGenes).length === 0
                 ? gTotal
@@ -216,11 +221,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             setType={"genes"}
             setTypeLabel="gene"
             countHook={useGeneSetCountQuery}
-            valuesHook={useGeneSetValuesQuery}
             appendSetHook={useAppendToGeneSetMutation}
             closeModal={() => setShowAddModal(false)}
             field={"genes.gene_id"}
-            index={"gene"}
           />
         )}
         {showRemoveModal && (
@@ -236,7 +239,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             countHook={useGeneSetCountQuery}
             closeModal={() => setShowRemoveModal(false)}
             removeFromSetHook={useRemoveFromGeneSetMutation}
-            index={"gene"}
           />
         )}
 
