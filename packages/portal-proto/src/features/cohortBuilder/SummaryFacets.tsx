@@ -31,40 +31,33 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   );
 
   return (
-    <div>
-      <div className="grid grid-cols-5 gap-2">
-        {fields.map((entry, index) => {
-          return (
-            <div
-              key={`summary-chart-${entry.field}-{${index}`}
-              className="grid w-fit"
-            >
-              <EnumFacet
-                field={entry.field}
-                valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
-                facetName={entry.name}
-                startShowingData={false}
-                key={`summary-chart-${entry.field}-${index}`}
-                width="w-64"
-                hideIfEmpty={false}
-                hooks={{
-                  useUpdateFacetFilters: useUpdateFacetFilter,
-                  useTotalCounts: partial(
-                    useTotalCounts,
-                    FacetDocTypeToCountsIndexMap[entry.docType],
-                  ),
-                  useClearFilter: useClearFilters,
-                  useGetFacetData: partial(
-                    useEnumFacetValues,
-                    entry.docType,
-                    entry.indexType,
-                  ),
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
+    <div className="grid grid-cols-5 gap-4">
+      {fields.map((entry, index) => {
+        return (
+          <EnumFacet
+            field={entry.field}
+            valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
+            facetName={entry.name}
+            startShowingData={false}
+            key={`summary-chart-${entry.field}-${index}`}
+            width={`20px`}
+            hideIfEmpty={false}
+            hooks={{
+              useUpdateFacetFilters: useUpdateFacetFilter,
+              useTotalCounts: partial(
+                useTotalCounts,
+                FacetDocTypeToCountsIndexMap[entry.docType],
+              ),
+              useClearFilter: useClearFilters,
+              useGetFacetData: partial(
+                useEnumFacetValues,
+                entry.docType,
+                entry.indexType,
+              ),
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

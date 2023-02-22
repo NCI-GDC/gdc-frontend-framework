@@ -179,10 +179,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         <FacetHeader>
           <Tooltip
             label={description}
-            classNames={{
-              arrow: "bg-base-light",
-              tooltip: "bg-base-max text-base-contrast-max",
-            }}
             position="bottom-start"
             multiline
             width={220}

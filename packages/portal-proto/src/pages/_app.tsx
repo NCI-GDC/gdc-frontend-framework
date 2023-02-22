@@ -155,6 +155,18 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               lg: 1275,
               xl: 1800,
             },
+            components: {
+              Tooltip: {
+                defaultProps: {
+                  arrowSize: 10,
+                  classNames: {
+                    tooltip:
+                      "bg-accent-lightest text-base-min shadow-lg font-content-noto font-medium text-sm",
+                    arrow: "bg-accent-lightest",
+                  },
+                },
+              },
+            },
           }}
         >
           <div

@@ -19,14 +19,14 @@ const OverflowTooltippedLabel = ({
       label={label}
       disabled={!showTooltip}
       position="top-start"
-      offset={0}
+      offset={5}
       multiline
       withArrow
-      arrowSize={6}
       arrowOffset={20}
       classNames={{
-        arrow: "bg-base-darker",
-        tooltip: "bg-base-darker text-base-darker-contrast font-normal",
+        tooltip:
+          "bg-accent-lightest text-base-min shadow-lg font-content-noto font-medium text-sm",
+        arrow: "bg-accent-lightest",
       }}
     >
       <div

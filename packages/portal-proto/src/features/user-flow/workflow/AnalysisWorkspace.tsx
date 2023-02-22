@@ -154,7 +154,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest hover:border-primary"
+                      className="text-primary hover:bg-primary-darker hover:text-white hover:border-primary-darker border-primary"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
