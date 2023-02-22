@@ -31,7 +31,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   );
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-1">
       {fields.map((entry, index) => {
         return (
           <EnumFacet
@@ -40,7 +40,6 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             facetName={entry.name}
             startShowingData={false}
             key={`summary-chart-${entry.field}-${index}`}
-            width={`20px`}
             hideIfEmpty={false}
             hooks={{
               useUpdateFacetFilters: useUpdateFacetFilter,
