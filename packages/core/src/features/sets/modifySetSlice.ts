@@ -115,7 +115,7 @@ export const modifySetSlice = graphqlAPISlice
             }
           }
         }
-                
+
         `,
           graphQLFilters: {
             input: {
