@@ -418,14 +418,14 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <BsCaretUpFill
                           className={
                             column.isSorted && !column.isSortedDesc
-                              ? "text-primary-darker"
+                              ? "text-primary"
                               : ""
                           }
                         />
                         <BsCaretDownFill
                           className={`${
                             column.isSorted && column.isSortedDesc
-                              ? "text-primary-darker"
+                              ? "text-primary"
                               : ""
                           } relative top-[-2px]`}
                         />
@@ -463,7 +463,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 text-xs text-content"
+                          className="px-2 py-0.5 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>

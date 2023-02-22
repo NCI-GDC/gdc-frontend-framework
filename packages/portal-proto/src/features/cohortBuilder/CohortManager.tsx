@@ -537,13 +537,15 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-base-light w-80 p-0 pt-5",
+                  root: "border-secondary-darkest w-80 p-0 pt-[1.3rem]",
                   input:
-                    "text-heading font-medium text-primary-darkest rounded-l-none h-10",
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-[2.65rem]",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"
-                rightSection={<DownArrowIcon size={20} />}
+                rightSection={
+                  <DownArrowIcon size={20} className="text-primary" />
+                }
                 rightSectionWidth={30}
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />

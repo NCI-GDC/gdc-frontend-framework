@@ -102,20 +102,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     entity_name: null,
   });
 
-  const colors = {
-    ...Object.fromEntries(
-      Object.entries(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend
-          .colors,
-      )
-        .filter(([key]) => !key.includes("-"))
-        .map(([key, values]) => [key, Object.values(values)]),
-    ),
-  };
-
-  console.log("colors", colors);
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -157,9 +143,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   // @ts-ignore
                   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
                     .extend.colors,
-                )
-                  .filter(([key]) => !key.includes("-"))
-                  .map(([key, values]) => [key, Object.values(values)]),
+                ).map(([key, values]) => [key, Object.values(values)]),
               ),
             },
             primaryColor: "primary",

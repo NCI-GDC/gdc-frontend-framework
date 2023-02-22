@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-import { ActionIcon, useMantineTheme } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -107,9 +107,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const dispatch = useCoreDispatch();
 
-  const theme = useMantineTheme();
-  console.log("theme", theme);
-
   const clearAllFilters = () => {
     dispatch(clearCohortFilters());
     setExpandedState({ type: "clear", cohortId: currentCohortId });
@@ -168,7 +165,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
               <OverflowTooltippedLabel
                 label={currentCohortName}
-                className="font-bold text-secondary-contrast-darkest pl-2 max-w-[260px]"
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
               >
                 {currentCohortName}
               </OverflowTooltippedLabel>
@@ -184,7 +181,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 >
                   Clear All
                 </button>
-                <div className="display flex gap-2 ml-auto">
+                <div className="display flex gap-2 ml-auto mr-3">
                   <ActionIcon
                     variant={
                       allQueryExpressionsCollapsed ? "filled" : "outline"
