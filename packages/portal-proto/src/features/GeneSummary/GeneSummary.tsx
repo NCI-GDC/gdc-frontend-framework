@@ -9,7 +9,7 @@ import {
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
@@ -76,7 +76,7 @@ const GeneView = ({
   contextSensitive = false,
 }: GeneViewProps) => {
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   const formatDataForSummary = () => {
     const {
@@ -239,7 +239,9 @@ const GeneView = ({
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
+                  contextSensitive={contextSensitive}
                   genomicFilters={contextSensitive ? contextFilters : undefined}
+                  // don't have to send this most probably (clean uppp)
                   cohortFilters={contextSensitive ? cohortFilters : undefined}
                 />
               </div>
