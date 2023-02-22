@@ -53,27 +53,6 @@ describe("ageDisplay", () => {
   });
 });
 
-const filterEq = {
-  mode: "in",
-  content: { field: "field", value: ["one"] },
-};
-
-const filterIn6 = {
-  op: "in",
-  content: {
-    field: "field",
-    value: ["one", "two", "three", "four", "five", "six"],
-  },
-};
-
-const filterIn7 = {
-  op: "in",
-  content: {
-    field: "field",
-    value: ["one", "two", "three", "four", "five", "six", "seven"],
-  },
-};
-
 describe("filtersToName", () => {
   it("should return an empty string when passed empty filters", () => {
     expect(filtersToName(undefined)).toEqual("");
