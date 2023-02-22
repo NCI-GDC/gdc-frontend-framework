@@ -55,6 +55,10 @@ export interface SMTableContainerProps {
   columnsList?: Array<Column>;
   geneSymbol?: string;
   isDemoMode?: boolean;
+  /*
+   * boolean used to determine if the links need to be opened in a summary modal or a Link
+   */
+  isModal?: boolean;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -68,6 +72,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   handleSsmToggled = () => null,
   toggledSsms = [],
   isDemoMode = false,
+  isModal = false,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -346,6 +351,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 handleSsmToggled={handleSsmToggled}
                 toggledSsms={toggledSsms}
                 isDemoMode={isDemoMode}
+                isModal={isModal}
               />
             </div>
           )}

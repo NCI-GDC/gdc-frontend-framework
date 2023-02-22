@@ -8,7 +8,6 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
-  defaultCohortNameGenerator,
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import {
@@ -129,7 +128,6 @@ export const CasesCohortButton = (): JSX.Element => {
       )}
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

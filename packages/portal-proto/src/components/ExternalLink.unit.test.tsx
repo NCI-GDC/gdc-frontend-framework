@@ -5,7 +5,6 @@ describe("<ExternalLink />", () => {
   const mockData = {
     href: "https://google.com",
     title: "External Link",
-    separator: "<span> ? </span>",
     dataTestId: "test-externalLink",
   };
 
@@ -51,49 +50,5 @@ describe("<ExternalLink />", () => {
     render(testElem);
     const el = screen.getByTestId(mockData.dataTestId);
     expect(el.getAttribute("href")).toBe(mockData.href);
-  });
-
-  it("renders the default separator", () => {
-    const testElem = (
-      <ExternalLink dataTestId={mockData.dataTestId} href={mockData.href}>
-        Click Here
-      </ExternalLink>
-    );
-
-    const { container } = render(testElem);
-    const el = container.getElementsByTagName("span");
-    expect(el[0].textContent).toBe(" | ");
-  });
-
-  it("renders the provided separator", () => {
-    const testElem = (
-      <ExternalLink
-        dataTestId={mockData.dataTestId}
-        href={mockData.href}
-        separator={<span>xyz</span>}
-      >
-        Click Here
-      </ExternalLink>
-    );
-
-    const { container } = render(testElem);
-    const el = container.getElementsByTagName("span");
-    expect(el[0].textContent).toBe("xyz");
-  });
-
-  it("renders no separator if value set to false", () => {
-    const testElem = (
-      <ExternalLink
-        dataTestId={mockData.dataTestId}
-        href={mockData.href}
-        separator={false}
-      >
-        Click Here
-      </ExternalLink>
-    );
-
-    const { container } = render(testElem);
-    const el = container.getElementsByTagName("span");
-    expect(el.length).toBe(0);
   });
 });

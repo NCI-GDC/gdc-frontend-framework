@@ -4,6 +4,9 @@ import ProjectsCohortButton from "./ProjectsCohortButton";
 import * as appApi from "./appApi";
 import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
+import { MantineProvider } from "@mantine/core";
+import * as mantine_form from "@mantine/form";
+import { mantineFormNoErrorObj } from "__mocks__/sharedMockData";
 
 jest.mock("@mantine/notifications");
 const mockedShowNotification = showNotification as jest.Mock<
@@ -15,6 +18,7 @@ beforeEach(() => mockedShowNotification.mockClear());
 describe("<ProjectCohortButton />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(appApi, "useAppDispatch").mockReturnValue(jest.fn());
   });
 
   it("should render a empty New Cohort button", () => {
@@ -37,24 +41,39 @@ describe("<ProjectCohortButton />", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
     const { getByRole } = render(<ProjectsCohortButton />);
-    expect(getByRole("button").textContent).toBe(" 2 Create New Cohort");
+    expect(getByRole("button").textContent).toBe("2 Create New Cohort");
   });
 
   it("dispatch an add cohort action", async () => {
     jest.spyOn(appApi, "useAppSelector").mockReturnValue(["TCGA", "FM"]);
 
-    jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
+    jest.spyOn(core, "useCoreSelector").mockReturnValue(["cohort1", "cohort2"]);
 
     const mockDispatch = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
+    jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
 
-    const { getByRole } = render(<ProjectsCohortButton />);
+    const { getByRole, getByTestId } = render(
+      <MantineProvider
+        theme={{
+          colors: {
+            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          },
+        }}
+      >
+        <ProjectsCohortButton />
+      </MantineProvider>,
+    );
 
     await userEvent.click(
       getByRole("button", {
         name: "2 Create New Cohort",
       }),
     );
+
+    // this button is in SaveOrCreateCohortModal
+    await userEvent.click(getByTestId("action-button"));
     expect(mockDispatch).toBeCalledWith({
       payload: {
         filters: {

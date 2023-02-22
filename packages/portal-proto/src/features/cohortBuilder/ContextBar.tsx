@@ -170,6 +170,20 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+        if (cmdAndParam[0] === "newProjectsCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
       }
 
       coreDispatch(clearCohortMessage());
@@ -215,17 +229,6 @@ const ContextBar: React.FC = () => {
   ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
-
-  const CohortBarWithProps = () => (
-    <CohortManager
-      // TODO: need to connect to cohort persistence
-      // eslint-disable-next-line react/prop-types
-      cohorts={cohorts}
-      onSelectionChanged={handleCohortSelection}
-      startingId={currentIndex}
-    />
-  );
-
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (
@@ -234,7 +237,13 @@ const ContextBar: React.FC = () => {
       data-tour="context_bar"
     >
       <CollapsibleContainer
-        Top={CohortBarWithProps}
+        Top={() => (
+          <CohortManager
+            cohorts={cohorts}
+            onSelectionChanged={handleCohortSelection}
+            startingId={currentIndex}
+          />
+        )}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
         onlyIcon={false}

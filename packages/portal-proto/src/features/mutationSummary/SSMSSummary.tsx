@@ -14,8 +14,15 @@ import SSMPlot from "../charts/SSMPlot";
 import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
-export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
+export const SSMSSummary = ({
+  ssm_id,
+  isModal = false,
+}: {
+  ssm_id: string;
+  isModal?: boolean;
+}): JSX.Element => {
   const { data: summaryData, isFetching } = useSSMS({
     filters: {
       content: {
@@ -166,8 +173,10 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
     <div>
       {!isFetching && summaryData ? (
         <>
-          <SummaryHeader iconText="MU" headerTitle={summaryData.dna_change} />
-          <div className="mx-auto mt-20 w-9/12 pt-4">
+          {!isModal && (
+            <SummaryHeader iconText="mu" headerTitle={summaryData.dna_change} />
+          )}
+          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -185,10 +194,10 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
                 </div>
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <BarChartIcon size={20} />
-                <h2 className="text-xl">Consequences</h2>
+            <div className="mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChartIcon size={20} className="text-accent" />
+                <HeaderTitle>Consequences</HeaderTitle>
               </div>
               <SMSConsequenceTableContainer
                 columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
@@ -196,6 +205,10 @@ export const SSMSSummary = ({ ssm_id }: { ssm_id: string }): JSX.Element => {
               />
             </div>
             <div className="mt-4">
+              <div className="flex items-center gap-2">
+                <BarChartIcon size={20} className="text-accent" />
+                <HeaderTitle>Cancer Distribution</HeaderTitle>
+              </div>
               <Grid>
                 <SSMPlot page={"ssms"} ssms={ssm_id} />
               </Grid>

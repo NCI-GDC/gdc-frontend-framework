@@ -4,7 +4,6 @@ const config: InitialOptionsTsJest = {
   preset: "ts-jest",
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   transform: {
-    ".+\\.(css|styl|less|sass|scss)$": "jest-css-modules-transform",
     "@stjude": "ts-jest",
     // uncomment when testing with npm linked sjpp client package code
     // "proteinpaint/client": "ts-jest"
@@ -20,6 +19,7 @@ const config: InitialOptionsTsJest = {
     "^@/components(.*)$": "<rootDir>/src/components/$1",
     "^@/features/(.*)$": "<rootDir>/src/features/$1",
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],

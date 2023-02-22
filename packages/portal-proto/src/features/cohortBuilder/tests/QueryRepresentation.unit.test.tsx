@@ -1,7 +1,6 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
-import { CoreProvider } from "@gff/core";
 import { QueryExpressionsExpandedContext } from "../QueryExpressionSection";
 import { convertFilterToComponent } from "../QueryRepresentation";
 
@@ -24,15 +23,13 @@ describe("<QueryRepresentation />", () => {
       ]);
 
     const { getByText } = render(
-      <CoreProvider>
-        <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
-          {convertFilterToComponent({
-            operator: "includes",
-            operands: ["E10", "E40", "E60"],
-            field: "genes.gene_id",
-          })}
-        </QueryExpressionsExpandedContext.Provider>
-      </CoreProvider>,
+      <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
+        {convertFilterToComponent({
+          operator: "includes",
+          operands: ["E10", "E40", "E60"],
+          field: "genes.gene_id",
+        })}
+      </QueryExpressionsExpandedContext.Provider>,
     );
     expect(getByText("2 input genes")).toBeInTheDocument();
     expect(getByText("FAT4")).toBeInTheDocument();
@@ -56,15 +53,13 @@ describe("<QueryRepresentation />", () => {
     }));
 
     const { getByText } = render(
-      <CoreProvider>
-        <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
-          {convertFilterToComponent({
-            operator: "includes",
-            operands: ["E10", "E40", "E60"],
-            field: "genes.gene_id",
-          })}
-        </QueryExpressionsExpandedContext.Provider>
-      </CoreProvider>,
+      <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
+        {convertFilterToComponent({
+          operator: "includes",
+          operands: ["E10", "E40", "E60"],
+          field: "genes.gene_id",
+        })}
+      </QueryExpressionsExpandedContext.Provider>,
     );
     expect(getByText("my gene set")).toBeInTheDocument();
     expect(getByText("FAT4")).toBeInTheDocument();
@@ -92,15 +87,13 @@ describe("<QueryRepresentation />", () => {
     }));
 
     const { getByText, getByTestId } = render(
-      <CoreProvider>
-        <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
-          {convertFilterToComponent({
-            operator: "includes",
-            operands: ["E10", "E40", "E60", "E40"],
-            field: "genes.gene_id",
-          })}
-        </QueryExpressionsExpandedContext.Provider>
-      </CoreProvider>,
+      <QueryExpressionsExpandedContext.Provider value={[{}, jest.fn()]}>
+        {convertFilterToComponent({
+          operator: "includes",
+          operands: ["E10", "E40", "E60", "E40"],
+          field: "genes.gene_id",
+        })}
+      </QueryExpressionsExpandedContext.Provider>,
     );
 
     expect(getByText("FAT3")).toBeInTheDocument();
