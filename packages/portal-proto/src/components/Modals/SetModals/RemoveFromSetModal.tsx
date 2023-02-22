@@ -109,6 +109,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
               setId: selectedSets[0][0],
             })
           }
+          disabled={selectedSets.length === 0}
         >
           Save
         </DarkFunctionButton>
