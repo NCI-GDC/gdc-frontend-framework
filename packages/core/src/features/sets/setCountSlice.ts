@@ -53,7 +53,7 @@ export const setCountSlice = graphqlAPISlice
         ],
       }),
       ssmSetCount: builder.query({
-        query: ({ setId }) => ({
+        query: ({ setId, additionalFilters }) => ({
           graphQLQuery: `query ssmSetCounts(
           $filters: FiltersArgument
         ) {
@@ -68,15 +68,31 @@ export const setCountSlice = graphqlAPISlice
           }
         }
         `,
-          graphQLFilters: {
-            filters: {
-              op: "=",
-              content: {
-                field: "ssms.ssm_id",
-                value: `set_id:${setId}`,
+          graphQLFilters: additionalFilters
+            ? {
+                filters: {
+                  content: [
+                    {
+                      op: "=",
+                      content: {
+                        field: "ssms.ssm_id",
+                        value: `set_id:${setId}`,
+                      },
+                    },
+                    additionalFilters,
+                  ],
+                  op: "and",
+                },
+              }
+            : {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "ssms.ssm_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
               },
-            },
-          },
         }),
         transformResponse: (response) =>
           response.data.viewer.explore.ssms.hits.total,

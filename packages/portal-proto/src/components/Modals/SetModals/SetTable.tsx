@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
 import { Checkbox, Radio, Tooltip } from "@mantine/core";
 import { useCoreSelector, selectSetsByType, SetTypes } from "@gff/core";
@@ -15,7 +16,7 @@ const CountCell = ({ countHook, setId }) => {
 };
 
 interface SelectCellProps {
-  readonly countHook: UseQuery<any>;
+  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
   readonly set: string[];
   readonly multiselect: boolean;
   readonly selectedSets: string[][];
@@ -43,6 +44,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           <Checkbox
             value={setId}
             checked={selected}
+            disabled={disabledMessage !== undefined}
             onChange={() =>
               selected
                 ? setSelectedSets(
@@ -54,8 +56,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
         ) : (
           <Radio
             value={setId}
-            disabled={disabledMessage !== undefined}
             checked={selected}
+            disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
           />
         )}
