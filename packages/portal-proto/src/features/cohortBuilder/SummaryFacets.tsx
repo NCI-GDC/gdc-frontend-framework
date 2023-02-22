@@ -10,6 +10,7 @@ import {
   useEnumFacetValues,
 } from "@/features/facets/hooks";
 import partial from "lodash/partial";
+import tw from "tailwind-styled-components";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -21,6 +22,25 @@ export interface SummaryFacetInfo {
 interface SummaryFacetProps {
   readonly fields: ReadonlyArray<SummaryFacetInfo>;
 }
+
+export const SummaryFacetHeader = tw.div`
+flex items-start justify-between flex-nowrap shadow-md px-1.5 border-base- border-b-1`;
+
+export const SummaryFacetHeaderLabel = tw.div`
+text-primary-darkest font-heading font-semibold text-[1.25em] break-words py-2
+`;
+
+export const SummaryFacetIconButton = tw.button`
+text-red
+font-bold
+py-2
+px-1
+rounded
+inline-flex
+items-center
+hover:text-primary-darker
+`;
+
 export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   fields,
 }: SummaryFacetProps) => {
@@ -36,6 +56,11 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
         return (
           <EnumFacet
             field={entry.field}
+            header={{
+              Panel: SummaryFacetHeader,
+              Label: SummaryFacetHeaderLabel,
+              iconStyle: "text-primary-darkest hover:text-primary-lighter",
+            }}
             valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
             facetName={entry.name}
             startShowingData={false}
