@@ -75,7 +75,7 @@ const GeneView = ({
   contextFilters = undefined,
   contextSensitive = false,
 }: GeneViewProps) => {
-  const cohortFilters = useCoreSelector((state) =>
+  const currentCohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
   const formatDataForSummary = () => {
@@ -178,6 +178,8 @@ const GeneView = ({
     );
   };
 
+  const genomicFilters = contextSensitive ? contextFilters : undefined;
+  const cohortFilters = contextSensitive ? currentCohortFilters : undefined;
   return (
     <div>
       {data?.genes && (
@@ -215,21 +217,21 @@ const GeneView = ({
                   page="gene"
                   gene={gene_id}
                   height={200}
-                  genomicFilters={contextSensitive ? contextFilters : undefined}
-                  cohortFilters={contextSensitive ? cohortFilters : undefined}
+                  genomicFilters={genomicFilters}
+                  cohortFilters={cohortFilters}
                 />
                 <CNVPlot
                   gene={gene_id}
                   height={200}
-                  genomicFilters={contextSensitive ? contextFilters : undefined}
-                  cohortFilters={contextSensitive ? cohortFilters : undefined}
+                  genomicFilters={genomicFilters}
+                  cohortFilters={cohortFilters}
                 />
               </Grid>
               <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}
-                genomicFilters={contextSensitive ? contextFilters : undefined}
-                cohortFilters={contextSensitive ? cohortFilters : undefined}
+                genomicFilters={genomicFilters}
+                cohortFilters={cohortFilters}
               />
               <div className="mt-4">
                 <div className="flex items-center gap-2">
@@ -240,9 +242,8 @@ const GeneView = ({
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                   contextSensitive={contextSensitive}
-                  genomicFilters={contextSensitive ? contextFilters : undefined}
-                  // don't have to send this most probably (clean uppp)
-                  cohortFilters={contextSensitive ? cohortFilters : undefined}
+                  genomicFilters={genomicFilters}
+                  cohortFilters={cohortFilters}
                 />
               </div>
             </div>

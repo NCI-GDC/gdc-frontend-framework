@@ -467,6 +467,7 @@ export const createTableColumn = (
                       entity_id: row.original?.geneID,
                       entity_name: label,
                       contextSensitive: true,
+                      // TODO: rename
                       contextFilters: genomicFilters,
                     })
                   }

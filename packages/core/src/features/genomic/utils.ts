@@ -1,5 +1,6 @@
 import { Intersection, Union } from "../gdcapi/filters";
 
+// maybe can use this
 export const appendFilterToOperation = (
   filter: Intersection | Union | undefined,
   addition: Intersection | Union | undefined,

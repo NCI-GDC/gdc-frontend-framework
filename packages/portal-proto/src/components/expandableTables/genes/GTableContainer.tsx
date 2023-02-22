@@ -3,6 +3,7 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
+  joinFilters,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -242,7 +243,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
                 isDemoMode={isDemoMode}
-                genomicFilters={genomicFilters}
+                genomicFilters={
+                  // For Demo Mode -> cohortFilters cannot be accessed using selector
+                  // hence combining it here before passing it via callback in genesTableUtils
+                  isDemoMode
+                    ? joinFilters(genomicFilters, cohortFilters)
+                    : genomicFilters
+                }
               />
             </div>
           )}

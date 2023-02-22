@@ -37,6 +37,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     gene,
     contextFilters,
   });
+
   if (isUninitialized) {
     return <div>Initializing chart...</div>;
   }

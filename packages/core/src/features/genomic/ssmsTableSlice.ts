@@ -1,4 +1,8 @@
-import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import {
+  GraphQLApiResponse,
+  graphqlAPISlice,
+  TablePageOffsetProps,
+} from "../gdcapi/gdcgraphql";
 import {
   buildCohortGqlOperator,
   FilterSet,
@@ -10,7 +14,6 @@ import {
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
-import { GenomicTableProps } from "./types";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
 import { DataStatus } from "src/dataAccess";
@@ -155,12 +158,9 @@ export const buildSSMSTableSearchFilters = (
   return undefined;
 };
 
-export interface SsmsTableRequestParameters extends GenomicTableProps {
+export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly geneSymbol?: string;
-  isDemoMode: boolean;
-  overwritingDemoFilter: FilterSet;
-  localPlusCohortFilters: FilterSet;
-  currentCohortFilter: FilterSet;
+  readonly localPlusCohortFilters: FilterSet;
 }
 
 interface ssmtableResponse {
@@ -221,82 +221,45 @@ const generateFilter = ({
   pageSize,
   offset,
   searchTerm,
-  genomicFilters,
   geneSymbol,
-  isDemoMode,
-  overwritingDemoFilter,
-  currentCohortFilter,
   localPlusCohortFilters,
 }: SsmsTableRequestParameters) => {
-  const cohortFilters = buildCohortGqlOperator(
-    geneSymbol // if gene symbol use all GDC
-      ? joinFilters(
-          {
-            mode: "and",
-            root: {
-              "genes.symbol": {
-                field: "genes.symbol",
-                operator: "includes",
-                operands: [geneSymbol],
-              },
+  // if gene symbol combine it with cohort and genomic filters for context sensitive.
+  // at this point localPlusCohortFilters already takes care for context / non-context
+  const geneAndCohortFilters = geneSymbol
+    ? joinFilters(
+        {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
             },
           },
-          localPlusCohortFilters,
-        )
-      : isDemoMode
-      ? overwritingDemoFilter
-      : currentCohortFilter,
-  );
-  const cohortFiltersContent = cohortFilters?.content
-    ? Object(cohortFilters?.content)
-    : [];
-
-  const geneAndCohortFilters = geneSymbol
-    ? joinFilters(localPlusCohortFilters, {
-        mode: "and",
-        root: {
-          "genes.symbol": {
-            field: "genes.symbol",
-            operator: "includes",
-            operands: [geneSymbol],
-          },
         },
-      })
+        localPlusCohortFilters,
+      )
     : localPlusCohortFilters;
 
+  const geneAndCohortFiltersContent = buildCohortGqlOperator(
+    geneAndCohortFilters,
+  )?.content
+    ? Object(buildCohortGqlOperator(geneAndCohortFilters)?.content)
+    : [];
+
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
-  const tableFilters = isDemoMode
-    ? convertFilterToGqlFilter(
-        appendFilterToOperation(
-          filterSetToOperation(
-            joinFilters(overwritingDemoFilter, genomicFilters),
-          ) as Union | Intersection | undefined,
-          searchFilters,
-        ),
-      )
-    : convertFilterToGqlFilter(
-        appendFilterToOperation(
-          filterSetToOperation(geneAndCohortFilters) as
-            | Union
-            | Intersection
-            | undefined,
-          searchFilters,
-        ),
-      );
+  const tableFilters = convertFilterToGqlFilter(
+    appendFilterToOperation(
+      filterSetToOperation(geneAndCohortFilters) as
+        | Union
+        | Intersection
+        | undefined,
+      searchFilters,
+    ),
+  );
 
   const graphQlFilters = {
-    ssmTested: {
-      content: [
-        {
-          content: {
-            field: "cases.available_variation_data",
-            value: ["ssm"],
-          },
-          op: "in",
-        },
-      ],
-      op: "and",
-    },
     ssmCaseFilter: {
       content: [
         ...[
@@ -308,11 +271,11 @@ const generateFilter = ({
             op: "in",
           },
         ],
-        ...cohortFiltersContent,
+        ...geneAndCohortFiltersContent,
       ],
       op: "and",
     },
-    ssmsTable_size: pageSize,
+    ssmsTable_filters: tableFilters ? tableFilters : {},
     consequenceFilters: {
       content: [
         {
@@ -325,8 +288,20 @@ const generateFilter = ({
       ],
       op: "and",
     },
+    ssmTested: {
+      content: [
+        {
+          content: {
+            field: "cases.available_variation_data",
+            value: ["ssm"],
+          },
+          op: "in",
+        },
+      ],
+      op: "and",
+    },
+    ssmsTable_size: pageSize,
     ssmsTable_offset: offset,
-    ssmsTable_filters: tableFilters ? tableFilters : {},
     score: "occurrence.case.project.project_id",
     sort: [
       {

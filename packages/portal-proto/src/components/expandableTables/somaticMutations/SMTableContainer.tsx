@@ -2,10 +2,8 @@ import {
   GDCSsmsTable,
   FilterSet,
   usePrevious,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  mergeGenomicAndCohortFilters,
   useGetSssmTableDataQuery,
+  joinFilters,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -159,29 +157,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
   const [smTotal, setSMTotal] = useState(0);
 
-  const localPlusCohortFilters = useCoreSelector((state) =>
-    mergeGenomicAndCohortFilters(state, genomicFilters),
-  );
-
-  const currentCohortFilter = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
+  const localPlusCohortFilters = joinFilters(cohortFilters, genomicFilters);
 
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
-    genomicFilters: genomicFilters,
     geneSymbol: geneSymbol,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
-    currentCohortFilter: contextSensitive
-      ? currentCohortFilter
-      : { mode: "and", root: {} },
-    localPlusCohortFilters: contextSensitive
-      ? localPlusCohortFilters
-      : { mode: "and", root: {} },
+    localPlusCohortFilters:
+      // might cleanup a bit more
+      contextSensitive || isModal || isDemoMode
+        ? localPlusCohortFilters
+        : { mode: "and", root: {} },
   });
 
   useEffect(() => {
