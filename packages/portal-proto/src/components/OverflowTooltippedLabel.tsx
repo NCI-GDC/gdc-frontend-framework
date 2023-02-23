@@ -25,8 +25,8 @@ const OverflowTooltippedLabel = ({
       arrowOffset={20}
       classNames={{
         tooltip:
-          "bg-accent-lightest text-base-min shadow-lg font-content-noto font-medium text-sm",
-        arrow: "bg-accent-lightest",
+          "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+        arrow: "bg-base-min bg-opacity-90",
       }}
     >
       <div
