@@ -65,7 +65,7 @@ const nciBlue = {
   lighter: "#abc5db",
   light: "#6a9dc1",
   DEFAULT: "#2a72a5",
-  vivid: "#3289C7",
+  vivid: "#3671A8",
   dark: "#256492",
   darker: "#1d567e",
   darkest: "#0f4163",
