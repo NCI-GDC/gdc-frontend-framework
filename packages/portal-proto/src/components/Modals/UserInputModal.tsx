@@ -2,7 +2,6 @@ import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
 import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
-import { modalStyles } from "./styles";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
