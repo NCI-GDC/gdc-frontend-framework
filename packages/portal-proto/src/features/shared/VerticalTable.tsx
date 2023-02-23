@@ -351,7 +351,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     return (
       <table
         {...getTableProps()}
-        className="w-full text-left font-content border-1 shadow-xs"
+        className="w-full text-left font-content shadow-xs"
       >
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
@@ -359,7 +359,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-xs font-bold text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md`}
+              className={`font-heading text-xs font-bold text-base-contrast-max py-2 whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -367,7 +367,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className={`px-2 pt-3 pb-1 font-heading  ${
+                    className={`px-2 pt-1 pb-1 font-heading  ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -379,7 +379,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold ${
+                    className={`px-2 pt-1 pb-1 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -437,7 +437,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()} className="">
+        <tbody
+          {...getTableBodyProps()}
+          className="border-1 border-base-lighter"
+        >
           {status === "rejected" ? (
             <tr>
               <td className="" colSpan={columns.length}>
@@ -453,8 +456,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     {...row.getRowProps()}
                     className={
                       index % 2 === 1
-                        ? "bg-base-max border-1"
-                        : "bg-base-lightest border-1"
+                        ? "bg-base-max border-1 border-base-lighter"
+                        : "bg-base-lightest border-1 border-base-lighter"
                     }
                     key={`row-${index}`}
                   >
@@ -463,7 +466,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-0.5 text-xs text-content"
+                          className="px-2 py-0 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -641,7 +644,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-between	border-base-light pt-2 mx-4">
+        <div className="flex flex-row items-center text-content justify-between	border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
             <div className="flex flex-row items-center m-auto ml-0">
               <span className="my-auto mx-1 text-xs">Show</span>
@@ -675,6 +678,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             size="sm"
             radius="xs"
             withEdges
+            classNames={{ item: "border-0" }}
           />
         </div>
       )}

@@ -102,6 +102,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     entity_name: null,
   });
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const defaultTailwindColorTheme =
+    tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+
   return (
     <CoreProvider>
       <Provider store={store}>
@@ -138,12 +143,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // TODO: refactor how the configuration get loaded
 
               ...Object.fromEntries(
-                Object.entries(
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                    .extend.colors,
-                ).map(([key, values]) => [key, Object.values(values)]),
+                Object.entries(defaultTailwindColorTheme).map(
+                  ([key, values]) => [key, Object.values(values)],
+                ),
               ),
             },
             primaryColor: "primary",
@@ -163,6 +165,36 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                     tooltip:
                       "bg-accent-lightest text-base-min shadow-lg font-content-noto font-medium text-sm",
                     arrow: "bg-accent-lightest",
+                  },
+                },
+              },
+              Modal: {
+                defaultProps: {
+                  zIndex: 400,
+                  radius: "md",
+                  padding: 0,
+                  styles: {
+                    header: {
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                      fontFamily: '"Montserrat", "sans-serif"',
+                      fontSize: "1.65em",
+                      fontWeight: 500,
+                      letterSpacing: ".1rem",
+                      borderColor: defaultTailwindColorTheme.base.lighter,
+                      borderStyle: "solid",
+                      borderWidth: "0px 0px 2px 0px",
+                      padding: "15px 20px 15px 15px",
+                      margin: "5px 5px 5px 5px",
+                    },
+                    modal: {
+                      backgroundColor: defaultTailwindColorTheme.base.max,
+                    },
+                    close: {
+                      backgroundColor: defaultTailwindColorTheme.base.lightest,
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                    },
                   },
                 },
               },

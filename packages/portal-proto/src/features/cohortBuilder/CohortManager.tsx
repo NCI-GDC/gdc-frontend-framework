@@ -301,7 +301,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
     >
       {(isAddCohortLoading ||
         isCohortIdFetching ||
@@ -537,7 +537,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-secondary-darkest w-80 p-0 pt-5",
+                  root: "border-secondary-darkest w-80 p-0 pt-4",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
@@ -550,7 +550,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />
               <div
-                className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
+                className={`ml-auto text-heading text-[0.65em] font-semibold pt-0.75 text-primary-contrast ${
                   cohortModified ? "visible" : "invisible"
                 }`}
               >

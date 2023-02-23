@@ -23,7 +23,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         <div className="flex-grow">
           <Top />
         </div>
-        <div className="flex flex-row items-center bg-primary pr-4">
+        <div className="flex flex-row items-center bg-primary pr-4 pb-2">
           <Button
             className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast"
             onClick={toggle}

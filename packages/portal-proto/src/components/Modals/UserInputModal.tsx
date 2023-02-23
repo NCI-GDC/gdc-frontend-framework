@@ -51,7 +51,6 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
       }
       size="xl"
       withinPortal={false}
-      classNames={modalStyles}
       closeButtonLabel="close modal"
     >
       <DiscardChangesModal

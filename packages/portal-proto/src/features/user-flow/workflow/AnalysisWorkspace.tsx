@@ -128,11 +128,11 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
             data-tour="analysis_tool_filters"
             className="flex flex-col pr-1"
             span={1}
-            xs={3}
-            sm={3}
-            md={3}
-            lg={3}
-            xl={3}
+            xs={2}
+            sm={2}
+            md={2}
+            lg={2}
+            xl={2}
           >
             <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
@@ -154,7 +154,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-primary hover:bg-primary-darker hover:text-white hover:border-primary-darker border-primary"
+                      className="text-primary hover:bg-primary-darker hover:text-white hover:border-primary-darker"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>

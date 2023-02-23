@@ -25,7 +25,8 @@ const QueryExpressionContainer = tw.div`
   border-secondary-darkest
   border-1
   border-l-4
-  mt-3
+  my-3
+  mx-3
 `;
 
 const MAX_COLLAPSED_ROWS = 3;

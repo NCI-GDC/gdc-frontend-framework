@@ -22,7 +22,6 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
     closeButtonLabel="close"
     onClose={onClose}
     size="lg"
-    classNames={modalStyles}
     withinPortal={false}
   >
     <div className="p-4">

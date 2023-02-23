@@ -67,7 +67,7 @@ const StyledFacetTabs = (props: TabsProps) => {
           ...theme.fn.focusStyles(),
           padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
           cursor: "pointer",
-          fontSize: theme.fontSizes.sm,
+          fontSize: theme.fontSizes.md,
           fontFamily: theme.fontFamily,
           display: "flex",
           flexDirection: "row",
@@ -315,9 +315,9 @@ export const FacetTabs = (): JSX.Element => {
         onTabChange={setActiveTab}
         keepMounted={false}
         classNames={{
-          tab: "first:mt-2 last:mb-2 ml-2 sm:w-32 md:w-48 lg:w-64 data-active:text-primary-content-darkest data-active:border-primary-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-t-2 data-active:border-l-2 data-active:border-b-2 data-active:bg-base-max hover:bg-primary-darker active:shadow-lg",
+          tab: "first:mt-2 last:mb-2 ml-2 sm:w-44 md:w-60 lg:w-80 data-active:text-primary-content-darkest data-active:border-primary-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-t-2 data-active:border-l-2 data-active:border-b-2 data-active:bg-base-max hover:bg-primary-darker active:shadow-lg",
           tabsList:
-            "flex flex-col bg-primary-dark text-primary-contrast-dark w-[240px] border-r-2 border-primary-darkest",
+            "flex flex-col bg-primary-dark text-primary-contrast-dark w-64 border-r-2 border-primary-darkest",
           tabLabel: "text-left",
           root: "bg-base-max",
         }}
