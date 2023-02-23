@@ -79,6 +79,7 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
+          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}

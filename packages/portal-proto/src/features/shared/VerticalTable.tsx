@@ -14,6 +14,7 @@ import {
   Pagination,
   LoadingOverlay,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core";
 
 export interface PaginationOptions {
@@ -558,6 +559,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
+  const theme = useMantineTheme();
+
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
@@ -566,13 +569,14 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         )}
         <div className="flex flex-row items-center">
           {search?.enabled && (
-            <div className="flex flex-row w-max">
+            <div className="flex flex-row w-max mb-2">
               <TextInput
-                icon={<MdSearch size={24} />}
+                icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
                 placeholder={search.placeholder ?? "Search"}
                 aria-label="Table Search Input"
                 classNames={{
-                  input: "focus:border-2 cus:drop-shadow-xl",
+                  input:
+                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
                   wrapper: "w-72 mr-1",
                 }}
                 size="sm"
@@ -613,9 +617,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     setShowColumnMenu(!showColumnMenu);
                   }}
                 >
-                  <Box
-                    className={`border-1 border-base p-2 rounded-md mx-1 hover:cursor-pointer`}
-                  >
+                  <Box className="border-1 border-base p-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
                     {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
                   </Box>
                 </button>
@@ -644,7 +646,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-between	border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex flex-row items-center text-content justify-between	bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
             <div className="flex flex-row items-center m-auto ml-0">
               <span className="my-auto mx-1 text-xs">Show</span>

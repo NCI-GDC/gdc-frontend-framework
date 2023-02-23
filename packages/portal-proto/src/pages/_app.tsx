@@ -102,9 +102,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     entity_name: null,
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const defaultTailwindColorTheme =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
 
   return (

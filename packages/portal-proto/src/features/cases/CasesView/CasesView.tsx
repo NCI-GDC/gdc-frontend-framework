@@ -378,12 +378,12 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 JSON
               </Button>
             </ButtonTooltip>
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
               </Button>
             </ButtonTooltip>
