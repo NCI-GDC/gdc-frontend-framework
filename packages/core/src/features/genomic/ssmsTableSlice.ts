@@ -10,6 +10,7 @@ import {
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
+  GqlIntersection,
   Intersection,
   Union,
 } from "../gdcapi/filters";
@@ -242,11 +243,8 @@ const generateFilter = ({
       )
     : localPlusCohortFilters;
 
-  const geneAndCohortFiltersContent = buildCohortGqlOperator(
-    geneAndCohortFilters,
-  )?.content
-    ? Object(buildCohortGqlOperator(geneAndCohortFilters)?.content)
-    : [];
+  const geneAndCohortFiltersContent =
+    buildCohortGqlOperator(geneAndCohortFilters);
 
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
   const tableFilters = convertFilterToGqlFilter(
@@ -271,7 +269,9 @@ const generateFilter = ({
             op: "in",
           },
         ],
-        ...geneAndCohortFiltersContent,
+        ...(geneAndCohortFiltersContent
+          ? (geneAndCohortFiltersContent as GqlIntersection)?.content
+          : []),
       ],
       op: "and",
     },
