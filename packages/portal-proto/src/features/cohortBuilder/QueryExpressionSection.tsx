@@ -217,21 +217,22 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   </ActionIcon>
                   <ActionIcon
                     variant={filtersSectionCollapsed ? "outline" : "filled"}
-                    color="white"
+                    color={filtersSectionCollapsed ? "white" : "white"}
                     onClick={() =>
                       setFiltersSectionCollapsed(!filtersSectionCollapsed)
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                    className={`data-disabled:bg-gray-300`}
                   >
                     {filtersSectionCollapsed ? (
                       <>
-                        <DownArrowIcon size={30} className="text-primary" />
+                        <DownArrowIcon size={30} className="text-white" />
                       </>
                     ) : (
                       <>
-                        <UpArrowIcon size={30} className="text-white" />
+                        <UpArrowIcon size={30} className="text-primary" />
                       </>
                     )}
                   </ActionIcon>
