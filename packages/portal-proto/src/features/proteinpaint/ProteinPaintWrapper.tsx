@@ -1,6 +1,7 @@
 import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import { v4 as uuidv4 } from "uuid";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -25,9 +26,11 @@ interface PpProps {
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
-  const filter0 = buildCohortGqlOperator(
-    useCoreSelector(selectCurrentCohortFilters),
-  );
+  const isDemoMode = useIsDemoApp();
+
+  const filter0 = isDemoMode
+    ? null
+    : buildCohortGqlOperator(useCoreSelector(selectCurrentCohortFilters));
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
@@ -71,8 +74,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = getLollipopTrack(props, filter0, callback);
-
       if (!data) return;
+      if (isDemoMode) data.geneSymbol = "MYC";
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
@@ -108,6 +111,11 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
+      {isDemoMode && (
+        <span className="font-heading italic px-2 py-4 mt-4">
+          {"Demo showing MYC variants for all GDC."}
+        </span>
+      )}
       <div
         ref={divRef}
         style={{ margin: "32px" }}
@@ -127,6 +135,7 @@ interface Mds3Arg {
   gene2canonicalisoform?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
   geneSearch4GDCmds3?: boolean;
+  geneSymbol?: string;
   tracks: Track[];
 }
 

@@ -12,6 +12,10 @@ jest.mock("@gff/core", () => ({
   PROTEINPAINT_API: "host:port/basepath",
 }));
 
+jest.mock("@/hooks/useIsDemoApp", () => ({
+  useIsDemoApp: jest.fn(() => false),
+}));
+
 jest.mock("@stjude/proteinpaint-client", () => ({
   __esModule: true,
   runproteinpaint: jest.fn(async (arg) => {

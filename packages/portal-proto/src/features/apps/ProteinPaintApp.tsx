@@ -4,13 +4,7 @@ import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
 import { DemoUtil } from "./DemoUtil";
 
 const ProteinPaintApp: FC = () => {
-  const isDemoMode = useIsDemoApp();
-
-  return isDemoMode ? (
-    <DemoUtil text="Coming Soon!" />
-  ) : (
-    <ProteinPaintWrapper />
-  );
+  return <ProteinPaintWrapper />;
 };
 
 export default ProteinPaintApp;
