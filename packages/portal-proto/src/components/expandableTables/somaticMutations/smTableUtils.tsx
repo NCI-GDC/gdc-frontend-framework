@@ -39,7 +39,6 @@ export const createTableColumn = (
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
   isModal: boolean,
   isConsequenceTable?: boolean,
-  contextSensitive?: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -456,7 +455,7 @@ export const createTableColumn = (
                     tooltip:
                       "bg-base-lightest text-base-contrast-lightest font-heading text-left",
                   }}
-                  position={contextSensitive ? "left-start" : "top"}
+                  position={geneSymbol && isModal ? "left-start" : "top"}
                 >
                   <div className="font-heading text-left text-xs whitespace-pre-line">
                     Impact

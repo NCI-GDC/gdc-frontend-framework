@@ -241,9 +241,9 @@ const GeneView = ({
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
-                  contextSensitive={contextSensitive}
                   genomicFilters={genomicFilters}
                   cohortFilters={cohortFilters}
+                  isModal={isModal}
                 />
               </div>
             </div>

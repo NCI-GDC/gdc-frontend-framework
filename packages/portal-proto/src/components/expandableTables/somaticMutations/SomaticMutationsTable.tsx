@@ -33,7 +33,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   geneSymbol = undefined,
   isDemoMode = false,
   isModal = false,
-  contextSensitive = false,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -114,15 +113,12 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         isDemoMode,
         setEntityMetadata,
         isModal,
-        false,
-        contextSensitive,
       );
     });
   }, [
     visibleColumns,
     geneSymbol,
     selectedMutations,
-    contextSensitive,
     handleSsmToggled,
     setSelectedMutations,
     toggledSsms,

@@ -50,7 +50,6 @@ export interface SMTableContainerProps {
    * boolean used to determine if the links need to be opened in a summary modal or a Link
    */
   isModal?: boolean;
-  contextSensitive?: boolean;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -65,7 +64,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = [],
   isDemoMode = false,
   isModal = false,
-  contextSensitive = false,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -276,7 +274,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 isDemoMode={isDemoMode}
                 isModal={isModal}
                 geneSymbol={geneSymbol}
-                contextSensitive={contextSensitive}
               />
             </div>
           )}
