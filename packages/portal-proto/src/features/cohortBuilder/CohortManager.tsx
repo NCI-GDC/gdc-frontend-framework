@@ -537,7 +537,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-secondary-darkest w-80 p-0 pt-[1.25rem]",
+                  root: "border-secondary-darkest w-80 p-0 pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
