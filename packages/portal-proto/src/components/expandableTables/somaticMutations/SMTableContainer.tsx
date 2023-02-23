@@ -279,6 +279,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 toggledSsms={toggledSsms}
                 isDemoMode={isDemoMode}
                 isModal={isModal}
+                geneSymbol={geneSymbol}
+                contextSensitive={contextSensitive}
               />
             </div>
           )}

@@ -89,4 +89,5 @@ export interface SomaticMutationsTableProps {
   geneSymbol?: string;
   isDemoMode?: boolean;
   isModal?: boolean;
+  contextSensitive?: boolean;
 }

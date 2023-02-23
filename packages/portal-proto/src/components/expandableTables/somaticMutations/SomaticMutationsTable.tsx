@@ -33,6 +33,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   geneSymbol = undefined,
   isDemoMode = false,
   isModal = false,
+  contextSensitive = false,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -99,34 +100,38 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
-  const columns = useMemo<ColumnDef<SomaticMutations>[]>(
-    () => {
-      return visibleColumns.map(({ id: accessor }: Column) => {
-        return createTableColumn(
-          accessor,
-          selectedMutations,
-          setSelectedMutations,
-          handleSurvivalPlotToggled,
-          setMutationID,
-          handleSsmToggled,
-          toggledSsms,
-          geneSymbol,
-          isDemoMode,
-          setEntityMetadata,
-          isModal,
-        );
-      });
-    }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      visibleColumns,
-      width,
-      selectedMutations,
-      mutationID,
-      setMutationID,
-      handleSurvivalPlotToggled,
-      setEntityMetadata,
-    ],
-  );
+  const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
+    return visibleColumns.map(({ id: accessor }: Column) => {
+      return createTableColumn(
+        accessor,
+        selectedMutations,
+        setSelectedMutations,
+        handleSurvivalPlotToggled,
+        setMutationID,
+        handleSsmToggled,
+        toggledSsms,
+        geneSymbol,
+        isDemoMode,
+        setEntityMetadata,
+        isModal,
+        false,
+        contextSensitive,
+      );
+    });
+  }, [
+    visibleColumns,
+    geneSymbol,
+    selectedMutations,
+    contextSensitive,
+    handleSsmToggled,
+    setSelectedMutations,
+    toggledSsms,
+    isDemoMode,
+    isModal,
+    setMutationID,
+    handleSurvivalPlotToggled,
+    setEntityMetadata,
+  ]);
 
   useEffect(() => {
     setExpanded({});

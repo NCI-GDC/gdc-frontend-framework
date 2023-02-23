@@ -20,6 +20,7 @@ import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { SSMSData } from "@gff/core";
 import { externalLinks } from "src/utils";
+import tw from "tailwind-styled-components";
 
 export const createTableColumn = (
   accessor: string,
@@ -38,6 +39,7 @@ export const createTableColumn = (
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
   isModal: boolean,
   isConsequenceTable?: boolean,
+  contextSensitive?: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -402,81 +404,59 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => {
-              const twIconStyles = `w-7 h-6 text-white border rounded-md flex justify-center items-center`;
+              const TwIconDiv = tw.div`w-7 h-6 text-white border rounded-md flex justify-center items-center`;
               return (
                 <Tooltip
                   label={
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-1">
                       <Text>Impact for canonical transcript:</Text>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         VEP:
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          HI
-                        </div>
+                        <TwIconDiv className="bg-red-500 mx-1">HI</TwIconDiv>
                         high
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          LO
-                        </div>
+                        <TwIconDiv className="bg-green-500 mx-1">LO</TwIconDiv>
                         low
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          MO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">MO</TwIconDiv>
                         moderate
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          MR
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">MR</TwIconDiv>
                         modifier
                       </div>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         SIFT:
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          DH
-                        </div>
+                        <TwIconDiv className=" bg-red-500 mx-1">DH</TwIconDiv>
                         deleterious
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          DL
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">DL</TwIconDiv>
                         deleterious_low_confidence
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          TO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">TO</TwIconDiv>
                         tolerated
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          TL
-                        </div>
+                        <TwIconDiv className=" bg-green-500 mx-1">TL</TwIconDiv>
                         tolerated_low_confidence
                       </div>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         PolyPhen:
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          BE
-                        </div>
+                        <TwIconDiv className=" bg-green-500 mx-1">BE</TwIconDiv>
                         benign
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          PO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">PO</TwIconDiv>
                         possibly_damaging
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          PR
-                        </div>
+                        <TwIconDiv className=" bg-red-500 mx-1">PR</TwIconDiv>
                         probably_damaging
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          UN
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">UN</TwIconDiv>
                         unknown
                       </div>
                     </div>
                   }
                   width="auto"
                   withArrow
-                  arrowSize={6}
+                  arrowSize={8}
                   transition="fade"
+                  offset={10}
                   transitionDuration={200}
                   multiline
                   classNames={{
                     tooltip:
                       "bg-base-lightest text-base-contrast-lightest font-heading text-left",
                   }}
+                  position={contextSensitive ? "left-start" : "top"}
                 >
                   <div className="font-heading text-left text-xs whitespace-pre-line">
                     Impact
