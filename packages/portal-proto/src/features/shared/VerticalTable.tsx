@@ -675,20 +675,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             size="sm"
             radius="xs"
             withEdges
-            getItemAriaLabel={(page) => {
-              switch (page) {
-                case "prev":
-                  return "previous page button";
-                case "next":
-                  return "next page button";
-                case "first":
-                  return "first page button";
-                case "last":
-                  return "last page button";
-                default:
-                  return `${page} item`;
-              }
-            }}
           />
         </div>
       )}
