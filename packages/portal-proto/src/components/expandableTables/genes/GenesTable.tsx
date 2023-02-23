@@ -128,13 +128,16 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           genomicFilters,
         );
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     visibleColumns,
     selectedGenes,
     setSelectedGenes,
-    geneID,
     setGeneID,
+    genomicFilters,
+    toggledGenes,
+    handleGeneToggled,
+    isDemoMode,
+    setEntityMetadata,
     handleSurvivalPlotToggled,
   ]);
 
