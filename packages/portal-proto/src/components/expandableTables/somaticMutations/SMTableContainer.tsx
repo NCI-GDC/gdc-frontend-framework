@@ -214,6 +214,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         {showSaveModal && (
           <SaveSelectionAsSetModal
             filters={setFilters}
+            sort="occurrence.case.project.project_id"
             initialSetName={
               Object.keys(selectedMutations).length === 0
                 ? filtersToName(genomicFilters)

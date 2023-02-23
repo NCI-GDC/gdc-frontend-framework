@@ -121,6 +121,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
               ? `The set cannot exceed ${SET_COUNT_LIMIT.toLocaleString()} ${setTypeLabel}s.`
               : undefined
           }
+          sortByName
         />
         {isSuccessCount &&
           selectedSets.length > 0 &&
@@ -145,16 +146,26 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
             appendToSet({
               setId: selectedSets[0][0],
               filters: {
-                content: [
-                  buildCohortGqlOperator(filters),
-                  {
-                    op: "excludeifany",
-                    content: {
-                      field,
-                      value: [`set_id:${selectedSets[0][0]}`],
-                    },
-                  },
-                ],
+                content: buildCohortGqlOperator(filters)
+                  ? [
+                      buildCohortGqlOperator(filters),
+                      {
+                        op: "excludeifany",
+                        content: {
+                          field,
+                          value: [`set_id:${selectedSets[0][0]}`],
+                        },
+                      },
+                    ]
+                  : [
+                      {
+                        op: "excludeifany",
+                        content: {
+                          field,
+                          value: [`set_id:${selectedSets[0][0]}`],
+                        },
+                      },
+                    ],
                 op: "and",
               },
               size: SET_COUNT_LIMIT - setCount,

@@ -199,6 +199,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ? filtersToName(genomicFilters)
                 : "Custom Gene Selection"
             }
+            sort="case.project.project_id"
             saveCount={
               Object.keys(selectedGenes).length === 0
                 ? gTotal

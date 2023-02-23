@@ -34,7 +34,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
 }: SelectCellProps) => {
   const [setId] = set;
   const { data, isSuccess } = countHook({ setId });
-  const disabledMessage = isSuccess ? shouldDisable(data) : undefined;
+  const disabledMessage =
+    isSuccess && shouldDisable ? shouldDisable(data) : undefined;
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
 
   return (
@@ -73,6 +74,7 @@ interface SetTableProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly multiselect?: boolean;
+  readonly sortByName?: boolean;
   readonly shouldDisable?: (value: number) => string;
 }
 
@@ -83,25 +85,28 @@ const SetTable: React.FC<SetTableProps> = ({
   setType,
   setTypeLabel,
   multiselect = true,
+  sortByName = false,
   shouldDisable,
 }: SetTableProps) => {
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
   const tableData = useMemo(() => {
-    return Object.entries(sets).map((set) => ({
-      select: (
-        <SelectCell
-          countHook={countHook}
-          set={set}
-          multiselect={multiselect}
-          shouldDisable={shouldDisable}
-          selectedSets={selectedSets}
-          setSelectedSets={setSelectedSets}
-        />
-      ),
-      name: set[1],
-      count: <CountCell countHook={countHook} setId={set[0]} />,
-    }));
+    return Object.entries(sets)
+      .sort((setA, setB) => (sortByName ? setA[1].localeCompare(setB[1]) : 0))
+      .map((set) => ({
+        select: (
+          <SelectCell
+            countHook={countHook}
+            set={set}
+            multiselect={multiselect}
+            shouldDisable={shouldDisable}
+            selectedSets={selectedSets}
+            setSelectedSets={setSelectedSets}
+          />
+        ),
+        name: set[1],
+        count: <CountCell countHook={countHook} setId={set[0]} />,
+      }));
   }, [
     sets,
     selectedSets,
@@ -109,6 +114,7 @@ const SetTable: React.FC<SetTableProps> = ({
     multiselect,
     setSelectedSets,
     shouldDisable,
+    sortByName,
   ]);
 
   const columns = useMemo(() => {

@@ -74,7 +74,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
 
   return (
     <Modal
-      title={`Remove ${removeFromCount} ${setTypeLabel}${
+      title={`Remove ${removeFromCount.toLocaleString()} ${setTypeLabel}${
         removeFromCount > 1 ? "s" : ""
       } from an existing set`}
       closeButtonLabel="close"
@@ -95,6 +95,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           shouldDisable={(value: number) =>
             value === 0 ? "Set is empty." : undefined
           }
+          sortByName
         />
       </div>
       <ModalButtonContainer>
@@ -102,10 +103,12 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
         <DarkFunctionButton
           onClick={() =>
             removeFromSet({
-              filters: {
-                content: [buildCohortGqlOperator(filters)],
-                op: "and",
-              },
+              filters: buildCohortGqlOperator(filters)
+                ? {
+                    content: [buildCohortGqlOperator(filters)],
+                    op: "and",
+                  }
+                : {},
               setId: selectedSets[0][0],
             })
           }

@@ -34,9 +34,13 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           <Button
             rightIcon={<MdOutlineArrowDropDown />}
             leftIcon={
-              <Box className="bg-primary-dark text-primary-dark-contrast w-7 h-7 rounded-md flex justify-center items-center">
-                {numSelected}
-              </Box>
+              numSelected > 0 ? (
+                <Box className="bg-primary-dark text-primary-dark-contrast w-7 h-7 rounded-md flex justify-center items-center">
+                  {numSelected}
+                </Box>
+              ) : (
+                <Box className="w-7 h-7" />
+              )
             }
           >
             {buttonLabel[0].label}

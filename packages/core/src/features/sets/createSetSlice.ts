@@ -77,7 +77,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
         response.data.sets.create.explore.ssm.set_id,
     }),
     createGeneSetFromFilters: builder.mutation({
-      query: ({ filters, size }) => ({
+      query: ({ filters, size, score }) => ({
         graphQLQuery: `mutation createSet(
           $input: CreateSetInput
         ) {
@@ -97,6 +97,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
           input: {
             filters,
             size,
+            score,
           },
         },
       }),
@@ -104,7 +105,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
         response.data.sets.create.explore.gene.set_id,
     }),
     createSsmsSetFromFilters: builder.mutation({
-      query: ({ filters, size }) => ({
+      query: ({ filters, size, score }) => ({
         graphQLQuery: `mutation createSet(
           $input: CreateSetInput
         ) {
@@ -124,6 +125,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
           input: {
             filters,
             size,
+            score,
           },
         },
       }),

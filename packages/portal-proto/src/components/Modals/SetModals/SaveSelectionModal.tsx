@@ -28,6 +28,7 @@ interface SaveSelectionAsSetModalProps {
   readonly setTypeLabel: string;
   readonly createSetHook: UseMutation<any>;
   readonly closeModal: () => void;
+  readonly sort?: string;
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
@@ -38,6 +39,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   setTypeLabel,
   createSetHook,
   closeModal,
+  sort,
 }: SaveSelectionAsSetModalProps) => {
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
@@ -110,10 +112,15 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           Up to the top {max.toLocaleString()} {setTypeLabel}
           {max > 1 ? "s" : ""} can be saved.
         </p>
-        <TextInput required label="Name" {...form.getInputProps("name")} />
+        <TextInput
+          required
+          label="Name"
+          {...form.getInputProps("name")}
+          maxLength={100}
+        />
         {form.errors?.name === undefined &&
         Object.values(sets).includes(form.values.name) ? (
-          <WarningMessage message="A set with the same name already exists." />
+          <WarningMessage message="A set with the same name already exists. This will overwrite it." />
         ) : (
           <p className="text-sm pt-1">Maximum 100 characters</p>
         )}
@@ -125,6 +132,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
             createSet({
               filters: buildCohortGqlOperator(filters),
               size: form.values.top,
+              score: sort,
             })
           }
           disabled={!form.isValid() || response.isLoading}
