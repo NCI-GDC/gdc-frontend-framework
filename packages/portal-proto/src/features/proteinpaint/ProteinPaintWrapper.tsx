@@ -11,6 +11,8 @@ import {
   useUserDetails,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
+  DEFAULT_COHORT_ID,
+  setActiveCohort,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -27,10 +29,8 @@ interface PpProps {
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
-
-  const filter0 = isDemoMode
-    ? null
-    : buildCohortGqlOperator(useCoreSelector(selectCurrentCohortFilters));
+  const currentCohort = useCoreSelector(selectCurrentCohortFilters);
+  const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
@@ -70,6 +70,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     );
   };
 
+  const isRendered = useRef<boolean>(false);
+  if (isDemoMode && !isRendered.current) {
+    isRendered.current = true;
+    coreDispatch(setActiveCohort(DEFAULT_COHORT_ID));
+  }
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
@@ -103,6 +109,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
       props.geneSearch4GDCmds3,
+      isDemoMode,
       filter0,
       userDetails,
     ],
