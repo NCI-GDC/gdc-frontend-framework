@@ -172,7 +172,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 defaultProps: {
                   zIndex: 400,
                   radius: "md",
-                  padding: 0,
                   styles: {
                     header: {
                       color:
