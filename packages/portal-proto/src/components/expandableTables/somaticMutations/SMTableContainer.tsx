@@ -165,11 +165,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     geneSymbol: geneSymbol,
-    localPlusCohortFilters:
-      // might cleanup a bit more
-      contextSensitive || isModal || isDemoMode
-        ? localPlusCohortFilters
-        : { mode: "and", root: {} },
+    localPlusCohortFilters: localPlusCohortFilters,
   });
 
   useEffect(() => {
