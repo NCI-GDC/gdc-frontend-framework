@@ -335,7 +335,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-2 mr-8 px-2">
+    <div className="flex flex-col ml-1 mr-1 ">
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
 
       <VerticalTable

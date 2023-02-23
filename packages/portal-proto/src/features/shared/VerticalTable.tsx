@@ -565,7 +565,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     <div className="grow overflow-hidden">
       <div className="flex">
         {additionalControls && (
-          <div className={"flex-auto h-10"}>{additionalControls}</div>
+          <div className="flex-auto h-10">{additionalControls}</div>
         )}
         <div className="flex flex-row items-center">
           {search?.enabled && (
@@ -617,7 +617,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     setShowColumnMenu(!showColumnMenu);
                   }}
                 >
-                  <Box className="border-1 border-base p-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
+                  <Box className="border-1 border-base p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
                     {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
                   </Box>
                 </button>

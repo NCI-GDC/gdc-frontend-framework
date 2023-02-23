@@ -25,7 +25,7 @@ const QueryExpressionContainer = tw.div`
   border-secondary-darkest
   border-1
   border-l-4
-  my-3
+  my-4
   mx-3
 `;
 

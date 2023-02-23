@@ -21,7 +21,7 @@ export const SummaryStatsItem: React.FC<SummaryStatsItemProp> = ({
       <div className="-mb-1 -mt-1 text-[1.1rem] font-medium tracking-tight">
         {count && count >= 0 ? count.toLocaleString() : ""}
       </div>
-      <div className="text-[0.75rem] font-semibold">{title}</div>
+      <div className="text-sm font-semibold">{title}</div>
     </div>
   );
 };

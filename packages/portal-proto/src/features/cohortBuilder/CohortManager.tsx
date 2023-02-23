@@ -537,7 +537,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-secondary-darkest w-80 p-0 pt-4",
+                  root: "border-secondary-darkest w-80 p-0 pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
@@ -550,7 +550,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />
               <div
-                className={`ml-auto text-heading text-[0.65em] font-semibold pt-0.75 text-primary-contrast ${
+                className={`ml-auto text-heading text-sm font-semibold pt-0.75 text-primary-contrast ${
                   cohortModified ? "visible" : "invisible"
                 }`}
               >

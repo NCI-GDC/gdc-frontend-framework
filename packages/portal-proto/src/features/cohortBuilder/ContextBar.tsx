@@ -365,7 +365,6 @@ const ContextBar: React.FC = () => {
         currentCohortName={currentCohortName}
         currentCohortId={currentCohortId}
       />
-      <hr className="border-2" />
     </div>
   );
 };

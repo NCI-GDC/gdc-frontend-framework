@@ -98,7 +98,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
-              className="text-[0.65em] text-secondary border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
+              className="text-xs text-secondary p-0 border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
             >
               Demo
             </Button>
