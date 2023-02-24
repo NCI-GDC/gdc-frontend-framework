@@ -659,7 +659,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
-                label={"select page size"}
+                aria-label={"select page size"}
               />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>
