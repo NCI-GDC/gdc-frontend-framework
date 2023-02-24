@@ -1,6 +1,7 @@
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 import { TypeIcon } from "../TypeIcon";
 
-interface SummaryHeaderProps {
+export interface SummaryHeaderProps {
   iconText: string;
   headerTitle: string | number;
 }
@@ -13,9 +14,7 @@ export const SummaryHeader = ({
       <div className="rounded-full flex flex-row items-center p-1 px-2">
         <TypeIcon iconText={iconText} />
       </div>
-      <span className="text-lg text-accent uppercase tracking-wide font-medium">
-        {headerTitle}
-      </span>
+      <HeaderTitle>{headerTitle}</HeaderTitle>
     </header>
   );
 };

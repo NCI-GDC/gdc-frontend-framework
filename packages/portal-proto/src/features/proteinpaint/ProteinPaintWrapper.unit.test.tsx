@@ -8,6 +8,7 @@ jest.mock("@gff/core", () => ({
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useUserDetails: jest.fn(() => userDetails),
+  useCoreDispatch: jest.fn(() => null),
   PROTEINPAINT_API: "host:port/basepath",
 }));
 
@@ -36,8 +37,8 @@ test("SSM lolliplot arguments", () => {
       dslabel: "GDC",
       filter0: { abc: "xyz" },
       allow2selectSamples: {
-        buttonText: "Select samples",
-        attributes: ["sample_id"],
+        buttonText: "Create Cohort",
+        attributes: ["case.case_id"],
         callback: runpparg.tracks[0]?.allow2selectSamples?.callback,
       },
     },

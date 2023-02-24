@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { LoadingOverlay, Select, Loader, Tooltip } from "@mantine/core";
+import { useRouter } from "next/router";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -43,8 +44,9 @@ import {
   updateActiveCohortFilter,
   FilterGroup,
   addNewCohortGroups,
-  defaultCohortNameGenerator,
+  addNewCohortWithFilterAndMessage,
   showModal,
+  CoreDispatch,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./CohortGroup";
 import CountButton from "./CountButton";
@@ -93,6 +95,86 @@ disabled:opacity-50
 `;
 
 /**
+ * If removeList is empty, the function removes all params from url.
+ * @param  router
+ * @param  removeList
+ */
+const removeQueryParamsFromRouter = (
+  router,
+  removeList: string[] = [],
+): void => {
+  if (removeList.length > 0) {
+    removeList.forEach((param) => delete router.query[param]);
+  } else {
+    // Remove all
+    Object.keys(router.query).forEach((param) => delete router.query[param]);
+  }
+  router.replace(
+    {
+      pathname: router.pathname,
+      query: router.query,
+    },
+    undefined,
+    /**
+     * Do not refresh the page
+     */
+    { shallow: true },
+  );
+};
+
+interface CreateCohortFromBodyplotProps {
+  dispatch: CoreDispatch;
+  onCreateCohort: (name: string) => boolean;
+}
+
+/**
+ * Component for creating a cohort from the bodyplot section of the Home page.
+ * Implemented as a separate component to isolate state management.
+ * @param dispatch
+ * @param onCreateCohort
+ */
+const CreateCohortFromBodyplot: React.FC<CreateCohortFromBodyplotProps> = ({
+  dispatch,
+  onCreateCohort,
+}: CreateCohortFromBodyplotProps) => {
+  const router = useRouter();
+  const {
+    query: { operation, filters },
+  } = router;
+
+  const [cohortOperation, setCohortOperation] = useState({
+    operation: operation,
+    filters: filters,
+  });
+
+  return cohortOperation.operation == "createCohort" ? (
+    <SaveOrCreateCohortModal
+      entity="cohort"
+      action="create"
+      opened
+      onClose={() => {
+        removeQueryParamsFromRouter(router, ["operation", "filters"]);
+        setCohortOperation({ operation: undefined, filters: undefined });
+      }}
+      onActionClick={async (newName: string) => {
+        const cohortFilters = JSON.parse(
+          cohortOperation.filters as string,
+        ) as FilterSet;
+        dispatch(
+          addNewCohortWithFilterAndMessage({
+            filters: cohortFilters,
+            name: newName,
+            makeCurrent: true,
+            message: "newCohort",
+          }),
+        );
+      }}
+      onNameChange={onCreateCohort}
+    />
+  ) : null;
+};
+
+/**
  * Component for selecting, adding, saving, removing, and deleting cohorts
  * @param cohorts: array of Cohort
  * @param onSelectionChanged
@@ -118,15 +200,20 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
 
-  // util function to check for names while saving the cohort
+  // util function to check for duplicate names while saving the cohort
+  // here we filter the current cohort id so as not to so duplicate name warning
   // passed to SavingCohortModal as a prop
   const onSaveCohort = (name: string) =>
     cohorts
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
 
-  const onCreateCohort = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
+  // util function to check for duplicate names while creating the cohort
+  // passed to SavingCohortModal as a prop
+  const onCreateCohort = useCallback(
+    (name: string) => cohorts.every((cohort) => cohort.name !== name),
+    [cohorts],
+  );
 
   // Cohort specific actions
   const newCohort = useCallback(
@@ -238,7 +325,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             setShowDelete(false);
             // only delete cohort from BE if it's been saved before
             if (currentCohort?.saved) {
-              // dont delete it from the local adapter if not able to delete from the BE
+              // don't delete it from the local adapter if not able to delete from the BE
               await deleteCohortFromBE(cohortId)
                 .unwrap()
                 .then(() => deleteCohort())
@@ -320,6 +407,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         />
       )}
 
+      <CreateCohortFromBodyplot
+        dispatch={coreDispatch}
+        onCreateCohort={onCreateCohort}
+      />
+
       {showSaveCohort && (
         <SaveOrCreateCohortModal
           initialName={cohortName}
@@ -369,7 +461,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
       {showCreateCohort && (
         <SaveOrCreateCohortModal
-          initialName={defaultCohortNameGenerator()}
           entity="cohort"
           action="create"
           opened

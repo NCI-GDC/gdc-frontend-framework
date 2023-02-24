@@ -22,11 +22,13 @@ import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 interface BiospecimenProps {
   caseId: string;
   bioId: string;
+  isModal?: boolean;
 }
 
 export const Biospecimen = ({
   caseId,
   bioId,
+  isModal = false,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
 
@@ -87,16 +89,18 @@ export const Biospecimen = ({
       setTreeStatusOverride(null);
     }
 
-    router.push(
-      {
-        query: {
-          ...router.query,
-          bioId: entity[`${type.s}_id`],
+    if (!isModal) {
+      router.push(
+        {
+          query: {
+            ...router.query,
+            bioId: entity[`${type.s}_id`],
+          },
         },
-      },
-      undefined,
-      { shallow: true },
-    );
+        undefined,
+        { shallow: true },
+      );
+    }
   };
 
   const supplementalFiles = bioSpecimenData?.files?.hits?.edges || [];
@@ -139,8 +143,8 @@ export const Biospecimen = ({
             </Menu>
           </div>
 
-          <div className="flex mt-2">
-            <div className="mr-5">
+          <div className="flex mt-2 gap-4">
+            <div className="basis-1/4">
               <div className="flex mb-4">
                 <Input
                   icon={<MdOutlineSearch size={24} />}
@@ -211,7 +215,7 @@ export const Biospecimen = ({
                   />
                 )}
             </div>
-            <div className="flex-1">
+            <div className="basis-3/4">
               <HorizontalTable
                 tableData={formatEntityInfo(
                   selectedEntity,

@@ -360,6 +360,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               )}
               toggledSsms={currentMutations}
               isDemoMode={isDemoMode}
+              isModal={true}
             />
           </Tabs.Panel>
         </Tabs>
