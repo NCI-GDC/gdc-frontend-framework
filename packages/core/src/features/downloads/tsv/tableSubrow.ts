@@ -65,6 +65,7 @@ export interface MutatedGenesFreqTransformedItem {
   cnvLoss: string;
   mutations: string;
   annotations: string;
+  is_cancer_gene_census: boolean;
 }
 
 export interface MutationsFreqTransformedItem {
@@ -111,11 +112,12 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             project__project_id: { buckets: n = [] },
           },
         } = cases;
-        const transformedBuckets = n.map(({ doc_count, key }) => {
+
+        const transformedBuckets = n.map(({ doc_count, key: project }) => {
           return {
-            project: key,
+            project,
             numerator: doc_count,
-            denominator: d.find(({ key }) => key === key)?.doc_count,
+            denominator: d.find(({ key }) => key === project)?.doc_count,
           };
         });
 
@@ -127,9 +129,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       { geneIds: string[]; tableData: any }
     >({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
-        // todo handle errors
-        // if (error) {
-        //   return { error };
         const result = await fetchWithBQ({
           graphQLQuery: getAliasGraphQLQuery(arg.geneIds, "genes") as string,
           graphQLFilters: getAliasFilters(arg.geneIds, "genes") as Record<
@@ -154,6 +153,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             case_cnv_gain,
             case_cnv_loss,
             annotations,
+            is_cancer_gene_census,
           }: {
             gene_id: string;
             symbol: string;
@@ -164,6 +164,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             case_cnv_gain: number;
             case_cnv_loss: number;
             annotations: boolean;
+            is_cancer_gene_census: boolean;
           }) => {
             return {
               gene_id,
@@ -181,18 +182,17 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ?.map(
                   ({
                     doc_count: n,
-                    key: projectName,
+                    key: project,
                   }: {
                     doc_count: number;
                     key: string;
                   }) => {
                     const d = denominators?.project__project_id?.buckets.find(
-                      ({ key }: { key: string }) => key === projectName,
+                      ({ key }: { key: string }) => key === project,
                     )?.doc_count;
-                    return `${projectName}: ${n} / ${d} (${(
-                      100 *
-                      (n / d)
-                    ).toFixed(2)}%)`;
+                    return `${project}: ${n} / ${d} (${(100 * (n / d)).toFixed(
+                      2,
+                    )}%)`;
                   },
                 )
                 .join(", "),
@@ -210,6 +210,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               ...(annotations
                 ? { annotations: "Cancer Gene Cencus" }
                 : { annotations: "" }),
+              is_cancer_gene_census,
             };
           },
         );
@@ -246,11 +247,11 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             project__project_id: { buckets: n = [] },
           },
         } = cases;
-        const transformedBuckets = n.map(({ doc_count, key }) => {
+        const transformedBuckets = n.map(({ doc_count, key: project }) => {
           return {
-            project: key,
+            project,
             numerator: doc_count,
-            denominator: d.find(({ key }) => key === key)?.doc_count,
+            denominator: d.find(({ key }) => key === project)?.doc_count,
           };
         });
 
@@ -264,15 +265,16 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
         const result = await fetchWithBQ({
           graphQLQuery: getAliasGraphQLQuery(
-            arg.ssmsIds.map((id) => id.replaceAll("-", "_")),
+            arg?.ssmsIds?.map((id) => id.replaceAll("-", "_")),
             "ssms",
           ),
           graphQLFilters: getAliasFilters(
-            arg.ssmsIds.map((id) => id.replaceAll("-", "_")),
+            arg?.ssmsIds?.map((id) => id.replaceAll("-", "_")),
             "ssms",
           ),
         });
         const { filteredCases, ssms } = arg?.tableData;
+
         const { denominators, ...remaining } =
           result?.data?.data?.explore?.cases;
 
@@ -317,18 +319,17 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ?.map(
                   ({
                     doc_count: n,
-                    key: projectName,
+                    key: project,
                   }: {
                     doc_count: number;
                     key: string;
                   }) => {
                     const d = denominators?.project__project_id?.buckets.find(
-                      ({ key }: { key: string }) => key === projectName,
+                      ({ key }: { key: string }) => key === project,
                     )?.doc_count;
-                    return `${projectName}: ${n} / ${d} (${(
-                      100 *
-                      (n / d)
-                    ).toFixed(2)}%)`;
+                    return `${project}: ${n} / ${d} (${(100 * (n / d)).toFixed(
+                      2,
+                    )}%)`;
                   },
                 )
                 .join(", "),
@@ -336,14 +337,20 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ? consequence.map(
                     ({
                       annotation: {
-                        vep_impact,
-                        sift_impact,
+                        vep_impact: v,
+                        sift_impact: s,
                         sift_score,
-                        polyphen_impact,
+                        polyphen_impact: p,
                         polyphen_score,
                       },
                     }) => {
-                      return `VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`;
+                      return [
+                        v ? `VEP: ${v}` : ``,
+                        s ? `SIFT: ${s} - score ${sift_score}` : ``,
+                        p ? `PolyPhen: ${p} - score ${polyphen_score}` : ``,
+                      ]
+                        .filter(({ length }) => length)
+                        .join(",");
                     },
                   )[0]
                 : "",

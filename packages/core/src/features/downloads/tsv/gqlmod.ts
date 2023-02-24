@@ -14,6 +14,7 @@ export const getVersion = (version: string): Record<string, string> => {
 
 export const getGQLParams = (ids: string[], version: string): string => {
   const { filters } = getVersion(version);
+  //   $filters_cancer_gene_census: FiltersArgument,
   const params = `
   $filters_case: FiltersArgument,
   ${`${ids
@@ -66,13 +67,27 @@ export const getAliasGraphQLQuery = (
   return query;
 };
 
-export const caseFilter = {
+export const additionalFilters = {
+  // todo refactor adding additional filters/query vars
+
+  // filters_case: {
+  //   content: [
+  //     {
+  //       content: {
+  //         field: "cases.available_variation_data",
+  //         value: ["ssm"],
+  //       },
+  //       op: "in",
+  //     },
+  //   ],
+  //   op: "and",
+  // },
   filters_case: {
     content: [
       {
         content: {
-          field: "cases.available_variation_data",
-          value: ["ssm"],
+          field: "genes.is_cancer_gene_census",
+          value: ["true"],
         },
         op: "in",
       },
@@ -87,7 +102,7 @@ export const getAliasFilters = (
 ): Record<string, unknown> => {
   const { filters: aliasFilter, id: aliasId } = getVersion(version);
 
-  const filters = { ...caseFilter } as Record<string, unknown>;
+  const filters = { ...additionalFilters } as Record<string, unknown>;
   for (const id of ids) {
     filters[`${aliasFilter.replace("$", "")}_${id}`] = {
       op: "and",
