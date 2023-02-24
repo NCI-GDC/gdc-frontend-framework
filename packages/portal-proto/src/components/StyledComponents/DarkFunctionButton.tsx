@@ -5,8 +5,8 @@ export default tw(Button)`
 flex
 flex-row
 items-center
-bg-primary-darkest
-text-primary-contrast-darkest
+bg-secondary
+text-secondary-contrast
 border
 border-solid
 font-heading

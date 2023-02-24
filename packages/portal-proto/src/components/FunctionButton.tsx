@@ -13,12 +13,12 @@ export default tw(Button)<FunctionButtonProps>`
 flex
 flex-row
 items-center
-bg-base-lightest
-text-base-contrast-max
+bg-white
+text-secondary
 border
 border-solid
-border-primary-darker
-hover:bg-primary-darker
+border-secondary
+hover:bg-secondary
 font-heading
-hover:text-primary-contrast-darker
+hover:text-white
 `;

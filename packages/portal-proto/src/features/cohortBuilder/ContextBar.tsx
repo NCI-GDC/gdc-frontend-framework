@@ -248,7 +248,7 @@ const ContextBar: React.FC = () => {
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
         onlyIcon={false}
       >
-        <div className="flex flex-col ">
+        <div className="flex flex-col bg-nci-violet-lightest">
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2 gap-4">
               <DropdownWithIcon
@@ -298,6 +298,7 @@ const ContextBar: React.FC = () => {
                   />
                 }
                 menuLabelText="Filter your cohort by:"
+                menuLabelCustomClass="font-bold text-primary"
               />
 
               {activeTab === "summary" && (
@@ -364,7 +365,6 @@ const ContextBar: React.FC = () => {
         currentCohortName={currentCohortName}
         currentCohortId={currentCohortId}
       />
-      <hr className="border-2" />
     </div>
   );
 };

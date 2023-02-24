@@ -33,6 +33,19 @@ const nciGrayContent = {
   min: "#000000",
 };
 
+const nciBlueContent = {
+  max: "#FFFFFF",
+  lightest: "#f1f1f1",
+  lighter: "#c5c5c5",
+  light: "#9b9b9b",
+  DEFAULT: "#706f6f",
+  dark: "#606060",
+  darker: "#414150",
+  darkest: "#00334D",
+  ink: "#1b1b1b",
+  min: "#000000",
+};
+
 const nciGrayContrast = {
   min: "#FFFFFF",
   darkest: "#f1f1f1",
@@ -52,7 +65,7 @@ const nciBlue = {
   lighter: "#abc5db",
   light: "#6a9dc1",
   DEFAULT: "#2a72a5",
-  vivid: "#3289C7",
+  vivid: "#3671A8",
   dark: "#256492",
   darker: "#1d567e",
   darkest: "#0f4163",
@@ -131,7 +144,7 @@ const nciTeal = {
   light: "#64b7db",
   DEFAULT: "#0d95a1",
   vivid: "#0FB1BF",
-  dark: "#2b8ba7",
+  dark: "#82368C",
   darker: "#227991",
   darkest: "#135f73",
   min: "#0C3945",
@@ -564,6 +577,84 @@ const pastelChart = {
   },
 };
 
+const V2Secondary = {
+  max: "#E8F3F6",
+  lightest: "#C0DDE5",
+  lighter: "#98C6D3",
+  light: "#71AFC0",
+  DEFAULT: "#267F98",
+  vivid: "#4B97AC",
+  dark: "#1B6478",
+  darker: "#124857",
+  darkest: "#00314c",
+  min: "#030D10",
+};
+
+const V2SecondaryContrast = {
+  max: "#030D10",
+  lightest: "#0A2B34",
+  lighter: "#333333",
+  light: "#414141",
+  DEFAULT: "#ffffff",
+  vivid: "#c4c4c4",
+  dark: "#71AFC0",
+  darker: "#98C6D3",
+  darkest: "#ffffff",
+  min: "#ffffff",
+};
+
+const V2Accent = {
+  max: "#FBEDE6",
+  lightest: "#F3CDBB",
+  lighter: "#EAAD91",
+  light: "#E08D68",
+  DEFAULT: "#D46E40",
+  vivid: "#C7501A",
+  dark: "#9E3D11",
+  darker: "#722A0A",
+  darkest: "#451804",
+  min: "#160701",
+};
+
+const V2AccentContrast = {
+  max: "#111111",
+  lightest: "#111111",
+  lighter: "#111111",
+  light: "#111111",
+  DEFAULT: "#ffffff",
+  vivid: "#FFFFFF",
+  dark: "#FFFFFF",
+  darker: "#FFFFFF",
+  darkest: "#FFFFFF",
+  min: "#FFFFFF",
+};
+
+const V2AccentCool = {
+  max: "#E9F4F1",
+  lightest: "#C1DED6",
+  lighter: "#9FDFC9",
+  light: "#39B588",
+  DEFAULT: "#2A836A",
+  vivid: "#2A836A",
+  dark: "#217657",
+  darker: "#154B3B",
+  darkest: "#0C2D23",
+  min: "#030E0B",
+};
+
+const v2AccentCoolContent = {
+  max: "#EBF8FB",
+  lightest: "#D5EBF1",
+  lighter: "#A5DBE8",
+  light: "#84CCDD",
+  DEFAULT: "#64BCD2",
+  vivid: "#44acc5",
+  dark: "#32879B",
+  darker: "#226170",
+  darkest: "#133A43",
+  min: "#061215",
+};
+
 module.exports = {
   important: "#__next",
   content: [
@@ -773,19 +864,19 @@ module.exports = {
             "base-content": nciGrayContent,
             "base-contrast": nciGrayContrast,
             primary: nciBlue,
-            "primary-content": nciGrayContent,
+            "primary-content": nciBlueContent,
             "primary-contrast": nciBlueContrast,
-            secondary: nciRed,
+            secondary: V2Secondary,
             "secondary-content": nciGrayContent,
-            "secondary-contrast": nciRedContrast,
-            accent: nciBlumine,
+            "secondary-contrast": V2SecondaryContrast,
+            accent: V2Accent,
             "accent-content": nciGrayContent,
-            "accent-contrast": nciBlumineContrast,
+            "accent-contrast": V2AccentContrast,
             "accent-warm": nciYellow,
             "accent-warm-content": nciGrayContent,
             "accent-warm-contrast": nciYellowContrast,
-            "accent-cool": nciCyan,
-            "accent-cool-content": nciGrayContent,
+            "accent-cool": V2AccentCool,
+            "accent-cool-content": v2AccentCoolContent,
             "accent-cool-contrast": nciCyanContrast,
             chart: nciTeal,
             "chart-contrast": nciTealContrast,
