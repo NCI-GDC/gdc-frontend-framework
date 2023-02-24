@@ -161,7 +161,8 @@ export const buildSSMSTableSearchFilters = (
 
 export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly geneSymbol?: string;
-  readonly localPlusCohortFilters: FilterSet;
+  readonly genomicFilters: FilterSet;
+  readonly cohortFilters: FilterSet;
 }
 
 interface ssmtableResponse {
@@ -223,10 +224,11 @@ const generateFilter = ({
   offset,
   searchTerm,
   geneSymbol,
-  localPlusCohortFilters,
+  genomicFilters,
+  cohortFilters,
 }: SsmsTableRequestParameters) => {
-  // if gene symbol combine it with cohort and genomic filters for context sensitive.
-  // at this point localPlusCohortFilters already takes care for context / non-context
+  const genomicPlusCohortFilters = joinFilters(cohortFilters, genomicFilters);
+  // if gene symbol combine geneSymbol with cohort and genomic filters else only use genomicPlusCohortFilters without geneSymbol.
   const geneAndCohortFilters = geneSymbol
     ? joinFilters(
         {
@@ -239,12 +241,11 @@ const generateFilter = ({
             },
           },
         },
-        localPlusCohortFilters,
+        genomicPlusCohortFilters,
       )
-    : localPlusCohortFilters;
+    : genomicPlusCohortFilters;
 
-  const geneAndCohortFiltersContent =
-    buildCohortGqlOperator(geneAndCohortFilters);
+  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
 
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
   const tableFilters = convertFilterToGqlFilter(
@@ -269,12 +270,14 @@ const generateFilter = ({
             op: "in",
           },
         ],
-        ...(geneAndCohortFiltersContent
-          ? (geneAndCohortFiltersContent as GqlIntersection)?.content
+        // For case filter only use cohort filter and not genomic filter
+        ...(cohortFiltersGQl
+          ? (cohortFiltersGQl as GqlIntersection)?.content
           : []),
       ],
       op: "and",
     },
+    // for table filters use both cohort and genomic filter along with search filter
     ssmsTable_filters: tableFilters ? tableFilters : {},
     consequenceFilters: {
       content: [

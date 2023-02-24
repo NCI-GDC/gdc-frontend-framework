@@ -23,6 +23,8 @@ import { SMTableContainer } from "@/components/expandableTables/somaticMutations
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 
 interface GeneViewProps {
   data: {
@@ -75,9 +77,25 @@ const GeneView = ({
   contextFilters = undefined,
   contextSensitive = false,
 }: GeneViewProps) => {
+  const isDemo = useIsDemoApp();
   const currentCohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
+
+  // Since genomic filter lies in different store, it cannot be accessed using selectors.
+  // Hence, passing it via a callback as contextFilters
+  const genomicFilters = contextSensitive ? contextFilters : undefined;
+  let cohortFilters = undefined;
+
+  if (contextSensitive) {
+    // if it's for mutation frequency demo use different filter (TCGA-LGG) than the current cohort filter
+    if (isDemo) {
+      cohortFilters = overwritingDemoFilterMutationFrequency;
+    } else {
+      cohortFilters = currentCohortFilters;
+    }
+  }
+
   const formatDataForSummary = () => {
     const {
       genes: {
@@ -178,8 +196,6 @@ const GeneView = ({
     );
   };
 
-  const genomicFilters = contextSensitive ? contextFilters : undefined;
-  const cohortFilters = contextSensitive ? currentCohortFilters : undefined;
   return (
     <div>
       {data?.genes && (
@@ -187,7 +203,6 @@ const GeneView = ({
           {!isModal && (
             <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
           )}
-
           <div className={`mx-auto ${isModal ? "mt-2" : "mt-20"} w-9/12 pt-4`}>
             {contextSensitive && <ContextSensitiveBanner />}
             <div className="text-primary-content">
@@ -241,8 +256,8 @@ const GeneView = ({
                 <SMTableContainer
                   columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
-                  genomicFilters={genomicFilters}
                   cohortFilters={cohortFilters}
+                  genomicFilters={genomicFilters}
                   isModal={isModal}
                 />
               </div>

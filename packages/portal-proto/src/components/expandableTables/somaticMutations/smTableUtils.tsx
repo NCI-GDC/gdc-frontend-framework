@@ -359,7 +359,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
-                      isModal={isModal}
+                      shouldLink={isModal && geneSymbol === undefined}
                       setEntityMetadata={setEntityMetadata}
                     />
                   )}

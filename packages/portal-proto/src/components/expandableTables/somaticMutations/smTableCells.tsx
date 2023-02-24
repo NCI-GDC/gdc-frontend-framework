@@ -7,7 +7,7 @@ import { entityMetadataType } from "src/utils/contexts";
 
 export const ProteinChange = ({
   proteinChange,
-  isModal,
+  shouldLink,
   setEntityMetadata,
 }: {
   proteinChange: {
@@ -15,13 +15,13 @@ export const ProteinChange = ({
     aaChange: string;
     geneId: string;
   };
-  isModal: boolean;
+  shouldLink: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
     <div className="flex flex-row w-max justify-start font-content text-xs">
-      {isModal ? (
+      {shouldLink ? (
         <button
           className="text-utility-link underline text-xs mx-0.5"
           onClick={() =>

@@ -3,7 +3,6 @@ import {
   FilterSet,
   usePrevious,
   useGetSssmTableDataQuery,
-  joinFilters,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -155,15 +154,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
   const [smTotal, setSMTotal] = useState(0);
 
-  const localPlusCohortFilters = joinFilters(cohortFilters, genomicFilters);
-
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     geneSymbol: geneSymbol,
-    localPlusCohortFilters: localPlusCohortFilters,
+    genomicFilters: genomicFilters,
+    cohortFilters: cohortFilters,
   });
 
   useEffect(() => {
