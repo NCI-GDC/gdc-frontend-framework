@@ -656,6 +656,7 @@ module.exports = {
           text: "#42346F",
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
+          borderAlt: "#F0E4CB",
         },
       },
       height: {
