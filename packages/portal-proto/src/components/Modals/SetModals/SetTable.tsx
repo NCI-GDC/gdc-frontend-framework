@@ -53,6 +53,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
                   )
                 : setSelectedSets([...selectedSets, set])
             }
+            aria-labelledby={`set-table-${set[0]}`}
           />
         ) : (
           <Radio
@@ -60,6 +61,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
+            aria-labelledby={`set-table-${set[0]}`}
           />
         )}
       </span>
@@ -104,7 +106,7 @@ const SetTable: React.FC<SetTableProps> = ({
             setSelectedSets={setSelectedSets}
           />
         ),
-        name: set[1],
+        name: <label id={`set-table-${set[0]}`}>{set[1]}</label>,
         count: <CountCell countHook={countHook} setId={set[0]} />,
       }));
   }, [
