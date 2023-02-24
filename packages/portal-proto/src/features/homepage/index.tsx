@@ -24,9 +24,9 @@ const Homepage = (): JSX.Element => {
               Genomic Data Commons
               <span className="block font-medium -mt-4">Data Portal</span>
             </h1>
-            <h3 className="mt-2 items-center font-heading font-bold text-md text-summarybar-text">
+            <h2 className="mt-2 items-center font-heading font-bold text-md text-summarybar-text">
               Harmonized Cancer Datasets
-            </h3>
+            </h2>
             <p className="items-center tracking-wide text-primary-content-darkest w-[75%]">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response

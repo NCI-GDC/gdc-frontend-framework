@@ -28,10 +28,10 @@ const HPCard = ({
   return (
     <div className={mainClassName}>
       <div className="text-center py-12 max-w-screen-2xl m-auto">
-        <h3 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
+        <h2 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
-        </h3>
+        </h2>
         <p className="py-1 text-2xl">{body}</p>
         {typeof href === "string" ? (
           <a

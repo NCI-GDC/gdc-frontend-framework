@@ -27,9 +27,9 @@ const HPCardImg = ({
     <div className="bg-hero-pattern bg-cover">
       <div className="max-w-screen-2xl m-auto flex gap-16">
         <div className="w-1/2 py-10">
-          <h3 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
+          <h2 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
             {head}
-          </h3>
+          </h2>
           <div className="py-1 space-y-6 max-w-4xl text-2xl pb-4">{body}</div>
           <HomepageButton href={href}>{linkText}</HomepageButton>
         </div>
