@@ -14,11 +14,11 @@ flex
 flex-row
 items-center
 bg-white
-text-secondary
+text-primary
 border
 border-solid
-border-secondary
-hover:bg-secondary
+border-primary
+hover:bg-primary
 font-heading
 hover:text-white
 `;

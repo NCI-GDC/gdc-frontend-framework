@@ -267,16 +267,9 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex flex-row justify-startflex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
-                  )}
-                  {row.getCanExpand() && (
-                    <div className="text-center content-center mr-6">
+                    <div className="text-center content-center">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -296,6 +289,13 @@ export const createTableColumn = (
                         />
                       </button>
                     </div>
+                  )}
+                  {row.getCanExpand() && (
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation="horizontal"
+                    />
                   )}
                 </div>
               );

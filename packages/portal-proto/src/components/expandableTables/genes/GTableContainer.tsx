@@ -8,7 +8,6 @@ import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -16,6 +15,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 
@@ -180,22 +180,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     label="Export All Except #Cases and #Mutations"
                     comingSoon={true}
                   >
-                    <Button
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      JSON
-                    </Button>
+                    <FunctionButton>JSON</FunctionButton>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
-                    <Button
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      TSV
-                    </Button>
+                    <FunctionButton>TSV</FunctionButton>
                   </ButtonTooltip>
                 </div>
               }

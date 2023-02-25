@@ -30,9 +30,12 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
       <Menu shadow="md">
         <Menu.Target>
           <Button
+            variant="outline"
+            color="primary"
+            className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
             rightIcon={<MdOutlineArrowDropDown />}
             leftIcon={
-              <Box className="bg-primary-dark text-primary-dark-contrast w-7 h-7 rounded-md flex justify-center items-center">
+              <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
                 {numSelected}
               </Box>
             }
@@ -41,8 +44,8 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           </Button>
         </Menu.Target>
 
-        <Menu.Dropdown>
-          <Menu.Label className="bg-primary text-primary-contrast font-heading font-bold">
+        <Menu.Dropdown className="border-1 border-primary">
+          <Menu.Label className="bg-base-max text-primary font-heading font-bold border-primary border-bottom-1">
             {numSelected === 0
               ? `${total.toLocaleString()} ${label}s`
               : numSelected === 1
@@ -51,7 +54,14 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           </Menu.Label>
           {options.map(({ value, label }: ControlOption) => {
             if (value !== "placeholder") {
-              return <Menu.Item key={label}>{label}</Menu.Item>;
+              return (
+                <Menu.Item
+                  key={label}
+                  className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+                >
+                  {label}
+                </Menu.Item>
+              );
             }
           })}
         </Menu.Dropdown>

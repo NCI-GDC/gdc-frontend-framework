@@ -136,10 +136,6 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
       <FacetHeader>
         <Tooltip
           label={description || "No description available"}
-          classNames={{
-            arrow: "bg-base-light",
-            tooltip: "bg-base-max text-base-contrast-max",
-          }}
           position="bottom-start"
           multiline
           width={220}
@@ -164,7 +160,9 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
       <div className="p-2">
         <Button
           onClick={() => dispatch(showModal({ modal: FACET_TO_MODAL[field] }))}
-          color="accent"
+          color="primary"
+          variant="outline"
+          size="xs"
         >
           + Add {facetTitle}
         </Button>
@@ -176,11 +174,11 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
               <Badge
                 size="sm"
                 variant="filled"
-                color="accent"
+                color="accent-cool"
+                className="normal-case items-center cursor-pointer pl-1.5 pr-0 cursor-pointer"
                 key={`${field}-${value}-${i}`}
                 data-testid={`set-facet-${field}-${value}-${i}`}
                 rightSection={removeButton(value)}
-                className="cursor-pointer"
                 onClick={() => {
                   const newOperands = [...facetValues];
 
