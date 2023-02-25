@@ -14,20 +14,16 @@ import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
 import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
-import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { addToCart, removeFromCart } from "../../cart/updateCart";
-import {
-  columnListOrder,
-  getCasesTableAnnotationsLinkParams,
-  SlideCountsIcon,
-} from "./utils";
+import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { SummaryModalContext } from "src/utils/contexts";
+import { ImageSlideCount } from "@/components/ImageSlideCount";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -41,6 +37,7 @@ const useStyles = createStyles((theme) => ({
     "&[data-disabled]": {
       border: "1px solid gray",
       margin: "2px 0",
+      cursor: "not-allowed",
     },
   },
 }));
@@ -139,25 +136,7 @@ export const ContextualCasesView: React.FC = () => {
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
             >
-              <Button
-                compact
-                disabled={slideCount === 0}
-                leftIcon={
-                  <GiMicroscope
-                    className={`mt-0.5 ${
-                      slideCount === 0 && "text-base-contrast-lightest"
-                    }`}
-                  />
-                }
-                size="xs"
-                variant="outline"
-                classNames={classes}
-                className="my-2"
-              >
-                <SlideCountsIcon $count={slideCount}>
-                  {slideCount === 0 ? "--" : slideCount}
-                </SlideCountsIcon>
-              </Button>
+              <ImageSlideCount slideCount={slideCount} />
             </Link>
           ),
           cart: (

@@ -798,6 +798,9 @@ module.exports = {
       fontSize: {
         "2xs": ".85rem",
       },
+      opacity: {
+        15: ".15",
+      },
       boxShadow: {
         "3xl": "0 0 5px 2px rgba(0, 0, 0, 0.25)",
         inset: "inset 0 0 20px 5px rgba(0, 0, 0, 0.1)",

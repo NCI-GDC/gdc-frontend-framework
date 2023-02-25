@@ -7,11 +7,13 @@ export const FileAccessBadge = ({
   access: AccessType;
 }): JSX.Element => (
   <Badge
-    className={
-      access === "open" //TODO: keep or change to theme color (used same for the repository file table)
-        ? "font-heading bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-xs"
-        : "font-heading bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-xs"
-    }
+    className={`capitalize text-xs font-bold
+      ${
+        access === "open" //TODO: keep or change to theme color (used same for the repository file table)
+          ? "bg-accent-cool-light text-accent-cool-dark bg-opacity-15"
+          : "bg-nci-red-lighter/50 text-nci-red-darkest"
+      }
+    `}
     data-testid="badgeElement"
   >
     {access}

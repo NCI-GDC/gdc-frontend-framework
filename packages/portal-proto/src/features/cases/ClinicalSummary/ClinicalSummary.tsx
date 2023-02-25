@@ -1,5 +1,6 @@
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 import {
   Demographic,
   Diagnoses,
@@ -7,7 +8,7 @@ import {
   FamilyHistories,
   FollowUps,
 } from "@gff/core/dist/features/cases/types";
-import { Button, Menu, Tabs, Text } from "@mantine/core";
+import { Button, Divider, Menu, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { MdFileDownload as DownloadIcon } from "react-icons/md";
 import { humanify } from "src/utils";
@@ -70,16 +71,22 @@ export const ClinicalSummary = ({
     0,
   );
 
+  const CountComponent = ({ count }: { count: number }) => (
+    <span className="h-[11px] w-4 bg-accent-vivid text-base-lightest text-xs font-medium px-1.5 py-0.5 ml-1 rounded-sm">
+      {count}
+    </span>
+  );
+
+  const activeTabStyle =
+    "bg-accent-cool-content-lightest border-2 border-primary";
+
   return (
-    <div className="flex flex-col gap-2 mt-5 max-w-full">
+    <div className="max-w-full">
       <div className="flex justify-between">
-        <Text
-          size="lg"
-          weight={500}
-          className="font-heading text-primary uppercase tracking-wide"
-        >
-          Clinical
-        </Text>
+        <div className="self-end">
+          <HeaderTitle>Clinical</HeaderTitle>
+        </div>
+
         <Menu width="target">
           <Menu.Target>
             <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
@@ -97,20 +104,23 @@ export const ClinicalSummary = ({
           </Menu.Dropdown>
         </Menu>
       </div>
-      <div>
+      <div className="border-1 border-base-lighter">
         <Tabs
           variant="pills"
           defaultValue="gallery"
           value={activeTab}
           onTabChange={setActiveTab}
           keepMounted={false}
+          color=""
           classNames={{
             root: "w-full",
+            tabsList: "mt-2 ml-2",
             panel: "max-w-full overflow-x-auto",
+            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-8",
           }}
           styles={(theme) => ({
             tab: {
-              border: `2px solid ${theme.colors.gray[4]}`,
+              border: `2px solid ${theme.colors.gray[2]}`,
             },
           })}
         >
@@ -119,6 +129,7 @@ export const ClinicalSummary = ({
               value="demographic"
               aria-label="Demographic"
               data-testid="demographicTab"
+              className={activeTab === "demographic" && activeTabStyle}
             >
               Demographic
             </Tabs.Tab>
@@ -126,29 +137,59 @@ export const ClinicalSummary = ({
               value="diagnoses"
               aria-label="Diagnoses and Treatments`"
               data-testid="diagnosisTab"
+              className={activeTab === "diagnoses" && activeTabStyle}
             >
-              {` Diagnoses (${diagnoses.length}) > Treatments (${totalTreatmentNodes})`}
+              <span className="flex gap-2">
+                <span>
+                  Diagnoses
+                  <CountComponent count={diagnoses.length} />
+                </span>
+                <Divider orientation="vertical" />
+                <span>
+                  Treatments
+                  <CountComponent count={totalTreatmentNodes} />
+                </span>
+              </span>
             </Tabs.Tab>
             <Tabs.Tab
               value="family"
               aria-label="Family Histories"
               data-testid="familyTab"
+              className={activeTab === "family" && activeTabStyle}
             >
-              {`Family Histories (${family_histories.length})`}
+              <span>
+                Family Histories
+                <CountComponent count={family_histories.length} />
+              </span>
             </Tabs.Tab>
             <Tabs.Tab
               value="exposures"
               aria-label="Exposures"
               data-testid="exposuresTab"
+              className={activeTab === "exposures" && activeTabStyle}
             >
-              {`Exposures (${exposures.length})`}
+              <span>
+                Exposures
+                <CountComponent count={exposures.length} />
+              </span>
             </Tabs.Tab>
             <Tabs.Tab
               value="followups"
               aria-label="Follow Ups"
               data-testid="followUpsTab"
+              className={activeTab === "followups" && activeTabStyle}
             >
-              {`Follow-Ups (${follow_ups.length}) > Molecular Tests (${totalMolecularTestNodes})`}
+              <span className="flex gap-2">
+                <span>
+                  Follow-Ups
+                  <CountComponent count={follow_ups.length} />
+                </span>
+                <Divider orientation="vertical" />
+                <span>
+                  Molecular Tests
+                  <CountComponent count={totalMolecularTestNodes} />
+                </span>
+              </span>
             </Tabs.Tab>
           </Tabs.List>
 

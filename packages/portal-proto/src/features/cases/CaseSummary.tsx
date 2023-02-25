@@ -14,15 +14,9 @@ import {
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import SummaryCount from "@/components/Summary/SummaryCount";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import {
-  FaFile,
-  FaMicroscope,
-  FaShoppingCart,
-  FaEdit,
-  FaTable,
-} from "react-icons/fa";
+import { FaFile, FaShoppingCart, FaEdit, FaTable } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -50,6 +44,7 @@ import {
   HeaderTitle,
 } from "../shared/tailwindComponents";
 import { URLContext } from "src/utils/contexts";
+import { ImageSlideCount } from "@/components/ImageSlideCount";
 
 // TODO: break it down
 
@@ -301,23 +296,20 @@ export const CaseSummary = ({
 
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
-        <div className="flex">
+        <div className="flex items-center gap-2">
           <Tooltip label="View Slide Image">
             <div>
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
               >
-                <a className="flex gap-1 cursor-pointer text-primary bg-white">
-                  <FaMicroscope className="mt-0.5" />
-                  <span className="bg-accent text-white">({slideCount})</span>
-                </a>
+                <ImageSlideCount slideCount={slideCount} />
               </Link>
             </div>
           </Tooltip>
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
           >
-            <div>
+            <ActionIcon variant="outline" size="sm">
               <FaShoppingCart
                 onClick={() => {
                   isAllImagesFilesInCart
@@ -332,13 +324,14 @@ export const CaseSummary = ({
                         dispatch,
                       );
                 }}
-                className={`cursor-pointer mt-0.5 ${
+                className={`cursor-pointer ${
                   isAllImagesFilesInCart
                     ? "text-utility-category4"
                     : "text-primary"
                 }`}
+                size={12}
               />
-            </div>
+            </ActionIcon>
           </Tooltip>
         </div>
       );
@@ -393,10 +386,17 @@ export const CaseSummary = ({
 
     return {
       headers: [
-        <div key="case_summary_data_table_data_category">Data Category</div>,
+        <div
+          key="case_summary_data_table_data_category"
+          className="text-sm leading-[18px]"
+        >
+          Data Category
+        </div>,
         <div key="case_summary_data_table_file_header" className="flex">
-          <div className="basis-1/3 text-right">Files</div>
-          <div className="basis-2/3 pl-1">
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Files
+          </div>
+          <div className="basis-2/3 pl-1 font-normal text-sm leading-[18px]">
             (n={filesCountTotal.toLocaleString()})
           </div>
         </div>,
@@ -442,12 +442,17 @@ export const CaseSummary = ({
 
     return {
       headers: [
-        <div key="case_summary_data_exp_table_exp_title">
+        <div
+          key="case_summary_data_exp_table_exp_title"
+          className="text-sm leading-[18px]"
+        >
           Experimental Strategy
         </div>,
         <div key="case_summary_data_exp_table_file_header" className="flex">
-          <div className="basis-1/3 text-right">Files</div>
-          <div className="basis-2/3 pl-1">
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Files
+          </div>
+          <div className="basis-2/3 pl-1 font-normal text-sm leading-[18px]">
             (n={filesCountTotal.toLocaleString()})
           </div>
         </div>,
@@ -569,7 +574,7 @@ export const CaseSummary = ({
                 </div>
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-4 mb-14">
                 <CategoryTableSummary
                   title="File Counts by Data Category"
                   dataObject={data.summary.data_categories}
@@ -584,30 +589,33 @@ export const CaseSummary = ({
               </div>
             </div>
 
-            <div>
-              <ClinicalSummary
-                diagnoses={diagnoses}
-                follow_ups={follow_ups}
-                demographic={demographic}
-                family_histories={family_histories}
-                exposures={exposures}
-              />
-            </div>
+            <ClinicalSummary
+              diagnoses={diagnoses}
+              follow_ups={follow_ups}
+              demographic={demographic}
+              family_histories={family_histories}
+              exposures={exposures}
+            />
+
             {clinicalFilteredFiles?.length > 0 && (
-              <div className="my-5">
-                <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
+              <div className="mt-8">
+                <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
                   <HeaderTitle>Clinical Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForClinicalFiles()} />
               </div>
             )}
 
-            <div ref={targetRef} id="biospecimen">
+            <div
+              ref={targetRef}
+              id="biospecimen"
+              className={biospecimenFilteredFiles?.length === 0 && "mb-16"}
+            >
               <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
             </div>
             {biospecimenFilteredFiles?.length > 0 && (
-              <div className="my-5">
-                <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
+              <div className="mt-8 mb-16">
+                <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
                   <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForBioSpecimenFiles()} />
