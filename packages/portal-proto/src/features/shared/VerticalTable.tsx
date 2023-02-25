@@ -547,7 +547,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   };
 
   useEffect(() => {
-    setShowLoading(true);
     //prevents unneeded api calls if user is typing something
     const delayDebounceFn = setTimeout(() => {
       handleChange({
