@@ -245,7 +245,24 @@ const generateFilter = ({
       )
     : genomicPlusCohortFilters;
 
-  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+  const cohortFiltersGQl = buildCohortGqlOperator(
+    // for Gene Summary, combine it with genesymbol
+    geneSymbol
+      ? joinFilters(
+          {
+            mode: "and",
+            root: {
+              "genes.symbol": {
+                field: "genes.symbol",
+                operator: "includes",
+                operands: [geneSymbol],
+              },
+            },
+          },
+          cohortFilters,
+        )
+      : cohortFilters,
+  );
 
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
   const tableFilters = convertFilterToGqlFilter(
