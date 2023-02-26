@@ -1,0 +1,12 @@
+<svg id="SetOperations" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect id="Rectangle_187" data-name="Rectangle 187" width="48" height="48" rx="3" fill="#fff"/>
+  <g id="Group_24" data-name="Group 24">
+    <path id="Path_65" data-name="Path 65" d="M36.57,29.5a12.27,12.27,0,1,1-24.54,0v-.06a12.3,12.3,0,0,0,11.98-.5,12.272,12.272,0,0,0,12.56.18v.37Z" fill="#ee5251" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_66" data-name="Path 66" d="M42.7,18.5a12.255,12.255,0,0,1-6.14,10.63,12.288,12.288,0,0,0-6.72-10.58v-.06A12.283,12.283,0,0,0,24,8.03,12.27,12.27,0,0,1,42.7,18.48Z" fill="#fcd242" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_67" data-name="Path 67" d="M36.56,29.13A12.272,12.272,0,0,1,24,28.95a12.261,12.261,0,0,0,5.84-10.4A12.283,12.283,0,0,1,36.56,29.13Z" fill="rgba(238,82,81,0.7)" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_68" data-name="Path 68" d="M18.16,18.5v.37a12.26,12.26,0,0,0-6.14,10.58A12.274,12.274,0,0,1,17.57,6.23,12.143,12.143,0,0,1,24,8.05a12.261,12.261,0,0,0-5.84,10.46Z" fill="#2a74a5" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_69" data-name="Path 69" d="M24,28.95a12.3,12.3,0,0,1-11.98.5,12.294,12.294,0,0,1,6.14-10.58A12.257,12.257,0,0,0,24,28.95Z" fill="rgba(42,116,165,0.7)" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_70" data-name="Path 70" d="M29.84,18.5v.06a12.3,12.3,0,0,0-11.68.32v-.37A12.283,12.283,0,0,1,24,8.05a12.261,12.261,0,0,1,5.84,10.46Z" fill="rgba(252,210,66,0.7)" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+    <path id="Path_71" data-name="Path 71" d="M29.84,18.55A12.261,12.261,0,0,1,24,28.95a12.271,12.271,0,0,1-5.84-10.08,12.3,12.3,0,0,1,11.68-.32Z" fill="rgba(0,186,139,0.45)" stroke="#313131" stroke-miterlimit="10" stroke-width="1"/>
+  </g>
+</svg>
