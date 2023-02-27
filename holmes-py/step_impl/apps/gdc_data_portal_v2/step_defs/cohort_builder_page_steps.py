@@ -25,21 +25,21 @@ def perform_filter_card_action(tab_name: str, table):
         APP.cohort_builder_page.perform_action_within_filter_card(v[0], v[1])
         time.sleep(0.1)
 
-@step("Enter text in a filter card from <tab_name> tab on the Cohort Builder page <table>")
+@step("Search in a filter card from <tab_name> tab on the Cohort Builder page <table>")
 def search_in_filter_card(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         APP.cohort_builder_page.type_in_facet_search_text_area(v[0], v[1], v[2])
         time.sleep(0.1)
 
-@step("Click the show more or show less button from <tab_name> tab on the Cohort Builder page <table>")
+@step("Expand or contract a facet from <tab_name> tab on the Cohort Builder page <table>")
 def click_show_more_or_show_less(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         APP.cohort_builder_page.click_show_more_less_within_filter_card(v[0], v[1])
         time.sleep(0.1)
 
-@step("Click the following objects from <tab_name> tab on the Cohort Builder page <table>")
+@step("Activate the following objects from <tab_name> tab on the Cohort Builder page <table>")
 def click_named_object(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
@@ -53,7 +53,7 @@ def add_custom_filter_card(tab_name: str, table):
         APP.cohort_builder_page.add_custom_filter(v[0])
         time.sleep(0.1)
 
-@step("Check text displayed in the cohort query expression area <table>")
+@step("This text is expected in the cohort query expression area <table>")
 def check_text_in_cohort_query_expression(table):
     for k, v in enumerate(table):
         is_query_expression_area_text_present = APP.cohort_builder_page.is_query_expression_area_text_present(v[0])

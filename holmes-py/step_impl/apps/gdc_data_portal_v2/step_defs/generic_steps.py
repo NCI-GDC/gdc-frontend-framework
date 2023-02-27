@@ -9,6 +9,7 @@ from ....base.webdriver import WebDriver
 from ....base.utility import Utility
 
 
+
 @step("Pause <sleep_time> seconds")
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
@@ -120,7 +121,10 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
-@step("Click the following radio buttons <table>")
+# TO-DO: replace home_page function call with base_page.
+# All generic_step functions and related locators should
+# be put into base_page.py
+@step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
         APP.home_page.click_radio_button(v[0])

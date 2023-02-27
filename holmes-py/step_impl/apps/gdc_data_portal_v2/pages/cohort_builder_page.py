@@ -1,12 +1,9 @@
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
-
+from ....base.base_page import GenericLocators
 class CohortBuilderPageLocators:
     BUTTON_IDENT = lambda button_name: f'[data-testid="button-cohort-builder-{button_name}"]'
-    BUTTON_GENERIC_IDENT = lambda button_name: f'//button[@data-testid="button-{button_name}"]'
-    RADIO_BUTTON_GENERIC_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
-    CHECKBOX_GENERIC_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
 
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
@@ -77,5 +74,5 @@ class CohortBuilderPage(BasePage):
         add_custom_filter = CohortBuilderPageLocators.CUSTOM_FILTER_ADD_BUTTON
         self.click(add_custom_filter)
         self.driver.wait_for_selector(CohortBuilderPageLocators.CUSTOM_FILTER_TABLE_PAGE, state="visible")
-        custom_filter_to_add = CohortBuilderPageLocators.BUTTON_GENERIC_IDENT(facet_to_add)
+        custom_filter_to_add = GenericLocators.BUTTON_GENERIC_IDENT(facet_to_add)
         self.click(custom_filter_to_add)

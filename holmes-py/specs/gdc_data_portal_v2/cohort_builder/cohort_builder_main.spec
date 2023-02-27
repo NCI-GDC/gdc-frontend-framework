@@ -55,17 +55,17 @@ tags: cohort-selections
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
-  |Morphology       |8000/0              |
+  |Morphology       |8000/0               |
 
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
-  |facet_name       |action               |
-  |-----------------|---------------------|
+  |facet_name       |action                       |
+  |-----------------|-----------------------------|
   |Morphology       |Flip between form and chart  |
-  |Morphology       |clear selection      |
-  |Morphology       |Search               |
+  |Morphology       |clear selection              |
+  |Morphology       |Search                       |
   |Morphology       |Flip between form and chart  |
 
-* Enter text in a filter card from "General Diagnosis" tab on the Cohort Builder page
+* Search in a filter card from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |label               |text  |
   |-----------------|---------------------|------|
   |Morphology       |search values        |9950/3|
@@ -76,8 +76,8 @@ tags: cohort-selections
   |Morphology       |9950/3               |
   |Morphology       |9950/3               |
 
-* Click the show more or show less button from "Available Data" tab on the Cohort Builder page
-  |facet_name       |label               |
+* Expand or contract a facet from "Available Data" tab on the Cohort Builder page
+  |facet_name       |label                |
   |-----------------|---------------------|
   |Data Format      |plus-icon            |
 
@@ -86,8 +86,8 @@ tags: cohort-selections
   |-----------------|---------------------|
   |Data Format       |xlsx                |
 
-* Click the show more or show less button from "Available Data" tab on the Cohort Builder page
-  |facet_name       |label               |
+* Expand or contract a facet from "Available Data" tab on the Cohort Builder page
+  |facet_name       |label                |
   |-----------------|---------------------|
   |Data Format      |minus-icon           |
 
@@ -98,23 +98,23 @@ tags: cohort-selections
 
 ## Cohort Builder - Range Card Functions
 
-* Enter text in a filter card from "Demographic" tab on the Cohort Builder page
+* Search in a filter card from "Demographic" tab on the Cohort Builder page
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|
   |Age at Diagnosis |input from value     |59    |
   |Age at Diagnosis |input to value       |71    |
 
-* Click the following objects from "Demographic" tab on the Cohort Builder page
+* Activate the following objects from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |
 
-* Click the following radio buttons
+* Select the following radio buttons
   |radio_id                                           |
   |---------------------------------------------------|
   |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_1 |
 
-  * Perform the following actions from "Demographic" tab on the Cohort Builder page
+* Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
   |Age at Diagnosis |clear selection      |
@@ -126,13 +126,13 @@ tags: cohort-selections
   |-----------------|
   |created_datetime |
 
-* Enter text in a filter card from "Custom Filters" tab on the Cohort Builder page
+* Search in a filter card from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |label                  |text      |
   |-----------------|-----------------------|----------|
   |Created Datetime |Set the since value    |1959-09-22|
   |Created Datetime |Set the through value  |11/30/95  |
 
-* Check text displayed in the cohort query expression area
+* This text is expected in the cohort query expression area
   |text      |
   |----------|
   |1959-09-22|
@@ -150,9 +150,9 @@ tags: cohort-selections
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
   |filter_name      |
   |-----------------|
-  |case_id |
+  |case_id          |
 
-* Enter text in a filter card from "Custom Filters" tab on the Cohort Builder page
+* Search in a filter card from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |label                         |text                                   |
   |-----------------|------------------------------|---------------------------------------|
   |Case Id          |enter value to add filter     |9e15d908-12c2-5a1b-b1c4-c328242d474a   |
