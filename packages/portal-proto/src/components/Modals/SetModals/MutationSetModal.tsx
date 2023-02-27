@@ -5,7 +5,7 @@ import {
   useCoreDispatch,
   hideModal,
   useGetSsmsQuery,
-  useCreateSsmsSetMutation,
+  useCreateSsmsSetFromValuesMutation,
   useSsmSetCountQuery,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
@@ -50,7 +50,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
           }
           hooks={{
             query: useGetSsmsQuery,
-            createSet: useCreateSsmsSetMutation,
+            createSet: useCreateSsmsSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
             useAddNewFilterGroups: useAddNewFilterGroups,
