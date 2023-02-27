@@ -35,24 +35,24 @@ const HPCardImgAlt = ({
       <div className="py-10 max-w-screen-2xl m-auto text-base-max flex gap-16">
         <div className="w-1/3 relative">
           <div
-            className="relative 
-          w-[340px] 
+            className="relative
+          w-[340px]
           h-[340px]
-          before:w-[248px] 
-          before:h-[248px] 
-          before:block 
-          before:absolute 
-          before:-inset-2 
-          before:rounded-lg 
-          before:bg-summarybar-border  
-          
-          after:w-[248px] 
-          after:h-[248px] 
-          after:block 
+          before:w-[248px]
+          before:h-[248px]
+          before:block
+          before:absolute
+          before:-inset-2
+          before:rounded-lg
+          before:bg-summarybar-border
+
+          after:w-[248px]
+          after:h-[248px]
+          after:block
           after:absolute
           after:-bottom-2
           after:-right-2
-          after:rounded-lg 
+          after:rounded-lg
           after:bg-summarybar-borderAlt"
           >
             <Image
