@@ -73,7 +73,7 @@ const SummaryStatsPanel = () => {
           title="GENES"
           count={23621}
           size={24}
-          icon="/user-flow/icons/genes.svg"
+          icon="/user-flow/icons/gene-mutation.svg" // this page will be deleted so no need to maintain icon
         />
         <SummaryStatsItem
           title="MUTATIONS"

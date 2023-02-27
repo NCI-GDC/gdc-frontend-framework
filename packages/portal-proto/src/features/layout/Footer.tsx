@@ -114,7 +114,7 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="flex flex-col bg-accent-darkest justify-center text-center p-10 text-accent-contrast-darkest text-sm">
+    <footer className="flex flex-col bg-secondary-darkest justify-center text-center p-10 text-accent-contrast-darkest text-sm">
       <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-5 border-b border-[#5D7A8D]">
         {/**TODO place color value in global store */}
         <div>

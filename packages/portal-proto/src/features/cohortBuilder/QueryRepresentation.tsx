@@ -43,8 +43,8 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 `;
 
 const QueryFieldLabel = tw.div`
-bg-accent-lightest
-text-primary-darkest
+bg-accent-cool-content-lightest
+text-base-darkest
 uppercase
 px-2
 border-primary-darkest
@@ -61,11 +61,10 @@ font-heading
 shadow-md
 font-medium
 text-sm
-rounded-sm
 border-[1.5px]
 mr-1
 mb-2
-border-primary-darkest
+border-secondary-darkest
 w-inherit
 `;
 
@@ -185,12 +184,12 @@ const IncludeExcludeQueryElement: React.FC<
   const RemoveButton = ({ value }: { value: string }) => (
     <ActionIcon
       size="xs"
-      color="accent-content.0"
+      color="white"
       radius="xl"
       variant="transparent"
       aria-label={`remove ${value}`}
     >
-      <ClearIcon />
+      <ClearIcon size={10} />
     </ActionIcon>
   );
 
@@ -235,9 +234,9 @@ const IncludeExcludeQueryElement: React.FC<
                   key={`query-rep-${field}-${value}-${i}`}
                   data-testid={`query-rep-${field}-${value}-${i}`}
                   variant="filled"
-                  color="primary.9"
+                  color="accent-cool"
                   size="md"
-                  className="normal-case max-w-[162px] cursor-pointer"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = [...operands];
@@ -279,7 +278,10 @@ const IncludeExcludeQueryElement: React.FC<
                     }
                   }}
                 >
-                  <OverflowTooltippedLabel label={value}>
+                  <OverflowTooltippedLabel
+                    label={value}
+                    className="flex-grow font-heading text-md font-content-noto"
+                  >
                     {x.label}
                   </OverflowTooltippedLabel>
                 </Badge>
@@ -315,7 +317,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
       ) : null}
       <div className="flex flex-row items-center">
         <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-lightest text-base pb-1"
+          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-content-lightest text-base pb-1"
           onClick={() => handleKeepMember(operation)}
         >
           {operation.operator}
@@ -410,7 +412,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-primary-darkest p-0 m-0 h-full round-r-lg text-accent-contrast "
+        className="bg-accent p-0 m-0 h-full round-r-lg text-white"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >

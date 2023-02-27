@@ -335,8 +335,9 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-2 mr-8">
+    <div className="flex flex-col ml-1 mr-1 ">
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
+
       <VerticalTable
         tableData={cases || []}
         columns={columns}
@@ -377,12 +378,12 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 JSON
               </Button>
             </ButtonTooltip>
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
               </Button>
             </ButtonTooltip>

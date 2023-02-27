@@ -25,27 +25,6 @@ export const GenericCohortModal = ({
       radius="md"
       onClose={onClose}
       zIndex={400}
-      styles={(theme) => ({
-        header: {
-          color: theme.colors.primary[8],
-          fontFamily: '"Montserrat", "sans-serif"',
-          fontSize: "1.65em",
-          fontWeight: 500,
-          letterSpacing: ".1rem",
-          borderColor: theme.colors.base[1],
-          borderStyle: "solid",
-          borderWidth: "0px 0px 2px 0px",
-          padding: "15px 20px 15px 15px",
-          margin: "5px 5px 5px 5px",
-        },
-        modal: {
-          backgroundColor: theme.colors.base[0],
-        },
-        close: {
-          backgroundColor: theme.colors.base[1],
-          color: theme.colors.primary[8],
-        },
-      })}
     >
       <Box
         sx={() => ({
@@ -58,7 +37,7 @@ export const GenericCohortModal = ({
             fontFamily: '"Montserrat", "sans-serif"',
             fontSize: "0.95em",
             fontWeight: 500,
-            color: theme.colors.base[8],
+            color: theme.colors.base[8], //ink
           })}
         >
           {mainText}
@@ -67,7 +46,7 @@ export const GenericCohortModal = ({
           sx={(theme) => ({
             fontFamily: '"Montserrat", "sans-serif"',
             fontSize: "0.85em",
-            color: theme.colors.base[9],
+            color: theme.colors.base[8],
             paddingTop: "1em",
           })}
         >
@@ -91,12 +70,12 @@ export const GenericCohortModal = ({
                 backgroundColor: "white",
               },
             })}
-            color="primary.5"
+            color="secondary"
             onClick={onClose}
           >
             Cancel
           </Button>
-          <Button variant={"filled"} color="primary.8" onClick={onActionClick}>
+          <Button variant={"filled"} color="secondary" onClick={onActionClick}>
             {actionText}
           </Button>
         </Group>

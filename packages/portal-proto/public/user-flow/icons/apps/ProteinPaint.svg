@@ -1,0 +1,21 @@
+<svg id="ProteinPaint" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect id="Rectangle_179" data-name="Rectangle 179" width="48" height="48" rx="3" fill="#fff"/>
+  <path id="Path_51" data-name="Path 51" d="M20.12,39.35V35.77l-7.55-4.25V28.74" fill="none" stroke="#313131" stroke-miterlimit="10" stroke-width="0.75"/>
+  <path id="Path_52" data-name="Path 52" d="M22.21,39.35V35.77l3.78-4.25V28.74" fill="none" stroke="#313131" stroke-miterlimit="10" stroke-width="0.75"/>
+  <path id="Path_53" data-name="Path 53" d="M26.6,39.35V35.77l11.12-4.25V28.74" fill="none" stroke="#313131" stroke-miterlimit="10" stroke-width="0.75"/>
+  <g id="Group_22" data-name="Group 22">
+    <rect id="Rectangle_180" data-name="Rectangle 180" width="41.19" height="5.96" transform="translate(3.41 39.35)" fill="#313131"/>
+    <circle id="Ellipse_1" data-name="Ellipse 1" cx="5.76" cy="5.76" r="5.76" transform="translate(6.81 17.21)" fill="#2a74a5"/>
+    <circle id="Ellipse_2" data-name="Ellipse 2" cx="3.75" cy="3.75" r="3.75" transform="translate(8.82 9.71)" fill="#2a74a5" opacity="0.7"/>
+    <circle id="Ellipse_3" data-name="Ellipse 3" cx="2.38" cy="2.38" r="2.38" transform="translate(10.19 4.96)" fill="#2a74a5" opacity="0.4"/>
+    <circle id="Ellipse_4" data-name="Ellipse 4" cx="1.48" cy="1.48" r="1.48" transform="translate(11.09 2)" fill="#2a74a5" opacity="0.25"/>
+    <circle id="Ellipse_5" data-name="Ellipse 5" cx="1.48" cy="1.48" r="1.48" transform="translate(24.51 10.37)" fill="#ee5251" opacity="0.25"/>
+    <circle id="Ellipse_6" data-name="Ellipse 6" cx="1.48" cy="1.48" r="1.48" transform="translate(24.51 7.41)" fill="#ee5251" opacity="0.15"/>
+    <circle id="Ellipse_7" data-name="Ellipse 7" cx="3.74" cy="3.74" r="3.74" transform="translate(22.25 21.26)" fill="#ee5251"/>
+    <circle id="Ellipse_8" data-name="Ellipse 8" cx="2.43" cy="2.43" r="2.43" transform="translate(23.56 16.41)" fill="#ee5251" opacity="0.7"/>
+    <circle id="Ellipse_9" data-name="Ellipse 9" cx="1.54" cy="1.54" r="1.54" transform="translate(24.45 13.33)" fill="#ee5251" opacity="0.4"/>
+    <circle id="Ellipse_10" data-name="Ellipse 10" cx="1.54" cy="1.54" r="1.54" transform="translate(36.18 25.88)" fill="#fcd242"/>
+    <circle id="Ellipse_11" data-name="Ellipse 11" cx="1.54" cy="1.54" r="1.54" transform="translate(36.18 22.8)" fill="#fcd242" opacity="0.7"/>
+    <circle id="Ellipse_12" data-name="Ellipse 12" cx="1.54" cy="1.54" r="1.54" transform="translate(36.18 19.72)" fill="#fcd242" opacity="0.25"/>
+  </g>
+</svg>

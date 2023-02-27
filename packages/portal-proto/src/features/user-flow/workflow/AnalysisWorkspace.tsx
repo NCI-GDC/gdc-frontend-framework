@@ -92,7 +92,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col font-montserrat">
+    <div className="flex flex-col font-heading">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-primary-lightest"
@@ -122,17 +122,17 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-base-lightest">
+      <div className="bg-base-max">
         <Grid columns={12} className="p-3 my-2" gutter="md">
           <Grid.Col
             data-tour="analysis_tool_filters"
             className="flex flex-col pr-1"
             span={1}
-            xs={3}
-            sm={3}
-            md={3}
-            lg={3}
-            xl={3}
+            xs={2}
+            sm={2}
+            md={2}
+            lg={2}
+            xl={2}
           >
             <div className="flex justify-between pb-4 text-primary-content-darkest">
               <div>
@@ -154,7 +154,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                   <Menu.Target>
                     <ActionIcon
                       variant="outline"
-                      className="text-primary-content-darkest hover:bg-primary hover:text-primary-content-lightest hover:border-primary"
+                      className="text-primary hover:bg-primary-darker hover:text-white hover:border-primary-darker"
                     >
                       <SortIcon size={24} />
                     </ActionIcon>
@@ -216,7 +216,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     value={x.value}
                     classNames={{
                       label:
-                        "text-primary-content-darker font-medium border border-solid border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
+                        "text-primary font-medium border border-solid border-primary hover:bg-primary-darker hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
                       checkIcon: "text-white",
                       iconWrapper: "text-primary-content-min",
                     }}
@@ -249,7 +249,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                       md={4}
                       lg={3}
                       xl={2}
-                      style={{ minHeight: 130, maxWidth: 170 }}
+                      style={{ minHeight: 130, maxWidth: 200 }}
                     >
                       <AnalysisCard
                         entry={{ ...{ applicable: true, ...x } }}

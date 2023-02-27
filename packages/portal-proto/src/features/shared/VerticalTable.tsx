@@ -14,6 +14,7 @@ import {
   Pagination,
   LoadingOverlay,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core";
 
 export interface PaginationOptions {
@@ -351,7 +352,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     return (
       <table
         {...getTableProps()}
-        className="w-full text-left font-content border-1 shadow-xs"
+        className="w-full text-left font-content shadow-xs"
       >
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
@@ -359,7 +360,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-xs font-bold text-base-contrast-max py-4 whitespace-pre-line leading-5 shadow-md`}
+              className={`font-heading text-xs font-bold text-base-contrast-max py-2 whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -367,7 +368,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className={`px-2 pt-3 pb-1 font-heading  ${
+                    className={`px-2 pt-1 pb-1 font-heading  ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -379,7 +380,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-3 pb-1 font-heading text-xs font-bold ${
+                    className={`px-2 pt-1 pb-1 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -418,14 +419,14 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <BsCaretUpFill
                           className={
                             column.isSorted && !column.isSortedDesc
-                              ? "text-primary-darker"
+                              ? "text-primary"
                               : ""
                           }
                         />
                         <BsCaretDownFill
                           className={`${
                             column.isSorted && column.isSortedDesc
-                              ? "text-primary-darker"
+                              ? "text-primary"
                               : ""
                           } relative top-[-2px]`}
                         />
@@ -437,7 +438,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()} className="">
+        <tbody
+          {...getTableBodyProps()}
+          className="border-1 border-base-lighter"
+        >
           {status === "rejected" ? (
             <tr>
               <td className="" colSpan={columns.length}>
@@ -453,8 +457,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     {...row.getRowProps()}
                     className={
                       index % 2 === 1
-                        ? "bg-base-max border-1"
-                        : "bg-slate-50 border-1"
+                        ? "bg-base-max border-1 border-base-lighter"
+                        : "bg-base-lightest border-1 border-base-lighter"
                     }
                     key={`row-${index}`}
                   >
@@ -463,7 +467,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-1 text-xs text-content"
+                          className="px-2 py-0 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -555,21 +559,24 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
+  const theme = useMantineTheme();
+
   return (
     <div className="grow overflow-hidden">
       <div className="flex">
         {additionalControls && (
-          <div className={"flex-auto h-10"}>{additionalControls}</div>
+          <div className="flex-auto h-10">{additionalControls}</div>
         )}
         <div className="flex flex-row items-center">
           {search?.enabled && (
-            <div className="flex flex-row w-max">
+            <div className="flex flex-row w-max mb-2">
               <TextInput
-                icon={<MdSearch size={24} />}
+                icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
                 placeholder={search.placeholder ?? "Search"}
                 aria-label="Table Search Input"
                 classNames={{
-                  input: "focus:border-2 cus:drop-shadow-xl",
+                  input:
+                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
                   wrapper: "w-72 mr-1",
                 }}
                 size="sm"
@@ -610,9 +617,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     setShowColumnMenu(!showColumnMenu);
                   }}
                 >
-                  <Box
-                    className={`border-1 border-base p-2 rounded-md mx-1 hover:cursor-pointer`}
-                  >
+                  <Box className="border-1 border-base p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
                     {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
                   </Box>
                 </button>
@@ -641,7 +646,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-between	border-base-light pt-2 mx-4">
+        <div className="flex flex-row items-center text-content justify-between	bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
             <div className="flex flex-row items-center m-auto ml-0">
               <span className="my-auto mx-1 text-xs">Show</span>
@@ -676,6 +681,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             size="sm"
             radius="xs"
             withEdges
+            classNames={{ item: "border-0" }}
             getItemAriaLabel={(page) => {
               switch (page) {
                 case "prev":
