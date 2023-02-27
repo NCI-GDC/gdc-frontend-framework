@@ -85,8 +85,8 @@ export const SummaryModal = ({
       classNames={{
         modal: "mt-0 mx-0 px-4",
         header:
-          "mb-0 mx-0 mt-3 bg-primary-vivid shadow-lg border-0 font-bold rounded-sm",
-        close: "text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 mb-2",
+          "mb-0 mx-0 mt-3 bg-primary-vivid shadow-lg border-0 font-bold rounded-sm pb-4",
+        close: "text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2",
       }}
       padding={0}
       title={HeaderTitle}
