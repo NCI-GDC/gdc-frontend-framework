@@ -79,7 +79,7 @@ export const headerElements = [
       aria-label="cohort builder button"
     >
       <Image
-        src={"/user-flow/icons/build.svg"}
+        src={"/user-flow/icons/apps/CohortBuilder.svg"}
         alt="Cohort logo"
         width={24}
         height={24}
