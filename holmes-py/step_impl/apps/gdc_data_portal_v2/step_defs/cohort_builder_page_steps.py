@@ -33,7 +33,7 @@ def add_custom_filter_card(tab_name: str, table):
         APP.cohort_builder_page.add_custom_filter(v[0])
         time.sleep(0.1)
 
-@step("Click the <tab_name> tab on the Cohort Builder page")
+@step("Navigate to the <tab_name> tab on the Cohort Builder page")
 def click_cohort_builder_tab(tab_name: str):
     APP.cohort_builder_page.click_button(tab_name)
 
@@ -44,7 +44,6 @@ def perform_filter_card_action(tab_name: str, table):
         APP.cohort_builder_page.perform_action_within_filter_card(v[0], v[1])
         time.sleep(0.1)
 
-@step("Click aria checkbox with spinner wait <table>")
-def click_aria_checkbox_with_wait(table):
-    for k, v in enumerate(table):
-        APP.cohort_builder_page.click_aria_checkbox_with_wait(v[0])
+@step("Only show custom case filters with values")
+def click_show_only_properties_with_values_checkbox():
+    APP.cohort_builder_page.click_only_show_properties_with_values_checkbox()

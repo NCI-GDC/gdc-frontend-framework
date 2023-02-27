@@ -2,7 +2,7 @@ from typing import List
 
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
-    DATA_TESTID_IDENT = lambda data_testid: f'[data-testid="{data_testid}"]'
+    DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
 
 class BasePage:
@@ -54,15 +54,15 @@ class BasePage:
         return is_text_present
 
     def is_data_testid_present(self, data_testid):
-        locator = GenericLocators.DATA_TESTID_IDENT(data_testid)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
     def click_button_data_testid(self, data_testid):
-        locator = GenericLocators.DATA_TESTID_IDENT(data_testid)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
-    def send_text_into_search_bar(self, aria_label, text_to_send):
+    def send_text_into_search_bar(self, text_to_send, aria_label):
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)

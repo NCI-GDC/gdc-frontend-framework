@@ -5,7 +5,6 @@ from ....base.base_page import BasePage
 class CohortBuilderPageLocators:
     BUTTON_IDENT = lambda button_name: f'[data-testid="button-cohort-builder-{button_name}"]'
     BUTTON_GENERIC_IDENT = lambda button_name: f'//button[@data-testid="button-{button_name}"]'
-    ARIA_INPUT_CHECKBOX_IDENT = lambda aria_label:f'//input[@aria-label="{aria_label}"]'
 
     FACET_GROUP_IDENT = lambda group_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]'
     FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
@@ -14,6 +13,7 @@ class CohortBuilderPageLocators:
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
+    ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = '//input[@aria-label="show only properties with values"]'
     SPINNER_IDENT = f'[repeatcount="indefinite"]'
 
 class CohortBuilderPage(BasePage):
@@ -55,7 +55,7 @@ class CohortBuilderPage(BasePage):
         self.click(locator)
 
     # Clicks a checkbox with an aria label and waits for the spinner to 'detach'
-    def click_aria_checkbox_with_wait(self, aria_label):
-        locator = CohortBuilderPageLocators.ARIA_INPUT_CHECKBOX_IDENT(aria_label)
+    def click_only_show_properties_with_values_checkbox(self):
+        locator = CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
         self.click(locator)
         self.wait_until_locator_is_detached(CohortBuilderPageLocators.SPINNER_IDENT)

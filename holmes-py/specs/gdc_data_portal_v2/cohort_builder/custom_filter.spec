@@ -14,79 +14,43 @@ tags: gdc-data-portal-v2, cohort-builder, regression
 
 ## Cohort Builder - Custom Filter Tab and Modal
 
-* Click the "Custom Filters" tab on the Cohort Builder page
+* Navigate to the "Custom Filters" tab on the Cohort Builder page
 
-* Is text present on the page
-  |text                     |
-  |-------------------------|
-  |No custom filters added  |
+* Is text "No custom filters added" present on the page
 
-* Click button with data-testid
-  |data_testid                                |
-  |-------------------------------------------|
-  |button-cohort-builder-add-a-custom-filter  |
+* Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Enter text in the "Search for a case property" search bar
-  |text               |
-  |-------------------|
-  |days_to_collection |
+* Enter text "days_to_collection" in the "Search for a case property" search bar
 
-* Click button with data-testid
-  |data_testid                        |
-  |-----------------------------------|
-  |button-samples.days_to_collection  |
+* Select "samples.days_to_collection" a data-testid button
 
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name         |action               |
   |-------------------|---------------------|
   |Days to Collection |Remove the facet     |
 
-* Click button with data-testid
-  |data_testid                                |
-  |-------------------------------------------|
-  |button-cohort-builder-add-a-custom-filter  |
+* Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Enter text in the "Search for a case property" search bar
-  |text                         |
-  |-----------------------------|
-  |serological laboratory test  |
+* Enter text "serological laboratory test" in the "Search for a case property" search bar
 
-* Click button with data-testid
-  |data_testid                                    |
-  |-----------------------------------------------|
-  |button-follow_ups.viral_hepatitis_serologies   |
+* Select "follow_ups.viral_hepatitis_serologies" a data-testid button
 
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name                 |action               |
   |---------------------------|---------------------|
   |Viral Hepatitis Serologies |Remove the facet     |
 
-* Click button with data-testid
-  |data_testid                                |
-  |-------------------------------------------|
-  |button-cohort-builder-add-a-custom-filter  |
+* Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Click aria checkbox with spinner wait
-  |aria_label                       |
-  |---------------------------------|
-  |show only properties with values |
+* Only show custom case filters with values
 
-* Is data testid not present on the page
-  |data_testid                                                    |
-  |---------------------------------------------------------------|
-  |button-diagnoses.pathology_details.number_proliferating_cells  |
+* Is data-testid button "diagnoses.pathology_details.number_proliferating_cells" not present on the page
 
-* Click button with data-testid
-  |data_testid                                  |
-  |---------------------------------------------|
-  |button-diagnoses.annotations.classification  |
+* Select "diagnoses.annotations.classification" a data-testid button
 
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name         |action               |
   |-------------------|---------------------|
   |Classification     |Remove the facet     |
 
-* Is text present on the page
-  |text                     |
-  |-------------------------|
-  |No custom filters added  |
+* Is text "No custom filters added" present on the page
