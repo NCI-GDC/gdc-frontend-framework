@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-primary-darkest"
+                  className="px-1 ml-1 bg-accent"
                   radius="xs"
                 >
                   {currentCart?.length || 0}

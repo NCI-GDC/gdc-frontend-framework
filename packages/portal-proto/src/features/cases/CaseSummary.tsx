@@ -307,9 +307,9 @@ export const CaseSummary = ({
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
               >
-                <a className="flex gap-1 cursor-pointer text-primary">
+                <a className="flex gap-1 cursor-pointer text-primary bg-white">
                   <FaMicroscope className="mt-0.5" />
-                  <span>({slideCount})</span>
+                  <span className="bg-accent text-white">({slideCount})</span>
                 </a>
               </Link>
             </div>

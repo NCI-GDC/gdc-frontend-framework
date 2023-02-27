@@ -3,7 +3,6 @@ import { Modal } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import { modalStyles } from "./styles";
 
 interface DiscardChangesModalProps {
   readonly action: () => void;
@@ -22,7 +21,6 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
     closeButtonLabel="close"
     onClose={onClose}
     size="lg"
-    classNames={modalStyles}
     withinPortal={false}
   >
     <div className="p-4">

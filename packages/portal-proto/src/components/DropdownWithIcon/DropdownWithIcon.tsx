@@ -79,6 +79,7 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
+          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
@@ -86,7 +87,7 @@ export const DropdownWithIcon = ({
           {TargetButtonChildren}
         </Button>
       </Menu.Target>
-      <Menu.Dropdown>
+      <Menu.Dropdown className="border-1 border-secondary">
         {menuLabelText && (
           <>
             <Menu.Label
@@ -105,6 +106,7 @@ export const DropdownWithIcon = ({
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
+            className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
           >
             {title}
           </Menu.Item>

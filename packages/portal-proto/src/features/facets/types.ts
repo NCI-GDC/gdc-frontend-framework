@@ -1,4 +1,5 @@
 import { NumericFromTo, OperandValue, Operation, FilterGroup } from "@gff/core";
+import { ComponentType } from "react";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -80,6 +81,12 @@ export interface FacetCardProps<T extends FacetDataHooks> {
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
   readonly dismissCallback?: (string) => void;
+
+  readonly header?: {
+    readonly Panel?: ComponentType; // optional header component
+    readonly Label?: ComponentType; // optional facet label component
+    readonly iconStyle?: string; // optional facet button component
+  };
 }
 
 export type RangeFromOp = ">" | ">=";

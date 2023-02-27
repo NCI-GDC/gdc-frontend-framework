@@ -18,7 +18,7 @@ export const SummaryModalHeader = ({
       <div className="rounded-full flex flex-row items-center p-1 px-2">
         <TypeIcon iconText={iconText} />
       </div>
-      <span className="text-2xl text-accent uppercase tracking-wide font-medium">
+      <span className="text-2xl text-secondary uppercase tracking-wide font-medium">
         {headerTitle}
       </span>
     </header>
@@ -96,7 +96,6 @@ export const SummaryModal = ({
             <SummaryModalHeader iconText="gn" headerTitle={entity_name} />
           ),
         };
-
   return (
     <Modal
       opened={modalOpened}
@@ -107,9 +106,11 @@ export const SummaryModal = ({
       overflow="inside"
       classNames={{
         modal: "mt-0 mx-0 px-4",
-        header: "mb-0 bg-base-max shadow-lg",
+        header:
+          "mb-0 mt-4 bg-base-max shadow-lg text-primary text-base p-0 border-0 font-bold",
         close: "text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 mb-2",
       }}
+      padding={0}
       title={HeaderTitle}
       overlayOpacity={0.3}
     >

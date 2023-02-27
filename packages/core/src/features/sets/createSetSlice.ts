@@ -2,7 +2,7 @@ import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 export const createSetSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    createGeneSet: builder.mutation({
+    createGeneSetFromValues: builder.mutation({
       query: ({ values }) => ({
         graphQLQuery: `mutation createSet(
           $input: CreateSetInput
@@ -39,7 +39,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (response) =>
         response.data.sets.create.explore.gene.set_id,
     }),
-    createSsmsSet: builder.mutation({
+    createSsmsSetFromValues: builder.mutation({
       query: ({ values }) => ({
         graphQLQuery: `mutation createSet(
           $input: CreateSetInput
@@ -76,8 +76,68 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (response) =>
         response.data.sets.create.explore.ssm.set_id,
     }),
+    createGeneSetFromFilters: builder.mutation({
+      query: ({ filters, size, score }) => ({
+        graphQLQuery: `mutation createSet(
+          $input: CreateSetInput
+        ) {
+          sets {
+            create {
+              explore {
+                gene(input: $input) {
+                  set_id
+                  size
+                }
+              }
+            }
+          }
+        }
+        `,
+        graphQLFilters: {
+          input: {
+            filters,
+            size,
+            score,
+          },
+        },
+      }),
+      transformResponse: (response) =>
+        response.data.sets.create.explore.gene.set_id,
+    }),
+    createSsmsSetFromFilters: builder.mutation({
+      query: ({ filters, size, score }) => ({
+        graphQLQuery: `mutation createSet(
+          $input: CreateSetInput
+        ) {
+          sets {
+            create {
+              explore {
+                ssm(input: $input) {
+                  set_id
+                  size
+                }
+              }
+            }
+          }
+        }
+        `,
+        graphQLFilters: {
+          input: {
+            filters,
+            size,
+            score,
+          },
+        },
+      }),
+      transformResponse: (response) =>
+        response.data.sets.create.explore.ssm.set_id,
+    }),
   }),
 });
 
-export const { useCreateGeneSetMutation, useCreateSsmsSetMutation } =
-  createSetSlice;
+export const {
+  useCreateGeneSetFromValuesMutation,
+  useCreateSsmsSetFromValuesMutation,
+  useCreateGeneSetFromFiltersMutation,
+  useCreateSsmsSetFromFiltersMutation,
+} = createSetSlice;
