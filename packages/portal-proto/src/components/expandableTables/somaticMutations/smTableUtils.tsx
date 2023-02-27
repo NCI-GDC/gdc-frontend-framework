@@ -167,7 +167,7 @@ export const createTableColumn = (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <ToggledCheck
-                      margin="mt-[0.42em] ml-0.5"
+                      margin="ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}

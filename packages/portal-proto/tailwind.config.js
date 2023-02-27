@@ -35,7 +35,7 @@ const nciGrayContent = {
 
 const nciBlueContent = {
   max: "#FFFFFF",
-  lightest: "#f1f1f1",
+  lightest: "#F8F9FA",
   lighter: "#c5c5c5",
   light: "#9b9b9b",
   DEFAULT: "#706f6f",
@@ -797,6 +797,9 @@ module.exports = {
       },
       fontSize: {
         "2xs": ".85rem",
+      },
+      opacity: {
+        15: ".15",
       },
       boxShadow: {
         "3xl": "0 0 5px 2px rgba(0, 0, 0, 0.25)",

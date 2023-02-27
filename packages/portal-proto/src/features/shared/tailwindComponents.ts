@@ -1,12 +1,17 @@
 import tw from "tailwind-styled-components";
 
 export const HeaderTitle = tw.h2`
-text-lg text-secondary uppercase tracking-wide font-medium
+text-lg text-primary-content-darkest uppercase tracking-wide font-medium
+`;
+
+export const SummaryHeaderTitle = tw.h2`
+text-[28px] leading-[34px] text-base-lightest uppercase tracking-wide font-medium
 `;
 
 export const PercentBar = tw.div`
 relative
-bg-percentage-bar-base
+
+border border-accent-cool-lighter
 rounded-sm
 px-1
 w-16
@@ -27,5 +32,16 @@ absolute
 left-0
 top-0
 h-full
-bg-percentage-bar-complete
+bg-accent-cool-lighter
 rounded-sm`;
+
+export const DownloadButton = tw.button`
+    px-1.5
+    min-h-[28px]
+    min-w-10
+    border-primary
+    text-primary
+    border
+    rounded-[4px]
+    transition-colors
+`;
