@@ -18,7 +18,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 * Expected result "Best Overall Response" in the search bar on the Cohort Builder page
 
-* Click on the search bar result and validate the presence of correct facet card
+* Select search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Best Overall Response  |Best Overall Response  |
@@ -27,7 +27,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 * Expected result "Age at Diagnosis" in the search bar on the Cohort Builder page
 
-* Click on the search bar result and validate the presence of correct facet card
+* Select search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Age at Diagnosis       |Age at Diagnosis       |
@@ -36,7 +36,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 * Expected result "Project" in the search bar on the Cohort Builder page
 
-* Click on the search bar result and validate the presence of correct facet card
+* Select search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Project                |Project                |
@@ -57,7 +57,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 * Expected result "age at index" in the search bar on the Cohort Builder page
 
-* Click on the search bar result and validate the presence of correct facet card
+* Select search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |age at index           |Age at Index           |

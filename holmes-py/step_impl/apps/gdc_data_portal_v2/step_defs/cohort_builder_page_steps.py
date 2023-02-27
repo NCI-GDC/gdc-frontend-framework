@@ -28,7 +28,7 @@ def validate_search_bar_result_text(expected_text: str):
     assert is_expected_text_present, f"The expected search bar result text '{expected_text}' is NOT present"
     time.sleep(0.1)
 
-@step("Click on the search bar result and validate the presence of correct facet card <table>")
+@step("Select search bar result and validate the presence of correct facet card <table>")
 def check_for_facet_card_without_navigating(table):
     for k, v in enumerate(table):
         APP.cohort_builder_page.click_on_search_bar_result(v[0])
