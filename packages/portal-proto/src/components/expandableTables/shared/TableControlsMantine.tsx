@@ -5,8 +5,8 @@ import { Box, Group, Menu, Button, Text } from "@mantine/core";
 interface ControlOption {
   label: string;
   value: string;
-  disabled?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 interface TableControlsProps {
@@ -37,9 +37,13 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
             className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
             rightIcon={<MdOutlineArrowDropDown />}
             leftIcon={
-              <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
-                {numSelected}
-              </Box>
+              numSelected > 0 ? (
+                <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
+                  {numSelected}
+                </Box>
+              ) : (
+                <Box className="w-7 h-7" />
+              )
             }
           >
             {buttonLabel[0].label}
@@ -54,18 +58,22 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
               ? `1 ${label}`
               : `${numSelected.toLocaleString()} ${label}s`}
           </Menu.Label>
-          {options.map(({ value, label }: ControlOption) => {
-            if (value !== "placeholder") {
-              return (
-                <Menu.Item
-                  key={label}
-                  className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
-                >
-                  {label}
-                </Menu.Item>
-              );
-            }
-          })}
+          {options.map(
+            ({ value, label, onClick, disabled = false }: ControlOption) => {
+              if (value !== "placeholder") {
+                return (
+                  <Menu.Item
+                    key={label}
+                    onClick={onClick}
+                    disabled={disabled}
+                    className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+                  >
+                    {label}
+                  </Menu.Item>
+                );
+              }
+            },
+          )}
         </Menu.Dropdown>
       </Menu>
       <Group className="mx-2">{additionalControls}</Group>
