@@ -664,6 +664,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
+                aria-label={"select page size"}
               />
               <span className="my-auto mx-1 text-xs">Entries</span>
             </div>
@@ -681,6 +682,20 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             radius="xs"
             withEdges
             classNames={{ item: "border-0" }}
+            getItemAriaLabel={(page) => {
+              switch (page) {
+                case "prev":
+                  return "previous page button";
+                case "next":
+                  return "next page button";
+                case "first":
+                  return "first page button";
+                case "last":
+                  return "last page button";
+                default:
+                  return `${page} page button`;
+              }
+            }}
           />
         </div>
       )}
