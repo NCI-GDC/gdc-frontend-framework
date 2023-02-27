@@ -5,14 +5,14 @@ describe("<FileAccessBadge />", () => {
   it("certain class with shade of green for open access", () => {
     const { getByTestId } = render(<FileAccessBadge access="open" />);
     expect(getByTestId("badgeElement")).toHaveClass(
-      "font-heading bg-nci-green-lighter/50 text-nci-green-darkest capitalize text-xs",
+      "capitalize text-xs font-bold bg-accent-cool-light text-accent-cool-dark bg-opacity-15",
     );
   });
 
   it("certain class with shade of red for controlled access", () => {
     const { getByTestId } = render(<FileAccessBadge access="controlled" />);
     expect(getByTestId("badgeElement")).toHaveClass(
-      "font-heading bg-nci-red-lighter/50 text-nci-red-darkest capitalize text-xs",
+      "capitalize text-xs font-bold bg-nci-red-lighter/50 text-nci-red-darkest",
     );
   });
 });
