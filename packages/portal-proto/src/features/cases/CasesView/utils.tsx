@@ -2,7 +2,6 @@ import { ArraySeparatedSpan } from "@/features/shared/ArraySeparatedSpan";
 import { Columns } from "@/features/shared/VerticalTable";
 import { AnnotationDefaults } from "@gff/core";
 import { Row, TableInstance } from "react-table";
-import tw from "tailwind-styled-components";
 import { SelectAlCasesButton, SelectCaseButton } from "../SelectCasesButton";
 
 interface CellProps {
@@ -88,23 +87,5 @@ export const getCasesTableAnnotationsLinkParams = (
   }
   return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
-
-export const SlideCountsIcon = tw.div<{
-  $count?: number;
-}>`
-${(p: { $count?: number }) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-base-dark"}
-  ${(p: { $count?: number }) =>
-    p.$count !== undefined && p.$count > 0
-      ? "text-primary-contrast"
-      : "text-base-contrast-lighter"}
-  inline-flex
-  items-center
-  w-5
-  h-4
-  justify-center
-  font-heading
-  rounded-md
-`;
 
 export const MAX_CASE_IDS = 100000;

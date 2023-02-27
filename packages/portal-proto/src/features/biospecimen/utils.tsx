@@ -4,7 +4,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaMicroscope, FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -19,6 +19,7 @@ import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
 import { humanify, fileInCart } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
+import { GiMicroscope } from "react-icons/gi";
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -121,7 +122,7 @@ export const formatEntityInfo = (
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
-                <FaMicroscope className="text-primary-content" />
+                <GiMicroscope className="text-primary-content" size={16} />
               </a>
             </Link>
           </div>

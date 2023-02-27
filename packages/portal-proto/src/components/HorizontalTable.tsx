@@ -68,7 +68,10 @@ export const HorizontalTable = ({
               {obj.values.map((value, index): JSX.Element => {
                 const tdObject = (item: string | JSX.Element): JSX.Element => {
                   return (
-                    <td key={`${obj.headerName}-${index}`} className="text-sm">
+                    <td
+                      key={`${obj.headerName}-${index}`}
+                      className="text-sm border-l-2 border-base-lighter pl-4"
+                    >
                       {item}
                     </td>
                   );

@@ -1,3 +1,4 @@
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 import { IconType } from "react-icons";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 
@@ -16,14 +17,11 @@ export const SummaryCard = ({
 }: SummaryCardProps): JSX.Element => {
   return (
     <div>
-      <div className="flex gap-2 bg-base-lightest text-primary-content-darkest  p-2">
+      <div className="flex gap-2 bg-base-lightest p-2">
         {Icon && (
-          <Icon
-            className="inline-block mt-1 align-baseline"
-            color="primary-content-darkest"
-          />
+          <Icon className="inline-block mt-1 align-baseline text-primary-content-darkest" />
         )}
-        <h2 className="text-lg tracking-wide uppercase font-medium">{title}</h2>
+        <HeaderTitle>{title}</HeaderTitle>
       </div>
 
       {message && <div className="mt-2 text-sm">{message}</div>}

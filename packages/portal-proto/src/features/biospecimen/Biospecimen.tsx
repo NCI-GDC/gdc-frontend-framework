@@ -18,6 +18,7 @@ import { formatEntityInfo, search } from "./utils";
 import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 interface BiospecimenProps {
   caseId: string;
@@ -114,7 +115,7 @@ export const Biospecimen = ({
 
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
-    <div className="my-5">
+    <div className="mt-14">
       {isBiospecimentDataFetching ? (
         <LoadingOverlay visible data-testid="loading" />
       ) : selectedEntity &&
@@ -122,9 +123,10 @@ export const Biospecimen = ({
         selectedType !== undefined ? (
         <>
           <div className="flex justify-between">
-            <h2 className="text-lg text-accent tracking-wide uppercase font-medium">
-              Biospecimen
-            </h2>
+            <div className="self-end">
+              <HeaderTitle>Biospecimen</HeaderTitle>
+            </div>
+
             <Menu width="target">
               <Menu.Target>
                 <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">

@@ -22,7 +22,6 @@ import { MdClose as CloseIcon } from "react-icons/md";
 
 import { FileModal } from "@/features/files/FileView";
 import { GdcFile } from "@gff/core";
-import { CaseModal } from "@/features/cases/CaseView";
 import { Case } from "@/features/user-flow/all-apps/baseExploration";
 
 const AnalysisPage: NextPage = () => {
@@ -54,8 +53,8 @@ const AnalysisPage: NextPage = () => {
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
-  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
-  const [currentCase, setCurrentCase] = useState(undefined as Case);
+  const [, setCaseModalOpen] = useState(false);
+  const [, setCurrentCase] = useState(undefined as Case);
 
   const Options = () => (
     <div className="flex flex-col mb-2 ">
@@ -460,11 +459,6 @@ const AnalysisPage: NextPage = () => {
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
-      />
-      <CaseModal
-        isOpen={isCaseModalOpen}
-        closeModal={() => setCaseModalOpen(false)}
-        patient={currentCase}
       />
     </UserFlowVariedPages>
   );
