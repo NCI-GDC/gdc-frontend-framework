@@ -74,7 +74,7 @@ export const HorizontalTable = ({
                   return (
                     <td
                       key={`${obj.headerName}-${index}`}
-                      className="text-sm border-l-2 border-base-lighter pl-4 border-1 font-content-noto"
+                      className="text-sm border-l-2 border-base-lighter pl-4 border-1 font-content-noto font-normal"
                     >
                       {item}
                     </td>
