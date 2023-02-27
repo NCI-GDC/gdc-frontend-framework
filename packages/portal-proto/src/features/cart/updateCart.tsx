@@ -232,14 +232,14 @@ export const AddToCartButton: React.FC<CartButtonProps> = ({
     <ActionIcon
       title="Add to cart"
       aria-label="Add to cart"
-      className="mx-auto text-primary border-primary bg-base-max"
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
       onClick={() => addToCart(files, currentCart, dispatch)}
     >
       <CartIcon />
     </ActionIcon>
   ) : (
     <Button
-      className="text-primary bg-base-max border-primary hover:bg-primary-darker hover:text-base-max"
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
       onClick={() => addToCart(files, currentCart, dispatch)}
     >
       <CartIcon className="mr-2" /> Add to Cart
@@ -260,14 +260,14 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="mx-auto text-primary border-primary bg-base-max"
+      className="mx-auto text-primary-content-darkest border-primary-darkest"
     >
       <TrashIcon />
     </ActionIcon>
   ) : (
     <Button
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="text-primary bg-base-max border-primary hover:bg-primary-darker hover:text-base-max"
+      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
     >
       <CartIcon className="mr-2" />
       Remove From Cart
