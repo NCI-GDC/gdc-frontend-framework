@@ -1,4 +1,5 @@
 // credit to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/uikit/Highlight.js
+// This is only used in BioTree
 
 import React from "react";
 
@@ -14,7 +15,9 @@ export const internalHighlight = (
     return (
       <span>
         {seg1}
-        <mark className="font-bold bg-transparent">{foundQuery}</mark>
+        <mark className="font-bold bg-transparent text-base-darkest">
+          {foundQuery}
+        </mark>
         {seg2}
       </span>
     );

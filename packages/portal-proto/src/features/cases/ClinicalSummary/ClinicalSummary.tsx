@@ -77,9 +77,6 @@ export const ClinicalSummary = ({
     </span>
   );
 
-  const activeTabStyle =
-    "bg-accent-cool-content-lightest border-2 border-primary";
-
   return (
     <div className="max-w-full">
       <div className="flex justify-between">
@@ -116,7 +113,7 @@ export const ClinicalSummary = ({
             root: "w-full",
             tabsList: "mt-2 ml-2",
             panel: "max-w-full overflow-x-auto",
-            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-8",
+            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-8 data-active:bg-accent-cool-content-lightest data-active:border-2 data-active:border-primary",
           }}
           styles={(theme) => ({
             tab: {
@@ -129,7 +126,6 @@ export const ClinicalSummary = ({
               value="demographic"
               aria-label="Demographic"
               data-testid="demographicTab"
-              className={activeTab === "demographic" && activeTabStyle}
             >
               Demographic
             </Tabs.Tab>
@@ -137,7 +133,6 @@ export const ClinicalSummary = ({
               value="diagnoses"
               aria-label="Diagnoses and Treatments`"
               data-testid="diagnosisTab"
-              className={activeTab === "diagnoses" && activeTabStyle}
             >
               <span className="flex gap-2">
                 <span>
@@ -155,7 +150,6 @@ export const ClinicalSummary = ({
               value="family"
               aria-label="Family Histories"
               data-testid="familyTab"
-              className={activeTab === "family" && activeTabStyle}
             >
               <span>
                 Family Histories
@@ -166,7 +160,6 @@ export const ClinicalSummary = ({
               value="exposures"
               aria-label="Exposures"
               data-testid="exposuresTab"
-              className={activeTab === "exposures" && activeTabStyle}
             >
               <span>
                 Exposures
@@ -177,7 +170,6 @@ export const ClinicalSummary = ({
               value="followups"
               aria-label="Follow Ups"
               data-testid="followUpsTab"
-              className={activeTab === "followups" && activeTabStyle}
             >
               <span className="flex gap-2">
                 <span>

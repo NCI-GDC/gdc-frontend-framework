@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   useCoreDispatch,
@@ -41,7 +41,6 @@ import {
   PercentBarLabel,
   HeaderTitle,
 } from "../shared/tailwindComponents";
-import { URLContext } from "src/utils/contexts";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
   getAnnotationsLinkParams,
@@ -57,6 +56,7 @@ export interface CaseViewProps {
   };
   readonly bio_id: string;
   readonly case_id: string;
+  readonly shouldScrollToBio: boolean;
 }
 
 export const CaseView: React.FC<CaseViewProps> = ({
@@ -65,6 +65,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
   annotationCountData,
   bio_id,
   case_id,
+  shouldScrollToBio,
 }: CaseViewProps) => {
   const filesCountTotal = data?.files?.length ?? 0;
   const annotationsCountTotal = annotationCountData?.count;
@@ -86,21 +87,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
     exposures = [],
     files = [],
   } = data || {};
-  const prevPathValue = useContext(URLContext);
 
   useEffect(() => {
-    // not working
-    console.log("got here", prevPathValue);
-    if (
-      prevPathValue !== undefined &&
-      ["MultipleImageViewerPage", "selectedId"].every((term) =>
-        prevPathValue.prevPath?.includes(term),
-      )
-    ) {
-      console.log("got inside");
-      scrollIntoView({ alignment: "center" });
+    if (shouldScrollToBio) {
+      scrollIntoView();
     }
-  }, [prevPathValue, scrollIntoView]);
+  }, [scrollIntoView, shouldScrollToBio]);
 
   const clinicalFilteredFiles = files?.filter(
     (file) => file.data_type === "Clinical Supplement",

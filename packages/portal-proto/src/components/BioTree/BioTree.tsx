@@ -34,7 +34,7 @@ const Node = ({
               (search(query, { node: entity }) || [])
                 .map((e) => e.node)
                 .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
-                ? "bg-nci-yellow"
+                ? "bg-accent-vivid"
                 : ""
             }`}
             onClick={() => {
@@ -187,7 +187,7 @@ export const BioTree = ({
         <Badge
           variant="filled"
           className={`cursor-pointer ${
-            query && type.p.includes(query) && "bg-nci-yellow"
+            query && type.p.includes(query) && "bg-accent-vivid"
           }`}
         >
           <Highlight search={query} text={type.p} />
