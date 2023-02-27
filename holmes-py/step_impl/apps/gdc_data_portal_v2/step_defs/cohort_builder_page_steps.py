@@ -18,6 +18,47 @@ def make_cohort_builder_selections(tab_name: str, table):
         APP.cohort_builder_page.make_selection_within_facet_group(v[0], v[1])
         time.sleep(0.1)
 
+@step("Perform the following actions from <tab_name> tab on the Cohort Builder page <table>")
+def perform_filter_card_action(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.perform_action_within_filter_card(v[0], v[1])
+        time.sleep(0.1)
+
+@step("Search in a filter card from <tab_name> tab on the Cohort Builder page <table>")
+def search_in_filter_card(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.type_in_facet_search_text_area(v[0], v[1], v[2])
+        time.sleep(0.1)
+
+@step("Expand or contract a facet from <tab_name> tab on the Cohort Builder page <table>")
+def click_show_more_or_show_less(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.click_show_more_less_within_filter_card(v[0], v[1])
+        time.sleep(0.1)
+
+@step("Activate the following objects from <tab_name> tab on the Cohort Builder page <table>")
+def click_named_object(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.click_named_item_in_facet_group(v[0], v[1])
+        time.sleep(0.1)
+
+@step("Add a custom filter from <tab_name> tab on the Cohort Builder page <table>")
+def add_custom_filter_card(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.add_custom_filter(v[0])
+        time.sleep(0.1)
+
+@step("This text is expected in the cohort query expression area <table>")
+def check_text_in_cohort_query_expression(table):
+    for k, v in enumerate(table):
+        is_query_expression_area_text_present = APP.cohort_builder_page.is_query_expression_area_text_present(v[0])
+        assert is_query_expression_area_text_present, f"The text '{v[0]}' is NOT present in the Query Expression Area"
+
 @step("Validate presence of facet cards on the <tab_name> tab on the Cohort Builder page <table>")
 def make_cohort_builder_selections(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
