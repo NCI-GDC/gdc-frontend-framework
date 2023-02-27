@@ -50,6 +50,9 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
   |-------------------------|
   |demographic.age_at_index |
 
+Age at index is not in system after adding it, so we navigate away
+and come back so it loads in and becomes searchable. This is only
+with automation, performing it manually works as expected.
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Cohort" from "Header" "section"
 
