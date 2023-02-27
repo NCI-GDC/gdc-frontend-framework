@@ -10,7 +10,7 @@ export const FileAccessBadge = ({
     className={`capitalize text-xs font-bold
       ${
         access === "open" //TODO: keep or change to theme color (used same for the repository file table)
-          ? "bg-accent-cool-light text-accent-cool-dark bg-opacity-15"
+          ? "bg-nci-green-lighter/50 text-nci-green-darkest"
           : "bg-nci-red-lighter/50 text-nci-red-darkest"
       }
     `}

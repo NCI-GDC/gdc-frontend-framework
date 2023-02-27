@@ -5,7 +5,7 @@ describe("<FileAccessBadge />", () => {
   it("certain class with shade of green for open access", () => {
     const { getByTestId } = render(<FileAccessBadge access="open" />);
     expect(getByTestId("badgeElement")).toHaveClass(
-      "capitalize text-xs font-bold bg-accent-cool-light text-accent-cool-dark bg-opacity-15",
+      "capitalize text-xs font-bold bg-nci-green-lighter/50 text-nci-green-darkest",
     );
   });
 
