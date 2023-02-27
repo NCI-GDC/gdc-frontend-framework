@@ -26,7 +26,7 @@ const HPCard = ({
   mainClassName = "",
 }: HPCardProps): JSX.Element => {
   return (
-    <div className={mainClassName}>
+    <div className={`px-7 ${mainClassName}`}>
       <div className="text-center py-12 max-w-screen-2xl m-auto">
         <h2 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
           {head}
