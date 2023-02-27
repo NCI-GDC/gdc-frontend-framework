@@ -41,15 +41,9 @@ export const SaveOrCreateCohortModal = ({
   const description =
     Object.keys(form.errors).length === 0 &&
     (!onNameChange(form.values.name) ? (
-      <span style={{ color: "#976F21" }}>
-        <WarningIcon
-          style={{
-            color: "#FFAD0D",
-            display: "inline",
-            marginRight: "2px",
-          }}
-        />
-        A {entity} with the same name already exists.{" "}
+      <span className="text-warningColorText">
+        <WarningIcon className="text-warningColor inline mr-0.5" />A {entity}{" "}
+        with the same name already exists.{" "}
         {additionalDuplicateMessage && additionalDuplicateMessage}
       </span>
     ) : (

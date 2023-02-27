@@ -325,6 +325,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
                 isDemoMode={isDemoMode}
+                genomicFilters={genomicFilters}
               />
             </div>
           )}

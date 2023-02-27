@@ -1,8 +1,8 @@
 import {
-  useSsmsTable,
   GDCSsmsTable,
   FilterSet,
   usePrevious,
+  useGetSssmTableDataQuery,
   useSsmSetCountQuery,
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
@@ -77,7 +77,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTern] = useDebouncedValue(searchTerm, 400);
+  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
   const [visibleColumns, setVisibleColumns] = useState(
@@ -165,28 +165,29 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
   const [smTotal, setSMTotal] = useState(0);
 
-  const { data } = useSsmsTable({
+  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
-      debouncedSearchTern.length > 0 ? debouncedSearchTern : undefined,
-    genomicFilters: genomicFilters,
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
     geneSymbol: geneSymbol,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
+    genomicFilters: genomicFilters,
+    cohortFilters: cohortFilters,
   });
 
   useEffect(() => {
     setPage(0);
   }, [pageSize]);
 
-  const { status, ssms: initialData } = data;
-
   useEffect(() => {
-    if (status === "fulfilled") {
-      setTableData(initialData);
+    if (!isFetching && isSuccess) {
+      setTableData({
+        ...data,
+        pageSize: pageSize,
+        offset: pageSize * page,
+      });
     }
-  }, [status, initialData]);
+  }, [isFetching, isSuccess, data, pageSize, page]);
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -336,7 +337,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           ) : (
             <div ref={ref}>
               <SomaticMutationsTable
-                status={status}
+                status={
+                  isFetching
+                    ? "pending"
+                    : isSuccess
+                    ? "fulfilled"
+                    : isError
+                    ? "rejected"
+                    : "uninitialized"
+                }
                 initialData={tableData}
                 selectedSurvivalPlot={selectedSurvivalPlot}
                 handleSurvivalPlotToggled={handleSurvivalPlotToggled}
@@ -353,6 +362,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 toggledSsms={toggledSsms}
                 isDemoMode={isDemoMode}
                 isModal={isModal}
+                geneSymbol={geneSymbol}
               />
             </div>
           )}

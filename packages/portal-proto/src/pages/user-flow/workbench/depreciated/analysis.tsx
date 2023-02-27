@@ -5,7 +5,7 @@ import ReactModal from "react-modal";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { Select } from "@/components/Select";
 import { CohortManager } from "@/features/user-flow/many-pages/cohort";
-import SomanticMutationFilterFixedVersion from "@/features/genomic/SomanticMutationFilter";
+import SomaticMutationFilterFixedVersion from "@/features/genomic/SomaticMutationFilter";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import {
   GeneExpression,
@@ -412,7 +412,7 @@ const AnalysisPage: NextPage = () => {
           </div>
           <div className="flex-grow overflow-y-auto">
             {selectedApp === "Somatic Mutations" ? (
-              <SomanticMutationFilterFixedVersion />
+              <SomaticMutationFilterFixedVersion />
             ) : (
               <Image
                 src="/user-flow/oncogrid-mock-up.png"

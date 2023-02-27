@@ -4,6 +4,7 @@ import {
 } from "@/components/Summary/SummaryHeader";
 import { CaseSummary } from "@/features/cases/CaseSummary";
 import { ContextualFileView } from "@/features/files/FileSummary";
+import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
 import { SummaryHeaderTitle } from "@/features/shared/tailwindComponents";
@@ -34,7 +35,13 @@ export const SummaryModal = ({
 }): JSX.Element => {
   const { prevPath, currentPath } = useContext(URLContext);
   const [modalOpened, setOpened] = useState(opened);
-  const { entity_type, entity_id, entity_name } = entityMetadata;
+  const {
+    entity_type,
+    entity_id,
+    entity_name,
+    contextSensitive = false,
+    contextFilters = undefined,
+  } = entityMetadata;
   useEffect(() => {
     if (prevPath !== currentPath) {
       setOpened(false);
@@ -68,10 +75,24 @@ export const SummaryModal = ({
             <SummaryModalHeader iconText="fl" headerTitle={entity_name} />
           ),
         }
-      : {
+      : entity_type === "ssms"
+      ? {
           SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
           HeaderTitle: (
             <SummaryModalHeader iconText="mu" headerTitle={entity_name} />
+          ),
+        }
+      : {
+          SummaryPage: (
+            <GeneSummary
+              gene_id={entity_id}
+              isModal={true}
+              contextSensitive={contextSensitive}
+              contextFilters={contextFilters}
+            />
+          ),
+          HeaderTitle: (
+            <SummaryModalHeader iconText="gn" headerTitle={entity_name} />
           ),
         };
   return (

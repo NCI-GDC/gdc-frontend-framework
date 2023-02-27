@@ -13,8 +13,9 @@ import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
 import { Image } from "@/components/Image";
 import { startCase } from "lodash";
-import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { entityMetadataType } from "src/utils/contexts";
+import { FilterSet } from "@gff/core";
 
 export const createTableColumn = (
   accessor: string,
@@ -29,6 +30,8 @@ export const createTableColumn = (
   toggledGenes: ReadonlyArray<string>,
   setGeneID: Dispatch<SetStateAction<string>>,
   isDemoMode: boolean,
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
+  genomicFilters: FilterSet,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -452,14 +455,25 @@ export const createTableColumn = (
               />
             ),
             cell: ({ row }) => {
+              const label = row.original[`${accessor}`]
+                ? row.original[`${accessor}`]
+                : "";
               return (
-                <Link href={`/genes/${row.original?.geneID}`}>
-                  <a className="text-utility-link underline text-sm">
-                    {row.original[`${accessor}`]
-                      ? row.original[`${accessor}`]
-                      : ""}
-                  </a>
-                </Link>
+                <button
+                  className="text-utility-link underline text-xs"
+                  onClick={() =>
+                    setEntityMetadata({
+                      entity_type: "genes",
+                      entity_id: row.original?.geneID,
+                      entity_name: label,
+                      contextSensitive: true,
+                      // TODO: rename
+                      contextFilters: genomicFilters,
+                    })
+                  }
+                >
+                  {label}
+                </button>
               );
             },
           },

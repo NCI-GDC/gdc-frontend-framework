@@ -193,10 +193,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
                   handleSurvivalPlotToggled={undefined}
                   handleGeneToggled={() => null}
                 />
-                <SMTableContainer
-                  selectedSurvivalPlot={undefined}
-                  handleSurvivalPlotToggled={undefined}
-                />
+                <SMTableContainer />
               </div>
             </AllAppViewer>
           ) : currentApp == "clinical-filters" ? (
