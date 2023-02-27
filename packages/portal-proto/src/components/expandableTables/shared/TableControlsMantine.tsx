@@ -5,6 +5,8 @@ import { Box, Group, Menu, Button, Text } from "@mantine/core";
 interface ControlOption {
   label: string;
   value: string;
+  disabled?: boolean;
+  onClick?: () => void;
 }
 
 interface TableControlsProps {
