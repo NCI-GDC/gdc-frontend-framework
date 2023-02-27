@@ -10,8 +10,8 @@ export const SummaryHeader = ({
   headerTitle,
 }: SummaryHeaderProps): JSX.Element => {
   return (
-    <header className="fixed bg-base-max py-3 pl-24 z-10 w-full flex flex-row nowrap items-center shadow-lg">
-      <div className="rounded-full flex flex-row items-center p-1 px-2">
+    <header className="fixed bg-base-max py-3 pl-24 z-10 w-full flex flex-row nowrap items-center shadow-lg ">
+      <div className="rounded-full flex flex-row items-center p-1 px-2 font-bold whitespace-nowrap">
         <TypeIcon iconText={iconText} />
       </div>
       <HeaderTitle>{headerTitle}</HeaderTitle>
