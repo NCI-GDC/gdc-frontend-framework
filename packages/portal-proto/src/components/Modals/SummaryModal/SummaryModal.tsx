@@ -2,7 +2,6 @@ import {
   SummaryHeaderIcon,
   SummaryHeaderProps,
 } from "@/components/Summary/SummaryHeader";
-import { TypeIcon } from "@/components/TypeIcon";
 import { CaseSummary } from "@/features/cases/CaseSummary";
 import { ContextualFileView } from "@/features/files/FileSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
