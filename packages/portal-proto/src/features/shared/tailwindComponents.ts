@@ -29,3 +29,14 @@ top-0
 h-full
 bg-percentage-bar-complete
 rounded-sm`;
+
+export const DownloadButton = tw.button`
+    px-1.5
+    min-h-[28px]
+    min-w-10
+    border-primary
+    text-primary
+    border
+    rounded-[4px]
+    transition-colors
+`;

@@ -19,6 +19,7 @@ import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
+import { DownloadButton } from "@/features/shared/tailwindComponents";
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
 const textColors = [
@@ -424,7 +425,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
         </div>
-        <div className="flex flex-row items-center ml-auto mt-2 ">
+        <div className="flex flex-row items-center ml-auto mt-2 gap-1">
           <Menu
             position="bottom-start"
             offset={1}
@@ -437,12 +438,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Target>
               <div className="flex">
                 <Tooltip label="Download Survival Plot data or image">
-                  <button
-                    className="px-1.5 min-h-[28px] min-w-[40px] mx-1 border-base-light border rounded-[4px] transition-colors"
-                    aria-label="Download button with an icon"
-                  >
+                  <DownloadButton aria-label="Download button with an icon">
                     <DownloadIcon size="1.25em" />
-                  </button>
+                  </DownloadButton>
                 </Tooltip>
               </div>
             </Menu.Target>
@@ -466,13 +464,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset Survival Plot Zoom">
-            <button
-              className="px-1.5 min-h-[28px] min-w-[40px] border-base-light border rounded-[4px] transition-colors"
+            <DownloadButton
               onClick={() => setXDomain(undefined)}
               aria-label="reset button with an icon"
             >
               <ResetIcon size="1.15rem"></ResetIcon>
-            </button>
+            </DownloadButton>
           </Tooltip>
         </div>
       </div>
