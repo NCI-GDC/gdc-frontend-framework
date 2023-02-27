@@ -267,7 +267,7 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-start flex-nowrap items-center">
+                <div className="flex flex-row flex-nowrap items-center">
                   {row.getCanExpand() && (
                     <div className="text-center content-center">
                       <button
