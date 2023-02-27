@@ -20,7 +20,7 @@ import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
-  mapFilesFromCasesToCartFile,
+  mapGdcFileToCartFile,
 } from "../files/utils";
 import {
   allFilesInCart,
@@ -76,7 +76,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
     offset: 60,
   });
   const isAllFilesInCart = data?.files
-    ? allFilesInCart(currentCart, mapFilesFromCasesToCartFile(data?.files))
+    ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
 
   const {
@@ -140,7 +140,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
     const isAllImagesFilesInCart = allFilesInCart(
       currentCart,
-      mapFilesFromCasesToCartFile(imageFiles),
+      mapGdcFileToCartFile(imageFiles),
     );
 
     if (!!slideCount && imageFiles.length > 0) {
@@ -163,12 +163,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
                 onClick={() => {
                   isAllImagesFilesInCart
                     ? removeFromCart(
-                        mapFilesFromCasesToCartFile(imageFiles),
+                        mapGdcFileToCartFile(imageFiles),
                         currentCart,
                         dispatch,
                       )
                     : addToCart(
-                        mapFilesFromCasesToCartFile(imageFiles),
+                        mapGdcFileToCartFile(imageFiles),
                         currentCart,
                         dispatch,
                       );
@@ -325,7 +325,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         action: (
           <TableActionButtons
             isOutputFileInCart={isOutputFileInCart}
-            file={mapFilesFromCasesToCartFile([file])}
+            file={mapGdcFileToCartFile([file])}
             downloadFile={mapFileData([file])[0]}
           />
         ),
@@ -374,12 +374,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(
-                    mapFilesFromCasesToCartFile(data.files),
+                    mapGdcFileToCartFile(data.files),
                     currentCart,
                     dispatch,
                   )
                 : addToCart(
-                    mapFilesFromCasesToCartFile(data.files),
+                    mapGdcFileToCartFile(data.files),
                     currentCart,
                     dispatch,
                   )

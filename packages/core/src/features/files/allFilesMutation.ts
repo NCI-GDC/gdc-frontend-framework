@@ -26,7 +26,7 @@ export const allFilesApiSlice = coreCreateApi({
         },
         body: {
           filters: filters,
-          fields: "file_id",
+          fields: "access,acl,file_id,file_size,state,file_name",
           size: 10001, // set one over max add to cart function allows
         },
       }),
