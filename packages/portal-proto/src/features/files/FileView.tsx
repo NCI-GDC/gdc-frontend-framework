@@ -60,11 +60,11 @@ export interface FileViewProps {
 }
 
 const FullWidthDiv = tw.div`
-bg-base-lightest w-full text-base-contrast-lighter mt-4
+bg-base-max w-full text-base-contrast-lighter mt-4
 `;
 
 const TitleHeader = tw.div`
-bg-base-lightest text-base-contrast-lighter
+bg-base-max text-base-contrast-lighter
 `;
 
 const getAnnotationsLinkParams = (
