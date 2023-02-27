@@ -32,7 +32,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
         { label: "Saved Sets", value: "saved" },
       ]}
     >
-      <Tabs.Panel value="input" className="pt-4 ">
+      <Tabs.Panel value="input" className="pt-4">
         <InputEntityList
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"

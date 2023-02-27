@@ -168,7 +168,7 @@ export const createTableColumn = (
                       }}
                     >
                       <ToggledCheck
-                        margin="mt-[0.42em] ml-0.5"
+                        margin="ml-0.5"
                         isActive={row.original["survival"].checked}
                         icon={<SurvivalIcon size={24} />}
                         selected={row.original["survival"]}
@@ -267,7 +267,7 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-startflex-nowrap items-center">
+                <div className="flex flex-row justify-start flex-nowrap items-center">
                   {row.getCanExpand() && (
                     <div className="text-center content-center">
                       <button

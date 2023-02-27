@@ -45,7 +45,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
         </Menu.Target>
 
         <Menu.Dropdown className="border-1 border-primary">
-          <Menu.Label className="bg-base-max text-primary font-heading font-bold border-primary border-bottom-1">
+          <Menu.Label className="bg-base-max text-primary font-heading font-bold border-primary border-b-1">
             {numSelected === 0
               ? `${total.toLocaleString()} ${label}s`
               : numSelected === 1
