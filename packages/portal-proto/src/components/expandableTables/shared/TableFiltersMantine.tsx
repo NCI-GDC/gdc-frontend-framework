@@ -31,7 +31,7 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
           placeholder="Search"
           aria-label="Table Search Input"
           classNames={{
-            input: "focus:border-2 fo  cus:drop-shadow-xl",
+            input: "focus:border-2 focus:drop-shadow-xl",
             wrapper: "w-72",
           }}
           size="sm"

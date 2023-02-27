@@ -12,7 +12,7 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useContext, useEffect } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -30,16 +30,19 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import urlJoin from "url-join";
 import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
-import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
-import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
-import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { theme } from "tailwind.config";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import {
   DropdownMenu,
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
+import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
+import { SummaryModalContext } from "src/utils/contexts";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
@@ -82,6 +85,8 @@ export const Header: React.FC<HeaderProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
   return (
     <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
@@ -128,15 +133,15 @@ export const Header: React.FC<HeaderProps> = ({
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-primary-darkest"
+                  className="px-1 ml-1 bg-accent"
                   radius="xs"
                 >
-                  {currentCart.length || 0}
+                  {currentCart?.length || 0}
                 </Badge>
               </div>
             </Button>
           </Link>
-          {userInfo.data.username ? (
+          {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown">
               <Menu.Target>
                 <Button
@@ -146,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
                 >
-                  {userInfo.data.username}
+                  {userInfo?.data?.username}
                 </Button>
               </Menu.Target>
               <DropdownMenu>
@@ -393,10 +398,24 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-grow">
         <Options />
       </div>
+      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
       {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
       {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
+      {entityMetadata.entity_type !== null && (
+        <SummaryModal
+          opened
+          onClose={() =>
+            setEntityMetadata({
+              entity_type: null,
+              entity_id: null,
+              entity_name: null,
+            })
+          }
+          entityMetadata={entityMetadata}
+        />
+      )}
     </div>
   );
 };

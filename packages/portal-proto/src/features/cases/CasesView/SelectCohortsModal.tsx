@@ -18,7 +18,6 @@ import {
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
-  defaultCohortNameGenerator,
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
@@ -180,7 +179,6 @@ export const SelectCohortsModal = ({
         >
           {showCreateCohort && (
             <SaveOrCreateCohortModal
-              initialName={defaultCohortNameGenerator()}
               entity="cohort"
               action="create"
               opened={showCreateCohort}

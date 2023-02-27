@@ -1,7 +1,6 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
-import { CoreProvider } from "@gff/core";
 import SetFacet from "./SetFacet";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
@@ -17,26 +16,24 @@ jest.spyOn(core, "useGeneSymbol").mockReturnValue({
 describe("<QueryRepresentation />", () => {
   it("handles display of groups", () => {
     const { getByText } = render(
-      <CoreProvider>
-        <SetFacet
-          field={"genes.gene_id"}
-          hooks={{
-            useGetFacetValues: jest
-              .fn()
-              .mockImplementation(() => ["E10", "E40", "E60"]),
-            useClearFilter: jest.fn(),
-            useRemoveFilterGroup: jest.fn(),
-            useUpdateFacetFilters: jest.fn(),
-            useFilterGroups: jest
-              .fn()
-              .mockImplementation(() => [
-                { ids: ["E10", "E40"], field: "genes.gene_id" },
-              ]),
-            useClearGroups: jest.fn(),
-          }}
-          valueLabel=""
-        />
-      </CoreProvider>,
+      <SetFacet
+        field={"genes.gene_id"}
+        hooks={{
+          useGetFacetValues: jest
+            .fn()
+            .mockImplementation(() => ["E10", "E40", "E60"]),
+          useClearFilter: jest.fn(),
+          useRemoveFilterGroup: jest.fn(),
+          useUpdateFacetFilters: jest.fn(),
+          useFilterGroups: jest
+            .fn()
+            .mockImplementation(() => [
+              { ids: ["E10", "E40"], field: "genes.gene_id" },
+            ]),
+          useClearGroups: jest.fn(),
+        }}
+        valueLabel=""
+      />,
     );
     expect(getByText("2 input genes")).toBeInTheDocument();
     expect(getByText("FAT4")).toBeInTheDocument();
@@ -48,22 +45,20 @@ describe("<QueryRepresentation />", () => {
     }));
 
     const { getByText } = render(
-      <CoreProvider>
-        <SetFacet
-          field={"genes.gene_id"}
-          hooks={{
-            useGetFacetValues: jest
-              .fn()
-              .mockImplementation(() => ["set_id:123", "E60"]),
-            useClearFilter: jest.fn(),
-            useRemoveFilterGroup: jest.fn(),
-            useUpdateFacetFilters: jest.fn(),
-            useFilterGroups: jest.fn(),
-            useClearGroups: jest.fn(),
-          }}
-          valueLabel=""
-        />
-      </CoreProvider>,
+      <SetFacet
+        field={"genes.gene_id"}
+        hooks={{
+          useGetFacetValues: jest
+            .fn()
+            .mockImplementation(() => ["set_id:123", "E60"]),
+          useClearFilter: jest.fn(),
+          useRemoveFilterGroup: jest.fn(),
+          useUpdateFacetFilters: jest.fn(),
+          useFilterGroups: jest.fn(),
+          useClearGroups: jest.fn(),
+        }}
+        valueLabel=""
+      />,
     );
     expect(getByText("my gene set")).toBeInTheDocument();
     expect(getByText("FAT4")).toBeInTheDocument();
@@ -73,28 +68,26 @@ describe("<QueryRepresentation />", () => {
     const mockUpdateFilter = jest.fn();
 
     const { getByText, getByTestId } = render(
-      <CoreProvider>
-        <SetFacet
-          field={"genes.gene_id"}
-          hooks={{
-            useGetFacetValues: jest
-              .fn()
-              .mockImplementation(() => ["E10", "E40", "E60", "E40"]),
-            useClearFilter: jest.fn(),
-            useRemoveFilterGroup: jest.fn().mockImplementation(() => jest.fn()),
-            useUpdateFacetFilters: jest
-              .fn()
-              .mockImplementation(() => mockUpdateFilter),
-            useFilterGroups: jest
-              .fn()
-              .mockImplementation(() => [
-                { ids: ["E10", "E40"], field: "genes.gene_id" },
-              ]),
-            useClearGroups: jest.fn(),
-          }}
-          valueLabel=""
-        />
-      </CoreProvider>,
+      <SetFacet
+        field={"genes.gene_id"}
+        hooks={{
+          useGetFacetValues: jest
+            .fn()
+            .mockImplementation(() => ["E10", "E40", "E60", "E40"]),
+          useClearFilter: jest.fn(),
+          useRemoveFilterGroup: jest.fn().mockImplementation(() => jest.fn()),
+          useUpdateFacetFilters: jest
+            .fn()
+            .mockImplementation(() => mockUpdateFilter),
+          useFilterGroups: jest
+            .fn()
+            .mockImplementation(() => [
+              { ids: ["E10", "E40"], field: "genes.gene_id" },
+            ]),
+          useClearGroups: jest.fn(),
+        }}
+        valueLabel=""
+      />,
     );
 
     expect(getByText("FAT3")).toBeInTheDocument();

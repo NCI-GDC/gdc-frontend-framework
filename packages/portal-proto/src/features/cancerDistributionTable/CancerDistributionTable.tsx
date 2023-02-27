@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
-  useProjects,
+  useGetProjectsQuery,
   CancerDistributionTableData,
   useGetCDTableGeneSummaryDLQuery,
 } from "@gff/core";
@@ -98,7 +98,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   symbol,
   isGene,
 }: CancerDistributionTableProps) => {
-  const { data: projects, isFetching: projectsFetching } = useProjects({
+  const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
       op: "in",
       content: {
@@ -116,7 +116,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   });
 
   const projectsById = Object.fromEntries(
-    (projects || []).map((project) => [project.project_id, project]),
+    (projects?.projectData || []).map((project) => [
+      project.project_id,
+      project,
+    ]),
   );
   const columnListOrder = useMemo(() => {
     const columns = [

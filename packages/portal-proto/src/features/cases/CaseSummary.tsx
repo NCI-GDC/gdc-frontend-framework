@@ -23,7 +23,6 @@ import {
   FaEdit,
   FaTable,
 } from "react-icons/fa";
-import { URLContext } from "src/pages/_app";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -32,7 +31,7 @@ import {
 } from "../files/utils";
 import {
   allFilesInCart,
-  calculatePercentageAsString,
+  calculatePercentageAsNumber,
   fileInCart,
   humanify,
   sortByPropertyAsc,
@@ -44,15 +43,24 @@ import fileSize from "filesize";
 import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
+import {
+  PercentBar,
+  PercentBarComplete,
+  PercentBarLabel,
+  HeaderTitle,
+} from "../shared/tailwindComponents";
+import { URLContext } from "src/utils/contexts";
 
 // TODO: break it down
 
 export const CaseSummary = ({
   case_id,
   bio_id,
+  isModal = false,
 }: {
   case_id: string;
   bio_id: string;
+  isModal?: boolean;
 }): JSX.Element => {
   const { data, isFetching } = useCaseSummary({
     filters: {
@@ -299,9 +307,9 @@ export const CaseSummary = ({
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
               >
-                <a className="flex gap-1 cursor-pointer text-primary">
+                <a className="flex gap-1 cursor-pointer text-primary bg-white">
                   <FaMicroscope className="mt-0.5" />
-                  <span>({slideCount})</span>
+                  <span className="bg-accent text-white">({slideCount})</span>
                 </a>
               </Link>
             </div>
@@ -354,19 +362,44 @@ export const CaseSummary = ({
       "data_category",
     );
 
-    const rows = sortedDataCategories.map((data_c) => ({
-      data_category: data_c.data_category,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${data_c.file_count.toLocaleString()} (${calculatePercentageAsString(
+    const rows = sortedDataCategories.map((data_c) => {
+      const fileCountPercentage = calculatePercentageAsNumber(
         data_c.file_count,
         filesCountTotal,
-      )})`,
-    }));
+      );
+
+      return {
+        data_category: data_c.data_category,
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <div className="basis-1/3 text-right">
+              {data_c.file_count.toLocaleString()}
+            </div>
+            <div className="basis-2/3 pl-1">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
-        "Data Category",
-        `Files (n=${filesCountTotal.toLocaleString()})`,
+        <div key="case_summary_data_table_data_category">Data Category</div>,
+        <div key="case_summary_data_table_file_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={filesCountTotal.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
@@ -378,19 +411,46 @@ export const CaseSummary = ({
       "experimental_strategy",
     );
 
-    const rows = sortedExpCategories.map((exp_c) => ({
-      experimental_strategy: exp_c.experimental_strategy,
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: `${exp_c.file_count.toLocaleString()} (${calculatePercentageAsString(
+    const rows = sortedExpCategories.map((exp_c) => {
+      const fileCountPercentage = calculatePercentageAsNumber(
         exp_c.file_count,
         filesCountTotal,
-      )})`,
-    }));
+      );
+
+      return {
+        experimental_strategy: exp_c.experimental_strategy,
+        // TODO: Need to change it to Link after the href has been finalized
+        file_count: (
+          <div className="flex">
+            <div className="basis-1/3 text-right">
+              {exp_c.file_count.toLocaleString()}
+            </div>
+            <div className="basis-2/3 pl-1">
+              <PercentBar>
+                <PercentBarLabel>{`${fileCountPercentage.toFixed(
+                  2,
+                )}%`}</PercentBarLabel>
+                <PercentBarComplete
+                  style={{ width: `${fileCountPercentage}%` }}
+                />
+              </PercentBar>
+            </div>
+          </div>
+        ),
+      };
+    });
 
     return {
       headers: [
-        "Experimental Strategy",
-        `Files (n=${filesCountTotal.toLocaleString()})`,
+        <div key="case_summary_data_exp_table_exp_title">
+          Experimental Strategy
+        </div>,
+        <div key="case_summary_data_exp_table_file_header" className="flex">
+          <div className="basis-1/3 text-right">Files</div>
+          <div className="basis-2/3 pl-1">
+            (n={filesCountTotal.toLocaleString()})
+          </div>
+        </div>,
       ],
       tableRows: rows,
     };
@@ -451,8 +511,15 @@ export const CaseSummary = ({
         <LoadingOverlay visible data-testid="loading" />
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <>
-          <SummaryHeader iconText="CA" headerTitle={headerTitle} />
-          <div className="flex flex-col mx-auto mt-20 w-10/12">
+          {!isModal && (
+            <SummaryHeader iconText="ca" headerTitle={headerTitle} />
+          )}
+
+          <div
+            className={`flex flex-col mx-auto ${
+              isModal ? "mt-5" : "mt-20"
+            } w-10/12`}
+          >
             <div className="flex flex-col gap-5">
               <Button
                 leftIcon={<FaShoppingCart />}
@@ -529,23 +596,19 @@ export const CaseSummary = ({
             {clinicalFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Clinical Supplement File
-                  </h2>
+                  <HeaderTitle>Clinical Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForClinicalFiles()} />
               </div>
             )}
 
             <div ref={targetRef} id="biospecimen">
-              <Biospecimen caseId={case_id} bioId={bio_id} />
+              <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
             </div>
             {biospecimenFilteredFiles?.length > 0 && (
               <div className="my-5">
                 <div className="flex gap-2 bg-base-lightest text-primary-content p-2">
-                  <h2 className="text-lg text-accent uppercase tracking-wide font-medium">
-                    Biospecimen Supplement File
-                  </h2>
+                  <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
                 </div>
                 <TempTable tableData={formatDataForBioSpecimenFiles()} />
               </div>

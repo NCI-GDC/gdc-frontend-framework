@@ -22,6 +22,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks } from "../../../utils";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { entityMetadataType } from "src/utils/contexts";
 
 export const createTableColumn = (
   accessor: string,
@@ -37,6 +38,9 @@ export const createTableColumn = (
   toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
   isDemoMode: boolean,
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
+  isModal: boolean,
+  isConsequenceTable?: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -200,6 +204,7 @@ export const createTableColumn = (
               const label = originalLabel
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
+              const ssmsId = row.original[`mutationID`];
               return (
                 <div className="font-content flex justify-start">
                   {label !== "" ? (
@@ -207,7 +212,28 @@ export const createTableColumn = (
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
-                      <div className="text-xs">{label}</div>
+                      {isConsequenceTable ? (
+                        <span className="text-xs">{label}</span>
+                      ) : isModal ? (
+                        <button
+                          className="text-utility-link underline text-xs"
+                          onClick={() =>
+                            setEntityMetadata({
+                              entity_type: "ssms",
+                              entity_id: ssmsId,
+                              entity_name: originalLabel,
+                            })
+                          }
+                        >
+                          {label}
+                        </button>
+                      ) : (
+                        <Link href={`/ssms/${ssmsId}`}>
+                          <a className="underline text-utility-link text-xs">
+                            {label}
+                          </a>
+                        </Link>
+                      )}
                     </Tooltip>
                   ) : (
                     <div className="text-lg ml-3">{"--"}</div>

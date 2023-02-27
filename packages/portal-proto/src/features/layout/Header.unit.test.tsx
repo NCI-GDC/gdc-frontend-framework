@@ -1,9 +1,9 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
-import { CoreProvider } from "@gff/core";
+import { render } from "test-utils";
 
 describe("<Header />", () => {
   beforeEach(() => {
@@ -49,9 +49,7 @@ describe("<Header />", () => {
       .mockReturnValueOnce(null);
 
     const { getByTestId, queryByTestId } = render(
-      <CoreProvider>
-        <Header {...{ headerElements, indexPath: "/" }} />
-      </CoreProvider>,
+      <Header {...{ headerElements, indexPath: "/" }} />,
     );
     expect(getByTestId("loginButton")).toBeInTheDocument();
     expect(queryByTestId("userdropdown")).toBeNull();
@@ -71,9 +69,7 @@ describe("<Header />", () => {
       .mockReturnValueOnce(null);
 
     const { getByTestId, queryByTestId } = render(
-      <CoreProvider>
-        <Header {...{ headerElements, indexPath: "/" }} />
-      </CoreProvider>,
+      <Header {...{ headerElements, indexPath: "/" }} />,
     );
     expect(queryByTestId("loginButton")).toBeNull();
     expect(getByTestId("userdropdown")).toBeInTheDocument();
@@ -98,9 +94,7 @@ describe("<Header />", () => {
       .spyOn(core, "fetchToken")
       .mockReturnValue(Promise.resolve({ text: "", status: 401 }));
     const { getByTestId } = render(
-      <CoreProvider>
-        <Header {...{ headerElements, indexPath: "/" }} />
-      </CoreProvider>,
+      <Header {...{ headerElements, indexPath: "/" }} />,
     );
 
     await fireEvent.click(getByTestId("userdropdown"));
@@ -135,9 +129,7 @@ test("should show User Profile Modal when fetch token returns 401", async () => 
     .spyOn(core, "fetchToken")
     .mockReturnValue(Promise.resolve({ text: "", status: 200 }));
   const { getByTestId } = render(
-    <CoreProvider>
-      <Header {...{ headerElements, indexPath: "/" }} />
-    </CoreProvider>,
+    <Header {...{ headerElements, indexPath: "/" }} />,
   );
 
   await fireEvent.click(getByTestId("userdropdown"));

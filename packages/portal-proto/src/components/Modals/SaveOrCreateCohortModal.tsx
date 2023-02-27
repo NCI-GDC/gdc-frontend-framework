@@ -6,7 +6,7 @@ import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 export const SaveOrCreateCohortModal = ({
   entity,
   action = "Save",
-  initialName,
+  initialName = "",
   opened,
   onClose,
   onActionClick,
@@ -15,7 +15,7 @@ export const SaveOrCreateCohortModal = ({
 }: {
   entity: string;
   action?: string;
-  initialName: string;
+  initialName?: string;
   opened: boolean;
   onClose: () => void;
   onActionClick: (name: string) => void;
@@ -64,27 +64,6 @@ export const SaveOrCreateCohortModal = ({
       radius="md"
       zIndex={400}
       onClose={onClose}
-      styles={(theme) => ({
-        header: {
-          color: theme.colors.primary[8],
-          fontFamily: '"Montserrat", "sans-serif"',
-          fontSize: "1.65em",
-          fontWeight: 500,
-          letterSpacing: ".1rem",
-          borderColor: theme.colors.base[1],
-          borderStyle: "solid",
-          borderWidth: "0px 0px 2px 0px",
-          padding: "15px 20px 15px 15px",
-          margin: "5px 5px 5px 5px",
-        },
-        modal: {
-          backgroundColor: theme.colors.base[0],
-        },
-        close: {
-          backgroundColor: theme.colors.base[1],
-          color: theme.colors.primary[8],
-        },
-      })}
       withinPortal={false}
     >
       <Box
@@ -132,14 +111,14 @@ export const SaveOrCreateCohortModal = ({
                 backgroundColor: "white",
               },
             })}
-            color="primary.5"
+            color="secondary"
             onClick={onClose}
           >
             Cancel
           </Button>
           <Button
             variant={"filled"}
-            color="primary.8"
+            color="secondary"
             aria-label={`Save button to add a ${entity}`}
             onClick={() => {
               if (form.validate().hasErrors) return;

@@ -170,6 +170,20 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+        if (cmdAndParam[0] === "newProjectsCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
       }
 
       coreDispatch(clearCohortMessage());
@@ -215,17 +229,6 @@ const ContextBar: React.FC = () => {
   ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
-
-  const CohortBarWithProps = () => (
-    <CohortManager
-      // TODO: need to connect to cohort persistence
-      // eslint-disable-next-line react/prop-types
-      cohorts={cohorts}
-      onSelectionChanged={handleCohortSelection}
-      startingId={currentIndex}
-    />
-  );
-
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (
@@ -234,12 +237,18 @@ const ContextBar: React.FC = () => {
       data-tour="context_bar"
     >
       <CollapsibleContainer
-        Top={CohortBarWithProps}
+        Top={() => (
+          <CohortManager
+            cohorts={cohorts}
+            onSelectionChanged={handleCohortSelection}
+            startingId={currentIndex}
+          />
+        )}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
         onlyIcon={false}
       >
-        <div className="flex flex-col ">
+        <div className="flex flex-col bg-nci-violet-lightest">
           <div className="relative p-2">
             <div className="flex flex-row absolute ml-2 gap-4">
               <DropdownWithIcon
@@ -289,6 +298,7 @@ const ContextBar: React.FC = () => {
                   />
                 }
                 menuLabelText="Filter your cohort by:"
+                menuLabelCustomClass="font-bold text-primary"
               />
 
               {activeTab === "summary" && (
@@ -355,7 +365,6 @@ const ContextBar: React.FC = () => {
         currentCohortName={currentCohortName}
         currentCohortId={currentCohortId}
       />
-      <hr className="border-2" />
     </div>
   );
 };

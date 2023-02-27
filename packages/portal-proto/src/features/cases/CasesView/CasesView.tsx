@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Divider, Menu } from "@mantine/core";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -27,6 +27,7 @@ import {
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { SummaryModalContext } from "src/utils/contexts";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -112,6 +113,8 @@ export const ContextualCasesView: React.FC = () => {
   useEffect(() => {
     setOffset(0);
   }, [cohortFilters]);
+
+  const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const cases = useMemo(
     () =>
@@ -216,19 +219,35 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              <Link href={`/cases/${datum.case_uuid}`}>
-                <a className="text-utility-link underline">{datum.case_id}</a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "case",
+                    entity_id: datum.case_uuid,
+                    entity_name: `${datum?.project_id} / ${datum?.submitter_id}`,
+                  })
+                }
+              >
+                {datum.case_id}
+              </button>
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,
           project_id: (
             <OverflowTooltippedLabel label={datum.project_id}>
-              <Link href={`/projects/${datum.project_id}`}>
-                <a className="text-utility-link underline">
-                  {datum.project_id}
-                </a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "project",
+                    entity_id: datum.project_id,
+                    entity_name: datum.project_id,
+                  })
+                }
+              >
+                {datum.project_id}
+              </button>
             </OverflowTooltippedLabel>
           ),
           program: datum.program,
@@ -266,7 +285,7 @@ export const ContextualCasesView: React.FC = () => {
           ),
         };
       }),
-    [data, currentCart, classes, dispatch],
+    [data, currentCart, classes, dispatch, setEntityMetadata],
   );
 
   const sortByActions = (sortByObj) => {
@@ -316,8 +335,9 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-2 mr-8">
+    <div className="flex flex-col ml-1 mr-1 ">
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
+
       <VerticalTable
         tableData={cases || []}
         columns={columns}
@@ -358,12 +378,12 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 JSON
               </Button>
             </ButtonTooltip>
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
               </Button>
             </ButtonTooltip>

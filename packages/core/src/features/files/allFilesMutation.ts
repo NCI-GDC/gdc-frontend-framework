@@ -11,7 +11,7 @@ export interface GdcFileIds {
   readonly file_id?: string;
 }
 
-export const filesApiSlice = coreCreateApi({
+export const allFilesApiSlice = coreCreateApi({
   reducerPath: "filesApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${GDC_API}`,
@@ -43,8 +43,9 @@ export const filesApiSlice = coreCreateApi({
   }),
 });
 
-export const { useGetAllFilesMutation } = filesApiSlice;
+export const { useGetAllFilesMutation } = allFilesApiSlice;
 
-export const filesApiSliceMiddleware = filesApiSlice.middleware as Middleware;
-export const filesApiSliceReducerPath: string = filesApiSlice.reducerPath;
-export const filesAllApiReducer: Reducer = filesApiSlice.reducer as Reducer;
+export const allFilesApiSliceMiddleware =
+  allFilesApiSlice.middleware as Middleware;
+export const allFilesApiSliceReducerPath: string = allFilesApiSlice.reducerPath;
+export const allFilesApiReducer: Reducer = allFilesApiSlice.reducer as Reducer;

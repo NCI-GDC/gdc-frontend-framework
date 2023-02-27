@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext,
+} from "react";
 import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
@@ -6,6 +12,7 @@ import { getMutation, createTableColumn } from "./smTableUtils";
 import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
+import { SummaryModalContext } from "src/utils/contexts";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,
@@ -24,6 +31,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   toggledSsms = [],
   geneSymbol = undefined,
   isDemoMode = false,
+  isModal = false,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -80,6 +88,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(
     () => {
       return visibleColumns.map(({ id: accessor }: Column) => {
@@ -93,6 +103,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           toggledSsms,
           geneSymbol,
           isDemoMode,
+          setEntityMetadata,
+          isModal,
         );
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,6 +115,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
       mutationID,
       setMutationID,
       handleSurvivalPlotToggled,
+      setEntityMetadata,
     ],
   );
 
