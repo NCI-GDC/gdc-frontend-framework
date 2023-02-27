@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
@@ -30,6 +30,16 @@ export const GeneCancerDistributionTable: React.FC<
     isError: downloadError,
     isSuccess: downloadSuccess,
   } = useGetCDTableGeneSummaryDLQuery({ gene });
+
+  useEffect(() => {
+    console.table([
+      downloadData,
+      downloadFetching,
+      downloadError,
+      downloadSuccess,
+    ]);
+  }, [downloadData, downloadFetching, downloadError, downloadSuccess]);
+
   const { data, isFetching, isError, isSuccess } =
     useGetGeneCancerDistributionTableQuery({ gene });
   return (
