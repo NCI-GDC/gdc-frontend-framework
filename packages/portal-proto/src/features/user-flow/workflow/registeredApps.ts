@@ -68,7 +68,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: "icons/apps/Cohortcomparison.svg",
+    icon: "icons/apps/CohortComparison.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
