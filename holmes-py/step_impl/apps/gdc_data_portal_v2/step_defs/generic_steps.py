@@ -120,6 +120,9 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
+# TO-DO: replace home_page function call with base_page.
+# All generic_step functions and related locators should
+# be put into base_page.py
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     is_text_present = APP.home_page.is_text_present(expected_text)
