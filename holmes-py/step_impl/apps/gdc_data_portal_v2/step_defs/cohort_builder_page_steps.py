@@ -18,17 +18,15 @@ def make_cohort_builder_selections(tab_name: str, table):
         APP.cohort_builder_page.make_selection_within_facet_group(v[0], v[1])
         time.sleep(0.1)
 
-@step("Enter text in the search bar on the Cohort Builder page <table>")
-def enter_text_into_search_bar(table):
-    for k, v in enumerate(table):
-        APP.cohort_builder_page.send_text_into_search_bar(v[0])
+@step("Enter text <text_to_send> in the search bar on the Cohort Builder page")
+def enter_text_into_search_bar(text_to_send: str):
+    APP.cohort_builder_page.send_text_into_search_bar(text_to_send)
 
-@step("Validate search bar results on the Cohort Builder page <table>")
-def validate_search_bar_result_text(table):
-    for k, v in enumerate(table):
-        is_expected_text_present = APP.cohort_builder_page.validate_search_bar_result(v[0])
-        assert is_expected_text_present, f"The expected search bar result text '{v[0]}' is NOT present"
-        time.sleep(0.1)
+@step("Expected result <expected_text> in the search bar on the Cohort Builder page")
+def validate_search_bar_result_text(expected_text: str):
+    is_expected_text_present = APP.cohort_builder_page.validate_search_bar_result(expected_text)
+    assert is_expected_text_present, f"The expected search bar result text '{expected_text}' is NOT present"
+    time.sleep(0.1)
 
 @step("Click on the search bar result and validate the presence of correct facet card <table>")
 def check_for_facet_card_without_navigating(table):

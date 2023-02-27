@@ -9,9 +9,9 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
-@step("Click on cDAVE app play button")
-def click_on_cdave_play_button():
-    APP.clinical_data_analysis.click_on_cdave_play_button()
+@step("Navigate to cDAVE app")
+def navigate_to_cdave_app():
+    APP.clinical_data_analysis.navigate_to_cdave_app()
 
 
 @step("Expand clinical property sections")

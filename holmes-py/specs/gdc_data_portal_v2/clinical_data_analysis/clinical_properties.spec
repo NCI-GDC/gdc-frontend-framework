@@ -12,7 +12,7 @@ tags: cdave, regression, smoke
 
 * On GDC Data Portal V2 app
 * Navigate to "Analysis" from "Header" "section"
-* Click on cDAVE app play button
+* Navigate to cDAVE app
 * Expand clinical property sections
 * Check clinical properties
 

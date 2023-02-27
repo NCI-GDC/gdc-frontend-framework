@@ -1,5 +1,7 @@
 from typing import List
 
+class GenericLocators:
+    DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
 
 class BasePage:
     def __init__(self, driver) -> None:

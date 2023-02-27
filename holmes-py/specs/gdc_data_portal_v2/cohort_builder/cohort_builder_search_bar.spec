@@ -14,60 +14,36 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 ## Cohort Builder - Search Bar
 
-* Enter text in the search bar on the Cohort Builder page
-  |text                   |
-  |-----------------------|
-  |Best Overall Response  |
+* Enter text "Best Overall Response" in the search bar on the Cohort Builder page
 
-* Validate search bar results on the Cohort Builder page
-  |check_text             |
-  |-----------------------|
-  |Best Overall Response  |
+* Expected result "Best Overall Response" in the search bar on the Cohort Builder page
 
 * Click on the search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Best Overall Response  |Best Overall Response  |
 
-* Enter text in the search bar on the Cohort Builder page
-  |text                   |
-  |-----------------------|
-  |expressed in number    |
+* Enter text "expressed in number" in the search bar on the Cohort Builder page
 
-* Validate search bar results on the Cohort Builder page
-  |check_text             |
-  |-----------------------|
-  |Age at Diagnosis       |
+* Expected result "Age at Diagnosis" in the search bar on the Cohort Builder page
 
 * Click on the search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Age at Diagnosis       |Age at Diagnosis       |
 
-* Enter text in the search bar on the Cohort Builder page
-  |text                   |
-  |-----------------------|
-  |GENIE-MSK              |
+* Enter text "GENIE-MSK" in the search bar on the Cohort Builder page
 
-* Validate search bar results on the Cohort Builder page
-  |check_text             |
-  |-----------------------|
-  |Project                |
+* Expected result "Project" in the search bar on the Cohort Builder page
 
 * Click on the search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |Project                |Project                |
 
-* Enter text in the search bar on the Cohort Builder page
-  |text                   |
-  |-----------------------|
-  |age at index           |
+* Enter text "age at index" in the search bar on the Cohort Builder page
 
-* Validate search bar results on the Cohort Builder page
-  |check_text                       |
-  |---------------------------------|
-  |cohort-builder-search-no-results |
+* Expected result "cohort-builder-search-no-results" in the search bar on the Cohort Builder page
 
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
   |filter_name              |
@@ -77,15 +53,9 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Cohort" from "Header" "section"
 
-* Enter text in the search bar on the Cohort Builder page
-  |text                   |
-  |-----------------------|
-  |age at index           |
+* Enter text "age at index" in the search bar on the Cohort Builder page
 
-* Validate search bar results on the Cohort Builder page
-  |check_text             |
-  |-----------------------|
-  |age at index           |
+* Expected result "age at index" in the search bar on the Cohort Builder page
 
 * Click on the search bar result and validate the presence of correct facet card
   |text_to_click          |facet_to_check         |
