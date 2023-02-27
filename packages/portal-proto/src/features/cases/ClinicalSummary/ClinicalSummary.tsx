@@ -113,7 +113,7 @@ export const ClinicalSummary = ({
             root: "w-full",
             tabsList: "mt-2 ml-2",
             panel: "max-w-full overflow-x-auto",
-            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-8 data-active:bg-accent-cool-content-lightest data-active:border-2 data-active:border-primary",
+            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-2 data-active:bg-accent-cool-content-lightest data-active:border-2 data-active:border-primary",
           }}
           styles={(theme) => ({
             tab: {
