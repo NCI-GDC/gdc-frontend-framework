@@ -35,7 +35,7 @@ const nciGrayContent = {
 
 const nciBlueContent = {
   max: "#FFFFFF",
-  lightest: "#f1f1f1",
+  lightest: "#F8F9FA",
   lighter: "#c5c5c5",
   light: "#9b9b9b",
   DEFAULT: "#706f6f",
