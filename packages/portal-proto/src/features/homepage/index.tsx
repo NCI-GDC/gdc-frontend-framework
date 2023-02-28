@@ -118,11 +118,11 @@ const Homepage = (): JSX.Element => {
           alt: "Skewed representation of data explorer",
           width: 696,
           height: 469,
-          objectPosition: "top -64px right 0",
+          objectPosition: "top -54px right 94px",
         }}
       />
       <div className="rounded-2xl shadow-[0px_0px_16px_#00000029] text-center mx-auto mb-10">
-        <div className="flex  m-8  max-w-screen-lg">
+        <div className="flex  m-8  max-w-screen-lg gap-14">
           <ul className="flex gap-4 w-2/3">
             {[
               {
@@ -137,8 +137,8 @@ const Homepage = (): JSX.Element => {
                 src: "/homepage/slide1-ProteinP.jpg",
                 title: "ProteinPaint",
               },
-            ].map((obj) => (
-              <li className="flex flex-col w-[220px]">
+            ].map((obj, index) => (
+              <li className="flex flex-col w-[220px]" key={index}>
                 <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
                   <Image
                     alt={obj.title}
@@ -154,11 +154,11 @@ const Homepage = (): JSX.Element => {
               </li>
             ))}
           </ul>
-          <div className="">
+          <div className="text-left pt-14">
             <p>
-              Analyze your custom cohorts by applying the GDC's collection of
-              tools for visualizing clinical features, genomic alterations, and
-              other cancer drivers.
+              Analyze your custom cohorts by applying the GDC&apos;s collection
+              of tools for visualizing clinical features, genomic alterations,
+              and other cancer drivers.
             </p>
             <HomepageButton
               href={{
@@ -211,13 +211,14 @@ const Homepage = (): JSX.Element => {
             Contact our knowledgeable and highly engaged team of specialists for
             help with the data and the many features offered by the Genomic Data
             Commons. Send a question, suggestion, or description of an issue to
-            our team who will respond promptly. We look forward to hearing from
-            our users!
+            our team who will respond promptly.
+            <br />
+            We look forward to hearing from our users!
           </>
         }
         linkText="Contact Us"
         href="https://gdc.cancer.gov/support"
-        mainClassName="bg-btm-pattern bg-top bg-no-repeat"
+        mainClassName="bg-btm-pattern bg-cover"
       />
     </div>
   );

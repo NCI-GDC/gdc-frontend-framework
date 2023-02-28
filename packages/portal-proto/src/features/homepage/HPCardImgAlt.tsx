@@ -65,7 +65,7 @@ const HPCardImgAlt = ({
           </div>
         </div>
         <div className="w-2/3">
-          <h2 className="font-heading font-bold text-3xl pb-8 leading-tight">
+          <h2 className="font-heading font-bold text-3xl pb-8 tracking-tight">
             {head}
           </h2>
           <div className="py-1 space-y-5 max-w-4xl pb-4">{body}</div>

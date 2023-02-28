@@ -28,7 +28,7 @@ const HPCard = ({
   return (
     <div className={`px-7 ${mainClassName}`}>
       <div className="text-center py-12 max-w-screen-lg m-auto">
-        <h2 className="font-heading font-bold text-3xl pb-5 text-summarybar-text">
+        <h2 className="font-heading font-bold text-3xl pb-5 text-summarybar-text tracking-tight">
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
         </h2>
