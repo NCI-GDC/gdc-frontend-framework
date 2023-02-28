@@ -28,7 +28,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import FunctionButton from "@/components/FunctionButton";
+import { Button } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import { useMutatedGenesFreqDLQuery } from "@gff/core";
@@ -330,7 +330,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             sort="case.project.project_id"
             saveCount={
               Object.keys(selectedGenes).length === 0
-                ? gTotal
+                ? genesTotal
                 : Object.keys(selectedGenes).length
             }
             setType={"genes"}
@@ -344,7 +344,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             addToCount={
               Object.keys(selectedGenes).length === 0
-                ? gTotal
+                ? genesTotal
                 : Object.keys(selectedGenes).length
             }
             setType={"genes"}
@@ -360,7 +360,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             removeFromCount={
               Object.keys(selectedGenes).length === 0
-                ? gTotal
+                ? genesTotal
                 : Object.keys(selectedGenes).length
             }
             setType={"genes"}

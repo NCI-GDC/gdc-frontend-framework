@@ -2,8 +2,8 @@ import React, { useCallback, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
 import RatioSpring from "./RatioSpring";
-import { FaCircle as Circle } from "react-icons/fa";
 import { TableSubrowData } from "@gff/core";
+import { FaCircle as Circle } from "react-icons/fa";
 
 interface ListSpringProps {
   subData: ReadonlyArray<TableSubrowData>;
@@ -60,7 +60,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
     (item: TableSubrowDataWithRatio, index: number) => {
       return (
         <div className="flex flex-row items-center">
-          <Circle size="0.65em" className="text-primary shrink-0 "></Circle>
+          <Circle size="0.65em" className="text-primary shrink-0" />
           <RatioSpring
             item={{
               numerator: item.numerator ?? 0,

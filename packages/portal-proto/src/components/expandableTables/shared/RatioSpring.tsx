@@ -52,25 +52,21 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
           orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
         ) : (
           <li key={`subrow-item-${index}`} className={`list-none`}>
-            <div className="flex flex-col">
-              <div className={`flex flex-row m-auto w-fit`}>
-                {project && (
-                  <div className={`font-bold text-black mx-0.5`}>
-                    {project}:
-                  </div>
-                )}{" "}
-                {project?.length < 15 && (
-                  <>
-                    {fraction} {percentage}
-                  </>
-                )}
-              </div>
-              {(orientation === "vertical" || project?.length > 15) && (
-                <div className={`flex flex-row w-max mx-auto`}>
+            <div className={`flex flex-row m-auto mb-0 pb-0 w-fit`}>
+              {project && (
+                <div className={`font-bold text-black mx-0.5`}>{project}:</div>
+              )}{" "}
+              {project?.length <= 12 && (
+                <>
                   {fraction} {percentage}
-                </div>
+                </>
               )}
             </div>
+            {(orientation === "vertical" || project?.length > 12) && (
+              <div className={`flex flex-row mx-auto mt-0 pt-0 w-fit`}>
+                {fraction} {percentage}
+              </div>
+            )}
           </li>
         )}
       </animated.ul>

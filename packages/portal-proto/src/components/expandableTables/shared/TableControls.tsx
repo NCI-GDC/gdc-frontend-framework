@@ -5,6 +5,8 @@ import { animated, useSpring } from "@react-spring/web";
 interface ControlOption {
   label: string;
   value: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 interface TableControlsProps {

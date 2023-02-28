@@ -240,7 +240,9 @@ export const createTableColumn = (
                       className={`flex flex-col items-center text-center font-content text-xs`}
                     >
                       <div className={`flex flex-row`}>
-                        {`${numerator} / ${denominator}`}
+                        {`${numerator.toLocaleString(
+                          "en-US",
+                        )} / ${denominator.toLocaleString("en-US")}`}
                       </div>
                       <div className={`flex flex-row`}>
                         {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
@@ -280,7 +282,9 @@ export const createTableColumn = (
                       className={`flex flex-col font-content text-xs text-center items-center`}
                     >
                       <div className={`flex flex-row`}>
-                        {`${numerator} / ${denominator}`}
+                        {`${numerator.toLocaleString(
+                          "en-US",
+                        )} / ${denominator.toLocaleString("en-US")}`}
                       </div>
                       <div className={`flex flex-row`}>
                         {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
@@ -308,13 +312,6 @@ export const createTableColumn = (
                         />
                       </button>
                     </div>
-                  )}
-                  {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
                   )}
                 </div>
               );
