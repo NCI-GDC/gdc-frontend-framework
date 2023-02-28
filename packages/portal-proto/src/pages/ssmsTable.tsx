@@ -6,10 +6,7 @@ const SSMSTablePage: NextPage = () => {
   return (
     <SimpleLayout>
       <div>
-        <SMTableContainer
-          selectedSurvivalPlot={undefined}
-          handleSurvivalPlotToggled={undefined}
-        />
+        <SMTableContainer />
       </div>
     </SimpleLayout>
   );

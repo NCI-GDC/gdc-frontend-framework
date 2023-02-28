@@ -1,8 +1,9 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Grid } from "@mantine/core";
-import { useSsmPlot } from "@gff/core";
+import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
+import { processFilters } from "src/utils";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -15,6 +16,8 @@ interface SSMPlotProps {
   readonly gene?: string;
   readonly ssms?: string;
   readonly height?: number;
+  readonly genomicFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 
 const SSMPlot: React.FC<SSMPlotProps> = ({
@@ -22,12 +25,17 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   gene,
   ssms,
   height = undefined,
+  genomicFilters = undefined,
+  cohortFilters = undefined,
 }: SSMPlotProps) => {
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
+
   const router = useRouter();
 
   const { data, error, isUninitialized, isFetching, isError } = useSsmPlot({
     gene,
     ssms,
+    contextFilters,
   });
 
   if (isUninitialized) {

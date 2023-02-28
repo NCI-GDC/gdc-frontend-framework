@@ -1,3 +1,5 @@
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection } from "../gdcapi/filters";
 import { Buckets, Bucket } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
@@ -62,8 +64,13 @@ export interface CancerDistributionTableData {
 export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getGeneCancerDistributionTable: builder.query({
-      query: (request: { gene: string }) => ({
-        graphQLQuery: `
+      query: (request: {
+        gene: string;
+        contextFilters: FilterSet | undefined;
+      }) => {
+        const gqlContextFilter = buildCohortGqlOperator(request.contextFilters);
+        return {
+          graphQLQuery: `
         query CancerDistributionTable(
           $ssmTested: FiltersArgument
           $ssmCountsFilters: FiltersArgument
@@ -130,130 +137,143 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
           }
         }
       `,
-        graphQLFilters: {
-          ssmTested: {
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["ssm"],
+          graphQLFilters: {
+            ssmTested: {
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["ssm"],
+                  },
+                  op: "in",
                 },
-                op: "in",
-              },
-            ],
-            op: "and",
+              ],
+              op: "and",
+            },
+            ssmCountsFilters: {
+              op: "and",
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["ssm"],
+                  },
+                  op: "in",
+                },
+                {
+                  op: "in",
+                  content: {
+                    field: "genes.gene_id",
+                    value: [request.gene],
+                  },
+                },
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
+              ],
+            },
+            caseAggsFilter: {
+              op: "and",
+              content: [
+                {
+                  op: "in",
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["ssm"],
+                  },
+                },
+                {
+                  op: "NOT",
+                  content: {
+                    field: "cases.gene.ssm.observation.observation_id",
+                    value: "MISSING",
+                  },
+                },
+                {
+                  op: "in",
+                  content: {
+                    field: "genes.gene_id",
+                    value: [request.gene],
+                  },
+                },
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
+              ],
+            },
+            cnvGainFilter: {
+              op: "and",
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["cnv"],
+                  },
+                  op: "in",
+                },
+                {
+                  content: {
+                    field: "cnvs.cnv_change",
+                    value: ["Gain"],
+                  },
+                  op: "in",
+                },
+                {
+                  op: "in",
+                  content: {
+                    field: "genes.gene_id",
+                    value: [request.gene],
+                  },
+                },
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
+              ],
+            },
+            cnvLossFilter: {
+              op: "and",
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["cnv"],
+                  },
+                  op: "in",
+                },
+                {
+                  content: {
+                    field: "cnvs.cnv_change",
+                    value: ["Loss"],
+                  },
+                  op: "in",
+                },
+                {
+                  op: "in",
+                  content: {
+                    field: "genes.gene_id",
+                    value: [request.gene],
+                  },
+                },
+                ...(gqlContextFilter
+                  ? (gqlContextFilter as GqlIntersection)?.content
+                  : []),
+              ],
+            },
+            cnvTested: {
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["cnv"],
+                  },
+                  op: "in",
+                },
+              ],
+              op: "and",
+            },
           },
-          ssmCountsFilters: {
-            op: "and",
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["ssm"],
-                },
-                op: "in",
-              },
-              {
-                op: "in",
-                content: {
-                  field: "genes.gene_id",
-                  value: [request.gene],
-                },
-              },
-            ],
-          },
-          caseAggsFilter: {
-            op: "and",
-            content: [
-              {
-                op: "in",
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["ssm"],
-                },
-              },
-              {
-                op: "NOT",
-                content: {
-                  field: "cases.gene.ssm.observation.observation_id",
-                  value: "MISSING",
-                },
-              },
-              {
-                op: "in",
-                content: {
-                  field: "genes.gene_id",
-                  value: [request.gene],
-                },
-              },
-            ],
-          },
-          cnvGainFilter: {
-            op: "and",
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-                op: "in",
-              },
-              {
-                content: {
-                  field: "cnvs.cnv_change",
-                  value: ["Gain"],
-                },
-                op: "in",
-              },
-              {
-                op: "in",
-                content: {
-                  field: "genes.gene_id",
-                  value: [request.gene],
-                },
-              },
-            ],
-          },
-          cnvLossFilter: {
-            op: "and",
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-                op: "in",
-              },
-              {
-                content: {
-                  field: "cnvs.cnv_change",
-                  value: ["Loss"],
-                },
-                op: "in",
-              },
-              {
-                op: "in",
-                content: {
-                  field: "genes.gene_id",
-                  value: [request.gene],
-                },
-              },
-            ],
-          },
-          cnvTested: {
-            content: [
-              {
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          },
-        },
-      }),
+        };
+      },
       transformResponse: (
         response: GraphQLApiResponse<GeneCancerDistributionTableResponse>,
       ): CancerDistributionTableData => {

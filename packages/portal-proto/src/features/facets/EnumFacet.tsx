@@ -42,6 +42,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
  * @param hideIfEmpty if facet has no data, do not render
  * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width set the width of the facet
+ * @param header object containing the components to use for the header
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
@@ -56,6 +57,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
+  header = {
+    Panel: FacetHeader,
+    Label: FacetText,
+    iconStyle: controlsIconStyle,
+  },
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -172,17 +178,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-1"
-      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <div>
-        <FacetHeader>
+        <header.Panel>
           <Tooltip
             label={description}
-            classNames={{
-              arrow: "bg-base-light",
-              tooltip: "bg-base-max text-base-contrast-max",
-            }}
             position="bottom-start"
             multiline
             width={220}
@@ -191,14 +193,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             transitionDuration={200}
             disabled={!description}
           >
-            <FacetText>
+            <header.Label>
               {facetName ? facetName : fieldNameToTitle(field)}
-            </FacetText>
+            </header.Label>
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
               <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={controlsIconStyle} />
+                <SearchIcon size="1.45em" className={header.iconStyle} />
               </FacetIconButton>
             ) : null}
             {showFlip ? (
@@ -206,14 +208,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 onClick={toggleFlip}
                 aria-label="Flip between form and chart"
               >
-                <FlipIcon size="1.45em" className={controlsIconStyle} />
+                <FlipIcon size="1.45em" className={header.iconStyle} />
               </FacetIconButton>
             ) : null}
             <FacetIconButton
               onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
-              <UndoIcon size="1.25em" className={controlsIconStyle} />
+              <UndoIcon size="1.25em" className={header.iconStyle} />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
@@ -223,11 +225,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 }}
                 aria-label="Remove the facet"
               >
-                <CloseIcon size="1.25em" className={controlsIconStyle} />
+                <CloseIcon size="1.25em" className={header.iconStyle} />
               </FacetIconButton>
             ) : null}
           </div>
-        </FacetHeader>
+        </header.Panel>
       </div>
       <div className="h-full">
         {isSearching && (

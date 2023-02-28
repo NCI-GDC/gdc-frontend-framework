@@ -1,6 +1,7 @@
 import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
 import { v4 as uuidv4 } from "uuid";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -10,6 +11,8 @@ import {
   useUserDetails,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
+  DEFAULT_COHORT_ID,
+  setActiveCohort,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -25,9 +28,9 @@ interface PpProps {
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
-  const filter0 = buildCohortGqlOperator(
-    useCoreSelector(selectCurrentCohortFilters),
-  );
+  const isDemoMode = useIsDemoApp();
+  const currentCohort = useCoreSelector(selectCurrentCohortFilters);
+  const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
@@ -67,12 +70,18 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     );
   };
 
+  const isRendered = useRef<boolean>(false);
+  if (isDemoMode && !isRendered.current) {
+    isRendered.current = true;
+    coreDispatch(setActiveCohort(DEFAULT_COHORT_ID));
+  }
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = getLollipopTrack(props, filter0, callback);
-
       if (!data) return;
+      if (isDemoMode) data.geneSymbol = "MYC";
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
@@ -100,6 +109,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
       props.geneSearch4GDCmds3,
+      isDemoMode,
       filter0,
       userDetails,
     ],
@@ -108,9 +118,14 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
+      {isDemoMode && (
+        <span className="font-heading italic px-2 py-4 mt-4">
+          {"Demo showing MYC variants for all GDC."}
+        </span>
+      )}
       <div
         ref={divRef}
-        style={{ margin: "32px" }}
+        style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
       />
     </div>
@@ -127,6 +142,7 @@ interface Mds3Arg {
   gene2canonicalisoform?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
   geneSearch4GDCmds3?: boolean;
+  geneSymbol?: string;
   tracks: Track[];
 }
 

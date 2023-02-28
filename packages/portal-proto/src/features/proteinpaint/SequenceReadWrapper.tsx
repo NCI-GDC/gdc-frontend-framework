@@ -72,7 +72,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
     <div>
       <div
         ref={alertRef}
-        style={{ margin: "32px", display: `${alertDisplay}` }}
+        style={{ margin: "2em", display: `${alertDisplay}` }}
         className="sjpp-wrapper-alert-div"
       >
         <b>Access alert</b>
@@ -81,7 +81,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
       </div>
       <div
         ref={divRef}
-        style={{ margin: "32px", display: `${rootDisplay}` }}
+        style={{ margin: "2em", display: `${rootDisplay}` }}
         className="sjpp-wrapper-root-div"
       ></div>
     </div>

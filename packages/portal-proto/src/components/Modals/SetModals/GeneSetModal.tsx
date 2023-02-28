@@ -5,7 +5,7 @@ import {
   useCoreDispatch,
   hideModal,
   useGetGenesQuery,
-  useCreateGeneSetMutation,
+  useCreateGeneSetFromValuesMutation,
   useGeneSetCountQuery,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
@@ -52,7 +52,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           }
           hooks={{
             query: useGetGenesQuery,
-            createSet: useCreateGeneSetMutation,
+            createSet: useCreateGeneSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
             useAddNewFilterGroups: useAddNewFilterGroups,

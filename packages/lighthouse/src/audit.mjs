@@ -55,26 +55,22 @@ const auditUrl = async (name, url) => {
 };
 
 const saveAuditResults = (name, results, date, reportsDir) => {
-  if (!fs.existsSync(reportsDir)) {
-    fs.mkdirSync(reportsDir, { recursive: true });
-  }
+  // create output directories as needed
+  outputTypes.forEach((outputType) => {
+    const outputDir = `${reportsDir}/${outputType}`;
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+  });
 
+  // write report to file for each output type.
   for (let i = 0; i < outputTypes.length; i++) {
+    const outputDir = `${reportsDir}/${outputTypes[i]}`;
     fs.writeFileSync(
-      `${reportsDir}/lighthouse-report-${name}-${date.toISOString()}.${
-        outputTypes[i]
-      }`,
-      // `.report` is the HTML report as a string
+      `${outputDir}/lighthouse-report-${name}.${outputTypes[i]}`,
       results.report[i],
     );
   }
-
-  // `.lhr` is the Lighthouse Result as a JS object
-  console.log(
-    `${name} performance score: ${
-      results.lhr.categories.performance.score * 100
-    }`,
-  );
 };
 
 const performAudits = async (baseUrl, paths, reportsDir) => {
