@@ -3,7 +3,11 @@ import { Image } from "@/components/Image";
 export const headerElements = [
   <Link key="BuildCohort" href="/cohort-builder">
     <div className="text-sm font-heading  hover:bg-primary-lighter text-primary-content-darkest p-2 rounded inline-flex flex-nowrap items-center shadow-md ">
-      <Image src={"/user-flow/icons/build.svg"} width={24} height={24} />{" "}
+      <Image
+        src={"/user-flow/icons/apps/CohortBuilder.svg"}
+        width={24}
+        height={24}
+      />{" "}
       <span className="px-2">Build Cohort</span>
     </div>
   </Link>,

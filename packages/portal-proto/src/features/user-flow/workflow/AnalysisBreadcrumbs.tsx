@@ -24,7 +24,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
 
   return (
-    <div className="w-full bg-primary-darkest p-2 flex items-center ">
+    <div className="w-full bg-primary p-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
         className="bg-base-lightest text-primary-content-darkest"

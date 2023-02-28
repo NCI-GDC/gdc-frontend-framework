@@ -41,7 +41,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             <Menu.Target>
               <Button
                 rightIcon={<DownIcon size={20} />}
-                className="bg-base-max text-base-content-darker border-base border-base-lighter"
+                className="bg-base-max text-primary border-primary"
               >
                 Create New Cohort
               </Button>

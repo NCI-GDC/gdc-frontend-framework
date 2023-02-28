@@ -22,10 +22,11 @@ const QueryExpressionContainer = tw.div`
   items-center
   bg-white
   shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
-  border-primary-darkest
+  border-secondary-darkest
+  border-1
   border-l-4
-  p-4
-  mt-3
+  my-4
+  mx-3
 `;
 
 const MAX_COLLAPSED_ROWS = 3;
@@ -161,32 +162,32 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         <QueryExpressionsExpandedContext.Provider
           value={[expandedState[currentCohortId], setExpandedState]}
         >
-          <div className="flex flex-col w-full">
-            <div className="flex mb-2 items-center">
+          <div className="flex flex-col w-full bg-primary">
+            <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
               <OverflowTooltippedLabel
                 label={currentCohortName}
-                className="font-bold text-primary-darkest pr-4 max-w-[260px]"
+                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
               >
                 {currentCohortName}
               </OverflowTooltippedLabel>
               <>
                 <button
-                  className={`text-sm font-montserrat ${
+                  className={`text-sm font-montserrat pl-2 ${
                     noFilters
-                      ? "cursor-not-allowed text-base-content"
-                      : "cursor-pointer text-primary-darkest"
+                      ? "cursor-not-allowed text-secondary-contrast-darkest"
+                      : "cursor-pointer text-secondary-contrast-darkest"
                   }`}
                   onClick={clearAllFilters}
                   disabled={noFilters}
                 >
                   Clear All
                 </button>
-                <div className="display flex gap-2 ml-auto">
+                <div className="display flex gap-2 ml-auto mr-3">
                   <ActionIcon
                     variant={
                       allQueryExpressionsCollapsed ? "filled" : "outline"
                     }
-                    color="primary.9"
+                    color="white"
                     onClick={() =>
                       allQueryExpressionsCollapsed
                         ? setExpandedState({
@@ -204,33 +205,34 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {allQueryExpressionsCollapsed ? (
                       <>
-                        <LeftArrowIcon size={20} color="white" />
-                        <RightArrowIcon size={20} color="white" />
+                        <LeftArrowIcon size={20} className="text-primary" />
+                        <RightArrowIcon size={20} className="text-primary" />
                       </>
                     ) : (
                       <>
-                        <RightArrowIcon size={20} color="primary.9" />
-                        <LeftArrowIcon size={20} color="primary.9" />
+                        <RightArrowIcon size={20} className="text-white" />
+                        <LeftArrowIcon size={20} className="text-white" />
                       </>
                     )}
                   </ActionIcon>
                   <ActionIcon
                     variant={filtersSectionCollapsed ? "outline" : "filled"}
-                    color={"primary.9"}
+                    color={filtersSectionCollapsed ? "white" : "white"}
                     onClick={() =>
                       setFiltersSectionCollapsed(!filtersSectionCollapsed)
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                    className={`data-disabled:bg-gray-300`}
                   >
                     {filtersSectionCollapsed ? (
                       <>
-                        <DownArrowIcon size={30} color="primary.9" />
+                        <DownArrowIcon size={30} className="text-white" />
                       </>
                     ) : (
                       <>
-                        <UpArrowIcon size={30} color="white" />
+                        <UpArrowIcon size={30} className="text-primary" />
                       </>
                     )}
                   </ActionIcon>
@@ -238,7 +240,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </>
             </div>
             <div
-              className={`flex flex-wrap bg-base-lightest w-full p-2 pb-0 rounded-md overflow-x-hidden ${
+              className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
                 filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
               }`}
               style={
@@ -259,7 +261,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
         </QueryExpressionsExpandedContext.Provider>
       ) : (
-        <span className="text-md text-primary-darkest ">
+        <span className="text-md p-3 text-primary-darkest ">
           Currently viewing all cases in the GDC. Further refine your cohort
           with tools such as the Cohort Builder.
         </span>

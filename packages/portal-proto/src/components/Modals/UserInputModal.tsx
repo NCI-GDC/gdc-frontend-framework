@@ -2,7 +2,6 @@ import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
 import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
-import { modalStyles } from "./styles";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
@@ -50,8 +49,8 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
         userEnteredInput ? setShowDiscardModal("close") : dispatch(hideModal())
       }
       size="xl"
+      padding={0}
       withinPortal={false}
-      classNames={modalStyles}
       closeButtonLabel="close modal"
     >
       <DiscardChangesModal

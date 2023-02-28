@@ -17,7 +17,6 @@ import {
 } from "@/features/apps/Apps";
 import { FileModal } from "@/features/files/FileView";
 import { GdcFile } from "@gff/core";
-import { CaseModal } from "@/features/cases/CaseView";
 import { Case } from "@/features/user-flow/all-apps/baseExploration";
 
 const AnalysisPage: NextPage = () => {
@@ -41,8 +40,8 @@ const AnalysisPage: NextPage = () => {
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
-  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
-  const [currentCase, setCurrentCase] = useState(undefined as Case);
+  const [, setCaseModalOpen] = useState(false);
+  const [, setCurrentCase] = useState(undefined as Case);
 
   const headerElements = [
     <Link key="Studies" href="/user-flow/depreciated/many-pages-v2/studies">
@@ -160,11 +159,6 @@ const AnalysisPage: NextPage = () => {
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
-      />
-      <CaseModal
-        isOpen={isCaseModalOpen}
-        closeModal={() => setCaseModalOpen(false)}
-        patient={currentCase}
       />
     </UserFlowVariedPages>
   );
