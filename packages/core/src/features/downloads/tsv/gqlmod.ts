@@ -109,7 +109,7 @@ export const getAliasFilters = (
       content: [
         {
           content: {
-            field: `${aliasFilter.split("_").at(-1)}.${aliasId}`,
+            field: `${[...aliasFilter.split("_")].at(-1)}.${aliasId}`,
             value: [id.replaceAll("_", "-")],
           },
           op: "in",
