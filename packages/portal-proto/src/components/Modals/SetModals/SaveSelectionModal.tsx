@@ -130,7 +130,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         <DarkFunctionButton
           onClick={() =>
             createSet({
-              filters: buildCohortGqlOperator(filters),
+              filters: buildCohortGqlOperator(filters) ?? {},
               size: form.values.top,
               score: sort,
             })
