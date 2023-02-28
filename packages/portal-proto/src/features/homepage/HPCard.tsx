@@ -3,7 +3,7 @@ import { LinkProps } from "next/link";
 
 // TODO eliminate duplicate styles
 const homepageButtonStyles = `
-bg-primary text-base-max border-base-light border-1
+bg-primary text-sm text-base-max border-base-light border-1
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block
 `;
@@ -27,12 +27,12 @@ const HPCard = ({
 }: HPCardProps): JSX.Element => {
   return (
     <div className={`px-7 ${mainClassName}`}>
-      <div className="text-center py-12 max-w-screen-2xl m-auto">
-        <h2 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
+      <div className="text-center py-12 max-w-screen-lg m-auto">
+        <h2 className="font-heading font-bold text-3xl pb-5 text-summarybar-text">
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
         </h2>
-        <p className="py-1 text-2xl">{body}</p>
+        <p className="py-1">{body}</p>
         {typeof href === "string" ? (
           <a
             href={href}

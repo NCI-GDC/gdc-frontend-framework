@@ -5,11 +5,11 @@ import { Image } from "@/components/Image";
 
 export const HomepageButtonAlt = tw(
   NextLink,
-)`bg-primary-max text-summarybar-text border-base-light border-1
+)`bg-primary-max text-sm text-summarybar-text border-base-light border-1
 hover:bg-primary-lightest hover:text-primary-min
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block`;
 // TODO eliminate duplicate styles
-const homepageButtonAltStyles = `bg-primary-max text-summarybar-text border-base-light border-1
+const homepageButtonAltStyles = `bg-primary-max text-sm text-summarybar-text border-base-light border-1
 hover:bg-primary-lightest hover:text-primary-min
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block`;
 
@@ -32,7 +32,7 @@ const HPCardImgAlt = ({
 }: HPCardImgAltProps): JSX.Element => {
   return (
     <div className="bg-gradient-to-r from-[#1673A3] to-[#833689] px-7">
-      <div className="py-10 max-w-screen-2xl m-auto text-base-max flex gap-16">
+      <div className="py-10 max-w-screen-lg m-auto text-base-max flex gap-16">
         <div className="w-1/3 relative">
           <div
             className="relative
@@ -65,10 +65,10 @@ const HPCardImgAlt = ({
           </div>
         </div>
         <div className="w-2/3">
-          <h2 className="font-heading font-bold text-4xl pb-8 leading-tight">
+          <h2 className="font-heading font-bold text-3xl pb-8 leading-tight">
             {head}
           </h2>
-          <div className="py-1 space-y-6 max-w-4xl text-2xl pb-4">{body}</div>
+          <div className="py-1 space-y-5 max-w-4xl pb-4">{body}</div>
           {typeof href === "string" ? (
             <a
               href={href}

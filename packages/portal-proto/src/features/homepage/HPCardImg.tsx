@@ -24,13 +24,13 @@ const HPCardImg = ({
   imgProps,
 }: HPCardImgProps): JSX.Element => {
   return (
-    <div className="bg-hero-pattern bg-cover px-7">
-      <div className="max-w-screen-2xl m-auto flex gap-16">
+    <div className="bg-mid-pattern bg-top bg-no-repeat px-7">
+      <div className="max-w-screen-lg m-auto flex">
         <div className="w-1/2 py-10">
-          <h2 className="font-heading font-bold text-4xl pb-5 text-summarybar-text">
+          <h2 className="font-heading font-bold text-3xl pb-5 text-summarybar-text">
             {head}
           </h2>
-          <div className="py-1 space-y-6 max-w-4xl text-2xl pb-4">{body}</div>
+          <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
           <HomepageButton href={href}>{linkText}</HomepageButton>
         </div>
         <div className="w-1/2 relative h-[334px]">
@@ -39,6 +39,7 @@ const HPCardImg = ({
             src={imgProps.src}
             height={imgProps.height}
             width={imgProps.width}
+            layout="fixed"
             objectPosition={imgProps.objectPosition}
           />
         </div>

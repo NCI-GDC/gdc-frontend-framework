@@ -6,9 +6,10 @@ import HPCard from "./HPCard";
 import HPCardImgAlt from "./HPCardImgAlt";
 import HPCardImg from "./HPCardImg";
 import { useTotalCounts } from "@gff/core";
+import { Image } from "@/components/Image";
 
 export const HomepageButton = tw(NextLink)`
-bg-primary text-base-max border-base-light border-1
+bg-primary text-sm text-base-max border-base-light border-1
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block
 `;
@@ -117,9 +118,59 @@ const Homepage = (): JSX.Element => {
           alt: "Skewed representation of data explorer",
           width: 696,
           height: 469,
-          objectPosition: "top -54px right 0",
+          objectPosition: "top -64px right 0",
         }}
       />
+      <div className="rounded-2xl shadow-[0px_0px_16px_#00000029] text-center mx-auto mb-10">
+        <div className="flex  m-8  max-w-screen-lg">
+          <ul className="flex gap-4 w-2/3">
+            {[
+              {
+                src: "/homepage/slide1-SurvivalP.jpg",
+                title: "Survival Plot",
+              },
+              {
+                src: "/homepage/slide1-MutationF.jpg",
+                title: "Mutation Frequency",
+              },
+              {
+                src: "/homepage/slide1-ProteinP.jpg",
+                title: "ProteinPaint",
+              },
+            ].map((obj) => (
+              <li className="flex flex-col w-[220px]">
+                <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
+                  <Image
+                    alt={obj.title}
+                    src={obj.src}
+                    width={220}
+                    height={164}
+                    className="rounded-t-lg"
+                  />
+                </div>
+                <div className="bg-nci-purple text-primary-max text-center rounded-b-lg py-3">
+                  {obj.title}
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="">
+            <p>
+              Analyze your custom cohorts by applying the GDC's collection of
+              tools for visualizing clinical features, genomic alterations, and
+              other cancer drivers.
+            </p>
+            <HomepageButton
+              href={{
+                pathname: "/analysis_page",
+                query: { app: undefined },
+              }}
+            >
+              Explore More Tools
+            </HomepageButton>
+          </div>
+        </div>
+      </div>
       <HPCardImgAlt
         head={
           <>
@@ -166,7 +217,7 @@ const Homepage = (): JSX.Element => {
         }
         linkText="Contact Us"
         href="https://gdc.cancer.gov/support"
-        mainClassName="bg-hero-pattern bg-cover"
+        mainClassName="bg-btm-pattern bg-top bg-no-repeat"
       />
     </div>
   );
