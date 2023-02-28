@@ -64,3 +64,8 @@ with automation, performing it manually works as expected.
   |text_to_click          |facet_to_check         |
   |-----------------------|-----------------------|
   |age at index           |Age at Index           |
+
+* Perform the following actions from "Custom Filters" tab on the Cohort Builder page
+  |facet_name       |action               |
+  |-----------------|---------------------|
+  |Age at Index     |Remove the facet     |
