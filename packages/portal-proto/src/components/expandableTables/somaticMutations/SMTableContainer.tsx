@@ -9,6 +9,7 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
+  joinFilters,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -192,6 +193,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
+  const combinedFilters = joinFilters(genomicFilters, cohortFilters);
   const setFilters =
     Object.keys(selectedMutations).length > 0
       ? ({
@@ -204,7 +206,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : genomicFilters;
+      : geneSymbol
+      ? joinFilters(combinedFilters, {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
+            },
+          },
+        })
+      : combinedFilters;
 
   return (
     <>
@@ -217,7 +230,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             sort="occurrence.case.project.project_id"
             initialSetName={
               Object.keys(selectedMutations).length === 0
-                ? filtersToName(genomicFilters)
+                ? filtersToName(setFilters)
                 : "Custom Mutation Selection"
             }
             saveCount={
