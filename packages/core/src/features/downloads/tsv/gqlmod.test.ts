@@ -25,15 +25,19 @@ describe("getVersion", () => {
 describe("test getGQLParams for different entities", () => {
   it('should return the correct string for a single ID and "genes" version', () => {
     const result = getGQLParams(["123"], "genes");
-    expect(result).toContain(
-      "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
+    expect(result).toEqual(
+      expect.stringContaining(
+        "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
+      ),
     );
   });
 
   it('should return the correct string for multiple IDs and "ssms" version', () => {
     const result = getGQLParams(["456", "789"], "ssms");
-    expect(result).toContain(
-      "$filters_case: FiltersArgument,\n$filters_ssms_456: FiltersArgument,\n$filters_ssms_789: FiltersArgument".trim(),
+    expect(result).toEqual(
+      expect.stringContaining(
+        "$filters_case: FiltersArgument,\n$filters_ssms_456: FiltersArgument,\n$filters_ssms_789: FiltersArgument".trim(),
+      ),
     );
   });
 });
@@ -41,16 +45,20 @@ describe("test getGQLParams for different entities", () => {
 describe("test getAliasGraphQLQuery for different entities", () => {
   it('should return the correct string for a single ID and "genes" version', () => {
     const result = getAliasGraphQLQuery(["123"], "genes");
-    expect(result).toContain(
-      "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
+    expect(result).toEqual(
+      expect.stringContaining(
+        "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
+      ),
     );
     expect(result).toContain("geneId");
   });
 
   it('should return the correct string for multiple IDs and "ssms" version', () => {
     const result = getAliasGraphQLQuery(["456", "789"], "ssms");
-    expect(result).toContain(
-      "$filters_case: FiltersArgument,\n$filters_ssms_456: FiltersArgument,\n$filters_ssms_789: FiltersArgument".trim(),
+    expect(result).toEqual(
+      expect.stringContaining(
+        "$filters_case: FiltersArgument,\n$filters_ssms_456: FiltersArgument,\n$filters_ssms_789: FiltersArgument".trim(),
+      ),
     );
     expect(result).toContain("ssmId");
   });
