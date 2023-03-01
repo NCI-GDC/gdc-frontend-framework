@@ -122,7 +122,7 @@ const Homepage = (): JSX.Element => {
         }}
       />
       <div className="rounded-2xl shadow-[0px_0px_16px_#00000029] text-center mx-auto mb-10">
-        <div className="flex  m-8  max-w-screen-lg gap-14">
+        <div className="flex  m-8  max-w-screen-lg gap-14 items-center">
           <ul className="flex gap-4 w-2/3">
             {[
               {
@@ -154,7 +154,7 @@ const Homepage = (): JSX.Element => {
               </li>
             ))}
           </ul>
-          <div className="text-left pt-14">
+          <div className="text-left">
             <p>
               Analyze your custom cohorts by applying the GDC&apos;s collection
               of tools for visualizing clinical features, genomic alterations,

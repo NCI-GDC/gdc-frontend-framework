@@ -32,8 +32,8 @@ const HPCardImgAlt = ({
 }: HPCardImgAltProps): JSX.Element => {
   return (
     <div className="bg-gradient-to-r from-[#1673A3] to-[#833689] px-7">
-      <div className="py-10 max-w-screen-lg m-auto text-base-max flex gap-16">
-        <div className="w-1/3 relative">
+      <div className="py-10 max-w-screen-lg m-auto text-base-max flex gap-16 items-center">
+        <div>
           <div
             className="relative
           w-[340px]
@@ -65,7 +65,7 @@ const HPCardImgAlt = ({
           </div>
         </div>
         <div className="w-2/3">
-          <h2 className="font-heading font-bold text-3xl pb-8 tracking-tight">
+          <h2 className="font-heading font-bold text-2xl pb-8 tracking-tight">
             {head}
           </h2>
           <div className="py-1 space-y-5 max-w-4xl pb-4">{body}</div>
