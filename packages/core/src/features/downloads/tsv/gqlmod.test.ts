@@ -62,58 +62,18 @@ describe("test getAliasGraphQLQuery for different entities", () => {
   });
 });
 
-describe("returns correct gql aliased filters", () => {
-  test("returns gql filters for 4 gene ids", () => {
-    const { filters } = getAliasFilters(
-      ["bulbasaur", "squirtle", "charmander"],
-      "genes",
-    );
-    const pokeFilters = {
-      filters_genes_bulbasaur: {
+describe("getAliasFilters", () => {
+  it("returns expected filters for single id and version", () => {
+    const ids = ["id1"];
+    const version = "v1";
+    const expectedFilters = {
+      alias_field_id1: {
         op: "and",
         content: [
           {
             content: {
-              field: "genes.gene_id",
-              value: ["bulbasaur"],
-            },
-            op: "in",
-          },
-          {
-            op: "NOT",
-            content: {
-              field: "cases.gene.ssm.observation.observation_id",
-              value: "MISSING",
-            },
-          },
-        ],
-      },
-      filters_genes_squirtle: {
-        op: "and",
-        content: [
-          {
-            content: {
-              field: "genes.gene_id",
-              value: ["squirtle"],
-            },
-            op: "in",
-          },
-          {
-            op: "NOT",
-            content: {
-              field: "cases.gene.ssm.observation.observation_id",
-              value: "MISSING",
-            },
-          },
-        ],
-      },
-      filters_genes_charmander: {
-        op: "and",
-        content: [
-          {
-            content: {
-              field: "genes.gene_id",
-              value: ["charmander"],
+              field: "id1.v1",
+              value: ["id1"],
             },
             op: "in",
           },
@@ -127,6 +87,54 @@ describe("returns correct gql aliased filters", () => {
         ],
       },
     };
-    expect(filters).toEqual(pokeFilters);
+
+    expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
+  });
+
+  it("returns expected filters for multiple ids and version", () => {
+    const ids = ["id1", "id2"];
+    const version = "v2";
+    const expectedFilters = {
+      alias_field_id1: {
+        op: "and",
+        content: [
+          {
+            content: {
+              field: "id1.v2",
+              value: ["id1"],
+            },
+            op: "in",
+          },
+          {
+            op: "NOT",
+            content: {
+              field: "cases.gene.ssm.observation.observation_id",
+              value: "MISSING",
+            },
+          },
+        ],
+      },
+      alias_field_id2: {
+        op: "and",
+        content: [
+          {
+            content: {
+              field: "id2.v2",
+              value: ["id2"],
+            },
+            op: "in",
+          },
+          {
+            op: "NOT",
+            content: {
+              field: "cases.gene.ssm.observation.observation_id",
+              value: "MISSING",
+            },
+          },
+        ],
+      },
+    };
+
+    expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
   });
 });
