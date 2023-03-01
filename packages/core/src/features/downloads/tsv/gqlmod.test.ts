@@ -50,7 +50,7 @@ describe("test getAliasGraphQLQuery for different entities", () => {
         "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
       ),
     );
-    expect(result).toContain("geneId");
+    expect(result).toEqual(expect.stringContaining("filters_genes_`123"));
   });
 
   it('should return the correct string for multiple IDs and "ssms" version', () => {
@@ -60,7 +60,8 @@ describe("test getAliasGraphQLQuery for different entities", () => {
         "$filters_case: FiltersArgument,\n$filters_ssms_456: FiltersArgument,\n$filters_ssms_789: FiltersArgument".trim(),
       ),
     );
-    expect(result).toContain("ssmId");
+    expect(result).toEqual(expect.stringContaining("filters_ssms_456"));
+    expect(result).toEqual(expect.stringContaining("filters_ssms_789"));
   });
 });
 
