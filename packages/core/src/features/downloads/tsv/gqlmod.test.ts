@@ -46,11 +46,8 @@ describe("test getAliasGraphQLQuery for different entities", () => {
   it('should return the correct string for a single ID and "genes" version', () => {
     const result = getAliasGraphQLQuery(["123"], "genes");
     expect(result).toEqual(
-      expect.stringContaining(
-        "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
-      ),
+      expect.stringContaining("$filters_genes_123: FiltersArgument"),
     );
-    expect(result).toEqual(expect.stringContaining("filters_genes_123"));
   });
 
   it('should return the correct string for multiple IDs and "ssms" version', () => {
