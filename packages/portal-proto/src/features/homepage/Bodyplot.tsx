@@ -125,10 +125,10 @@ export const Bodyplot = (): JSX.Element => {
       createHumanBody({
         title: "Cases by Major Primary Site",
         selector: bodyplotRef.current,
-        width: 460,
+        width: 500,
         height: 500,
         data: processedData ?? [],
-        labelSize: "10px",
+        labelSize: "12px",
         primarySiteKey: "key",
         fileCountKey: "fileCount",
         caseCountKey: "caseCount",

@@ -218,7 +218,7 @@ const Homepage = (): JSX.Element => {
         }
         linkText="Contact Us"
         href="https://gdc.cancer.gov/support"
-        mainClassName="bg-btm-pattern bg-cover"
+        mainClassName="bg-btm-pattern bg-center bg-cover"
       />
     </div>
   );
