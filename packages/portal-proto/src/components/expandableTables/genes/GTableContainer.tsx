@@ -10,6 +10,7 @@ import {
   useGeneSetCountQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
+  joinFilters,
 } from "@gff/core";
 import {
   createContext,
@@ -314,7 +315,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : genomicFilters;
+      : joinFilters(cohortFilters, genomicFilters);
 
   return (
     <>
@@ -324,7 +325,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             initialSetName={
               Object.keys(selectedGenes).length === 0
-                ? filtersToName(genomicFilters)
+                ? filtersToName(setFilters)
                 : "Custom Gene Selection"
             }
             sort="case.project.project_id"
