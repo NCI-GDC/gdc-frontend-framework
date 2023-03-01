@@ -67,7 +67,7 @@ describe("getAliasFilters", () => {
     const ids = ["id1"];
     const version = "genes";
     const expectedFilters = {
-      alias_field_id1: {
+      filters_genes_id1: {
         op: "and",
         content: [
           {
@@ -87,7 +87,6 @@ describe("getAliasFilters", () => {
         ],
       },
     };
-
     expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
   });
 
@@ -95,7 +94,7 @@ describe("getAliasFilters", () => {
     const ids = ["id1", "id2"];
     const version = "ssms";
     const expectedFilters = {
-      alias_field_id1: {
+      filters_ssms_id1: {
         op: "and",
         content: [
           {
@@ -114,7 +113,7 @@ describe("getAliasFilters", () => {
           },
         ],
       },
-      alias_field_id2: {
+      filters_ssms_id2: {
         op: "and",
         content: [
           {
@@ -134,7 +133,6 @@ describe("getAliasFilters", () => {
         ],
       },
     };
-
     expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
   });
 });
