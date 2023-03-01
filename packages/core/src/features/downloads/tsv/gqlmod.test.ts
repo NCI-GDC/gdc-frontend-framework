@@ -22,7 +22,7 @@ describe("getVersion", () => {
   });
 });
 
-describe("getGQLParams", () => {
+describe("test getGQLParams for different entities", () => {
   it('should return the correct string for a single ID and "genes" version', () => {
     const result = getGQLParams(["123"], "genes");
     expect(result).toBe(
@@ -38,7 +38,7 @@ describe("getGQLParams", () => {
   });
 });
 
-describe("getAliasGraphQLQuery", () => {
+describe("test getAliasGraphQLQuery for different entities", () => {
   it('should return the correct string for a single ID and "genes" version', () => {
     const result = getAliasGraphQLQuery(["123"], "genes");
     expect(result).toContain(
