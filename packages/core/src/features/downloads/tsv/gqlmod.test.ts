@@ -86,6 +86,20 @@ describe("getAliasFilters", () => {
           },
         ],
       },
+      ...{
+        filters_case: {
+          content: [
+            {
+              content: {
+                field: "genes.is_cancer_gene_census",
+                value: ["true"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+      },
     };
     expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
   });
@@ -94,6 +108,20 @@ describe("getAliasFilters", () => {
     const ids = ["id1", "id2"];
     const version = "ssms";
     const expectedFilters = {
+      ...{
+        filters_case: {
+          content: [
+            {
+              content: {
+                field: "genes.is_cancer_gene_census",
+                value: ["true"],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+      },
       filters_ssms_id1: {
         op: "and",
         content: [
