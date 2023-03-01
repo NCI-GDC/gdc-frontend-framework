@@ -50,7 +50,7 @@ describe("test getAliasGraphQLQuery for different entities", () => {
         "$filters_case: FiltersArgument,\n$filters_genes_123: FiltersArgument".trim(),
       ),
     );
-    expect(result).toEqual(expect.stringContaining("filters_genes_`123"));
+    expect(result).toEqual(expect.stringContaining("filters_genes_123"));
   });
 
   it('should return the correct string for multiple IDs and "ssms" version', () => {
