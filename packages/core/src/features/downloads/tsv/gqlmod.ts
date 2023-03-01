@@ -67,49 +67,35 @@ export const getAliasGraphQLQuery = (
   return query;
 };
 
-export const additionalFilters = {
-  // todo refactor adding additional filters/query vars
-
-  // filters_case: {
-  //   content: [
-  //     {
-  //       content: {
-  //         field: "cases.available_variation_data",
-  //         value: ["ssm"],
-  //       },
-  //       op: "in",
-  //     },
-  //   ],
-  //   op: "and",
-  // },
-  filters_case: {
-    content: [
-      {
-        content: {
-          field: "genes.is_cancer_gene_census",
-          value: ["true"],
-        },
-        op: "in",
-      },
-    ],
-    op: "and",
-  },
-};
-
 export const getAliasFilters = (
   ids: string[],
   version: string,
 ): Record<string, unknown> => {
   const { filters: aliasFilter, id: aliasId } = getVersion(version);
 
-  const filters = { ...additionalFilters } as Record<string, unknown>;
+  const additionalFilter = {
+    filters_case: {
+      content: [
+        {
+          content: {
+            field: "genes.is_cancer_gene_census",
+            value: ["true"],
+          },
+          op: "in",
+        },
+      ],
+      op: "and",
+    },
+  };
+
+  const filters = { ...additionalFilter } as Record<string, unknown>;
   for (const id of ids) {
     filters[`${aliasFilter.replace("$", "")}_${id}`] = {
       op: "and",
       content: [
         {
           content: {
-            field: `${[...aliasFilter.split("_")].at(-1)}.${aliasId}`,
+            field: `${aliasFilter.split("_").at(-1)}.${aliasId}`,
             value: [id.replaceAll("_", "-")],
           },
           op: "in",

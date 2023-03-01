@@ -65,14 +65,14 @@ describe("test getAliasGraphQLQuery for different entities", () => {
 describe("getAliasFilters", () => {
   it("returns expected filters for single id and version", () => {
     const ids = ["id1"];
-    const version = "v1";
+    const version = "genes";
     const expectedFilters = {
       alias_field_id1: {
         op: "and",
         content: [
           {
             content: {
-              field: "id1.v1",
+              field: "genes.gene_id",
               value: ["id1"],
             },
             op: "in",
@@ -93,14 +93,14 @@ describe("getAliasFilters", () => {
 
   it("returns expected filters for multiple ids and version", () => {
     const ids = ["id1", "id2"];
-    const version = "v2";
+    const version = "ssms";
     const expectedFilters = {
       alias_field_id1: {
         op: "and",
         content: [
           {
             content: {
-              field: "id1.v2",
+              field: "ssms.ssm_id",
               value: ["id1"],
             },
             op: "in",
@@ -119,7 +119,7 @@ describe("getAliasFilters", () => {
         content: [
           {
             content: {
-              field: "id2.v2",
+              field: "ssms.ssm_id",
               value: ["id2"],
             },
             op: "in",
