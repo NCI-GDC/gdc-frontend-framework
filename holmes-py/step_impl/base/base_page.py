@@ -1,6 +1,7 @@
 from typing import List
 
 class GenericLocators:
+    DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
     BUTTON_GENERIC_IDENT = lambda button_name: f'//button[@data-testid="button-{button_name}"]'

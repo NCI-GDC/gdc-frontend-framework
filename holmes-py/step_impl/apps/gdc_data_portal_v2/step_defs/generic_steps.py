@@ -42,7 +42,7 @@ def quick_search_and_click(text: str):
 def navigate_to_page_in_page(target, source, target_type):
     sources = {
         "Header": {
-            "section": APP.header_section.click_button
+            "section": APP.header_section.navigate_to_main_pages
         },
         "Home Page":{
             "app": APP.home_page.navigate_to_app
