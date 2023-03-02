@@ -23,7 +23,6 @@ export default createGdcAppWithOwnStore({
   requiredEntityTypes: [],
   store: AppStore,
   context: AppContext,
-  persist: true,
 });
 
 export const ProjectsCenterAppId: string = id;
