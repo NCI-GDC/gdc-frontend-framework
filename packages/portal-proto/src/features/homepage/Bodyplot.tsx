@@ -105,7 +105,8 @@ export const Bodyplot = (): JSX.Element => {
   const bodyplotRef = useRef(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
   const clickHandler = useCallback((data: { key: string }) => {
-    const e = HUMAN_BODY_MAPPINGS[data.key];
+    const key = data.key.replace(/-/g, " ");
+    const e = HUMAN_BODY_MAPPINGS[key];
     Router.push({
       pathname: "/analysis_page",
       query: {

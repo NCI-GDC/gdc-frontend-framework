@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MdFileDownload as DownloadIcon } from "react-icons/md";
 import { Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
+import { DownloadButton } from "@/features/shared/tailwindComponents";
 
 interface ChartDownloadProps {
   readonly chartDivId: string;
@@ -28,13 +29,12 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   return (
     <div>
       <Tooltip label="Download image or data">
-        <button
-          className="px-1.5 min-h-[28px] min-w-[40px] border-base-light text-base-contrast-light border rounded-[4px] "
+        <DownloadButton
           onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
           aria-label="Download button with an icon"
         >
           <DownloadIcon size="1.25em" />
-        </button>
+        </DownloadButton>
       </Tooltip>
       {downloadMenuOpen && (
         <div className="z-10 w-44 absolute bg-base-lightest rounded shadow-md">

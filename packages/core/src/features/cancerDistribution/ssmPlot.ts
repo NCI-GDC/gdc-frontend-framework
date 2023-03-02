@@ -6,6 +6,8 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { CoreState } from "../../reducers";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
@@ -39,7 +41,12 @@ const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument
 }
 `;
 
-const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
+const fetchSsmAnalysisQuery = async (
+  gene: string,
+  ssms: string,
+  contextFilters: FilterSet | undefined,
+) => {
+  const gqlContextFilter = buildCohortGqlOperator(contextFilters);
   const graphqlFilters = gene
     ? {
         caseAggsFilters: {
@@ -66,6 +73,9 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
                 value: "MISSING",
               },
             },
+            ...(gqlContextFilter
+              ? (gqlContextFilter as GqlIntersection)?.content
+              : []),
           ],
         },
         ssmFilters: {
@@ -85,6 +95,9 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
                 value: [gene],
               },
             },
+            ...(gqlContextFilter
+              ? (gqlContextFilter as GqlIntersection)?.content
+              : []),
           ],
         },
         ssmTested: {
@@ -141,8 +154,16 @@ const fetchSsmAnalysisQuery = async (gene: string, ssms: string) => {
 
 export const fetchSsmPlot = createAsyncThunk(
   "cancerDistribution/ssmPlot",
-  async ({ gene, ssms }: { gene: string; ssms: string }) => {
-    return await fetchSsmAnalysisQuery(gene, ssms);
+  async ({
+    gene,
+    ssms,
+    contextFilters,
+  }: {
+    gene: string;
+    ssms: string;
+    contextFilters: FilterSet | undefined;
+  }) => {
+    return await fetchSsmAnalysisQuery(gene, ssms, contextFilters);
   },
 );
 

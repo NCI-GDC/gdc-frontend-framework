@@ -134,6 +134,7 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   datum,
   unitLabel = "Cases",
 }: EnumBarChartTooltipProps) => {
+  const theme = useMantineTheme();
   return (
     <g style={{ pointerEvents: "none" }}>
       <foreignObject x={x} y={y}>
@@ -149,6 +150,12 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           withArrow
           opened
           withinPortal
+          arrowSize={10}
+          style={{
+            fontSize: 12,
+            backgroundColor: theme.colors.accent[1],
+            color: theme.colors.base[9],
+          }}
         >
           <Box></Box>
         </Tooltip>

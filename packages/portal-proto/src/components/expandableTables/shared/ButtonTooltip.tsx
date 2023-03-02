@@ -34,10 +34,6 @@ export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
       transition="fade"
       transitionDuration={200}
       multiline
-      classNames={{
-        tooltip:
-          "bg-base-lightest text-base-contrast-lightest font-heading text-left",
-      }}
     >
       {children}
     </Tooltip>

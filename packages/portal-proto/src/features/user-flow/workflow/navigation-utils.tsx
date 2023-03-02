@@ -4,13 +4,12 @@ import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 
 const NavLink = tw(NextLink)`
-text-sm
-font-heading
 flex
 items-center
 gap-1
 font-heading
-text-md
+text-sm
+font-medium
 text-base-darker
 pr-4
 `;
@@ -19,9 +18,6 @@ export const headerElements = [
   <Tooltip
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
@@ -46,9 +42,6 @@ export const headerElements = [
   <Tooltip
     key="Studies"
     label="View the projects available within the GDC and select them for further exploration and analysis."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
@@ -73,9 +66,6 @@ export const headerElements = [
   <Tooltip
     key="Cohort"
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
@@ -89,7 +79,7 @@ export const headerElements = [
       aria-label="cohort builder button"
     >
       <Image
-        src={"/user-flow/icons/build.svg"}
+        src={"/user-flow/icons/apps/CohortBuilder.svg"}
         alt="Cohort logo"
         width={24}
         height={24}
@@ -100,9 +90,6 @@ export const headerElements = [
   <Tooltip
     key="Download"
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}

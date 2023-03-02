@@ -14,7 +14,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
 }: FeaturedToolCardProps) => {
   return (
     <Grid
-      className="bg-base-max border-base-darkest border h-full items-center m-0 rounded-lg p-0"
+      className="bg-base-max border-secondary-darkest border h-full items-center m-0 rounded-lg p-0"
       justify="space-between"
     >
       <Grid.Col span={2}>
@@ -41,7 +41,7 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
         className="flex flex-row justify-end p-0 m-0"
       >
         <ActionIcon
-          className="justify-self-end bg-secondary-darkest w-12 h-[6em] p-0 hover:bg-secondary rounded-none rounded-r"
+          className="justify-self-end bg-secondary w-12 h-[6em] p-0 hover:bg-secondary-darker rounded-none rounded-r"
           variant="filled"
           onClick={() => onClick(entry)}
           aria-label={`Navigate to ${entry.name}`}

@@ -81,15 +81,15 @@ interface CohortGroupButtonProps {
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
 ${(p: CohortGroupButtonProps) =>
   p.$buttonDisabled
-    ? "text-primary-content-darkest"
-    : "hover:bg-primary hover:text-primary-content-lightest"}
+    ? "text-primary"
+    : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 h-10
 w-10
 flex
 justify-center
 items-center
-bg-base-lightest
+bg-base-max
 transition-colors
 disabled:opacity-50
 `;
@@ -301,7 +301,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-20 shadow-lg bg-primary-darkest"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
     >
       {(isAddCohortLoading ||
         isCohortIdFetching ||
@@ -518,7 +518,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   setShowDiscard(true);
                 }}
                 className={`mr-0.5 ${
-                  !cohortModified && "cursor-not-allowed bg-gray-400"
+                  !cohortModified && "cursor-not-allowed bg-base-light"
                 }`}
                 $buttonDisabled={!cohortModified}
                 $isDiscard={true}
@@ -537,18 +537,20 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   onSelectionChanged(x);
                 }}
                 classNames={{
-                  root: "border-base-light w-80 p-0 pt-5",
+                  root: "border-secondary-darkest w-80 p-0 pt-5",
                   input:
-                    "text-heading font-medium text-primary-darkest rounded-l-none h-10",
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"
-                rightSection={<DownArrowIcon size={20} />}
+                rightSection={
+                  <DownArrowIcon size={20} className="text-primary" />
+                }
                 rightSectionWidth={30}
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />
               <div
-                className={`ml-auto text-heading text-[0.65em] font-semibold pt-1 text-primary-contrast ${
+                className={`ml-auto text-heading text-sm font-semibold pt-0.75 text-primary-contrast ${
                   cohortModified ? "visible" : "invisible"
                 }`}
               >
@@ -575,7 +577,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               $buttonDisabled={isDefaultCohort}
               data-testid="saveButton"
               className={`${
-                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+                isDefaultCohort && "cursor-not-allowed bg-base-light"
               }`}
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
@@ -598,7 +600,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 setShowDelete(true);
               }}
               className={`${
-                isDefaultCohort && "cursor-not-allowed bg-gray-400"
+                isDefaultCohort && "cursor-not-allowed bg-base-light"
               }`}
               $buttonDisabled={isDefaultCohort}
               data-testid="deleteButton"
@@ -622,7 +624,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             <CohortGroupButton
               data-testid="downloadButton"
               className={`${
-                isErrorCaseIds && "cursor-not-allowed bg-gray-400"
+                isErrorCaseIds && "cursor-not-allowed bg-base-light"
               }`}
               $buttonDisabled={isErrorCaseIds}
               onClick={() => {

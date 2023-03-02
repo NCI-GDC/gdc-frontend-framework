@@ -1,0 +1,3 @@
+const SET_COUNT_LIMIT = 50000;
+
+export { SET_COUNT_LIMIT };

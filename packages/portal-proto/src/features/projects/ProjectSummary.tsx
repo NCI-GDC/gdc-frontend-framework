@@ -362,7 +362,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-32 bg-primary border-primary border rounded"
+                  variant="outline"
+                  className="px-1.5 min-h-7 w-34 text-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
@@ -380,7 +381,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-24 bg-primary border-primary border rounded"
+                  variant="outline"
+                  className="px-1.5 min-h-7 w-26 text-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical
@@ -406,8 +408,9 @@ Data Transfer Tool is recommended for transferring large volumes of data."
               withArrow
             >
               <Button
+                variant="outline"
                 leftIcon={<MdFileDownload size="1.25em" />}
-                className="bg-primary border-primary"
+                className="text-primary border-primary"
               >
                 Manifest
               </Button>
