@@ -4,7 +4,8 @@ class GenericLocators:
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
     BUTTON_GENERIC_IDENT = lambda button_name: f'//button[@data-testid="button-{button_name}"]'
-
+    QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
+    QUICK_SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -47,6 +48,10 @@ class BasePage:
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
 
+    # wait for element to have non-empty bounding box and no visibility:hidden
+    def wait_until_locator_is_visible(self, locator):
+        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
+
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
@@ -57,3 +62,8 @@ class BasePage:
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
         result = self.is_checked(locator)
         return result
+
+    def quick_search_and_click(self,text):
+        self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+        text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
+        self.click(text_locator)
