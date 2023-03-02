@@ -59,7 +59,7 @@ const Homepage = (): JSX.Element => {
         body={
           <>
             High-quality datasets spanning{" "}
-            {countsInfo.repositoryCaseCounts?.toLocaleString()} cases from
+            {countsInfo?.repositoryCaseCounts?.toLocaleString()} cases from
             cancer genomic studies such as{" "}
             <strong className="italic">
               The Cancer Genomic Atlas (TCGA), Human Cancer Models Initiative
