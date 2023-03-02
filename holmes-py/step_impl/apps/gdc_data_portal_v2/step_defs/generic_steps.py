@@ -37,7 +37,7 @@ def go_to_page(page_name):
 def navigate_to_page_in_page(target, source, target_type):
     sources = {
         "Header": {
-            "section": APP.header_section.click_button
+            "section": APP.header_section.navigate_to_main_pages
         },
         "Home Page":{
             "app": APP.home_page.navigate_to_app
