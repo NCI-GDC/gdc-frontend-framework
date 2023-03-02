@@ -6,6 +6,8 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { CoreState } from "../../reducers";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphQLQuery = `query CancerDistributionCNV(
@@ -56,7 +58,9 @@ const graphQLQuery = `query CancerDistributionCNV(
 
 const fetchCnvAnalysisQuery = async (
   gene: string,
+  contextFilters: FilterSet | undefined,
 ): Promise<GraphQLApiResponse> => {
+  const gqlContextFilter = buildCohortGqlOperator(contextFilters);
   const graphQLFilters = {
     cnvAll: {
       op: "and",
@@ -82,6 +86,9 @@ const fetchCnvAnalysisQuery = async (
             value: [gene],
           },
         },
+        ...(gqlContextFilter
+          ? (gqlContextFilter as GqlIntersection)?.content
+          : []),
       ],
     },
     cnvGain: {
@@ -108,6 +115,9 @@ const fetchCnvAnalysisQuery = async (
             value: [gene],
           },
         },
+        ...(gqlContextFilter
+          ? (gqlContextFilter as GqlIntersection)?.content
+          : []),
       ],
     },
     cnvLoss: {
@@ -134,6 +144,9 @@ const fetchCnvAnalysisQuery = async (
             value: [gene],
           },
         },
+        ...(gqlContextFilter
+          ? (gqlContextFilter as GqlIntersection)?.content
+          : []),
       ],
     },
     cnvTested: {
@@ -165,6 +178,9 @@ const fetchCnvAnalysisQuery = async (
             value: [gene],
           },
         },
+        ...(gqlContextFilter
+          ? (gqlContextFilter as GqlIntersection)?.content
+          : []),
       ],
     },
   };
@@ -178,8 +194,14 @@ const fetchCnvAnalysisQuery = async (
 
 export const fetchCnvPlot = createAsyncThunk(
   "cancerDistribution/cnvPlot",
-  async ({ gene }: { gene: string }): Promise<GraphQLApiResponse> => {
-    return await fetchCnvAnalysisQuery(gene);
+  async ({
+    gene,
+    contextFilters,
+  }: {
+    gene: string;
+    contextFilters: FilterSet | undefined;
+  }): Promise<GraphQLApiResponse> => {
+    return await fetchCnvAnalysisQuery(gene, contextFilters);
   },
 );
 

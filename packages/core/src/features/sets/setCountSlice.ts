@@ -1,10 +1,12 @@
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
-export const setCountSlice = graphqlAPISlice.injectEndpoints({
-  endpoints: (builder) => ({
-    geneSetCount: builder.query({
-      query: ({ setId }) => ({
-        graphQLQuery: `query geneSetCounts(
+export const setCountSlice = graphqlAPISlice
+  .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets"] })
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      geneSetCount: builder.query({
+        query: ({ setId, additionalFilters }) => ({
+          graphQLQuery: `query geneSetCounts(
           $filters: FiltersArgument
         ) {
           viewer {
@@ -18,22 +20,41 @@ export const setCountSlice = graphqlAPISlice.injectEndpoints({
           }
         }
         `,
-        graphQLFilters: {
-          filters: {
-            op: "=",
-            content: {
-              field: "genes.gene_id",
-              value: `set_id:${setId}`,
-            },
-          },
-        },
+          graphQLFilters: additionalFilters
+            ? {
+                filters: {
+                  content: [
+                    {
+                      op: "=",
+                      content: {
+                        field: "genes.gene_id",
+                        value: `set_id:${setId}`,
+                      },
+                    },
+                    additionalFilters,
+                  ],
+                  op: "and",
+                },
+              }
+            : {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "genes.gene_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+        }),
+        transformResponse: (response) =>
+          response.data.viewer.explore.genes.hits.total,
+        providesTags: (_result, _error, arg) => [
+          { type: "geneSets", id: arg.setId },
+        ],
       }),
-      transformResponse: (response) =>
-        response.data.viewer.explore.genes.hits.total,
-    }),
-    ssmSetCount: builder.query({
-      query: ({ setId }) => ({
-        graphQLQuery: `query ssmSetCounts(
+      ssmSetCount: builder.query({
+        query: ({ setId, additionalFilters }) => ({
+          graphQLQuery: `query ssmSetCounts(
           $filters: FiltersArgument
         ) {
           viewer {
@@ -47,20 +68,39 @@ export const setCountSlice = graphqlAPISlice.injectEndpoints({
           }
         }
         `,
-        graphQLFilters: {
-          filters: {
-            op: "=",
-            content: {
-              field: "ssms.ssm_id",
-              value: `set_id:${setId}`,
-            },
-          },
-        },
+          graphQLFilters: additionalFilters
+            ? {
+                filters: {
+                  content: [
+                    {
+                      op: "=",
+                      content: {
+                        field: "ssms.ssm_id",
+                        value: `set_id:${setId}`,
+                      },
+                    },
+                    additionalFilters,
+                  ],
+                  op: "and",
+                },
+              }
+            : {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "ssms.ssm_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+        }),
+        transformResponse: (response) =>
+          response.data.viewer.explore.ssms.hits.total,
+        providesTags: (_result, _error, arg) => [
+          { type: "ssmsSets", id: arg.setId },
+        ],
       }),
-      transformResponse: (response) =>
-        response.data.viewer.explore.ssms.hits.total,
     }),
-  }),
-});
+  });
 
 export const { useGeneSetCountQuery, useSsmSetCountQuery } = setCountSlice;

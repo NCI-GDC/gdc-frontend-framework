@@ -15,7 +15,7 @@ export const COHORTS = [
 export const REGISTERED_APPS = [
   {
     name: "Clinical Data Analysis",
-    icon: "icons/apps/cdave.svg",
+    icon: "icons/apps/ClinicalData.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     countsField: "repositoryCaseCount",
@@ -25,7 +25,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    icon: "icons/build.svg",
+    icon: "icons/apps/CohortBuilder.svg",
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
@@ -35,7 +35,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Mutation Frequency",
-    icon: "icons/apps/mutations.svg",
+    icon: "icons/apps/MutationsFrequency.svg",
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
@@ -68,7 +68,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: "icons/apps/cohortComparison.svg",
+    icon: "icons/apps/CohortComparison.svg",
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
@@ -81,7 +81,7 @@ export const REGISTERED_APPS = [
   /*
   {
     name: "Gene Expression",
-    icon: "gene-expression.png",
+    icon: "icons/aops/GeneExpression.svg",
     tags: ["geneExpression"],
     hasDemo: true,
     id: "GeneExpression",
@@ -94,7 +94,7 @@ export const REGISTERED_APPS = [
   */
   {
     name: "Set Operations",
-    icon: "icons/apps/setOps.svg",
+    icon: "icons/apps/SetOperations.svg",
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
@@ -106,7 +106,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "OncoGrid",
-    icon: "icons/apps/oncogrid.svg",
+    icon: "icons/apps/Oncogrid.svg",
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
@@ -120,7 +120,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Sequence Reads",
-    icon: "sequence-reads.png",
+    icon: "icons/apps/SequenceReads.svg",
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -133,7 +133,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    icon: "proteinpaint.png",
+    icon: "icons/apps/ProteinPaint.svg",
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,

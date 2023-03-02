@@ -22,7 +22,7 @@ const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
   ssr: false,
 });
 
-const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
+const SomaticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
   const [showGeneChart, setShowGeneChart] = useState(false);
   const [showMutationChart, setShowMutationChart] = useState(false);
 
@@ -121,10 +121,7 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
             }
           >
             <div className="card-face bg-base-lightest">
-              <SMTableContainer
-                selectedSurvivalPlot={undefined}
-                handleSurvivalPlotToggled={undefined}
-              />
+              <SMTableContainer />
             </div>
             <div className="card-face card-back bg-base-lightest">
               <div className="flex flex-row justify-center bg-base-lightest border-2 border-base-lighter">
@@ -160,4 +157,4 @@ const SomanticMutationFilterFlipVersion: React.FC<SomaticAppProps> = () => {
   );
 };
 
-export default SomanticMutationFilterFlipVersion;
+export default SomaticMutationFilterFlipVersion;

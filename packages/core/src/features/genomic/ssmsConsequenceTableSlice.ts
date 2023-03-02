@@ -148,20 +148,23 @@ const slice = createSlice({
         const data = action.payload.data.viewer.explore.ssms.hits.edges[0].node;
         state.ssmsConsequence.id = data.id;
         state.ssmsConsequence.consequenceTotal = data.consequence.hits.total;
-        state.ssmsConsequence.consequence = data.consequence.hits.edges.map(
-          ({ node }: Record<string, any>): SSMSConsequence => {
+        (state.ssmsConsequence.consequence = data.consequence.hits.edges.map(
+          ({ node }: { node: SSMSConsequence }) => {
+            const transcript = node.transcript;
             return {
               id: node.id,
-              aa_change: node.transcript.aa_change,
-              is_canonical: node.transcript.is_canonical,
-              consequence_type: node.transcript.consequence_type,
-              gene: { ...node.transcript.gene },
-              annotation: { ...node.transcript.annotation },
-              transcript_id: node.transcript.transcript_id,
+              transcript: {
+                aa_change: transcript.aa_change,
+                annotation: { ...transcript.annotation },
+                consequence_type: transcript.consequence_type,
+                gene: { ...transcript.gene },
+                is_canonical: transcript.is_canonical,
+                transcript_id: transcript.transcript_id,
+              },
             };
           },
-        );
-        state.status = "fulfilled";
+        )),
+          (state.status = "fulfilled");
         state.error = undefined;
         return state;
       })
