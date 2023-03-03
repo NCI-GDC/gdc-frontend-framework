@@ -26,6 +26,8 @@ class CohortBuilderPageLocators:
     SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
     QUERY_EXPRESSION_TEXT = lambda text: f'div:text("{text}")'
 
+    ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = '//input[@aria-label="show only properties with values"]'
+    SPINNER_IDENT = f'[repeatcount="indefinite"]'
 
 class CohortBuilderPage(BasePage):
 
@@ -46,6 +48,14 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.FACET_GROUP_IDENT(facet_group_name)
         result = self.is_visible(locator)
         return result
+
+    # Adds a custom filter from the Custom Filters tab
+    def add_custom_filter(self, facet_to_add):
+        add_custom_filter = CohortBuilderPageLocators.CUSTOM_FILTER_ADD_BUTTON
+        self.click(add_custom_filter)
+        self.wait_for_selector(CohortBuilderPageLocators.CUSTOM_FILTER_TABLE_PAGE)
+        custom_filter_to_add = GenericLocators.DATA_TESTID_BUTTON_IDENT(facet_to_add)
+        self.click(custom_filter_to_add)
 
     # Clicks a checkbox within a facet group
     def make_selection_within_facet_group(self, facet_group_name, selection):
@@ -81,6 +91,12 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
         self.click(locator)
 
+    # Clicks a checkbox with an aria label and waits for the spinner to 'detach'
+    def click_only_show_properties_with_values_checkbox(self):
+        locator = CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
+        self.click(locator)
+        self.wait_until_locator_is_detached(CohortBuilderPageLocators.SPINNER_IDENT)
+
     # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):
         locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
@@ -101,11 +117,3 @@ class CohortBuilderPage(BasePage):
     def click_named_item_in_facet_group(self, facet_group_name, object_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(facet_group_name, object_name)
         self.click(locator)
-
-    # Adds a custom filter from the Custom Filters tab
-    def add_custom_filter(self, facet_to_add):
-        add_custom_filter = CohortBuilderPageLocators.CUSTOM_FILTER_ADD_BUTTON
-        self.click(add_custom_filter)
-        self.driver.wait_for_selector(CohortBuilderPageLocators.CUSTOM_FILTER_TABLE_PAGE, state="visible")
-        custom_filter_to_add = GenericLocators.BUTTON_GENERIC_IDENT(facet_to_add)
-        self.click(custom_filter_to_add)
