@@ -84,3 +84,11 @@ def make_cohort_builder_selections(tab_name: str, table):
         is_facet_visible = APP.cohort_builder_page.check_facet_card_presence(v[0])
         assert is_facet_visible, f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
         time.sleep(0.1)
+
+@step("Navigate to the <tab_name> tab on the Cohort Builder page")
+def click_cohort_builder_tab(tab_name: str):
+    APP.cohort_builder_page.click_button(tab_name)
+
+@step("Only show custom case filters with values")
+def click_show_only_properties_with_values_checkbox():
+    APP.cohort_builder_page.click_only_show_properties_with_values_checkbox()
