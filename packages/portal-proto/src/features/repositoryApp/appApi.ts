@@ -18,6 +18,7 @@ const persistConfig = {
   key: REPOSITORY_APP_NAME,
   version: 1,
   storage,
+  debug: true,
   whitelist: ["facets", "filters"],
 };
 

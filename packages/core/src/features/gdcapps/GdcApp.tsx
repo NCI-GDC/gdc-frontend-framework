@@ -12,7 +12,6 @@ import {
   createDispatchHook,
   createStoreHook,
 } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
 import {
   persistStore,
   FLUSH,
@@ -26,6 +25,7 @@ import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
 import { Pagination } from "../gdcapi/gdcapi";
+import { AppPersistGate } from "./AppPersistGate";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";
@@ -204,9 +204,9 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
       <Provider store={store} context={context}>
         <CookiesProvider>
           {persist ? (
-            <PersistGate loading={null} persistor={persistStore(store)}>
+            <AppPersistGate loading={null} persistor={persistStore(store)}>
               <App />
-            </PersistGate>
+            </AppPersistGate>
           ) : (
             <App />
           )}
