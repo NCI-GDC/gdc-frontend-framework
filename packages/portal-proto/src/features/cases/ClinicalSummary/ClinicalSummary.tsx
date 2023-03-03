@@ -79,14 +79,17 @@ export const ClinicalSummary = ({
 
   return (
     <div className="max-w-full">
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-1">
         <div className="self-end">
           <HeaderTitle>Clinical</HeaderTitle>
         </div>
 
         <Menu width="target">
           <Menu.Target>
-            <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
+            <Button
+              className="px-1.5 min-h-7 w-28 rounded text-primary hover:bg-primary-darker hover:text-base-lightest"
+              variant="outline"
+            >
               <DownloadIcon size="1.25em" />
               Download
             </Button>
@@ -101,151 +104,147 @@ export const ClinicalSummary = ({
           </Menu.Dropdown>
         </Menu>
       </div>
-      <div className="border-1 border-base-lighter">
-        <Tabs
-          variant="pills"
-          defaultValue="gallery"
-          value={activeTab}
-          onTabChange={setActiveTab}
-          keepMounted={false}
-          color=""
-          classNames={{
-            root: "w-full",
-            tabsList: "mt-2 ml-2",
-            panel: "max-w-full overflow-x-auto",
-            tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-2 data-active:bg-accent-cool-content-lightest data-active:border-2 data-active:border-primary",
-          }}
-          styles={(theme) => ({
-            tab: {
-              border: `2px solid ${theme.colors.gray[2]}`,
-            },
-          })}
-        >
-          <Tabs.List>
-            <Tabs.Tab
-              value="demographic"
-              aria-label="Demographic"
-              data-testid="demographicTab"
-            >
-              Demographic
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="diagnoses"
-              aria-label="Diagnoses and Treatments`"
-              data-testid="diagnosisTab"
-            >
-              <span className="flex gap-2">
-                <span>
-                  Diagnoses
-                  <CountComponent count={diagnoses.length} />
-                </span>
-                <Divider orientation="vertical" />
-                <span>
-                  Treatments
-                  <CountComponent count={totalTreatmentNodes} />
-                </span>
-              </span>
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="family"
-              aria-label="Family Histories"
-              data-testid="familyTab"
-            >
+
+      <Tabs
+        variant="pills"
+        defaultValue="gallery"
+        value={activeTab}
+        onTabChange={setActiveTab}
+        keepMounted={false}
+        classNames={{
+          root: "w-full",
+          tabsList: "mt-2 border-1 border-base-lighter border-b-3 p-2",
+          panel: "max-w-full overflow-x-auto pt-0",
+          tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-2 data-active:bg-accent-cool-content-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
+        }}
+        styles={(theme) => ({
+          tab: {
+            border: `2px solid ${theme.colors.gray[2]}`,
+          },
+        })}
+      >
+        <Tabs.List>
+          <Tabs.Tab
+            value="demographic"
+            aria-label="Demographic"
+            data-testid="demographicTab"
+          >
+            Demographic
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="diagnoses"
+            aria-label="Diagnoses and Treatments`"
+            data-testid="diagnosisTab"
+          >
+            <span className="flex gap-2">
               <span>
-                Family Histories
-                <CountComponent count={family_histories.length} />
+                Diagnoses
+                <CountComponent count={diagnoses.length} />
               </span>
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="exposures"
-              aria-label="Exposures"
-              data-testid="exposuresTab"
-            >
+              <Divider orientation="vertical" />
               <span>
-                Exposures
-                <CountComponent count={exposures.length} />
+                Treatments
+                <CountComponent count={totalTreatmentNodes} />
               </span>
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="followups"
-              aria-label="Follow Ups"
-              data-testid="followUpsTab"
-            >
-              <span className="flex gap-2">
-                <span>
-                  Follow-Ups
-                  <CountComponent count={follow_ups.length} />
-                </span>
-                <Divider orientation="vertical" />
-                <span>
-                  Molecular Tests
-                  <CountComponent count={totalMolecularTestNodes} />
-                </span>
+            </span>
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="family"
+            aria-label="Family Histories"
+            data-testid="familyTab"
+          >
+            <span>
+              Family Histories
+              <CountComponent count={family_histories.length} />
+            </span>
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="exposures"
+            aria-label="Exposures"
+            data-testid="exposuresTab"
+          >
+            <span>
+              Exposures
+              <CountComponent count={exposures.length} />
+            </span>
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="followups"
+            aria-label="Follow Ups"
+            data-testid="followUpsTab"
+          >
+            <span className="flex gap-2">
+              <span>
+                Follow-Ups
+                <CountComponent count={follow_ups.length} />
               </span>
-            </Tabs.Tab>
-          </Tabs.List>
+              <Divider orientation="vertical" />
+              <span>
+                Molecular Tests
+                <CountComponent count={totalMolecularTestNodes} />
+              </span>
+            </span>
+          </Tabs.Tab>
+        </Tabs.List>
 
-          <Tabs.Panel value="demographic" pt="xs">
-            {Object.keys(demographic).length > 0 ? (
-              <HorizontalTable tableData={formatDataForDemographics()} />
-            ) : (
-              <Text className="p-5 bg-base-contrast" weight="bold">
-                No Demographic Found.
-              </Text>
-            )}
-          </Tabs.Panel>
+        <Tabs.Panel value="demographic" pt="xs">
+          {Object.keys(demographic).length > 0 ? (
+            <HorizontalTable tableData={formatDataForDemographics()} />
+          ) : (
+            <Text className="p-5 bg-base-contrast" weight="bold">
+              No Demographic Found.
+            </Text>
+          )}
+        </Tabs.Panel>
 
-          <Tabs.Panel value="diagnoses" pt="xs">
-            {diagnoses.length === 0 ? (
-              <Text className="p-5 bg-base-contrast" weight="bold">
-                No Diagnoses Found.
-              </Text>
-            ) : (
-              <DiagnosesOrFollowUps dataInfo={diagnoses} />
-            )}
-          </Tabs.Panel>
+        <Tabs.Panel value="diagnoses" pt="xs">
+          {diagnoses.length === 0 ? (
+            <Text className="p-5 bg-base-contrast" weight="bold">
+              No Diagnoses Found.
+            </Text>
+          ) : (
+            <DiagnosesOrFollowUps dataInfo={diagnoses} />
+          )}
+        </Tabs.Panel>
 
-          <Tabs.Panel value="family" pt="xs">
-            {family_histories.length === 0 ? (
-              <Text className="p-5 bg-base-contrast" weight="bold">
-                No Family Histories Found.
-              </Text>
-            ) : (
-              <FamilyHistoryOrExposure dataInfo={family_histories} />
-            )}
-          </Tabs.Panel>
+        <Tabs.Panel value="family" pt="xs">
+          {family_histories.length === 0 ? (
+            <Text className="p-5 bg-base-contrast" weight="bold">
+              No Family Histories Found.
+            </Text>
+          ) : (
+            <FamilyHistoryOrExposure dataInfo={family_histories} />
+          )}
+        </Tabs.Panel>
 
-          <Tabs.Panel value="exposures" pt="xs">
-            {exposures.length === 0 ? (
-              <Text className="p-5 bg-base-contrast" weight="bold">
-                No Exposures Found.
-              </Text>
-            ) : (
-              <FamilyHistoryOrExposure dataInfo={exposures} />
-            )}
-          </Tabs.Panel>
+        <Tabs.Panel value="exposures" pt="xs">
+          {exposures.length === 0 ? (
+            <Text className="p-5 bg-base-contrast" weight="bold">
+              No Exposures Found.
+            </Text>
+          ) : (
+            <FamilyHistoryOrExposure dataInfo={exposures} />
+          )}
+        </Tabs.Panel>
 
-          <Tabs.Panel value="followups" pt="xs">
-            {follow_ups.length === 0 ? (
-              <Text className="p-5 bg-base-contrast" weight="bold">
-                No Follow Ups Found.
-              </Text>
-            ) : (
-              <DiagnosesOrFollowUps
-                dataInfo={
-                  follow_ups.length > 1
-                    ? follow_ups
-                        .slice()
-                        .sort(
-                          (a, b) => a.days_to_follow_up - b.days_to_follow_up,
-                        )
-                    : follow_ups
-                }
-              />
-            )}
-          </Tabs.Panel>
-        </Tabs>
-      </div>
+        <Tabs.Panel value="followups" pt="xs">
+          {follow_ups.length === 0 ? (
+            <Text className="p-5 bg-base-contrast" weight="bold">
+              No Follow Ups Found.
+            </Text>
+          ) : (
+            <DiagnosesOrFollowUps
+              dataInfo={
+                follow_ups.length > 1
+                  ? follow_ups
+                      .slice()
+                      .sort((a, b) => a.days_to_follow_up - b.days_to_follow_up)
+                  : follow_ups
+              }
+            />
+          )}
+        </Tabs.Panel>
+      </Tabs>
     </div>
   );
 };

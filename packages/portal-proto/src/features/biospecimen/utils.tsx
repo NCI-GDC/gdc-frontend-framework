@@ -122,7 +122,7 @@ export const formatEntityInfo = (
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
-                <GiMicroscope className="text-primary-content" size={16} />
+                <GiMicroscope className="text-base-lighter" size={16} />
               </a>
             </Link>
           </div>
@@ -144,7 +144,7 @@ export const formatEntityInfo = (
                     );
               }}
               className={`${
-                isFileInCart ? "text-secondary-min" : "text-primary-content"
+                isFileInCart ? "text-primary" : "text-base-lighter"
               } cursor-pointer`}
             />
           </div>
@@ -153,7 +153,7 @@ export const formatEntityInfo = (
           <div>
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              customStyle="text-primary-content px-0 h-3.5 border-0 bg-transparent"
+              customStyle="text-base-lighter px-0 h-3.5 border-0 bg-transparent"
               showLoading={false}
             />
           </div>

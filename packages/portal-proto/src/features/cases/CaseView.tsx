@@ -11,11 +11,10 @@ import {
   caseSummaryDefaults,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import SummaryCount from "@/components/Summary/SummaryCount";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import { FaFile, FaShoppingCart, FaEdit, FaTable } from "react-icons/fa";
+import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -358,57 +357,92 @@ export const CaseView: React.FC<CaseViewProps> = ({
     return supplementFilesRender(filteredFiles);
   };
 
+  const addLinkValue = () => (
+    <span className="text-base-lightest">
+      {getAnnotationsLinkParams(annotationCountData, case_id) ? (
+        <Link
+          href={getAnnotationsLinkParams(annotationCountData, case_id)}
+          passHref
+        >
+          <a className="underline" target="_blank">
+            {annotationsCountTotal.toLocaleString()}
+          </a>
+        </Link>
+      ) : (
+        annotationsCountTotal.toLocaleString()
+      )}
+    </span>
+  );
+
+  const Files = (
+    <span className="flex items-center gap-1">
+      <FaFile size={24} />
+      <span>{filesCountTotal?.toLocaleString()} Files</span>
+    </span>
+  );
+
+  const Annotations = (
+    <span className="flex items-center gap-1">
+      <FaEdit size={24} />
+      <span>
+        {addLinkValue()}{" "}
+        {annotationsCountTotal > 1 ? "Annotations" : "Annotation"}
+      </span>
+    </span>
+  );
+
   return (
     <>
-      {!isModal && <SummaryHeader iconText="ca" headerTitle={headerTitle} />}
-
-      <div
-        className={`flex flex-col mx-auto ${
-          isModal ? "mt-5" : "mt-20"
-        } w-10/12`}
-      >
-        <div className="flex flex-col gap-5">
-          <Button
-            leftIcon={<FaShoppingCart />}
-            className="self-end text-primary-contrast bg-primary hover:bg-primary-darker"
-            onClick={() =>
-              isAllFilesInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-            }
-            disabled={filesCountTotal === 0}
-          >
-            {!isAllFilesInCart
-              ? "Add all files to the cart"
-              : "Remove all files from the cart"}
-          </Button>
-          <div className="flex gap-4">
-            <div className="w-10/12">
-              <SummaryCard
-                tableData={formatDataForCaseSummary()}
-                Icon={FaTable}
-              />
+      {!isModal && (
+        <SummaryHeader
+          iconText="ca"
+          headerTitle={headerTitle}
+          leftElement={
+            <Button
+              leftIcon={<FaShoppingCart />}
+              className="text-primary bg-base-lightest hover:bg-primary-darkest hover:text-primary-content-lightest"
+              onClick={() =>
+                isAllFilesInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+              }
+              disabled={filesCountTotal === 0}
+              classNames={{ label: "font-medium text-sm" }}
+            >
+              {!isAllFilesInCart
+                ? "Add all files to the cart"
+                : "Remove all files from the cart"}
+            </Button>
+          }
+          rightElement={
+            <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+              Total of {Files} {Annotations}
             </div>
-            <div className="w-2/12">
-              <SummaryCount
-                title="files"
-                count={filesCountTotal?.toLocaleString()}
-                Icon={FaFile}
-              />
-              <SummaryCount
-                title="annotations"
-                count={annotationsCountTotal.toLocaleString()}
-                Icon={FaEdit}
-                href={getAnnotationsLinkParams(annotationCountData, case_id)}
-                shouldOpenInNewTab
+          }
+        />
+      )}
+
+      <div className={`flex flex-col ${isModal ? "mt-5" : "mt-36"} mx-4`}>
+        <div className="flex flex-col gap-5 mt-8">
+          <div className="flex">
+            <div className="basis-1/2">
+              <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
+            </div>
+            <div className="basis-1/2">
+              <SummaryCard
+                tableData={formatDataForCaseSummary().slice(
+                  4,
+                  formatDataForCaseSummary().length,
+                )}
+                title=""
               />
             </div>
           </div>
@@ -438,7 +472,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
         {clinicalFilteredFiles?.length > 0 && (
           <div className="mt-8">
-            <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
+            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
               <HeaderTitle>Clinical Supplement File</HeaderTitle>
             </div>
             <TempTable tableData={formatDataForClinicalFiles()} />
@@ -456,7 +490,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         </div>
         {biospecimenFilteredFiles?.length > 0 && (
           <div className="mt-8 mb-16">
-            <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
+            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
               <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
             </div>
             <TempTable tableData={formatDataForBioSpecimenFiles()} />

@@ -208,15 +208,11 @@ const GeneView = ({
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
-                  <SummaryCard
-                    tableData={formatDataForSummary()}
-                    Icon={FaTable}
-                  />
+                  <SummaryCard tableData={formatDataForSummary()} />
                 </div>
                 <div className="flex-1">
                   <SummaryCard
                     tableData={formatDataForExternalReferences()}
-                    Icon={FaBook}
                     title="External References"
                   />
                 </div>

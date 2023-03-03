@@ -29,9 +29,9 @@ export const TableActionButtons = ({
       <Button
         className={`${
           isOutputFileInCart
-            ? "bg-secondary-min text-secondary-contrast-min"
-            : "bg-base-lightest text-base-min"
-        } border border-base-darkest rounded p-2 hover:bg-base-darkest hover:text-base-contrast-min`}
+            ? "bg-primary text-base-lightest"
+            : "bg-base-lightest text-primary"
+        } border border-base-darkest rounded p-2 hover:bg-primary-darkest hover:text-base-lightest`}
         onClick={() => {
           isOutputFileInCart
             ? removeFromCart(file, currentCart, dispatch)

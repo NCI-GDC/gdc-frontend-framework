@@ -435,7 +435,6 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                     </>
                   ) : null
                 }
-                Icon={FaTable}
                 tableData={formatDataForSummary()}
               />
             </div>
