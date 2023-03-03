@@ -10,6 +10,7 @@ import {
   useGeneSetCountQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
+  joinFilters,
 } from "@gff/core";
 import {
   createContext,
@@ -21,7 +22,6 @@ import {
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -29,6 +29,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
+import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import { useMutatedGenesFreqDLQuery } from "@gff/core";
@@ -314,7 +315,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : genomicFilters;
+      : joinFilters(cohortFilters, genomicFilters);
 
   return (
     <>
@@ -324,7 +325,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             initialSetName={
               Object.keys(selectedGenes).length === 0
-                ? filtersToName(genomicFilters)
+                ? filtersToName(setFilters)
                 : "Custom Gene Selection"
             }
             sort="case.project.project_id"
@@ -475,6 +476,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 visibleColumns={visibleColumns}
                 searchTerm={searchTerm}
                 isDemoMode={isDemoMode}
+                genomicFilters={genomicFilters}
               />
             </div>
           )}

@@ -9,6 +9,7 @@ from ....base.webdriver import WebDriver
 from ....base.utility import Utility
 
 
+
 @step("Pause <sleep_time> seconds")
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
@@ -36,7 +37,7 @@ def go_to_page(page_name):
 def navigate_to_page_in_page(target, source, target_type):
     sources = {
         "Header": {
-            "section": APP.header_section.click_button
+            "section": APP.header_section.navigate_to_main_pages
         },
         "Home Page":{
             "app": APP.home_page.navigate_to_app
@@ -119,3 +120,43 @@ def verify_file_has_expected_field_names(file_type, field_name):
     elif "TSV" in file_type:
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
+
+# TO-DO: replace home_page function call with base_page.
+# All generic_step functions and related locators should
+# be put into base_page.py
+@step("Is text <expected_text> present on the page")
+def is_text_present_on_the_page(expected_text: str):
+    is_text_present = APP.home_page.is_text_present(expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
+@step("Is data-testid button <data_testid> not present on the page")
+def is_data_testid_not_present_on_the_page(data_testid: str):
+    is_data_testid_present = APP.home_page.is_data_testid_present(data_testid)
+    assert is_data_testid_present == False, f"The data-testid '{data_testid}' IS present"
+
+@step("Select <data_testid> a data-testid button")
+def click_button_with_data_testid(data_testid: str):
+    APP.home_page.click_button_data_testid(data_testid)
+
+@step("Enter text <text> in the <aria_label> search bar")
+def send_text_into_search_bar(text: str, aria_label: str):
+    APP.home_page.send_text_into_search_bar(text, aria_label)
+@step("Select the following radio buttons <table>")
+def click_radio_buttons(table):
+    for k, v in enumerate(table):
+        APP.home_page.click_radio_button(v[0])
+        time.sleep(0.1)
+
+@step("Is checkbox checked <table>")
+def is_checkbox_checked(table):
+    for k, v in enumerate(table):
+        is_checkbox_enabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
+        time.sleep(0.1)
+
+@step("Is checkbox not checked <table>")
+def is_checkbox_not_checked(table):
+    for k, v in enumerate(table):
+        is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
+        time.sleep(0.1)

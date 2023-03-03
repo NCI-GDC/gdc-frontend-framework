@@ -3,7 +3,7 @@ import {
   CART_LIMIT,
   createGdcAppWithOwnStore,
   FilterSet,
-  GdcFileIds,
+  GdcFile,
   GqlOperation,
   joinFilters,
   selectCart,
@@ -77,7 +77,7 @@ const RepositoryApp = () => {
   const getAllSelectedFiles = (callback, filters) => {
     getFileSizeSliceData(filters)
       .unwrap()
-      .then((data: GdcFileIds[]) => {
+      .then((data: GdcFile[]) => {
         return mapGdcFileToCartFile(data);
       })
       .then((cartFiles) => {

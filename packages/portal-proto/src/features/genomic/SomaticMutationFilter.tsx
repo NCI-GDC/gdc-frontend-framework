@@ -15,7 +15,7 @@ const GeneChartWithNoSSR = dynamic(() => import("./Charts"), {
   ssr: false,
 });
 
-const SomanticMutationFilterFixedVersion: React.FC = () => {
+const SomaticMutationFilterFixedVersion: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGeneToggled = (_: Record<string, any>) => null;
 
@@ -99,14 +99,11 @@ const SomanticMutationFilterFixedVersion: React.FC = () => {
               </div>
             </div>
           </div>
-          <SMTableContainer
-            selectedSurvivalPlot={undefined}
-            handleSurvivalPlotToggled={undefined}
-          />
+          <SMTableContainer />
         </div>
       </div>
     </div>
   );
 };
 
-export default SomanticMutationFilterFixedVersion;
+export default SomaticMutationFilterFixedVersion;

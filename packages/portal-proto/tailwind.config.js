@@ -35,7 +35,7 @@ const nciGrayContent = {
 
 const nciBlueContent = {
   max: "#FFFFFF",
-  lightest: "#f1f1f1",
+  lightest: "#F8F9FA",
   lighter: "#c5c5c5",
   light: "#9b9b9b",
   DEFAULT: "#706f6f",
@@ -747,7 +747,10 @@ module.exports = {
           text: "#42346F",
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
+          borderAlt: "#F0E4CB",
         },
+        warningColor: "#FFAD0D", //orangish
+        warningColorText: "#976F21", //lighter orangish
       },
       height: {
         "nci-logo": "54px",
@@ -777,6 +780,8 @@ module.exports = {
       },
       backgroundImage: {
         "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
+        "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
+        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
@@ -797,6 +802,9 @@ module.exports = {
       },
       fontSize: {
         "2xs": ".85rem",
+      },
+      opacity: {
+        15: ".15",
       },
       boxShadow: {
         "3xl": "0 0 5px 2px rgba(0, 0, 0, 0.25)",

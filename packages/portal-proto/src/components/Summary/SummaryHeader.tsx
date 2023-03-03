@@ -1,5 +1,4 @@
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
-import { TypeIcon } from "../TypeIcon";
+import { SummaryHeaderTitle } from "@/features/shared/tailwindComponents";
 
 export interface SummaryHeaderProps {
   iconText: string;
@@ -10,11 +9,19 @@ export const SummaryHeader = ({
   headerTitle,
 }: SummaryHeaderProps): JSX.Element => {
   return (
-    <header className="fixed bg-base-max py-3 pl-24 z-10 w-full flex flex-row nowrap items-center shadow-lg ">
-      <div className="rounded-full flex flex-row items-center p-1 px-2 font-bold whitespace-nowrap">
-        <TypeIcon iconText={iconText} />
-      </div>
-      <HeaderTitle>{headerTitle}</HeaderTitle>
+    <header className="fixed bg-primary-vivid py-4 pl-24 z-10 w-full flex flex-row nowrap items-center shadow-lg gap-4">
+      <SummaryHeaderIcon iconText={iconText} />
+      <SummaryHeaderTitle>{headerTitle}</SummaryHeaderTitle>
     </header>
   );
 };
+
+export const SummaryHeaderIcon = ({
+  iconText,
+}: {
+  iconText: string;
+}): JSX.Element => (
+  <span className="w-9 h-9 uppercase rounded-full text-lg flex justify-center items-center leading-[22px] font-bold bg-base-lightest text-primary">
+    {iconText}
+  </span>
+);

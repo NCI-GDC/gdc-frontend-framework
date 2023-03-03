@@ -9,7 +9,7 @@ import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
 import { getMutation, createTableColumn } from "./smTableUtils";
-import { useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
 import { SummaryModalContext } from "src/utils/contexts";
@@ -41,7 +41,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   const [mutationID, setMutationID] = useState(undefined);
 
   const useSomaticMutationsTableFormat = useCallback(
-    (initialData) => {
+    (initialData: GDCSsmsTable) => {
       const { cases, filteredCases, ssmsTotal, ssms } = initialData;
       return ssms.map((sm) => {
         return getMutation(
@@ -90,34 +90,35 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
-  const columns = useMemo<ColumnDef<SomaticMutations>[]>(
-    () => {
-      return visibleColumns.map(({ id: accessor }: Column) => {
-        return createTableColumn(
-          accessor,
-          selectedMutations,
-          setSelectedMutations,
-          handleSurvivalPlotToggled,
-          setMutationID,
-          handleSsmToggled,
-          toggledSsms,
-          geneSymbol,
-          isDemoMode,
-          setEntityMetadata,
-          isModal,
-        );
-      });
-    }, // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      visibleColumns,
-      width,
-      selectedMutations,
-      mutationID,
-      setMutationID,
-      handleSurvivalPlotToggled,
-      setEntityMetadata,
-    ],
-  );
+  const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
+    return visibleColumns.map(({ id: accessor }: Column) => {
+      return createTableColumn(
+        accessor,
+        selectedMutations,
+        setSelectedMutations,
+        handleSurvivalPlotToggled,
+        setMutationID,
+        handleSsmToggled,
+        toggledSsms,
+        geneSymbol,
+        isDemoMode,
+        setEntityMetadata,
+        isModal,
+      );
+    });
+  }, [
+    visibleColumns,
+    geneSymbol,
+    selectedMutations,
+    handleSsmToggled,
+    setSelectedMutations,
+    toggledSsms,
+    isDemoMode,
+    isModal,
+    setMutationID,
+    handleSurvivalPlotToggled,
+    setEntityMetadata,
+  ]);
 
   useEffect(() => {
     setExpanded({});
