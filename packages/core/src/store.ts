@@ -25,7 +25,6 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  debug: true,
   whitelist: ["cart", "bannerNotification", "cohort", "sets"],
 };
 

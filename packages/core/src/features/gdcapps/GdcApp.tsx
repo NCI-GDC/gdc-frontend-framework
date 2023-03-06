@@ -13,7 +13,6 @@ import {
   createStoreHook,
 } from "react-redux";
 import {
-  persistStore,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -25,7 +24,6 @@ import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
 import { Pagination } from "../gdcapi/gdcapi";
-import { AppPersistGate } from "./AppPersistGate";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";
@@ -163,28 +161,19 @@ export interface CreateGdcAppWithOwnStoreOptions<
   S = any,
 > {
   readonly App: ComponentType;
-  readonly id: string;
-  readonly name: string;
-  readonly version: string;
+  readonly id: string; // unique id for this app
+  readonly name: string; // name of the app
+  readonly version: string; // version of the app, should be unique
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
-  readonly store: Store<S, A>;
+  readonly store: Store<S, A>; // the redux-store for this app
   readonly context: any;
-  readonly persist?: boolean;
 }
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const {
-    App,
-    id,
-    name,
-    version,
-    requiredEntityTypes,
-    store,
-    context,
-    persist = false,
-  } = options;
+  const { App, id, name, version, requiredEntityTypes, store, context } =
+    options;
 
   // need to create store and provider.
   // return a component representing this app
@@ -203,13 +192,7 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          {persist ? (
-            <AppPersistGate loading={null} persistor={persistStore(store)}>
-              <App />
-            </AppPersistGate>
-          ) : (
-            <App />
-          )}
+          <App />
         </CookiesProvider>
       </Provider>
     );

@@ -19,8 +19,8 @@ import tailwindConfig from "../../tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
-import "@/features/projectsCenter/ProjectsCenter";
-import "@/features/repositoryApp/RepositoryApp";
+import "@/features/projectsCenter/registerApp";
+import "@/features/repositoryApp/registerApp";
 import "@/features/genomic/registerApp";
 import "@/features/oncoGrid/registerApp";
 

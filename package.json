@@ -53,6 +53,7 @@
     "react-table": "^7.7.12",
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
+    "redux-logger": "^3.0.6",
     "tinycolor2": "^1.4.2",
     "url-join": "^5.0.0"
   },
