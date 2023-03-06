@@ -123,7 +123,7 @@ export const Biospecimen = ({
         selectedType !== undefined ? (
         <>
           <div className="flex justify-between">
-            <div className="self-end">
+            <div className="self-end -mb-2">
               <HeaderTitle>Biospecimen</HeaderTitle>
             </div>
 
@@ -146,12 +146,15 @@ export const Biospecimen = ({
           </div>
 
           <div className="flex mt-2 gap-4">
-            <div className="basis-1/4">
-              <div className="flex mb-4">
+            <div className="basis-4/12">
+              <div className="flex mb-4 gap-4">
                 <Input
                   icon={<MdOutlineSearch size={24} />}
                   placeholder="Search"
-                  className="w-96"
+                  className="basis-5/6"
+                  classNames={{
+                    input: "border-base-lighter",
+                  }}
                   onChange={(e) => {
                     if (e.target.value.length === 0) {
                       setExpandedCount(0);
@@ -163,6 +166,7 @@ export const Biospecimen = ({
                     setEntityClicked && setEntityClicked(false);
                     setSearchText(e.target.value);
                   }}
+                  size="lg"
                   value={searchText}
                   rightSection={
                     <MdOutlineClear
@@ -190,8 +194,10 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="ml-4 w-32 text-primary-content-lightest bg-primary hover:bg-primary-darker "
+                  className="text-primary hover:bg-primary-darker hover:text-base-lightest"
                   disabled={searchText.length > 0}
+                  variant="outline"
+                  size="lg"
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
                 </Button>

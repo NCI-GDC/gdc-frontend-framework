@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import {
-  AiOutlinePlusSquare as ExpandMoreIcon,
-  AiOutlineMinusSquare as ExpandLessIcon,
+  AiOutlinePlusCircle as ExpandMoreIcon,
+  AiFillMinusCircle as ExpandLessIcon,
 } from "react-icons/ai";
-import { ImArrowRight as ArrowRight } from "react-icons/im";
-import { Badge } from "@mantine/core";
+import { BsArrowRight as ArrowRight } from "react-icons/bs";
 import Highlight from "../Highlight";
 import { BioTreeProps, NodeProps, overrideMessage } from "./types";
 
@@ -19,22 +18,21 @@ const Node = ({
   search,
 }: NodeProps): JSX.Element => {
   return (
-    <li>
+    <li className="ml-6">
       {entity[`${type.s}_id`] && entity.submitter_id && (
         <div className="flex">
           <span
-            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1
-            ${
+            className={`w-full flex justify-between text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
-                ? "border-1 border-black rounded p-1"
-                : ""
+                ? "bg-accent-vivid text-base-lightest font-bold"
+                : "bg-nci-violet-lightest"
             }
             ${
               query &&
               (search(query, { node: entity }) || [])
                 .map((e) => e.node)
                 .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
-                ? "bg-accent-vivid"
+                ? ""
                 : ""
             }`}
             onClick={() => {
@@ -47,10 +45,10 @@ const Node = ({
             tabIndex={0}
           >
             <Highlight search={query} text={entity.submitter_id} />
+            {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
+              <ArrowRight color="white" size={16} />
+            )}
           </span>
-          {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
-            <ArrowRight className="ml-1 mt-2.5" />
-          )}
         </div>
       )}
       {entityTypes
@@ -164,9 +162,9 @@ export const BioTree = ({
   };
 
   return (
-    <ul className="ml-4 my-2 pl-4">
+    <ul className="my-2">
       <div
-        className="flex"
+        className="flex gap-1"
         onClick={onTreeClick}
         onKeyDown={onTreeClick}
         role="treeitem"
@@ -174,24 +172,23 @@ export const BioTree = ({
       >
         {isExpanded.current ? (
           <ExpandLessIcon
-            className="cursor-pointer text-nci-green-darkest"
+            className="cursor-pointer text-accent-vivid self-center"
             size={18}
           />
         ) : (
           <ExpandMoreIcon
-            className="cursor-pointer text-primary-content-darkest"
+            className="cursor-pointer text-accent-vivid self-center"
             size={18}
           />
         )}
 
-        <Badge
-          variant="filled"
-          className={`cursor-pointer ${
-            query && type.p.includes(query) && "bg-accent-vivid"
+        <span
+          className={`border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer ${
+            query && type.p.includes(query) && ""
           }`}
         >
           <Highlight search={query} text={type.p} />
-        </Badge>
+        </span>
       </div>
       {isExpanded.current &&
         entities?.hits?.edges?.map((entity) => {

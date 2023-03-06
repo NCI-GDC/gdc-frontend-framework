@@ -119,7 +119,10 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
             } border-base-lighter`}
           >
             {Object.values(row).map((item, index) => (
-              <td key={index} className="text-sm pl-2.5 py-2.5">
+              <td
+                key={index}
+                className="text-sm pl-2.5 py-2 border-base-lighter"
+              >
                 {item || "--"}
               </td>
             ))}

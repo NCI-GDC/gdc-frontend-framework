@@ -79,8 +79,8 @@ export const ClinicalSummary = ({
 
   return (
     <div className="max-w-full">
-      <div className="flex justify-between mb-1">
-        <div className="self-end">
+      <div className="flex justify-between">
+        <div className="self-end -mb-2">
           <HeaderTitle>Clinical</HeaderTitle>
         </div>
 
