@@ -23,7 +23,7 @@ const Node = ({
           <span
             className={`w-full flex justify-between text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
-                ? "bg-accent-vivid text-base-lightest font-bold"
+                ? "bg-accent-vivid text-base-max font-bold"
                 : "bg-nci-violet-lightest"
             }
          `}
@@ -159,7 +159,6 @@ export const BioTree = ({
         className="flex gap-1 ml-2"
         onClick={onTreeClick}
         onKeyDown={onTreeClick}
-        role="treeitem"
         tabIndex={0}
       >
         {isExpanded.current ? (

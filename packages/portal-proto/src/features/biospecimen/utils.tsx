@@ -117,46 +117,42 @@ export const formatEntityInfo = (
       "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image">
-          <div>
-            <Link
-              href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
-            >
-              <a>
-                <GiMicroscope className="text-base-lighter" size={16} />
-              </a>
-            </Link>
-          </div>
-        </Tooltip>{" "}
-        <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
-          <div>
-            <FaShoppingCart
-              onClick={() => {
-                isFileInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-              className={`${
-                isFileInCart ? "text-primary" : "text-base-lighter"
-              } cursor-pointer`}
-            />
-          </div>
+          <Link
+            href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
+          >
+            <a>
+              <GiMicroscope className="text-base-lighter" size={16} />
+            </a>
+          </Link>
         </Tooltip>
+
+        <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
+          <FaShoppingCart
+            onClick={() => {
+              isFileInCart
+                ? removeFromCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  );
+            }}
+            className={`${
+              isFileInCart ? "text-primary" : "text-base-lighter"
+            } cursor-pointer`}
+          />
+        </Tooltip>
+
         <Tooltip label="Download">
-          <div>
-            <DownloadFile
-              file={mapFileData(selectedSlide)[0]}
-              customStyle="text-base-lighter px-0 h-3.5 border-0 bg-transparent"
-              showLoading={false}
-            />
-          </div>
+          <DownloadFile
+            file={mapFileData(selectedSlide)[0]}
+            customStyle="text-base-lighter px-0 h-3.5 border-0 bg-transparent"
+            showLoading={false}
+          />
         </Tooltip>
       </div>,
     ]);
