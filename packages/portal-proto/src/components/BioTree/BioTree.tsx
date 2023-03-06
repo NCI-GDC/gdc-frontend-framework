@@ -15,7 +15,6 @@ const Node = ({
   selectedEntity,
   selectEntity,
   query,
-  search,
 }: NodeProps): JSX.Element => {
   return (
     <li className="ml-6">
@@ -27,14 +26,7 @@ const Node = ({
                 ? "bg-accent-vivid text-base-lightest font-bold"
                 : "bg-nci-violet-lightest"
             }
-            ${
-              query &&
-              (search(query, { node: entity }) || [])
-                .map((e) => e.node)
-                .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
-                ? ""
-                : ""
-            }`}
+         `}
             onClick={() => {
               selectEntity(entity, type);
             }}
@@ -164,7 +156,7 @@ export const BioTree = ({
   return (
     <ul className="my-2">
       <li
-        className="flex gap-1"
+        className="flex gap-1 ml-2"
         onClick={onTreeClick}
         onKeyDown={onTreeClick}
         role="treeitem"
@@ -182,43 +174,36 @@ export const BioTree = ({
           />
         )}
 
-        <span
-          className={`border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer ${
-            query && type.p.includes(query) && ""
-          }`}
-        >
+        <span className="border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer">
           <Highlight search={query} text={type.p} />
         </span>
       </li>
       {isExpanded.current &&
-        entities?.hits?.edges?.map((entity) => {
-          return (
-            <Node
-              entity={entity.node}
+        entities?.hits?.edges?.map((entity) => (
+          <Node
+            entity={entity.node}
+            entityTypes={entityTypes}
+            key={generateKey(entity.node)}
+            type={type}
+            selectedEntity={selectedEntity}
+            selectEntity={selectEntity}
+            query={query}
+          >
+            <BioTree
               entityTypes={entityTypes}
-              key={generateKey(entity.node)}
-              type={type}
+              parentNode={entity.node.submitter_id}
               selectedEntity={selectedEntity}
               selectEntity={selectEntity}
+              setTreeStatusOverride={setTreeStatusOverride}
+              treeStatusOverride={treeStatusOverride}
+              setExpandedCount={setExpandedCount}
+              setTotalNodeCount={setTotalNodeCount}
               search={search}
               query={query}
-            >
-              <BioTree
-                entityTypes={entityTypes}
-                parentNode={entity.node.submitter_id}
-                selectedEntity={selectedEntity}
-                selectEntity={selectEntity}
-                setTreeStatusOverride={setTreeStatusOverride}
-                treeStatusOverride={treeStatusOverride}
-                setExpandedCount={setExpandedCount}
-                setTotalNodeCount={setTotalNodeCount}
-                search={search}
-                query={query}
-                type={type}
-              />
-            </Node>
-          );
-        })}
+              type={type}
+            />
+          </Node>
+        ))}
     </ul>
   );
 };

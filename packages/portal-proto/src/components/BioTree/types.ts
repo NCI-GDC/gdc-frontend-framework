@@ -21,7 +21,6 @@ export interface NodeProps {
   selectedEntity: entityType;
   selectEntity: (entity: entityType, type: types) => void;
   query: string;
-  search: searchType;
 }
 
 export interface BioTreeProps {
