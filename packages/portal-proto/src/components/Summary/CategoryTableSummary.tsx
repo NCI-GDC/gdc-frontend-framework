@@ -1,5 +1,5 @@
-import { TempTable } from "@/features/files/FileView";
 import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { BasicTable } from "../Tables/BasicTable";
 
 interface CategoryTableSummaryProps {
   title: string;
@@ -22,6 +22,6 @@ export const CategoryTableSummary = ({
         <span className="block text-center text-sm pt-4">No results found</span>
       )}
     </div>
-    {dataObject ? <TempTable tableData={tableData} /> : null}
+    {dataObject ? <BasicTable tableData={tableData} /> : null}
   </div>
 );

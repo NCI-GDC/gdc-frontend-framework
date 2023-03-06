@@ -11,7 +11,7 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
+import { FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";

@@ -6,7 +6,7 @@ import {
   useFilesFacetsByNameFilter,
 } from "@gff/core";
 import SummaryCount from "../../components/Summary/SummaryCount";
-import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
+import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";

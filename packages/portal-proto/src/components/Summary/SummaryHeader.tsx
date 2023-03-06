@@ -1,7 +1,6 @@
 import { SummaryHeaderTitle } from "@/features/shared/tailwindComponents";
 import { Divider } from "@mantine/core";
 import { ReactNode } from "react";
-import { theme } from "tailwind.config";
 
 export interface SummaryHeaderProps {
   iconText: string;

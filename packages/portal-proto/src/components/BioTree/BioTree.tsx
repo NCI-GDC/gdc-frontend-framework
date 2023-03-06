@@ -163,7 +163,7 @@ export const BioTree = ({
 
   return (
     <ul className="my-2">
-      <div
+      <li
         className="flex gap-1"
         onClick={onTreeClick}
         onKeyDown={onTreeClick}
@@ -189,7 +189,7 @@ export const BioTree = ({
         >
           <Highlight search={query} text={type.p} />
         </span>
-      </div>
+      </li>
       {isExpanded.current &&
         entities?.hits?.edges?.map((entity) => {
           return (

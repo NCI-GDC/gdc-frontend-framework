@@ -7,7 +7,7 @@ import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { externalLinks, humanify } from "src/utils";
-import { FaBook, FaRegChartBar as BarChartIcon, FaTable } from "react-icons/fa";
+import { FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";

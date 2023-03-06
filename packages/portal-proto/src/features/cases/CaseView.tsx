@@ -31,7 +31,6 @@ import {
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import fileSize from "filesize";
-import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import {
@@ -45,6 +44,7 @@ import {
   getAnnotationsLinkParams,
   getSlideCountFromCaseSummary,
 } from "./utils";
+import { BasicTable } from "@/components/Tables/BasicTable";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -475,7 +475,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
               <HeaderTitle>Clinical Supplement File</HeaderTitle>
             </div>
-            <TempTable tableData={formatDataForClinicalFiles()} />
+            <BasicTable tableData={formatDataForClinicalFiles()} />
           </div>
         )}
 
@@ -493,7 +493,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
               <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
             </div>
-            <TempTable tableData={formatDataForBioSpecimenFiles()} />
+            <BasicTable tableData={formatDataForBioSpecimenFiles()} />
           </div>
         )}
       </div>
