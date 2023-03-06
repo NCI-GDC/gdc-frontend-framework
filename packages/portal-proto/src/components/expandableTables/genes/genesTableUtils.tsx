@@ -309,13 +309,13 @@ export const createTableColumn = (
                       </button>
                     </div>
                   )}
-                  {row.getCanExpand() && (
+                  {/* {row.getCanExpand() && (
                     <RatioSpring
                       index={0}
                       item={{ numerator, denominator }}
                       orientation="horizontal"
                     />
-                  )}
+                  )} */}
                 </div>
               );
             },

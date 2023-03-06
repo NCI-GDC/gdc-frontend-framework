@@ -190,7 +190,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     cohortFilters: cohortFilters,
   });
 
-  const { ssmsTotal = 0 } = data;
+  const { ssmsTotal } = data ?? { ssmsTotal: 0 };
 
   useEffect(() => {
     setPage(0);
@@ -403,7 +403,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
           <div className="flex flex-row ml-2 mb-4">
             <TableControls
-              total={ssmsTotal}
+              // ssmsTotal
+              total={0}
               numSelected={Object.keys(selectedMutations).length ?? 0}
               label={`Somatic Mutation`}
               options={[
@@ -540,15 +541,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{` ${((page + 1) * pageSize <
-                ssmsTotal
-                  ? (page + 1) * pageSize
-                  : ssmsTotal
-                ).toLocaleString("en-US")} `}</span>
+                <span className={`font-bold`}>
+                  {` ${((page + 1) * pageSize < ssmsTotal
+                    ? (page + 1) * pageSize
+                    : ssmsTotal
+                  ).toLocaleString("en-US")} `}
+                </span>
                 of
-                <span className={`font-bold`}>{` ${ssmsTotal.toLocaleString(
-                  "en-US",
-                )} `}</span>
+                <span className={`font-bold`}>
+                  {`
+                 ${ssmsTotal.toLocaleString("en-US")} 
+                `}
+                </span>
                 somatic mutations
               </span>
             </div>
