@@ -108,16 +108,17 @@ export const RepositoryApp = () => {
   const viewImageDisabled =
     imagesCount.slidesCount <= 0 && imagesCount.casesWithImagesCount <= 0;
   return (
-    <PersistGate persistor={persistor}>
-      <div className="flex flex-row mt-4 mx-3">
-        <div className="w-1/4">
-          <FileFacetPanel />
-        </div>
-        <div className="w-full overflow-hidden h-full">
-          <div className="flex flex-row justify-end align-center m-2">
-            <div className="flex justify-end gap-2">
-              <DownloadButton
-                customStyle={`
+    <>
+      <PersistGate persistor={persistor}>
+        <div className="flex flex-row mt-4 mx-3">
+          <div className="w-1/4">
+            <FileFacetPanel />
+          </div>
+          <div className="w-full overflow-hidden h-full">
+            <div className="flex flex-row justify-end align-center m-2">
+              <div className="flex justify-end gap-2">
+                <DownloadButton
+                  customStyle={`
               flex
               flex-row
               items-center
@@ -133,77 +134,78 @@ export const RepositoryApp = () => {
               disabled:border-opacity-60
               disabled:text-opacity-60
               `}
-                activeText="Processing"
-                inactiveText="Manifest"
-                toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
-                endpoint="files"
-                method="POST"
-                options={{
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }}
-                extraParams={{
-                  return_type: "manifest",
-                }}
-                filters={buildCohortGqlOperator(allFilters)}
-                setActive={setActive}
-                active={active}
-              />
+                  activeText="Processing"
+                  inactiveText="Manifest"
+                  toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+                  endpoint="files"
+                  method="POST"
+                  options={{
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }}
+                  extraParams={{
+                    return_type: "manifest",
+                  }}
+                  filters={buildCohortGqlOperator(allFilters)}
+                  setActive={setActive}
+                  active={active}
+                />
 
-              <Link
-                href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
-                  stringifyJSONParam(repositoryFilters),
-                )}`}
-              >
-                <Tooltip
-                  label={"No images available to be viewed"}
-                  disabled={!viewImageDisabled}
+                <Link
+                  href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
+                    stringifyJSONParam(repositoryFilters),
+                  )}`}
                 >
-                  <FunctionButton component="a" $disabled={viewImageDisabled}>
-                    View Images
-                  </FunctionButton>
-                </Tooltip>
-              </Link>
+                  <Tooltip
+                    label={"No images available to be viewed"}
+                    disabled={!viewImageDisabled}
+                  >
+                    <FunctionButton component="a" $disabled={viewImageDisabled}>
+                      View Images
+                    </FunctionButton>
+                  </Tooltip>
+                </Link>
 
-              <FunctionButton
-                leftIcon={<CartIcon />}
-                loading={allFilesLoading}
-                onClick={() => {
-                  // check number of files selected before making call
-                  if (
-                    pagination?.total &&
-                    pagination.total + currentCart.length > CART_LIMIT
-                  ) {
-                    showCartOverLimitNotification(currentCart.length);
-                  } else {
+                <FunctionButton
+                  leftIcon={<CartIcon />}
+                  loading={allFilesLoading}
+                  onClick={() => {
+                    // check number of files selected before making call
+                    if (
+                      pagination?.total &&
+                      pagination.total + currentCart.length > CART_LIMIT
+                    ) {
+                      showCartOverLimitNotification(currentCart.length);
+                    } else {
+                      getAllSelectedFiles(
+                        addToCart,
+                        buildCohortGqlOperator(allFilters),
+                      );
+                    }
+                  }}
+                >
+                  Add All Files to Cart
+                </FunctionButton>
+                <FunctionButtonRemove
+                  leftIcon={<VscTrash />}
+                  loading={allFilesLoading}
+                  onClick={() => {
                     getAllSelectedFiles(
-                      addToCart,
-                      buildCohortGqlOperator(allFilters),
+                      removeFromCart,
+                      buildCohortGqlOperatorWithCart(),
                     );
-                  }
-                }}
-              >
-                Add All Files to Cart
-              </FunctionButton>
-              <FunctionButtonRemove
-                leftIcon={<VscTrash />}
-                loading={allFilesLoading}
-                onClick={() => {
-                  getAllSelectedFiles(
-                    removeFromCart,
-                    buildCohortGqlOperatorWithCart(),
-                  );
-                }}
-              >
-                Remove All From Cart
-              </FunctionButtonRemove>
+                  }}
+                >
+                  Remove All From Cart
+                </FunctionButtonRemove>
+              </div>
             </div>
+            <FilesTables />
           </div>
-          <FilesTables />
         </div>
-      </div>
-    </PersistGate>
+      </PersistGate>
+    </>
   );
 };

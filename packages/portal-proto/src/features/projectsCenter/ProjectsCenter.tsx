@@ -9,13 +9,15 @@ const persistor = persistStore(AppStore);
 
 export const ProjectsCenter = (): JSX.Element => {
   return (
-    <PersistGate persistor={persistor}>
-      <div className="flex flex-col mt-4 ">
-        <div className="flex flex-row mx-3">
-          <ProjectFacetPanel />
-          <ProjectsTable />
+    <>
+      <PersistGate persistor={persistor}>
+        <div className="flex flex-col mt-4 ">
+          <div className="flex flex-row mx-3">
+            <ProjectFacetPanel />
+            <ProjectsTable />
+          </div>
         </div>
-      </div>
-    </PersistGate>
+      </PersistGate>
+    </>
   );
 };
