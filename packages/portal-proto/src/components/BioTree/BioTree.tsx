@@ -155,26 +155,29 @@ export const BioTree = ({
 
   return (
     <ul className="my-2">
-      <li
-        className="flex gap-1 ml-2"
-        onClick={onTreeClick}
-        onKeyDown={onTreeClick}
-        tabIndex={0}
-      >
-        {isExpanded.current ? (
-          <ExpandLessIcon
-            className="cursor-pointer text-accent-vivid self-center"
-            size={18}
-          />
-        ) : (
-          <ExpandMoreIcon
-            className="cursor-pointer text-accent-vivid self-center"
-            size={18}
-          />
-        )}
+      <li>
+        <span
+          onClick={onTreeClick}
+          onKeyDown={onTreeClick}
+          tabIndex={0}
+          role="button"
+          className="flex gap-1 ml-2"
+        >
+          {isExpanded.current ? (
+            <ExpandLessIcon
+              className="cursor-pointer text-accent-vivid self-center"
+              size={18}
+            />
+          ) : (
+            <ExpandMoreIcon
+              className="cursor-pointer text-accent-vivid self-center"
+              size={18}
+            />
+          )}
 
-        <span className="border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer">
-          <Highlight search={query} text={type.p} />
+          <span className="border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer">
+            <Highlight search={query} text={type.p} />
+          </span>
         </span>
       </li>
       {isExpanded.current &&
