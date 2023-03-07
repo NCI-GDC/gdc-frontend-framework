@@ -173,10 +173,13 @@ export const SSMSSummary = ({
     <div>
       {!isFetching && summaryData ? (
         <>
-          {!isModal && (
-            <SummaryHeader iconText="mu" headerTitle={summaryData.dna_change} />
-          )}
-          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
+          <SummaryHeader
+            iconText="mu"
+            headerTitle={summaryData.dna_change}
+            isModal={isModal}
+          />
+
+          <div className={`mx-auto ${!isModal && "mt-20"} w-9/12 pt-4`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">

@@ -122,7 +122,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
       (file) => file.data_type === "Slide Image",
     );
 
-    // maybe type it properly
+    // TODO: type it properly
     let caseSummaryObject: Record<string, any> = {
       case_uuid: case_id,
       case_id: submitter_id,
@@ -401,44 +401,43 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   return (
     <>
-      {!isModal && (
-        <SummaryHeader
-          iconText="ca"
-          headerTitle={headerTitle}
-          leftElement={
-            <Button
-              leftIcon={<FaShoppingCart />}
-              className="text-primary bg-base-lightest hover:bg-primary-darkest hover:text-primary-content-lightest"
-              onClick={() =>
-                isAllFilesInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(data.files),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(data.files),
-                      currentCart,
-                      dispatch,
-                    )
-              }
-              disabled={filesCountTotal === 0}
-              classNames={{ label: "font-medium text-sm" }}
-            >
-              {!isAllFilesInCart
-                ? "Add all files to the cart"
-                : "Remove all files from the cart"}
-            </Button>
-          }
-          rightElement={
-            <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
-              Total of {Files} {Annotations}
-            </div>
-          }
-        />
-      )}
+      <SummaryHeader
+        iconText="ca"
+        headerTitle={headerTitle}
+        leftElement={
+          <Button
+            leftIcon={<FaShoppingCart />}
+            className="text-primary bg-base-lightest hover:bg-primary-darkest hover:text-primary-content-lightest"
+            onClick={() =>
+              isAllFilesInCart
+                ? removeFromCart(
+                    mapGdcFileToCartFile(data.files),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(
+                    mapGdcFileToCartFile(data.files),
+                    currentCart,
+                    dispatch,
+                  )
+            }
+            disabled={filesCountTotal === 0}
+            classNames={{ label: "font-medium text-sm" }}
+          >
+            {!isAllFilesInCart
+              ? "Add all files to the cart"
+              : "Remove all files from the cart"}
+          </Button>
+        }
+        rightElement={
+          <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+            Total of {Files} {Annotations}
+          </div>
+        }
+        isModal={isModal}
+      />
 
-      <div className={`flex flex-col ${isModal ? "mt-5" : "mt-36"} mx-4`}>
+      <div className={`flex flex-col ${!isModal && "mt-32"} mx-4`}>
         <div className="flex flex-col gap-5 mt-8">
           <div className="flex">
             <div className="basis-1/2">

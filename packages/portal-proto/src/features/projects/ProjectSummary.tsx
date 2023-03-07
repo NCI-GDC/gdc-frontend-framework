@@ -348,13 +348,16 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     };
   };
   return (
-    <div>
-      {!projectData.isModal && (
-        <SummaryHeader iconText="pr" headerTitle={projectData.project_id} />
-      )}
+    <>
+      <SummaryHeader
+        iconText="pr"
+        headerTitle={projectData.project_id}
+        isModal={projectData.isModal}
+      />
+
       <div
         className={`flex flex-col mx-auto ${
-          projectData.isModal ? "mt-5" : "mt-20"
+          projectData.isModal ? "mt-4" : "mt-20"
         } w-10/12`}
       >
         <div className="flex flex-col gap-5">
@@ -476,6 +479,6 @@ Data Transfer Tool is recommended for transferring large volumes of data."
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

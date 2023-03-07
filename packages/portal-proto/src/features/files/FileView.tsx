@@ -354,7 +354,7 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <div
       className={`p-4 text-primary-content w-10/12 ${
-        isModal ? "mt-5" : "mt-20"
+        !isModal && "mt-20"
       } m-auto`}
     >
       <div className="flex justify-end pb-5 gap-2">

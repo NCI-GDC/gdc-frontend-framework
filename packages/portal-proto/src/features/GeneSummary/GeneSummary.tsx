@@ -200,10 +200,13 @@ const GeneView = ({
     <div>
       {data?.genes && (
         <>
-          {!isModal && (
-            <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
-          )}
-          <div className={`mx-auto ${isModal ? "mt-2" : "mt-20"} w-9/12 pt-4`}>
+          <SummaryHeader
+            iconText="gn"
+            headerTitle={data.genes.symbol}
+            isModal={isModal}
+          />
+
+          <div className={`mx-auto ${!isModal && "mt-20"} w-9/12 pt-4`}>
             {contextSensitive && <ContextSensitiveBanner />}
             <div className="text-primary-content">
               <div className="flex gap-6">

@@ -7,15 +7,21 @@ export interface SummaryHeaderProps {
   headerTitle: string | number;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
+  isModal?: boolean;
 }
 export const SummaryHeader = ({
   iconText,
   headerTitle,
   leftElement,
   rightElement,
+  isModal = false,
 }: SummaryHeaderProps): JSX.Element => {
   return (
-    <header className="fixed bg-primary-vivid py-4 px-4 z-10 w-full flex flex-col shadow-lg gap-4">
+    <header
+      className={`bg-primary-vivid py-4 px-4 z-10 w-full flex flex-col shadow-lg gap-4 ${
+        isModal ? "sticky top-0 rounded-t-sm" : "fixed"
+      }`}
+    >
       <div className="flex flex-row nowrap items-center gap-4">
         <SummaryHeaderIcon iconText={iconText} />
         <SummaryHeaderTitle>{headerTitle}</SummaryHeaderTitle>
