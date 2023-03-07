@@ -15,7 +15,7 @@ export const CategoryTableSummary = ({
   dataObject,
   tableData,
 }: CategoryTableSummaryProps): JSX.Element => (
-  <div className="flex-1">
+  <div className="basis-1/2">
     <div className="text-base-contrast-lighter">
       <HeaderTitle>{title}</HeaderTitle>
       {!dataObject && (

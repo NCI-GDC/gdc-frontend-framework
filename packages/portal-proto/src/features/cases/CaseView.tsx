@@ -37,7 +37,6 @@ import {
   PercentBar,
   PercentBarComplete,
   PercentBarLabel,
-  HeaderTitle,
 } from "../shared/tailwindComponents";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
@@ -221,7 +220,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         data_category: data_c.data_category,
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex">
+          <div className="flex h-6">
             <div className="basis-1/3 text-right">
               {data_c.file_count.toLocaleString()}
             </div>
@@ -277,7 +276,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         experimental_strategy: exp_c.experimental_strategy,
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex">
+          <div className="flex h-6">
             <div className="basis-1/3 text-right">
               {exp_c.file_count.toLocaleString()}
             </div>
@@ -454,19 +453,25 @@ export const CaseView: React.FC<CaseViewProps> = ({
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4 mb-14">
-            <CategoryTableSummary
-              title="File Counts by Data Category"
-              dataObject={data.summary.data_categories}
-              tableData={formatDataForDataCateogryTable()}
-            />
-
-            <CategoryTableSummary
-              title="File Counts by Experimental Strategy"
-              dataObject={data.summary.experimental_strategies}
-              tableData={formatDataForExpCateogryTable()}
-            />
-          </div>
+          {(data.summary.data_categories ||
+            data.summary.experimental_strategies) && (
+            <div className="flex gap-4 mt-4 mb-14">
+              {data.summary.data_categories && (
+                <CategoryTableSummary
+                  title="File Counts by Data Category"
+                  dataObject={data.summary.data_categories}
+                  tableData={formatDataForDataCateogryTable()}
+                />
+              )}
+              {data.summary.experimental_strategies && (
+                <CategoryTableSummary
+                  title="File Counts by Experimental Strategy"
+                  dataObject={data.summary.experimental_strategies}
+                  tableData={formatDataForExpCateogryTable()}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <ClinicalSummary
@@ -480,7 +485,9 @@ export const CaseView: React.FC<CaseViewProps> = ({
         {clinicalFilteredFiles?.length > 0 && (
           <div className="mt-8">
             <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <HeaderTitle>Clinical Supplement File</HeaderTitle>
+              <h2 className="text-xl text-primary-content-darkest font-medium">
+                Clinical Supplement File
+              </h2>
             </div>
             <BasicTable tableData={formatDataForClinicalFiles()} />
           </div>
@@ -498,7 +505,9 @@ export const CaseView: React.FC<CaseViewProps> = ({
         {biospecimenFilteredFiles?.length > 0 && (
           <div className="mt-8 mb-16">
             <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
+              <h2 className="text-xl text-primary-content-darkest font-medium">
+                Biospecimen Supplement File
+              </h2>
             </div>
             <BasicTable tableData={formatDataForBioSpecimenFiles()} />
           </div>

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
-import {
-  MdOutlineSearch,
-  MdFileDownload,
-  MdOutlineClear,
-} from "react-icons/md";
+import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
 import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
 import {
   entityType,
@@ -19,6 +15,8 @@ import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 
 interface BiospecimenProps {
   caseId: string;
@@ -129,17 +127,27 @@ export const Biospecimen = ({
 
             <Menu width="target">
               <Menu.Target>
-                <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
-                  <MdFileDownload size="1.25em" />
+                <Button
+                  className="px-1.5 min-h-7 rounded text-primary font-medium hover:bg-primary-darker hover:text-base-lightest"
+                  variant="outline"
+                  leftIcon={
+                    <DownloadIcon size={16} aria-label="download icon" />
+                  }
+                  rightIcon={<Dropdown size={20} aria-label="dropdown icon" />}
+                >
                   Download
                 </Button>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV
+                <Menu.Item
+                  icon={<DownloadIcon size={16} aria-label="download icon" />}
+                >
+                  TSV (Coming soon)
                 </Menu.Item>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON
+                <Menu.Item
+                  icon={<DownloadIcon size={16} aria-label="download icon" />}
+                >
+                  JSON (Coming soon)
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

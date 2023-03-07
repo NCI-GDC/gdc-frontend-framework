@@ -10,7 +10,8 @@ import {
 } from "@gff/core/dist/features/cases/types";
 import { Button, Divider, Menu, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
-import { MdFileDownload as DownloadIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { humanify } from "src/utils";
 import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
@@ -87,18 +88,19 @@ export const ClinicalSummary = ({
         <Menu width="target">
           <Menu.Target>
             <Button
-              className="px-1.5 min-h-7 w-28 rounded text-primary hover:bg-primary-darker hover:text-base-lightest"
+              className="px-1.5 min-h-7 rounded text-primary font-medium hover:bg-primary-darker hover:text-base-lightest"
               variant="outline"
+              leftIcon={<DownloadIcon size={16} aria-label="download icon" />}
+              rightIcon={<Dropdown size={20} aria-label="dropdown icon" />}
             >
-              <DownloadIcon size="1.25em" />
               Download
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+            <Menu.Item icon={<DownloadIcon size={16} />}>
               TSV (Coming soon)
             </Menu.Item>
-            <Menu.Item icon={<DownloadIcon size="1.25em" />}>
+            <Menu.Item icon={<DownloadIcon size={16} />}>
               JSON (Coming soon)
             </Menu.Item>
           </Menu.Dropdown>

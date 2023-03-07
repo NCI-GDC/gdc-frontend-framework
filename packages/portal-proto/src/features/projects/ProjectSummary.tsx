@@ -464,19 +464,25 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4 mb-8">
-            <CategoryTableSummary
-              title="Cases and File Counts by Data Category"
-              dataObject={projectData?.summary?.data_categories}
-              tableData={formatDataForDataCategoryTable()}
-            />
-
-            <CategoryTableSummary
-              title="Cases and File Counts by Experimental Strategy"
-              dataObject={projectData?.summary?.experimental_strategies}
-              tableData={formatDataForExpCategoryTable()}
-            />
-          </div>
+          {(projectData?.summary?.data_categories ||
+            projectData?.summary?.experimental_strategies) && (
+            <div className="flex gap-4 mt-4 mb-14">
+              {projectData?.summary?.data_categories && (
+                <CategoryTableSummary
+                  title="Cases and File Counts by Data Category"
+                  dataObject={projectData?.summary?.data_categories}
+                  tableData={formatDataForDataCategoryTable()}
+                />
+              )}
+              {projectData?.summary?.experimental_strategies && (
+                <CategoryTableSummary
+                  title="Cases and File Counts by Experimental Strategy"
+                  dataObject={projectData?.summary?.experimental_strategies}
+                  tableData={formatDataForExpCategoryTable()}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>

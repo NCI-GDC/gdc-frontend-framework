@@ -31,7 +31,8 @@ export const TableActionButtons = ({
           isOutputFileInCart
             ? "bg-primary text-base-lightest"
             : "bg-base-lightest text-primary"
-        } border border-primary rounded p-2 hover:bg-primary-darkest hover:text-base-lightest`}
+        } border border-primary rounded px-2 h-6 w-8
+         hover:bg-primary-darkest hover:text-base-lightest`}
         onClick={() => {
           isOutputFileInCart
             ? removeFromCart(file, currentCart, dispatch)
@@ -39,7 +40,7 @@ export const TableActionButtons = ({
         }}
         data-testid="add-remove-cart-button"
       >
-        <CartIcon title="Add to Cart" />
+        <CartIcon title="Add to Cart" size={12} />
       </Button>
       <DownloadFile
         file={downloadFile}
