@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, case-summary, cart, file-download
 * Verify that "File from Case Summary Biospecimen Supplement First File" has expected information
   |required_info                          |
   |---------------------------------------|
-  |ea806d2a-6b37-4af2-a8eb-d92d5720b02f   |
-  |8c09e09fafbcedff64b6cb7151332ff1       |
-  |50220                                  |
+  |a615d1d8-38ab-4d51-bf1d-f4c3c97a5de1   |
+  |a8c5db169c6088dd308eb73e368a7cd2       |
+  |116284                                 |
 Checks the UUID, MD5 Checksum, and file size values in the metadata file

@@ -10,7 +10,8 @@ class CaseSummaryLocators:
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
-    BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT = 'button:near(h2:has-text("BIOSPECIMEN SUPPLEMENT FILE") >> ..  >> .. >> button[data-testid="add-remove-cart-button"]  >> nth=0)'
+    # The first download button in the table of the section "BIOSPECIMEN SUPPLEMENT FILE"
+    BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT = 'h2:has-text("BIOSPECIMEN SUPPLEMENT FILE") >> ..  >> .. >> button:has-text("download") >> nth=0'
 
 class CaseSummaryPage(BasePage):
 
