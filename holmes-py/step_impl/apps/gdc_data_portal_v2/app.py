@@ -13,6 +13,7 @@ from ..gdc_data_portal_v2.pages.analysis_page import AnalysisPage
 from ..gdc_data_portal_v2.pages.repository_page import RepositoryPage
 from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage
 from ..gdc_data_portal_v2.pages.file_summary_page import FileSummaryPage
+from ..gdc_data_portal_v2.pages.case_summary_page import CaseSummaryPage
 
 
 class GDCDataPortalV2App:
@@ -35,3 +36,4 @@ class GDCDataPortalV2App:
         self.nav_analysis_center = NavAnalysisCenterPage(self.driver, self.url)
         self.clinical_data_analysis = ClinicalDataAnalysisPage(self.driver, self.url)
         self.file_summary_page = FileSummaryPage(self.driver,self.url)
+        self.case_summary_page = CaseSummaryPage(self.driver,self.url)
