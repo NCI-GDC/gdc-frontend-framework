@@ -1,12 +1,6 @@
 import rtlPlugin from "stylis-plugin-rtl";
 import { createEmotionCache, EmotionCache } from "@mantine/core";
 
-// export const rtlCache = createEmotionCache({
-//     key: 'mantine-rtl',
-//     prepend: true,
-//     stylisPlugins: [rtlPlugin],
-// });
-
 const createCache = (): EmotionCache => {
   // Insert mantine styles after global styles
   const insertionPoint =
