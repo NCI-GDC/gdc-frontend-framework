@@ -76,7 +76,6 @@ export const SummaryModal = ({
           "absolute right-5 top-5 text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 float-right z-20",
       }}
       padding={0}
-      withCloseButton={true}
       overlayOpacity={0.3}
     >
       {SummaryPage}
