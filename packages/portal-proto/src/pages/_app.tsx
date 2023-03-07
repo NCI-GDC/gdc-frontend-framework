@@ -68,6 +68,7 @@ type TenStringArray = [
   string,
 ];
 
+// TODO Might want to move this to a separate file
 const defaultTailwindColorTheme =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
