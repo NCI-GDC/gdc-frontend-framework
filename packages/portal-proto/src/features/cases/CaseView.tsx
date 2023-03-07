@@ -145,16 +145,25 @@ export const CaseView: React.FC<CaseViewProps> = ({
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
         <div className="flex items-center gap-2">
-          <Tooltip label="View Slide Image">
-            <Link
-              href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
-            >
-              <ImageSlideCount slideCount={slideCount} />
-            </Link>
+          <Tooltip
+            label="View Slide Image"
+            withinPortal={true}
+            withArrow
+            offset={-2}
+          >
+            <div>
+              <Link
+                href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
+              >
+                <ImageSlideCount slideCount={slideCount} />
+              </Link>
+            </div>
           </Tooltip>
 
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
+            withinPortal={true}
+            withArrow
           >
             <ActionIcon variant="outline" size="sm">
               <FaShoppingCart
