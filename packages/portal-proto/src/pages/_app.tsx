@@ -207,21 +207,20 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             } color-transition duration-500`}
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
-              <Notifications position="top-center" zIndex={400}>
-                <SummaryModalContext.Provider
-                  value={{
-                    entityMetadata,
-                    setEntityMetadata,
-                  }}
-                >
-                  <Component {...pageProps} />
+              <Notifications position="top-center" zIndex={400} />
+              <SummaryModalContext.Provider
+                value={{
+                  entityMetadata,
+                  setEntityMetadata,
+                }}
+              >
+                <Component {...pageProps} />
 
-                  <Script
-                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                    strategy="afterInteractive"
-                  />
-                </SummaryModalContext.Provider>
-              </Notifications>
+                <Script
+                  src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                  strategy="afterInteractive"
+                />
+              </SummaryModalContext.Provider>
             </URLContext.Provider>
           </div>
         </MantineProvider>
