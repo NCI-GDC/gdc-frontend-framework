@@ -32,6 +32,6 @@ class GDCDataPortalV2App:
         self.analysis_page = AnalysisPage(self.driver, self.url)
         self.repository_page = RepositoryPage(self.driver, self.url)
         self.cohort_builder_page = CohortBuilderPage(self.driver, self.url)
-        self.nav_analysis_center = AnalysisCenterPage(self.driver, self.url)
+        self.analysis_center_page = AnalysisCenterPage(self.driver, self.url)
         self.clinical_data_analysis = ClinicalDataAnalysisPage(self.driver, self.url)
         self.file_summary_page = FileSummaryPage(self.driver,self.url)

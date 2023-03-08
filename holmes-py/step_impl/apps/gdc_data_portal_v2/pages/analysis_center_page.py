@@ -1,126 +1,45 @@
 from playwright.sync_api import Page
 
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePageLocators
-
+from ....base.base_page import BasePage
+from step_impl.apps.gdc_data_portal_v2.pages.header_section import HeaderSectionLocators
 
 class AnalysisCenterLocators:
-    """A class for Home page locators. All home page locators should come here"""
+    FEATURED_TOOL_PROJECTS = 'button[aria-label="Navigate to Projects"]'
+    FEATURED_TOOL_COHORT_BUILDER = 'button[aria-label="Navigate to Cohort Builder"]'
+    FEATURED_TOOL_REPOSITORY = 'button[aria-label="Navigate to Repository"]'
 
-    TOOL_MANAGEMENT_SECTION = "div[data-tour='analysis_tool_management']"
-    COHORT_BUILDER_SECTION = "text='Cohort Builder' >> nth = 1"
-    REPOSITORY_VIEW_IMAGE_BUTTON = "text='View Images'"
+    ANALYSIS_CENTER_HEADER = 'a[data-testid="button-header-analysis"]'
 
+class AnalysisCenterPage(BasePage):
 
-class AnalysisCenterPage:
     def __init__(self, driver: Page, url):
-        self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
 
-    """Home page actions """
-
-    def visit(self):
-        self.driver.goto(self.URL)
-
-    def navigation_bar_card_check(self):
-        # First element in the set: a navigation bar icon
+    def featured_tools_navigation_check(self):
+        # First element in the set: a featured tool navigate button
         # Second element in the set: an element to check if user landed on correct page
         nav_and_location = [
             (
-                HomePageLocators.NAV_BAR_ANALYSIS_ICON,
-                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.FEATURED_TOOL_PROJECTS,
+                HeaderSectionLocators.PROJECTS_WAIT_FOR_LOCATOR,
             ),
             (
-                HomePageLocators.NAV_BAR_COHORT_ICON,
-                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.FEATURED_TOOL_COHORT_BUILDER,
+                HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_LOCATOR,
             ),
             (
-                HomePageLocators.NAV_BAR_REPOSITORY_ICON,
-                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.FEATURED_TOOL_REPOSITORY,
+                HeaderSectionLocators.REPOSITORY_WAIT_FOR_LOCATOR,
             ),
         ]
-        # Click on an icon from the nav bar, then validate user arrived on correct page
+        # Click on a featured tool nav button, then validate user arrived on correct page
         for navigation, location in nav_and_location:
             try:
-                self.driver.locator(navigation).click()
-                self.driver.wait_for_selector(location, state="visible")
-            except:
-                return False
-        return True
-
-    def navigation_default_view_card_check(self):
-        # First element in the set: a center icon from the home screen
-        # Second element in the set: a navigation bar icon
-
-        navigation_icon = [
-            (
-                HomePageLocators.NAV_DEFAULT_COHORT_ICON,
-                HomePageLocators.NAV_BAR_ANALYSIS_ICON,
-            ),
-            (
-                HomePageLocators.NAV_DEFAULT_ANALYSIS_ICON,
-                HomePageLocators.NAV_BAR_COHORT_ICON,
-            ),
-            (
-                HomePageLocators.NAV_DEFAULT_COHORT_ICON,
-                HomePageLocators.NAV_BAR_REPOSITORY_ICON,
-            ),
-            (
-                HomePageLocators.NAV_DEFAULT_REPOSITORY_ICON,
-                HomePageLocators.NAV_BAR_COHORT_ICON,
-            ),
-            (
-                HomePageLocators.NAV_DEFAULT_ANALYSIS_ICON,
-                HomePageLocators.NAV_BAR_REPOSITORY_ICON,
-            ),
-            (
-                HomePageLocators.NAV_DEFAULT_REPOSITORY_ICON,
-                HomePageLocators.NAV_BAR_ANALYSIS_ICON,
-            ),
-        ]
-
-        # First element in the set: an element to check if user landed on correct page (from the center movement)
-        # Second element in the set: an element to check if user landed on correct page (from the nav bar movement)
-        check_for_location = [
-            (
-                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
-                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-            ),
-            (
-                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
-            ),
-            (
-                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
-                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-            ),
-            (
-                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
-            ),
-            (
-                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-            ),
-            (
-                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-            ),
-        ]
-        # Start at the home screen. Click an icon from the default (center) of the screen. Validate user arrived at correct screen.
-        # Then, click on the nav bar to another location. Validate user arrived at correct screen. Done for all permutations of default
-        # navigation.
-        for navigation, location in zip(navigation_icon, check_for_location):
-            self.driver.locator(HomePageLocators.NAV_NIH_LOGO).click()
-            try:
-                # center icon nav card
-                self.driver.locator(navigation[0]).click()
-                # check to see if user landed in correct location
-                self.driver.wait_for_selector(location[0], state="visible")
-                # nav bar icon
-                self.driver.locator(navigation[1]).click()
-                # check to see if user landed in correct location
-                self.driver.wait_for_selector(location[1], state="visible")
+                self.click(navigation)
+                self.wait_until_locator_is_visible(location)
+                # Navigate back to the analysis center for the next test
+                self.click(AnalysisCenterLocators.ANALYSIS_CENTER_HEADER)
+                self.wait_until_locator_is_visible(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_LOCATOR)
             except:
                 return False
         return True
