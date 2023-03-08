@@ -112,7 +112,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       props.geneSearch4GDCmds3,
       isDemoMode,
       filter0,
-      props.userDetails,
+      props.userdetails,
     ],
   );
 
@@ -128,7 +128,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
-        userDetails={userDetails}
+        userdetails={userDetails}
       />
     </div>
   );

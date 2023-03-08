@@ -63,7 +63,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails],
+    [filter0, props.userdetails],
   );
 
   const alertRef = useRef();
@@ -83,6 +83,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em", display: `${rootDisplay}` }}
         className="sjpp-wrapper-root-div"
+        userdetails={userDetails}
       ></div>
     </div>
   );

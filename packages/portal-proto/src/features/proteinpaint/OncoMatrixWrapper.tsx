@@ -91,7 +91,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails, isDemoMode],
+    [filter0, props.userdetails, isDemoMode],
   );
 
   const divRef = useRef();
@@ -106,6 +106,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
+        userdetails={userDetails}
       />
     </div>
   );
