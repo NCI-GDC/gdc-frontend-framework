@@ -41,9 +41,7 @@ const DND: React.FC<DNDProps> = ({
               setColumnSearchTerm("");
             }}
           >
-            <Box
-              className={`border-1 border-base p-2 rounded-md mx-2 hover:cursor-pointer`}
-            >
+            <Box className="border-1 border-base p-2 rounded-md hover:cursor-pointer">
               {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
             </Box>
           </button>

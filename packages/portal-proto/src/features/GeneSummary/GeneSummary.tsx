@@ -249,7 +249,6 @@ const GeneView = ({
               />
               <div className="mt-4">
                 <div className="flex items-center gap-2">
-                  <BarChartIcon size={20} className="text-accent" />
                   <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
                 <SMTableContainer

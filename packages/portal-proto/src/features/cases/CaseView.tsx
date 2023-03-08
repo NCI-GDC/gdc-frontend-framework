@@ -436,8 +436,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
         isModal={isModal}
       />
 
-      <div className={`flex flex-col ${!isModal && "mt-32"} mx-4`}>
-        <div className="flex flex-col gap-5 mt-8">
+      <div className={`${!isModal && "mt-32"} mx-4`}>
+        <div className="mt-8">
           <div className="flex">
             <div className="basis-1/2">
               <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
@@ -455,7 +455,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
           {(data.summary.data_categories ||
             data.summary.experimental_strategies) && (
-            <div className="flex gap-4 mt-4 mb-14">
+            <div className="flex gap-4 mt-8 mb-14">
               {data.summary.data_categories && (
                 <CategoryTableSummary
                   title="File Counts by Data Category"

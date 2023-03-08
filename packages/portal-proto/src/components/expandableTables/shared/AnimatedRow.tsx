@@ -41,12 +41,12 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
       className={`border-2 ${
         selected
           ? `border-l-4 border-t-0 border-r-4 border-b-0 border-activeColor`
-          : ``
-      } ${index % 2 ? `bg-slate-50` : `bg-white`}`}
+          : `border-base-lighter`
+      } ${index % 2 === 1 ? `bg-base-max` : `bg-base-lightest`}`}
     >
       {row.getVisibleCells().map((cell, cellIdx) => {
         return (
-          <animated.td key={cell.id}>
+          <animated.td key={cell.id} className="py-2">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {row.id.includes(".") && cellIdx === 0 && subrow}
           </animated.td>

@@ -70,7 +70,7 @@ export const SSMSSummary = ({
       functional_impact: (
         <>
           {transcript_id ? (
-            <div className="flex-col">
+            <div className="flex-col py-2">
               <AnchorLink
                 href={externalLinks.transcript(transcript_id)}
                 title={transcript_id}
@@ -179,7 +179,7 @@ export const SSMSSummary = ({
             isModal={isModal}
           />
 
-          <div className={`mx-auto ${!isModal && "mt-20"} w-9/12 pt-4`}>
+          <div className={`mx-4 ${!isModal && "mt-20"}`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -193,19 +193,14 @@ export const SSMSSummary = ({
                 </div>
               </div>
             </div>
-            <div className="mt-4">
-              <div className="flex items-center gap-2 mb-2">
-                <BarChartIcon size={20} className="text-accent" />
-                <HeaderTitle>Consequences</HeaderTitle>
-              </div>
-              <SMSConsequenceTableContainer
-                columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
-                ssmsId={ssm_id}
-              />
-            </div>
-            <div className="mt-4">
+
+            <SMSConsequenceTableContainer
+              columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
+              ssmsId={ssm_id}
+            />
+
+            <div className="mt-8">
               <div className="flex items-center gap-2">
-                <BarChartIcon size={20} className="text-accent" />
                 <HeaderTitle>Cancer Distribution</HeaderTitle>
               </div>
               <Grid>

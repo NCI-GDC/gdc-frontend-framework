@@ -28,7 +28,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
     ({ value }: ControlOption) => value === "placeholder",
   );
   return (
-    <div className="flex flex-row items-center mt-3">
+    <div className="flex items-center mt-2 gap-2">
       <Menu shadow="md">
         <Menu.Target>
           <Button
@@ -76,7 +76,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           )}
         </Menu.Dropdown>
       </Menu>
-      <Group className="mx-2">{additionalControls}</Group>
+      <Group>{additionalControls}</Group>
       <div>
         {
           <Text className="font-heading font-bold text-md">

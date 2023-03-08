@@ -277,7 +277,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           />
         )}
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
-          <div className="flex flex-row ml-2 mb-4">
+          <div className="flex mb-4 gap-2">
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
@@ -326,18 +326,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
             />
           </div>
-          <div className="flex flex-row flex-nowrap mr-2">
-            <TableFilters
-              search={searchTerm}
-              handleSearch={handleSearch}
-              columnListOrder={columnListOrder}
-              handleColumnChange={handleColumnChange}
-              showColumnMenu={showColumnMenu}
-              setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_SMTABLE_ORDER}
-            />
-          </div>
+
+          <TableFilters
+            search={searchTerm}
+            handleSearch={handleSearch}
+            columnListOrder={columnListOrder}
+            handleColumnChange={handleColumnChange}
+            showColumnMenu={showColumnMenu}
+            setShowColumnMenu={setShowColumnMenu}
+            defaultColumns={DEFAULT_SMTABLE_ORDER}
+          />
         </div>
+
         <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder

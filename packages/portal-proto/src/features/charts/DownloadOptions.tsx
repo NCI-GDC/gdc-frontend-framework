@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MdFileDownload as DownloadIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 import { DownloadButton } from "@/features/shared/tailwindComponents";

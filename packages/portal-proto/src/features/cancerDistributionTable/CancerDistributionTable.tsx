@@ -309,9 +309,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       showControls={false}
       additionalControls={
-        <div className="flex gap-2">
-          <FunctionButton>JSON</FunctionButton>
+        <div className="flex flex-row-reverse gap-2">
           <FunctionButton>TSV</FunctionButton>
+          <FunctionButton>JSON</FunctionButton>
         </div>
       }
       pagination={{

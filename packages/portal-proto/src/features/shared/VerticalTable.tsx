@@ -360,7 +360,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-xs font-bold text-base-contrast-max py-2 whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter`}
+              className={`font-heading text-xs font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -368,7 +368,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className={`px-2 pt-1 pb-1 font-heading  ${
+                    className={`px-2 py-3 font-heading ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -380,7 +380,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-1 pb-1 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
+                    className={`px-2 py-3 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -390,7 +390,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         column.highlighted
                           ? "hover:bg-nci-purple-lighter"
                           : "hover:bg-primary-lightest"
-                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5`
+                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1`
                     }`}
                     key={`hcolumn-${key}`}
                     aria-sort={
@@ -467,7 +467,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-0 text-xs text-content"
+                          className="px-2 py-2.5 text-xs text-content"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -616,7 +616,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     setShowColumnMenu(!showColumnMenu);
                   }}
                 >
-                  <Box className="border-1 border-base p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
+                  <Box className="border-1 p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
                     {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
                   </Box>
                 </button>
