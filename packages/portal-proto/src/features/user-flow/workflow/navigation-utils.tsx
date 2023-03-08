@@ -1,7 +1,14 @@
 import { Image } from "@/components/Image";
 import { Tooltip } from "@mantine/core";
-import { NextLink } from "@mantine/next";
+import Link from "next/link";
 import tw from "tailwind-styled-components";
+
+// eslint-disable-next-line react/prop-types
+const NextLink = ({ children, href }) => (
+  <Link href={href}>
+    <span>{children}</span>
+  </Link>
+);
 
 const NavLink = tw(NextLink)`
 flex

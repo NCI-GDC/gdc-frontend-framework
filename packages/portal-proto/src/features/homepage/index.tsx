@@ -1,4 +1,4 @@
-import { NextLink } from "@mantine/next";
+import Link from "next/link";
 import tw from "tailwind-styled-components";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
@@ -7,6 +7,13 @@ import HPCardImgAlt from "./HPCardImgAlt";
 import HPCardImg from "./HPCardImg";
 import { useTotalCounts } from "@gff/core";
 import { Image } from "@/components/Image";
+
+// eslint-disable-next-line react/prop-types
+const NextLink = ({ children, href }) => (
+  <Link href={href}>
+    <span>{children}</span>
+  </Link>
+);
 
 export const HomepageButton = tw(NextLink)`
 bg-primary text-sm text-base-max border-base-light border-1

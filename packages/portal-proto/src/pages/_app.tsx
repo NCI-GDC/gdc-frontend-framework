@@ -13,7 +13,7 @@ import {
   createEmotionCache,
   EmotionCache,
 } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
+import { Notifications } from "@mantine/notifications";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
 
@@ -151,11 +151,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             primaryColor: "primary",
             primaryShade: { light: 4, dark: 7 },
             breakpoints: {
-              xs: 500,
-              sm: 800,
-              md: 1000,
-              lg: 1275,
-              xl: 1800,
+              xs: "500",
+              sm: "800",
+              md: "1000",
+              lg: "1275",
+              xl: "1800",
             },
             components: {
               Tooltip: {
@@ -207,7 +207,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             } color-transition duration-500`}
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
-              <NotificationsProvider position="top-center" zIndex={400}>
+              <Notifications position="top-center" zIndex={400}>
                 <SummaryModalContext.Provider
                   value={{
                     entityMetadata,
@@ -221,7 +221,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                     strategy="afterInteractive"
                   />
                 </SummaryModalContext.Provider>
-              </NotificationsProvider>
+              </Notifications>
             </URLContext.Provider>
           </div>
         </MantineProvider>
