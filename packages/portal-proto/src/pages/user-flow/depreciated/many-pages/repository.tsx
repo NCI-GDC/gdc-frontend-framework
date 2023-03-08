@@ -3,14 +3,13 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { CohortManager } from "@/features/user-flow/many-pages/cohort";
 import { Select } from "@/components/Select";
 import { useState } from "react";
-import { GdcFile, useFiles } from "@gff/core";
+import { GdcFile, useGetFilesQuery } from "@gff/core";
 import { FileModal } from "@/features/files/FileView";
-import { CaseModal } from "@/features/cases/CaseView";
 import { headerElements } from "@/features/user-flow/many-pages/navigation-utils";
 import { Case } from "@/features/user-flow/all-apps/baseExploration";
 
 const RepositoryPage: NextPage = () => {
-  const { data } = useFiles({ size: 20 });
+  const { data } = useGetFilesQuery({ size: 20 });
 
   const options = [
     { value: "cb-expand", label: "Cohort Builder Expand" },
@@ -25,8 +24,8 @@ const RepositoryPage: NextPage = () => {
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
-  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
-  const [currentCase, setCurrentCase] = useState(undefined as Case);
+  const [, setCaseModalOpen] = useState(false);
+  const [, setCurrentCase] = useState(undefined as Case);
 
   const Options = () => (
     <Select
@@ -83,11 +82,6 @@ const RepositoryPage: NextPage = () => {
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
-      />
-      <CaseModal
-        isOpen={isCaseModalOpen}
-        closeModal={() => setCaseModalOpen(false)}
-        patient={currentCase}
       />
     </UserFlowVariedPages>
   );

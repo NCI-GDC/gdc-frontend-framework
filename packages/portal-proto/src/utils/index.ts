@@ -1,5 +1,11 @@
 import { KeyboardEventHandler } from "react";
-import { CartFile, DAYS_IN_YEAR } from "@gff/core";
+import {
+  CartFile,
+  DAYS_IN_YEAR,
+  FilterSet,
+  joinFilters,
+  isIncludes,
+} from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
 
@@ -199,3 +205,42 @@ export const extractToArray = (
   data: ReadonlyArray<Record<string, number | string>>,
   nodeKey: string,
 ): (string | number)[] => data?.map((x) => x[nodeKey]);
+
+export const processFilters = (
+  filter_A: FilterSet,
+  filter_B: FilterSet,
+): FilterSet | undefined =>
+  !filter_A && !filter_B
+    ? undefined
+    : filter_A && !filter_B
+    ? filter_A
+    : !filter_A && filter_B
+    ? filter_B
+    : joinFilters(filter_B, filter_A);
+
+const MAX_VALUE_COUNT = 6;
+/**
+ * Creates a name for a filter set based on it's contents
+ * @param filters
+ * @returns a name with up to 6 filters, grouped by field
+ */
+export const filtersToName = (filters: FilterSet): string => {
+  const filterValues = [];
+  let valueCount = 0;
+  for (const filter of Object.values(filters?.root || {})) {
+    const filtersForField = isIncludes(filter) ? filter?.operands : [];
+    if (valueCount + filtersForField.length > MAX_VALUE_COUNT) {
+      const filtersToAdd = filtersForField.slice(
+        0,
+        MAX_VALUE_COUNT - valueCount,
+      );
+      filterValues.push(filtersToAdd.join(" / ") + "...");
+      break;
+    } else {
+      filterValues.push(filtersForField.join(" / "));
+      valueCount += filtersForField.length;
+    }
+  }
+
+  return filterValues.join(", ");
+};

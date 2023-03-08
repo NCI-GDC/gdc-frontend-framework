@@ -1,17 +1,19 @@
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "../styles/oncogrid.css";
-import { createContext, useState } from "react";
+import "@nci-gdc/sapien/dist/bodyplot.css";
+import { useState } from "react";
 import { Provider } from "react-redux";
 import type { AppProps } from "next/app";
 import Script from "next/script";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import {
+  MantineProvider,
+  createEmotionCache,
+  EmotionCache,
+} from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-// TODO: uncomment during PEAR-845
-// import { TourProvider } from "@reactour/tour";
-// import { CustomBadge as Badge } from "../features/tour/CustomBadge";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
 
@@ -30,9 +32,15 @@ import "react-tabs/style/react-tabs.css";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-ReactModal.setAppElement("#__next");
-
 import { datadogRum } from "@datadog/browser-rum";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+  URLContext,
+} from "src/utils/contexts";
+
+if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
+
 datadogRum.init({
   applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
   clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
@@ -63,8 +71,17 @@ type TenStringArray = [
   string?,
 ];
 
-export const URLContext = createContext({ prevPath: "", currentPath: "" });
-const appendCache = createEmotionCache({ key: "mantine", prepend: false });
+const getCache = (): EmotionCache => {
+  // Insert mantine styles after global styles
+  const insertionPoint =
+    typeof document !== "undefined"
+      ? document.querySelectorAll<HTMLElement>(
+          'style[data-emotion="css-global"]',
+        )?.[-1]
+      : undefined;
+
+  return createEmotionCache({ key: "mantine", insertionPoint });
+};
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -78,14 +95,28 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
+
+  const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
+    entity_type: null,
+    entity_id: null,
+    entity_name: null,
+  });
+
+  const defaultTailwindColorTheme =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+
   return (
     <CoreProvider>
       <Provider store={store}>
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionCache={appendCache}
+          emotionCache={getCache()}
           theme={{
+            // use V2 font in MantineProvider
+            fontFamily: "Montserrat, Noto Sans, sans-serif",
             // Override default blue color until styles are determined
             colors: {
               blue: Object.values(
@@ -112,12 +143,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               // TODO: refactor how the configuration get loaded
 
               ...Object.fromEntries(
-                Object.entries(
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme
-                    .extend.colors,
-                ).map(([key, values]) => [key, Object.values(values)]),
+                Object.entries(defaultTailwindColorTheme).map(
+                  ([key, values]) => [key, Object.values(values)],
+                ),
               ),
             },
             primaryColor: "primary",
@@ -129,6 +157,48 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               lg: 1275,
               xl: 1800,
             },
+            components: {
+              Tooltip: {
+                defaultProps: {
+                  arrowSize: 10,
+                  classNames: {
+                    tooltip:
+                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+                    arrow: "bg-base-min bg-opacity-90",
+                  },
+                },
+              },
+              Modal: {
+                defaultProps: {
+                  zIndex: 400,
+                  radius: "md",
+                  styles: {
+                    header: {
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                      fontFamily: '"Montserrat", "sans-serif"',
+                      fontSize: "1.65em",
+                      fontWeight: 500,
+                      letterSpacing: ".1rem",
+                      borderColor: defaultTailwindColorTheme.base.lighter,
+                      borderStyle: "solid",
+                      borderWidth: "0px 0px 2px 0px",
+                      padding: "15px 15px 5px 15px",
+                      margin: "5px 5px 10px 5px",
+                      textTransform: "uppercase",
+                    },
+                    modal: {
+                      backgroundColor: defaultTailwindColorTheme.base.max,
+                    },
+                    close: {
+                      backgroundColor: defaultTailwindColorTheme.base.lightest,
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                    },
+                  },
+                },
+              },
+            },
           }}
         >
           <div
@@ -138,14 +208,19 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
               <NotificationsProvider position="top-center" zIndex={400}>
-                {/* TODO: uncomment during PEAR-845 */}
-                {/* <TourProvider steps={[]} components={{ Badge }}> */}
-                <Component {...pageProps} />
-                <Script
-                  src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                  strategy="afterInteractive"
-                />
-                {/* </TourProvider> */}
+                <SummaryModalContext.Provider
+                  value={{
+                    entityMetadata,
+                    setEntityMetadata,
+                  }}
+                >
+                  <Component {...pageProps} />
+
+                  <Script
+                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
+                    strategy="afterInteractive"
+                  />
+                </SummaryModalContext.Provider>
               </NotificationsProvider>
             </URLContext.Provider>
           </div>

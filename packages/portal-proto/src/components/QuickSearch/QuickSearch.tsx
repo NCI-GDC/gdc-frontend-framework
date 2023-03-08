@@ -2,20 +2,15 @@ import { useQuickSearch } from "@gff/core";
 import { Badge, Loader, TextInput, Highlight } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { TraversableList } from "../List/TraversableList";
 import { TypeIcon } from "../TypeIcon";
 import { entityShortNameMapping } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
 
-export const QuickSearch = ({
-  performSearch,
-  setPerformSearch,
-}: {
-  performSearch: boolean;
-  setPerformSearch: Dispatch<SetStateAction<boolean>>;
-}): JSX.Element => {
+export const QuickSearch = (): JSX.Element => {
+  const [performSearch, setPerformSearch] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [focusedListElemIdx, setFocusedListElemIdx] = useState(undefined);
   const quickSearchRef = useRef(null);
@@ -115,15 +110,14 @@ export const QuickSearch = ({
       <div ref={ref} className="relative">
         <TextInput
           icon={isFetching ? <Loader size={24} /> : <SearchIcon size={24} />}
-          placeholder="Quick Search"
+          placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
           aria-label="Quick Search Input"
           ref={quickSearchRef}
           onKeyDown={onInputKeyDown}
           onFocus={onInputFocus}
           onBlur={onInputBlur}
           classNames={{
-            input: "focus:border-2 fo  cus:drop-shadow-xl",
-            wrapper: "w-72",
+            input: "focus:border-2 focus:drop-shadow-xl text-sm",
           }}
           size="sm"
           rightSection={

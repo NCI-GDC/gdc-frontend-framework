@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, FC } from "react";
+import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
+import { v4 as uuidv4 } from "uuid";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -7,13 +9,16 @@ import {
   FilterSet,
   PROTEINPAINT_API,
   useUserDetails,
+  useCoreDispatch,
+  addNewCohortWithFilterAndMessage,
+  DEFAULT_COHORT_ID,
+  setActiveCohort,
 } from "@gff/core";
-import { isEqual } from "lodash";
+import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
 interface PpProps {
-  track: string;
   basepath?: string;
   geneId?: string;
   gene2canonicalisoform?: string;
@@ -23,36 +28,60 @@ interface PpProps {
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
-  const filter0 = buildCohortGqlOperator(
-    useCoreSelector(selectCurrentCohortFilters),
-  );
-
+  const isDemoMode = useIsDemoApp();
+  const currentCohort = useCoreSelector(selectCurrentCohortFilters);
+  const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
   const { data: userDetails } = useUserDetails();
-  const [alertDisplay, setAlertDisplay] = useState("none");
-  const [rootDisplay, setRootDisplay] = useState("none");
-
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
 
+  const coreDispatch = useCoreDispatch();
+
+  const callback = function (arg: SelectSamplesCallBackArg): void {
+    const { samples, source } = arg;
+    const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "occurrence.case.case_id": {
+          operator: "includes",
+          field: "occurrence.case.case_id",
+          operands: ids,
+        },
+      },
+    };
+    coreDispatch(
+      // TODO: option to edit a cohort using ImportCohortModal???
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        message: "newCasesCohort",
+        // TODO: improve cohort name constructor
+        name: source + ` (n=${samples.length})`,
+        group:
+          ids.length > 1
+            ? {
+                ids: [...ids],
+                field: "occurrence.case.case_id",
+                groupId: uuidv4(),
+              }
+            : undefined,
+      }),
+    );
+  };
+
+  const isRendered = useRef<boolean>(false);
+  if (isDemoMode && !isRendered.current) {
+    isRendered.current = true;
+    coreDispatch(setActiveCohort(DEFAULT_COHORT_ID));
+  }
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const isAuthorized = props.track != "bam" || userDetails.username;
-      setAlertDisplay(isAuthorized ? "none" : "block");
-      setRootDisplay(isAuthorized ? "block" : "none");
-      if (!isAuthorized) return;
-
-      const data =
-        props.track == "lollipop"
-          ? getLollipopTrack(props, filter0)
-          : props.track == "bam" && userDetails?.username
-          ? getBamTrack(props, filter0)
-          : props.track == "matrix"
-          ? getMatrixTrack(props, filter0)
-          : null;
-
+      const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
+      if (isDemoMode) data.geneSymbol = "MYC";
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
@@ -62,8 +91,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
       const arg = Object.assign(
         { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-        JSON.parse(JSON.stringify(data)),
-      ) as PpArg;
+        cloneDeep(data),
+      ) as Mds3Arg;
 
       if (ppRef.current) {
         ppRef.current.update(arg);
@@ -80,39 +109,40 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
       props.geneSearch4GDCmds3,
+      isDemoMode,
       filter0,
       userDetails,
     ],
   );
 
-  const alertRef = useRef();
   const divRef = useRef();
   return (
     <div>
-      <div
-        ref={alertRef}
-        style={{ margin: "32px", display: `${alertDisplay}` }}
-        className="sjpp-wrapper-alert-div"
-      >
-        <b>Access alert</b>
-        <hr />
-        <p>Please login to access the Sequence Read visualization tool.</p>
-      </div>
+      {isDemoMode && (
+        <span className="font-heading italic px-2 py-4 mt-4">
+          {"Demo showing MYC variants for all GDC."}
+        </span>
+      )}
       <div
         ref={divRef}
-        style={{ margin: "32px", display: `${rootDisplay}` }}
+        style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
-      ></div>
+      />
     </div>
   );
 };
 
 interface Mds3Arg {
+  holder?: HTMLElement;
+  noheader?: boolean;
+  nobox?: boolean;
+  hide_dsHandles?: boolean;
   host: string;
   genome: string;
   gene2canonicalisoform?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
   geneSearch4GDCmds3?: boolean;
+  geneSymbol?: string;
   tracks: Track[];
 }
 
@@ -120,6 +150,7 @@ interface Track {
   type: string;
   dslabel: string;
   filter0: FilterSet;
+  allow2selectSamples?: SelectSamples;
 }
 
 interface mds3_isoform {
@@ -127,13 +158,32 @@ interface mds3_isoform {
   dslabel: string;
 }
 
-interface PpArg extends Mds3Arg, BamArg {}
-
 interface PpApi {
   update(arg: any): null;
 }
 
-function getLollipopTrack(props: PpProps, filter0: any) {
+type SampleData = {
+  "case.case_id"?: string;
+};
+
+interface SelectSamplesCallBackArg {
+  samples: SampleData[];
+  source: string;
+}
+
+type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
+
+interface SelectSamples {
+  buttonText: string;
+  attributes: string[];
+  callback: SelectSamplesCallback;
+}
+
+function getLollipopTrack(
+  props: PpProps,
+  filter0: any,
+  callback: SelectSamplesCallback,
+) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
@@ -144,6 +194,11 @@ function getLollipopTrack(props: PpProps, filter0: any) {
         type: "mds3",
         dslabel: "GDC",
         filter0,
+        allow2selectSamples: {
+          buttonText: "Create Cohort",
+          attributes: ["case.case_id"],
+          callback,
+        },
       },
     ],
   };
@@ -158,69 +213,6 @@ function getLollipopTrack(props: PpProps, filter0: any) {
   } else {
     arg.geneSearch4GDCmds3 = true;
   }
-
-  return arg;
-}
-
-interface BamArg {
-  host: string;
-  gdcbamslice: GdcBamSlice;
-  filter0: FilterSet;
-}
-
-type GdcBamSlice = {
-  hideTokenInput: boolean;
-};
-
-function getBamTrack(props: PpProps, filter0: any) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  const arg: BamArg = {
-    host: props.basepath || (basepath as string),
-    gdcbamslice: {
-      hideTokenInput: true,
-    },
-    filter0,
-  };
-
-  return arg;
-}
-
-interface MatrixArg {
-  host: string;
-  launchGdcMatrix: boolean;
-  filter0: FilterSet;
-}
-
-function getMatrixTrack(props: PpProps, filter0: any) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  const defaultFilter = {
-    op: "and",
-    content: [
-      {
-        op: "in",
-        content: {
-          field: "cases.primary_site",
-          value: ["breast", "bronchus and lung"],
-        },
-      },
-      {
-        op: ">=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 10000 },
-      },
-      {
-        op: "<=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 20000 },
-      },
-    ],
-  };
-
-  const arg: MatrixArg = {
-    host: props.basepath || (basepath as string),
-    launchGdcMatrix: true,
-    filter0: filter0 || defaultFilter,
-  };
 
   return arg;
 }

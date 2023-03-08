@@ -80,6 +80,17 @@ const buildGeneHaveAndHaveNotFilters = (
 // Persist which tab is active
 type AppModeState = "genes" | "ssms";
 
+export const overwritingDemoFilterMutationFrequency: FilterSet = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["TCGA-LGG"],
+    },
+  },
+};
+
 // need to define isDemoMode Here
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const isDemoMode = useIsDemoApp();
@@ -95,25 +106,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     selectGeneAndSSMFilters(state),
   );
 
+  const overwritingDemoFilter = useMemo(
+    () => overwritingDemoFilterMutationFrequency,
+    [],
+  );
+
   /**
    * Get genes in cohort
    */
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
-
-  const overwritingDemoFilter: FilterSet = useMemo(
-    () => ({
-      mode: "and",
-      root: {
-        "cases.project.project_id": {
-          operator: "includes",
-          field: "cases.project.project_id",
-          operands: ["TCGA-LGG"],
-        },
-      },
-    }),
-    [],
-  );
 
   const filters = useMemo(
     () =>
@@ -360,6 +362,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               )}
               toggledSsms={currentMutations}
               isDemoMode={isDemoMode}
+              isModal={true}
             />
           </Tabs.Panel>
         </Tabs>

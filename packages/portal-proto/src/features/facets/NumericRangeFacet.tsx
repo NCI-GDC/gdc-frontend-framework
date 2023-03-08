@@ -16,13 +16,12 @@ import { DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
-  getLowerAgeFromYears,
   getLowerAgeYears,
-  getUpperAgeFromYears,
-  getUpperAgeYears,
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
+  adjustYearsToDays,
+  adjustDaysToYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -191,6 +190,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   type="radio"
                   id={`${field}_${rangeKey}_${i}`}
                   name={`${field}_range_selection`}
+                  aria-label={rangeLabelsAndValues[rangeKey].valueLabel}
                   value={rangeKey}
                   checked={rangeKey === selected}
                   className={RadioStyle}
@@ -300,6 +300,7 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? minimum : getLowerAgeYears(minimum);
   const upperUnitRange =
     units !== "years" ? maximum : getLowerAgeYears(maximum);
+
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
@@ -324,11 +325,10 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
-            value={units !== "years" ? fromValue : getLowerAgeYears(fromValue)}
+            // units are always days
+            value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
-              units !== "years"
-                ? setFromValue(value)
-                : setFromValue(getLowerAgeFromYears(value));
+              setFromValue(adjustYearsToDays(value, units));
               changedCallback();
             }}
             hideControls
@@ -357,12 +357,10 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
-              units !== "years"
-                ? setToValue(value)
-                : setToValue(getUpperAgeFromYears(value));
+              setToValue(adjustYearsToDays(value, units));
               changedCallback();
             }}
-            value={units !== "years" ? toValue : getUpperAgeYears(toValue)}
+            value={adjustDaysToYears(toValue, units)}
             hideControls
             aria-label="input to value"
           />
@@ -515,6 +513,7 @@ const RangeInputWithPrefixedRanges: React.FC<
       <div className="flex flex-col w-100 space-y-2 mt-1 ">
         <div className="flex flex-row  justify-items-stretch items-center">
           <input
+            aria-label="custom range"
             type="radio"
             className={RadioStyle}
             id={`${field}_custom`}
@@ -616,9 +615,9 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // set up a fixed range -90 to 90 years over 19 buckets
-  const rangeMinimum = -32872.5;
-  const rangeMaximum = 32872.5;
-  const numBuckets = 19;
+  const rangeMinimum = -32873;
+  const rangeMaximum = 32873;
+  const numBuckets = 18;
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
@@ -628,7 +627,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
           { label: "Years", value: "years" },
         ]}
         value={units}
-        color={"primary.2"}
+        color={"primary"}
         onChange={setUnits}
       />
       <RangeInputWithPrefixedRanges
@@ -822,6 +821,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearFilters(field);
                 setClearValues(true);
               }}
+              aria-label="clear selection"
             >
               <UndoIcon size="1.15em" />
             </FacetIconButton>

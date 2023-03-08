@@ -35,7 +35,7 @@ export const TablePlaceholder: React.FC<TablePlaceholderProps> = ({
     >
       <div className={`mr-0 m-auto`}>
         <table>
-          <thead className={`border border-2 shadow-md w-[90%`}></thead>
+          <thead className={`border-2 shadow-md w-[90%`}></thead>
           <tbody>
             {Array.from({ length: numOfRows }, (_, i) => i).map((n, nIdx) => {
               return (
@@ -45,11 +45,9 @@ export const TablePlaceholder: React.FC<TablePlaceholderProps> = ({
                   // eslint-disable-next-line react-hooks/rules-of-hooks
                   style={useRowSpring(nIdx)}
                   className={`h-[${rowHeight}px] ${n === 0 ? "hidden" : ""} ${
-                    n === 1 ? `border border-2 shadow-md` : ``
+                    n === 1 ? `border-2 shadow-md` : ``
                   } ${
-                    n === 9
-                      ? `border border-2 border-b-2 shadow-md border-t-0`
-                      : ``
+                    n === 9 ? `border-2 border-b-2 shadow-md border-t-0` : ``
                   } ${n > 1 && n % 2 === 0 ? `bg-slate-100` : `bg-white`} ${
                     n > 1 ? `border-l-2 border-r-2 border-t-0 border-b-0` : ``
                   }`}

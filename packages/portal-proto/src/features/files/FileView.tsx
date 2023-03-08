@@ -37,6 +37,7 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -55,18 +56,15 @@ const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
 export interface FileViewProps {
   readonly file?: GdcFile;
   readonly fileHistory?: HistoryDefaults[];
+  readonly isModal?: boolean;
 }
 
 const FullWidthDiv = tw.div`
-bg-base-lightest w-full text-base-contrast-lighter mt-4
-`;
-
-const TitleText = tw.h2`
-text-lg text-accent uppercase tracking-wide font-medium mx-4 ml-2
+bg-base-max w-full text-base-contrast-lighter mt-4
 `;
 
 const TitleHeader = tw.div`
-bg-base-lightest text-base-contrast-lighter
+bg-base-max text-base-contrast-lighter
 `;
 
 const getAnnotationsLinkParams = (
@@ -105,7 +103,7 @@ export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
           {tableData.headers.map((text, index) => (
             <th
               key={index}
-              className="bg-base-max font-heading font-semibold border-b-2 border-base-lighter"
+              className="bg-base-max font-heading border-b-2 border-base-lighter"
             >
               {text}
             </th>
@@ -303,6 +301,7 @@ const AssociatedCB = ({
 export const FileView: React.FC<FileViewProps> = ({
   file,
   fileHistory,
+  isModal,
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
@@ -403,7 +402,11 @@ export const FileView: React.FC<FileViewProps> = ({
   };
 
   return (
-    <div className="p-4 text-primary-content w-10/12 mt-20 m-auto">
+    <div
+      className={`p-4 text-primary-content w-10/12 ${
+        isModal ? "mt-5" : "mt-20"
+      } m-auto`}
+    >
       <div className="flex justify-end pb-5 gap-2">
         {!isFileInCart ? (
           <AddToCartButton files={mapGdcFileToCartFile([file])} />
@@ -425,7 +428,7 @@ export const FileView: React.FC<FileViewProps> = ({
       </div>
       <div className="flex">
         <TitleHeader className="flex-auto mr-4 ">
-          <TitleText>File Properties</TitleText>
+          <HeaderTitle>File Properties</HeaderTitle>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
@@ -464,7 +467,7 @@ export const FileView: React.FC<FileViewProps> = ({
           />
         </TitleHeader>
         <TitleHeader className="w-1/3  h-full">
-          <TitleText>Data Information</TitleText>
+          <HeaderTitle>Data Information</HeaderTitle>
           <HorizontalTable
             tableData={formatDataForHorizontalTable(file, [
               {
@@ -490,7 +493,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
       {get(file, "data_type") === "Slide Image" && (
         <FullWidthDiv>
-          <TitleText>Slide Image Viewer</TitleText>
+          <HeaderTitle>Slide Image Viewer</HeaderTitle>
           <ImageViewer
             imageId={file?.file_id}
             tableData={parseSlideDetailsInfo(file)}
@@ -498,7 +501,7 @@ export const FileView: React.FC<FileViewProps> = ({
         </FullWidthDiv>
       )}
       <FullWidthDiv>
-        <TitleText>Associated Cases/Biospecimens</TitleText>
+        <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
         {file?.associated_entities?.length > 0 ? (
           <AssociatedCB
             cases={file?.cases}
@@ -514,7 +517,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <>
           <div className="bg-grey mt-4 flex gap-10">
             <TitleHeader className="flex-1 ">
-              <TitleText>Analysis</TitleText>
+              <HeaderTitle>Analysis</HeaderTitle>
               <HorizontalTable
                 tableData={formatDataForHorizontalTable(file, [
                   {
@@ -570,7 +573,7 @@ export const FileView: React.FC<FileViewProps> = ({
               />
             </TitleHeader>
             <TitleHeader className="flex-1 ">
-              <TitleText>Reference Genome</TitleText>
+              <HeaderTitle>Reference Genome</HeaderTitle>
               <HorizontalTable
                 tableData={[
                   { headerName: "Genome Build	", values: ["GRCh38.p0"] },
@@ -581,7 +584,7 @@ export const FileView: React.FC<FileViewProps> = ({
           </div>
           {file?.analysis?.metadata && (
             <FullWidthDiv>
-              <TitleText>Read Groups</TitleText>
+              <HeaderTitle>Read Groups</HeaderTitle>
               <TempTable
                 tableData={{
                   headers: [
@@ -614,14 +617,14 @@ export const FileView: React.FC<FileViewProps> = ({
         (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
       ) && (
         <FullWidthDiv>
-          <TitleText>Downstream Analyses Files</TitleText>
+          <HeaderTitle>Downstream Analyses Files</HeaderTitle>
           <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
         </FullWidthDiv>
       )}
 
       {fileHistory && (
         <FullWidthDiv>
-          <TitleText className="float-left mt-3">File Versions</TitleText>
+          <HeaderTitle className="float-left mt-3">File Versions</HeaderTitle>
           <div className="float-right my-2 mr-3">
             <Menu width="target">
               <Menu.Target>

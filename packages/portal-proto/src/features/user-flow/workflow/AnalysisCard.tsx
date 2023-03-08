@@ -40,7 +40,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     <Card
       shadow="sm"
       p="xs"
-      className={`bg-base-max border-primary-darkest overflow-visible border ${
+      className={`bg-base-max border-secondary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"
       }
        `}
@@ -68,7 +68,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         )}
         <div className="flex flex-col">
           <Button
-            className={`bg-secondary-darkest hover:bg-secondary hover:border-secondary mb-1 w-[50px] ${
+            className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${
               inactive ? "opacity-50" : ""
             }`}
             variant="filled"
@@ -98,7 +98,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant={"outline"}
-              className="text-primary-content-darkest border-primary-darkest hover:bg-primary hover:text-primary-content-max hover:border-primary w-[50px]"
+              className="text-xs text-secondary p-0 border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
             >
               Demo
             </Button>
@@ -119,7 +119,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )
           }
           classNames={{
-            root: "text-primary-content-darkest font-bold bg-transparent",
+            root: "text-secondary-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
         >
@@ -141,7 +141,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex flex-row items-center text-primary-content-darkest">
+          <div className="flex flex-row items-center text-secondary-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip

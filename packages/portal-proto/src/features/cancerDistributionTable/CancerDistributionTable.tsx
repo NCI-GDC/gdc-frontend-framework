@@ -5,8 +5,9 @@ import Link from "next/link";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
-  useProjects,
+  useGetProjectsQuery,
   CancerDistributionTableData,
+  FilterSet,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -15,16 +16,26 @@ import {
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { processFilters } from "src/utils";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
   readonly symbol: string;
+  readonly genomicFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 export const GeneCancerDistributionTable: React.FC<
   GeneCancerDistributionTableProps
-> = ({ gene, symbol }: GeneCancerDistributionTableProps) => {
+> = ({
+  gene,
+  symbol,
+  genomicFilters = undefined,
+  cohortFilters = undefined,
+}: GeneCancerDistributionTableProps) => {
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
+
   const { data, isFetching, isError, isSuccess } =
-    useGetGeneCancerDistributionTableQuery({ gene });
+    useGetGeneCancerDistributionTableQuery({ gene, contextFilters });
   return (
     <CancerDistributionTable
       data={data}
@@ -81,7 +92,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   symbol,
   isGene,
 }: CancerDistributionTableProps) => {
-  const { data: projects, isFetching: projectsFetching } = useProjects({
+  const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
       op: "in",
       content: {
@@ -99,7 +110,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   });
 
   const projectsById = Object.fromEntries(
-    (projects || []).map((project) => [project.project_id, project]),
+    (projects?.projectData || []).map((project) => [
+      project.project_id,
+      project,
+    ]),
   );
   const columnListOrder = useMemo(() => {
     const columns = [

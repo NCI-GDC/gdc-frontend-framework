@@ -7,12 +7,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import {
-  SingleSomaticMutation,
-  SomaticMutations,
-  Impact,
-  SsmToggledHandler,
-} from "./types";
+import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import { Survival } from "../shared/types";
 import { TableColumnDefinition } from "../shared/types";
@@ -20,9 +15,12 @@ import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
-import { externalLinks } from "../../../utils";
 import Link from "next/link";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
+import { entityMetadataType } from "src/utils/contexts";
+import { SSMSData } from "@gff/core";
+import { externalLinks } from "src/utils";
+import tw from "tailwind-styled-components";
 
 export const createTableColumn = (
   accessor: string,
@@ -38,6 +36,9 @@ export const createTableColumn = (
   toggledSsms: ReadonlyArray<string>,
   geneSymbol: string = undefined,
   isDemoMode: boolean,
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
+  isModal: boolean,
+  isConsequenceTable?: boolean,
 ): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -163,7 +164,7 @@ export const createTableColumn = (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <ToggledCheck
-                      margin="mt-[0.42em] ml-0.5"
+                      margin="ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}
                       survivalProps={{ plot: "gene.ssm.ssm_id" }}
@@ -201,6 +202,7 @@ export const createTableColumn = (
               const label = originalLabel
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
+              const ssmsId = row.original[`mutationID`];
               return (
                 <div className="font-content flex justify-start">
                   {label !== "" ? (
@@ -208,7 +210,28 @@ export const createTableColumn = (
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
-                      <div className="text-xs">{label}</div>
+                      {isConsequenceTable ? (
+                        <span className="text-xs">{label}</span>
+                      ) : isModal ? (
+                        <button
+                          className="text-utility-link underline text-xs"
+                          onClick={() =>
+                            setEntityMetadata({
+                              entity_type: "ssms",
+                              entity_id: ssmsId,
+                              entity_name: originalLabel,
+                            })
+                          }
+                        >
+                          {label}
+                        </button>
+                      ) : (
+                        <Link href={`/ssms/${ssmsId}`}>
+                          <a className="underline text-utility-link text-xs">
+                            {label}
+                          </a>
+                        </Link>
+                      )}
                     </Tooltip>
                   ) : (
                     <div className="text-lg ml-3">{"--"}</div>
@@ -336,6 +359,8 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
+                      shouldLink={isModal && geneSymbol === undefined}
+                      setEntityMetadata={setEntityMetadata}
                     />
                   )}
                 </div>
@@ -378,81 +403,59 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => {
-              const twIconStyles = `w-7 h-6 text-white border rounded-md flex justify-center items-center`;
+              const TwIconDiv = tw.div`w-7 h-6 text-white border rounded-md flex justify-center items-center`;
               return (
                 <Tooltip
                   label={
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-1">
                       <Text>Impact for canonical transcript:</Text>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         VEP:
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          HI
-                        </div>
+                        <TwIconDiv className="bg-red-500 mx-1">HI</TwIconDiv>
                         high
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          LO
-                        </div>
+                        <TwIconDiv className="bg-green-500 mx-1">LO</TwIconDiv>
                         low
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          MO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">MO</TwIconDiv>
                         moderate
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          MR
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">MR</TwIconDiv>
                         modifier
                       </div>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         SIFT:
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          DH
-                        </div>
+                        <TwIconDiv className=" bg-red-500 mx-1">DH</TwIconDiv>
                         deleterious
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          DL
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">DL</TwIconDiv>
                         deleterious_low_confidence
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          TO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">TO</TwIconDiv>
                         tolerated
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          TL
-                        </div>
+                        <TwIconDiv className=" bg-green-500 mx-1">TL</TwIconDiv>
                         tolerated_low_confidence
                       </div>
-                      <div className="flex flex-row items-bottom">
+                      <div className="flex flex-row items-bottom gap-1">
                         PolyPhen:
-                        <div className={`${twIconStyles} bg-green-500 mx-1`}>
-                          BE
-                        </div>
+                        <TwIconDiv className=" bg-green-500 mx-1">BE</TwIconDiv>
                         benign
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          PO
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">PO</TwIconDiv>
                         possibly_damaging
-                        <div className={`${twIconStyles} bg-red-500 mx-1`}>
-                          PR
-                        </div>
+                        <TwIconDiv className=" bg-red-500 mx-1">PR</TwIconDiv>
                         probably_damaging
-                        <div className={`${twIconStyles} bg-gray-500 mx-1`}>
-                          UN
-                        </div>
+                        <TwIconDiv className=" bg-gray-500 mx-1">UN</TwIconDiv>
                         unknown
                       </div>
                     </div>
                   }
                   width="auto"
                   withArrow
-                  arrowSize={6}
+                  arrowSize={8}
                   transition="fade"
+                  offset={10}
                   transitionDuration={200}
                   multiline
                   classNames={{
                     tooltip:
                       "bg-base-lightest text-base-contrast-lightest font-heading text-left",
                   }}
+                  position={geneSymbol && isModal ? "left-start" : "top"}
                 >
                   <div className="font-heading text-left text-xs whitespace-pre-line">
                     Impact
@@ -556,7 +559,7 @@ export const createTableColumn = (
                         toolTipLabel={"transcript_id"}
                       />
                       {isC ? (
-                        <Tooltip label={"Canconical"}>
+                        <Tooltip label={"Canonical"}>
                           <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
                             C
                           </div>
@@ -690,6 +693,7 @@ export type MutationsColumn = {
   proteinChange: {
     symbol: string;
     aaChange: string;
+    geneId: string;
   };
   affectedCasesInCohort: {
     numerator: number;
@@ -706,61 +710,70 @@ export type MutationsColumn = {
 };
 
 export const getMutation = (
-  sm: SingleSomaticMutation,
+  sm: SSMSData,
   selectedSurvivalPlot: Record<string, string>,
   filteredCases: number,
   cases: number,
   ssmsTotal: number,
 ): SomaticMutations => {
-  const { ssm_id, genomic_dna_change } = sm;
   const {
-    gene = {
-      symbol: "",
-      name: "",
+    ssm_id,
+    genomic_dna_change,
+    mutation_subtype,
+    consequence,
+    filteredOccurrences,
+    occurrence,
+  } = sm;
+
+  const {
+    transcript: {
+      consequence_type,
+      gene: { gene_id, symbol },
+      aa_change,
+      annotation: {
+        polyphen_impact,
+        polyphen_score,
+        sift_impact,
+        sift_score,
+        vep_impact,
+      },
     },
-    annotation = {
-      polyphen_impact: "",
-      polyphen_score: "",
-      sift_impact: "",
-      sift_score: "",
-      vep_impact: "",
-    },
-    aa_change = "",
-    consequence_type = "",
-  } = sm.consequence[0] ?? {};
+  } = consequence[0];
+
   return {
-    select: sm.ssm_id,
-    mutationID: sm.ssm_id,
-    DNAChange: sm.genomic_dna_change,
-    type: filterMutationType(sm.mutation_subtype),
+    select: ssm_id,
+    mutationID: ssm_id,
+    DNAChange: genomic_dna_change,
+    type: filterMutationType(mutation_subtype),
     consequences: consequence_type,
     proteinChange: {
-      symbol: gene.symbol,
+      symbol: symbol,
+      geneId: gene_id,
       aaChange: aa_change,
     },
     affectedCasesInCohort: {
-      numerator: sm.filteredOccurrences,
+      numerator: filteredOccurrences,
       denominator: filteredCases,
     },
     affectedCasesAcrossTheGDC: {
-      numerator: sm.occurrence,
+      numerator: occurrence,
       denominator: cases,
     },
     cohort: {
       checked: true,
     },
     survival: {
-      label: aa_change ? gene.symbol + " " + aa_change : gene.symbol,
+      label: aa_change ? symbol + " " + aa_change : symbol,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,
     },
     impact: {
-      polyphenImpact: annotation.polyphen_impact,
-      polyphenScore: annotation.polyphen_score,
-      siftImpact: annotation.sift_impact,
-      siftScore: annotation.sift_score,
-      vepImpact: annotation.vep_impact,
+      polyphenImpact: polyphen_impact,
+      polyphenScore: polyphen_score,
+      siftImpact: sift_impact,
+      siftScore: sift_score,
+      vepImpact: vep_impact,
     },
     // do not remove subRows key, it's needed for row.getCanExpand() to be true
     subRows: " ",

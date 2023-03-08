@@ -47,7 +47,9 @@ const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
 
 export const fetchImageCounts = createAsyncThunk(
   "repositoryApp/getImageCounts",
-  async (filters: FilterSet): Promise<GraphQLApiResponse> => {
+  async (
+    filters: FilterSet,
+  ): Promise<GraphQLApiResponse<Record<string, any>>> => {
     const fileFilters = buildCohortGqlOperator(filters);
     const caseFilters = buildCohortGqlOperator(
       joinFilters(filters, {

@@ -5,13 +5,14 @@ import {
   useCoreDispatch,
   hideModal,
   useGetGenesQuery,
-  useCreateGeneSetMutation,
+  useCreateGeneSetFromValuesMutation,
   useGeneSetCountQuery,
 } from "@gff/core";
-import InputSet from "./InputSet";
+import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
-import GenericSetModal from "./GenericSetModal";
+import UserInputModal from "../UserInputModal";
 import { SavedSetModalProps } from "./types";
+import UpdateCohortButton from "./UpdateFiltersButton";
 
 const GeneSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
@@ -23,13 +24,19 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
-    <GenericSetModal modalTitle={modalTitle} tabLabel="Genes" tabbed>
+    <UserInputModal
+      modalTitle={modalTitle}
+      tabs={[
+        { label: "Enter Genes", value: "input" },
+        { label: "Saved Sets", value: "saved" },
+      ]}
+    >
       <Tabs.Panel value="input" className="pt-4">
-        <InputSet
+        <InputEntityList
           inputInstructions={inputInstructions}
           textInputPlaceholder="e.g. ENSG00000141510, TP53, 7273, HGNC:11998, 191170, P04637"
-          setType="genes"
-          setTypeLabel="gene"
+          entityType="genes"
+          entityLabel="gene"
           identifierToolTip={
             <div>
               <p>
@@ -45,11 +52,12 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           }
           hooks={{
             query: useGetGenesQuery,
-            createSet: useCreateGeneSetMutation,
+            createSet: useCreateGeneSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
+            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
-          useAddNewFilterGroups={useAddNewFilterGroups}
+          SubmitButton={UpdateCohortButton}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -79,7 +87,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>
-    </GenericSetModal>
+    </UserInputModal>
   );
 };
 

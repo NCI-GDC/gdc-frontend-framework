@@ -98,12 +98,12 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Expand section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
+            className="flex flex-row items-center text-primary cursor-pointer w-full"
           >
+            <DownIcon size="1.25em" className="text-accent mr-1" />
             <span className="whitespace-nowrap">
               {value?.length.toLocaleString().padStart(6)} {label}
             </span>
-            <DownIcon size="1.25em" className="text-secondary-light" />
           </div>
         ) : (
           <div
@@ -114,14 +114,14 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Collapse section"
-            className="flex flex-row items-center justify-between text-primary cursor-pointer w-full mr-6"
+            className="flex flex-row items-center justify-right text-primary cursor-pointer w-full"
           >
+            <UpIcon size="1.25em" className="text-accent mr-1" />
             <span className="whitespace-nowrap text-bold">
               <b>
                 {value.length.toLocaleString().padStart(6)} {label}
               </b>
             </span>
-            <UpIcon size="1.25em" className="text-secondary-light" />
           </div>
         )}
       </div>

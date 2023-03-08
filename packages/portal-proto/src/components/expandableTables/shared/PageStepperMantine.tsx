@@ -19,6 +19,7 @@ const PageStepperMantine: React.FC<PageStepperProps> = ({
   return (
     <div className={`flex flex-row w-max m-auto`}>
       <Pagination
+        color="accent"
         boundaries={0}
         total={totalPages}
         page={page + 1}
@@ -27,6 +28,7 @@ const PageStepperMantine: React.FC<PageStepperProps> = ({
         size="sm"
         radius="xs"
         withEdges
+        classNames={{ item: "border-0" }}
       />
     </div>
   );

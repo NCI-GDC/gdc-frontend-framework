@@ -1,20 +1,8 @@
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
-import { ProteinPaintWrapper } from "../proteinpaint/ProteinPaintWrapper";
-import { DemoUtil } from "./DemoUtil";
+import { OncoMatrixWrapper } from "../proteinpaint/OncoMatrixWrapper";
 
 const MatrixApp: FC = () => {
-  const isDemoMode = useIsDemoApp();
-
-  return (
-    <>
-      {isDemoMode ? (
-        <ProteinPaintWrapper track="matrix" />
-      ) : (
-        <DemoUtil text="Coming Soon!" />
-      )}
-    </>
-  );
+  return <OncoMatrixWrapper />;
 };
 
 export default MatrixApp;

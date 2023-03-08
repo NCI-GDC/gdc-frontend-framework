@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
-import { Menu, Tabs } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import { useCohortFacetFilters } from "./CohortGroup";
@@ -12,6 +12,7 @@ import {
   ErrorCohortNotification,
   NewCohortNotification,
   SavedCohortNotification,
+  NewCohortNotificationWithSetAsCurrent,
 } from "@/features/cohortBuilder/CohortNotifications";
 import {
   useCoreDispatch,
@@ -29,19 +30,19 @@ import {
   setActiveCohortList,
   DataStatus,
   Cohort,
+  Modals,
+  showModal,
 } from "@gff/core";
-
+import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
   MdDownload as DownloadIcon,
   MdInsertChartOutlined as SummaryChartIcon,
   MdOutlineViewComfy as TableIcon,
-  MdFileCopy as FilesIcon,
 } from "react-icons/md";
-import { FaCartPlus as AddToCartIcon } from "react-icons/fa";
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import FunctionButton from "@/components/FunctionButton";
 import QueryExpressionSection from "./QueryExpressionSection";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 interface Error {
   data: {
@@ -155,6 +156,34 @@ const ContextBar: React.FC = () => {
             autoClose: 5000,
           });
         }
+        if (cmdAndParam[0] === "newCasesCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
+        if (cmdAndParam[0] === "newProjectsCohort") {
+          showNotification({
+            message: (
+              <NewCohortNotificationWithSetAsCurrent
+                cohortName={cmdAndParam[1]}
+                cohortId={cmdAndParam[2]}
+              />
+            ),
+            classNames: {
+              description: "flex flex-col content-center text-center",
+            },
+            autoClose: 5000,
+          });
+        }
       }
 
       coreDispatch(clearCohortMessage());
@@ -200,16 +229,7 @@ const ContextBar: React.FC = () => {
   ] as ReadonlyArray<SummaryFacetInfo>);
 
   const filters = useCohortFacetFilters();
-
-  const CohortBarWithProps = () => (
-    <CohortManager
-      // TODO: need to connect to cohort persistence
-      // eslint-disable-next-line react/prop-types
-      cohorts={cohorts}
-      onSelectionChanged={handleCohortSelection}
-      startingId={currentIndex}
-    />
-  );
+  const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (
     <div
@@ -217,43 +237,89 @@ const ContextBar: React.FC = () => {
       data-tour="context_bar"
     >
       <CollapsibleContainer
-        Top={CohortBarWithProps}
+        Top={() => (
+          <CohortManager
+            cohorts={cohorts}
+            onSelectionChanged={handleCohortSelection}
+            startingId={currentIndex}
+          />
+        )}
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
+        onlyIcon={false}
       >
-        <div className="flex flex-col ">
+        <div className="flex flex-col bg-nci-violet-lightest">
           <div className="relative p-2">
-            <div className="flex flex-row absolute ml-2">
-              <Menu>
-                <Menu.Target>
-                  <FunctionButton>
-                    <DownloadIcon />
-                    <CountButton
-                      countName="fileCount"
-                      label="Files"
-                      className="px-2"
-                    />
-                  </FunctionButton>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item icon={<AddToCartIcon />}>Add to Cart</Menu.Item>
-                  <Menu.Item icon={<DownloadIcon />}>
-                    Download Manifest
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-              <Menu>
-                <Menu.Target>
-                  <FunctionButton className="ml-2">
-                    <FilesIcon className="mr-1" /> Metadata
-                  </FunctionButton>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item>Biospecimen</Menu.Item>
-                  <Menu.Item>Clinical</Menu.Item>
-                  <Menu.Item>Sample Sheet</Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
+            <div className="flex flex-row absolute ml-2 gap-4">
+              <DropdownWithIcon
+                dropdownElements={[
+                  { title: "Add to Cart" },
+                  { title: "Download Manifest" },
+                  { title: "Metadata" },
+                  { title: "Sample Sheet" },
+                ]}
+                TargetButtonChildren={
+                  <CountButton countName="fileCount" label="Files" />
+                }
+                LeftIcon={
+                  <DownloadIcon size="1rem" aria-label="Files dropdown" />
+                }
+              />
+
+              <DropdownWithIcon
+                dropdownElements={[
+                  {
+                    title: "Cases",
+                    onClick: () =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalCaseSetModal }),
+                      ),
+                  },
+                  {
+                    title: "Genes",
+                    onClick: () =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalGeneSetModal }),
+                      ),
+                  },
+                  {
+                    title: "Mutations",
+                    onClick: () =>
+                      coreDispatch(
+                        showModal({ modal: Modals.GlobalMutationSetModal }),
+                      ),
+                  },
+                ]}
+                TargetButtonChildren="Custom Filters"
+                LeftIcon={
+                  <CohortFilterIcon
+                    size="1rem"
+                    aria-label="Custom cohort filters"
+                  />
+                }
+                menuLabelText="Filter your cohort by:"
+                menuLabelCustomClass="font-bold text-primary"
+              />
+
+              {activeTab === "summary" && (
+                <>
+                  <DropdownWithIcon
+                    dropdownElements={[
+                      { title: "JSON (Coming Soon)" },
+                      { title: "TSV (Coming Soon)" },
+                    ]}
+                    TargetButtonChildren="Biospecimen"
+                  />
+
+                  <DropdownWithIcon
+                    dropdownElements={[
+                      { title: "JSON (Coming Soon)" },
+                      { title: "TSV (Coming Soon)" },
+                    ]}
+                    TargetButtonChildren="Clinical"
+                  />
+                </>
+              )}
             </div>
             <Tabs
               classNames={{
@@ -264,6 +330,8 @@ const ContextBar: React.FC = () => {
               data-tour="cohort_summary"
               defaultValue="summary"
               keepMounted={false}
+              value={activeTab}
+              onTabChange={setActiveTab}
             >
               <Tabs.List position="right">
                 <Tabs.Tab
@@ -297,7 +365,6 @@ const ContextBar: React.FC = () => {
         currentCohortName={currentCohortName}
         currentCohortId={currentCohortId}
       />
-      <hr className="border-2" />
     </div>
   );
 };

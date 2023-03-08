@@ -1,0 +1,23 @@
+{
+  "name": "@gff/lighthouse",
+  "version": "1.0.0",
+  "description": "Use lighthouse to audit Portal v2",
+  "main": "index.js",
+  "scripts": {
+    "audit": "node src/audit.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NCI-GDC/gdc-frontend-framework.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/NCI-GDC/gdc-frontend-framework/issues"
+  },
+  "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
+  "devDependencies": {
+    "lighthouse": "^9.6.8",
+    "yargs": "^17.7.0"
+  }
+}

@@ -7,17 +7,23 @@ WORKDIR /app
 FROM node:16-alpine3.15 AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
+ARG BUILD_SHORT_SHA
+ENV NEXT_PUBLIC_BUILD_SHORT_SHA=$BUILD_SHORT_SHA
+
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
 RUN npm install --location=global lerna
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
+COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
 RUN npm ci
 COPY ./packages ./packages
 
 RUN lerna run --scope @gff/core compile
 RUN lerna run --scope @gff/core build
+RUN lerna run --scope @nci-gdc/sapien compile
+RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 

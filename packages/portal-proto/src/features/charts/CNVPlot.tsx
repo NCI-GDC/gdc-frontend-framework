@@ -2,9 +2,10 @@ import { useState } from "react";
 import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useCnvPlot } from "@gff/core";
+import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { Grid } from "@mantine/core";
+import { processFilters } from "src/utils";
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -13,6 +14,8 @@ const CHART_NAME = "cancer-distribution-bar-chart-cnv";
 interface CNVPlotProps {
   readonly gene: string;
   readonly height?: number;
+  readonly genomicFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 
 const hovertemplate =
@@ -21,14 +24,20 @@ const hovertemplate =
 const CNVPlot: React.FC<CNVPlotProps> = ({
   gene,
   height = undefined,
+  genomicFilters = undefined,
+  cohortFilters = undefined,
 }: CNVPlotProps) => {
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
+
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);
   const [lossChecked, setLossChecked] = useState(true);
 
   const { data, error, isUninitialized, isFetching, isError } = useCnvPlot({
     gene,
+    contextFilters,
   });
+
   if (isUninitialized) {
     return <div>Initializing chart...</div>;
   }

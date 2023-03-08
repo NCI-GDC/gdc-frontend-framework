@@ -10,7 +10,7 @@ export enum Modals {
   "NoAccessToProjectModal" = "NoAccessToProjectModal",
   "CartSizeLimitModal" = "CartSizeLimitModal",
   "CartDownloadModal" = "CartDownloadModal",
-  "AgreementModal" = " AgreementModal",
+  "AgreementModal" = "AgreementModal",
   "GeneralErrorModal" = " GeneralErrorModal",
   "GlobalCaseSetModal" = "GlobalCaseSetModal",
   "GlobalGeneSetModal" = "GlobalGeneSetModal",
@@ -18,6 +18,7 @@ export enum Modals {
   "LocalCaseSetModal" = "LocalCaseSetModal",
   "LocalGeneSetModal" = "LocalGeneSetModal",
   "LocalMutationSetModal" = "LocalMutationSetModal",
+  "ImportCohortModal" = "ImportCohortModal",
 }
 
 export interface ModalState {

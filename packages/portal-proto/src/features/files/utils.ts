@@ -1,4 +1,4 @@
-import { CartFile, GdcFile, caseFileType, GdcFileIds } from "@gff/core";
+import { CartFile, GdcFile, caseFileType } from "@gff/core";
 import { get, omit, pick } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";
 import { JSONObject } from "../types";
@@ -89,6 +89,10 @@ export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
       name: "Section_location",
     },
     {
+      field: "percent_granulocyte_infiltration",
+      name: "Percent_granulocyte_infiltration",
+    },
+    {
       field: "percent_necrosis",
       name: "Percent_necrosis",
     },
@@ -135,9 +139,9 @@ export const parseSlideDetailsInfo: parseSlideDetailsInfoFunc = (
 };
 
 export const mapGdcFileToCartFile = (
-  files: GdcFile[] | GdcFileIds[],
+  files: GdcFile[] | caseFileType[],
 ): CartFile[] =>
-  files.map((file) =>
+  files.map((file: GdcFile | caseFileType) =>
     pick(file, [
       "access",
       "acl",
@@ -148,16 +152,3 @@ export const mapGdcFileToCartFile = (
       "file_name",
     ]),
   );
-
-export const mapFilesFromCasesToCartFile = (
-  files: caseFileType[],
-): CartFile[] =>
-  files.map((file) => ({
-    access: file.access,
-    acl: file.acl,
-    file_id: file.file_id,
-    file_size: file.file_size,
-    state: file.state,
-    file_name: file.file_name,
-    project_id: file.project_id,
-  }));

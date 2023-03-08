@@ -2,21 +2,43 @@ import { Tooltip } from "@mantine/core";
 import { Impact } from "./types";
 import { humanify } from "src/utils";
 import { truncate } from "lodash";
+import { Dispatch, SetStateAction } from "react";
+import { entityMetadataType } from "src/utils/contexts";
 
 export const ProteinChange = ({
   proteinChange,
+  shouldLink,
+  setEntityMetadata,
 }: {
   proteinChange: {
     symbol: string;
     aaChange: string;
+    geneId: string;
   };
+  shouldLink: boolean;
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className={`flex flex-row w-max justify-start font-content text-xs`}>
-      <span className={`mx-0.5`}>{symbol}</span>
+    <div className="flex flex-row w-max justify-start font-content text-xs">
+      {shouldLink ? (
+        <button
+          className="text-utility-link underline text-xs mx-0.5"
+          onClick={() =>
+            setEntityMetadata({
+              entity_type: "genes",
+              entity_id: proteinChange.geneId,
+              entity_name: symbol,
+            })
+          }
+        >
+          {symbol}
+        </button>
+      ) : (
+        <span className="mx-0.5">{symbol}</span>
+      )}
       <Tooltip label={aaChange}>
-        <span className="mx-0.5 ">
+        <span className="mx-0.5">
           {truncate(aaChange == "" ? "--" : aaChange, {
             length: 12,
           })}

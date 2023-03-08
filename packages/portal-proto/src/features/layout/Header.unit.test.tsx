@@ -1,8 +1,9 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
+import { render } from "test-utils";
 
 describe("<Header />", () => {
   beforeEach(() => {

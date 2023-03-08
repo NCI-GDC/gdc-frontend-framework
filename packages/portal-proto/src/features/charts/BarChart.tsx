@@ -40,6 +40,7 @@ const BarChart: React.FC<BarChartProps> = ({
     y: orientation === "v" ? dataset.y : dataset.x,
     hoverinfo: "text",
     text: dataset.text,
+    hoverlabel: { bgcolor: "rgba(0,0,0,0.9)", font: "Montserrat" },
     hovertemplate: dataset.hovertemplate,
     customdata: dataset.customdata,
     textposition: "none",

@@ -1,5 +1,5 @@
 import {
-  useProjects,
+  useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
@@ -21,57 +21,37 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
-import tw from "tailwind-styled-components";
-
-const PercentBar = tw.div`
-relative
-bg-percentage-bar-base
-rounded-sm
-px-1
-w-14
-h-full`;
-
-const PercentBarLabel = tw.div`
-absolute
-z-10
-left-0
-top-0
-w-full
-h-full
-text-percentage-bar-label
-text-center`;
-
-const PercentBarComplete = tw.div`
-absolute
-left-0
-top-0
-w-full
-h-full
-bg-percentage-bar-complete
-rounded-sm`;
+import {
+  PercentBar,
+  PercentBarComplete,
+  PercentBarLabel,
+} from "../shared/tailwindComponents";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
+  readonly isModal?: boolean;
 }
 
 export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
+  isModal = false,
 }: ContextualProjectViewProps) => {
-  const { data: projectsData, isFetching: isProjectFetching } = useProjects({
-    filters: {
-      op: "=",
-      content: {
-        field: "project_id",
-        value: projectId,
+  const { data: projectsData, isFetching: isProjectFetching } =
+    useGetProjectsQuery({
+      filters: {
+        op: "=",
+        content: {
+          field: "project_id",
+          value: projectId,
+        },
       },
-    },
-    expand: [
-      "summary",
-      "summary.data_categories",
-      "summary.experimental_strategies",
-      "program",
-    ],
-  });
+      expand: [
+        "summary",
+        "summary.data_categories",
+        "summary.experimental_strategies",
+        "program",
+      ],
+    });
   const { data: annotationCountData, isFetching: isAnnotationFetching } =
     useAnnotations({
       filters: {
@@ -108,11 +88,14 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     );
 
   const projectData =
-    projectsData && projectsData.length > 0 ? projectsData[0] : undefined;
+    projectsData?.projectData && projectsData?.projectData.length > 0
+      ? projectsData?.projectData[0]
+      : undefined;
   const projectWithAnnotation = {
     ...projectData,
     annotation: annotationCountData,
     hasControlledAccess,
+    isModal,
   };
 
   return (
@@ -134,6 +117,7 @@ export interface ProjectViewProps extends ProjectDefaults {
     count: number;
   };
   hasControlledAccess: boolean;
+  isModal?: boolean;
 }
 
 export const ProjectView: React.FC<ProjectViewProps> = (
@@ -150,7 +134,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       dbgap_accession_number,
       disease_type,
       name: project_name,
-    } = projectData;
+    } = projectData || {};
 
     const dbGaP_study_accession =
       program_dbgap_accession_number || dbgap_accession_number;
@@ -365,14 +349,21 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   };
   return (
     <div>
-      <SummaryHeader iconText="PR" headerTitle={projectData.project_id} />
-      <div className="flex flex-col mx-auto mt-20 w-10/12">
+      {!projectData.isModal && (
+        <SummaryHeader iconText="pr" headerTitle={projectData.project_id} />
+      )}
+      <div
+        className={`flex flex-col mx-auto ${
+          projectData.isModal ? "mt-5" : "mt-20"
+        } w-10/12`}
+      >
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
             <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-32 bg-primary border-primary border rounded"
+                  variant="outline"
+                  className="px-1.5 min-h-7 w-34 text-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Biospecimen
@@ -390,7 +381,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Menu width="target">
               <Menu.Target>
                 <Button
-                  className="px-1.5 min-h-7 w-24 bg-primary border-primary border rounded"
+                  variant="outline"
+                  className="px-1.5 min-h-7 w-26 text-primary border-primary border rounded"
                   leftIcon={<MdFileDownload size="1.25em" />}
                 >
                   Clinical
@@ -412,11 +404,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
 Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
+              multiline
               withArrow
             >
               <Button
+                variant="outline"
                 leftIcon={<MdFileDownload size="1.25em" />}
-                className="bg-primary border-primary"
+                className="text-primary border-primary"
               >
                 Manifest
               </Button>

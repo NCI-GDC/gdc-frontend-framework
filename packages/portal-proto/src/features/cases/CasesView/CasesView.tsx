@@ -7,25 +7,23 @@ import {
   SortBy,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { Button, createStyles, Menu } from "@mantine/core";
-import React, { useEffect, useMemo, useState } from "react";
+import { Button, createStyles, Divider, Menu } from "@mantine/core";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
 import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
-import { GiMicroscope } from "react-icons/gi";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { addToCart, removeFromCart } from "../../cart/updateCart";
-import {
-  columnListOrder,
-  getCasesTableAnnotationsLinkParams,
-  SlideCountsIcon,
-} from "./utils";
+import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { SummaryModalContext } from "src/utils/contexts";
+import { ImageSlideCount } from "@/components/ImageSlideCount";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -39,6 +37,7 @@ const useStyles = createStyles((theme) => ({
     "&[data-disabled]": {
       border: "1px solid gray",
       margin: "2px 0",
+      cursor: "not-allowed",
     },
   },
 }));
@@ -112,6 +111,8 @@ export const ContextualCasesView: React.FC = () => {
     setOffset(0);
   }, [cohortFilters]);
 
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+
   const cases = useMemo(
     () =>
       data?.map((datum) => {
@@ -135,25 +136,7 @@ export const ContextualCasesView: React.FC = () => {
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
             >
-              <Button
-                compact
-                disabled={slideCount === 0}
-                leftIcon={
-                  <GiMicroscope
-                    className={`mt-0.5 ${
-                      slideCount === 0 && "text-base-contrast-lightest"
-                    }`}
-                  />
-                }
-                size="xs"
-                variant="outline"
-                classNames={classes}
-                className="my-2"
-              >
-                <SlideCountsIcon $count={slideCount}>
-                  {slideCount === 0 ? "--" : slideCount}
-                </SlideCountsIcon>
-              </Button>
+              <ImageSlideCount slideCount={slideCount} />
             </Link>
           ),
           cart: (
@@ -215,19 +198,35 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              <Link href={`/cases/${datum.case_uuid}`}>
-                <a className="text-utility-link underline">{datum.case_id}</a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "case",
+                    entity_id: datum.case_uuid,
+                    entity_name: `${datum?.project_id} / ${datum?.submitter_id}`,
+                  })
+                }
+              >
+                {datum.case_id}
+              </button>
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,
           project_id: (
             <OverflowTooltippedLabel label={datum.project_id}>
-              <Link href={`/projects/${datum.project_id}`}>
-                <a className="text-utility-link underline">
-                  {datum.project_id}
-                </a>
-              </Link>
+              <button
+                className="text-utility-link underline"
+                onClick={() =>
+                  setEntityMetadata({
+                    entity_type: "project",
+                    entity_id: datum.project_id,
+                    entity_name: datum.project_id,
+                  })
+                }
+              >
+                {datum.project_id}
+              </button>
             </OverflowTooltippedLabel>
           ),
           program: datum.program,
@@ -265,7 +264,7 @@ export const ContextualCasesView: React.FC = () => {
           ),
         };
       }),
-    [data, currentCart, classes, dispatch],
+    [data, currentCart, classes, dispatch, setEntityMetadata],
   );
 
   const sortByActions = (sortByObj) => {
@@ -315,7 +314,9 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full ml-2 mr-8">
+    <div className="flex flex-col ml-1 mr-1 ">
+      <Divider color="#C5C5C5" className="mb-3 mr-4" />
+
       <VerticalTable
         tableData={cases || []}
         columns={columns}
@@ -324,57 +325,44 @@ export const ContextualCasesView: React.FC = () => {
         additionalControls={
           <div className="flex gap-2">
             <CasesCohortButton />
-            <Menu width="target" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  color="primary"
-                  leftIcon={
-                    pickedCases.length ? (
-                      <CountsIcon $count={pickedCases.length}>
-                        {pickedCases.length}{" "}
-                      </CountsIcon>
-                    ) : null
-                  }
-                  rightIcon={<Dropdown />}
-                >
-                  Biospecimen
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item>JSON (Coming Soon)</Menu.Item>
-                <Menu.Item>TSV (Coming Soon)</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-            <Menu width="target" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  color="primary"
-                  leftIcon={
-                    pickedCases.length ? (
-                      <CountsIcon $count={pickedCases.length}>
-                        {pickedCases.length}{" "}
-                      </CountsIcon>
-                    ) : null
-                  }
-                  rightIcon={<Dropdown />}
-                >
-                  Clinical
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
-                <Menu.Item>TSV (Coming soon) </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+
+            <DropdownWithIcon
+              dropdownElements={[
+                { title: "JSON (Coming Soon)" },
+                { title: "TSV (Coming Soon)" },
+              ]}
+              TargetButtonChildren="Biospecimen"
+              LeftIcon={
+                pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : null
+              }
+            />
+
+            <DropdownWithIcon
+              dropdownElements={[
+                { title: "JSON (Coming Soon)" },
+                { title: "TSV (Coming Soon)" },
+              ]}
+              TargetButtonChildren="Clinical"
+              LeftIcon={
+                pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : null
+              }
+            />
+
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 JSON
               </Button>
             </ButtonTooltip>
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary">
+              <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
               </Button>
             </ButtonTooltip>

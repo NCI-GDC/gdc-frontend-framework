@@ -1,41 +1,32 @@
 import { Image } from "@/components/Image";
-import { Button, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 
-const NavButton = tw(Button)`
-text-sm
-font-heading
-hover:bg-primary-lighter
-transition-colors
-text-primary-content-darkest
-p-2
-rounded
-inline-flex
-flex-nowrap
+const NavLink = tw(NextLink)`
+flex
 items-center
-shadow-lg
+gap-1
+font-heading
+text-sm
+font-medium
+text-base-darker
+pr-4
 `;
 
 export const headerElements = [
   <Tooltip
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: undefined },
       }}
-      className=" "
       data-testid="button-header-analysis"
       aria-label="analysis center button"
     >
@@ -45,21 +36,17 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Analysis Center
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Studies"
-    label="View the Projects/Studies available within the GDC and select them for further exploration and analysis."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
+    label="View the projects available within the GDC and select them for further exploration and analysis."
     position="bottom-start"
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "Projects" },
@@ -73,21 +60,17 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Projects
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Cohort"
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "CohortBuilder" },
@@ -96,26 +79,22 @@ export const headerElements = [
       aria-label="cohort builder button"
     >
       <Image
-        src={"/user-flow/icons/build.svg"}
+        src={"/user-flow/icons/apps/CohortBuilder.svg"}
         alt="Cohort logo"
         width={24}
         height={24}
       />
-    </NavButton>
+      Cohort Builder
+    </NavLink>
   </Tooltip>,
   <Tooltip
     key="Download"
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
-    classNames={{
-      tooltip: "shadow-lg bg-base-lightest text-primary-content-darkest",
-    }}
     position="bottom-start"
     multiline
     width={220}
   >
-    <NavButton
-      unstyled
-      component={NextLink}
+    <NavLink
       href={{
         pathname: "/analysis_page",
         query: { app: "Downloads" },
@@ -129,6 +108,7 @@ export const headerElements = [
         width={24}
         height={24}
       />
-    </NavButton>
+      Repository
+    </NavLink>
   </Tooltip>,
 ];

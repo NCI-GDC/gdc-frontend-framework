@@ -1,6 +1,6 @@
 import FunctionButton from "@/components/FunctionButton";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
-import { modalStyles } from "@/components/Modals/SetModals/styles";
+import { modalStyles } from "@/components/Modals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   Columns,
@@ -18,7 +18,6 @@ import {
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
-  defaultCohortNameGenerator,
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
@@ -153,7 +152,7 @@ export const SelectCohortsModal = ({
 
   const description = `Select an existing cohort, then click Submit. This will create a new
     cohort that contains all the cases from your selected cohort ${
-      isWithCohort ? "and" : "expect"
+      isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
   const onNameChange = (name: string) =>
@@ -180,7 +179,6 @@ export const SelectCohortsModal = ({
         >
           {showCreateCohort && (
             <SaveOrCreateCohortModal
-              initialName={defaultCohortNameGenerator()}
               entity="cohort"
               action="create"
               opened={showCreateCohort}

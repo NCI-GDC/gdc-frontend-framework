@@ -27,7 +27,6 @@ import {
   Repository,
   CohortViewerApp,
 } from "../../apps/Apps";
-//import { ContextualFilesView } from "../../files/FilesView";
 import { CollapsibleContainer } from "../../../components/CollapsibleContainer";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
@@ -35,7 +34,6 @@ import { FacetGroup } from "../../cohortBuilder/FacetGroup";
 import { get_facets } from "../../cohortBuilder/dictionary";
 import { FileModal } from "../../files/FileView";
 import { GdcFile, FacetDefinition } from "@gff/core";
-import { CaseModal } from "../../cases/CaseView";
 import { Button } from "@mantine/core";
 
 export interface BaseExplorationPageProps {
@@ -67,8 +65,8 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
   const [isFileModalOpen, setFileModalOpen] = useState(false);
   const [currentFile, setCurrentFile] = useState(undefined as GdcFile);
 
-  const [isCaseModalOpen, setCaseModalOpen] = useState(false);
-  const [currentCase, setCurrentCase] = useState(undefined as Case);
+  const [, setCaseModalOpen] = useState(false);
+  const [, setCurrentCase] = useState(undefined as Case);
 
   // used to scroll to top of apps section
   const topOfApps = useRef(null);
@@ -195,10 +193,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
                   handleSurvivalPlotToggled={undefined}
                   handleGeneToggled={() => null}
                 />
-                <SMTableContainer
-                  selectedSurvivalPlot={undefined}
-                  handleSurvivalPlotToggled={undefined}
-                />
+                <SMTableContainer />
               </div>
             </AllAppViewer>
           ) : currentApp == "clinical-filters" ? (
@@ -237,11 +232,6 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
         isOpen={isFileModalOpen}
         closeModal={() => setFileModalOpen(false)}
         file={currentFile}
-      />
-      <CaseModal
-        isOpen={isCaseModalOpen}
-        closeModal={() => setCaseModalOpen(false)}
-        patient={currentCase}
       />
     </UserFlowVariedPages>
   );
@@ -360,9 +350,8 @@ const AllAppsRepository = (props: AllAppsRepositoryProps) => {
         </button>
         <div className="flex-grow text-center">Repository</div>
       </div>
-      TODO Fix ContextualFilesView if needed
+
       {handleFileSelected}
-      {/*<ContextualFilesView handleFileSelected={handleFileSelected} /> */}
     </div>
   );
 };
