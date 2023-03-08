@@ -31,7 +31,7 @@ export const filters_ssms_counts = (id: string): Record<string, any> => {
   };
 };
 
-export const filters_case_aggregations = (id: string): Record<string, any> => {
+export const filters_mutations = (id: string): Record<string, any> => {
   return {
     op: "and",
     content: [
@@ -81,11 +81,49 @@ export const filters_cnv = (
 };
 
 export const cdFilters = (id: string): Record<string, any> => {
-  // todo add camelCase key names for export
   return {
-    filters_case_aggregations,
+    filters_mutations,
     id: filters_ssms_counts(id),
     filters_cnv_tested,
     filters_entity_tested,
+  };
+};
+
+export const cdTableGeneSummaryQuery = (id: string) => {
+  return {
+    project: `key`,
+    diseaseType: `disease_type`,
+    primarySite: `primary_site`,
+    ssmsAffectedCases: `filters_ssmsAffectedCases_${id}`,
+    cnvGains: `filters_cnvGains_${id}`,
+    cnvLosses: `filters_cnvLosses_${id}`,
+    mutations: `filters_mutations_${id}`,
+  };
+};
+
+export const cdTableGeneSummaryFilters = (id: string) => {
+  return {
+    cnvGains: filters_cnv(id, "Gain"),
+    cnvLosses: filters_cnv(id, "Loss"),
+    mutations: filters_mutations(id),
+    ssmsAffectedCases: filters_mutations(id),
+  };
+};
+
+export const cdTableMutationSummaryQuery = (id: string) => {
+  return {
+    project: `key`,
+    diseaseType: `disease_type`,
+    primarySite: `primary_site`,
+    ssmsAffectedCases: `filters_ssmsAffectedCases_${id}`,
+  };
+};
+
+export const cdTableMutationSummaryFilters = (id: string) => {
+  return {
+    id: () => {
+      id;
+    },
+    // todo
   };
 };

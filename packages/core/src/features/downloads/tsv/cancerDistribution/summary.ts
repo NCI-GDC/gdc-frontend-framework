@@ -2,7 +2,13 @@ import {
   GraphQLApiResponse,
   graphqlAPISlice,
 } from "../../../gdcapi/gdcgraphql";
-import { cdFilters } from "./cdFilters";
+import {
+  cdTableGeneSummaryQuery,
+  cdTableMutationSummaryQuery,
+  cdFilters,
+  cdTableGeneSummaryFilters,
+  cdTableMutationSummaryFilters,
+} from "./cdFilters";
 
 // CD = Cancer Distribution
 
@@ -16,133 +22,46 @@ export interface CDTableMutationSummaryData {
   // mtn fields
 }
 
-const bucketsFields = (buckets = "buckets", fields = ["doc_count", "key"]) => {
-  return `${buckets} {
-            ${fields.join("\n")}
-          }`;
-};
+export interface CDTableProjectsResponse {
+  projects: {
+    project__project_id: {
+      buckets: {
+        doc_count: string;
+        key: string;
+      };
+    };
+  };
+}
 
-const aggregationTree = (root: string, filters: string[]): string => {
-  // filter (:)
+// const bucketsFields = (buckets = "buckets", fields = ["doc_count", "key"]) => {
+//   return `${buckets} {
+//             ${fields.join("\n")}
+//           }`;
+// };
 
-  const reduce = root.split(".").reduce((r, acc) => {
-    return `${r} ${acc ? `{${acc} ` : `{}`}`;
-  });
-  console.log("filters", filters);
-  const rlen = [...Array(root.length).keys()];
-  const len = [`}`, `}`, `}`];
-  const test = len.join("\n");
-  console.log("test", reduce + test, "rlen", rlen);
-  return reduce;
-
-  // todo: include these fields
-
-  // const { data: projects, isFetching: projectsFetching } = useProjects({
-  //   filters: {
-  //     op: "in",
-  //     content: {
-  //       field: "project_id",
-  //       value: data?.projects.map((p) => p.key),
-  //     },
-  //   },
-  //   expand: [
-  //     "summary",
-  //     "summary.data_categories",
-  //     "summary.experimental_strategies",
-  //     "program",
-  //   ],
-  //   size: data?.projects.length,
-  // });
-};
-
-const getCDQuery = (id: string, entity: string): string => {
-  switch (entity) {
+const getCDQuery = (id: string, feature: string, fields: string[]): string => {
+  switch (feature) {
     case "genes": {
-      const {
-        ssmsTestedFilter,
-        cnvLossFilters,
-        cnvGainFilters,
-        ...otherFilters
-      } = cdFilters(id);
-      console.log("otherFilters", otherFilters);
-      aggregationTree(
-        "ssms.aggregations(filters).occurrence__case__project__project_id",
-        [
-          "filters_case_aggregations",
-          "ssms_counts",
-          "cnv_tested",
-          "entity_tested",
-        ],
-      );
-      // todo
-      return `
-      query CancerDistributionTable(
-        $ssmTested: FiltersArgument
-        $ssmCountsFilters: FiltersArgument
-        $filters_case_aggregations: FiltersArgument
-        $cnvGainFilter: FiltersArgument
-        $cnvLossFilter: FiltersArgument
-        $cnvTested: FiltersArgument
-      ) {
-        viewer {
-          explore {
-            ssms {
-              aggregations(filters: $ssmCountsFilters) {
-                occurrence__case__project__project_id {
-                  ${bucketsFields()}
-                }
-              }
-            }
-            cases {
-              filtered: aggregations(filters: $filters_case_aggregations) {
-                project__project_id {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-              cnvGain: aggregations(filters: $cnvGainFilter) {
-                project__project_id {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-              cnvLoss: aggregations(filters: $cnvLossFilter) {
-                project__project_id {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-              cnvTotal: aggregations(filters: $cnvTested) {
-                 project__project_id {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-              total: aggregations(filters: $ssmTested) {
-                project__project_id {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `;
+      // let fields: columns currently visible in table
+      // const dlFields = [...fields] n [...Object.keys(geneSummaryCDFields)]
+      // dlFields.map(({ visibleColumn }) => mutationSummaryCDQuery)
+      console.log("fields", fields);
+      fields
+        .map((field) => {
+          return field;
+          // return `${field[cdTableGeneSummaryQuery(id)]}`
+        })
+        .join("\n,");
+      // const { } = cdTableGeneSummaryQuery;
+      debugger;
+      return `${id}`;
+      // todo;
     }
     case "ssms": {
-      // todo
-      return `MutationsCDTableQuery`;
+      // dlFields.map(({ visibleColumn }) => mutationSummaryCDFields)
+      const { ...query } = cdTableMutationSummaryQuery;
+      console.log(query);
+      return `${id}`;
     }
     default: {
       return "defaultCDQuery";
@@ -150,14 +69,19 @@ const getCDQuery = (id: string, entity: string): string => {
   }
 };
 
-const getCDFilters = (id: string, entity: string): Record<string, any> => {
-  switch (entity) {
+const getCDFilters = (
+  id: string,
+  feature: string,
+  fields: string[],
+): Record<string, any> => {
+  console.log("fields", fields);
+  switch (feature) {
     case "genes": {
-      return { id: id };
+      return cdTableGeneSummaryFilters(id);
     }
-    // case "ssms": {
-    //   return {};
-    // }
+    case "ssms": {
+      return cdTableMutationSummaryFilters(id);
+    }
     default: {
       return {};
     }
@@ -166,23 +90,119 @@ const getCDFilters = (id: string, entity: string): Record<string, any> => {
 
 export const cancerDistributionDownloadSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCDTableGeneSummaryDL: builder.query({
-      query: (request: { gene: string }) => ({
-        graphQLQuery: getCDQuery(request.gene, "genes") as string,
-        graphQLFilters: getCDFilters(request.gene, "genes") as Record<
+    getCDTableSummaryDL: builder.mutation({
+      query: ({ id, feature, fields }) => ({
+        // todo, add feature tags to endpts
+        graphQLQuery: getCDQuery(id, "genes", fields) as string,
+        graphQLFilters: getCDFilters(id, feature, fields) as Record<
           string,
           unknown
         >,
+        providesTags: (totalCDProjects: CDTableProjectsResponse[]) => [
+          ...(totalCDProjects ? [...(<[]>totalCDProjects)] : []),
+          { type: "Download", id: `${id}` },
+        ],
       }),
       transformResponse: (
-        response: GraphQLApiResponse<any>,
+        response: GraphQLApiResponse<CDTableProjectsResponse>,
       ): CDTableGeneSummaryData[] => {
-        console.log("cd table response", response);
+        const {
+          projects: {
+            project__project_id: { buckets },
+          },
+        } = response as unknown as CDTableProjectsResponse;
+        console.log("buckets", buckets);
+        debugger;
         return [] as CDTableGeneSummaryData[];
       },
     }),
   }),
 });
 
-export const { useGetCDTableGeneSummaryDLQuery } =
+export const { useGetCDTableSummaryDLMutation } =
   cancerDistributionDownloadSlice;
+
+// return `
+//   query CancerDistributionTable(
+//     $ssmTested: FiltersArgument
+//     $ssmCountsFilters: FiltersArgument
+//     $filters_case_aggregations: FiltersArgument
+//     $cnvGainFilter: FiltersArgument
+//     $cnvLossFilter: FiltersArgument
+//     $cnvTested: FiltersArgument
+//   ) {
+//     viewer {
+//       explore {
+//         ssms {
+//           aggregations(filters: $ssmCountsFilters) {
+//             occurrence__case__project__project_id {
+//               ${bucketsFields()}
+//             }
+//           }
+//         }
+//         cases {
+//           filtered: aggregations(filters: $filters_case_aggregations) {
+//             project__project_id {
+//               buckets {
+//                 doc_count
+//                 key
+//               }
+//             }
+//           }
+//           cnvGain: aggregations(filters: $cnvGainFilter) {
+//             project__project_id {
+//               buckets {
+//                 doc_count
+//                 key
+//               }
+//             }
+//           }
+//           cnvLoss: aggregations(filters: $cnvLossFilter) {
+//             project__project_id {
+//               buckets {
+//                 doc_count
+//                 key
+//               }
+//             }
+//           }
+//           cnvTotal: aggregations(filters: $cnvTested) {
+//              project__project_id {
+//               buckets {
+//                 doc_count
+//                 key
+//               }
+//             }
+//           }
+//           total: aggregations(filters: $ssmTested) {
+//             project__project_id {
+//               buckets {
+//                 doc_count
+//                 key
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `
+
+//   todo: include these fields
+
+//   const { data: projects, isFetching: projectsFetching } = useProjects({
+//     filters: {
+//       op: "in",
+//       content: {
+//         field: "project_id",
+//         value: data?.projects.map((p) => p.key),
+//       },
+//     },
+//     expand: [
+//       "summary",
+//       "summary.data_categories",
+//       "summary.experimental_strategies",
+//       "program",
+//     ],
+//     size: data?.projects.length,
+//   });
+// };
