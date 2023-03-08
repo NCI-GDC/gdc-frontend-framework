@@ -82,6 +82,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
       if (isDemoMode) data.geneSymbol = "MYC";
+      // compare the argument to runpp to avoid unnecessary render
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
@@ -104,14 +105,14 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
       props.geneSearch4GDCmds3,
       isDemoMode,
       filter0,
-      userDetails,
+      props.userDetails,
     ],
   );
 
@@ -127,6 +128,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
+        userDetails={userDetails}
       />
     </div>
   );
