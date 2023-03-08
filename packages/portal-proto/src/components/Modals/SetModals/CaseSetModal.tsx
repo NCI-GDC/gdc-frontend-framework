@@ -1,5 +1,4 @@
 import React from "react";
-import { useGetCasesQuery } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import UserInputModal from "../UserInputModal";
 import { InputModalProps } from "./types";
@@ -37,7 +36,6 @@ const CaseSetModal: React.FC<InputModalProps> = ({
         entityType="cases"
         entityLabel="case"
         hooks={{
-          query: useGetCasesQuery,
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
           useAddNewFilterGroups: useAddNewFilterGroups,
