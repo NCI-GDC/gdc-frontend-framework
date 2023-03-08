@@ -4,7 +4,7 @@ from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePageLocators
 
 
-class NavAnalysisCenterLocators:
+class AnalysisCenterLocators:
     """A class for Home page locators. All home page locators should come here"""
 
     TOOL_MANAGEMENT_SECTION = "div[data-tour='analysis_tool_management']"
@@ -12,7 +12,7 @@ class NavAnalysisCenterLocators:
     REPOSITORY_VIEW_IMAGE_BUTTON = "text='View Images'"
 
 
-class NavAnalysisCenterPage:
+class AnalysisCenterPage:
     def __init__(self, driver: Page, url):
         self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
@@ -28,15 +28,15 @@ class NavAnalysisCenterPage:
         nav_and_location = [
             (
                 HomePageLocators.NAV_BAR_ANALYSIS_ICON,
-                NavAnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
             ),
             (
                 HomePageLocators.NAV_BAR_COHORT_ICON,
-                NavAnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
             ),
             (
                 HomePageLocators.NAV_BAR_REPOSITORY_ICON,
-                NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
             ),
         ]
         # Click on an icon from the nav bar, then validate user arrived on correct page
@@ -83,28 +83,28 @@ class NavAnalysisCenterPage:
         # Second element in the set: an element to check if user landed on correct page (from the nav bar movement)
         check_for_location = [
             (
-                NavAnalysisCenterLocators.COHORT_BUILDER_SECTION,
-                NavAnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
             ),
             (
-                NavAnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-                NavAnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
             ),
             (
-                NavAnalysisCenterLocators.COHORT_BUILDER_SECTION,
-                NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
             ),
             (
-                NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-                NavAnalysisCenterLocators.COHORT_BUILDER_SECTION,
+                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.COHORT_BUILDER_SECTION,
             ),
             (
-                NavAnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
-                NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
             ),
             (
-                NavAnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
-                NavAnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
+                AnalysisCenterLocators.REPOSITORY_VIEW_IMAGE_BUTTON,
+                AnalysisCenterLocators.TOOL_MANAGEMENT_SECTION,
             ),
         ]
         # Start at the home screen. Click an icon from the default (center) of the screen. Validate user arrived at correct screen.
