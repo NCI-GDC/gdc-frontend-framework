@@ -747,6 +747,7 @@ module.exports = {
           text: "#42346F",
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
+          borderAlt: "#F0E4CB",
         },
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#976F21", //lighter orangish
@@ -779,6 +780,8 @@ module.exports = {
       },
       backgroundImage: {
         "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
+        "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
+        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
