@@ -153,8 +153,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <div>
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
+                passHref
               >
-                <ImageSlideCount slideCount={slideCount} />
+                <a>
+                  <ImageSlideCount slideCount={slideCount} />
+                </a>
               </Link>
             </div>
           </Tooltip>
