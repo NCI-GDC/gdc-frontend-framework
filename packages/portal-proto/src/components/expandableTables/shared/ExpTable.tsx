@@ -70,7 +70,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
             .getHeaderGroups()
             .slice(1)
             .map((headerGroup) => (
-              <tr key={headerGroup.id} className="h-16">
+              <tr key={headerGroup.id} className="">
                 {headerGroup.headers.map((header) => {
                   return (
                     <th
