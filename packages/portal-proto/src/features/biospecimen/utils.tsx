@@ -126,7 +126,7 @@ export const formatEntityInfo = (
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
-                <GiMicroscope size={18} />
+                <GiMicroscope size={17} />
               </a>
             </Link>
           </ActionIcon>
