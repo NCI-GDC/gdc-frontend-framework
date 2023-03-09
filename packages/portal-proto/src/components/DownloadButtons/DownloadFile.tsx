@@ -34,7 +34,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
 
   const customStyleFile = inactiveText
     ? "text-base-lightest bg-primary hover:bg-primary-darker"
-    : `bg-base-lightest text-primary border border-primary rounded hover:bg-primary-darkest hover:text-base-lightest ${
+    : `bg-base-max text-primary border border-primary rounded hover:bg-primary hover:text-base-max ${
         !inactiveText && !activeText ? "w-8 p-0 h-6" : "p-2"
       }`;
 

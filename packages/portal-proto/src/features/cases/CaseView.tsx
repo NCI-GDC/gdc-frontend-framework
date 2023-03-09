@@ -167,28 +167,29 @@ export const CaseView: React.FC<CaseViewProps> = ({
             withinPortal={true}
             withArrow
           >
-            <ActionIcon variant="outline" size="sm">
-              <FaShoppingCart
-                onClick={() => {
-                  isAllImagesFilesInCart
-                    ? removeFromCart(
-                        mapGdcFileToCartFile(imageFiles),
-                        currentCart,
-                        dispatch,
-                      )
-                    : addToCart(
-                        mapGdcFileToCartFile(imageFiles),
-                        currentCart,
-                        dispatch,
-                      );
-                }}
-                className={`cursor-pointer ${
-                  isAllImagesFilesInCart
-                    ? "text-utility-category4"
-                    : "text-primary"
-                }`}
-                size={12}
-              />
+            <ActionIcon
+              variant="outline"
+              size="sm"
+              className={`hover:bg-primary hover:text-base-max border-primary ${
+                isAllImagesFilesInCart
+                  ? "bg-primary text-base-max"
+                  : "text-primary bg-base-max"
+              }`}
+              onClick={() => {
+                isAllImagesFilesInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(imageFiles),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(imageFiles),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+            >
+              <FaShoppingCart size={12} />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -409,7 +410,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             leftIcon={<FaShoppingCart />}
-            className="text-primary bg-base-lightest hover:bg-primary-darkest hover:text-primary-content-lightest"
+            className={`${
+              isAllFilesInCart
+                ? "bg-primary-darkest text-base-max"
+                : "text-primary bg-base-lightest"
+            } hover:bg-primary-darkest hover:text-base-max`}
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(
