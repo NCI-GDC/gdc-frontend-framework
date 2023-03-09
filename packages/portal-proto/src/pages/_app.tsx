@@ -8,11 +8,14 @@ import type { AppProps } from "next/app";
 import Script from "next/script";
 import { CoreProvider } from "@gff/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { MantineProvider, MantineThemeOverride } from "@mantine/core";
+import {
+  MantineProvider,
+  createEmotionCache,
+  EmotionCache,
+} from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import store from "../app/store";
 import tailwindConfig from "../../tailwind.config";
-import { rtlCache } from "../rtl-cache";
 
 // import gdc apps here.
 // their default exports will trigger registration.
@@ -56,108 +59,28 @@ datadogRum.init({
 });
 
 type TenStringArray = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
+  string?,
 ];
 
-// TODO Might want to move this to a separate file
-const defaultTailwindColorTheme =
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+const getCache = (): EmotionCache => {
+  // Insert mantine styles after global styles
+  const insertionPoint =
+    typeof document !== "undefined"
+      ? document.querySelectorAll<HTMLElement>(
+          'style[data-emotion="css-global"]',
+        )?.[-1]
+      : undefined;
 
-const V2Theme = {
-  // use V2 font in MantineProvider
-  fontFamily: "Montserrat, Noto Sans, sans-serif",
-  // Override default blue color until styles are determined
-  colors: {
-    blue: Object.values(
-      tailwindConfig.theme.extend.colors["nci-blue"],
-    ) as TenStringArray,
-    gray: Object.values(
-      tailwindConfig.theme.extend.colors["nci-gray"],
-    ) as TenStringArray,
-    white: [
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-    ] as TenStringArray,
-    // Add default color from tailwind config to Mantine theme
-    // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
-    // plugins declaration.
-    // TODO: refactor how the configuration get loaded
-
-    ...Object.fromEntries(
-      Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
-        key,
-        Object.values(values),
-      ]),
-    ),
-  },
-  primaryColor: "primary",
-  primaryShade: { light: 4, dark: 7 },
-  breakpoints: {
-    xs: 500,
-    sm: 800,
-    md: 1000,
-    lg: 1275,
-    xl: 1800,
-  },
-  components: {
-    Tooltip: {
-      defaultProps: {
-        arrowSize: 10,
-        classNames: {
-          tooltip:
-            "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
-          arrow: "bg-base-min bg-opacity-90",
-        },
-      },
-    },
-    Modal: {
-      defaultProps: {
-        zIndex: 400,
-        radius: "md",
-        styles: {
-          header: {
-            color: defaultTailwindColorTheme["primary-content"].darkest,
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "1.65em",
-            fontWeight: 500,
-            letterSpacing: ".1rem",
-            borderColor: defaultTailwindColorTheme.base.lighter,
-            borderStyle: "solid",
-            borderWidth: "0px 0px 2px 0px",
-            padding: "15px 15px 5px 15px",
-            margin: "5px 5px 10px 5px",
-            textTransform: "uppercase",
-          },
-          modal: {
-            backgroundColor: defaultTailwindColorTheme.base.max,
-          },
-          close: {
-            backgroundColor: defaultTailwindColorTheme.base.lightest,
-            color: defaultTailwindColorTheme["primary-content"].darkest,
-          },
-        },
-      },
-    },
-  },
+  return createEmotionCache({ key: "mantine", insertionPoint });
 };
 
 const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
@@ -179,14 +102,104 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     entity_name: null,
   });
 
+  const defaultTailwindColorTheme =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+
   return (
     <CoreProvider>
       <Provider store={store}>
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
-          emotionCache={rtlCache}
-          theme={V2Theme as MantineThemeOverride}
+          emotionCache={getCache()}
+          theme={{
+            // use V2 font in MantineProvider
+            fontFamily: "Montserrat, Noto Sans, sans-serif",
+            // Override default blue color until styles are determined
+            colors: {
+              blue: Object.values(
+                tailwindConfig.theme.extend.colors["nci-blue"],
+              ) as TenStringArray,
+              gray: Object.values(
+                tailwindConfig.theme.extend.colors["nci-gray"],
+              ) as TenStringArray,
+              white: [
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+                "#ffffff",
+              ],
+              // Add default color from tailwind config to Mantine theme
+              // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
+              // plugins declaration.
+              // TODO: refactor how the configuration get loaded
+
+              ...Object.fromEntries(
+                Object.entries(defaultTailwindColorTheme).map(
+                  ([key, values]) => [key, Object.values(values)],
+                ),
+              ),
+            },
+            primaryColor: "primary",
+            primaryShade: { light: 4, dark: 7 },
+            breakpoints: {
+              xs: 500,
+              sm: 800,
+              md: 1000,
+              lg: 1275,
+              xl: 1800,
+            },
+            components: {
+              Tooltip: {
+                defaultProps: {
+                  arrowSize: 10,
+                  classNames: {
+                    tooltip:
+                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+                    arrow: "bg-base-min bg-opacity-90",
+                  },
+                },
+              },
+              Modal: {
+                defaultProps: {
+                  zIndex: 400,
+                  radius: "md",
+                  styles: {
+                    header: {
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                      fontFamily: '"Montserrat", "sans-serif"',
+                      fontSize: "1.65em",
+                      fontWeight: 500,
+                      letterSpacing: ".1rem",
+                      borderColor: defaultTailwindColorTheme.base.lighter,
+                      borderStyle: "solid",
+                      borderWidth: "0px 0px 2px 0px",
+                      padding: "15px 15px 5px 15px",
+                      margin: "5px 5px 10px 5px",
+                      textTransform: "uppercase",
+                    },
+                    modal: {
+                      backgroundColor: defaultTailwindColorTheme.base.max,
+                    },
+                    close: {
+                      backgroundColor: defaultTailwindColorTheme.base.lightest,
+                      color:
+                        defaultTailwindColorTheme["primary-content"].darkest,
+                    },
+                  },
+                },
+              },
+            },
+          }}
         >
           <div
             className={`${

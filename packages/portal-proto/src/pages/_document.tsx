@@ -1,9 +1,8 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { resetIdCounter } from "react-tabs";
 import { ServerStyles, createStylesServer } from "@mantine/next";
-import { rtlCache } from "../rtl-cache";
 
-const stylesServer = createStylesServer(rtlCache);
+const stylesServer = createStylesServer();
 
 class GdcDocument extends Document {
   static async getInitialProps(
