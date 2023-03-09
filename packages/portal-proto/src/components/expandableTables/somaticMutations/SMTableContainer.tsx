@@ -33,6 +33,7 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import FunctionButton from "@/components/FunctionButton";
 
 export const SelectedRowContext =
   createContext<
@@ -276,56 +277,42 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             removeFromSetHook={useRemoveFromSsmSetMutation}
           />
         )}
-        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
-          <div className="flex mb-4 gap-2">
-            <TableControls
-              total={smTotal}
-              numSelected={Object.keys(selectedMutations).length ?? 0}
-              label={`Somatic Mutation`}
-              options={[
-                { label: "Save/Edit Mutation Set", value: "placeholder" },
-                {
-                  label: "Save as new mutation set",
-                  value: "save",
-                  onClick: () => setShowSaveModal(true),
-                },
-                {
-                  label: "Add to existing mutation set",
-                  value: "add",
-                  disabled: Object.keys(sets).length === 0,
-                  onClick: () => setShowAddModal(true),
-                },
-                {
-                  label: "Remove from existing mutation set",
-                  value: "remove",
-                  disabled: Object.keys(sets).length === 0,
-                  onClick: () => setShowRemoveModal(true),
-                },
-              ]}
-              additionalControls={
-                <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Cases">
-                    <Button
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      JSON
-                    </Button>
-                  </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
-                    <Button
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      TSV
-                    </Button>
-                  </ButtonTooltip>
-                </div>
-              }
-            />
-          </div>
+        <div className="flex justify-between items-center mb-2 mt-8">
+          <TableControls
+            total={smTotal}
+            numSelected={Object.keys(selectedMutations).length ?? 0}
+            label={`Somatic Mutation`}
+            options={[
+              { label: "Save/Edit Mutation Set", value: "placeholder" },
+              {
+                label: "Save as new mutation set",
+                value: "save",
+                onClick: () => setShowSaveModal(true),
+              },
+              {
+                label: "Add to existing mutation set",
+                value: "add",
+                disabled: Object.keys(sets).length === 0,
+                onClick: () => setShowAddModal(true),
+              },
+              {
+                label: "Remove from existing mutation set",
+                value: "remove",
+                disabled: Object.keys(sets).length === 0,
+                onClick: () => setShowRemoveModal(true),
+              },
+            ]}
+            additionalControls={
+              <div className="flex gap-2">
+                <ButtonTooltip label="Export All Except #Cases">
+                  <FunctionButton>JSON</FunctionButton>
+                </ButtonTooltip>
+                <ButtonTooltip label="Export current view">
+                  <FunctionButton>TSV</FunctionButton>
+                </ButtonTooltip>
+              </div>
+            }
+          />
 
           <TableFilters
             search={searchTerm}

@@ -110,8 +110,8 @@ const RepositoryApp = () => {
         <FileFacetPanel />
       </div>
       <div className="w-full overflow-hidden h-full">
-        <div className="flex flex-row justify-end align-center m-2">
-          <div className="flex justify-end gap-2">
+        <div className="flex flex-row justify-end align-center">
+          <div className="flex justify-end gap-2 mb-6">
             <DownloadButton
               customStyle={`
               flex

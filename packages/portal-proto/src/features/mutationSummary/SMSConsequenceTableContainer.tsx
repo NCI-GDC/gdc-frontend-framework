@@ -13,6 +13,7 @@ import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/muta
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import FunctionButton from "@/components/FunctionButton";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -149,22 +150,10 @@ export const SMSConsequenceTableContainer: React.FC<
 
           <div className="flex gap-2">
             <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
-              <Button
-                className={
-                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                }
-              >
-                JSON
-              </Button>
+              <FunctionButton>JSON</FunctionButton>
             </ButtonTooltip>
             <ButtonTooltip label="Export current view" comingSoon={true}>
-              <Button
-                className={
-                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                }
-              >
-                TSV
-              </Button>
+              <FunctionButton>TSV</FunctionButton>
             </ButtonTooltip>
             <DND
               columnListOrder={columnListOrder}

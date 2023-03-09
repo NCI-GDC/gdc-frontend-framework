@@ -46,7 +46,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     >
       {row.getVisibleCells().map((cell, cellIdx) => {
         return (
-          <animated.td key={cell.id} className="py-2">
+          <animated.td key={cell.id} className="py-2 px-2">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {row.id.includes(".") && cellIdx === 0 && subrow}
           </animated.td>

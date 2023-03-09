@@ -456,7 +456,7 @@ export const createTableColumn = (
                   }}
                   position={geneSymbol && isModal ? "left-start" : "top"}
                 >
-                  <div className="font-heading text-left text-xs whitespace-pre-line">
+                  <div className="font-heading text-left text-sm whitespace-pre-line">
                     Impact
                   </div>
                 </Tooltip>

@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
+import { ReactNode } from "react";
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
 });
 
 export interface ChartTitleBarProps {
-  readonly title?: string;
+  readonly title?: ReactNode;
   readonly filename: string;
   readonly divId: string;
   readonly jsonData: Record<string, unknown>;
@@ -18,7 +19,7 @@ const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
   jsonData,
 }: ChartTitleBarProps) => {
   return (
-    <div className="flex items-center justify-between flex-wrap p-1.5">
+    <div className="flex items-center justify-between">
       {title}
       <DownloadOptions
         chartDivId={divId}

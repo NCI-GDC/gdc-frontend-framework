@@ -16,24 +16,7 @@ import {
 } from "./SelectCohortsModal";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-
-interface CountsIconProps {
-  $count?: number;
-}
-
-export const CountsIcon = tw.div<CountsIconProps>`
-${(p: CountsIconProps) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-accent" : "bg-transparent"}
-inline-flex
-items-center
-justify-center
-w-8
-h-5
-text-accent-contrast
-font-heading
-rounded-md
-
-`;
+import { CountsIcon } from "@/features/shared/tailwindComponents";
 
 export const CasesCohortButton = (): JSX.Element => {
   const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>

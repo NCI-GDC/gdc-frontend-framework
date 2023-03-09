@@ -26,7 +26,7 @@ export const TableHeader = ({
             "bg-base-lightest text-base-contrast-lightest font-heading text-left",
         }}
       >
-        <div className="font-heading text-left text-xs whitespace-pre-line">
+        <div className="font-heading text-left text-sm whitespace-pre-line">
           {title}
         </div>
       </Tooltip>

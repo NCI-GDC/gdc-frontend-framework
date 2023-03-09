@@ -17,24 +17,11 @@ import {
 } from "@gff/core";
 import tw from "tailwind-styled-components";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import { CountsIcon } from "../shared/tailwindComponents";
 
 interface CountsIconProps {
   $count?: number;
 }
-
-export const CountsIcon = tw.div<CountsIconProps>`
-${(p: CountsIconProps) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-transparent"}
-inline-flex
-items-center
-justify-center
-w-8
-h-6
-text-primary-contrast
-font-heading
-rounded-md
-
-`;
 
 const ProjectsCohortButton = (): JSX.Element => {
   const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>

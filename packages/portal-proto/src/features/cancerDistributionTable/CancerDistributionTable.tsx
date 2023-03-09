@@ -309,9 +309,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       showControls={false}
       additionalControls={
-        <div className="flex flex-row-reverse gap-2">
-          <FunctionButton>TSV</FunctionButton>
+        <div className="flex gap-2">
+          {/* TODO need to fix here to be right aligned and also check all the places where vertical table is being used */}
           <FunctionButton>JSON</FunctionButton>
+          <FunctionButton>TSV</FunctionButton>
         </div>
       }
       pagination={{

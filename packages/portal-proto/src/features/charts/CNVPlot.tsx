@@ -6,6 +6,9 @@ import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { Grid } from "@mantine/core";
 import { processFilters } from "src/utils";
+import tw from "tailwind-styled-components";
+import { CountSpan } from "../shared/tailwindComponents";
+
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -57,10 +60,21 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const caseData = data.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
-  const caseTotal = data.caseTotal.toLocaleString();
-  const mutationTotal = data.mutationTotal.toLocaleString();
-  const projectCount = caseData.length.toLocaleString();
-  const title = `${caseTotal} CASES AFFECTED BY ${mutationTotal} CNV EVENTS ACROSS ${projectCount} PROJECTS`;
+
+  const caseTotal = <CountSpan>{data.caseTotal.toLocaleString()}</CountSpan>;
+  const mutationTotal = (
+    <CountSpan>{data.mutationTotal.toLocaleString()}</CountSpan>
+  );
+  const projectCount = (
+    <CountSpan>{caseData.length.toLocaleString()}</CountSpan>
+  );
+
+  const title = (
+    <span>
+      {caseTotal} CASES AFFECTED BY {mutationTotal} CNV EVENTS ACROSS{" "}
+      {projectCount} PROJECTS
+    </span>
+  );
 
   let chartData;
   if (gainChecked && lossChecked) {

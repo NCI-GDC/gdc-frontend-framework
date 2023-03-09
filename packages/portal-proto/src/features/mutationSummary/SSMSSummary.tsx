@@ -1,5 +1,4 @@
 import React from "react";
-import { Grid } from "@mantine/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
@@ -7,7 +6,6 @@ import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { externalLinks, humanify } from "src/utils";
-import { FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
@@ -15,6 +13,7 @@ import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDi
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { Grid } from "@mantine/core";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -199,13 +198,12 @@ export const SSMSSummary = ({
               ssmsId={ssm_id}
             />
 
-            <div className="mt-8">
-              <div className="flex items-center gap-2">
-                <HeaderTitle>Cancer Distribution</HeaderTitle>
-              </div>
+            <div className="mt-8 mb-16">
+              <HeaderTitle>Cancer Distribution</HeaderTitle>
               <Grid>
                 <SSMPlot page={"ssms"} ssms={ssm_id} />
               </Grid>
+
               <SSMSCancerDistributionTable
                 ssms={ssm_id}
                 symbol={summaryData.dna_change}

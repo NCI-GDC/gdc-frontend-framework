@@ -1,6 +1,7 @@
 import React from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Box, Group, Menu, Button, Text } from "@mantine/core";
+import { CountsIcon } from "@/features/shared/tailwindComponents";
 
 interface ControlOption {
   label: string;
@@ -29,7 +30,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
   );
   return (
     <div className="flex items-center mt-2 gap-2">
-      <Menu shadow="md">
+      <Menu shadow="md" width="target">
         <Menu.Target>
           <Button
             variant="outline"
@@ -38,12 +39,8 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
             rightIcon={<MdOutlineArrowDropDown />}
             leftIcon={
               numSelected > 0 ? (
-                <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
-                  {numSelected}
-                </Box>
-              ) : (
-                <Box className="w-7 h-7" />
-              )
+                <CountsIcon $count={numSelected}>{numSelected}</CountsIcon>
+              ) : null
             }
           >
             {buttonLabel[0].label}

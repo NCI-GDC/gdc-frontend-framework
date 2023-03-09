@@ -206,7 +206,7 @@ const GeneView = ({
             isModal={isModal}
           />
 
-          <div className={`mx-auto ${!isModal && "mt-20"} w-9/12 pt-4`}>
+          <div className={`mx-4 ${!isModal && "mt-20"}`}>
             {contextSensitive && <ContextSensitiveBanner />}
             <div className="text-primary-content">
               <div className="flex gap-6">
@@ -222,11 +222,9 @@ const GeneView = ({
               </div>
             </div>
             <div className="mt-4">
-              <div className="flex items-center gap-2">
-                <BarChartIcon size={20} className="text-accent" />
-                <HeaderTitle>Cancer Distribution</HeaderTitle>
-              </div>
-              <Grid>
+              <HeaderTitle>Cancer Distribution</HeaderTitle>
+
+              <Grid className="mt-2 mb-16">
                 <SSMPlot
                   page="gene"
                   gene={gene_id}

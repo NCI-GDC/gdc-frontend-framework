@@ -360,7 +360,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-xs font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4`}
+              className={`font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -380,7 +380,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 py-3 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
+                    className={`px-2 py-3 border-base-lighter border-b-2 border-t-1 font-heading text-sm font-bold ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -561,14 +561,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const theme = useMantineTheme();
 
   return (
-    <div className="grow overflow-hidden">
-      <div className="flex">
-        {additionalControls && (
-          <div className="flex-auto h-10">{additionalControls}</div>
-        )}
-        <div className="flex flex-row items-center">
+    <div className="grow overflow-hidden items-center">
+      <div className="flex justify-between">
+        {additionalControls && <div>{additionalControls}</div>}
+        <div className="flex items-center">
           {search?.enabled && (
-            <div className="flex flex-row w-max mb-2">
+            <div className="flex mb-2">
               <TextInput
                 icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
                 placeholder={search.placeholder ?? "Search"}
@@ -589,7 +587,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         });
                       }}
                       className="cursor-pointer"
-                    ></MdClose>
+                    />
                   )
                 }
                 value={searchTerm}
@@ -600,43 +598,43 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   });
                 }}
               />
-            </div>
-          )}
-          {showControls && (
-            <Popover
-              opened={showColumnMenu}
-              onClose={() => setShowColumnMenu(false)}
-              position="bottom"
-              transition="scale"
-              withArrow
-            >
-              <Popover.Target>
-                <button
-                  onClick={() => {
-                    setShowColumnMenu(!showColumnMenu);
-                  }}
+              {showControls && (
+                <Popover
+                  opened={showColumnMenu}
+                  onClose={() => setShowColumnMenu(false)}
+                  position="bottom"
+                  transition="scale"
+                  withArrow
                 >
-                  <Box className="border-1 p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
-                    {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
-                  </Box>
-                </button>
-              </Popover.Target>
-              <Popover.Dropdown>
-                <div className={`w-fit`}>
-                  {columns.length > 0 && showColumnMenu && (
-                    <div className="mr-0 ml-2">
-                      <DndProvider backend={HTML5Backend}>
-                        <DragDrop
-                          listOptions={columns} // here....
-                          handleColumnChange={handleColumnChange}
-                          columnSearchTerm={""}
-                        />
-                      </DndProvider>
+                  <Popover.Target>
+                    <button
+                      onClick={() => {
+                        setShowColumnMenu(!showColumnMenu);
+                      }}
+                    >
+                      <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                        {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                      </Box>
+                    </button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <div className={`w-fit`}>
+                      {columns.length > 0 && showColumnMenu && (
+                        <div className="mr-0 ml-2">
+                          <DndProvider backend={HTML5Backend}>
+                            <DragDrop
+                              listOptions={columns} // here....
+                              handleColumnChange={handleColumnChange}
+                              columnSearchTerm={""}
+                            />
+                          </DndProvider>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </Popover.Dropdown>
-            </Popover>
+                  </Popover.Dropdown>
+                </Popover>
+              )}
+            </div>
           )}
         </div>
       </div>
