@@ -29,8 +29,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-// import FunctionButton from "@/components/FunctionButton";
-import { Button } from "@mantine/core";
+import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import { useMutatedGenesFreqDLQuery } from "@gff/core";
@@ -402,7 +401,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               additionalControls={
                 <div className="flex flex-row gap-2">
                   <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                    <Button
+                    <FunctionButton
                       onClick={() => {
                         if (mutatedGenesFreqFetching) {
                           setExportMutatedGenesPending(true);
@@ -415,10 +414,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       }
                     >
                       {"JSON"}
-                    </Button>
+                    </FunctionButton>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view">
-                    <Button
+                    <FunctionButton
                       onClick={() => {
                         if (mutatedGenesFreqTSVFetching) {
                           setExportMutatedGenesTSVPending(true);
@@ -431,7 +430,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                       }
                     >
                       {"TSV"}
-                    </Button>
+                    </FunctionButton>
                   </ButtonTooltip>
                 </div>
               }

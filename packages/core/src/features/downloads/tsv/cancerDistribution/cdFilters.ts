@@ -15,7 +15,7 @@ export const filters_cnv_tested = {
   op: "and",
 };
 
-export const filters_ssms_counts = (id: string): Record<string, any> => {
+export const filters_ssm_counts = (id: string): Record<string, any> => {
   return {
     op: "and",
     content: [
@@ -83,7 +83,7 @@ export const filters_cnv = (
 export const cdFilters = (id: string): Record<string, any> => {
   return {
     filters_mutations,
-    id: filters_ssms_counts(id),
+    id: filters_ssm_counts(id),
     filters_cnv_tested,
     filters_entity_tested,
   };
@@ -94,7 +94,7 @@ export const cdTableGeneSummaryQuery = (id: string) => {
     project: `key`,
     diseaseType: `disease_type`,
     primarySite: `primary_site`,
-    ssmsAffectedCases: `filters_ssmsAffectedCases_${id}`,
+    ssmsAffectedCases: `filters_ssmAffectedCases_${id}`,
     cnvGains: `filters_cnvGains_${id}`,
     cnvLosses: `filters_cnvLosses_${id}`,
     mutations: `filters_mutations_${id}`,
@@ -115,7 +115,7 @@ export const cdTableMutationSummaryQuery = (id: string) => {
     project: `key`,
     diseaseType: `disease_type`,
     primarySite: `primary_site`,
-    ssmsAffectedCases: `filters_ssmsAffectedCases_${id}`,
+    ssmsAffectedCases: `filters_ssmAffectedCases_${id}`,
   };
 };
 

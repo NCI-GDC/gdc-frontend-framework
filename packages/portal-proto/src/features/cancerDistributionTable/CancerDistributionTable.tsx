@@ -8,6 +8,7 @@ import {
   useGetProjectsQuery,
   CancerDistributionTableData,
   useGetCDTableGeneSummaryDLQuery,
+  useGetCDTableSummaryDLMutation,
   FilterSet,
 } from "@gff/core";
 import {
@@ -213,7 +214,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               visible: true,
             },
             {
-              id: "num_mutations",
+              id: "mutations",
               columnName: (
                 <div>
                   <Tooltip
@@ -283,7 +284,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         style: "percent",
                         minimumFractionDigits: 2,
                       })})`,
-                      num_mutations:
+                      mutations:
                         (data.ssmFiltered[d.key] || 0) === 0
                           ? 0
                           : d.doc_count.toLocaleString(),
@@ -318,6 +319,32 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         break;
     }
   };
+
+  const dlColumns = [
+    "project",
+    "diseaseType",
+    "primarySite",
+    "ssmAffectedCases",
+    "cnvGains",
+    "cnvGains",
+    "cnvLosses",
+    "mutations",
+  ];
+
+  const {
+    data: cdDLMutationData,
+    isFetching: cdDLFetching,
+    isError: cdDLError,
+  } = useGetCDTableSummaryDLMutation({
+    // data.projects.map(({ projectId }) => projectId);
+    ids: [],
+    feature: "cdTable-genes-tsv",
+    // intersect w/ columnListOrder
+    //.filter(({ visible }) => visible)
+    //.map((element) => element.toLowerCase())
+    //.map((case) => lodash snake-case to camelCase compare)
+    fields: dlColumns,
+  });
 
   return (
     <VerticalTable
