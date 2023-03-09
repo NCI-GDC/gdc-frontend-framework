@@ -49,17 +49,15 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <div className="ml-0">
-                <TableHeader
-                  title={startCase(accessor)}
-                  tooltip={""}
-                  className="ml-1 mr-2"
-                />
-              </div>
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="ml-1 mr-2"
+              />
             ),
             cell: ({ row }) => {
               return (
-                <div className="ml-1.5 mr-2">
+                <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -69,7 +67,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -251,11 +249,10 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                  Across the GDC`}
+                 Across the GDC`}
                 tooltip={`# Cases where Mutation is observed /
                   # Cases tested for Simple Somatic Mutations portal wide
                   Expand to see breakdown by project`}
-                className="flex flex-row justify-start w-32"
               />
             ),
             cell: ({ row }) => {
@@ -322,7 +319,7 @@ export const createTableColumn = (
                 "affectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
                     <>
                       <RatioSpring
@@ -490,7 +487,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start ml-4 ">
+                <div className="flex justify-start">
                   <div className="font-content text-lg font-bold">
                     {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
                   </div>
@@ -517,7 +514,7 @@ export const createTableColumn = (
             cell: ({ row }) => {
               const label = row.original["aa_change"];
               return (
-                <div className="flex justify-start ml-4 ">
+                <div className="flex justify-start">
                   {label !== null ? (
                     <div className="font-content text-xs">{label}</div>
                   ) : (
@@ -583,23 +580,17 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex flex-row justify-start w-32 ml-4"
+                className="flex flex-row justify-start"
               />
             ),
-            cell: ({ row }) => {
-              return (
-                <div className="flex justify-start ml-4 ">
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
-                </div>
-              );
-            },
+            cell: ({ row }) => (
+              <TableCell
+                row={row}
+                accessor={accessor}
+                anchor={false}
+                tooltip={""}
+              />
+            ),
           },
         ],
       };
@@ -614,13 +605,13 @@ export const createTableColumn = (
               <TableHeader
                 title={startCase(accessor)}
                 tooltip={""}
-                className="flex flex-row justify-start ml-1.5"
+                className="flex flex-row justify-start"
               />
             ),
             cell: ({ row }) => {
               const geneSymbol = row.original["gene_id"];
               return (
-                <div className="flex justify-start ml-1.5">
+                <div className="flex justify-start">
                   <Link href={`/genes/${geneSymbol}`}>
                     <a className="text-utility-link font-content text-xs underline">
                       {row.original[`${accessor}`]
@@ -649,20 +640,14 @@ export const createTableColumn = (
                 className="flex flex-row justify-start"
               />
             ),
-            cell: ({ row }) => {
-              return (
-                <div className="flex justify-start">
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
-                </div>
-              );
-            },
+            cell: ({ row }) => (
+              <TableCell
+                row={row}
+                accessor={accessor}
+                anchor={false}
+                tooltip={""}
+              />
+            ),
           },
         ],
       };

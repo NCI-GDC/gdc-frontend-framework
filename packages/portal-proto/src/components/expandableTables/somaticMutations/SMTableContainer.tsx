@@ -277,7 +277,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             removeFromSetHook={useRemoveFromSsmSetMutation}
           />
         )}
-        <div className="flex justify-between items-center mb-2 mt-8">
+        <div className="flex justify-between items-center mb-2">
           <TableControls
             total={smTotal}
             numSelected={Object.keys(selectedMutations).length ?? 0}
@@ -328,7 +328,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth={`w-48`}
+              cellWidth="w-48"
               rowHeight={60}
               numOfColumns={15}
               numOfRows={pageSize}
@@ -368,41 +368,36 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div
-            className={`flex flex-row w-100 ml-2 mt-0 font-heading items-center`}
-          >
+          <div className="flex font-heading items-center bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <div className={"grow-0"}>
+              <div className="grow-0">
                 <div className="flex flex-row items-center text-sm ml-0">
-                  <span className="my-auto mx-1 ">Show</span>
+                  <span className="my-auto mx-1">Show</span>
                   <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                  <span className="my-auto mx-1 ">Entries</span>
+                  <span className="my-auto mx-1">Entries</span>
                 </div>
               </div>
             </div>
-            <div
-              className={`flex flex-row justify-between items-center text-sm`}
-            >
+            <div className="flex flex-row justify-between items-center text-sm">
               <span>
                 Showing
-                <span className={`font-bold`}>{` ${(
+                <span className="font-bold">{` ${(
                   page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{`${((page + 1) * pageSize <
-                smTotal
+                <span className="font-bold">{`${((page + 1) * pageSize < smTotal
                   ? (page + 1) * pageSize
                   : smTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
-                <span className={`font-bold`}>{` ${smTotal.toLocaleString(
+                <span className="font-bold">{` ${smTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 somatic mutations
               </span>
             </div>
-            <div className={`m-auto mr-0`}>
+            <div className="m-auto mr-0">
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(smTotal / pageSize)}

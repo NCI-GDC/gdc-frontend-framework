@@ -6,7 +6,7 @@ import { AppContext, AppStore, id } from "@/features/projectsCenter/appApi";
 
 export const ProjectsCenter = (): JSX.Element => {
   return (
-    <div className="flex flex-col mt-4 ">
+    <div className="flex flex-col mt-4">
       <div className="flex flex-row mx-3">
         <ProjectFacetPanel />
         <ProjectsTable />

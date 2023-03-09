@@ -70,6 +70,7 @@ const ProjectsCohortButton = (): JSX.Element => {
           ) : null
         }
         onClick={() => setShowCreateCohort(true)}
+        className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
       >
         Create New Cohort
       </Button>

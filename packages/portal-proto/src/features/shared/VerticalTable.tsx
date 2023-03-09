@@ -360,7 +360,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         <thead>
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4`}
+              className={`font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-16`}
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -455,11 +455,12 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 <Fragment key={`row-${index}`}>
                   <tr
                     {...row.getRowProps()}
-                    className={
+                    className={`${
                       index % 2 === 1
                         ? "bg-base-max border-1 border-base-lighter"
                         : "bg-base-lightest border-1 border-base-lighter"
                     }
+                    `}
                     key={`row-${index}`}
                   >
                     {row.cells.map((cell, key) => {
@@ -560,93 +561,101 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   const theme = useMantineTheme();
 
+  console.log({ search, showControls });
+
   return (
-    <div className="grow overflow-hidden items-center">
-      <div className="flex justify-between">
+    <div className="grow overflow-hidden">
+      <div
+        className={`flex ${
+          !search?.enabled && !showControls ? "justify-end" : "justify-between"
+        }`}
+      >
         {additionalControls && <div>{additionalControls}</div>}
-        <div className="flex items-center">
-          {search?.enabled && (
-            <div className="flex mb-2">
-              <TextInput
-                icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
-                placeholder={search.placeholder ?? "Search"}
-                aria-label="Table Search Input"
-                classNames={{
-                  input:
-                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
-                  wrapper: "w-72 mr-1",
-                }}
-                size="sm"
-                rightSection={
-                  searchTerm.length > 0 && (
-                    <MdClose
-                      onClick={() => {
-                        setSearchTerm("");
-                        handleChange({
-                          newSearch: "",
-                        });
-                      }}
-                      className="cursor-pointer"
-                    />
-                  )
-                }
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
-                }}
-              />
-              {showControls && (
-                <Popover
-                  opened={showColumnMenu}
-                  onClose={() => setShowColumnMenu(false)}
-                  position="bottom"
-                  transition="scale"
-                  withArrow
-                >
-                  <Popover.Target>
-                    <button
-                      onClick={() => {
-                        setShowColumnMenu(!showColumnMenu);
-                      }}
-                    >
-                      <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-                        {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-                      </Box>
-                    </button>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <div className={`w-fit`}>
-                      {columns.length > 0 && showColumnMenu && (
-                        <div className="mr-0 ml-2">
-                          <DndProvider backend={HTML5Backend}>
-                            <DragDrop
-                              listOptions={columns} // here....
-                              handleColumnChange={handleColumnChange}
-                              columnSearchTerm={""}
-                            />
-                          </DndProvider>
-                        </div>
-                      )}
-                    </div>
-                  </Popover.Dropdown>
-                </Popover>
-              )}
-            </div>
-          )}
-        </div>
+        {(search?.enabled || showControls) && (
+          <div className="flex items-center">
+            {search?.enabled && (
+              <div className="flex mb-2 gap-2">
+                <TextInput
+                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  placeholder={search.placeholder ?? "Search"}
+                  aria-label="Table Search Input"
+                  classNames={{
+                    input:
+                      "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                    wrapper: "w-72 mr-1",
+                  }}
+                  size="sm"
+                  rightSection={
+                    searchTerm.length > 0 && (
+                      <MdClose
+                        onClick={() => {
+                          setSearchTerm("");
+                          handleChange({
+                            newSearch: "",
+                          });
+                        }}
+                        className="cursor-pointer"
+                      />
+                    )
+                  }
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    handleChange({
+                      newSearch: e.target.value,
+                    });
+                  }}
+                />
+                {showControls && (
+                  <Popover
+                    opened={showColumnMenu}
+                    onClose={() => setShowColumnMenu(false)}
+                    position="bottom"
+                    transition="scale"
+                    withArrow
+                  >
+                    <Popover.Target>
+                      <button
+                        onClick={() => {
+                          setShowColumnMenu(!showColumnMenu);
+                        }}
+                      >
+                        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                        </Box>
+                      </button>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <div className={`w-fit`}>
+                        {columns.length > 0 && showColumnMenu && (
+                          <div className="mr-0 ml-2">
+                            <DndProvider backend={HTML5Backend}>
+                              <DragDrop
+                                listOptions={columns} // here....
+                                handleColumnChange={handleColumnChange}
+                                columnSearchTerm={""}
+                              />
+                            </DndProvider>
+                          </div>
+                        )}
+                      </div>
+                    </Popover.Dropdown>
+                  </Popover>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="overflow-y-auto w-full relative">
         <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-between	bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
-            <div className="flex flex-row items-center m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
+            <div className="flex flex-row items-center m-auto ml-0 text-sm">
+              <span className="my-auto mx-1">Show</span>
               <Select
                 size="xs"
                 radius="md"
@@ -663,7 +672,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 }}
                 aria-label={"select page size"}
               />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+              <span className="my-auto mx-1">Entries</span>
             </div>
           )}
 

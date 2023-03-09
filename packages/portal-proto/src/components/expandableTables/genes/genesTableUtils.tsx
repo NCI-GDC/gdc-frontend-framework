@@ -50,7 +50,7 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className="ml-1.5 mr-2">
+                <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -60,7 +60,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },

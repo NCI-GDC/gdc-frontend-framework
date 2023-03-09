@@ -9,7 +9,6 @@ import {
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
 } from "@gff/core";
-import tw from "tailwind-styled-components";
 import {
   SelectCohortsModal,
   WithOrWithoutCohortType,

@@ -207,7 +207,11 @@ const GeneView = ({
           />
 
           <div className={`mx-4 ${!isModal && "mt-20"}`}>
-            {contextSensitive && <ContextSensitiveBanner />}
+            {contextSensitive && (
+              <div className="my-6">
+                <ContextSensitiveBanner />
+              </div>
+            )}
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -221,7 +225,7 @@ const GeneView = ({
                 </div>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-8">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
               <Grid className="mt-2 mb-16">
@@ -245,7 +249,8 @@ const GeneView = ({
                 genomicFilters={genomicFilters}
                 cohortFilters={cohortFilters}
               />
-              <div className="mt-4">
+
+              <div className="mt-14 mb-16">
                 <div className="flex items-center gap-2">
                   <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>

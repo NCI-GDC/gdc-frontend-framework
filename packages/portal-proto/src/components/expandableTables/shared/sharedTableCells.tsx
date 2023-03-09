@@ -46,22 +46,18 @@ export const TableCell = ({
   tooltip: string;
 }): JSX.Element => {
   return (
-    <div>
-      <>
-        <animated.div
-          className={`font-content text-center text-xs ${
-            anchor
-              ? `text-activeColor underline hover:cursor-pointer font-bold`
-              : ``
-          }`}
-        >
-          <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
-            <div>
-              {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
-            </div>
-          </Tooltip>
-        </animated.div>
-      </>
-    </div>
+    <animated.div
+      className={`flex justify-start font-content text-xs ${
+        anchor
+          ? `text-activeColor underline hover:cursor-pointer font-bold`
+          : ``
+      }`}
+    >
+      <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
+        <span>
+          {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
+        </span>
+      </Tooltip>
+    </animated.div>
   );
 };

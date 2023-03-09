@@ -309,8 +309,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       showControls={false}
       additionalControls={
-        <div className="flex gap-2">
-          {/* TODO need to fix here to be right aligned and also check all the places where vertical table is being used */}
+        <div className="flex gap-2 mb-2">
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>
