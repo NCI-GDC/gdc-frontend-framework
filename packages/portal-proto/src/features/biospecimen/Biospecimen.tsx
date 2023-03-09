@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
 import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
-import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
+import { Button, Input, LoadingOverlay } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 interface BiospecimenProps {
   caseId: string;
@@ -124,33 +124,20 @@ export const Biospecimen = ({
             <div className="self-end -mb-2">
               <HeaderTitle>Biospecimen</HeaderTitle>
             </div>
-
-            <Menu width="target">
-              <Menu.Target>
-                <Button
-                  className="px-1.5 min-h-7 rounded text-primary font-medium hover:bg-primary-darker hover:text-base-lightest"
-                  variant="outline"
-                  leftIcon={
-                    <DownloadIcon size={16} aria-label="download icon" />
-                  }
-                  rightIcon={<Dropdown size={20} aria-label="dropdown icon" />}
-                >
-                  Download
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item
-                  icon={<DownloadIcon size={16} aria-label="download icon" />}
-                >
-                  TSV (Coming soon)
-                </Menu.Item>
-                <Menu.Item
-                  icon={<DownloadIcon size={16} aria-label="download icon" />}
-                >
-                  JSON (Coming soon)
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+            <DropdownWithIcon
+              dropdownElements={[
+                {
+                  title: "TSV (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+                {
+                  title: "JSON (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+              ]}
+              TargetButtonChildren="Download"
+              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            />
           </div>
 
           <div className="flex mt-2 gap-4">
@@ -174,7 +161,6 @@ export const Biospecimen = ({
                     setEntityClicked && setEntityClicked(false);
                     setSearchText(e.target.value);
                   }}
-                  size="lg"
                   value={searchText}
                   rightSection={
                     <MdOutlineClear
@@ -205,7 +191,6 @@ export const Biospecimen = ({
                   className="text-primary hover:bg-primary-darker hover:text-base-lightest"
                   disabled={searchText.length > 0}
                   variant="outline"
-                  size="lg"
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
                 </Button>

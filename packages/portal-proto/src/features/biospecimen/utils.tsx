@@ -5,7 +5,7 @@ import {
   mapGdcFileToCartFile,
 } from "../files/utils";
 import { FaShoppingCart } from "react-icons/fa";
-import { Tooltip } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
   CartFile,
@@ -117,15 +117,19 @@ export const formatEntityInfo = (
       "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image" withinPortal={true} withArrow>
-          <div>
+          <ActionIcon
+            variant="outline"
+            size="sm"
+            className="w-8 p-0 h-6 text-primary bg-base-max border-primary hover:bg-primary hover:text-base-max"
+          >
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
-                <GiMicroscope className="text-base-lighter" size={16} />
+                <GiMicroscope size={14} />
               </a>
             </Link>
-          </div>
+          </ActionIcon>
         </Tooltip>
 
         <Tooltip
@@ -133,34 +137,38 @@ export const formatEntityInfo = (
           withinPortal={true}
           withArrow
         >
-          <div>
-            <FaShoppingCart
-              onClick={() => {
-                isFileInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-              className={`${
-                isFileInCart ? "text-primary" : "text-base-lighter"
-              } cursor-pointer`}
-            />
-          </div>
+          <ActionIcon
+            variant="outline"
+            size="sm"
+            className={`w-8 h-6 p-0 border-primary hover:bg-primary hover:text-base-max ${
+              isFileInCart
+                ? "bg-primary text-base-max"
+                : "text-primary bg-base-max"
+            }`}
+            onClick={() => {
+              isFileInCart
+                ? removeFromCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  );
+            }}
+          >
+            <FaShoppingCart size={12} />
+          </ActionIcon>
         </Tooltip>
 
         <Tooltip label="Download" withinPortal={true} withArrow>
           <div>
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              customStyle="text-base-lighter px-0 h-3.5 border-0 bg-transparent"
               showLoading={false}
+              // customStyle="px-1 h-6 text-primary bg-base-max border border-primary rounded hover:bg-primary hover:text-base-max"
             />
           </div>
         </Tooltip>
