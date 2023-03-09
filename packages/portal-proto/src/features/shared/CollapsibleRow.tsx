@@ -83,12 +83,10 @@ const CollapsibleRow = ({
   }
 
   if (value?.length === 1) {
-    return (
-      <div className="flex flex-row justify-start mr-6  w-48">{value[0]}</div>
-    );
+    return <div className="flex justify-start mr-6  w-48">{value[0]}</div>;
   } else {
     return (
-      <div className="flex flex-row nowrap justify-between items-center w-full">
+      <div className="flex nowrap justify-between items-center w-full">
         {collapsed ? (
           <div
             onClick={() => handleExpand(row)}
