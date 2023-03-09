@@ -61,7 +61,7 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   const Icon = active ? (
     <Loader size="sm" className="p-1" />
   ) : (
-    <FiDownload title="download" size={12} />
+    <FiDownload title="download" size={16} />
   );
 
   return (

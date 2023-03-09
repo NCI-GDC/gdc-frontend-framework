@@ -40,7 +40,7 @@ export const TableActionButtons = ({
         }}
         data-testid="add-remove-cart-button"
       >
-        <CartIcon title="Add to Cart" size={12} />
+        <CartIcon title="Add to Cart" size={16} />
       </Button>
       <DownloadFile
         file={downloadFile}
