@@ -158,7 +158,9 @@ export const BioTree = ({
       <li>
         <span
           onClick={onTreeClick}
-          onKeyDown={onTreeClick}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") onTreeClick();
+          }}
           tabIndex={0}
           role="button"
           className="flex gap-1 ml-2"

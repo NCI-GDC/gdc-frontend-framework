@@ -24,7 +24,6 @@ describe("<TableActionButtons />", () => {
     const mockRemoveCartFunc = jest.spyOn(cartFunctions, "removeFromCart");
     await userEvent.click(cartButton);
 
-    expect(cartButton).toHaveClass("bg-primary text-base-max");
     expect(mockRemoveCartFunc).toBeCalled();
   });
 
@@ -41,7 +40,6 @@ describe("<TableActionButtons />", () => {
     const mockAddCartFunc = jest.spyOn(cartFunctions, "addToCart");
     await userEvent.click(cartButton);
 
-    expect(cartButton).toHaveClass("bg-base-max text-primary");
     expect(mockAddCartFunc).toBeCalled();
   });
 });

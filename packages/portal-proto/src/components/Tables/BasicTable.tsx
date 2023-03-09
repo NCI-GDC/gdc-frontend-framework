@@ -1,4 +1,5 @@
 import { Table } from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
 
 interface TempTableProps {
   readonly tableData: {
@@ -33,7 +34,7 @@ export const BasicTable = ({ tableData }: TempTableProps): JSX.Element => {
       <tbody>
         {tableData.tableRows.map((row, index) => (
           <tr
-            key={index}
+            key={uuidv4()}
             className={`${
               index % 2 ? "bg-base-lightest" : "bg-base-max "
             } border-base-lighter`}
