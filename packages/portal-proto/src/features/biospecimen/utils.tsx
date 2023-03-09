@@ -168,7 +168,6 @@ export const formatEntityInfo = (
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
               showLoading={false}
-              // customStyle="px-1 h-6 text-primary bg-base-max border border-primary rounded hover:bg-primary hover:text-base-max"
             />
           </div>
         </Tooltip>
