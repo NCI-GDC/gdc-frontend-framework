@@ -3,9 +3,7 @@ import {
   graphqlAPISlice,
 } from "../../../gdcapi/gdcgraphql";
 import {
-  // cdTableGeneSummaryQuery,
-  cdTableMutationSummaryQuery,
-  // cdFilters,
+  cdTableGeneSummaryQuery,
   cdTableGeneSummaryFilters,
   cdTableMutationSummaryFilters,
 } from "./cdFilters";
@@ -49,6 +47,7 @@ const getCDQuery = (
       // let fields: columns currently visible in table
       // const dlFields = [...fields] n [...Object.keys(geneSummaryCDFields)]
       // dlFields.map(({ visibleColumn }) => mutationSummaryCDQuery)
+      cdTableGeneSummaryQuery("123");
       console.log("fields", fields);
       fields
         .map((field) => {
@@ -63,8 +62,8 @@ const getCDQuery = (
     }
     case "ssms": {
       // dlFields.map(({ visibleColumn }) => mutationSummaryCDFields)
-      const { ...query } = cdTableMutationSummaryQuery;
-      console.log(query);
+      // const { ...query } = cdTableGeneSummaryQuery;
+      // console.log(query);
       return `${ids.join(",")}`;
     }
     default: {
@@ -109,19 +108,16 @@ export const cancerDistributionDownloadSlice = graphqlAPISlice
   .enhanceEndpoints({ addTagTypes: ["downloads"] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      getCDTableSummaryDL: builder.mutation({
-        query: ({ ids, feature, fields }: CDTableDLInput) => ({
+      getCDTableSummaryDL: builder.query({
+        query: ({ ids, feature, fields }) => ({
           graphQLQuery: getCDQuery(ids, feature, fields) as string,
           graphQLFilters: getCDFilters(ids, feature, fields) as Record<
             string,
             unknown
           >,
         }),
-        invalidatesTags: (_result, _error, arg) => [
-          { type: "downloads", id: arg.ids?.join(",") },
-        ],
         transformResponse: (
-          response: GraphQLApiResponse<CDTableProjectsResponse>,
+          response: GraphQLApiResponse<any>,
         ): CDTableGeneSummaryData[] => {
           const {
             projects: {
@@ -130,14 +126,13 @@ export const cancerDistributionDownloadSlice = graphqlAPISlice
           } = response as unknown as CDTableProjectsResponse;
           console.log("buckets", buckets);
           debugger;
-          return [] as CDTableGeneSummaryData[];
+          return [{ cd: "" }] as CDTableGeneSummaryData[];
         },
       }),
     }),
   });
 
-export const { useGetCDTableSummaryDLMutation } =
-  cancerDistributionDownloadSlice;
+export const { useGetCDTableSummaryDLQuery } = cancerDistributionDownloadSlice;
 
 // return `
 //   query CancerDistributionTable(

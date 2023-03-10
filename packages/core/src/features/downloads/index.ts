@@ -18,7 +18,7 @@ import {
 } from "./tsv/tableSubrow";
 import {
   CDTableGeneSummaryData,
-  useGetCDTableGeneSummaryDLQuery,
+  useGetCDTableSummaryDLQuery,
 } from "./tsv/cancerDistribution/summary";
 
 export const downloadsReducer = combineReducers({
@@ -39,6 +39,6 @@ export {
   useMutatedGenesFreqDLQuery,
   useMutationsFreqDLQuery,
   TableSubrowData,
-  useGetCDTableGeneSummaryDLQuery,
+  useGetCDTableSummaryDLQuery,
   CDTableGeneSummaryData,
 };

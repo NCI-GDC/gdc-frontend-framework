@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
@@ -7,8 +7,7 @@ import {
   useGetSSMSCancerDistributionTableQuery,
   useGetProjectsQuery,
   CancerDistributionTableData,
-  useGetCDTableGeneSummaryDLQuery,
-  useGetCDTableSummaryDLMutation,
+  // useGetCDTableSummaryDLQuery,
   FilterSet,
 } from "@gff/core";
 import {
@@ -19,6 +18,8 @@ import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
+import { convertDateToString } from "src/utils/date";
+import { saveAs } from "file-saver";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -35,22 +36,61 @@ export const GeneCancerDistributionTable: React.FC<
   cohortFilters = undefined,
 }: GeneCancerDistributionTableProps) => {
   const contextFilters = processFilters(genomicFilters, cohortFilters);
-
-  const {
-    data: downloadData,
-    isFetching: downloadFetching,
-    isError: downloadError,
-    isSuccess: downloadSuccess,
-  } = useGetCDTableGeneSummaryDLQuery({ gene });
-
-  useEffect(() => {
-    console.table([
-      downloadData,
-      downloadFetching,
-      downloadError,
-      downloadSuccess,
-    ]);
-  }, [downloadData, downloadFetching, downloadError, downloadSuccess]);
+  const exportCDTableGeneSummaryTSV = (
+    data: any,
+    visibleColumns: string[] = [],
+  ) => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headerOptions = {
+      project: "Project",
+      disease_type: "Disease Type",
+      primary_site: "Primary Site",
+      ssm_affected: "# SSM Affected Cases",
+      cnv_gains: "# CNV Gains",
+      cnv_losses: "# CNV Losses",
+      mutations: "# Mutations",
+    };
+    const headers = visibleColumns.length
+      ? [...visibleColumns.map((h) => headerOptions[h])]
+      : [
+          "Project",
+          "Disease Type",
+          "Primary Site",
+          "# SSM Affected Cases",
+          "# CNV Gains",
+          "# CNV Losses",
+          "# Mutations",
+        ];
+    const body = data
+      .map(
+        ({
+          projectId,
+          disease_type,
+          primary_site,
+          ssm_affected_cases,
+          cnv_gains,
+          cnv_losses,
+          mutations,
+        }) => {
+          return [
+            projectId,
+            disease_type,
+            primary_site,
+            ssm_affected_cases,
+            cnv_gains,
+            cnv_losses,
+            mutations,
+          ].join("\t");
+        },
+      )
+      .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
 
   const { data, isFetching, isError, isSuccess } =
     useGetGeneCancerDistributionTableQuery({ gene, contextFilters });
@@ -62,6 +102,7 @@ export const GeneCancerDistributionTable: React.FC<
       isSuccess={isSuccess}
       symbol={symbol}
       isGene
+      dl={exportCDTableGeneSummaryTSV}
     />
   );
 };
@@ -81,6 +122,36 @@ export const SSMSCancerDistributionTable: React.FC<
 > = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
   const { data, isFetching, isError, isSuccess } =
     useGetSSMSCancerDistributionTableQuery({ ssms });
+
+  const exportCDTableMutationSummaryTSV = (
+    data: any,
+    visibleColumns: string[] = [],
+  ) => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headerOptions = {
+      project: "Project",
+      disease_type: "Disease Type",
+      primary_site: "Primary Site",
+      ssm_affected_cases: "# SSM Affected Cases",
+    };
+    const headers = visibleColumns.length
+      ? [...visibleColumns.map((h) => headerOptions[h])]
+      : ["Project", "Disease Type", "Primary Site", "# SSM Affected Cases"];
+
+    const body = data
+      .map(({ projectId, disease_type, primary_site, ssm_affected_cases }) => {
+        return [projectId, disease_type, primary_site, ssm_affected_cases].join(
+          "\t",
+        );
+      })
+      .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
   return (
     <CancerDistributionTable
       data={data}
@@ -89,6 +160,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isSuccess={isSuccess}
       symbol={symbol}
       isGene={false}
+      dl={exportCDTableMutationSummaryTSV}
     />
   );
 };
@@ -100,6 +172,7 @@ interface CancerDistributionTableProps {
   readonly isSuccess: boolean;
   readonly symbol: string;
   readonly isGene: boolean;
+  readonly dl: (data: unknown, visibleColumns?: string[]) => void;
 }
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
@@ -109,6 +182,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   isSuccess,
   symbol,
   isGene,
+  dl,
 }: CancerDistributionTableProps) => {
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -241,6 +315,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         ? data?.projects
             .map((d) => {
               const row = {
+                projectId: d.key,
                 project: (
                   <Link href={`/projects/${d.key}`}>
                     <a className="text-utility-link underline">{d.key}</a>
@@ -320,32 +395,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     }
   };
 
-  const dlColumns = [
-    "project",
-    "diseaseType",
-    "primarySite",
-    "ssmAffectedCases",
-    "cnvGains",
-    "cnvGains",
-    "cnvLosses",
-    "mutations",
-  ];
-
-  const {
-    data: cdDLMutationData,
-    isFetching: cdDLFetching,
-    isError: cdDLError,
-  } = useGetCDTableSummaryDLMutation({
-    // data.projects.map(({ projectId }) => projectId);
-    ids: [],
-    feature: "cdTable-genes-tsv",
-    // intersect w/ columnListOrder
-    //.filter(({ visible }) => visible)
-    //.map((element) => element.toLowerCase())
-    //.map((case) => lodash snake-case to camelCase compare)
-    fields: dlColumns,
-  });
-
   return (
     <VerticalTable
       tableData={displayedData}
@@ -355,7 +404,19 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton
+            onClick={() => {
+              dl(
+                formattedData,
+                // not in all tables
+                // columnListOrder
+                //   .filter(({ visible }) => visible)
+                //   .map(({ id }) => id)
+              );
+            }}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       pagination={{
