@@ -7,7 +7,7 @@ import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { externalLinks, humanify } from "src/utils";
-import { FaBook, FaRegChartBar as BarChartIcon, FaTable } from "react-icons/fa";
+import { FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
@@ -173,22 +173,21 @@ export const SSMSSummary = ({
     <div>
       {!isFetching && summaryData ? (
         <>
-          {!isModal && (
-            <SummaryHeader iconText="mu" headerTitle={summaryData.dna_change} />
-          )}
-          <div className={`mx-auto ${isModal ? "mt-5" : "mt-20"} w-9/12 pt-4`}>
+          <SummaryHeader
+            iconText="mu"
+            headerTitle={summaryData.dna_change}
+            isModal={isModal}
+          />
+
+          <div className={`mx-auto ${!isModal && "mt-20"} w-9/12 pt-4`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
-                  <SummaryCard
-                    tableData={formatDataForSummary()}
-                    Icon={FaTable}
-                  />
+                  <SummaryCard tableData={formatDataForSummary()} />
                 </div>
                 <div className="flex-1">
                   <SummaryCard
                     tableData={formatDataForExternalReferences()}
-                    Icon={FaBook}
                     title="External References"
                   />
                 </div>

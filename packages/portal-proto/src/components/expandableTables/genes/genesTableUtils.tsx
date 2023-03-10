@@ -481,7 +481,6 @@ export const createTableColumn = (
                     setEntityMetadata({
                       entity_type: "genes",
                       entity_id: row.original?.geneID,
-                      entity_name: label,
                       contextSensitive: true,
                       // TODO: rename
                       contextFilters: genomicFilters,

@@ -28,7 +28,6 @@ export const ProteinChange = ({
             setEntityMetadata({
               entity_type: "genes",
               entity_id: proteinChange.geneId,
-              entity_name: symbol,
             })
           }
         >
