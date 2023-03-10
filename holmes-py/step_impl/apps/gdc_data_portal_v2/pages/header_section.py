@@ -6,10 +6,10 @@ class HeaderSectionLocators:
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-header-{button_name}']"
 
     # These are all locators that only appear when the respective page has fully loaded
-    ANALYSIS_CENTER_WAIT_FOR_LOCATOR = "button[aria-label='Navigate to Clinical Data Analysis tool']"
-    PROJECTS_WAIT_FOR_LOCATOR = "input[data-testid='checkbox-biospecimen']"
-    COHORT_BUILDER_WAIT_FOR_LOCATOR = "button[data-testid='button-cohort-builder-general']"
-    REPOSITORY_WAIT_FOR_LOCATOR = "button[data-testid='button-add-a-file-filter']"
+    ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
+    PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
+    COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
+    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter']"
 
 class HeaderSection(BasePage):
 
@@ -26,10 +26,10 @@ class HeaderSection(BasePage):
     # We want to wait for the main content of the page to load before continuing the test.
     def wait_for_page_to_load(self, page_to_load):
         if page_to_load == "analysis":
-            self.wait_for_selector(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_LOCATOR)
+            self.wait_for_selector(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT)
         elif page_to_load == "projects":
-            self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_LOCATOR)
+            self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT)
         elif page_to_load == "cohort":
-            self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_LOCATOR)
+            self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
         elif page_to_load == "downloads":
-            self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_LOCATOR)
+            self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)

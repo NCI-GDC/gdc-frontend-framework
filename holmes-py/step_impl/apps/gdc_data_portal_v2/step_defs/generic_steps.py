@@ -30,7 +30,7 @@ def navigate_to_app():
 
 @step("Go to <page_name> page")
 def go_to_page(page_name):
-    pages = {"Analysis": APP.analysis_page.visit()}
+    pages = {"Analysis": APP.analysis_center_page.visit()}
     pages[page_name]
 
 # Best used with a UUID
@@ -50,7 +50,7 @@ def navigate_to_page_in_page(target, source, target_type):
         "Repository": {
             "app": APP.repository_page.click_button,
         },
-        "Analysis": {"app": APP.analysis_page.navigate_to_tool},
+        "Analysis": {"app": APP.analysis_center_page.navigate_to_tool},
         "Cohort Builder": {
             "app": APP.cohort_builder_page.click_button
         }

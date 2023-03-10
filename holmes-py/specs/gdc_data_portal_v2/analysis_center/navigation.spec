@@ -1,16 +1,15 @@
 # Analysis Center Navigation
-Date Created    : 8/3/2022
+Date Created    : 03/08/2023
 Version			: 1.0
 Owner		    : GDC QA
 Description		: Test analysis center navigation
+Test-Case       : N/A
 
 tags: gdc-data-portal-v2, navigation, analysis-center
 
-## Test analysis center navigation
-
-tags: nav_analysis_center, regression, smoke
-
+## Navigate to the analysis center
 * On GDC Data Portal V2 app
 * Navigate to "Analysis" from "Header" "section"
-* Navigation Bar Icon Checks
-* Navigation Home Screen Center Icon Checks
+
+## Validate featured tools navigation
+* Validate featured tools navigation
