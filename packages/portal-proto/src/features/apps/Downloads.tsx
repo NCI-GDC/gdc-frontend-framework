@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { RepositoryAppId } from "../repositoryApp/RepositoryApp";
+import { RepositoryAppId } from "../repositoryApp/registerApp";
 import { selectGdcAppById, useCoreSelector } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoUtil } from "./DemoUtil";

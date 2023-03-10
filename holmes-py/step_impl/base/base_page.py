@@ -1,11 +1,17 @@
 from typing import List
 
 class GenericLocators:
-    DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
+    TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+
+    SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
+    QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
+    QUICK_SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
+
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
-    BUTTON_GENERIC_IDENT = lambda button_name: f'//button[@data-testid="button-{button_name}"]'
 
+    DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
+    DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -15,7 +21,7 @@ class BasePage:
         self.driver.goto(url)
 
     def click(self, locator):
-        self.wait_for_selector(locator)
+        self.wait_until_locator_is_visible(locator)
         self.driver.locator(locator).click()
 
     def get_text(self, locator):
@@ -45,8 +51,39 @@ class BasePage:
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
 
+    # wait for element to have non-empty bounding box and no visibility:hidden
+    def wait_until_locator_is_visible(self, locator):
+        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
+
+    # wait for element to not be present in DOM
+    def wait_until_locator_is_detached(self, locator):
+        self.driver.locator(locator).wait_for(state='detached', timeout= 60000)
+
+    def is_text_present(self, text):
+        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        is_text_present = self.is_visible(locator)
+        return is_text_present
+
+    def is_data_testid_present(self, data_testid):
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        is_data_testid_present = self.is_visible(locator)
+        return is_data_testid_present
+
+    def click_button_data_testid(self, data_testid):
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        self.click(locator)
+
+    def send_text_into_search_bar(self, text_to_send, aria_label):
+        locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
+
+    # wait for element to have non-empty bounding box and no visibility:hidden
+    def wait_until_locator_is_visible(self, locator):
+        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
 
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
@@ -58,3 +95,8 @@ class BasePage:
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
         result = self.is_checked(locator)
         return result
+
+    def quick_search_and_click(self,text):
+        self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+        text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
+        self.click(text_locator)

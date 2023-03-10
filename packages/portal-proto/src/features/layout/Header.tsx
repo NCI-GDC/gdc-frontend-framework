@@ -410,7 +410,6 @@ export const Header: React.FC<HeaderProps> = ({
             setEntityMetadata({
               entity_type: null,
               entity_id: null,
-              entity_name: null,
             })
           }
           entityMetadata={entityMetadata}

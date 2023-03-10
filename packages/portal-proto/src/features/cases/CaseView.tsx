@@ -11,11 +11,10 @@ import {
   caseSummaryDefaults,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import SummaryCount from "@/components/Summary/SummaryCount";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import { FaFile, FaShoppingCart, FaEdit, FaTable } from "react-icons/fa";
+import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -32,20 +31,19 @@ import {
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import fileSize from "filesize";
-import { TempTable } from "../files/FileView";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import {
   PercentBar,
   PercentBarComplete,
   PercentBarLabel,
-  HeaderTitle,
 } from "../shared/tailwindComponents";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
   getAnnotationsLinkParams,
   getSlideCountFromCaseSummary,
 } from "./utils";
+import { BasicTable } from "@/components/Tables/BasicTable";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -123,7 +121,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
       (file) => file.data_type === "Slide Image",
     );
 
-    // maybe type it properly
+    // TODO: type it properly
     let caseSummaryObject: Record<string, any> = {
       case_uuid: case_id,
       case_id: submitter_id,
@@ -146,40 +144,52 @@ export const CaseView: React.FC<CaseViewProps> = ({
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
         <div className="flex items-center gap-2">
-          <Tooltip label="View Slide Image">
+          <Tooltip
+            label="View Slide Image"
+            withinPortal={true}
+            withArrow
+            offset={-2}
+          >
             <div>
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
+                passHref
               >
-                <ImageSlideCount slideCount={slideCount} />
+                <a>
+                  <ImageSlideCount slideCount={slideCount} />
+                </a>
               </Link>
             </div>
           </Tooltip>
+
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
+            withinPortal={true}
+            withArrow
           >
-            <ActionIcon variant="outline" size="sm">
-              <FaShoppingCart
-                onClick={() => {
-                  isAllImagesFilesInCart
-                    ? removeFromCart(
-                        mapGdcFileToCartFile(imageFiles),
-                        currentCart,
-                        dispatch,
-                      )
-                    : addToCart(
-                        mapGdcFileToCartFile(imageFiles),
-                        currentCart,
-                        dispatch,
-                      );
-                }}
-                className={`cursor-pointer ${
-                  isAllImagesFilesInCart
-                    ? "text-utility-category4"
-                    : "text-primary"
-                }`}
-                size={12}
-              />
+            <ActionIcon
+              variant="outline"
+              size="sm"
+              className={`hover:bg-primary hover:text-base-max border-primary ${
+                isAllImagesFilesInCart
+                  ? "bg-primary text-base-max"
+                  : "text-primary bg-base-max"
+              }`}
+              onClick={() => {
+                isAllImagesFilesInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(imageFiles),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(imageFiles),
+                      currentCart,
+                      dispatch,
+                    );
+              }}
+            >
+              <FaShoppingCart size={12} />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -214,7 +224,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         data_category: data_c.data_category,
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex">
+          <div className="flex h-6">
             <div className="basis-1/3 text-right">
               {data_c.file_count.toLocaleString()}
             </div>
@@ -270,7 +280,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         experimental_strategy: exp_c.experimental_strategy,
         // TODO: Need to change it to Link after the href has been finalized
         file_count: (
-          <div className="flex">
+          <div className="flex h-6">
             <div className="basis-1/3 text-right">
               {exp_c.file_count.toLocaleString()}
             </div>
@@ -358,19 +368,53 @@ export const CaseView: React.FC<CaseViewProps> = ({
     return supplementFilesRender(filteredFiles);
   };
 
+  const addLinkValue = () => (
+    <span className="text-base-lightest">
+      {getAnnotationsLinkParams(annotationCountData, case_id) ? (
+        <Link
+          href={getAnnotationsLinkParams(annotationCountData, case_id)}
+          passHref
+        >
+          <a className="underline" target="_blank">
+            {annotationsCountTotal.toLocaleString()}
+          </a>
+        </Link>
+      ) : (
+        annotationsCountTotal.toLocaleString()
+      )}
+    </span>
+  );
+
+  const Files = (
+    <span className="flex items-center gap-1">
+      <FaFile size={24} />
+      <span>{filesCountTotal?.toLocaleString()} Files</span>
+    </span>
+  );
+
+  const Annotations = (
+    <span className="flex items-center gap-1">
+      <FaEdit size={24} />
+      <span>
+        {addLinkValue()}{" "}
+        {annotationsCountTotal > 1 ? "Annotations" : "Annotation"}
+      </span>
+    </span>
+  );
+
   return (
     <>
-      {!isModal && <SummaryHeader iconText="ca" headerTitle={headerTitle} />}
-
-      <div
-        className={`flex flex-col mx-auto ${
-          isModal ? "mt-5" : "mt-20"
-        } w-10/12`}
-      >
-        <div className="flex flex-col gap-5">
+      <SummaryHeader
+        iconText="ca"
+        headerTitle={headerTitle}
+        leftElement={
           <Button
             leftIcon={<FaShoppingCart />}
-            className="self-end text-primary-contrast bg-primary hover:bg-primary-darker"
+            className={`${
+              isAllFilesInCart
+                ? "bg-primary-darkest text-base-max"
+                : "text-primary bg-base-lightest"
+            } hover:bg-primary-darkest hover:text-base-max`}
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(
@@ -385,47 +429,57 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   )
             }
             disabled={filesCountTotal === 0}
+            classNames={{ label: "font-medium text-sm" }}
           >
             {!isAllFilesInCart
               ? "Add all files to the cart"
               : "Remove all files from the cart"}
           </Button>
-          <div className="flex gap-4">
-            <div className="w-10/12">
+        }
+        rightElement={
+          <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+            Total of {Files} {Annotations}
+          </div>
+        }
+        isModal={isModal}
+      />
+
+      <div className={`flex flex-col ${!isModal && "mt-32"} mx-4`}>
+        <div className="flex flex-col gap-5 mt-8">
+          <div className="flex">
+            <div className="basis-1/2">
+              <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
+            </div>
+            <div className="basis-1/2">
               <SummaryCard
-                tableData={formatDataForCaseSummary()}
-                Icon={FaTable}
-              />
-            </div>
-            <div className="w-2/12">
-              <SummaryCount
-                title="files"
-                count={filesCountTotal?.toLocaleString()}
-                Icon={FaFile}
-              />
-              <SummaryCount
-                title="annotations"
-                count={annotationsCountTotal.toLocaleString()}
-                Icon={FaEdit}
-                href={getAnnotationsLinkParams(annotationCountData, case_id)}
-                shouldOpenInNewTab
+                tableData={formatDataForCaseSummary().slice(
+                  4,
+                  formatDataForCaseSummary().length,
+                )}
+                title=""
               />
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4 mb-14">
-            <CategoryTableSummary
-              title="File Counts by Data Category"
-              dataObject={data.summary.data_categories}
-              tableData={formatDataForDataCateogryTable()}
-            />
-
-            <CategoryTableSummary
-              title="File Counts by Experimental Strategy"
-              dataObject={data.summary.experimental_strategies}
-              tableData={formatDataForExpCateogryTable()}
-            />
-          </div>
+          {(data.summary.data_categories ||
+            data.summary.experimental_strategies) && (
+            <div className="flex gap-4 mt-4 mb-14">
+              {data.summary.data_categories && (
+                <CategoryTableSummary
+                  title="File Counts by Data Category"
+                  dataObject={data.summary.data_categories}
+                  tableData={formatDataForDataCateogryTable()}
+                />
+              )}
+              {data.summary.experimental_strategies && (
+                <CategoryTableSummary
+                  title="File Counts by Experimental Strategy"
+                  dataObject={data.summary.experimental_strategies}
+                  tableData={formatDataForExpCateogryTable()}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <ClinicalSummary
@@ -438,10 +492,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
         {clinicalFilteredFiles?.length > 0 && (
           <div className="mt-8">
-            <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <HeaderTitle>Clinical Supplement File</HeaderTitle>
+            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
+              <h2 className="text-xl text-primary-content-darkest font-medium">
+                Clinical Supplement File
+              </h2>
             </div>
-            <TempTable tableData={formatDataForClinicalFiles()} />
+            <BasicTable tableData={formatDataForClinicalFiles()} />
           </div>
         )}
 
@@ -456,10 +512,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
         </div>
         {biospecimenFilteredFiles?.length > 0 && (
           <div className="mt-8 mb-16">
-            <div className="flex gap-2 bg-base-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <HeaderTitle>Biospecimen Supplement File</HeaderTitle>
+            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
+              <h2 className="text-xl text-primary-content-darkest font-medium">
+                Biospecimen Supplement File
+              </h2>
             </div>
-            <TempTable tableData={formatDataForBioSpecimenFiles()} />
+            <BasicTable tableData={formatDataForBioSpecimenFiles()} />
           </div>
         )}
       </div>

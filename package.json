@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {
@@ -12,13 +12,14 @@
     "lint-fix": "eslint --fix .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "npm run test --workspaces",
-    "test:int": "npm run test:int --workspaces",
-    "test:all": "npm run test:all --workspaces",
-    "compile": "lerna run --parallel compile",
+    "test": "npm run test --workspaces --if-present",
+    "test:int": "npm run test:int --workspaces --if-present",
+    "test:all": "npm run test:all --workspaces --if-present",
+    "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
     "prepare": "husky install",
     "build": "lerna run build",
+    "build:clean": "lerna run build:clean",
     "start": "lerna run --parallel start"
   },
   "lint-staged": {

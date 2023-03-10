@@ -218,7 +218,6 @@ export const createTableColumn = (
                             setEntityMetadata({
                               entity_type: "ssms",
                               entity_id: ssmsId,
-                              entity_name: originalLabel,
                             })
                           }
                         >

@@ -7,7 +7,6 @@ export type entityType = null | "project" | "case" | "file" | "ssms" | "genes";
 export interface entityMetadataType {
   entity_type: entityType;
   entity_id: string;
-  entity_name: string;
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }

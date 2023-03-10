@@ -106,7 +106,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                   setEntityMetadata({
                     entity_type: "file",
                     entity_id: file.file_id,
-                    entity_name: file.file_name,
                   })
                 }
               >
@@ -121,7 +120,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                   setEntityMetadata({
                     entity_type: "file",
                     entity_id: file.file_id,
-                    entity_name: file.file_name,
                   })
                 }
               >
@@ -143,10 +141,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                       file.cases?.length === 1
                         ? file.cases?.[0].case_id
                         : file.file_id,
-                    entity_name:
-                      file.cases?.length === 1
-                        ? `${file?.cases?.[0]?.project.project_id} / ${file?.cases?.[0]?.submitter_id}`
-                        : file.file_name,
                   });
                 }}
               >
@@ -160,7 +154,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                   setEntityMetadata({
                     entity_type: "project",
                     entity_id: file.project_id,
-                    entity_name: file.project_id,
                   })
                 }
               >

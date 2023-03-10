@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import ReactModal from "react-modal";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { Table, Button, Menu } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import { FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
@@ -38,6 +38,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { BasicTable } from "@/components/Tables/BasicTable";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -77,57 +78,6 @@ const getAnnotationsLinkParams = (
     return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
   }
   return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
-};
-
-//temp table component until global one is done
-interface TempTableProps {
-  readonly tableData: {
-    readonly headers: string[] | JSX.Element[];
-    readonly tableRows: any[];
-  };
-}
-
-export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
-  if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
-    console.error("bad table data", tableData);
-    return <></>;
-  }
-  return (
-    <Table
-      striped
-      data-testid="tempTable"
-      className="drop-shadow-sm border-1 border-base-lighter"
-    >
-      <thead>
-        <tr>
-          {tableData.headers.map((text, index) => (
-            <th
-              key={index}
-              className="bg-base-max font-heading border-b-2 border-base-lighter"
-            >
-              {text}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {tableData.tableRows.map((row, index) => (
-          <tr
-            key={index}
-            className={`${
-              index % 2 ? "bg-base-lightest" : "bg-base-max "
-            } border-base-lighter`}
-          >
-            {Object.values(row).map((item, index) => (
-              <td key={index} className="text-sm p-1 pl-2.5">
-                {item || "--"}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
 };
 
 const GenericLink = ({
@@ -386,7 +336,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ],
       tableRows: tableRows,
     };
-    return <TempTable tableData={formattedTableData} />;
+    return <BasicTable tableData={formattedTableData} />;
   };
 
   const downloadVersionJSON = () => {
@@ -404,7 +354,7 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <div
       className={`p-4 text-primary-content w-10/12 ${
-        isModal ? "mt-5" : "mt-20"
+        !isModal && "mt-20"
       } m-auto`}
     >
       <div className="flex justify-end pb-5 gap-2">
@@ -585,7 +535,7 @@ export const FileView: React.FC<FileViewProps> = ({
           {file?.analysis?.metadata && (
             <FullWidthDiv>
               <HeaderTitle>Read Groups</HeaderTitle>
-              <TempTable
+              <BasicTable
                 tableData={{
                   headers: [
                     "Read Group ID",
@@ -651,7 +601,7 @@ export const FileView: React.FC<FileViewProps> = ({
               </Menu.Dropdown>
             </Menu>
           </div>
-          <TempTable
+          <BasicTable
             tableData={{
               headers: [
                 "Version",

@@ -35,11 +35,12 @@ interface DropdownWithIconProps {
    */
   targetButtonDisabled?: boolean;
   /**
-   *    array dropdown items. Need to pass title, onClick event handler is optional
+   *    array dropdown items. Need to pass title, onClick and icon event handler is optional
    */
   dropdownElements: Array<{
     title: string;
     onClick?: () => void;
+    icon?: JSX.Element;
   }>;
   /**
    *    only provide menuLabelText if we want label for dropdown elements
@@ -99,7 +100,7 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </>
         )}
-        {dropdownElements.map(({ title, onClick }, idx) => (
+        {dropdownElements.map(({ title, onClick, icon }, idx) => (
           <Menu.Item
             onClick={() => {
               onClick && onClick();
@@ -107,6 +108,7 @@ export const DropdownWithIcon = ({
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
             className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+            icon={icon && icon}
           >
             {title}
           </Menu.Item>
