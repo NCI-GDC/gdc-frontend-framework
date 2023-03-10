@@ -6,7 +6,7 @@ import {
   useFilesFacetsByNameFilter,
 } from "@gff/core";
 import SummaryCount from "../../components/Summary/SummaryCount";
-import { FaUser, FaFile, FaEdit, FaTable } from "react-icons/fa";
+import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
@@ -348,13 +348,16 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     };
   };
   return (
-    <div>
-      {!projectData.isModal && (
-        <SummaryHeader iconText="pr" headerTitle={projectData.project_id} />
-      )}
+    <>
+      <SummaryHeader
+        iconText="pr"
+        headerTitle={projectData.project_id}
+        isModal={projectData.isModal}
+      />
+
       <div
         className={`flex flex-col mx-auto ${
-          projectData.isModal ? "mt-5" : "mt-20"
+          projectData.isModal ? "mt-4" : "mt-20"
         } w-10/12`}
       >
         <div className="flex flex-col gap-5">
@@ -435,7 +438,6 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                     </>
                   ) : null
                 }
-                Icon={FaTable}
                 tableData={formatDataForSummary()}
               />
             </div>
@@ -462,21 +464,27 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             </div>
           </div>
 
-          <div className="flex gap-4 mt-4 mb-8">
-            <CategoryTableSummary
-              title="Cases and File Counts by Data Category"
-              dataObject={projectData?.summary?.data_categories}
-              tableData={formatDataForDataCategoryTable()}
-            />
-
-            <CategoryTableSummary
-              title="Cases and File Counts by Experimental Strategy"
-              dataObject={projectData?.summary?.experimental_strategies}
-              tableData={formatDataForExpCategoryTable()}
-            />
-          </div>
+          {(projectData?.summary?.data_categories ||
+            projectData?.summary?.experimental_strategies) && (
+            <div className="flex gap-4 mt-4 mb-14">
+              {projectData?.summary?.data_categories && (
+                <CategoryTableSummary
+                  title="Cases and File Counts by Data Category"
+                  dataObject={projectData?.summary?.data_categories}
+                  tableData={formatDataForDataCategoryTable()}
+                />
+              )}
+              {projectData?.summary?.experimental_strategies && (
+                <CategoryTableSummary
+                  title="Cases and File Counts by Experimental Strategy"
+                  dataObject={projectData?.summary?.experimental_strategies}
+                  tableData={formatDataForExpCategoryTable()}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };

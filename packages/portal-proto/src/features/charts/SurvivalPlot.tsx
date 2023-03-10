@@ -102,11 +102,10 @@ export const useSurvival: survival = (
               </div>,
             );
           },
-          onClickDonor: (e, { project_id, submitter_id, id }) => {
+          onClickDonor: (e, { id }) => {
             setEntityMetadata({
               entity_type: "case",
               entity_id: id,
-              entity_name: `${project_id} / ${submitter_id}`,
             });
           },
 

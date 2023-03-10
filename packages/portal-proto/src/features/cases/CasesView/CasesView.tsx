@@ -204,7 +204,6 @@ export const ContextualCasesView: React.FC = () => {
                   setEntityMetadata({
                     entity_type: "case",
                     entity_id: datum.case_uuid,
-                    entity_name: `${datum?.project_id} / ${datum?.submitter_id}`,
                   })
                 }
               >
@@ -221,7 +220,6 @@ export const ContextualCasesView: React.FC = () => {
                   setEntityMetadata({
                     entity_type: "project",
                     entity_id: datum.project_id,
-                    entity_name: datum.project_id,
                   })
                 }
               >

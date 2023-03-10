@@ -5,7 +5,7 @@ import {
   mapGdcFileToCartFile,
 } from "../files/utils";
 import { FaShoppingCart } from "react-icons/fa";
-import { Tooltip } from "@mantine/core";
+import { ActionIcon, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
   CartFile,
@@ -116,44 +116,57 @@ export const formatEntityInfo = (
     filtered.push([
       "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
-        <Tooltip label="View Slide Image">
-          <div>
+        <Tooltip label="View Slide Image" withinPortal={true} withArrow>
+          <ActionIcon
+            variant="outline"
+            size="sm"
+            className="w-8 p-0 h-6 text-primary bg-base-max border-primary hover:bg-primary hover:text-base-max"
+          >
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
               <a>
-                <GiMicroscope className="text-primary-content" size={16} />
+                <GiMicroscope size={17} />
               </a>
             </Link>
-          </div>
-        </Tooltip>{" "}
-        <Tooltip label={isFileInCart ? "Remove from Cart" : "Add to Cart"}>
-          <div>
-            <FaShoppingCart
-              onClick={() => {
-                isFileInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                      currentCart,
-                      dispatch,
-                    );
-              }}
-              className={`${
-                isFileInCart ? "text-secondary-min" : "text-primary-content"
-              } cursor-pointer`}
-            />
-          </div>
+          </ActionIcon>
         </Tooltip>
-        <Tooltip label="Download">
+
+        <Tooltip
+          label={isFileInCart ? "Remove from Cart" : "Add to Cart"}
+          withinPortal={true}
+          withArrow
+        >
+          <ActionIcon
+            variant="outline"
+            size="sm"
+            className={`w-8 h-6 p-0 border-primary hover:bg-primary hover:text-base-max ${
+              isFileInCart
+                ? "bg-primary text-base-max"
+                : "text-primary bg-base-max"
+            }`}
+            onClick={() => {
+              isFileInCart
+                ? removeFromCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  )
+                : addToCart(
+                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                    currentCart,
+                    dispatch,
+                  );
+            }}
+          >
+            <FaShoppingCart size={16} />
+          </ActionIcon>
+        </Tooltip>
+
+        <Tooltip label="Download" withinPortal={true} withArrow>
           <div>
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              customStyle="text-primary-content px-0 h-3.5 border-0 bg-transparent"
               showLoading={false}
             />
           </div>

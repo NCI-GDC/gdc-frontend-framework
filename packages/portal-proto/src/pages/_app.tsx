@@ -99,7 +99,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
     entity_type: null,
     entity_id: null,
-    entity_name: null,
   });
 
   const defaultTailwindColorTheme =
