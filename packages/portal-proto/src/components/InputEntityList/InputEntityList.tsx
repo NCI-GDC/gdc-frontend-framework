@@ -7,7 +7,7 @@ import {
   ActionIcon,
   Loader,
 } from "@mantine/core";
-import { flatten, debounce } from "lodash";
+import { flatten, debounce, uniq } from "lodash";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import {
@@ -96,7 +96,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             op: "in",
             content: {
               field: searchField,
-              value: tokens.map((t) => t.toLowerCase()),
+              value: uniq(tokens.map((t) => t.toLowerCase())),
             },
           },
           fields: [...mappedToFields, ...matchAgainstIdentifiers],
