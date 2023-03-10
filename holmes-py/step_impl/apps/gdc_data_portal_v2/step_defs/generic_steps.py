@@ -136,6 +136,12 @@ def verify_file_content(file_type, table):
     for k, v in enumerate(table):
         assert v[0] in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is NOT found in the file"
 
+# Checks if specified information is NOT inside collected content from read-in files
+@step("Verify that <file_type> does not contain specified information <table>")
+def verify_content_is_not_in_file(file_type, table):
+    for k, v in enumerate(table):
+        assert v[0] not in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is found in the file when it's unexpected"
+
 @step("Verify that the <file_type> has <field_name> for each object")
 def verify_file_has_expected_field_names(file_type, field_name):
     fails = {}
