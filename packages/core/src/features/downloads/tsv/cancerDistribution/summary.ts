@@ -3,24 +3,17 @@ import {
   graphqlAPISlice,
 } from "../../../gdcapi/gdcgraphql";
 import {
-  cdTableGeneSummaryQuery,
   cdTableGeneSummaryFilters,
   cdTableMutationSummaryFilters,
 } from "./cdFilters";
 
-// CD = Cancer Distribution
+// todo
 
-export interface CDTableGeneSummaryData {
-  cd: string;
-  // gene fields
+export interface ResponseData {
+  data: any;
 }
 
-export interface CDTableMutationSummaryData {
-  cd: string;
-  // mtn fields
-}
-
-export interface CDTableProjectsResponse {
+export interface Cluster {
   projects: {
     project__project_id: {
       buckets: {
@@ -37,17 +30,12 @@ export interface CDTableProjectsResponse {
 //           }`;
 // };
 
-const getCDQuery = (
-  ids: string[],
-  feature: string,
-  fields: string[],
-): string => {
+const getQuery = (ids: string[], feature: string, fields: string[]): string => {
   switch (feature) {
     case "genes": {
       // let fields: columns currently visible in table
       // const dlFields = [...fields] n [...Object.keys(geneSummaryCDFields)]
       // dlFields.map(({ visibleColumn }) => mutationSummaryCDQuery)
-      cdTableGeneSummaryQuery("123");
       console.log("fields", fields);
       fields
         .map((field) => {
@@ -56,7 +44,6 @@ const getCDQuery = (
         })
         .join("\n,");
       // const { } = cdTableGeneSummaryQuery;
-      debugger;
       return `${ids.join(",")}`;
       // todo;
     }
@@ -72,7 +59,7 @@ const getCDQuery = (
   }
 };
 
-const getCDFilters = (
+const getFilters = (
   ids: string[],
   feature: string,
   fields: string[],
@@ -98,41 +85,40 @@ const getCDFilters = (
   }
 };
 
-export interface CDTableDLInput {
+export interface RequestInput {
   ids: string[];
   feature: string;
   fields: string[];
 }
 
-export const cancerDistributionDownloadSlice = graphqlAPISlice
-  .enhanceEndpoints({ addTagTypes: ["downloads"] })
+export const endpointSlice = graphqlAPISlice
+  .enhanceEndpoints({ addTagTypes: ["gql"] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      getCDTableSummaryDL: builder.query({
-        query: ({ ids, feature, fields }) => ({
-          graphQLQuery: getCDQuery(ids, feature, fields) as string,
-          graphQLFilters: getCDFilters(ids, feature, fields) as Record<
+      getEndpoint: builder.query({
+        query: ({ ids, feature, fields }: RequestInput) => ({
+          graphQLQuery: getQuery(ids, feature, fields) as string,
+          graphQLFilters: getFilters(ids, feature, fields) as Record<
             string,
             unknown
           >,
         }),
         transformResponse: (
           response: GraphQLApiResponse<any>,
-        ): CDTableGeneSummaryData[] => {
+        ): ResponseData[] => {
           const {
             projects: {
               project__project_id: { buckets },
             },
-          } = response as unknown as CDTableProjectsResponse;
+          } = response as unknown as Cluster;
           console.log("buckets", buckets);
-          debugger;
-          return [{ cd: "" }] as CDTableGeneSummaryData[];
+          return [{ data: [] }] as ResponseData[];
         },
       }),
     }),
   });
 
-export const { useGetCDTableSummaryDLQuery } = cancerDistributionDownloadSlice;
+export const { useGetEndpointQuery } = endpointSlice;
 
 // return `
 //   query CancerDistributionTable(
@@ -198,23 +184,3 @@ export const { useGetCDTableSummaryDLQuery } = cancerDistributionDownloadSlice;
 //     }
 //   }
 // `
-
-//   todo: include these fields
-
-//   const { data: projects, isFetching: projectsFetching } = useProjects({
-//     filters: {
-//       op: "in",
-//       content: {
-//         field: "project_id",
-//         value: data?.projects.map((p) => p.key),
-//       },
-//     },
-//     expand: [
-//       "summary",
-//       "summary.data_categories",
-//       "summary.experimental_strategies",
-//       "program",
-//     ],
-//     size: data?.projects.length,
-//   });
-// };

@@ -89,7 +89,7 @@ export const cdFilters = (id: string): Record<string, any> => {
   };
 };
 
-export const cdTableGeneSummaryQuery = (id: string) => {
+export const cdTableGeneSummaryQuery = (id: string): Record<string, any> => {
   return {
     project: `key`,
     diseaseType: `disease_type`,
@@ -101,7 +101,7 @@ export const cdTableGeneSummaryQuery = (id: string) => {
   };
 };
 
-export const cdTableGeneSummaryFilters = (id: string) => {
+export const cdTableGeneSummaryFilters = (id: string): Record<string, any> => {
   return {
     cnvGains: filters_cnv(id, "Gain"),
     cnvLosses: filters_cnv(id, "Loss"),
@@ -110,7 +110,9 @@ export const cdTableGeneSummaryFilters = (id: string) => {
   };
 };
 
-export const cdTableMutationSummaryQuery = (id: string) => {
+export const cdTableMutationSummaryQuery = (
+  id: string,
+): Record<string, any> => {
   return {
     project: `key`,
     diseaseType: `disease_type`,
@@ -119,7 +121,9 @@ export const cdTableMutationSummaryQuery = (id: string) => {
   };
 };
 
-export const cdTableMutationSummaryFilters = (id: string) => {
+export const cdTableMutationSummaryFilters = (
+  id: string,
+): Record<string, any> => {
   return {
     id: () => {
       id;
