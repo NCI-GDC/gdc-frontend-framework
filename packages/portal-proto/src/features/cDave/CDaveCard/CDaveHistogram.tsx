@@ -102,17 +102,23 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 >
                   <ActionIcon
                     variant="outline"
-                    className="bg-base-max text-base-contrast-max border-primary-darkest"
+                    className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    <DownloadIcon />
+                    <DownloadIcon className="text-primary" />
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item>SVG (Coming soon)</Menu.Item>
-                <Menu.Item>PNG (Coming soon)</Menu.Item>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
+                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
+                  SVG (Coming soon)
+                </Menu.Item>
+                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
+                  PNG (Coming soon)
+                </Menu.Item>
+                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
+                  JSON (Coming soon)
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>

@@ -424,7 +424,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
         </div>
-        <div className="flex flex-row items-center ml-auto mt-2 gap-1">
+        <div className="flex flex-row items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
             offset={1}

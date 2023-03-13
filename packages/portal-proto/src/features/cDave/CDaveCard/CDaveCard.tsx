@@ -68,13 +68,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "histogram" && !noData
-                  ? "bg-primary-darkest text-primary-contrast-darkest"
-                  : "border-primary-darkest text-primary-content-darkest"
+                  ? "bg-primary"
+                  : "border-primary"
               }
               onClick={() => setChartType("histogram")}
               disabled={noData}
             >
-              <BarChartIcon />
+              <BarChartIcon
+                className={
+                  chartType === "histogram" && !noData
+                    ? "text-primary-contrast"
+                    : "text-primary"
+                }
+              />
             </ActionIcon>
           </Tooltip>
           <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
@@ -82,13 +88,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "survival"
-                  ? "bg-primary-darkest text-primary-contrast-darkest"
-                  : "border-primary-darkest text-primary-content-darkest"
+                  ? "bg-primary text-primary"
+                  : "border-primary text-primary-content"
               }
               onClick={() => setChartType("survival")}
               disabled={noData}
             >
-              <SurvivalChartIcon />
+              <SurvivalChartIcon
+                className={
+                  chartType === "survival"
+                    ? "text-primary-contrast"
+                    : "text-primary"
+                }
+              />
             </ActionIcon>
           </Tooltip>
           <Tooltip
@@ -99,9 +111,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           >
             <ActionIcon
               onClick={() => updateFields(field)}
-              className="border-primary-darkest text-primary-content-darkest"
+              className="border-primary text-primary-content"
             >
-              <CloseIcon />
+              <CloseIcon className="text-primary" />
             </ActionIcon>
           </Tooltip>
         </div>
