@@ -655,7 +655,8 @@ const v2AccentCoolContent = {
   min: "#061215",
 };
 
-// got these for v1 (portal-ui)
+// got these from v1 (portal-ui)
+// https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/theme/versions/active.ts#L88
 const vep = {
   high: "rgb(185, 36, 36)",
   moderate: "#634d0c",

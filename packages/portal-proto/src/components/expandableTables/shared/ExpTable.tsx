@@ -74,7 +74,6 @@ export const ExpTable: React.FC<ExpTableProps> = ({
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      // confustion for py because the same number is bigger in one scenario
                       className="py-3 px-2 border-b-4 border-base-lighter font-heading"
                     >
                       {header.isPlaceholder ? null : (
