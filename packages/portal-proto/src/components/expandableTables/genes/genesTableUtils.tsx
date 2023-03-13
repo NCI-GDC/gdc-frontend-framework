@@ -276,43 +276,48 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-col items-center">
-                  {row.getCanExpand() && (
-                    <div
-                      className={`flex flex-col font-content text-xs text-center items-center`}
-                    >
-                      <div className={`flex flex-row`}>
-                        {`${numerator.toLocaleString(
-                          "en-US",
-                        )} / ${denominator.toLocaleString("en-US")}`}
+                <div className="flex">
+                  <div className="flex flex-row items-center">
+                    {row.getCanExpand() && (
+                      <div className="text-center items-center content-center pr-2">
+                        <button
+                          aria-controls={`expandedSubrow`}
+                          aria-expanded={row.getCanExpand() ? "true" : "false"}
+                          {...{
+                            onClick: () => {
+                              setGeneID(row.original[`geneID`]);
+                              row.toggleExpanded();
+                            },
+                            style: { cursor: "pointer" },
+                          }}
+                        >
+                          <ToggleSpring
+                            isExpanded={row.getIsExpanded()}
+                            icon={
+                              <MdKeyboardArrowDown
+                                size="0.75em"
+                                color="white"
+                              />
+                            }
+                          />
+                        </button>
                       </div>
-                      <div className={`flex flex-row`}>
-                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
-                      </div>
-                    </div>
-                  )}
-                  {row.getCanExpand() && (
-                    <div className="text-center items-center content-center">
-                      <button
-                        aria-controls={`expandedSubrow`}
-                        aria-expanded={row.getCanExpand() ? "true" : "false"}
-                        {...{
-                          onClick: () => {
-                            setGeneID(row.original[`geneID`]);
-                            row.toggleExpanded();
-                          },
-                          style: { cursor: "pointer" },
-                        }}
+                    )}
+                    {row.getCanExpand() && (
+                      <div
+                        className={`flex flex-col font-content text-xs text-center items-center`}
                       >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="0.75em" color="white" />
-                          }
-                        />
-                      </button>
-                    </div>
-                  )}
+                        <div className={`flex flex-row`}>
+                          {`${numerator.toLocaleString(
+                            "en-US",
+                          )} / ${denominator.toLocaleString("en-US")}`}
+                        </div>
+                        <div className={`flex flex-row`}>
+                          {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             },
