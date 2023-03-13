@@ -561,8 +561,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   const theme = useMantineTheme();
 
-  console.log({ search, showControls });
-
   return (
     <div className="grow overflow-hidden">
       <div

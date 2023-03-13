@@ -52,8 +52,6 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  console.log(table.getHeaderGroups());
-
   const selectAllActive =
     table.getRowModel().rows.length === 0
       ? false
