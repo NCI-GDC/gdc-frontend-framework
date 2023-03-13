@@ -15,18 +15,15 @@ from ....base.utility import Utility
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
 
-
 @before_spec
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
-
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
     APP.warning_modal.accept_warning()
-
 
 @step("Go to <page_name> page")
 def go_to_page(page_name):
@@ -199,9 +196,14 @@ def is_data_testid_not_present_on_the_page(data_testid: str):
 def click_button_with_data_testid(data_testid: str):
     APP.home_page.click_button_data_testid(data_testid)
 
+@step("Select <button_text_name>")
+def click_button_with_displayed_text_name(button_text_name: str):
+    APP.home_page.click_button_with_displayed_text_name(button_text_name)
+
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     APP.home_page.send_text_into_search_bar(text, aria_label)
+
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):

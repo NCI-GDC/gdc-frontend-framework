@@ -25,4 +25,7 @@ class CohortBar(BasePage):
 
     def click_import_cohort_browse(self, button_text_name:str):
         self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
-        self.click(CohortBarLocators.BROWSE_BUTTON(button_text_name), force = True)
+        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
+
+    def click_cohort_bar_named_button(self, button_text_name:str):
+        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name))

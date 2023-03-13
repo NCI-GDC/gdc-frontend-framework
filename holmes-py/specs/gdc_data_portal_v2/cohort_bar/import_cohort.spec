@@ -14,5 +14,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 
 ## Import Cohort
 * Select "Upload" from the Cohort Bar
-* Upload "Cases List" from "Cohort Bar" in "Cohort Bar Import"
+* Upload "Cases List" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
+* Select "Submit"
+* Name the cohort "cases list" and "Create" in the Cohort Bar
 * Pause "5" seconds

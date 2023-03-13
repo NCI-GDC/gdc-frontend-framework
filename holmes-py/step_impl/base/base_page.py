@@ -13,6 +13,8 @@ class GenericLocators:
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
+    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'span:text("{button_text_name}")'
+
 class BasePage:
     def __init__(self, driver) -> None:
         self.driver = driver
@@ -72,6 +74,10 @@ class BasePage:
 
     def click_button_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        self.click(locator)
+
+    def click_button_with_displayed_text_name(self, button_text_name):
+        locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
