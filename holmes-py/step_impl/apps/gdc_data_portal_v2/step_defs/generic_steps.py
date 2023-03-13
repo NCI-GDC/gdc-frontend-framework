@@ -103,6 +103,21 @@ def download_file_at_file_table(file:str, source:str):
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
 
+@step("Upload <file_name> from <folder_name> in <source> through <button>")
+def download_file_at_file_table(file_name:str, folder_name:str, source:str, button:str):
+    sources = {
+        "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
+    }
+    driver = WebDriver.page
+    with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
+        # Allows using sources without passing in contents of <file> as a parameter
+            sources.get(source)(button)
+    file_chooser = file_chooser_info.value
+    file_name = file_name.lower().replace(" ", "_")
+    folder_name = folder_name.lower().replace(" ", "_")
+    file_path = f"{Utility.parent_dir()}/holmes-py/resources/{folder_name}/{file_name}.txt"
+    file_chooser.set_files(file_path)
+
 @step("Read from <file_type>")
 def read_from_file(file_type):
     with open(data_store.spec[file_type],'r+') as f:

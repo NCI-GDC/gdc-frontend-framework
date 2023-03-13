@@ -20,9 +20,10 @@ class BasePage:
     def goto(self, url):
         self.driver.goto(url)
 
-    def click(self, locator):
+    # Force: Whether to bypass the actionability checks
+    def click(self, locator, force=False):
         self.wait_until_locator_is_visible(locator)
-        self.driver.locator(locator).click()
+        self.driver.locator(locator).click(force=force)
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
@@ -80,10 +81,6 @@ class BasePage:
 
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
-
-    # wait for element to have non-empty bounding box and no visibility:hidden
-    def wait_until_locator_is_visible(self, locator):
-        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
 
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
