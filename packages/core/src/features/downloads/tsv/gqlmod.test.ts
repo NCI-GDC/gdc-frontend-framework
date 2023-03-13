@@ -107,11 +107,11 @@ describe("getAliasFilters", () => {
         filters_case: {
           content: [
             {
+              op: "NOT",
               content: {
-                field: "genes.is_cancer_gene_census",
-                value: ["true"],
+                field: "cases.gene.ssm.observation.observation_id",
+                value: "MISSING",
               },
-              op: "in",
             },
           ],
           op: "and",
