@@ -270,9 +270,9 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row flex-nowrap items-center">
+                <div className="flex flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <div className="text-center content-center">
+                    <div className="text-center mr-1">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -393,10 +393,7 @@ export const createTableColumn = (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
                         return (
-                          <div
-                            key={`cytoband-${key}`}
-                            className={`my-0.5 text-xs`}
-                          >
+                          <div key={`cytoband-${key}`} className="my-0.5">
                             {cytoband}
                           </div>
                         );
@@ -429,7 +426,7 @@ export const createTableColumn = (
               return (
                 <div>
                   {row.getCanExpand() && (
-                    <div className="text-center text-xs">
+                    <div className="text-center">
                       {row?.original["mutations"]?.toLocaleString("en-US") ??
                         ""}
                     </div>
@@ -460,7 +457,7 @@ export const createTableColumn = (
                 : "";
               return (
                 <button
-                  className="text-utility-link underline text-xs"
+                  className="text-utility-link underline"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
@@ -494,11 +491,11 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`text-xs`}>
+                <span>
                   {row.original[`${accessor}`]
                     ? row.original[`${accessor}`]
                     : ""}
-                </div>
+                </span>
               );
             },
           },

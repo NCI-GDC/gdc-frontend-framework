@@ -64,8 +64,8 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   return (
     <div>
       <LoadingOverlay visible={status === "pending"} />
-      <table className="w-full border border-base-lighter">
-        <thead className="border-2 shadow-md border-base-lighter">
+      <table className="w-full border border-base-lighter text-sm">
+        <thead className="border-2 shadow-md border-base-lighter h-14">
           {table
             .getHeaderGroups()
             .slice(1)

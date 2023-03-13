@@ -15,13 +15,8 @@ import {
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
 } from "@gff/core";
-import tw from "tailwind-styled-components";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { CountsIcon } from "../shared/tailwindComponents";
-
-interface CountsIconProps {
-  $count?: number;
-}
 
 const ProjectsCohortButton = (): JSX.Element => {
   const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>

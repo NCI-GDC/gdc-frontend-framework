@@ -81,19 +81,15 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start ml-3">
+                <>
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
-                      margin="my-0.5 ml-0"
+                      margin=""
                       icon={
                         isDemoMode ? (
                           <Image
@@ -122,7 +118,7 @@ export const createTableColumn = (
                       disabled={isDemoMode}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -136,11 +132,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               if (row.depth > 0) {
@@ -159,7 +151,7 @@ export const createTableColumn = (
                 ? `Click to remove ${selected.name} from plot`
                 : `Click to plot ${selected.name}`;
               return (
-                <div className="flex justify-start">
+                <>
                   {row.getCanExpand() && (
                     <ToggledCheck
                       margin="ml-0.5"
@@ -172,7 +164,7 @@ export const createTableColumn = (
                       tooltip={tooltip}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -191,7 +183,6 @@ export const createTableColumn = (
                   title={startCase(accessor)}
                   tooltip={`Genomic DNA Change, shown as
                    {chromosome}:g{start}{ref}>{tumor}`}
-                  className="flex justify-start"
                 />
               </div>
             ),
@@ -202,17 +193,17 @@ export const createTableColumn = (
                 : originalLabel;
               const ssmsId = row.original[`mutationID`];
               return (
-                <div className="font-content flex justify-start">
+                <div className="font-content">
                   {label !== "" ? (
                     <Tooltip
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
                       {isConsequenceTable ? (
-                        <span className="text-xs">{label}</span>
+                        <span>{label}</span>
                       ) : isModal ? (
                         <button
-                          className="text-utility-link underline text-xs"
+                          className="text-utility-link underline"
                           onClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
@@ -224,9 +215,7 @@ export const createTableColumn = (
                         </button>
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link text-xs">
-                            {label}
-                          </a>
+                          <a className="underline text-utility-link">{label}</a>
                         </Link>
                       )}
                     </Tooltip>
@@ -262,7 +251,7 @@ export const createTableColumn = (
               return (
                 <div className="flex flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <div className="text-center content-center">
+                    <div className="text-center content-center mr-2">
                       <button
                         aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -307,7 +296,6 @@ export const createTableColumn = (
               <TableHeader
                 title={`# Affected Cases
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
-                className="flex justify-start"
                 tooltip={`# Cases where Mutation is observed in ${
                   geneSymbol ?? "Cohort"
                 } / # Cases tested for Simple Somatic Mutations in Cohort`}
@@ -343,11 +331,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
@@ -375,13 +359,12 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={"Consequences for canonical transcript"}
-                className="flex flex-row justify-start mr-2"
+                tooltip="Consequences for canonical transcript"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start font-content text-sx">
+                <div className="font-content">
                   {row.getCanExpand() && (
                     <Consequences consequences={row.original["consequences"]} />
                   )}
@@ -399,7 +382,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => {
-              const TwIconDiv = tw.div`w-7 h-6 text-white border rounded-md flex justify-center items-center`;
+              const TwIconDiv = tw.div`w-7 h-6 text-base-max border rounded-md flex justify-center items-center`;
               return (
                 <Tooltip
                   label={
@@ -453,7 +436,7 @@ export const createTableColumn = (
                   }}
                   position={geneSymbol && isModal ? "left-start" : "top"}
                 >
-                  <div className="font-heading text-left text-sm whitespace-pre-line">
+                  <div className="font-heading text-left whitespace-pre-line">
                     Impact
                   </div>
                 </Tooltip>
@@ -461,7 +444,7 @@ export const createTableColumn = (
             },
             cell: ({ row }) => {
               return (
-                <div className="flex flex-row justify-start">
+                <div className="flex">
                   {row.getCanExpand() && (
                     <Impacts impact={row.original["impact"]} />
                   )}
@@ -479,18 +462,12 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="Gene Strand"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="Gene Strand" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start">
-                  <div className="font-content text-lg font-bold">
-                    {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
-                  </div>
+                <div className="font-content text-lg font-bold">
+                  {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
                 </div>
               );
             },
@@ -505,24 +482,18 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="AA Change"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="AA Change" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               const label = row.original["aa_change"];
               return (
-                <div className="flex justify-start">
+                <>
                   {label !== null ? (
-                    <div className="font-content text-xs">{label}</div>
+                    <span>{label}</span>
                   ) : (
-                    <div className="font-content text-center text-lg ml-3">
-                      {"--"}
-                    </div>
+                    <span className="text-center text-lg">--</span>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -536,32 +507,20 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="Transcript"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="Transcript" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               const transcript_id = row.original?.transcript_id;
               const isC = row.original["is_canonical"] as boolean;
               return (
-                <div className="flex flex-row justify-start ">
+                <div>
                   {transcript_id ? (
-                    <div className="flex flex-row flex-nowrap font-content items-center text-sm">
-                      <AnchorLink
-                        href={externalLinks.transcript(transcript_id)}
-                        title={transcript_id}
-                        toolTipLabel={"transcript_id"}
-                      />
-                      {isC ? (
-                        <Tooltip label={"Canonical"}>
-                          <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
-                            C
-                          </div>
-                        </Tooltip>
-                      ) : null}
-                    </div>
+                    <AnchorLink
+                      href={externalLinks.transcript(transcript_id)}
+                      title={transcript_id}
+                      toolTipLabel={isC ? "Canonical" : undefined}
+                      iconText={isC ? "C" : undefined}
+                    />
                   ) : null}
                 </div>
               );
@@ -577,11 +536,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex flex-row justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => (
               <TableCell
@@ -602,24 +557,18 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex flex-row justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               const geneSymbol = row.original["gene_id"];
               return (
-                <div className="flex justify-start">
-                  <Link href={`/genes/${geneSymbol}`}>
-                    <a className="text-utility-link font-content text-xs underline">
-                      {row.original[`${accessor}`]
-                        ? row.original[`${accessor}`]
-                        : ""}
-                    </a>
-                  </Link>
-                </div>
+                <Link href={`/genes/${geneSymbol}`}>
+                  <a className="text-utility-link font-content underline">
+                    {row.original[`${accessor}`]
+                      ? row.original[`${accessor}`]
+                      : ""}
+                  </a>
+                </Link>
               );
             },
           },
@@ -634,11 +583,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex flex-row justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => (
               <TableCell

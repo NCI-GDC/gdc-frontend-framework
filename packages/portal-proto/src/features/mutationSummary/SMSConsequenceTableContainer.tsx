@@ -1,7 +1,6 @@
 import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
 import { default as PageStepper } from "@/components/expandableTables/shared/PageStepperMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import TablePlaceholder from "@/components/expandableTables/shared/TablePlaceholder";

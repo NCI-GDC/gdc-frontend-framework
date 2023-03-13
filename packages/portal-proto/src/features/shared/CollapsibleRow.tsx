@@ -14,18 +14,16 @@ const CreateContent = (
   return (
     <div className="flex flex-col px-3">
       {Object.entries(items).map(([x, values], index) => (
-        <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
+        <div
+          className="flex flex-col p-2"
+          key={`${x}-${values.length}-${index}`}
+        >
           {index > 0 ? <Divider /> : null}
-          <p className={"text-header text-[0.95em] font-heading font-semibold"}>
-            {x}
-          </p>
-          <div className="columns-4 font-content text-sm  p-4">
+          <p className="text-[16px] font-heading font-semibold mb-2">{x}</p>
+          <div className="columns-4 font-content text-sm">
             {[...values].sort().map((y) => (
               <div className="flex flex-row items-center" key={y}>
-                <Circle
-                  size="0.65em"
-                  className="text-primary shrink-0 "
-                ></Circle>
+                <Circle size="0.65em" className="text-primary shrink-0" />
                 <p className="pl-2">{y}</p>
               </div>
             ))}

@@ -352,15 +352,15 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     return (
       <table
         {...getTableProps()}
-        className="w-full text-left font-content shadow-xs"
+        className="w-full text-left font-content shadow-xs text-sm"
       >
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
-        <thead>
+        <thead className="h-14">
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4`}
+              className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -457,8 +457,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     {...row.getRowProps()}
                     className={`${
                       index % 2 === 1
-                        ? "bg-base-max border-1 border-base-lighter"
-                        : "bg-base-lightest border-1 border-base-lighter"
+                        ? "bg-base-max border border-base-lighter"
+                        : "bg-base-lightest border border-base-lighter"
                     }
                     `}
                     key={`row-${index}`}
@@ -468,7 +468,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-2.5 text-xs text-content"
+                          className="px-2 py-2.5"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -543,7 +543,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p className={"text-heading text-sm"}>Showing {outputString ?? "--"}</p>
+      <p className="text-heading text-sm">Showing {outputString ?? "--"}</p>
     );
   };
 

@@ -17,6 +17,7 @@ import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
+import { NumeratorDenominator } from "@/components/expandableTables/shared/NumeratorDenominator";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -144,9 +145,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               multiline
               withArrow
             >
-              <span className="underline decoration-dashed">
-                # SSM Affected Cases
-              </span>
+              <span># SSM Affected Cases</span>
             </Tooltip>
           </div>
         ),
@@ -168,9 +167,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     multiline
                     withArrow
                   >
-                    <span className="underline decoration-dashed">
-                      # CNV Gains
-                    </span>
+                    <span># CNV Gains</span>
                   </Tooltip>
                 </div>
               ),
@@ -187,9 +184,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     multiline
                     withArrow
                   >
-                    <span className="underline decoration-dashed">
-                      # CNV Losses
-                    </span>
+                    <span># CNV Losses</span>
                   </Tooltip>
                 </div>
               ),
@@ -204,9 +199,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     multiline
                     withArrow
                   >
-                    <span className="underline decoration-dashed">
-                      # Mutations
-                    </span>
+                    <span># Mutations</span>
                   </Tooltip>
                 </div>
               ),
@@ -230,42 +223,31 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-                ssm_affected_cases: `${(
-                  data.ssmFiltered[d.key] || 0
-                ).toLocaleString()} / ${data.ssmTotal[
-                  d.key
-                ].toLocaleString()} (${(
-                  (data.ssmFiltered[d.key] || 0) / data.ssmTotal[d.key]
-                ).toLocaleString(undefined, {
-                  style: "percent",
-                  minimumFractionDigits: 2,
-                })})`,
+
+                ssm_affected_cases: (
+                  <NumeratorDenominator
+                    numerator={data.ssmFiltered[d.key] || 0}
+                    denominator={data.ssmTotal[d.key]}
+                  />
+                ),
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
               };
               return {
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: `${(
-                        data.cnvGain[d.key] || 0
-                      ).toLocaleString()} / ${(
-                        data.cnvTotal[d.key] || 0
-                      ).toLocaleString()} (${(
-                        data.cnvGain[d.key] / data.cnvTotal[d.key] || 0
-                      ).toLocaleString(undefined, {
-                        style: "percent",
-                        minimumFractionDigits: 2,
-                      })})`,
-                      cnv_losses: `${(
-                        data.cnvLoss[d.key] || 0
-                      ).toLocaleString()} / ${(
-                        data.cnvTotal[d.key] || 0
-                      ).toLocaleString()} (${(
-                        data.cnvLoss[d.key] / data.cnvTotal[d.key] || 0
-                      ).toLocaleString(undefined, {
-                        style: "percent",
-                        minimumFractionDigits: 2,
-                      })})`,
+                      cnv_gains: (
+                        <NumeratorDenominator
+                          numerator={data.cnvGain[d.key] || 0}
+                          denominator={data.cnvTotal[d.key] || 0}
+                        />
+                      ),
+                      cnv_losses: (
+                        <NumeratorDenominator
+                          numerator={data.cnvLoss[d.key] || 0}
+                          denominator={data.cnvTotal[d.key] || 0}
+                        />
+                      ),
                       num_mutations:
                         (data.ssmFiltered[d.key] || 0) === 0
                           ? 0

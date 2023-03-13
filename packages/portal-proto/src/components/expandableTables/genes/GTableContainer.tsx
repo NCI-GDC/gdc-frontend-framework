@@ -330,13 +330,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {visibleColumns.length ? (
           <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
             <div className={"grow-0"}>
-              <div className="flex flex-row items-center text-sm ml-0">
+              <div className="flex items-center text-sm ml-0">
                 <span className="my-auto mx-1">Show</span>
                 <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
                 <span className="my-auto mx-1">Entries</span>
               </div>
             </div>
-            <div className="flex flex-row items-center justify-center grow text-sm">
+            <div className="flex items-center justify-center grow text-sm">
               <span>
                 Showing
                 <span className="font-bold">{` ${(

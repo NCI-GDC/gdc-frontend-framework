@@ -1,5 +1,5 @@
-import { animated } from "@react-spring/web";
 import { Text, Tooltip } from "@mantine/core";
+import { animated } from "@react-spring/web";
 
 export const TableHeader = ({
   title,
@@ -47,7 +47,7 @@ export const TableCell = ({
 }): JSX.Element => {
   return (
     <animated.div
-      className={`flex justify-start font-content text-xs ${
+      className={`flex justify-start font-content ${
         anchor
           ? `text-activeColor underline hover:cursor-pointer font-bold`
           : ``

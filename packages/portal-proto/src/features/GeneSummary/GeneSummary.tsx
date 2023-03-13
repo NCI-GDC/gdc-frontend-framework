@@ -11,7 +11,6 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
@@ -206,7 +205,7 @@ const GeneView = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal && "mt-20"}`}>
+          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-22"}`}>
             {contextSensitive && (
               <div className="my-6">
                 <ContextSensitiveBanner />

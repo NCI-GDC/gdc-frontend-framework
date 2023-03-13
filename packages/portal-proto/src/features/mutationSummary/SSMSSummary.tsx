@@ -69,7 +69,7 @@ export const SSMSSummary = ({
       functional_impact: (
         <>
           {transcript_id ? (
-            <div className="flex-col py-2">
+            <div className="flex flex-col py-2 gap-0.5">
               <AnchorLink
                 href={externalLinks.transcript(transcript_id)}
                 title={transcript_id}
@@ -77,9 +77,7 @@ export const SSMSSummary = ({
                 toolTipLabel="Canonical"
               />
 
-              {vep_impact && (
-                <span className="-mt-1 block">VEP: {vep_impact}</span>
-              )}
+              {vep_impact && <span>VEP: {vep_impact}</span>}
 
               {(sift_impact || sift_score !== undefined) && (
                 <div>

@@ -6,7 +6,6 @@ import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { Grid } from "@mantine/core";
 import { processFilters } from "src/utils";
-import tw from "tailwind-styled-components";
 import { CountSpan } from "../shared/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {

@@ -20,10 +20,10 @@ export const ProteinChange = ({
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className="flex flex-row w-max justify-start font-content text-xs">
+    <div className="flex flex-row w-max justify-start font-content">
       {shouldLink ? (
         <button
-          className="text-utility-link underline text-xs mx-0.5"
+          className="text-utility-link underline mx-0.5"
           onClick={() =>
             setEntityMetadata({
               entity_type: "genes",
@@ -54,7 +54,7 @@ export const Consequences = ({
 }): JSX.Element => {
   return (
     <>
-      <span className={`mx-0.5 font-content text-xs`}>
+      <span className="mx-0.5 font-content text">
         {humanify({
           term: consequences?.replace("_variant", "").replace("_", " "),
         }) ?? ``}

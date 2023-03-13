@@ -74,7 +74,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
             {isMenuOpen && (
               <div className={`text-center`}>
                 <animated.div
-                  className={`flex flex-row mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 text-xs ${
+                  className={`flex flex-row mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 ${
                     numSelected === 0
                       ? `text-activeColor bg-white`
                       : `bg-activeColor text-white`

@@ -4,7 +4,6 @@ import { Grid } from "@mantine/core";
 import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { processFilters } from "src/utils";
-import tw from "tailwind-styled-components";
 import { CountSpan } from "../shared/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {

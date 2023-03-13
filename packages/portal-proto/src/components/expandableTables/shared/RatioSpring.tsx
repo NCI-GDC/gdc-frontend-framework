@@ -1,5 +1,6 @@
 import React from "react";
 import { animated, useSpring } from "@react-spring/web";
+import { NumeratorDenominator } from "./NumeratorDenominator";
 
 interface Item {
   project?: string | undefined;
@@ -31,30 +32,22 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   ];
   return (
     <>
-      <animated.ul style={staggeredSpring} className={`p-1 text-xs`}>
+      <animated.ul style={staggeredSpring}>
         {numerator === 0 ? (
-          orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
+          orientation === "vertical" && <div className="w-max m-auto">0</div>
         ) : (
-          <li key={`subrow-item-${index}`} className={`list-none`}>
-            <div className={`flex flex-row m-auto w-fit`}>
-              {project && (
-                <div className={`font-bold text-black mx-0.5`}>{project}:</div>
-              )}{" "}
-              <div className={`text-activeColor mx-1`}>
-                {numerator.toLocaleString("en-US")}
-              </div>
-              <div className={`text-black mx-0.5`}> / </div>
-              <div className={`text-activeColor`}>
-                {denominator.toLocaleString("en-US")}
-              </div>
-              {orientation === "horizontal" && (
-                <div className={`ml-1`}>({((n * 100) / d).toFixed(2)}%)</div>
-              )}
+          <li key={`subrow-item-${index}`} className="list-none">
+            <div className="flex w-fit">
+              {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
+              <NumeratorDenominator
+                numerator={numerator}
+                denominator={denominator}
+              />
             </div>
             {orientation === "vertical" && (
-              <div className={`w-max mx-auto`}>
+              <span className="w-max mx-auto">
                 ({((n * 100) / d).toFixed(2)}%)
-              </div>
+              </span>
             )}
           </li>
         )}

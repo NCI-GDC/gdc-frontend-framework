@@ -1,6 +1,6 @@
 import React from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { Box, Group, Menu, Button, Text } from "@mantine/core";
+import { Group, Menu, Button, Text } from "@mantine/core";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 
 interface ControlOption {
@@ -36,7 +36,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
             variant="outline"
             color="primary"
             className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
-            rightIcon={<MdOutlineArrowDropDown />}
+            rightIcon={<MdOutlineArrowDropDown size={20} />}
             leftIcon={
               numSelected > 0 ? (
                 <CountsIcon $count={numSelected}>{numSelected}</CountsIcon>
