@@ -67,7 +67,7 @@ const useCohortCentricFiles = () => {
   };
 };
 
-export const RepositoryApp = () => {
+export const RepositoryApp = (): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const { allFilters, pagination, repositoryFilters, imagesCount } =

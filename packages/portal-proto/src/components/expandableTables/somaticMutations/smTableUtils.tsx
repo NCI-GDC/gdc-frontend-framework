@@ -253,7 +253,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <div className="text-center content-center mr-2">
                       <button
-                        aria-controls={`expandedSubrow`}
+                        aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {

@@ -33,6 +33,7 @@ const DND: React.FC<DNDProps> = ({
         position="bottom-end"
         transition="scale"
         withArrow
+        aria-label="column change button"
       >
         <Popover.Target>
           <button

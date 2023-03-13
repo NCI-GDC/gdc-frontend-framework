@@ -31,28 +31,26 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
     denominator === 0 ? 1 : denominator,
   ];
   return (
-    <>
-      <animated.ul style={staggeredSpring}>
-        {numerator === 0 ? (
-          orientation === "vertical" && <div className="w-max m-auto">0</div>
-        ) : (
-          <li key={`subrow-item-${index}`} className="list-none">
-            <div className="flex w-fit">
-              {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
-              <NumeratorDenominator
-                numerator={numerator}
-                denominator={denominator}
-              />
-            </div>
-            {orientation === "vertical" && (
-              <span className="w-max mx-auto">
-                ({((n * 100) / d).toFixed(2)}%)
-              </span>
-            )}
-          </li>
-        )}
-      </animated.ul>
-    </>
+    <animated.ul style={staggeredSpring}>
+      {numerator === 0 ? (
+        orientation === "vertical" && <div className="w-max m-auto">0</div>
+      ) : (
+        <li key={`subrow-item-${index}`} className="list-none">
+          <div className="flex w-fit">
+            {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
+            <NumeratorDenominator
+              numerator={numerator}
+              denominator={denominator}
+            />
+          </div>
+          {orientation === "vertical" && (
+            <span className="w-max mx-auto">
+              ({((n * 100) / d).toFixed(2)}%)
+            </span>
+          )}
+        </li>
+      )}
+    </animated.ul>
   );
 };
 
