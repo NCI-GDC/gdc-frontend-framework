@@ -5,8 +5,8 @@ export const NumeratorDenominator = ({
   numerator: number;
   denominator: number;
 }): JSX.Element => (
-  <span className="flex gap-1">
-    <span>{numerator.toLocaleString()}</span>
+  <span className="flex gap-1" data-testid="numeratorDenominatorTest">
+    <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
     <span>&#47;</span>
     <span>{denominator.toLocaleString()}</span>
     <span>
