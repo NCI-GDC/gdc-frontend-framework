@@ -237,11 +237,7 @@ export const createTableColumn = (
               return (
                 <div className={`flex flex-row justify-start`}>
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -294,11 +290,7 @@ export const createTableColumn = (
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );

@@ -201,7 +201,7 @@ export const createTableColumn = (
                     >
                       {isConsequenceTable ? (
                         <span>{label}</span>
-                      ) : isModal ? (
+                      ) : isModal && !geneSymbol ? (
                         <button
                           className="text-utility-link underline"
                           onClick={() =>
@@ -273,11 +273,7 @@ export const createTableColumn = (
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -309,13 +305,7 @@ export const createTableColumn = (
               return (
                 <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <>
-                      <RatioSpring
-                        index={0}
-                        item={{ numerator, denominator }}
-                        orientation="horizontal"
-                      />
-                    </>
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );

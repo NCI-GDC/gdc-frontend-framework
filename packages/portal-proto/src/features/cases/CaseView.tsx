@@ -150,7 +150,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             withArrow
             offset={-2}
           >
-            <div>
+            <div className="pt-0.5">
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
                 passHref

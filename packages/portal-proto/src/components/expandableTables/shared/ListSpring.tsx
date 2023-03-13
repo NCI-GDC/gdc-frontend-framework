@@ -68,7 +68,6 @@ const ListSpring: React.FC<ListSpringProps> = ({
               project: item.project,
             }}
             index={index}
-            orientation={"horizontal"}
           />
         </div>
       );

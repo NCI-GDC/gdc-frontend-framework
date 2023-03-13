@@ -6,12 +6,12 @@ export const NumeratorDenominator = ({
   denominator: number;
 }): JSX.Element => (
   <span className="flex gap-1">
-    <span className="">{numerator.toLocaleString()}</span>
-    <span>/</span>
-    <span className="">{denominator.toLocaleString()}</span>
+    <span>{numerator.toLocaleString()}</span>
+    <span>&#47;</span>
+    <span>{denominator.toLocaleString()}</span>
     <span>
       (
-      {denominator === 0
+      {numerator === 0 || denominator === 0
         ? "0.00%"
         : (numerator / denominator || 1).toLocaleString(undefined, {
             style: "percent",
