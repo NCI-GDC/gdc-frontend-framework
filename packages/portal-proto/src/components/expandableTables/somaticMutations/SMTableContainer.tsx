@@ -179,13 +179,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     {} as SelectedReducer<SomaticMutations>,
   );
 
-  const {
-    data,
-    isSuccess,
-    isFetching,
-    isError,
-    data: { ssmsTotal },
-  } = useGetSssmTableDataQuery({
+  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
@@ -194,6 +188,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
   });
+
+  const { ssmsTotal } = data ? data : { ssmsTotal: 0 };
 
   useEffect(() => {
     setPage(0);
