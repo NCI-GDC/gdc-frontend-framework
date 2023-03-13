@@ -64,7 +64,6 @@ export interface MutatedGenesFreqTransformedItem {
   cnvGain: string;
   cnvLoss: string;
   mutations: string;
-  annotations: string;
   is_cancer_gene_census: boolean;
 }
 
@@ -152,7 +151,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             numCases,
             case_cnv_gain,
             case_cnv_loss,
-            annotations,
             is_cancer_gene_census,
           }: {
             gene_id: string;
@@ -163,7 +161,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             numCases: number;
             case_cnv_gain: number;
             case_cnv_loss: number;
-            annotations: boolean;
             is_cancer_gene_census: boolean;
           }) => {
             return {
@@ -207,9 +204,9 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               ...(mutationCounts[gene_id] && {
                 mutations: mutationCounts[gene_id],
               }),
-              ...(annotations
-                ? { annotations: "Cancer Gene Cencus" }
-                : { annotations: "" }),
+              ...(is_cancer_gene_census
+                ? { is_cancer_gene_census: "Cancer Gene Cencus" }
+                : { is_cancer_gene_census: "" }),
               is_cancer_gene_census,
             };
           },

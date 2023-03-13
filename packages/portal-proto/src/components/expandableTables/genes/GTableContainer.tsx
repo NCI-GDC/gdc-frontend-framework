@@ -260,7 +260,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           cnvGain,
           cnvLoss,
           mutations,
-          annotations,
+          is_cancer_gene_census,
         }) => {
           return [
             gene_id,
@@ -273,7 +273,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             cnvGain,
             cnvLoss,
             mutations,
-            annotations,
+            is_cancer_gene_census,
           ].join("\t");
         },
       )
