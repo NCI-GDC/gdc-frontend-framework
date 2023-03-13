@@ -189,7 +189,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     cohortFilters: cohortFilters,
   });
 
-  const { ssmsTotal } = data ? data : { ssmsTotal: 0 };
+  const { ssmsTotal } = data ?? { ssmsTotal: 0 };
 
   useEffect(() => {
     setPage(0);
