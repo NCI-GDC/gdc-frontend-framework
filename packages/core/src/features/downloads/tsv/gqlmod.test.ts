@@ -128,7 +128,7 @@ describe("getAliasFilters", () => {
           {
             content: {
               field: "ssms.ssm_id",
-              value: ["id1"],
+              value: ["id2"],
             },
             op: "in",
           },
