@@ -100,8 +100,8 @@ def download_file_at_file_table(file:str, source:str):
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
 
-@step("Upload <file_name> from <folder_name> in <source> through <button>")
-def download_file_at_file_table(file_name:str, folder_name:str, source:str, button:str):
+@step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")
+def download_file_at_file_table(file_name:str, extension:str, folder_name:str, source:str, button:str):
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
     }
@@ -112,7 +112,7 @@ def download_file_at_file_table(file_name:str, folder_name:str, source:str, butt
     file_chooser = file_chooser_info.value
     file_name = file_name.lower().replace(" ", "_")
     folder_name = folder_name.lower().replace(" ", "_")
-    file_path = f"{Utility.parent_dir()}/holmes-py/resources/{folder_name}/{file_name}.txt"
+    file_path = f"{Utility.parent_dir()}/holmes-py/resources/{folder_name}/{file_name}.{extension}"
     file_chooser.set_files(file_path)
 
 @step("Read from <file_type>")

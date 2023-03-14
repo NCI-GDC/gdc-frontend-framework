@@ -12,9 +12,23 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Navigate to "Cohort" from "Header" "section"
 
 
-## Import Cohort
+## Import Cohort all Case Identifiers
 * Select "Upload" from the Cohort Bar
-* Upload "Cases List" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
+* Upload "Cases List" "txt" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
-* Name the cohort "cases list" and "Create" in the Cohort Bar
-* Pause "5" seconds
+* Name the cohort "cases list" in the Cohort Bar section
+* "Create" "cases list" in the Cohort Bar section
+
+## Import Cohort from Data Portal V1
+* Select "Upload" from the Cohort Bar
+* Upload "data portal v1 tcga chol" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
+* Select "Submit"
+* Name the cohort "data portal v1" in the Cohort Bar section
+* "Create" "data portal v1" in the Cohort Bar section
+
+## Import Cohort from Data Portal V2
+* Select "Upload" from the Cohort Bar
+* Upload "organoid" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
+* Select "Submit"
+* Name the cohort "organoid" in the Cohort Bar section
+* "Create" "organoid" in the Cohort Bar section
