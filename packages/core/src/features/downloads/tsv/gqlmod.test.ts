@@ -63,7 +63,7 @@ describe("test getAliasGraphQLQuery for different entities", () => {
 });
 
 describe("getAliasFilters", () => {
-  it("returns expected filters for single id and version", () => {
+  it("returns expected filters for single id and genes version", () => {
     const ids = ["id1"];
     const version = "genes";
     const expectedFilters = {
@@ -99,24 +99,10 @@ describe("getAliasFilters", () => {
     expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
   });
 
-  it("returns expected filters for multiple ids and version", () => {
+  it("returns expected filters for multiple ids and ssms version", () => {
     const ids = ["id1", "id2"];
     const version = "ssms";
     const expectedFilters = {
-      ...{
-        filters_case: {
-          content: [
-            {
-              op: "NOT",
-              content: {
-                field: "cases.gene.ssm.observation.observation_id",
-                value: "MISSING",
-              },
-            },
-          ],
-          op: "and",
-        },
-      },
       filters_ssms_id1: {
         op: "and",
         content: [
@@ -128,11 +114,11 @@ describe("getAliasFilters", () => {
             op: "in",
           },
           {
-            op: "NOT",
             content: {
               field: "cases.gene.ssm.observation.observation_id",
               value: "MISSING",
             },
+            op: "NOT",
           },
         ],
       },
@@ -142,18 +128,27 @@ describe("getAliasFilters", () => {
           {
             content: {
               field: "ssms.ssm_id",
-              value: ["id2"],
+              value: ["id1"],
             },
             op: "in",
           },
           {
-            op: "NOT",
             content: {
               field: "cases.gene.ssm.observation.observation_id",
               value: "MISSING",
             },
+            op: "NOT",
           },
         ],
+      },
+      ...{
+        filters_case: {
+          content: {
+            field: "cases.gene.ssm.observation.observation_id",
+            value: "MISSING",
+          },
+          op: "NOT",
+        },
       },
     };
     expect(getAliasFilters(ids, version)).toEqual(expectedFilters);
