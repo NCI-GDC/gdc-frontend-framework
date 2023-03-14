@@ -445,6 +445,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
+                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
                 onClick={() =>
                   handleDownloadSVG(downloadRef, "survival-plot.svg")
                 }
@@ -452,14 +453,25 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 SVG
               </Menu.Item>
               <Menu.Item
+                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
                 onClick={() =>
                   handleDownloadPNG(downloadRef, "survival-plot.png")
                 }
               >
                 PNG
               </Menu.Item>
-              <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
-              <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
+              <Menu.Item
+                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+                onClick={handleDownloadJSON}
+              >
+                JSON
+              </Menu.Item>
+              <Menu.Item
+                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+                onClick={handleDownloadTSV}
+              >
+                TSV
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset Survival Plot Zoom">

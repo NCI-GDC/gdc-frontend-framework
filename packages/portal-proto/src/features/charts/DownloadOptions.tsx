@@ -47,7 +47,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 onKeyPress={(e) =>
                   e.key === "Enter" ? downloadImage("svg") : undefined
                 }
-                className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest"
+                className="cursor-pointer block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest"
               >
                 SVG
               </span>
@@ -60,7 +60,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                 onKeyPress={(e) =>
                   e.key === "Enter" ? downloadImage("png") : undefined
                 }
-                className="cursor-pointer block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest "
+                className="cursor-pointer block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest "
               >
                 PNG
               </span>
@@ -71,7 +71,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
                   JSON.stringify(jsonData),
                 )}`}
                 download={`${chartName}.json`}
-                className="block py-2 px-4 text-sm text-base-contrast-lightest hover:bg-base-lightest "
+                className="block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest "
                 role="menuitem"
               >
                 JSON
