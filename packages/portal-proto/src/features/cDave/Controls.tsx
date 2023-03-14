@@ -136,10 +136,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="px-2 ">
+    <li key={field.full} className="px-2 pt-2">
       {searchTerm ? (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pb-1">
             <label
               className="font-content font-medium text-md"
               htmlFor={`switch-${field.full}`}

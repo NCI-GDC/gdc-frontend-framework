@@ -88,10 +88,11 @@ def download_file_at_file_table(file:str, source:str):
     sources = {
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
-        "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_suppliment_file_first_download_button
+        "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_suppliment_file_first_download_button,
+        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button
     }
     driver = WebDriver.page
-    with driver.expect_download() as download_info:
+    with driver.expect_download(timeout=60000) as download_info:
         # Allows using sources without passing in contents of <file> as a parameter
         if file.lower() == "file":
             sources.get(source)()
@@ -131,9 +132,15 @@ def read_metadata_from_compressed_file(file_type):
 
 # Checks if specified information is inside collected content from read-in files
 @step("Verify that <file_type> has expected information <table>")
-def verify_metadata_content(file_type, table):
+def verify_file_content(file_type, table):
     for k, v in enumerate(table):
-        assert v[0] in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is NOT found in the metadata file"
+        assert v[0] in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is NOT found in the file"
+
+# Checks if specified information is NOT inside collected content from read-in files
+@step("Verify that <file_type> does not contain specified information <table>")
+def verify_content_is_not_in_file(file_type, table):
+    for k, v in enumerate(table):
+        assert v[0] not in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is found in the file when it's unexpected"
 
 @step("Verify that the <file_type> has <field_name> for each object")
 def verify_file_has_expected_field_names(file_type, field_name):
