@@ -1,13 +1,15 @@
 import React, { Dispatch, SetStateAction } from "react";
-import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import {
+  IoMdTrendingDown as SurvivalIcon,
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { AnnotationsIcon } from "../shared/sharedTableUtils";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
@@ -266,11 +268,11 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-nowrap items-center">
+                <div className="flex items-center gap-2">
                   {row.getCanExpand() && (
-                    <div className="text-center mr-1">
+                    <div className="flex items-center">
                       <button
-                        aria-controls={`expandedSubrow`}
+                        aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
@@ -280,12 +282,11 @@ export const createTableColumn = (
                           style: { cursor: "pointer" },
                         }}
                       >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="0.75em" color="white" />
-                          }
-                        />
+                        {!row.getIsExpanded() ? (
+                          <DownIcon size="1.25em" className="text-accent" />
+                        ) : (
+                          <UpIcon size="1.25em" className="text-accent" />
+                        )}
                       </button>
                     </div>
                   )}

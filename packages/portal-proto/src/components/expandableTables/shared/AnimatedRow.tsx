@@ -38,9 +38,9 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     <animated.tr
       style={unitSpring}
       key={row.id}
-      className={`border-2 ${
+      className={`border ${
         selected
-          ? `border-l-4 border-t-0 border-r-4 border-b-0 border-activeColor`
+          ? `border-x-4 border-y-0 border-activeColor`
           : `border-base-lighter`
       } ${index % 2 === 1 ? `bg-base-max` : `bg-base-lightest`}`}
     >

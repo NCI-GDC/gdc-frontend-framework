@@ -18,11 +18,11 @@ export const SummaryHeader = ({
 }: SummaryHeaderProps): JSX.Element => {
   return (
     <header
-      className={`bg-primary-vivid py-4 px-4 z-10 w-full flex flex-col shadow-lg gap-4 ${
-        isModal ? "sticky top-0 rounded-t-sm" : "fixed"
+      className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
+        isModal ? "sticky top-0 rounded-t-sm z-20" : "fixed z-10"
       }`}
     >
-      <div className="flex flex-row nowrap items-center gap-4">
+      <div className="flex flex-nowrap items-center gap-4">
         <SummaryHeaderIcon iconText={iconText} />
         <SummaryHeaderTitle>{headerTitle}</SummaryHeaderTitle>
       </div>

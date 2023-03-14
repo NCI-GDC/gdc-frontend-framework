@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
-import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import {
+  IoMdTrendingDown as SurvivalIcon,
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
@@ -249,9 +251,9 @@ export const createTableColumn = (
                 "affectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-nowrap items-center">
+                <div className="flex items-center gap-2">
                   {row.getCanExpand() && (
-                    <div className="text-center content-center mr-2">
+                    <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
@@ -263,12 +265,11 @@ export const createTableColumn = (
                           style: { cursor: "pointer" },
                         }}
                       >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="0.75em" color="white" />
-                          }
-                        />
+                        {!row.getIsExpanded() ? (
+                          <DownIcon size="1.25em" className="text-accent" />
+                        ) : (
+                          <UpIcon size="1.25em" className="text-accent" />
+                        )}
                       </button>
                     </div>
                   )}
@@ -372,43 +373,63 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => {
-              const TwIconDiv = tw.div`w-7 h-6 text-base-max border rounded-md flex justify-center items-center`;
+              const TwIconDiv = tw.div`w-7 h-6 text-base-max border rounded-md flex justify-center items-center mx-1`;
               return (
                 <Tooltip
                   label={
                     <div className="flex flex-col gap-1">
                       <Text>Impact for canonical transcript:</Text>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         VEP:
-                        <TwIconDiv className="bg-red-500 mx-1">HI</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-high">HI</TwIconDiv>
                         high
-                        <TwIconDiv className="bg-green-500 mx-1">LO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-low">LO</TwIconDiv>
                         low
-                        <TwIconDiv className=" bg-gray-500 mx-1">MO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-moderate">
+                          MO
+                        </TwIconDiv>
                         moderate
-                        <TwIconDiv className=" bg-gray-500 mx-1">MR</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-modifier">
+                          MR
+                        </TwIconDiv>
                         modifier
                       </div>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         SIFT:
-                        <TwIconDiv className=" bg-red-500 mx-1">DH</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-deleterious">
+                          DH
+                        </TwIconDiv>
                         deleterious
-                        <TwIconDiv className=" bg-gray-500 mx-1">DL</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-deleterious_low_confidence">
+                          DL
+                        </TwIconDiv>
                         deleterious_low_confidence
-                        <TwIconDiv className=" bg-gray-500 mx-1">TO</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-tolerated">
+                          TO
+                        </TwIconDiv>
                         tolerated
-                        <TwIconDiv className=" bg-green-500 mx-1">TL</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-tolerated_low_confidence">
+                          TL
+                        </TwIconDiv>
                         tolerated_low_confidence
                       </div>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         PolyPhen:
-                        <TwIconDiv className=" bg-green-500 mx-1">BE</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-benign">
+                          BE
+                        </TwIconDiv>
                         benign
-                        <TwIconDiv className=" bg-gray-500 mx-1">PO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-possibly_damaging">
+                          PO
+                        </TwIconDiv>
                         possibly_damaging
-                        <TwIconDiv className=" bg-red-500 mx-1">PR</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-probably_damaging">
+                          PR
+                        </TwIconDiv>
                         probably_damaging
-                        <TwIconDiv className=" bg-gray-500 mx-1">UN</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-unknown">
+                          UN
+                        </TwIconDiv>
                         unknown
                       </div>
                     </div>

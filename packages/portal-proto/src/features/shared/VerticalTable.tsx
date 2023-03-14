@@ -349,6 +349,19 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       }
     }, [sortBy]);
     //TODO have focus stay on selection, also only reload table data not headers
+
+    const thStyleColumnSorting = (column: any) =>
+      `px-2 py-3 border-base-lighter font-heading text-base-contrast-max whitespace-nowrap ${
+        column.highlighted ? "bg-nci-purple-lightest" : "bg-base-max"
+      } ${
+        column.canSort &&
+        `${
+          column.highlighted
+            ? "hover:bg-nci-purple-lighter"
+            : "hover:bg-primary-lightest"
+        } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1`
+      }`;
+
     return (
       <table
         {...getTableProps()}
@@ -380,18 +393,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 py-3 border-base-lighter border-b-2 border-t-1 font-heading text-sm font-bold ${
-                      column.highlighted
-                        ? "bg-nci-purple-lightest"
-                        : "bg-base-max"
-                    } text-base-contrast-max whitespace-nowrap ${
-                      column.canSort &&
-                      `${
-                        column.highlighted
-                          ? "hover:bg-nci-purple-lighter"
-                          : "hover:bg-primary-lightest"
-                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1`
-                    }`}
+                    className={thStyleColumnSorting(column)}
                     key={`hcolumn-${key}`}
                     aria-sort={
                       column.isSorted
@@ -410,28 +412,31 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     }}
                     role={column.canSort ? "button" : "columnheader"}
                   >
-                    {column.render("Header")}
-                    {column.canSort && (
-                      <div
-                        key={`span-${key}`}
-                        className="inline-block text-xs pl-3 align-middle text-base-light"
-                      >
-                        <BsCaretUpFill
-                          className={
-                            column.isSorted && !column.isSortedDesc
-                              ? "text-primary"
-                              : ""
-                          }
-                        />
-                        <BsCaretDownFill
-                          className={`${
-                            column.isSorted && column.isSortedDesc
-                              ? "text-primary"
-                              : ""
-                          } relative top-[-2px]`}
-                        />
-                      </div>
-                    )}
+                    <div className="flex items-center">
+                      <span>{column.render("Header")}</span>
+
+                      {column.canSort && (
+                        <div
+                          key={`span-${key}`}
+                          className="inline-block text-xs pl-3 align-middle text-base-light"
+                        >
+                          <BsCaretUpFill
+                            className={
+                              column.isSorted && !column.isSortedDesc
+                                ? "text-primary"
+                                : ""
+                            }
+                          />
+                          <BsCaretDownFill
+                            className={`${
+                              column.isSorted && column.isSortedDesc
+                                ? "text-primary"
+                                : ""
+                            } relative top-[-2px]`}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </th>
                 );
               })}
@@ -455,10 +460,8 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 <Fragment key={`row-${index}`}>
                   <tr
                     {...row.getRowProps()}
-                    className={`${
-                      index % 2 === 1
-                        ? "bg-base-max border border-base-lighter"
-                        : "bg-base-lightest border border-base-lighter"
+                    className={`border border-base-lighter ${
+                      index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                     }
                     `}
                     key={`row-${index}`}

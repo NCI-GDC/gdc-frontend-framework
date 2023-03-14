@@ -82,7 +82,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
       </span>
     ) : (
       <span>
-        THIS MUTATION AFFECTS {caseCount} CASES ACROSS {projectCount} PROJECTS`
+        THIS MUTATION AFFECTS {caseCount} CASES ACROSS {projectCount} PROJECTS
       </span>
     );
 

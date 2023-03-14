@@ -94,9 +94,9 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Expand section"
-            className="flex flex-row items-center text-primary cursor-pointer w-full"
+            className="flex items-center text-primary cursor-pointer gap-2"
           >
-            <DownIcon size="1.25em" className="text-accent mr-1" />
+            <DownIcon size="1.25em" className="text-accent" />
             <span className="whitespace-nowrap">
               {value?.length.toLocaleString().padStart(6)} {label}
             </span>

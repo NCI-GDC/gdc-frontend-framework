@@ -73,7 +73,7 @@ export const SummaryModal = ({
       classNames={{
         header: "relative m-0 p-0 border-0",
         close:
-          "absolute right-5 top-5 text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 float-right z-20",
+          "absolute right-5 top-5 text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 float-right z-30",
       }}
       padding={0}
       overlayOpacity={0.5}
