@@ -51,11 +51,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="ml-1 mr-2"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
@@ -91,7 +87,6 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
-                      margin=""
                       icon={
                         isDemoMode ? (
                           <Image

@@ -44,11 +44,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="ml-1 mr-2"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
@@ -88,7 +84,6 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
-                      margin={`my-0.5 ml-0 mr-1`}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -237,7 +232,7 @@ export const createTableColumn = (
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className={`flex flex-row justify-start`}>
+                <div className="flex justify-start">
                   {row.getCanExpand() && (
                     <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
@@ -258,7 +253,6 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                  Across the GDC`}
-                className="flex flex-row justify-start mx-4"
                 tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
@@ -309,7 +303,6 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-8"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -342,7 +335,6 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-2"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -417,14 +409,14 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
-                    <div className="text-center">
+                    <span>
                       {row?.original["mutations"]?.toLocaleString("en-US") ??
                         ""}
-                    </div>
+                    </span>
                   )}
-                </div>
+                </>
               );
             },
           },

@@ -10,7 +10,7 @@ interface SwitchSpringProps {
   disabled?: boolean;
   handleSwitch: any;
   tooltip: string;
-  margin: string;
+  margin?: string;
   survivalProps?: {
     plot: string;
   };
@@ -48,10 +48,10 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         style={sliderSpring}
         data-testid="middle-div-switchSpring"
         className={classNames(
-          "border border-lightgray h-5",
+          "border border-lightgray",
+          disabled ? "cursor-not-allowed" : "cursor-pointer",
           {
             "rounded-xl": icon,
-            "cursor-not-allowed": disabled,
           },
           isActive ? "bg-activeColor" : "bg-gray-300",
         )}
@@ -68,7 +68,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       >
         <animated.div
           style={ballSpring}
-          className={`border-2 rounded-sm ${
+          className={`ml-1 border-2 rounded-sm ${
             disabled ? "border-gray-300" : "border-activeColor"
           }
              bg-white ${icon && `rounded-xl`} ${
