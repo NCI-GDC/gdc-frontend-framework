@@ -92,7 +92,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 color="nci-blue"
               />
             </Radio.Group>
-            <Menu>
+            <Menu zIndex={1}>
               <Menu.Target>
                 <Tooltip
                   label="Download image or data"

@@ -362,7 +362,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       >
         <div className="flex flex-col gap-5">
           <div className="self-end flex gap-3">
-            <Menu width="target">
+            <Menu width="target" zIndex={1}>
               <Menu.Target>
                 <Button
                   variant="outline"
@@ -381,7 +381,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu width="target">
+            <Menu width="150px" zIndex={1}>
               <Menu.Target>
                 <Button
                   variant="outline"

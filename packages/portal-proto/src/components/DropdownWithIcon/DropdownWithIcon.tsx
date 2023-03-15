@@ -75,6 +75,7 @@ export const DropdownWithIcon = ({
       classNames={classes}
       {...(customPosition && { position: customPosition })}
       data-testid="menu-elem"
+      zIndex={1}
     >
       <Menu.Target>
         <Button

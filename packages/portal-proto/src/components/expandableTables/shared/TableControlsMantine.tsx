@@ -30,7 +30,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
   );
   return (
     <div className="flex items-center mt-2 gap-2">
-      <Menu shadow="md" width="target">
+      <Menu shadow="md" width="target" zIndex={1}>
         <Menu.Target>
           <Button
             variant="outline"
