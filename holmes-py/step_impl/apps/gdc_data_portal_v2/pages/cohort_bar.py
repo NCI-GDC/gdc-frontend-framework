@@ -7,7 +7,6 @@ class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
-    BROWSE_BUTTON = lambda button_text_name: f'span:text("{button_text_name}")'
 
     TEXT_IN_TEMP_COHORT_MESSAGE = lambda text: f'b:has-text("{text}")'
 class CohortBar(BasePage):
@@ -20,17 +19,25 @@ class CohortBar(BasePage):
     def navigate(self):
         self.goto(self.URL)
 
+    # Clicks a button on the actual cohort bar
     def click_cohort_bar_button(self, button_name:str):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
         self.click(locator)
 
-    def click_import_cohort_browse(self, button_text_name:str):
-        self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
-        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
-
+    # Clicks a button based on its text name
     def click_cohort_bar_named_button(self, button_text_name:str):
         self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name))
 
+    # After import cohort button has been clicked, we make sure the correct modal has loaded.
+    # Then, we click the 'browse' button to open the file explorer.
+    def click_import_cohort_browse(self, button_text_name:str):
+        self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
+        # It does not click the 'browse' button without force parameter set to 'True'
+        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
+
+    # Waits for a piece of text to appear in the temporary cohort modal
+    # That modal appears after an action has been performed on a cohort
+    # state (e.g create, save, delete, etc. )
     def wait_for_text_in_cohort_message(self, text):
         locator = CohortBarLocators.TEXT_IN_TEMP_COHORT_MESSAGE(text)
         try:

@@ -101,7 +101,18 @@ def download_file_at_file_table(file:str, source:str):
     data_store.spec[f"{file} from {source}"] = file_path
 
 @step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")
-def download_file_at_file_table(file_name:str, extension:str, folder_name:str, source:str, button:str):
+def upload_file(file_name:str, extension:str, folder_name:str, source:str, button:str):
+    """
+    upload_file performs an action to launch a file explorer,
+    and then uploads a specified file located in the resources folder.
+
+    :param file_name: The name of the file being uploaded
+    :param extension: The extension of the file being uploaded
+    :param folder_name: Name of the folder that contains the file being uploaded.
+    :param source: Specifies what function is causing the action to launch the file explorer
+    :param button: ID or Name of the button that is being clicked to launch the file explorer
+    :return: N/A
+    """
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
     }

@@ -11,7 +11,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
-
 ## Import Cohort all Case Identifiers
 * Select "Upload" from the Cohort Bar
 * Upload "Cases List" "txt" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
