@@ -290,7 +290,8 @@ export const createTableColumn = (
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
                 tooltip={`# Cases where Mutation is observed in ${
                   geneSymbol ?? "Cohort"
-                } / # Cases tested for Simple Somatic Mutations in Cohort`}
+                } /
+                # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),
             cell: ({ row }) => {

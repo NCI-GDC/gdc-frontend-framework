@@ -610,6 +610,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     position="bottom"
                     transition="scale"
                     withArrow
+                    zIndex={1}
                   >
                     <Popover.Target>
                       <button

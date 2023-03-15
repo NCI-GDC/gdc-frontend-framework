@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { Grid } from "@mantine/core";
 import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { processFilters } from "src/utils";
@@ -106,7 +105,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <Grid.Col span={6}>
+    <div className="border border-base-lighter p-4">
       <div>
         <ChartTitleBar
           title={title}
@@ -115,7 +114,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           jsonData={{}}
         />
       </div>
-      <div className="w-100 h-100">
+      <div className="">
         <BarChart
           divId={chartDivId}
           data={chartData}
@@ -123,7 +122,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           height={height}
         />
       </div>
-    </Grid.Col>
+    </div>
   );
 };
 

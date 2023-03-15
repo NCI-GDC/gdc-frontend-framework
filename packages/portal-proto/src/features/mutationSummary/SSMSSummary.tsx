@@ -13,7 +13,6 @@ import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDi
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
-import { Grid } from "@mantine/core";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -176,7 +175,7 @@ export const SSMSSummary = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal && "mt-20"}`}>
+          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-6"}`}>
             <div className="text-primary-content">
               <div className="flex gap-6">
                 <div className="flex-1">
@@ -198,9 +197,9 @@ export const SSMSSummary = ({
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <Grid>
-                <SSMPlot page={"ssms"} ssms={ssm_id} />
-              </Grid>
+              <div className="grid grid-cols-2 mb-16 mt-2">
+                <SSMPlot page="ssms" ssms={ssm_id} />
+              </div>
 
               <SSMSCancerDistributionTable
                 ssms={ssm_id}

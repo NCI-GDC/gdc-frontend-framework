@@ -144,6 +144,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     / # Cases tested for Simple Somatic Mutations in the Project`}
               multiline
               withArrow
+              width={250}
             >
               <span># SSM Affected Cases</span>
             </Tooltip>
@@ -166,6 +167,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         `}
                     multiline
                     withArrow
+                    width={250}
                   >
                     <span># CNV Gains</span>
                   </Tooltip>
@@ -183,6 +185,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         `}
                     multiline
                     withArrow
+                    width={250}
                   >
                     <span># CNV Losses</span>
                   </Tooltip>
@@ -198,6 +201,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
+                    width={250}
                   >
                     <span># Mutations</span>
                   </Tooltip>
