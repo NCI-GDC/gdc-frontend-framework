@@ -27,16 +27,39 @@ export interface Gene {
   symbol: string;
 }
 export interface Annotation {
-  polyphen_impact: string;
-  polyphen_score: number;
-  sift_score: number;
-  sift_impact: string;
-  vep_impact: string;
+  transcript: {
+    annotation: {
+      polyphen_impact: string;
+      polyphen_score: number;
+      sift_score: number;
+      sift_impact: string;
+      vep_impact: string;
+    };
+  };
 }
 
 export interface Consequence {
   aa_change: string;
-  annotation: Annotation;
+  transcript: {
+    aa_change: string;
+    gene: {
+      symbol: string;
+    };
+  };
+  consequence_type: string;
+  gene: Gene;
+  id: string;
+  is_canonical: boolean;
+}
+
+export interface ConsequenceSSMS {
+  aa_change: string;
+  transcript: {
+    aa_change: string;
+    gene: {
+      symbol: string;
+    };
+  };
   consequence_type: string;
   gene: Gene;
   id: string;
@@ -204,10 +227,9 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               ...(mutationCounts[gene_id] && {
                 mutations: mutationCounts[gene_id],
               }),
-              ...(is_cancer_gene_census
-                ? { is_cancer_gene_census: "Cancer Gene Cencus" }
-                : { is_cancer_gene_census: "" }),
-              is_cancer_gene_census,
+              is_cancer_gene_census: is_cancer_gene_census
+                ? "Cancer Gene Census"
+                : "",
             };
           },
         );
@@ -287,14 +309,21 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             ssm_id: string;
             filteredOccurrences: number;
             mutation_subtype: string;
-            consequence: Consequence[];
+            consequence: any;
           }) => {
             return {
               dnaChange: genomic_dna_change,
               proteinChange: consequence?.length
-                ? consequence.map(({ gene, aa_change }) => {
-                    return `${aa_change} ${gene.symbol}`;
-                  })[0]
+                ? (consequence || []).map(
+                    ({
+                      transcript: {
+                        aa_change,
+                        gene: { symbol },
+                      },
+                    }: Consequence) => {
+                      return `${aa_change} ${symbol ?? ""}`;
+                    },
+                  )[0]
                 : "",
               mutationId: ssm_id,
               type: [
@@ -302,9 +331,9 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 "Tri-nucleotide polymorphism",
               ].includes(mutation_subtype)
                 ? mutation_subtype
-                : startCase(mutation_subtype.split(" ").at(-1)),
+                : startCase(mutation_subtype?.split(" ").at(-1)),
               consequences: consequence?.length
-                ? consequence[0]?.consequence_type
+                ? consequence[0]?.transcript?.consequence_type
                 : "",
               ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                 100 *
@@ -333,14 +362,16 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
               impact: consequence?.length
                 ? consequence.map(
                     ({
-                      annotation: {
-                        vep_impact: v,
-                        sift_impact: s,
-                        sift_score,
-                        polyphen_impact: p,
-                        polyphen_score,
+                      transcript: {
+                        annotation: {
+                          vep_impact: v = "",
+                          sift_impact: s = "",
+                          sift_score,
+                          polyphen_impact: p = "",
+                          polyphen_score,
+                        },
                       },
-                    }) => {
+                    }: Annotation) => {
                       return [
                         v ? `VEP: ${v}` : ``,
                         s ? `SIFT: ${s} - score ${sift_score}` : ``,

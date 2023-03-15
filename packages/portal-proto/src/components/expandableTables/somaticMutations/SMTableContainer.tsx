@@ -272,6 +272,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const exportMutationsFreqTSV = useCallback(() => {
     const now = new Date();
     const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
+
     const headers = [
       "DNA Change",
       "Protein Change",
@@ -282,7 +283,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       "# Affected Cases Across the GDC",
       "Impact",
     ];
-    const body = mutationsFreqTSVData?.results
+    const body = (mutationsFreqTSVData?.results || [])
       .map(
         ({
           dnaChange,
