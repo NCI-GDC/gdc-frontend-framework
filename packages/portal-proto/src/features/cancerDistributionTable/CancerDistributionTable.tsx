@@ -227,7 +227,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ssm_affected_cases: (
                   <NumeratorDenominator
                     numerator={data.ssmFiltered[d.key] || 0}
-                    denominator={data.ssmTotal[d.key]}
+                    denominator={data.ssmTotal[d.key] || 0}
                   />
                 ),
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],

@@ -13,7 +13,7 @@ export const NumeratorDenominator = ({
       (
       {numerator === 0 || denominator === 0
         ? "0.00%"
-        : (numerator / denominator || 1).toLocaleString(undefined, {
+        : (numerator / denominator).toLocaleString(undefined, {
             style: "percent",
             minimumFractionDigits: 2,
           })}
