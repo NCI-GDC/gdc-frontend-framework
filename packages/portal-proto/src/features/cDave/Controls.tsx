@@ -134,10 +134,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="px-2">
+    <li key={field.full} className="px-2 pt-2">
       {searchTerm ? (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pb-1">
             <label
               className="font-content font-medium text-md"
               htmlFor={`switch-${field.full}`}
@@ -179,7 +179,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Highlight>
         </>
       ) : (
-        <div className="flex justify-between cursor-pointer items-center bg-none">
+        <div className="flex justify-between cursor-pointer items-center bg-none pb-1">
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
@@ -216,7 +216,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
             })}
             classNames={{
               input: "bg-none rounded-lg",
-              body: "pb-4",
             }}
             checked={checked}
             onChange={(e) => {
