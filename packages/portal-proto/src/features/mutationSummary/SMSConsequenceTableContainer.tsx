@@ -142,11 +142,11 @@ export const SMSConsequenceTableContainer: React.FC<
   return (
     <>
       <div className="mt-12">
-        <div className="flex mb-2 justify-between">
-          <div className="self-end -mb-2">
-            <HeaderTitle>Consequences</HeaderTitle>
-          </div>
+        <div className="mb-2">
+          <HeaderTitle>Consequences</HeaderTitle>
+        </div>
 
+        <div className="flex mb-2 justify-between">
           <div className="flex gap-2">
             <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
               <FunctionButton>JSON</FunctionButton>
@@ -154,14 +154,15 @@ export const SMSConsequenceTableContainer: React.FC<
             <ButtonTooltip label="Export current view" comingSoon={true}>
               <FunctionButton>TSV</FunctionButton>
             </ButtonTooltip>
-            <DND
-              columnListOrder={columnListOrder}
-              handleColumnChange={handleColumnChange}
-              showColumnMenu={showColumnMenu}
-              setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_CONSEQUENCE_TABLE_ORDER}
-            />
           </div>
+
+          <DND
+            columnListOrder={columnListOrder}
+            handleColumnChange={handleColumnChange}
+            showColumnMenu={showColumnMenu}
+            setShowColumnMenu={setShowColumnMenu}
+            defaultColumns={DEFAULT_CONSEQUENCE_TABLE_ORDER}
+          />
         </div>
       </div>
       <div ref={ref}>
