@@ -22,7 +22,7 @@ import {
 } from "@gff/core";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { Button, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
@@ -398,17 +398,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 {mutationsFreqFetching ? (
-                  <Button disabled={true}>
+                  <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
-                  </Button>
+                  </FunctionButton>
                 ) : (
                   <ButtonTooltip
                     label={`${
                       mutationsFreqFetching ? "" : "Export All Except #Cases"
                     }`}
                   >
-                    <Button
+                    <FunctionButton
                       disabled={true}
                       onClick={() => exportMutationsFreq()}
                       className={
@@ -416,28 +416,28 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       }
                     >
                       {"JSON"}
-                    </Button>
+                    </FunctionButton>
                   </ButtonTooltip>
                 )}
                 {mutationsFreqTSVFetching ? (
-                  <Button disabled={true}>
+                  <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
-                  </Button>
+                  </FunctionButton>
                 ) : (
                   <ButtonTooltip
                     label={`${
                       mutationsFreqTSVFetching ? "" : "Export current view"
                     }`}
                   >
-                    <Button
+                    <FunctionButton
                       onClick={() => exportMutationsFreqTSV()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
                       {"TSV"}
-                    </Button>
+                    </FunctionButton>
                   </ButtonTooltip>
                 )}
               </div>

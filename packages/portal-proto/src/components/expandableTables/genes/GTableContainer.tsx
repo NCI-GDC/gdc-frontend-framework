@@ -21,7 +21,7 @@ import {
   useCallback,
 } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
-import { Button, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { default as PageStepper } from "../shared/PageStepperMantine";
@@ -40,6 +40,7 @@ import { filtersToName } from "src/utils";
 import { convertDateToString } from "src/utils/date";
 import { saveAs } from "file-saver";
 import { FiDownload } from "react-icons/fi";
+import FunctionButton from "@/components/FunctionButton";
 
 export const SelectedRowContext =
   createContext<
@@ -402,24 +403,24 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             additionalControls={
               <div className="flex flex-row gap-2">
                 {mutatedGenesFreqFetching ? (
-                  <Button disabled={true}>
+                  <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
-                  </Button>
+                  </FunctionButton>
                 ) : (
                   <ButtonTooltip
                     label={`${
                       mutatedGenesFreqFetching ? "" : "Export current view"
                     }`}
                   >
-                    <Button
+                    <FunctionButton
                       onClick={() => exportMutatedGenes()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
                     >
                       {"JSON"}
-                    </Button>
+                    </FunctionButton>
                   </ButtonTooltip>
                 )}
                 <ButtonTooltip
@@ -427,7 +428,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     mutatedGenesFreqFetching ? "Fetching" : "Export"
                   } current view`}
                 >
-                  <Button
+                  <FunctionButton
                     disabled={mutatedGenesFreqFetching}
                     onClick={() => exportMutatedGenesTSV()}
                     className={
@@ -435,7 +436,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     }
                   >
                     {"TSV"}
-                  </Button>
+                  </FunctionButton>
                 </ButtonTooltip>
               </div>
             }
