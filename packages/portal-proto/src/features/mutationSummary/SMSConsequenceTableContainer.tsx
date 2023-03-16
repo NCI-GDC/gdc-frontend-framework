@@ -154,13 +154,6 @@ export const SMSConsequenceTableContainer: React.FC<
             <ButtonTooltip label="Export current view" comingSoon={true}>
               <FunctionButton>TSV</FunctionButton>
             </ButtonTooltip>
-            <DND
-              columnListOrder={columnListOrder}
-              handleColumnChange={handleColumnChange}
-              showColumnMenu={showColumnMenu}
-              setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_CONSEQUENCE_TABLE_ORDER}
-            />
           </div>
 
           <DND
