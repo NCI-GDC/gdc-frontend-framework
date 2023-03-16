@@ -1,7 +1,7 @@
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 export const setCountSlice = graphqlAPISlice
-  .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets"] })
+  .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets", "caseSets"] })
   .injectEndpoints({
     endpoints: (builder) => ({
       geneSetCount: builder.query({
@@ -100,7 +100,59 @@ export const setCountSlice = graphqlAPISlice
           { type: "ssmsSets", id: arg.setId },
         ],
       }),
+      caseSetCount: builder.query({
+        query: ({ setId, additionalFilters }) => ({
+          graphQLQuery: `query caseSetCounts(
+          $filters: FiltersArgument
+        ) {
+          viewer {
+            repository {
+              cases {
+                hits(filters: $filters, first: 0) {
+                  total
+                }
+              }
+            }
+          }
+        }
+        `,
+          graphQLFilters: additionalFilters
+            ? {
+                filters: {
+                  content: [
+                    {
+                      op: "=",
+                      content: {
+                        field: "cases.case_id",
+                        value: `set_id:${setId}`,
+                      },
+                    },
+                    additionalFilters,
+                  ],
+                  op: "and",
+                },
+              }
+            : {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "cases.case_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+        }),
+        transformResponse: (response) =>
+          response.data.viewer.repository.cases.hits.total,
+        providesTags: (_result, _error, arg) => [
+          { type: "caseSets", id: arg.setId },
+        ],
+      }),
     }),
   });
 
-export const { useGeneSetCountQuery, useSsmSetCountQuery } = setCountSlice;
+export const {
+  useGeneSetCountQuery,
+  useSsmSetCountQuery,
+  useCaseSetCountQuery,
+} = setCountSlice;

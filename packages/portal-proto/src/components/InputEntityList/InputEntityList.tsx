@@ -16,7 +16,6 @@ import {
   hideModal,
   Operation,
   FilterSet,
-  FilterGroup,
   fetchGdcEntities,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -37,14 +36,9 @@ interface InputEntityListProps {
   readonly entityType: SetTypes;
   readonly entityLabel: string;
   readonly hooks: {
-    readonly updateFilters?: (
-      field: string,
-      op: Operation,
-      groups?: FilterGroup[],
-    ) => void;
+    readonly updateFilters?: (field: string, op: Operation) => void;
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters?: () => FilterSet;
-    readonly useAddNewFilterGroups?: () => (groups: FilterGroup[]) => void;
   };
   readonly SubmitButton: React.ElementType;
 }

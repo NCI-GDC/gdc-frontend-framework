@@ -49,7 +49,6 @@ describe("<InputEntityList />", () => {
               updateFilters: jest.fn(),
               createSet: createSetHook,
               getExistingFilters: jest.fn(),
-              useAddNewFilterGroups: jest.fn().mockReturnValue(jest.fn()),
             }}
             SubmitButton={UpdateCohortButton}
           />

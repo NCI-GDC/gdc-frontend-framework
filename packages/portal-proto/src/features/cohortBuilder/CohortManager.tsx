@@ -42,8 +42,6 @@ import {
   useGetCasesQuery,
   Operation,
   updateActiveCohortFilter,
-  FilterGroup,
-  addNewCohortGroups,
   addNewCohortWithFilterAndMessage,
   showModal,
   CoreDispatch,
@@ -290,12 +288,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
-  const updateCohortFilters = (field: string, operation: Operation, groups) => {
-    coreDispatch(updateActiveCohortFilter({ field, operation, groups }));
-  };
-
-  const useAddNewFilterGroups = () => {
-    return (groups: FilterGroup[]) => coreDispatch(addNewCohortGroups(groups));
+  const updateCohortFilters = (field: string, operation: Operation) => {
+    coreDispatch(updateActiveCohortFilter({ field, operation }));
   };
 
   return (
@@ -477,7 +471,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         <CaseSetModal
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {modal === Modals.GlobalGeneSetModal && (
@@ -487,7 +480,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {modal === Modals.GlobalMutationSetModal && (
@@ -497,7 +489,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {/*  Modals End   */}

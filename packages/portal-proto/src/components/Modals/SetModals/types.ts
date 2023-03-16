@@ -1,13 +1,8 @@
-import { Operation, FilterSet, FilterGroup } from "@gff/core";
+import { Operation, FilterSet } from "@gff/core";
 
 export interface InputModalProps {
-  readonly updateFilters: (
-    field: string,
-    operation: Operation,
-    groups?: FilterGroup[],
-  ) => void;
+  readonly updateFilters: (field: string, operation: Operation) => void;
   readonly existingFiltersHook: () => FilterSet;
-  readonly useAddNewFilterGroups: () => (groups: FilterGroup[]) => void;
 }
 
 export interface SavedSetModalProps extends InputModalProps {

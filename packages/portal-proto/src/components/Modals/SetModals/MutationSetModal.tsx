@@ -19,7 +19,6 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
-  useAddNewFilterGroups,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -51,7 +50,6 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
             createSet: useCreateSsmsSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
-            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
           SubmitButton={UpdateCohortButton}
         />

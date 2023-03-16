@@ -7,7 +7,6 @@ import {
   ThunkAction,
   AnyAction,
 } from "@reduxjs/toolkit";
-import { isEqual } from "lodash";
 
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -34,12 +33,11 @@ export interface CaseSetDataAndStatus {
   //  id for query by cohort
 }
 
-export interface FilterGroup {
+export interface CohortStoredSets {
   readonly ids: string[];
+  readonly setId: string;
+  readonly setType: SetTypes;
   readonly field: string;
-  readonly setId?: string;
-  readonly setType?: SetTypes;
-  readonly groupId?: string; // unique identifier for groups that aren't sets
 }
 
 export interface Cohort {
@@ -47,7 +45,7 @@ export interface Cohort {
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
   readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
-  readonly groups?: FilterGroup[]; // filters that should be displayed together as a group
+  readonly sets?: CohortStoredSets[];
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
@@ -134,7 +132,33 @@ mutation mutationsCreateRepositoryCaseSetMutation(
  }
 }`;
 
-interface SetFilterResponse {
+interface SetCountResponse {
+  viewer: {
+    explore: {
+      [docType: string]: {
+        hits: {
+          total: number;
+        };
+      };
+    };
+  };
+}
+
+const buildSetCountQuery = (docType: string) => `query setCount(
+  $filters: FiltersArgument
+) {
+  viewer {
+    explore {
+      ${docType} {
+        hits(filters: $filters, first: 0) {
+          total
+        }
+      }
+    }
+  }
+}`;
+
+interface SetIdResponse {
   viewer: {
     explore: {
       [docType: string]: {
@@ -150,18 +174,41 @@ interface SetFilterResponse {
   };
 }
 
-const buildSetFilterQuery = (docType: string, field: string) => `query setInfo(
-  $filters: FiltersArgument
-) {
-  viewer {
-    explore {
-      ${docType} {
-        hits(filters: $filters, first: 50000) {
-          edges {
-            node {
-              ${field}
-            }
+const buildSetIdQuery = (docType: string, field: string) => `query setInfo(
+     $filters: FiltersArgument
+   ) {
+     viewer {
+       explore {
+         ${docType} {
+          hits(filters: $filters, first: 50000) {
+            edges {
+              node {
+                ${field}
+              }
+            } 
           }
+        }
+      }
+    }
+  }`;
+
+interface CreateSetResponse {
+  viewer: {
+    explore: {
+      [docType: string]: {
+        set_id: string;
+      };
+    };
+  };
+}
+const buildCreateSetMutation = (docType: string) => `mutation createSet(
+  $input: CreateSetInput
+) {
+  sets {
+    create {
+      explore {
+        ${docType}(input: $input) {
+          set_id
         }
       }
     }
@@ -207,9 +254,7 @@ export const createCaseSet = createAsyncThunk<
 );
 
 /*
-  Fetches the values associated with the set we are adding to the cohort and
-  adds those as filters to the cohort. Sets are ephemeral so we want the values added to filters
-  instead of the set id.
+  Adds sets to filters. Stores set if it's new or recreates set based on our stored ids if it has disappeared.
 */
 const handleFiltersForSet = createAsyncThunk<
   void,
@@ -224,23 +269,17 @@ const handleFiltersForSet = createAsyncThunk<
   "cohort/fetchFiltersForSet",
   async ({ field, setIds, otherOperands, operation }, thunkAPI) => {
     const [docType, fieldName] = field.split(".");
-    const query = buildSetFilterQuery(docType, fieldName);
-    const ids: string[] = [];
-    const newSets = [];
+    const countQuery = buildSetCountQuery(docType);
+    const idQuery = buildSetIdQuery(docType, fieldName);
 
     const currentCohort = cohortSelectors.selectById(
       thunkAPI.getState(),
       thunkAPI.getState().cohort.availableCohorts.currentCohort,
     ) as Cohort;
-    const currentSets = (currentCohort?.groups || []).map(
-      (group) => group.setId,
-    );
+
+    const updatedSetIds = [];
 
     for (const setId of setIds) {
-      if (currentSets.includes(setId)) {
-        continue;
-      }
-
       const filters = {
         op: "=",
         content: {
@@ -249,22 +288,48 @@ const handleFiltersForSet = createAsyncThunk<
         },
       };
 
-      const result = await graphqlAPI<SetFilterResponse>(query, { filters });
-      const setResult = result.data.viewer.explore[docType].hits.edges.map(
-        (node) => node.node[fieldName],
+      const storedSet = (currentCohort?.sets || []).find(
+        (set) => set.setId === setId,
       );
+      if (!storedSet) {
+        const result = await graphqlAPI<SetIdResponse>(idQuery, { filters });
+        const setResult = result.data.viewer.explore[docType].hits.edges.map(
+          (node) => node.node[fieldName],
+        );
+        const newSet = {
+          setId: setId,
+          setType: docType as SetTypes,
+          ids: setResult,
+          field,
+        };
+        thunkAPI.dispatch(addNewCohortSet(newSet));
+        updatedSetIds.push(`set_id:${setId}`);
+      } else {
+        const result = await graphqlAPI<SetCountResponse>(countQuery, {
+          filters,
+        });
+        const setCount = result.data.viewer.explore[docType].hits.total;
 
-      ids.push(...setResult);
-
-      newSets.push({
-        ids: setResult,
-        field,
-        setId,
-        setType: docType as SetTypes,
-      });
+        if (setCount === 0) {
+          const query = buildCreateSetMutation(docType);
+          const result = await graphqlAPI<CreateSetResponse>(query, {
+            input: {
+              filters: {
+                op: "in",
+                content: {
+                  field,
+                  value: storedSet.ids,
+                },
+              },
+            },
+          });
+          const setId = result.data.viewer.explore[docType].set_id;
+          updatedSetIds.push(`set_id:${setId}`);
+        } else {
+          updatedSetIds.push(`set_id:${setId}`);
+        }
+      }
     }
-
-    const combinedIds = [...ids, ...otherOperands];
 
     const updatedFilters = {
       mode: "and",
@@ -273,7 +338,7 @@ const handleFiltersForSet = createAsyncThunk<
         [field]: {
           operator: operation.operator,
           field,
-          operands: combinedIds,
+          operands: [...otherOperands, ...updatedSetIds],
         } as Includes,
       },
     };
@@ -290,8 +355,6 @@ const handleFiltersForSet = createAsyncThunk<
         }),
       );
     }
-
-    thunkAPI.dispatch(addNewCohortGroups(newSets));
   },
 );
 
@@ -319,7 +382,6 @@ const initialState = cohortsAdapter.upsertMany(
 interface UpdateFilterParams {
   field: string;
   operation: Operation;
-  groups?: FilterGroup[];
 }
 
 export const createCohortName = (postfix: string): string => {
@@ -412,7 +474,6 @@ interface NewCohortParams {
   filters?: FilterSet; // set the filters for the new cohort
   message?: string; // set message to show when
   name?: string; // set the name for the new cohort
-  group?: FilterGroup; // add a group to the new cohort
   makeCurrent?: boolean; // if true, the new cohort will be set as the current cohort
 }
 
@@ -483,14 +544,6 @@ const slice = createSlice({
         customName: action.payload.name,
       });
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
-      if (action.payload.group) {
-        cohortsAdapter.updateOne(state, {
-          id: cohort.id,
-          changes: {
-            groups: [action.payload.group],
-          },
-        });
-      }
       if (action.payload.makeCurrent === true) {
         state.currentCohort = cohort.id;
       }
@@ -619,8 +672,8 @@ const slice = createSlice({
       const { [filterPrefix[0]]: _b, ...updatedCaseIds } =
         cohortCaseSetIds ?? {};
 
-      const groups = (state.entities[state.currentCohort]?.groups || []).filter(
-        (group) => group.field !== action.payload,
+      const sets = (state.entities[state.currentCohort]?.sets || []).filter(
+        (set) => set.field !== action.payload,
       );
 
       if (Object.keys(updatedCaseIds).length) {
@@ -654,7 +707,7 @@ const slice = createSlice({
               caseSetIds: updatedCaseIds,
               status: "uninitialized",
             },
-            groups,
+            sets,
           },
         });
       } else
@@ -669,7 +722,7 @@ const slice = createSlice({
               caseSetIds: undefined,
               status: "uninitialized",
             },
-            groups,
+            sets,
           },
         });
     },
@@ -685,7 +738,7 @@ const slice = createSlice({
             caseSetIds: undefined,
             status: "uninitialized",
           },
-          groups: undefined,
+          sets: undefined,
         },
       });
     },
@@ -726,24 +779,24 @@ const slice = createSlice({
         },
       });
     },
-    addNewCohortGroups: (state, action: PayloadAction<FilterGroup[]>) => {
-      const groups = state.entities[state.currentCohort]?.groups;
+    addNewCohortSet: (state, action: PayloadAction<CohortStoredSets>) => {
+      const sets = state.entities[state.currentCohort]?.sets;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: {
-          groups: [...(groups !== undefined ? groups : []), ...action.payload],
+          sets: [...(sets !== undefined ? sets : []), action.payload],
         },
       });
     },
-    removeCohortGroup: (state, action: PayloadAction<FilterGroup>) => {
-      const groups = state.entities[state.currentCohort]?.groups;
+    removeCohortSet: (state, action: PayloadAction<string>) => {
+      const sets = state.entities[state.currentCohort]?.sets;
 
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: {
-          groups: [
-            ...(groups !== undefined ? groups : []).filter(
-              (group) => !isEqual(group, action.payload),
+          sets: [
+            ...(sets !== undefined ? sets : []).filter(
+              (set) => set.setId !== action.payload,
             ),
           ],
         },
@@ -873,9 +926,9 @@ export const {
   copyCohort,
   discardCohortChanges,
   setCohortMessage,
-  addNewCohortGroups,
-  removeCohortGroup,
   addCaseCount,
+  addNewCohortSet,
+  removeCohortSet,
 } = slice.actions;
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
@@ -947,35 +1000,6 @@ export const selectCurrentCohortFilterSet = (
     state.cohort.availableCohorts.currentCohort,
   );
   return cohort?.filters;
-};
-
-/**
- * Returns filter groups from the current cohort
- * @param state
- */
-export const selectCurrentCohortGroups = (
-  state: CoreState,
-): FilterGroup[] | undefined => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    state.cohort.availableCohorts.currentCohort,
-  );
-  return cohort?.groups || [];
-};
-
-/**
- * Returns filter groups from the current cohort filtered by field
- * @param state
- */
-export const selectCurrentCohortGroupsByField = (
-  state: CoreState,
-  field: string,
-): FilterGroup[] | undefined => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    state.cohort.availableCohorts.currentCohort,
-  );
-  return (cohort?.groups || []).filter((set) => set.field === field);
 };
 
 /**

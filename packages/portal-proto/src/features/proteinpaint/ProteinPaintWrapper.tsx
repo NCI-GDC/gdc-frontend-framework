@@ -1,6 +1,5 @@
 import { useEffect, useRef, FC } from "react";
 import { runproteinpaint } from "@stjude/proteinpaint-client";
-import { v4 as uuidv4 } from "uuid";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -58,14 +57,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         message: "newCasesCohort",
         // TODO: improve cohort name constructor
         name: source + ` (n=${samples.length})`,
-        group:
-          ids.length > 1
-            ? {
-                ids: [...ids],
-                field: "occurrence.case.case_id",
-                groupId: uuidv4(),
-              }
-            : undefined,
       }),
     );
   };

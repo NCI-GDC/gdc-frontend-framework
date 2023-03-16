@@ -1,4 +1,5 @@
 import React from "react";
+import { useCreateCaseSetFromValuesMutation } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import UserInputModal from "../UserInputModal";
 import { InputModalProps } from "./types";
@@ -7,7 +8,6 @@ import UpdateCohortButton from "./UpdateFiltersButton";
 const CaseSetModal: React.FC<InputModalProps> = ({
   updateFilters,
   existingFiltersHook,
-  useAddNewFilterGroups,
 }: InputModalProps) => {
   return (
     <UserInputModal modalTitle={"Filter Current Cohort by Cases"}>
@@ -36,9 +36,9 @@ const CaseSetModal: React.FC<InputModalProps> = ({
         entityType="cases"
         entityLabel="case"
         hooks={{
+          createSet: useCreateCaseSetFromValuesMutation,
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
-          useAddNewFilterGroups: useAddNewFilterGroups,
         }}
         SubmitButton={UpdateCohortButton}
       />

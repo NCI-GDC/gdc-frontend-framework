@@ -76,6 +76,43 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (response) =>
         response.data.sets.create.explore.ssm.set_id,
     }),
+    createCaseSetFromValues: builder.mutation({
+      query: ({ values }) => ({
+        graphQLQuery: `mutation createSet(
+          $input: CreateSetInput
+        ) {
+          sets {
+            create {
+              repository {
+                case(input: $input) {
+                  set_id
+                  size
+                }
+              }
+            }
+          }
+        }
+        `,
+        graphQLFilters: {
+          input: {
+            filters: {
+              op: "and",
+              content: [
+                {
+                  op: "in",
+                  content: {
+                    field: "cases.case_id",
+                    value: values,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      }),
+      transformResponse: (response) =>
+        response.data.sets.create.repository.case.set_id,
+    }),
     createGeneSetFromFilters: builder.mutation({
       query: ({ filters, size, score }) => ({
         graphQLQuery: `mutation createSet(
@@ -138,6 +175,7 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
 export const {
   useCreateGeneSetFromValuesMutation,
   useCreateSsmsSetFromValuesMutation,
+  useCreateCaseSetFromValuesMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
 } = createSetSlice;

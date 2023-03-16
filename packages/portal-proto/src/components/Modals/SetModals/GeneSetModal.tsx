@@ -19,7 +19,6 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
-  useAddNewFilterGroups,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -53,7 +52,6 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
             createSet: useCreateGeneSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
-            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
           SubmitButton={UpdateCohortButton}
         />
