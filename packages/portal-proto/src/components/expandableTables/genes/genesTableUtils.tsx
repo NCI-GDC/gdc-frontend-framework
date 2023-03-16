@@ -1,12 +1,14 @@
 import React, { Dispatch, SetStateAction } from "react";
-import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import {
+  IoMdTrendingDown as SurvivalIcon,
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { AnnotationsIcon } from "../shared/sharedTableUtils";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
@@ -15,6 +17,7 @@ import { startCase } from "lodash";
 import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { FilterSet } from "@gff/core";
+import RatioSpring from "../shared/RatioSpring";
 
 export const createTableColumn = (
   accessor: string,
@@ -41,15 +44,11 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="ml-1 mr-2"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
-                <div className="ml-1.5 mr-2">
+                <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -59,7 +58,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -85,7 +84,6 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
-                      margin={`my-0.5 ml-0 mr-1`}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -234,22 +232,11 @@ export const createTableColumn = (
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <>
+                <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <div
-                      className={`flex flex-col items-center text-center font-content text-xs`}
-                    >
-                      <div className={`flex flex-row`}>
-                        {`${numerator.toLocaleString(
-                          "en-US",
-                        )} / ${denominator.toLocaleString("en-US")}`}
-                      </div>
-                      <div className={`flex flex-row`}>
-                        {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
-                      </div>
-                    </div>
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -266,7 +253,6 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                  Across the GDC`}
-                className="flex flex-row justify-start mx-4"
                 tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
@@ -276,48 +262,31 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex">
-                  <div className="flex flex-row items-center">
-                    {row.getCanExpand() && (
-                      <div className="text-center items-center content-center pr-2">
-                        <button
-                          aria-controls={`expandedSubrow`}
-                          aria-expanded={row.getCanExpand() ? "true" : "false"}
-                          {...{
-                            onClick: () => {
-                              setGeneID(row.original[`geneID`]);
-                              row.toggleExpanded();
-                            },
-                            style: { cursor: "pointer" },
-                          }}
-                        >
-                          <ToggleSpring
-                            isExpanded={row.getIsExpanded()}
-                            icon={
-                              <MdKeyboardArrowDown
-                                size="0.75em"
-                                color="white"
-                              />
-                            }
-                          />
-                        </button>
-                      </div>
-                    )}
-                    {row.getCanExpand() && (
-                      <div
-                        className={`flex flex-col font-content text-xs text-center items-center`}
+                <div className="flex items-center gap-2">
+                  {row.getCanExpand() && (
+                    <div className="flex items-center">
+                      <button
+                        aria-label="expand or collapse subrow"
+                        aria-expanded={row.getCanExpand() ? "true" : "false"}
+                        {...{
+                          onClick: () => {
+                            setGeneID(row.original[`geneID`]);
+                            row.toggleExpanded();
+                          },
+                          style: { cursor: "pointer" },
+                        }}
                       >
-                        <div className={`flex flex-row`}>
-                          {`${numerator.toLocaleString(
-                            "en-US",
-                          )} / ${denominator.toLocaleString("en-US")}`}
-                        </div>
-                        <div className={`flex flex-row`}>
-                          {`(${(100 * (numerator / denominator)).toFixed(2)}%)`}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                        {!row.getIsExpanded() ? (
+                          <DownIcon size="1.25em" className="text-accent" />
+                        ) : (
+                          <UpIcon size="1.25em" className="text-accent" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  {row.getCanExpand() && (
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                  )}
                 </div>
               );
             },
@@ -334,7 +303,6 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-8"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -367,7 +335,6 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
-                className="flex flex-row justify-start mr-2"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -411,10 +378,7 @@ export const createTableColumn = (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
                         return (
-                          <div
-                            key={`cytoband-${key}`}
-                            className={`my-0.5 text-xs`}
-                          >
+                          <div key={`cytoband-${key}`} className="my-0.5">
                             {cytoband}
                           </div>
                         );
@@ -445,14 +409,14 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
-                    <div className="text-center text-xs">
+                    <span>
                       {row?.original["mutations"]?.toLocaleString("en-US") ??
                         ""}
-                    </div>
+                    </span>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -478,7 +442,7 @@ export const createTableColumn = (
                 : "";
               return (
                 <button
-                  className="text-utility-link underline text-xs"
+                  className="text-utility-link underline"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
@@ -512,11 +476,11 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <div className={`text-xs`}>
+                <span>
                   {row.original[`${accessor}`]
                     ? row.original[`${accessor}`]
                     : ""}
-                </div>
+                </span>
               );
             },
           },

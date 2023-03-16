@@ -1,5 +1,6 @@
 import React from "react";
 import { animated, useSpring } from "@react-spring/web";
+import { NumeratorDenominator } from "./NumeratorDenominator";
 
 interface Item {
   project?: string | undefined;
@@ -10,13 +11,11 @@ interface Item {
 interface RatioSpringProps {
   item: Item;
   index: number;
-  orientation: string;
 }
 
 const RatioSpring: React.FC<RatioSpringProps> = ({
   item,
   index,
-  orientation,
 }: RatioSpringProps) => {
   const staggeredSpring = useSpring({
     from: { opacity: 0 },
@@ -25,52 +24,19 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   });
 
   const { numerator, denominator, project } = item;
-  const [n, d] = [
-    denominator === 0 ? 0 : numerator,
-    denominator === 0 ? 1 : denominator,
-  ];
-  const fraction = (
-    <>
-      <div className={`text-activeColor mx-0.5`}>
-        {numerator.toLocaleString("en-US")}
-      </div>
-      <div className={`text-black mx-0.5`}> / </div>
-      <div className={`text-activeColor`}>
-        {denominator.toLocaleString("en-US")}
-      </div>
-    </>
-  );
-
-  const percentage = (
-    <div className={`ml-1`}>({((n * 100) / d).toFixed(2)}%)</div>
-  );
 
   return (
-    <>
-      <animated.ul style={staggeredSpring} className={`py-2 px-0 text-xs`}>
-        {numerator === 0 ? (
-          orientation === "vertical" && <div className={`w-max m-auto`}>0</div>
-        ) : (
-          <li key={`subrow-item-${index}`} className={`list-none`}>
-            <div className={`flex flex-row m-auto mb-0 pb-0 w-fit`}>
-              {project && (
-                <div className={`font-bold text-black mx-0.5`}>{project}:</div>
-              )}{" "}
-              {project?.length <= 12 && (
-                <>
-                  {fraction} {percentage}
-                </>
-              )}
-            </div>
-            {(orientation === "vertical" || project?.length > 12) && (
-              <div className={`flex flex-row mx-auto mt-0 pt-0 w-fit`}>
-                {fraction} {percentage}
-              </div>
-            )}
-          </li>
-        )}
-      </animated.ul>
-    </>
+    <animated.ul style={staggeredSpring}>
+      <li key={`subrow-item-${index}`} className="list-none">
+        <div className="flex">
+          {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
+          <NumeratorDenominator
+            numerator={numerator}
+            denominator={denominator}
+          />
+        </div>
+      </li>
+    </animated.ul>
   );
 };
 

@@ -15,8 +15,8 @@ const ToggleSpring: React.FC<ToggleSpringProps> = ({
   });
 
   return (
-    <animated.div style={polarSpring}>
-      <div className={`bg-accent rounded-md h-3 w-3`}>{icon}</div>
+    <animated.div style={polarSpring} className="bg-accent rounded-md h-3 w-3">
+      {icon}
     </animated.div>
   );
 };

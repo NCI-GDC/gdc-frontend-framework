@@ -3,23 +3,25 @@ import {
   useGenesTable,
   FilterSet,
   usePrevious,
-  useMutatedGenesFreqData,
   useCreateGeneSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
   useGeneSetCountQuery,
+  useMutatedGenesFreqData,
+  useMutatedGenesFreqDLQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
 } from "@gff/core";
 import {
   createContext,
-  useCallback,
   useEffect,
   useReducer,
   useState,
+  useCallback,
 } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
+import { Button, Loader } from "@mantine/core";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import { default as PageStepper } from "../shared/PageStepperMantine";
@@ -29,16 +31,14 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import { Button, Loader } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
-import { useMutatedGenesFreqDLQuery } from "@gff/core";
-import { saveAs } from "file-saver";
-import { convertDateToString } from "src/utils/date";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import { convertDateToString } from "src/utils/date";
+import { saveAs } from "file-saver";
 import { FiDownload } from "react-icons/fi";
 
 export const SelectedRowContext =
@@ -300,6 +300,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     mutatedGenesFreqTSVError,
     exportMutatedGenesTSVPending,
   ]);
+
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
@@ -373,93 +374,82 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           />
         )}
 
-        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
-          <div className="flex flex-row ml-2 mb-4">
-            <TableControls
-              total={genesTotal}
-              numSelected={Object.keys(selectedGenes).length ?? 0}
-              label={`Gene`}
-              options={[
-                { label: "Save/Edit Gene Set", value: "placeholder" },
-                {
-                  label: "Save as new gene set",
-                  value: "save",
-                  onClick: () => setShowSaveModal(true),
-                },
-                {
-                  label: "Add to existing gene set",
-                  value: "add",
-                  disabled: Object.keys(sets || {}).length === 0,
-                  onClick: () => setShowAddModal(true),
-                },
-                {
-                  label: "Remove from existing gene set",
-                  value: "remove",
-                  disabled: Object.keys(sets || {}).length === 0,
-                  onClick: () => setShowRemoveModal(true),
-                },
-              ]}
-              additionalControls={
-                <div className="flex flex-row gap-2">
-                  {mutatedGenesFreqFetching ? (
-                    <Button disabled={true}>
-                      <Loader size="sm" className="p-1" />
-                      <FiDownload title="download" size={16} />
-                    </Button>
-                  ) : (
-                    <ButtonTooltip
-                      label={`${
-                        mutatedGenesFreqFetching
-                          ? ""
-                          : "Export All Except #Cases and #Mutations"
-                      }`}
+        <div className="flex justify-between items-center mb-2 mt-8">
+          <TableControls
+            total={genesTotal}
+            numSelected={Object.keys(selectedGenes).length ?? 0}
+            label={`Gene`}
+            options={[
+              { label: "Save/Edit Gene Set", value: "placeholder" },
+              {
+                label: "Save as new gene set",
+                value: "save",
+                onClick: () => setShowSaveModal(true),
+              },
+              {
+                label: "Add to existing gene set",
+                value: "add",
+                disabled: Object.keys(sets || {}).length === 0,
+                onClick: () => setShowAddModal(true),
+              },
+              {
+                label: "Remove from existing gene set",
+                value: "remove",
+                disabled: Object.keys(sets || {}).length === 0,
+                onClick: () => setShowRemoveModal(true),
+              },
+            ]}
+            additionalControls={
+              <div className="flex flex-row gap-2">
+                {mutatedGenesFreqFetching ? (
+                  <Button disabled={true}>
+                    <Loader size="sm" className="p-1" />
+                    <FiDownload title="download" size={16} />
+                  </Button>
+                ) : (
+                  <ButtonTooltip
+                    label={`${
+                      mutatedGenesFreqFetching ? "" : "Export current view"
+                    }`}
+                  >
+                    <Button
+                      onClick={() => exportMutatedGenes()}
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
                     >
-                      <Button
-                        onClick={() => exportMutatedGenes()}
-                        className={
-                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                        }
-                      >
-                        {"JSON"}
-                      </Button>
-                    </ButtonTooltip>
-                  )}
-                  {mutatedGenesFreqTSVFetching ? (
-                    <Button disabled={true}>
-                      <Loader size="sm" className="p-1" />
-                      <FiDownload title="download" size={16} />
+                      {"JSON"}
                     </Button>
-                  ) : (
-                    <ButtonTooltip
-                      label={`${
-                        mutatedGenesFreqTSVFetching ? "" : "Export current view"
-                      }`}
-                    >
-                      <Button
-                        onClick={() => exportMutatedGenesTSV()}
-                        className={
-                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                        }
-                      >
-                        {"TSV"}
-                      </Button>
-                    </ButtonTooltip>
-                  )}
-                </div>
-              }
-            />
-          </div>
-          <div className="flex flex-row flex-nowrap mr-2">
-            <TableFilters
-              search={searchTerm}
-              handleSearch={handleSearch}
-              columnListOrder={columnListOrder}
-              handleColumnChange={handleColumnChange}
-              showColumnMenu={showColumnMenu}
-              setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_GTABLE_ORDER}
-            />
-          </div>
+                  </ButtonTooltip>
+                )}
+                <ButtonTooltip
+                  label={`${
+                    mutatedGenesFreqFetching ? "Fetching" : "Export"
+                  } current view`}
+                >
+                  <Button
+                    disabled={mutatedGenesFreqFetching}
+                    onClick={() => exportMutatedGenesTSV()}
+                    className={
+                      "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                    }
+                  >
+                    {"TSV"}
+                  </Button>
+                </ButtonTooltip>
+              </div>
+            }
+          />
+
+          <TableFilters
+            search={searchTerm}
+            handleSearch={handleSearch}
+            columnListOrder={columnListOrder}
+            handleColumnChange={handleColumnChange}
+            showColumnMenu={showColumnMenu}
+            setShowColumnMenu={setShowColumnMenu}
+            defaultColumns={DEFAULT_GTABLE_ORDER}
+          />
         </div>
         <div ref={ref}>
           {!visibleColumns.length ? (
@@ -496,13 +486,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {visibleColumns.length ? (
           <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
             <div className={"grow-0"}>
-              <div className="flex flex-row items-center text-sm ml-0">
-                <span className="my-auto mx-1 ">Show</span>
+              <div className="flex items-center text-sm ml-0">
+                <span className="my-auto mx-1">Show</span>
                 <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                <span className="my-auto mx-1 ">Entries</span>
+                <span className="my-auto mx-1">Entries</span>
               </div>
             </div>
-            <div className="flex flex-row items-center justify-center grow text-sm">
+            <div className="flex items-center justify-center grow text-sm">
               <span>
                 Showing
                 <span className="font-bold">{` ${(
@@ -511,7 +501,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
-                  {` ${((page + 1) * pageSize < genesTotal
+                  {`${((page + 1) * pageSize < genesTotal
                     ? (page + 1) * pageSize
                     : genesTotal
                   ).toLocaleString("en-US")} `}

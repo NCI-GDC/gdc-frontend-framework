@@ -44,6 +44,7 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import { FiDownload } from "react-icons/fi";
+import FunctionButton from "@/components/FunctionButton";
 
 export const SelectedRowContext =
   createContext<
@@ -370,96 +371,94 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           />
         )}
         <div className="flex flex-row justify-between items-center flex-nowrap w-100">
-          <div className="flex flex-row ml-2 mb-4">
-            <TableControls
-              total={ssmsTotal}
-              numSelected={Object.keys(selectedMutations).length ?? 0}
-              label={`Somatic Mutation`}
-              options={[
-                { label: "Save/Edit Mutation Set", value: "placeholder" },
-                {
-                  label: "Save as new mutation set",
-                  value: "save",
-                  onClick: () => setShowSaveModal(true),
-                },
-                {
-                  label: "Add to existing mutation set",
-                  value: "add",
-                  disabled: Object.keys(sets).length === 0,
-                  onClick: () => setShowAddModal(true),
-                },
-                {
-                  label: "Remove from existing mutation set",
-                  value: "remove",
-                  disabled: Object.keys(sets).length === 0,
-                  onClick: () => setShowRemoveModal(true),
-                },
-              ]}
-              additionalControls={
-                <div className="flex gap-2">
-                  {mutationsFreqFetching ? (
-                    <Button disabled={true}>
-                      <Loader size="sm" className="p-1" />
-                      <FiDownload title="download" size={16} />
-                    </Button>
-                  ) : (
-                    <ButtonTooltip
-                      label={`${
-                        mutationsFreqFetching ? "" : "Export All Except #Cases"
-                      }`}
+          <TableControls
+            total={ssmsTotal}
+            numSelected={Object.keys(selectedMutations).length ?? 0}
+            label={`Somatic Mutation`}
+            options={[
+              { label: "Save/Edit Mutation Set", value: "placeholder" },
+              {
+                label: "Save as new mutation set",
+                value: "save",
+                onClick: () => setShowSaveModal(true),
+              },
+              {
+                label: "Add to existing mutation set",
+                value: "add",
+                disabled: Object.keys(sets).length === 0,
+                onClick: () => setShowAddModal(true),
+              },
+              {
+                label: "Remove from existing mutation set",
+                value: "remove",
+                disabled: Object.keys(sets).length === 0,
+                onClick: () => setShowRemoveModal(true),
+              },
+            ]}
+            additionalControls={
+              <div className="flex gap-2">
+                {mutationsFreqFetching ? (
+                  <Button disabled={true}>
+                    <Loader size="sm" className="p-1" />
+                    <FiDownload title="download" size={16} />
+                  </Button>
+                ) : (
+                  <ButtonTooltip
+                    label={`${
+                      mutationsFreqFetching ? "" : "Export All Except #Cases"
+                    }`}
+                  >
+                    <Button
+                      disabled={true}
+                      onClick={() => exportMutationsFreq()}
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
                     >
-                      <Button
-                        disabled={true}
-                        onClick={() => exportMutationsFreq()}
-                        className={
-                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                        }
-                      >
-                        {"JSON"}
-                      </Button>
-                    </ButtonTooltip>
-                  )}
-                  {mutationsFreqTSVFetching ? (
-                    <Button disabled={true}>
-                      <Loader size="sm" className="p-1" />
-                      <FiDownload title="download" size={16} />
+                      {"JSON"}
                     </Button>
-                  ) : (
-                    <ButtonTooltip
-                      label={`${
-                        mutationsFreqTSVFetching ? "" : "Export current view"
-                      }`}
+                  </ButtonTooltip>
+                )}
+                {mutationsFreqTSVFetching ? (
+                  <Button disabled={true}>
+                    <Loader size="sm" className="p-1" />
+                    <FiDownload title="download" size={16} />
+                  </Button>
+                ) : (
+                  <ButtonTooltip
+                    label={`${
+                      mutationsFreqTSVFetching ? "" : "Export current view"
+                    }`}
+                  >
+                    <Button
+                      onClick={() => exportMutationsFreqTSV()}
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
                     >
-                      <Button
-                        onClick={() => exportMutationsFreqTSV()}
-                        className={
-                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                        }
-                      >
-                        {"TSV"}
-                      </Button>
-                    </ButtonTooltip>
-                  )}
-                </div>
-              }
-            />
-          </div>
-          <div className="flex flex-row flex-nowrap mr-2">
-            <TableFilters
-              search={searchTerm}
-              handleSearch={handleSearch}
-              columnListOrder={columnListOrder}
-              handleColumnChange={handleColumnChange}
-              showColumnMenu={showColumnMenu}
-              setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_SMTABLE_ORDER}
-            />
-          </div>
+                      {"TSV"}
+                    </Button>
+                  </ButtonTooltip>
+                )}
+              </div>
+            }
+          />
+
+          <TableFilters
+            search={searchTerm}
+            handleSearch={handleSearch}
+            columnListOrder={columnListOrder}
+            handleColumnChange={handleColumnChange}
+            showColumnMenu={showColumnMenu}
+            setShowColumnMenu={setShowColumnMenu}
+            defaultColumns={DEFAULT_SMTABLE_ORDER}
+          />
         </div>
+
         <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth={`w-48`}
+              cellWidth="w-48"
               rowHeight={60}
               numOfColumns={15}
               numOfRows={pageSize}
@@ -498,41 +497,37 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div
-            className={`flex flex-row w-100 ml-2 mt-0 font-heading items-center`}
-          >
+          <div className="flex font-heading items-center bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <div className={"grow-0"}>
+              <div className="grow-0">
                 <div className="flex flex-row items-center text-sm ml-0">
-                  <span className="my-auto mx-1 ">Show</span>
+                  <span className="my-auto mx-1">Show</span>
                   <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                  <span className="my-auto mx-1 ">Entries</span>
+                  <span className="my-auto mx-1">Entries</span>
                 </div>
               </div>
             </div>
-            <div
-              className={`flex flex-row justify-between items-center text-sm`}
-            >
+            <div className="flex flex-row justify-between items-center text-sm">
               <span>
                 Showing
-                <span className={`font-bold`}>{` ${(
+                <span className="font-bold">{` ${(
                   page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className={`font-bold`}>{` ${((page + 1) * pageSize <
+                <span className="font-bold">{`${((page + 1) * pageSize <
                 ssmsTotal
                   ? (page + 1) * pageSize
                   : ssmsTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
-                <span className={`font-bold`}>{` ${ssmsTotal.toLocaleString(
+                <span className="font-bold">{` ${ssmsTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 somatic mutations
               </span>
             </div>
-            <div className={`m-auto mr-0`}>
+            <div className="m-auto mr-0">
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(ssmsTotal / pageSize)}

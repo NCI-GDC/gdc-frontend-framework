@@ -67,7 +67,7 @@ const useCohortCentricFiles = () => {
   };
 };
 
-export const RepositoryApp = (): ReactElement => {
+export const RepositoryApp = (): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const { allFilters, pagination, repositoryFilters, imagesCount } =
@@ -110,30 +110,30 @@ export const RepositoryApp = (): ReactElement => {
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex flex-row mt-4 mx-3">
+        <div className="flex mt-4 mx-3">
           <div className="w-1/4">
             <FileFacetPanel />
           </div>
           <div className="w-full overflow-hidden h-full">
-            <div className="flex flex-row justify-end align-center m-2">
-              <div className="flex justify-end gap-2">
+            <div className="flex justify-end align-center">
+              <div className="flex justify-end gap-2 mb-6">
                 <DownloadButton
                   customStyle={`
-              flex
-              flex-row
-              items-center
-              bg-base-lightest
-              text-base-contrast-max
-              border
-              border-solid
-              border-primary-darker
-              hover:bg-primary-darker
-              font-heading
-              hover:text-primary-contrast-darker
-              disabled:opacity-60
-              disabled:border-opacity-60
-              disabled:text-opacity-60
-              `}
+                  flex
+                  flex-row
+                  items-center
+                  bg-base-lightest
+                  text-base-contrast-max
+                  border
+                  border-solid
+                  border-primary-darker
+                  hover:bg-primary-darker
+                  font-heading
+                  hover:text-primary-contrast-darker
+                  disabled:opacity-60
+                  disabled:border-opacity-60
+                  disabled:text-opacity-60
+                  `}
                   activeText="Processing"
                   inactiveText="Manifest"
                   toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
