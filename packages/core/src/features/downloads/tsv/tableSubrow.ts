@@ -333,7 +333,12 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ? mutation_subtype
                 : startCase(mutation_subtype?.split(" ").at(-1)),
               consequences: consequence?.length
-                ? consequence[0]?.transcript?.consequence_type
+                ? startCase(
+                    consequence[0]?.transcript?.consequence_type.replace(
+                      "_variant",
+                      "",
+                    ),
+                  ) ?? ""
                 : "",
               ssmsAffectedCasesInCohort: `${filteredOccurrences} / ${filteredCases} (${(
                 100 *
