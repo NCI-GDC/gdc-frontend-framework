@@ -29,7 +29,7 @@ image: docker.osdc.io/node:16-alpine3.15
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
-  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
+  DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
 
 workflow:
   rules:
@@ -87,6 +87,8 @@ Build core and compile portal:
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
+    - cd ${CI_PROJECT_DIR}/packages/sapien
+    - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
   cache:
@@ -132,7 +134,7 @@ Build and push container:
   before_script:
     - apk add bash
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
+    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
 Push latest container:

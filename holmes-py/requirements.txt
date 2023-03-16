@@ -74,5 +74,6 @@ virtualenv==20.16.2
     # via pre-commit
 websockets==10.1
     # via playwright
+
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
