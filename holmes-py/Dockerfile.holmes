@@ -31,4 +31,4 @@ RUN gauge install html-report
 
 WORKDIR /app
 
-CMD gauge run ./specs/gdc_data_portal_v2/
+CMD [ "sh", "-c", "gauge run ./specs/gdc_data_portal_v2/" ]
