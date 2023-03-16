@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { Grid } from "@mantine/core";
 import { processFilters } from "src/utils";
 import { CountSpan } from "../shared/tailwindComponents";
 
@@ -144,7 +143,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   };
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <Grid.Col span={6}>
+    <div className="border border-base-lighter p-4">
       <div>
         <ChartTitleBar
           title={title}
@@ -153,7 +152,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           jsonData={{}}
         />
       </div>
-      <div className="w-100 h-100">
+      <div>
         <BarChart
           divId={chartDivId}
           data={chartConfig}
@@ -184,7 +183,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           Loss
         </label>
       </div>
-    </Grid.Col>
+    </div>
   );
 };
 

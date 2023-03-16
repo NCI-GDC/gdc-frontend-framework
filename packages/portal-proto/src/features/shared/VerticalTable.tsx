@@ -566,11 +566,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   return (
     <div className="grow overflow-hidden">
-      <div
-        className={`flex ${
-          !search?.enabled && !showControls ? "justify-end" : "justify-between"
-        }`}
-      >
+      <div className="flex justify-between">
         {additionalControls && <div>{additionalControls}</div>}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
@@ -672,7 +668,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
-                aria-label={"select page size"}
+                aria-label="select page size"
               />
               <span className="my-auto mx-1">Entries</span>
             </div>

@@ -13,18 +13,14 @@ export const TableHeader = ({
   return (
     <div className={className}>
       <Tooltip
-        label={<Text className="text-xs whitespace-pre-line">{tooltip}</Text>}
         disabled={!tooltip?.length}
-        width={300}
+        label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
+        width={200}
+        multiline
         withArrow
-        arrowSize={6}
         transition="fade"
         transitionDuration={200}
-        multiline
-        classNames={{
-          tooltip:
-            "bg-base-lightest text-base-contrast-lightest font-heading text-left",
-        }}
+        position="bottom-start"
       >
         <div className="font-heading text-left text-sm whitespace-pre-line">
           {title}

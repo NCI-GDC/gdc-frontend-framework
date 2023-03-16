@@ -19,7 +19,7 @@ const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
   jsonData,
 }: ChartTitleBarProps) => {
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex justify-between items-center">
       {title}
       <DownloadOptions
         chartDivId={divId}

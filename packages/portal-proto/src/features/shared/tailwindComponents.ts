@@ -48,7 +48,7 @@ export const DownloadButton = tw.button`
     hover:text-base-max
 `;
 
-export const CountSpan = tw.span`p-0 m-0`;
+export const CountSpan = tw.span`font-bold p-0 m-0`;
 
 interface CountsIconProps {
   $count?: number;

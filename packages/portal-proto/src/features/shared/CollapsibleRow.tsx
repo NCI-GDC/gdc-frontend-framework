@@ -19,7 +19,7 @@ const CreateContent = (
           key={`${x}-${values.length}-${index}`}
         >
           {index > 0 ? <Divider /> : null}
-          <p className="text-[16px] font-heading font-semibold mb-2">{x}</p>
+          <p className="text-[1rem] font-heading font-semibold mb-2">{x}</p>
           <div className="columns-4 font-content text-sm">
             {[...values].sort().map((y) => (
               <div className="flex flex-row items-center" key={y}>

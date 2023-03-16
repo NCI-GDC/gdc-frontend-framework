@@ -16,7 +16,7 @@ import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { Grid, LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
@@ -205,7 +205,7 @@ const GeneView = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-22"}`}>
+          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-6"}`}>
             {contextSensitive && (
               <div className="my-6">
                 <ContextSensitiveBanner />
@@ -224,10 +224,10 @@ const GeneView = ({
                 </div>
               </div>
             </div>
-            <div className="mt-8">
+            <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
-              <Grid className="mt-2 mb-16">
+              <div className="grid grid-cols-2 gap-4 mt-2 mb-16">
                 <SSMPlot
                   page="gene"
                   gene={gene_id}
@@ -241,7 +241,7 @@ const GeneView = ({
                   genomicFilters={genomicFilters}
                   cohortFilters={cohortFilters}
                 />
-              </Grid>
+              </div>
               <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}
@@ -249,7 +249,7 @@ const GeneView = ({
                 cohortFilters={cohortFilters}
               />
 
-              <div className="mt-14 mb-16">
+              <div className="mt-14">
                 <div className="flex items-center gap-2">
                   <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
