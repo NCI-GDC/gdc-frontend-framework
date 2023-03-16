@@ -17,12 +17,12 @@ include:
 
 stages:
   - .pre
+  - build_and_run_ui_tests
   - test
   - build
   - unit
   - release
   - deploy
-  - build_and_run_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -183,6 +183,6 @@ Build and run UI tests:
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile.holmes ./holmes-py
     - docker run --add-host portal.gdc.cancer.gov:172.23.7.60 --env browser="headless chrome" --rm -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./specs/gdc_data_portal_v2/
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"'
-      when: on_success
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "push"'
+#      when: on_success
