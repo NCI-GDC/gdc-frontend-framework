@@ -13,7 +13,6 @@ import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDi
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
-import { Grid } from "@mantine/core";
 
 export const SSMSSummary = ({
   ssm_id,
