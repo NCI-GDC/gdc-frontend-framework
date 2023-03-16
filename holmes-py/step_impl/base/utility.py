@@ -1,6 +1,5 @@
 from pathlib import Path
 from os import path
-import pyautogui
 import time
 
 
@@ -23,8 +22,12 @@ class Utility:
         return path.isfile(file_path)
 
     def get_screen_size():
-        width, height = pyautogui.size()
-        return {"width": width, "height": height}
+        try:
+            import pyautogui
+            width, height = pyautogui.size()
+            return {"width": width, "height": height}
+        except:
+            pass
 
     def validate_json_key_exists(json_obj, json_key, fails):
         try:
