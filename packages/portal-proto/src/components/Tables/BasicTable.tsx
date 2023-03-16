@@ -17,9 +17,9 @@ export const BasicTable = ({ tableData }: TempTableProps): JSX.Element => {
     <Table
       striped
       data-testid="tempTable"
-      className="drop-shadow-sm border-1 border-base-lighter"
+      className="drop-shadow-sm border-1 border-base-lighter text-sm"
     >
-      <thead>
+      <thead className="h-14">
         <tr>
           {tableData.headers.map((text, index) => (
             <th

@@ -362,7 +362,7 @@ const FilesTables: React.FC = () => {
   return (
     <VerticalTable
       additionalControls={
-        <div className="flex">
+        <div className="flex gap-2 items-center">
           <div className="flex gap-2">
             <FunctionButton
               onClick={handleDownloadJSON}
@@ -377,12 +377,15 @@ const FilesTables: React.FC = () => {
               TSV
             </FunctionButton>
           </div>
-          <div className="flex gap-2 w-full flex-row-reverse text-xl">
-            <div className="pr-5">
-              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              {totalFileSize}
+          <div className="flex gap-1 text-xl">
+            <div>
+              Total of{" "}
+              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+              {tempPagination?.total > 1 || tempPagination?.total === 0
+                ? "Files"
+                : "File"}
             </div>
-            <div className="">
+            <div>
               <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
               <strong className="mr-1">{totalCaseCount}</strong>
               {fileSizeSliceData?.data?.total_case_count > 1 ||
@@ -390,12 +393,9 @@ const FilesTables: React.FC = () => {
                 ? "Cases"
                 : "Case"}
             </div>
-            <div className="">
-              Total of{" "}
-              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 || tempPagination?.total === 0
-                ? "Files"
-                : "File"}
+            <div>
+              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+              {totalFileSize}
             </div>
           </div>
         </div>

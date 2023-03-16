@@ -25,7 +25,7 @@ const DND: React.FC<DNDProps> = ({
   const [columnSearchTerm, setColumnSearchTerm] = useState("");
 
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex items-center">
       <Popover
         opened={showColumnMenu}
         onClose={() => setShowColumnMenu(false)}
@@ -33,6 +33,7 @@ const DND: React.FC<DNDProps> = ({
         position="bottom-end"
         transition="scale"
         withArrow
+        aria-label="column change button"
       >
         <Popover.Target>
           <button
@@ -41,32 +42,26 @@ const DND: React.FC<DNDProps> = ({
               setColumnSearchTerm("");
             }}
           >
-            <Box
-              className={`border-1 border-base p-2 rounded-md mx-2 hover:cursor-pointer`}
-            >
-              {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
+            <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+              {!showColumnMenu ? <BsList /> : <BsX size={17} />}
             </Box>
           </button>
         </Popover.Target>
         <Popover.Dropdown>
-          <div className={`w-fit bg-white rounded-md`}>
+          <div className="w-fit bg-base-max rounded-md">
             {columnListOrder.length > 0 && (
-              <div className={`p-1 bg-white items-center`}>
-                <div
-                  className={`flex flex-row h-10 items-center border-1 border-black rounded-md`}
-                >
+              <div className="p-1 bg-base-max items-center">
+                <div className="flex h-10 items-center border-1 border-black rounded-md">
                   {columnSearchTerm.length === 0 && (
-                    <span
-                      className={`flex flex-row absolute ml-2 text-xs pointer-events-none italic`}
-                    >
-                      <div className={`mt-0.5 ml-2 mr-2`}>
+                    <span className="flex absolute ml-2 text-xs pointer-events-none italic">
+                      <div className="mt-0.5 ml-2 mr-2">
                         <SearchIcon />
                       </div>
                       Search...
                     </span>
                   )}
                   <input
-                    className={`p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm`}
+                    className="p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm"
                     type="text"
                     value={columnSearchTerm}
                     onChange={(e) => setColumnSearchTerm(e.target.value)}
@@ -77,11 +72,9 @@ const DND: React.FC<DNDProps> = ({
                     </button>
                   )}
                 </div>
-                <div
-                  className={`flex flex-row w-80 mb-1 border-b-2 border-dotted`}
-                >
+                <div className="flex w-80 mb-1 border-b-2 border-dotted">
                   <button
-                    className={`text-xs my-1`}
+                    className="text-xs my-1"
                     onClick={() => {
                       handleColumnChange(defaultColumns);
                       setShowColumnMenu(false);

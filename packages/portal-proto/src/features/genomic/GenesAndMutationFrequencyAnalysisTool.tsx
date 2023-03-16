@@ -327,7 +327,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             </div>
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">
-            <div className="flex flex-col w-100 mx-6">
+            <div className="flex flex-col w-100 mx-6 mb-8">
               <div className="bg-base-max">
                 <LoadingOverlay
                   visible={!survivalPlotReady && !topGeneSSMSSuccess}
