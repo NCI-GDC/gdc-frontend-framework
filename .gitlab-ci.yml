@@ -17,12 +17,12 @@ include:
 
 stages:
   - .pre
-  - build_and_run_ui_tests
   - test
   - build
   - unit
   - release
   - deploy
+  - build_and_run_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
