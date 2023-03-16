@@ -29,7 +29,7 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import { useMutatedGenesFreqDLQuery } from "@gff/core";
@@ -39,6 +39,7 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import { FiDownload } from "react-icons/fi";
 
 export const SelectedRowContext =
   createContext<
@@ -400,43 +401,54 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex flex-row gap-2">
-                  <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                    <Button
-                      onClick={() => {
-                        if (mutatedGenesFreqFetching) {
-                          setExportMutatedGenesPending(true);
-                        } else {
-                          exportMutatedGenes();
-                        }
-                      }}
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      {"JSON"}
+                  {mutatedGenesFreqFetching ? (
+                    <Button disabled={true}>
+                      <Loader size="sm" className="p-1" />
+                      <FiDownload title="download" size={16} />
                     </Button>
-                  </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
-                    <Button
-                      onClick={() => {
-                        if (mutatedGenesFreqTSVFetching) {
-                          setExportMutatedGenesTSVPending(true);
-                        } else {
-                          exportMutatedGenesTSV();
-                        }
-                      }}
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
+                  ) : (
+                    <ButtonTooltip
+                      label={`${
+                        mutatedGenesFreqFetching
+                          ? ""
+                          : "Export All Except #Cases and #Mutations"
+                      }`}
                     >
-                      {"TSV"}
+                      <Button
+                        onClick={() => exportMutatedGenes()}
+                        className={
+                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                        }
+                      >
+                        {"JSON"}
+                      </Button>
+                    </ButtonTooltip>
+                  )}
+                  {mutatedGenesFreqTSVFetching ? (
+                    <Button disabled={true}>
+                      <Loader size="sm" className="p-1" />
+                      <FiDownload title="download" size={16} />
                     </Button>
-                  </ButtonTooltip>
+                  ) : (
+                    <ButtonTooltip
+                      label={`${
+                        mutatedGenesFreqTSVFetching ? "" : "Export current view"
+                      }`}
+                    >
+                      <Button
+                        onClick={() => exportMutatedGenesTSV()}
+                        className={
+                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                        }
+                      >
+                        {"TSV"}
+                      </Button>
+                    </ButtonTooltip>
+                  )}
                 </div>
               }
             />
           </div>
-
           <div className="flex flex-row flex-nowrap mr-2">
             <TableFilters
               search={searchTerm}

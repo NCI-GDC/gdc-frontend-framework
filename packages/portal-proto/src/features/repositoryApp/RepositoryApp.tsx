@@ -13,7 +13,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
@@ -67,7 +67,7 @@ const useCohortCentricFiles = () => {
   };
 };
 
-export const RepositoryApp = () => {
+export const RepositoryApp = (): ReactElement => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const { allFilters, pagination, repositoryFilters, imagesCount } =

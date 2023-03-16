@@ -22,7 +22,7 @@ import {
 } from "@gff/core";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { Button } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
@@ -43,6 +43,7 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import { FiDownload } from "react-icons/fi";
 
 export const SelectedRowContext =
   createContext<
@@ -104,10 +105,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     offset: 0,
     ssms: [],
   });
-  const [exportMutationsFreqPending, setExportMutationsFreqPending] =
-    useState(false);
-  const [exportMutationsFreqTSVPending, setExportMutationsFreqTSVPending] =
-    useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -240,7 +237,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const {
     data: mutationsFreqData,
     isFetching: mutationsFreqFetching,
-    isError: mutationsFreqError,
+    // isError: mutationsFreqError,
   } = useMutationsFreqData({
     size: pageSize * (page + 1),
     genomicFilters,
@@ -249,7 +246,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const {
     data: mutationsFreqTSVData,
     isFetching: mutationsFreqTSVFetching,
-    isError: mutationsFreqTSVError,
+    // isError: mutationsFreqTSVError,
   } = useMutationsFreqDLQuery({
     tableData,
     ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
@@ -315,35 +312,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
     saveAs(blob, fileName);
   }, [mutationsFreqTSVData?.results]);
-
-  useEffect(() => {
-    if (mutationsFreqError) {
-      setExportMutationsFreqPending(false);
-    } else if (exportMutationsFreqPending && !mutationsFreqFetching) {
-      exportMutationsFreq();
-      setExportMutationsFreqPending(false);
-    }
-  }, [
-    exportMutationsFreqTSV,
-    mutationsFreqFetching,
-    mutationsFreqError,
-    exportMutationsFreqPending,
-    exportMutationsFreq,
-  ]);
-
-  useEffect(() => {
-    if (mutationsFreqTSVError) {
-      setExportMutationsFreqTSVPending(false);
-    } else if (exportMutationsFreqTSVPending && !mutationsFreqTSVFetching) {
-      exportMutationsFreqTSV();
-      setExportMutationsFreqTSVPending(false);
-    }
-  }, [
-    exportMutationsFreqTSV,
-    mutationsFreqTSVFetching,
-    mutationsFreqTSVError,
-    exportMutationsFreqTSVPending,
-  ]);
 
   return (
     <>
@@ -429,38 +397,49 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Cases">
-                    <Button
-                      onClick={() => {
-                        if (mutationsFreqFetching) {
-                          setExportMutationsFreqPending(true);
-                        } else {
-                          exportMutationsFreq();
-                        }
-                      }}
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
-                    >
-                      JSON
+                  {mutationsFreqFetching ? (
+                    <Button disabled={true}>
+                      <Loader size="sm" className="p-1" />
+                      <FiDownload title="download" size={16} />
                     </Button>
-                  </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
-                    <Button
-                      onClick={() => {
-                        if (mutationsFreqTSVFetching) {
-                          setExportMutationsFreqTSVPending(true);
-                        } else {
-                          exportMutationsFreqTSV();
-                        }
-                      }}
-                      className={
-                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
-                      }
+                  ) : (
+                    <ButtonTooltip
+                      label={`${
+                        mutationsFreqFetching ? "" : "Export All Except #Cases"
+                      }`}
                     >
-                      TSV
+                      <Button
+                        disabled={true}
+                        onClick={() => exportMutationsFreq()}
+                        className={
+                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                        }
+                      >
+                        {"JSON"}
+                      </Button>
+                    </ButtonTooltip>
+                  )}
+                  {mutationsFreqTSVFetching ? (
+                    <Button disabled={true}>
+                      <Loader size="sm" className="p-1" />
+                      <FiDownload title="download" size={16} />
                     </Button>
-                  </ButtonTooltip>
+                  ) : (
+                    <ButtonTooltip
+                      label={`${
+                        mutationsFreqTSVFetching ? "" : "Export current view"
+                      }`}
+                    >
+                      <Button
+                        onClick={() => exportMutationsFreqTSV()}
+                        className={
+                          "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                        }
+                      >
+                        {"TSV"}
+                      </Button>
+                    </ButtonTooltip>
+                  )}
                 </div>
               }
             />

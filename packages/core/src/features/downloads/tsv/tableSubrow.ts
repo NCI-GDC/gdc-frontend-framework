@@ -309,7 +309,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
             ssm_id: string;
             filteredOccurrences: number;
             mutation_subtype: string;
-            consequence: any;
+            consequence: any[];
           }) => {
             return {
               dnaChange: genomic_dna_change,
@@ -360,7 +360,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 )
                 .join(", "),
               impact: consequence?.length
-                ? consequence.map(
+                ? (consequence || []).map(
                     ({
                       transcript: {
                         annotation: {
