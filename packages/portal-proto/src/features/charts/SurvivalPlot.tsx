@@ -9,10 +9,8 @@ import {
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
-import {
-  MdDownload as DownloadIcon,
-  MdRestartAlt as ResetIcon,
-} from "react-icons/md";
+import { MdRestartAlt as ResetIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";

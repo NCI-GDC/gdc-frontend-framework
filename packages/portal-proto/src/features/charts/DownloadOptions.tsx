@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { MdFileDownload as DownloadIcon } from "react-icons/md";
-import { Tooltip } from "@mantine/core";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 import { DownloadButton } from "@/features/shared/tailwindComponents";
 
@@ -27,60 +26,44 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   };
 
   return (
-    <div>
-      <Tooltip label="Download image or data">
-        <DownloadButton
-          onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
-          aria-label="Download button with an icon"
+    <Menu
+      width="auto"
+      classNames={{
+        item: "data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
+      }}
+      zIndex={1}
+    >
+      <Menu.Target>
+        <Tooltip label="Download image or data">
+          <DownloadButton aria-label="Download button with an icon">
+            <DownloadIcon size="1.25em" />
+          </DownloadButton>
+        </Tooltip>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          onClick={() => downloadImage("svg")}
+          onKeyUp={(e) => e.key === "Enter" && downloadImage("svg")}
         >
-          <DownloadIcon size="1.25em" />
-        </DownloadButton>
-      </Tooltip>
-      {downloadMenuOpen && (
-        <div className="z-10 w-44 absolute bg-base-lightest rounded shadow-md">
-          <ul className="py-1" role="menu">
-            <li>
-              <span
-                role="menuitem"
-                tabIndex={0}
-                onClick={() => downloadImage("svg")}
-                onKeyPress={(e) =>
-                  e.key === "Enter" ? downloadImage("svg") : undefined
-                }
-                className="cursor-pointer block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest"
-              >
-                SVG
-              </span>
-            </li>
-            <li>
-              <span
-                role="menuitem"
-                tabIndex={0}
-                onClick={() => downloadImage("png")}
-                onKeyPress={(e) =>
-                  e.key === "Enter" ? downloadImage("png") : undefined
-                }
-                className="cursor-pointer block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest "
-              >
-                PNG
-              </span>
-            </li>
-            <li>
-              <a
-                href={`data:text/json;charset=utf-8, ${encodeURIComponent(
-                  JSON.stringify(jsonData),
-                )}`}
-                download={`${chartName}.json`}
-                className="block py-2 px-4 text-sm text-accent-contrast-lightest hover:bg-accent-lightest "
-                role="menuitem"
-              >
-                JSON
-              </a>
-            </li>
-          </ul>
-        </div>
-      )}
-    </div>
+          SVG
+        </Menu.Item>
+        <Menu.Item
+          onClick={() => downloadImage("png")}
+          onKeyUp={(e) => e.key === "Enter" && downloadImage("png")}
+        >
+          PNG
+        </Menu.Item>
+        <Menu.Item
+          component="a"
+          href={`data:text/json;charset=utf-8, ${encodeURIComponent(
+            JSON.stringify(jsonData),
+          )}`}
+          download={`${chartName}.json`}
+        >
+          JSON
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 };
 

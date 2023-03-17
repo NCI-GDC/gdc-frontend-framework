@@ -15,26 +15,8 @@ import {
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
 } from "@gff/core";
-import tw from "tailwind-styled-components";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
-
-interface CountsIconProps {
-  $count?: number;
-}
-
-export const CountsIcon = tw.div<CountsIconProps>`
-${(p: CountsIconProps) =>
-  p.$count !== undefined && p.$count > 0 ? "bg-primary" : "bg-transparent"}
-inline-flex
-items-center
-justify-center
-w-8
-h-6
-text-primary-contrast
-font-heading
-rounded-md
-
-`;
+import { CountsIcon } from "../shared/tailwindComponents";
 
 const ProjectsCohortButton = (): JSX.Element => {
   const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>
@@ -83,6 +65,7 @@ const ProjectsCohortButton = (): JSX.Element => {
           ) : null
         }
         onClick={() => setShowCreateCohort(true)}
+        className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
       >
         Create New Cohort
       </Button>
