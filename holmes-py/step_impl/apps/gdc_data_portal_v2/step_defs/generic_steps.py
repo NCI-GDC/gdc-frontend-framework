@@ -198,6 +198,11 @@ def is_text_present_on_the_page(expected_text: str):
     is_text_present = APP.home_page.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
+@step("The cohort bar case count should be <case_count>")
+def is_cohort_bar_case_count_present_on_the_page(case_count: str):
+    is_case_count_present = APP.home_page.is_cohort_bar_case_count_present(case_count)
+    assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
+
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
     is_data_testid_present = APP.home_page.is_data_testid_present(data_testid)

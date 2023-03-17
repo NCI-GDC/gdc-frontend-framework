@@ -2,6 +2,7 @@ from typing import List
 
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -64,6 +65,11 @@ class BasePage:
 
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
+        is_text_present = self.is_visible(locator)
+        return is_text_present
+
+    def is_cohort_bar_case_count_present(self, case_count):
+        locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)
         is_text_present = self.is_visible(locator)
         return is_text_present
 

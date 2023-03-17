@@ -22,3 +22,7 @@ def name_cohort_and_click_button(button_name: str, cohort_name: str):
     APP.home_page.click_button_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_cohort_message(cohort_name)
     assert is_cohort_message_present, f"The text '{cohort_name}' is NOT present"
+
+@step("Set as current cohort")
+def set_as_current_cohort_from_temp_message():
+    APP.cohort_bar.click_set_as_current_cohort_from_temp_message()
