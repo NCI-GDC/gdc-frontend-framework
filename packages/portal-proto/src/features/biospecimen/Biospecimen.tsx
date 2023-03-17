@@ -120,25 +120,24 @@ export const Biospecimen = ({
         Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (
         <>
-          <div className="flex justify-between">
-            <div className="self-end -mb-2">
-              <HeaderTitle>Biospecimen</HeaderTitle>
-            </div>
-            <DropdownWithIcon
-              dropdownElements={[
-                {
-                  title: "TSV (Coming soon)",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
-                },
-                {
-                  title: "JSON (Coming soon)",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
-                },
-              ]}
-              TargetButtonChildren="Download"
-              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
-            />
+          <div className="mb-2">
+            <HeaderTitle>Biospecimen</HeaderTitle>
           </div>
+
+          <DropdownWithIcon
+            dropdownElements={[
+              {
+                title: "TSV (Coming soon)",
+                icon: <DownloadIcon size={16} aria-label="download icon" />,
+              },
+              {
+                title: "JSON (Coming soon)",
+                icon: <DownloadIcon size={16} aria-label="download icon" />,
+              },
+            ]}
+            TargetButtonChildren="Download"
+            LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+          />
 
           <div className="flex mt-2 gap-4">
             <div className="basis-4/12">
