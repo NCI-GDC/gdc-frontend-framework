@@ -52,6 +52,8 @@ export interface Cohort {
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly caseCount?: number; // track case count of a cohort
+
+  readonly history?: FilterSet[]; // track history of cohort
 }
 
 /**
@@ -405,6 +407,7 @@ const newCohort = ({
     modified: modified,
     saved: false,
     modified_datetime: ts.toISOString(),
+    history: [],
   };
 };
 
@@ -449,6 +452,7 @@ interface CopyCohortParams {
  * clearCohortMessage(): clears the current message by setting it to undefined
  * addNewCohortGroups(): adds groups of filters to the current cohort
  * removeCohortGroup(): removes a group of filters from the current cohort
+ * popHistory(): removes the last history entry
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
@@ -590,17 +594,24 @@ const slice = createSlice({
                 caseSetIds: caseSetIds,
                 status: "fulfilled",
               },
+              history: [filters],
             },
           });
-        } else
+        } else {
+          const currentHistory = state.entities[state.currentCohort]?.history;
+
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
               filters: filters,
               modified: true,
               modified_datetime: new Date().toISOString(),
+              history: currentHistory
+                ? [...currentHistory, filters]
+                : [filters],
             },
           });
+        }
       }
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
@@ -657,7 +668,7 @@ const slice = createSlice({
             groups,
           },
         });
-      } else
+      } else {
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
@@ -672,6 +683,7 @@ const slice = createSlice({
             groups,
           },
         });
+      }
     },
     clearCohortFilters: (state) => {
       cohortsAdapter.updateOne(state, {
@@ -699,6 +711,7 @@ const slice = createSlice({
           filters: action.payload || { mode: "and", root: {} },
           modified: false,
           modified_datetime: new Date().toISOString(),
+          history: [],
         },
       });
       state.message = `discardChanges|${
@@ -732,6 +745,18 @@ const slice = createSlice({
         id: state.currentCohort,
         changes: {
           groups: [...(groups !== undefined ? groups : []), ...action.payload],
+        },
+      });
+    },
+    popHistory: (state) => {
+      const history = state.entities[state.currentCohort]?.history;
+      if (history === undefined) {
+        return;
+      }
+      cohortsAdapter.updateOne(state, {
+        id: state.currentCohort,
+        changes: {
+          history: history.slice(0, history.length - 1),
         },
       });
     },
