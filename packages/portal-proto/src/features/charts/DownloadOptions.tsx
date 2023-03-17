@@ -14,8 +14,6 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   chartName,
   jsonData,
 }: ChartDownloadProps) => {
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
-
   const downloadImage = (filetype: "svg" | "png") => {
     Plotly.downloadImage(chartDivId, {
       format: filetype,
