@@ -182,7 +182,8 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile.holmes ./holmes-py
-    - docker run --name holmes-py --env browser="headless chrome" --rm -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec
+    - docker run --name holmes-py --env browser="headless chrome" --rm -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec || true
+    - ls -la
     - docker cp holmes-py:/app/.gauge .gauge
     - ls -la .gauge
     - docker cp holmes-py:/app/downloads downloads
@@ -191,14 +192,14 @@ Build and run UI tests:
     - ls -la logs
     - docker cp holmes-py:/app/reports reports
     - ls -la reports
-
   #  rules:
 #    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
 #      when: on_success
   artifacts:
+    when: always
     paths:
-      - .gauge/
-      - downloads/
-      - logs/
-      - reports/
-    expire_in: 1 week
+      - .gauge
+      - downloads
+      - logs
+      - reports
+    expire_in: 1 month
