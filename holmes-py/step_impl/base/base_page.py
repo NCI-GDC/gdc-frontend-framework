@@ -70,8 +70,11 @@ class BasePage:
 
     def is_cohort_bar_case_count_present(self, case_count):
         locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)
-        is_text_present = self.is_visible(locator)
-        return is_text_present
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     def is_data_testid_present(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)

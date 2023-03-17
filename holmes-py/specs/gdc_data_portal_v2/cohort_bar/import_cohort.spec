@@ -18,9 +18,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Name the cohort "organoid" in the Cohort Bar section
 * "Create" "organoid" in the Cohort Bar section
 * Set as current cohort
-* Pause "1" seconds
 * The cohort bar case count should be "70"
 * Select "Clear All"
+* The cohort bar case count should be "86,513"
 
 ## Import Cohort from Data Portal V1 file
 * Select "Upload" from the Cohort Bar
