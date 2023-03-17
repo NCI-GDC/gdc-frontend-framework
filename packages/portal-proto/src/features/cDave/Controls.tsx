@@ -148,7 +148,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             </label>
             <Switch
               styles={(theme) => ({
-                input: {
+                track: {
                   "&:hover": {
                     backgroundColor: theme.fn.darken(
                       tailwindConfig.theme.extend.colors[
@@ -157,8 +157,14 @@ const FieldControl: React.FC<FieldControlProps> = ({
                       0.05,
                     ),
                   },
-                  "&:checked": {
-                    color:
+                },
+                input: {
+                  "&:checked + .mantine-Switch-track": {
+                    backgroundColor:
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                    borderColor:
                       tailwindConfig.theme.extend.colors[
                         COLOR_MAP[field.field_type]
                       ]?.DEFAULT,
@@ -199,7 +205,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Tooltip>
           <Switch
             styles={(theme) => ({
-              input: {
+              track: {
                 "&:hover": {
                   backgroundColor: theme.fn.darken(
                     tailwindConfig.theme.extend.colors[
@@ -208,8 +214,14 @@ const FieldControl: React.FC<FieldControlProps> = ({
                     0.05,
                   ),
                 },
-                "&:checked": {
+              },
+              input: {
+                "&:checked + .mantine-Switch-track": {
                   backgroundColor:
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                  borderColor:
                     tailwindConfig.theme.extend.colors[
                       COLOR_MAP[field.field_type]
                     ]?.DEFAULT,
@@ -217,7 +229,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               },
             })}
             classNames={{
-              input: "bg-none rounded-lg",
+              input: "bg-red-500 rounded-lg",
             }}
             checked={checked}
             onChange={(e) => {

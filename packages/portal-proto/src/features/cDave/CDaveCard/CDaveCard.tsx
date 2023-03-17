@@ -54,7 +54,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   }, []);
 
   return (
-    <Card shadow="sm" radius="md" ref={(ref) => (targetRef.current = ref)}>
+    <Card
+      shadow="sm"
+      radius="md"
+      ref={(ref) => (targetRef.current = ref)}
+      className="border-1 border-base-lightest"
+    >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
         <div className="flex gap-1">
