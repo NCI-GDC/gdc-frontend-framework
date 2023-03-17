@@ -229,7 +229,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               },
             })}
             classNames={{
-              input: "bg-red-500 rounded-lg",
+              input: "bg-none rounded-lg",
             }}
             checked={checked}
             onChange={(e) => {
