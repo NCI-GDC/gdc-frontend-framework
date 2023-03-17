@@ -150,7 +150,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     label: "text-primary-content-darkest",
                     dropdown: "border-t-8 border-primary-darkest w-24",
                   }}
-                  zIndex={1}
                 >
                   <Menu.Target>
                     <ActionIcon

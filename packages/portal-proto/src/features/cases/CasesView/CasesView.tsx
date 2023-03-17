@@ -141,7 +141,7 @@ export const ContextualCasesView: React.FC = () => {
             </Link>
           ),
           cart: (
-            <Menu position="bottom-start" classNames={classes} zIndex={1}>
+            <Menu position="bottom-start" classNames={classes}>
               <Menu.Target>
                 <Button
                   leftIcon={

@@ -251,7 +251,7 @@ const OncoGridWrapper: React.FC = () => {
             onMouseLeave={() => setShowColorTooltip(false)}
           >
             <Box>
-              <Menu zIndex={1}>
+              <Menu>
                 <Menu.Target>
                   <Button
                     variant={"outline"}
@@ -285,12 +285,7 @@ const OncoGridWrapper: React.FC = () => {
               </Menu>
             </Box>
           </Tooltip>
-          <Menu
-            position="bottom-start"
-            offset={1}
-            transitionDuration={0}
-            zIndex={1}
-          >
+          <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
               <div className="flex">
                 <Tooltip

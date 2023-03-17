@@ -137,7 +137,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
         data-testid="cart-header"
       >
-        <Menu zIndex={1}>
+        <Menu>
           <Menu.Target>
             <Button
               classNames={{
@@ -176,7 +176,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <Menu zIndex={1}>
+        <Menu>
           <Menu.Target>
             <Button
               classNames={{
@@ -340,7 +340,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
           </Menu.Dropdown>
         </Menu>
-        <Menu zIndex={1}>
+        <Menu>
           <Menu.Target>
             <Button
               leftIcon={<TrashIcon />}

@@ -576,7 +576,7 @@ export const FileView: React.FC<FileViewProps> = ({
         <FullWidthDiv>
           <HeaderTitle className="float-left mt-3">File Versions</HeaderTitle>
           <div className="float-right my-2 mr-3">
-            <Menu width="target" zIndex={1}>
+            <Menu width="target">
               <Menu.Target>
                 <Button
                   className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker"

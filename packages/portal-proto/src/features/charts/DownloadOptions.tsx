@@ -29,7 +29,6 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
       classNames={{
         item: "data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
       }}
-      zIndex={1}
     >
       <Menu.Target>
         <Tooltip label="Download image or data">

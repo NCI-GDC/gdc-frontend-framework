@@ -37,6 +37,7 @@ const CardControls: React.FC<CardControlsProps> = ({
               label: "font-heading",
               item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
             }}
+            // this has a different zIndex because table header used in cDave also has a zIndex
             zIndex={100}
           >
             <Menu.Target>
@@ -68,6 +69,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             label: "font-heading",
             item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
           }}
+          // this has a different zIndex because table header used in cDave also has a zIndex
           zIndex={100}
         >
           <Menu.Target>
