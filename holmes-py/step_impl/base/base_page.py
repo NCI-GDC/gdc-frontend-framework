@@ -13,7 +13,7 @@ class GenericLocators:
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
-    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'span:text("{button_text_name}")'
+    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
 
 class BasePage:
     def __init__(self, driver) -> None:

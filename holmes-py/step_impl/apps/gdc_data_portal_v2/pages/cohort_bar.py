@@ -24,10 +24,6 @@ class CohortBar(BasePage):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
         self.click(locator)
 
-    # Clicks a button based on its text name
-    def click_cohort_bar_named_button(self, button_text_name:str):
-        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name))
-
     # After import cohort button has been clicked, we make sure the correct modal has loaded.
     # Then, we click the 'browse' button to open the file explorer.
     def click_import_cohort_browse(self, button_text_name:str):

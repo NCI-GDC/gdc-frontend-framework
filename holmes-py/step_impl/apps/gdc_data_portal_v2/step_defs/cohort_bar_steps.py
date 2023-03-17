@@ -19,6 +19,6 @@ def name_cohort_and_click_button(cohort_name: str):
 
 @step("<button_name> <cohort_name> in the Cohort Bar section")
 def name_cohort_and_click_button(button_name: str, cohort_name: str):
-    APP.cohort_bar.click_cohort_bar_named_button(button_name)
+    APP.home_page.click_button_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_cohort_message(cohort_name)
     assert is_cohort_message_present, f"The text '{cohort_name}' is NOT present"
