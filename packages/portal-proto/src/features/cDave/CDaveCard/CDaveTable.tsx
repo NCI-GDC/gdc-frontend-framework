@@ -69,7 +69,13 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                   key={`${fieldName}-${key}`}
                 >
                   <td className="pl-2 py-1">
-                    <Checkbox color="accent" size="xs" className="pt-1" />
+                    <Checkbox
+                      color="accent"
+                      size="xs"
+                      className="pt-1"
+                      data-testid={`CDave-${fieldName}-checkbox`}
+                      aria-label={`CDave table ${fieldName} checkbox`}
+                    />
                   </td>
                   <td>
                     <div className="pl-2">{key}</div>

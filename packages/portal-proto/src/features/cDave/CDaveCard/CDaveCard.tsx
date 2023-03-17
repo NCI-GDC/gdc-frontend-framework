@@ -77,6 +77,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                   : "border-primary"
               }
               onClick={() => setChartType("histogram")}
+              aria-label={`Select ${fieldName} histogram plot`}
               disabled={noData}
             >
               <BarChartIcon
@@ -97,6 +98,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                   : "border-primary text-primary-content"
               }
               onClick={() => setChartType("survival")}
+              aria-label={`Select ${fieldName} survival plot`}
               disabled={noData}
             >
               <SurvivalChartIcon
@@ -117,6 +119,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             <ActionIcon
               onClick={() => updateFields(field)}
               className="border-primary text-primary-content"
+              aria-label={`Remove ${fieldName} card`}
             >
               <CloseIcon className="text-primary" />
             </ActionIcon>
