@@ -5,7 +5,6 @@ import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { CategoricalBins } from "../types";
-
 import { COLOR_MAP } from "../constants";
 import { flattenBinnedData } from "../utils";
 
@@ -109,6 +108,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
+
               <Menu.Dropdown>
                 <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
                   SVG (Coming soon)
