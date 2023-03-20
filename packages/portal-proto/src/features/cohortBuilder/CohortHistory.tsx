@@ -24,11 +24,17 @@ const convertHistoryOperationToComponent = (operation: Operation) => {
       {" "}
       {isIncludes(operation) ? (
         <div className="flex flex-row items-center ">
-          <Text>{fieldNameToTitle(operation.field)}</Text>{" "}
-          <Badge color="primary">{operation.operands}</Badge>{" "}
+          <Text className="pr-1 border-r-2 border-primary mr-1 ">
+            {fieldNameToTitle(operation.field)}
+          </Text>{" "}
+          <Badge variant="filled" color="primary">
+            {operation.operands}
+          </Badge>{" "}
         </div>
-      ) : (
+      ) : isOperation(operation) ? (
         <Text>{operation.operator}</Text>
+      ) : (
+        <Text>{operation}</Text>
       )}
     </div>
   );

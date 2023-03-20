@@ -599,7 +599,7 @@ const slice = createSlice({
 
           const history = {
             timestamp: new Date().toISOString(),
-            operation: "add filter",
+            operation: "update",
             filters: filters,
             change: action.payload.operation,
           } as CohortHistory;
@@ -622,7 +622,7 @@ const slice = createSlice({
           const currentHistory = state.entities[state.currentCohort]?.history;
           const history = {
             timestamp: new Date().toISOString(),
-            operation: "add filter",
+            operation: "update filter",
             filters: filters,
             change: action.payload.operation,
           } as CohortHistory;
