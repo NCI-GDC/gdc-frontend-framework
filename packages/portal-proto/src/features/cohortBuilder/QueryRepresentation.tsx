@@ -280,7 +280,7 @@ const IncludeExcludeQueryElement: React.FC<
                 >
                   <OverflowTooltippedLabel
                     label={value}
-                    className="flex-grow font-heading text-md font-content-noto"
+                    className="flex-grow text-md font-content-noto"
                   >
                     {x.label}
                   </OverflowTooltippedLabel>
