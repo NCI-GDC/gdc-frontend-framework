@@ -519,10 +519,14 @@ export const FileView: React.FC<FileViewProps> = ({
               associated_entities={file?.associated_entities}
             />
           ) : (
-            // need to fix here (it will not have header anymore for the case below)
-            <h3 className="p-2 mx-4 text-primary-content-darker">
-              No cases or biospecimen found.
-            </h3>
+            <>
+              <div className="mt-3.5">
+                <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
+              </div>
+              <h3 className="p-2 mx-4 text-primary-content-darker">
+                No cases or biospecimen found.
+              </h3>
+            </>
           )}
         </DivWithMargin>
 
