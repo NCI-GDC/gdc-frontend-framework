@@ -366,7 +366,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Cases = (
     <span className="flex items-center gap-1">
-      <FaUser size={24} />
+      <div className="text-[1rem] xl:text-2xl">
+        <FaUser />
+      </div>
+
       <SingularOrPluralSpan
         count={projectData.summary?.case_count}
         title="Case"
@@ -376,7 +379,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Files = (
     <span className="flex items-center gap-1">
-      <FaFile size={24} />
+      <div className="text-[1rem] xl:text-2xl">
+        <FaFile />
+      </div>
+
       <SingularOrPluralSpan
         count={projectData.summary?.file_count}
         title="File"
@@ -386,7 +392,10 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit size={24} />
+      <div className="text-[1rem] xl:text-2xl">
+        <FaEdit />
+      </div>
+
       <span>
         {addLinkValue()}{" "}
         {projectData.annotation.count > 1 ? "Annotations" : "Annotation"}
@@ -472,7 +481,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
           </div>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+          <div className="flex items-center gap-2 text-[1rem] xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase">
             Total of {Cases} {Files} {Annotations}
           </div>
         }
@@ -480,9 +489,9 @@ Data Transfer Tool is recommended for transferring large volumes of data."
 
       <div className={`mx-4 ${projectData.isModal ? "mt-4" : "mt-36"} `}>
         <div className="mt-8">
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-8">
             <HeaderTitle>Summary</HeaderTitle>
-            {message && <div className="text-sm">{message}</div>}
+            {message && <div className="text-sm text-right">{message}</div>}
           </div>
           <div className="flex">
             <div className="basis-1/2">
