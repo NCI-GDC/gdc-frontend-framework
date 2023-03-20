@@ -514,7 +514,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
 
           {(projectData?.summary?.data_categories ||
             projectData?.summary?.experimental_strategies) && (
-            <div className="flex gap-4 mt-8 mb-14">
+            <div className="flex gap-8 mt-8 mb-14">
               {projectData?.summary?.data_categories && (
                 <CategoryTableSummary
                   title="Cases and File Counts by Data Category"
