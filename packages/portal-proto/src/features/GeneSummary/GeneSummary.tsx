@@ -205,14 +205,14 @@ const GeneView = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-6"}`}>
+          <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
             {contextSensitive && (
               <div className="my-6">
                 <ContextSensitiveBanner />
               </div>
             )}
             <div className="text-primary-content">
-              <div className="flex gap-6">
+              <div className="flex gap-8">
                 <div className="flex-1">
                   <SummaryCard tableData={formatDataForSummary()} />
                 </div>
@@ -227,7 +227,7 @@ const GeneView = ({
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
-              <div className="grid grid-cols-2 gap-4 mt-2 mb-16">
+              <div className="grid grid-cols-2 gap-8 mt-2 mb-16">
                 <SSMPlot
                   page="gene"
                   gene={gene_id}

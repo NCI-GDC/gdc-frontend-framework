@@ -410,11 +410,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             leftIcon={<FaShoppingCart />}
-            className={`${
-              isAllFilesInCart
-                ? "bg-primary-darkest text-base-max"
-                : "text-primary bg-base-lightest"
-            } hover:bg-primary-darkest hover:text-base-max`}
+            className="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(
