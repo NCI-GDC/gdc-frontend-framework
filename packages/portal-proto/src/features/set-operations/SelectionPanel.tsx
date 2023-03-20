@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Checkbox, Badge } from "@mantine/core";
+import { Checkbox, Badge, Tooltip } from "@mantine/core";
 import {
   useCoreSelector,
   selectAvailableCohorts,
   selectSetsByType,
+  useGeneSetCountQuery,
+  useSsmSetCountQuery,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -11,7 +13,25 @@ import {
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 
-const SelectionPanel = () => {
+const GeneCountCell = ({ setId }: { setId: string }): JSX.Element => {
+  const { data, isSuccess } = useGeneSetCountQuery({ setId });
+  return (
+    <Badge radius={"xs"} variant="outline">
+      {isSuccess ? data.toLocaleString() : "..."}
+    </Badge>
+  );
+};
+
+const MutationCountCell = ({ setId }: { setId: string }): JSX.Element => {
+  const { data, isSuccess } = useSsmSetCountQuery({ setId });
+  return (
+    <Badge radius={"xs"} variant="outline">
+      {isSuccess ? data.toLocaleString() : "..."}
+    </Badge>
+  );
+};
+
+const SelectionPanel = (): JSX.Element => {
   const [selectedEntites, setSelectedEntities] = useState<string[]>([]);
   const [selectedEntityType, setSelectedEntityType] = useState<
     "cohort" | "genes" | "mutations" | undefined
@@ -39,31 +59,18 @@ const SelectionPanel = () => {
     }
   }, [selectedEntites]);
 
-  const tableData = useMemo(() => {
-    return [
-      ...availableCohorts.map((cohort) => ({
-        select: (
+  const GeneSelectCell = ({ setId }: { setId: string }): JSX.Element => {
+    const { data, isSuccess } = useGeneSetCountQuery({ setId });
+    const count = isSuccess ? data : 0;
+    return (
+      <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
+        <span>
           <Checkbox
             disabled={
-              selectedEntityType !== undefined &&
-              selectedEntityType !== "cohort"
-            }
-            checked={selectedEntites.includes(cohort.id)}
-            onChange={() => {
-              selectEntity(cohort.id);
-              setSelectedEntityType("cohort");
-            }}
-          />
-        ),
-        entityType: "Cohort",
-        name: cohort.name,
-        count: <Badge>{cohort.caseCount.toLocaleString()}</Badge>,
-      })),
-      ...Object.entries(geneSets).map(([setId, setName]) => ({
-        select: (
-          <Checkbox
-            disabled={
-              selectedEntityType !== undefined && selectedEntityType !== "genes"
+              (selectedEntityType !== undefined &&
+                selectedEntityType !== "genes") ||
+              count === 0 ||
+              (selectedEntites.length === 3 && !selectedEntites.includes(setId))
             }
             checked={selectedEntites.includes(setId)}
             onChange={() => {
@@ -71,17 +78,24 @@ const SelectionPanel = () => {
               setSelectedEntityType("genes");
             }}
           />
-        ),
-        entityType: "Genes",
-        name: setName,
-        count: 0,
-      })),
-      ...Object.entries(mutationSets).map(([setId, setName]) => ({
-        select: (
+        </span>
+      </Tooltip>
+    );
+  };
+
+  const MutationSelectCell = ({ setId }: { setId: string }): JSX.Element => {
+    const { data, isSuccess } = useSsmSetCountQuery({ setId });
+    const count = isSuccess ? data : 0;
+
+    return (
+      <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
+        <span>
           <Checkbox
             disabled={
-              selectedEntityType !== undefined &&
-              selectedEntityType !== "mutations"
+              (selectedEntityType !== undefined &&
+                selectedEntityType !== "mutations") ||
+              count === 0 ||
+              (selectedEntites.length === 3 && !selectedEntites.includes(setId))
             }
             checked={selectedEntites.includes(setId)}
             onChange={() => {
@@ -89,10 +103,53 @@ const SelectionPanel = () => {
               setSelectedEntityType("mutations");
             }}
           />
+        </span>
+      </Tooltip>
+    );
+  };
+
+  const tableData = useMemo(() => {
+    return [
+      ...availableCohorts.map((cohort) => ({
+        select: (
+          <Tooltip label={"Cohort is empty"} disabled={cohort.caseCount > 0}>
+            <span>
+              <Checkbox
+                disabled={
+                  (selectedEntityType !== undefined &&
+                    selectedEntityType !== "cohort") ||
+                  cohort.caseCount === 0 ||
+                  (selectedEntites.length === 3 &&
+                    !selectedEntites.includes(cohort.id))
+                }
+                checked={selectedEntites.includes(cohort.id)}
+                onChange={() => {
+                  selectEntity(cohort.id);
+                  setSelectedEntityType("cohort");
+                }}
+              />
+            </span>
+          </Tooltip>
         ),
+        entityType: "Cases",
+        name: cohort.name,
+        count: (
+          <Badge radius={"xs"} variant="outline">
+            {cohort.caseCount.toLocaleString()}
+          </Badge>
+        ),
+      })),
+      ...Object.entries(geneSets).map(([setId, setName]) => ({
+        select: <GeneSelectCell setId={setId} />,
+        entityType: "Genes",
+        name: setName,
+        count: <GeneCountCell setId={setId} />,
+      })),
+      ...Object.entries(mutationSets).map(([setId, setName]) => ({
+        select: <MutationSelectCell setId={setId} />,
         entityType: "Mutations",
         name: setName,
-        count: 0,
+        count: <MutationCountCell setId={setId} />,
       })),
     ];
   }, [
@@ -101,6 +158,9 @@ const SelectionPanel = () => {
     mutationSets,
     selectedEntites,
     selectedEntityType,
+    //GeneSelectCell,
+    //MutationSelectCell,
+    //selectEntity,
   ]);
 
   const {
