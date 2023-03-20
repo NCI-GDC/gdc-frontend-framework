@@ -44,6 +44,7 @@ import {
   getSlideCountFromCaseSummary,
 } from "./utils";
 import { BasicTable } from "@/components/Tables/BasicTable";
+import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -388,7 +389,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const Files = (
     <span className="flex items-center gap-1">
       <FaFile size={24} />
-      <span>{filesCountTotal?.toLocaleString()} Files</span>
+      <SingularOrPluralSpan count={filesCountTotal} title="File" />
     </span>
   );
 

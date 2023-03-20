@@ -27,6 +27,7 @@ import {
 } from "../shared/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
+import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -366,14 +367,20 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const Cases = (
     <span className="flex items-center gap-1">
       <FaUser size={24} />
-      <span>{projectData.summary?.case_count.toLocaleString()} Cases</span>
+      <SingularOrPluralSpan
+        count={projectData.summary?.case_count}
+        title="Case"
+      />
     </span>
   );
 
   const Files = (
     <span className="flex items-center gap-1">
       <FaFile size={24} />
-      <span>{projectData.summary?.file_count.toLocaleString()} Files</span>
+      <SingularOrPluralSpan
+        count={projectData.summary?.file_count}
+        title="File"
+      />
     </span>
   );
 

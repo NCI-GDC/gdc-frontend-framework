@@ -456,7 +456,7 @@ export const FileView: React.FC<FileViewProps> = ({
       },
     ]);
 
-  const RightSideElementForHeader = () => (
+  const LeftSideElementForHeader = () => (
     <div className="flex gap-4">
       {!isFileInCart ? (
         <AddToCartButton files={mapGdcFileToCartFile([file])} />
@@ -485,7 +485,7 @@ export const FileView: React.FC<FileViewProps> = ({
         iconText="fl"
         headerTitle={file.file_name}
         isModal={isModal}
-        rightElement={<RightSideElementForHeader />}
+        leftElement={<LeftSideElementForHeader />}
       />
       <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
         <div className="flex gap-8">
