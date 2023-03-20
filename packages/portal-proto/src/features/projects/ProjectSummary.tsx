@@ -475,7 +475,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
         <div className="mt-8">
           <div className="flex justify-between">
             <HeaderTitle>Summary</HeaderTitle>
-            <div className="text-sm">{message}</div>
+            {message && <div className="text-sm">{message}</div>}
           </div>
           <div className="flex">
             <div className="basis-1/2">
