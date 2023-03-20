@@ -1,14 +1,12 @@
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
 import SetOperationsDemo from "../set-operations/SetOperationsDemo";
-import { DemoUtil } from "./DemoUtil";
+import SelectionPanel from "../set-operations/SelectionPanel";
 
 const SetOperationsApp: FC = () => {
   const isDemoMode = useIsDemoApp();
 
-  return (
-    <>{isDemoMode ? <SetOperationsDemo /> : <DemoUtil text="Coming Soon!" />}</>
-  );
+  return <>{isDemoMode ? <SetOperationsDemo /> : <SelectionPanel />}</>;
 };
 
 export default SetOperationsApp;

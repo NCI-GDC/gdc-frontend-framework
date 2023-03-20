@@ -22,6 +22,7 @@ import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import SelectionPanel from "@/features/set-operations/SelectionPanel";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -328,11 +329,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setActiveApp={handleAppSelected}
               onDemoApp={isDemoMode}
             />
+            {/*
             <AdditionalCohortSelection
               app={app}
               setOpen={setCohortSelectionOpen}
               setActiveApp={handleAppSelected}
             />
+          */}
+            <SelectionPanel />
           </div>
         )}
       </CSSTransition>
