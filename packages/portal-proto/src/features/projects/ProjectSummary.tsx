@@ -381,7 +381,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <Menu width="target">
+            <Menu width="150px">
               <Menu.Target>
                 <Button
                   variant="outline"

@@ -349,18 +349,31 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       }
     }, [sortBy]);
     //TODO have focus stay on selection, also only reload table data not headers
+
+    const thStyleColumnSorting = (column: any) =>
+      `px-2 py-3 border-base-lighter font-heading text-base-contrast-max whitespace-nowrap ${
+        column.highlighted ? "bg-nci-purple-lightest" : "bg-base-max"
+      } ${
+        column.canSort &&
+        `${
+          column.highlighted
+            ? "hover:bg-nci-purple-lighter"
+            : "hover:bg-primary-lightest"
+        } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1`
+      }`;
+
     return (
       <table
         {...getTableProps()}
-        className="w-full text-left font-content shadow-xs"
+        className="w-full text-left font-content shadow-xs text-sm"
       >
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
-        <thead>
+        <thead className="h-14">
           {headerGroups.map((headerGroup, key) => (
             <tr
-              className={`font-heading text-xs font-bold text-base-contrast-max py-2 whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter`}
+              className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
               {...headerGroup.getHeaderGroupProps()}
               key={`hrow-${key}`}
             >
@@ -368,7 +381,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 return columnSorting === "none" ? (
                   <th
                     {...column.getHeaderProps()}
-                    className={`px-2 pt-1 pb-1 font-heading  ${
+                    className={`px-2 py-3 font-heading ${
                       column.highlighted
                         ? "bg-nci-purple-lightest"
                         : "bg-base-max"
@@ -380,18 +393,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 ) : (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={`px-2 pt-1 pb-1 border-base-lighter border-b-2 border-t-1 font-heading text-xs font-bold ${
-                      column.highlighted
-                        ? "bg-nci-purple-lightest"
-                        : "bg-base-max"
-                    } text-base-contrast-max whitespace-nowrap ${
-                      column.canSort &&
-                      `${
-                        column.highlighted
-                          ? "hover:bg-nci-purple-lighter"
-                          : "hover:bg-primary-lightest"
-                      } focus:bg-primary-max focus:outline focus:outline-primary-lighter outline-offset-[-3px] outline-1 pb-0.5`
-                    }`}
+                    className={thStyleColumnSorting(column)}
                     key={`hcolumn-${key}`}
                     aria-sort={
                       column.isSorted
@@ -410,28 +412,31 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     }}
                     role={column.canSort ? "button" : "columnheader"}
                   >
-                    {column.render("Header")}
-                    {column.canSort && (
-                      <div
-                        key={`span-${key}`}
-                        className="inline-block text-xs pl-3 align-middle text-base-light"
-                      >
-                        <BsCaretUpFill
-                          className={
-                            column.isSorted && !column.isSortedDesc
-                              ? "text-primary"
-                              : ""
-                          }
-                        />
-                        <BsCaretDownFill
-                          className={`${
-                            column.isSorted && column.isSortedDesc
-                              ? "text-primary"
-                              : ""
-                          } relative top-[-2px]`}
-                        />
-                      </div>
-                    )}
+                    <div className="flex items-center">
+                      <span>{column.render("Header")}</span>
+
+                      {column.canSort && (
+                        <div
+                          key={`span-${key}`}
+                          className="inline-block text-xs pl-3 align-middle text-base-light"
+                        >
+                          <BsCaretUpFill
+                            className={
+                              column.isSorted && !column.isSortedDesc
+                                ? "text-primary"
+                                : ""
+                            }
+                          />
+                          <BsCaretDownFill
+                            className={`${
+                              column.isSorted && column.isSortedDesc
+                                ? "text-primary"
+                                : ""
+                            } relative top-[-2px]`}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </th>
                 );
               })}
@@ -455,11 +460,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 <Fragment key={`row-${index}`}>
                   <tr
                     {...row.getRowProps()}
-                    className={
-                      index % 2 === 1
-                        ? "bg-base-max border-1 border-base-lighter"
-                        : "bg-base-lightest border-1 border-base-lighter"
+                    className={`border border-base-lighter ${
+                      index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                     }
+                    `}
                     key={`row-${index}`}
                   >
                     {row.cells.map((cell, key) => {
@@ -467,7 +471,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         <td
                           {...cell.getCellProps()}
                           key={`column-${key}`}
-                          className="px-2 py-0 text-xs text-content"
+                          className="px-2 py-2.5"
                         >
                           {cell.render("Cell")}
                         </td>
@@ -542,7 +546,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p className={"text-heading text-sm"}>Showing {outputString ?? "--"}</p>
+      <p className="text-heading text-sm">Showing {outputString ?? "--"}</p>
     );
   };
 
@@ -562,93 +566,94 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   return (
     <div className="grow overflow-hidden">
-      <div className="flex">
-        {additionalControls && (
-          <div className="flex-auto h-10">{additionalControls}</div>
-        )}
-        <div className="flex flex-row items-center">
-          {search?.enabled && (
-            <div className="flex flex-row w-max mb-2">
-              <TextInput
-                icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
-                placeholder={search.placeholder ?? "Search"}
-                aria-label="Table Search Input"
-                classNames={{
-                  input:
-                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
-                  wrapper: "w-72 mr-1",
-                }}
-                size="sm"
-                rightSection={
-                  searchTerm.length > 0 && (
-                    <MdClose
-                      onClick={() => {
-                        setSearchTerm("");
-                        handleChange({
-                          newSearch: "",
-                        });
-                      }}
-                      className="cursor-pointer"
-                    ></MdClose>
-                  )
-                }
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  handleChange({
-                    newSearch: e.target.value,
-                  });
-                }}
-              />
-            </div>
-          )}
-          {showControls && (
-            <Popover
-              opened={showColumnMenu}
-              onClose={() => setShowColumnMenu(false)}
-              position="bottom"
-              transition="scale"
-              withArrow
-            >
-              <Popover.Target>
-                <button
-                  onClick={() => {
-                    setShowColumnMenu(!showColumnMenu);
+      <div className="flex justify-between">
+        {additionalControls && <div>{additionalControls}</div>}
+        {(search?.enabled || showControls) && (
+          <div className="flex items-center">
+            {search?.enabled && (
+              <div className="flex mb-2 gap-2">
+                <TextInput
+                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  placeholder={search.placeholder ?? "Search"}
+                  aria-label="Table Search Input"
+                  classNames={{
+                    input:
+                      "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                    wrapper: "w-72 mr-1",
                   }}
-                >
-                  <Box className="border-1 border-base p-2 mb-2 rounded-md mx-1 hover:cursor-pointer text-primary bg-base-max border-primary">
-                    {!showColumnMenu ? <BsList /> : <BsX size={"17px"} />}
-                  </Box>
-                </button>
-              </Popover.Target>
-              <Popover.Dropdown>
-                <div className={`w-fit`}>
-                  {columns.length > 0 && showColumnMenu && (
-                    <div className="mr-0 ml-2">
-                      <DndProvider backend={HTML5Backend}>
-                        <DragDrop
-                          listOptions={columns} // here....
-                          handleColumnChange={handleColumnChange}
-                          columnSearchTerm={""}
-                        />
-                      </DndProvider>
-                    </div>
-                  )}
-                </div>
-              </Popover.Dropdown>
-            </Popover>
-          )}
-        </div>
+                  size="sm"
+                  rightSection={
+                    searchTerm.length > 0 && (
+                      <MdClose
+                        onClick={() => {
+                          setSearchTerm("");
+                          handleChange({
+                            newSearch: "",
+                          });
+                        }}
+                        className="cursor-pointer"
+                      />
+                    )
+                  }
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    handleChange({
+                      newSearch: e.target.value,
+                    });
+                  }}
+                />
+                {showControls && (
+                  <Popover
+                    opened={showColumnMenu}
+                    onClose={() => setShowColumnMenu(false)}
+                    position="bottom"
+                    transition="scale"
+                    withArrow
+                    zIndex={1}
+                  >
+                    <Popover.Target>
+                      <button
+                        onClick={() => {
+                          setShowColumnMenu(!showColumnMenu);
+                        }}
+                      >
+                        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                        </Box>
+                      </button>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      <div className={`w-fit`}>
+                        {columns.length > 0 && showColumnMenu && (
+                          <div className="mr-0 ml-2">
+                            <DndProvider backend={HTML5Backend}>
+                              <DragDrop
+                                listOptions={columns} // here....
+                                handleColumnChange={handleColumnChange}
+                                columnSearchTerm={""}
+                              />
+                            </DndProvider>
+                          </div>
+                        )}
+                      </div>
+                    </Popover.Dropdown>
+                  </Popover>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="overflow-y-auto w-full relative">
         <LoadingOverlay visible={showLoading} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
-        <div className="flex flex-row items-center text-content justify-between	bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
-            <div className="flex flex-row items-center m-auto ml-0">
-              <span className="my-auto mx-1 text-xs">Show</span>
+            <div className="flex flex-row items-center m-auto ml-0 text-sm">
+              <span className="my-auto mx-1">Show</span>
               <Select
                 size="xs"
                 radius="md"
@@ -663,9 +668,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
-                aria-label={"select page size"}
+                aria-label="select page size"
               />
-              <span className="my-auto mx-1 text-xs">Entries</span>
+              <span className="my-auto mx-1">Entries</span>
             </div>
           )}
 

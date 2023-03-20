@@ -13,7 +13,7 @@ import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { CasesCohortButton, CountsIcon } from "./CasesCohortButton";
+import { CasesCohortButton } from "./CasesCohortButton";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
@@ -24,6 +24,7 @@ import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
+import { CountsIcon } from "@/features/shared/tailwindComponents";
 
 const useStyles = createStyles((theme) => ({
   item: {

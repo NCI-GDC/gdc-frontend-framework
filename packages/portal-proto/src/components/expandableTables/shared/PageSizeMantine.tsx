@@ -22,6 +22,7 @@ const PageSizeMantine: React.FC<PageSizeProps> = ({
         classNames={{
           root: "w-16 font-heading",
         }}
+        aria-label="select page size"
       />
     </div>
   );

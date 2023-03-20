@@ -1,5 +1,5 @@
-import { animated } from "@react-spring/web";
 import { Text, Tooltip } from "@mantine/core";
+import { animated } from "@react-spring/web";
 
 export const TableHeader = ({
   title,
@@ -13,20 +13,16 @@ export const TableHeader = ({
   return (
     <div className={className}>
       <Tooltip
-        label={<Text className="text-xs whitespace-pre-line">{tooltip}</Text>}
         disabled={!tooltip?.length}
-        width={300}
+        label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
+        width={200}
+        multiline
         withArrow
-        arrowSize={6}
         transition="fade"
         transitionDuration={200}
-        multiline
-        classNames={{
-          tooltip:
-            "bg-base-lightest text-base-contrast-lightest font-heading text-left",
-        }}
+        position="bottom-start"
       >
-        <div className="font-heading text-left text-xs whitespace-pre-line">
+        <div className="font-heading text-left text-sm whitespace-pre-line">
           {title}
         </div>
       </Tooltip>
@@ -46,22 +42,18 @@ export const TableCell = ({
   tooltip: string;
 }): JSX.Element => {
   return (
-    <div>
-      <>
-        <animated.div
-          className={`font-content text-center text-xs ${
-            anchor
-              ? `text-activeColor underline hover:cursor-pointer font-bold`
-              : ``
-          }`}
-        >
-          <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
-            <div>
-              {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
-            </div>
-          </Tooltip>
-        </animated.div>
-      </>
-    </div>
+    <animated.div
+      className={`flex justify-start font-content ${
+        anchor
+          ? `text-activeColor underline hover:cursor-pointer font-bold`
+          : ``
+      }`}
+    >
+      <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
+        <span>
+          {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
+        </span>
+      </Tooltip>
+    </animated.div>
   );
 };

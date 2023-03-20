@@ -655,6 +655,35 @@ const v2AccentCoolContent = {
   min: "#061215",
 };
 
+// got these from v1 (portal-ui)
+// https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/theme/versions/active.ts#L88
+const vep = {
+  high: "rgb(185, 36, 36)",
+  moderate: "#634d0c",
+  modifier: "#634d0c",
+  low: "#015c0a",
+};
+
+const sift = {
+  deleterious: "rgb(185, 36, 36)",
+  deleterious_low_confidence: "#634d0c",
+  tolerated: "#634d0c",
+  tolerated_low_confidence: "#015c0a",
+};
+
+const polyphen = {
+  benign: "#015c0a",
+  possibly_damaging: "#634d0c",
+  probably_damaging: "rgb(185, 36, 36)",
+  unknown: "rgb(107,98,98)",
+};
+
+const impact = {
+  vep,
+  sift,
+  polyphen,
+};
+
 module.exports = {
   important: "#__next",
   content: [
@@ -890,6 +919,7 @@ module.exports = {
             "chart-contrast": nciTealContrast,
             utility: utility,
             "utility-contrast": utilityContrast,
+            impact: impact,
           },
         },
       },

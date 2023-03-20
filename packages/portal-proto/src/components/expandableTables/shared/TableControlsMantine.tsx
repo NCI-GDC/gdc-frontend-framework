@@ -1,6 +1,7 @@
 import React from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { Box, Group, Menu, Button, Text } from "@mantine/core";
+import { Group, Menu, Button, Text } from "@mantine/core";
+import { CountsIcon } from "@/features/shared/tailwindComponents";
 
 interface ControlOption {
   label: string;
@@ -28,22 +29,18 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
     ({ value }: ControlOption) => value === "placeholder",
   );
   return (
-    <div className="flex flex-row items-center mt-3">
-      <Menu shadow="md">
+    <div className="flex items-center mt-2 gap-2">
+      <Menu shadow="md" width="target">
         <Menu.Target>
           <Button
             variant="outline"
             color="primary"
             className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
-            rightIcon={<MdOutlineArrowDropDown />}
+            rightIcon={<MdOutlineArrowDropDown size={20} />}
             leftIcon={
               numSelected > 0 ? (
-                <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
-                  {numSelected}
-                </Box>
-              ) : (
-                <Box className="w-7 h-7" />
-              )
+                <CountsIcon $count={numSelected}>{numSelected}</CountsIcon>
+              ) : null
             }
           >
             {buttonLabel[0].label}
@@ -76,7 +73,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           )}
         </Menu.Dropdown>
       </Menu>
-      <Group className="mx-2">{additionalControls}</Group>
+      <Group>{additionalControls}</Group>
       <div>
         {
           <Text className="font-heading font-bold text-md">

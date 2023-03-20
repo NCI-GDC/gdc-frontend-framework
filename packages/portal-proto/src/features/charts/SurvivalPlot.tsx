@@ -9,10 +9,8 @@ import {
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
-import {
-  MdDownload as DownloadIcon,
-  MdRestartAlt as ResetIcon,
-} from "react-icons/md";
+import { MdRestartAlt as ResetIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
@@ -429,7 +427,6 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             position="bottom-start"
             offset={1}
             transitionDuration={0}
-            zIndex={10}
             classNames={{
               item: "hover:bg-base-lighter hover:text-base-lighter-contrast",
             }}

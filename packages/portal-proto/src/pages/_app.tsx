@@ -167,6 +167,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   },
                 },
               },
+              Menu: {
+                defaultProps: { zIndex: 1 },
+              },
               Modal: {
                 defaultProps: {
                   zIndex: 400,

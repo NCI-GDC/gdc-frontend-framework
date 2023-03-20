@@ -80,25 +80,23 @@ export const ClinicalSummary = ({
 
   return (
     <div className="max-w-full">
-      <div className="flex justify-between">
-        <div className="self-end -mb-2">
-          <HeaderTitle>Clinical</HeaderTitle>
-        </div>
-        <DropdownWithIcon
-          dropdownElements={[
-            {
-              title: "TSV (Coming soon)",
-              icon: <DownloadIcon size={16} aria-label="download icon" />,
-            },
-            {
-              title: "JSON (Coming soon)",
-              icon: <DownloadIcon size={16} aria-label="download icon" />,
-            },
-          ]}
-          TargetButtonChildren="Download"
-          LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
-        />
+      <div className="mb-2">
+        <HeaderTitle>Clinical</HeaderTitle>
       </div>
+      <DropdownWithIcon
+        dropdownElements={[
+          {
+            title: "TSV (Coming soon)",
+            icon: <DownloadIcon size={16} aria-label="download icon" />,
+          },
+          {
+            title: "JSON (Coming soon)",
+            icon: <DownloadIcon size={16} aria-label="download icon" />,
+          },
+        ]}
+        TargetButtonChildren="Download"
+        LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+      />
 
       <Tabs
         variant="pills"
