@@ -427,7 +427,6 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             position="bottom-start"
             offset={1}
             transitionDuration={0}
-            zIndex={10}
             classNames={{
               item: "hover:bg-base-lighter hover:text-base-lighter-contrast",
             }}
