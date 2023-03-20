@@ -356,6 +356,7 @@ export const FileView: React.FC<FileViewProps> = ({
       {
         field: "file_name",
         name: "Name",
+        modifier: (v) => <span className="break-all">{v}</span>,
       },
       {
         field: "access",
@@ -486,6 +487,7 @@ export const FileView: React.FC<FileViewProps> = ({
         headerTitle={file.file_name}
         isModal={isModal}
         leftElement={<LeftSideElementForHeader />}
+        isFile={true}
       />
       <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
         <div className="flex gap-8">

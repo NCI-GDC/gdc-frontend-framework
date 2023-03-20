@@ -4,8 +4,14 @@ export const HeaderTitle = tw.h2`
 text-lg text-primary-content-darkest uppercase tracking-wide font-medium mb-1
 `;
 
-export const SummaryHeaderTitle = tw.h2`
-text-[28px] leading-[34px] text-base-lightest uppercase tracking-wide font-medium
+export const SummaryHeaderTitle = tw.h2<{ $isFileSummary: boolean }>`
+${(p: { $isFileSummary: boolean }) =>
+  p.$isFileSummary ? "text-lg" : "text-[28px]"}
+leading-[34px]
+text-base-lightest
+uppercase
+tracking-wide
+font-medium
 `;
 
 export const PercentBar = tw.div`

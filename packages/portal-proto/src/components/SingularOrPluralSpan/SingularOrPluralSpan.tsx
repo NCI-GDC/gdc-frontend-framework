@@ -4,7 +4,7 @@ export const SingularOrPluralSpan = ({
 }: {
   count: number;
   title: string;
-}) => {
+}): JSX.Element => {
   const updatedTitle = count > 1 ? `${title}s` : title;
   return (
     <span>
