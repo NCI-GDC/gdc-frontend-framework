@@ -37,6 +37,8 @@ const CardControls: React.FC<CardControlsProps> = ({
               label: "font-heading",
               item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
             }}
+            // this has a different zIndex because table header used in cDave also has a zIndex
+            zIndex={100}
           >
             <Menu.Target>
               <Button
@@ -57,7 +59,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             </Menu.Dropdown>
           </Menu>
           <ButtonTooltip label=" " comingSoon={true}>
-            <Button className="bg-base-max text-base-content-darker border-base border-base-lighter ml-2">
+            <Button className="bg-base-max text-base-content-darker border-base-lighter ml-2">
               TSV
             </Button>
           </ButtonTooltip>
@@ -67,11 +69,13 @@ const CardControls: React.FC<CardControlsProps> = ({
             label: "font-heading",
             item: "data-hovered:bg-base-lighter data-hovered:text-base-contrast-lighter",
           }}
+          // this has a different zIndex because table header used in cDave also has a zIndex
+          zIndex={100}
         >
           <Menu.Target>
             <Button
               rightIcon={<DownIcon size={20} />}
-              className="bg-base-max text-base-content-darker border-base border-base-lighter"
+              className="bg-base-max text-base-content-darker border-base-lighter"
             >
               Customize Bins
             </Button>

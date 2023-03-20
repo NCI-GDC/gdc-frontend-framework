@@ -533,6 +533,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 searchable
                 clearable={false}
                 value={startingId}
+                zIndex={1}
                 onChange={(x) => {
                   onSelectionChanged(x);
                 }}
