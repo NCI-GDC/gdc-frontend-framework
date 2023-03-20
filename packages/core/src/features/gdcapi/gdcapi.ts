@@ -508,7 +508,7 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
     if (fetchAll) {
       for (
         let count = chunkSize;
-        count < resData.data.pagination.total;
+        count < (resData?.data?.pagination?.total || 0);
         count += chunkSize
       ) {
         queue.push((callback) => {
@@ -611,6 +611,7 @@ export const endpointSlice = coreCreateApi({
 
     return { data: results };
   },
+  refetchOnReconnect: true,
   endpoints: (builder) => ({
     getGenes: builder.query({
       query: (request: GdcApiRequest) => ({

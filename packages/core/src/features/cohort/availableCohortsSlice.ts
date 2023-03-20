@@ -23,6 +23,12 @@ import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
+import {
+  createGeneSetMutation,
+  createSetMutationFactory,
+  transformGeneIdResponse,
+} from "../sets/createSetSlice";
+import { setCountQueryFactory } from "../sets/setCountSlice";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -132,89 +138,6 @@ mutation mutationsCreateRepositoryCaseSetMutation(
  }
 }`;
 
-interface SetCountResponse {
-  viewer: {
-    explore: {
-      [docType: string]: {
-        hits: {
-          total: number;
-        };
-      };
-    };
-  };
-}
-
-const buildSetCountQuery = (docType: string) => `query setCount(
-  $filters: FiltersArgument
-) {
-  viewer {
-    explore {
-      ${docType} {
-        hits(filters: $filters, first: 0) {
-          total
-        }
-      }
-    }
-  }
-}`;
-
-interface SetIdResponse {
-  viewer: {
-    explore: {
-      [docType: string]: {
-        hits: {
-          edges: {
-            node: {
-              [field: string]: string;
-            };
-          }[];
-        };
-      };
-    };
-  };
-}
-
-const buildSetIdQuery = (docType: string, field: string) => `query setInfo(
-     $filters: FiltersArgument
-   ) {
-     viewer {
-       explore {
-         ${docType} {
-          hits(filters: $filters, first: 50000) {
-            edges {
-              node {
-                ${field}
-              }
-            } 
-          }
-        }
-      }
-    }
-  }`;
-
-interface CreateSetResponse {
-  viewer: {
-    explore: {
-      [docType: string]: {
-        set_id: string;
-      };
-    };
-  };
-}
-const buildCreateSetMutation = (docType: string) => `mutation createSet(
-  $input: CreateSetInput
-) {
-  sets {
-    create {
-      explore {
-        ${docType}(input: $input) {
-          set_id
-        }
-      }
-    }
-  }
-}`;
-
 export interface CreateCaseSetProps {
   readonly caseSetId: string; // pass a caseSetId to use
   readonly pendingFilters?: FilterSet;
@@ -253,6 +176,92 @@ export const createCaseSet = createAsyncThunk<
   },
 );
 
+const setIdQueryFactory = async (
+  field: string,
+  filters: Record<string, any>,
+): Promise<string[] | undefined> => {
+  let ids;
+  let response;
+
+  switch (field) {
+    case "genes.gene_id":
+      response = await graphqlAPI<any>(
+        `query setInfo(
+             $filters: FiltersArgument
+         ) {
+             viewer {
+               explore {
+                 genes {
+                  hits(filters: $filters, first: 50000) {
+                    edges {
+                      node {
+                        gene_id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }`,
+        filters,
+      );
+      return response.data.viewer.explore.genes.hits.edges.map(
+        (node) => node.node.gene_id,
+      );
+
+    case "ssms.ssm_id":
+      response = await graphqlAPI<any>(
+        `query setInfo(
+        $filters: FiltersArgument
+    ) {
+        viewer {
+          explore {
+            ssms {
+             hits(filters: $filters, first: 50000) {
+               edges {
+                 node {
+                   ssm_id
+                 }
+               }
+             }
+           }
+         }
+       }
+     }`,
+        filters,
+      );
+      return response.data.viewer.explore.ssms.hits.edges.map(
+        (node) => node.node.ssm_id,
+      );
+    case "cases.case_id":
+      response = await graphqlAPI<any>(
+        `query setInfo(
+        $filters: FiltersArgument
+    ) {
+        viewer {
+          repository {
+            cases {
+             hits(filters: $filters, first: 50000) {
+               edges {
+                 node {
+                   case_id
+                 }
+               }
+             }
+           }
+         }
+       }
+     }`,
+        filters,
+      );
+      return response.data.viewer.repository.cases.hits.edges.map(
+        (node) => node.node.case_id,
+      );
+  }
+
+  return Promise.resolve(ids);
+};
+
 /*
   Adds sets to filters. Stores set if it's new or recreates set based on our stored ids if it has disappeared.
 */
@@ -268,9 +277,7 @@ const handleFiltersForSet = createAsyncThunk<
 >(
   "cohort/fetchFiltersForSet",
   async ({ field, setIds, otherOperands, operation }, thunkAPI) => {
-    const [docType, fieldName] = field.split(".");
-    const countQuery = buildSetCountQuery(docType);
-    const idQuery = buildSetIdQuery(docType, fieldName);
+    const [docType] = field.split(".");
 
     const currentCohort = cohortSelectors.selectById(
       thunkAPI.getState(),
@@ -291,28 +298,22 @@ const handleFiltersForSet = createAsyncThunk<
       const storedSet = (currentCohort?.sets || []).find(
         (set) => set.setId === setId,
       );
-      if (!storedSet) {
-        const result = await graphqlAPI<SetIdResponse>(idQuery, { filters });
-        const setResult = result.data.viewer.explore[docType].hits.edges.map(
-          (node) => node.node[fieldName],
-        );
-        const newSet = {
-          setId: setId,
-          setType: docType as SetTypes,
-          ids: setResult,
-          field,
-        };
-        thunkAPI.dispatch(addNewCohortSet(newSet));
-        updatedSetIds.push(`set_id:${setId}`);
+      if (storedSet === undefined) {
+        const setResult = await setIdQueryFactory(field, filters);
+        if (setResult !== undefined) {
+          const newSet = {
+            setId: setId,
+            setType: docType as SetTypes,
+            ids: setResult,
+            field,
+          };
+          thunkAPI.dispatch(addNewCohortSet(newSet));
+          updatedSetIds.push(`set_id:${setId}`);
+        }
       } else {
-        const result = await graphqlAPI<SetCountResponse>(countQuery, {
-          filters,
-        });
-        const setCount = result.data.viewer.explore[docType].hits.total;
-
+        const setCount = await setCountQueryFactory(field, filters);
         if (setCount === 0) {
-          const query = buildCreateSetMutation(docType);
-          const result = await graphqlAPI<CreateSetResponse>(query, {
+          const newSetId = await createSetMutationFactory(field, {
             input: {
               filters: {
                 op: "in",
@@ -323,8 +324,17 @@ const handleFiltersForSet = createAsyncThunk<
               },
             },
           });
-          const setId = result.data.viewer.explore[docType].set_id;
-          updatedSetIds.push(`set_id:${setId}`);
+          if (newSetId) {
+            const newSet = {
+              setId: newSetId,
+              setType: docType as SetTypes,
+              ids: storedSet.ids,
+              field,
+            };
+            updatedSetIds.push(`set_id:${newSetId}`);
+            thunkAPI.dispatch(removeCohortSet(setId));
+            thunkAPI.dispatch(addNewCohortSet(newSet));
+          }
         } else {
           updatedSetIds.push(`set_id:${setId}`);
         }

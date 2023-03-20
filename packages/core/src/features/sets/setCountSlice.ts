@@ -1,4 +1,69 @@
-import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import {
+  graphqlAPISlice,
+  graphqlAPI,
+  GraphQLApiResponse,
+} from "../gdcapi/gdcgraphql";
+
+const geneSetCountQuery = `query geneSetCounts(
+  $filters: FiltersArgument
+) {
+  viewer {
+    explore {
+      genes {
+        hits(filters: $filters, first: 0) {
+          total
+        }
+      }
+    }
+  }
+}
+`;
+
+const transformGeneSetCountResponse = (
+  response: GraphQLApiResponse<any>,
+): number => {
+  return response.data.viewer.explore.genes.hits.total;
+};
+
+const ssmsSetCountQuery = `query ssmSetCounts(
+  $filters: FiltersArgument
+) {
+  viewer {
+    explore {
+      ssms {
+        hits(filters: $filters, first: 0) {
+          total
+        }
+      }
+    }
+  }
+}`;
+
+const transformSsmsSetCountResponse = (
+  response: GraphQLApiResponse<any>,
+): number => {
+  return response.data.viewer.explore.ssms.hits.total;
+};
+
+const caseSetCountQuery = `query caseSetCounts(
+  $filters: FiltersArgument
+) {
+  viewer {
+    repository {
+      cases {
+        hits(filters: $filters, first: 0) {
+          total
+        }
+      }
+    }
+  }
+}`;
+
+const transformCaseSetCountResponse = (
+  response: GraphQLApiResponse<any>,
+): number => {
+  return response.data.viewer.repository.cases.hits.total;
+};
 
 export const setCountSlice = graphqlAPISlice
   .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets", "caseSets"] })
@@ -6,20 +71,7 @@ export const setCountSlice = graphqlAPISlice
     endpoints: (builder) => ({
       geneSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
-          graphQLQuery: `query geneSetCounts(
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            explore {
-              genes {
-                hits(filters: $filters, first: 0) {
-                  total
-                }
-              }
-            }
-          }
-        }
-        `,
+          graphQLQuery: geneSetCountQuery,
           graphQLFilters: additionalFilters
             ? {
                 filters: {
@@ -46,28 +98,14 @@ export const setCountSlice = graphqlAPISlice
                 },
               },
         }),
-        transformResponse: (response) =>
-          response.data.viewer.explore.genes.hits.total,
+        transformResponse: transformGeneSetCountResponse,
         providesTags: (_result, _error, arg) => [
           { type: "geneSets", id: arg.setId },
         ],
       }),
       ssmSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
-          graphQLQuery: `query ssmSetCounts(
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            explore {
-              ssms {
-                hits(filters: $filters, first: 0) {
-                  total
-                }
-              }
-            }
-          }
-        }
-        `,
+          graphQLQuery: ssmsSetCountQuery,
           graphQLFilters: additionalFilters
             ? {
                 filters: {
@@ -94,8 +132,7 @@ export const setCountSlice = graphqlAPISlice
                 },
               },
         }),
-        transformResponse: (response) =>
-          response.data.viewer.explore.ssms.hits.total,
+        transformResponse: transformSsmsSetCountResponse,
         providesTags: (_result, _error, arg) => [
           { type: "ssmsSets", id: arg.setId },
         ],
@@ -142,14 +179,37 @@ export const setCountSlice = graphqlAPISlice
                 },
               },
         }),
-        transformResponse: (response) =>
-          response.data.viewer.repository.cases.hits.total,
+        transformResponse: transformCaseSetCountResponse,
         providesTags: (_result, _error, arg) => [
           { type: "caseSets", id: arg.setId },
         ],
       }),
     }),
   });
+
+export const setCountQueryFactory = async (
+  field: string,
+  filters: Record<string, any>,
+): Promise<number | undefined> => {
+  let setCount;
+  let response;
+  switch (field) {
+    case "genes.gene_id":
+      response = await graphqlAPI(geneSetCountQuery, filters);
+      setCount = transformGeneSetCountResponse(response);
+      break;
+    case "ssms.ssm_id":
+      response = await graphqlAPI(ssmsSetCountQuery, filters);
+      setCount = transformSsmsSetCountResponse(response);
+      break;
+    case "cases.case_id":
+      response = await graphqlAPI(caseSetCountQuery, filters);
+      setCount = transformCaseSetCountResponse(response);
+      break;
+  }
+
+  return Promise.resolve(setCount);
+};
 
 export const {
   useGeneSetCountQuery,

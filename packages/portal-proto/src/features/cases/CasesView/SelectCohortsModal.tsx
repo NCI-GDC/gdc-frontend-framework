@@ -18,11 +18,11 @@ import {
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
+  graphqlAPI,
 } from "@gff/core";
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
-import { v4 as uuidv4 } from "uuid";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -124,13 +124,48 @@ export const SelectCohortsModal = ({
           : pickedCases.concat(resCases),
       ),
     );
+
+    const response = await graphqlAPI<any>(
+      `mutation createSet(
+      $input: CreateSetInput
+    ) {
+      sets {
+        create {
+          repository {
+            case(input: $input) {
+              set_id
+              size
+            }
+          }
+        }
+      }
+    }`,
+      {
+        input: {
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.case_id",
+                  value: updatedCases,
+                },
+              },
+            ],
+          },
+        },
+      },
+    );
+    const setId = response.data.sets.create.repository.case.set_id;
+
     const pickedCasesfilters: FilterSet = {
       mode: "and",
       root: {
         "cases.case_id": {
           operator: "includes",
           field: "cases.case_id",
-          operands: updatedCases,
+          operands: [`set_id:${setId}`],
         },
       },
     };
@@ -140,7 +175,6 @@ export const SelectCohortsModal = ({
         filters: pickedCasesfilters,
         message: "newCasesCohort",
         name: customName,
-        group: { ids: updatedCases, field: "cases.case_id", groupId: uuidv4() },
       }),
     );
     setLoading(false);
