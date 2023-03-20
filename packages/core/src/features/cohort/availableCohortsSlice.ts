@@ -42,6 +42,13 @@ export interface FilterGroup {
   readonly groupId?: string; // unique identifier for groups that aren't sets
 }
 
+interface CohortHistory {
+  readonly timestamp: string;
+  readonly filters: FilterSet;
+  change: Operation | string;
+  operation: string;
+}
+
 export interface Cohort {
   readonly id: string;
   readonly name: string;
@@ -53,7 +60,7 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly caseCount?: number; // track case count of a cohort
 
-  readonly history?: FilterSet[]; // track history of cohort
+  readonly history?: CohortHistory[]; // track history of cohort
 }
 
 /**
@@ -210,7 +217,7 @@ export const createCaseSet = createAsyncThunk<
 
 /*
   Fetches the values associated with the set we are adding to the cohort and
-  adds those as filters to the cohort. Sets are ephemeral so we want the values added to filters
+  adds those as filters to the cohort. Sets are ephemeral, so we want the values added to filters
   instead of the set id.
 */
 const handleFiltersForSet = createAsyncThunk<
@@ -407,7 +414,14 @@ const newCohort = ({
     modified: modified,
     saved: false,
     modified_datetime: ts.toISOString(),
-    history: [],
+    history: [
+      {
+        filters: filters,
+        change: { operator: "and", operands: [] },
+        operation: "create",
+        timestamp: ts.toISOString(),
+      },
+    ],
   };
 };
 
@@ -583,6 +597,13 @@ const slice = createSlice({
             },
           };
 
+          const history = {
+            timestamp: new Date().toISOString(),
+            operation: "add filter",
+            filters: filters,
+            change: action.payload.operation,
+          } as CohortHistory;
+
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
             changes: {
@@ -594,11 +615,17 @@ const slice = createSlice({
                 caseSetIds: caseSetIds,
                 status: "fulfilled",
               },
-              history: [filters],
+              history: [history],
             },
           });
         } else {
           const currentHistory = state.entities[state.currentCohort]?.history;
+          const history = {
+            timestamp: new Date().toISOString(),
+            operation: "add filter",
+            filters: filters,
+            change: action.payload.operation,
+          } as CohortHistory;
 
           cohortsAdapter.updateOne(state, {
             id: state.currentCohort,
@@ -607,8 +634,8 @@ const slice = createSlice({
               modified: true,
               modified_datetime: new Date().toISOString(),
               history: currentHistory
-                ? [...currentHistory, filters]
-                : [filters],
+                ? [...currentHistory, history]
+                : [history],
             },
           });
         }
@@ -634,6 +661,15 @@ const slice = createSlice({
         (group) => group.field !== action.payload,
       );
 
+      const history = {
+        timestamp: new Date().toISOString(),
+        operation: "remove filter",
+        filters: { mode: "and", root: updated },
+        change: action.payload,
+      } as CohortHistory;
+
+      const currentHistory = state.entities[state.currentCohort]?.history;
+
       if (Object.keys(updatedCaseIds).length) {
         // still require a case set
         // update caseSet
@@ -654,6 +690,7 @@ const slice = createSlice({
             ...additionalFilters,
           },
         };
+
         cohortsAdapter.updateOne(state, {
           id: state.currentCohort,
           changes: {
@@ -666,6 +703,7 @@ const slice = createSlice({
               status: "uninitialized",
             },
             groups,
+            history: currentHistory ? [...currentHistory, history] : [history],
           },
         });
       } else {
@@ -681,11 +719,20 @@ const slice = createSlice({
               status: "uninitialized",
             },
             groups,
+            history: currentHistory ? [...currentHistory, history] : [history],
           },
         });
       }
     },
     clearCohortFilters: (state) => {
+      const history = {
+        timestamp: new Date().toISOString(),
+        operation: "clear all filters",
+        filters: { mode: "and", root: {} },
+        change: "remove all filters",
+      } as CohortHistory;
+
+      const currentHistory = state.entities[state.currentCohort]?.history;
       cohortsAdapter.updateOne(state, {
         id: state.currentCohort,
         changes: {
@@ -698,6 +745,7 @@ const slice = createSlice({
             status: "uninitialized",
           },
           groups: undefined,
+          history: currentHistory ? [...currentHistory, history] : [history],
         },
       });
     },

@@ -7,6 +7,7 @@ import {
   MdFileDownload as DownloadIcon,
   MdFileUpload as UploadIcon,
   MdSave as SaveIcon,
+  MdOutlineHistory as TimelineIcon,
 } from "react-icons/md";
 import {
   FaCaretDown as DownArrowIcon,
@@ -57,6 +58,7 @@ import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
 import ImportCohortModal from "./Modals/ImportCohortModal";
+import CohortHistoryModal from "@/features/cohortBuilder/CohortHistory";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -276,6 +278,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
+  const [showCohortHistory, setShowCohortHistory] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const menu_items = [
@@ -404,6 +407,13 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 coreDispatch(setCohortMessage("error|saving|allId")),
               );
           }}
+        />
+      )}
+
+      {showCohortHistory && (
+        <CohortHistoryModal
+          opened={showCohortHistory}
+          onClose={() => setShowCohortHistory(false)}
         />
       )}
 
@@ -643,6 +653,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               ) : (
                 <DownloadIcon size="1.5em" aria-label="Download cohort" />
               )}
+            </CohortGroupButton>
+          </Tooltip>
+          <Tooltip label="Show History" position="bottom" withArrow>
+            <CohortGroupButton
+              data-testid="showCohortHistory"
+              onClick={() => setShowCohortHistory(true)}
+            >
+              <TimelineIcon size="1.5em" aria-label="Cohort History" />
             </CohortGroupButton>
           </Tooltip>
         </>
