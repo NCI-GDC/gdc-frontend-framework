@@ -479,13 +479,22 @@ export const CaseView: React.FC<CaseViewProps> = ({
           )}
         </div>
 
-        <ClinicalSummary
-          diagnoses={diagnoses}
-          follow_ups={follow_ups}
-          demographic={demographic}
-          family_histories={family_histories}
-          exposures={exposures}
-        />
+        <div
+          className={`${
+            !(
+              data.summary.data_categories ||
+              data.summary.experimental_strategies
+            ) && "mt-14"
+          }`}
+        >
+          <ClinicalSummary
+            diagnoses={diagnoses}
+            follow_ups={follow_ups}
+            demographic={demographic}
+            family_histories={family_histories}
+            exposures={exposures}
+          />
+        </div>
 
         {clinicalFilteredFiles?.length > 0 && (
           <div className="mt-8">
