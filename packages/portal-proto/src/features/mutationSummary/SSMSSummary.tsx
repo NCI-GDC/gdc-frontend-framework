@@ -175,18 +175,16 @@ export const SSMSSummary = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal ? "mt-20" : "mt-6"}`}>
-            <div className="text-primary-content">
-              <div className="flex gap-6">
-                <div className="flex-1">
-                  <SummaryCard tableData={formatDataForSummary()} />
-                </div>
-                <div className="flex-1">
-                  <SummaryCard
-                    tableData={formatDataForExternalReferences()}
-                    title="External References"
-                  />
-                </div>
+          <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
+            <div className="flex gap-8">
+              <div className="flex-1">
+                <SummaryCard tableData={formatDataForSummary()} />
+              </div>
+              <div className="flex-1">
+                <SummaryCard
+                  tableData={formatDataForExternalReferences()}
+                  title="External References"
+                />
               </div>
             </div>
 
