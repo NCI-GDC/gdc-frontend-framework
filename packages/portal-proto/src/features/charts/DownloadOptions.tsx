@@ -2,6 +2,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 import { DownloadButton } from "@/features/shared/tailwindComponents";
+import { useEffect } from "react";
 
 interface ChartDownloadProps {
   readonly chartDivId: string;
@@ -22,6 +23,10 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
       filename: chartName,
     }).then((r) => r);
   };
+
+  useEffect(() => {
+    console.log(`hi json for ${chartName}`, jsonData);
+  }, [jsonData, chartName]);
 
   return (
     <Menu

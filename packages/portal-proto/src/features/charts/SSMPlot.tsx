@@ -111,7 +111,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           title={title}
           filename={CHART_NAME}
           divId={chartDivId}
-          jsonData={{}}
+          jsonData={{ ...data }}
         />
       </div>
       <div className="">

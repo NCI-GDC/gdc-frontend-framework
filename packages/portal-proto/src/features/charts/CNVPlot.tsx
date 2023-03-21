@@ -149,7 +149,14 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           title={title}
           filename={CHART_NAME}
           divId={chartDivId}
-          jsonData={{}}
+          jsonData={{
+            ...data?.cases.map(({ project, ssmCount, totalCount }) => {
+              return {
+                project,
+                value: (ssmCount / totalCount).toFixed(2),
+              };
+            }),
+          }}
         />
       </div>
       <div>
