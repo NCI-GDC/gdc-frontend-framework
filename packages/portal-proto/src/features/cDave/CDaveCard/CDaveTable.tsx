@@ -25,7 +25,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedSurvivalPlots,
   continuous,
 }: CDaveTableProps) => {
-  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`;
+  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto ">
