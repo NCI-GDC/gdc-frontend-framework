@@ -1,6 +1,5 @@
 from typing import List
-from webdriver import WebDriver
-
+from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
@@ -17,7 +16,7 @@ class GenericLocators:
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
-    BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}")'
+    BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -122,18 +121,15 @@ class BasePage:
 
     def perform_action_handle_new_tab(self, source:str, button:str):
         """
-        upload_file performs an action to launch a file explorer,
-        and then uploads a specified file located in the resources folder.
+        perform_action_handle_new_tab performs an action to open a new tab,
+        and then returns a page object for that new tab.
 
-        :param file_name: The name of the file being uploaded
-        :param extension: The extension of the file being uploaded
-        :param folder_name: Name of the folder that contains the file being uploaded.
-        :param source: Specifies what function is causing the action to launch the file explorer
-        :param button: ID or Name of the button that is being clicked to launch the file explorer
-        :return: N/A
+        :param source: Specifies what function is causing the action to open the new tab
+        :param button: ID or Name of the button that is being clicked to open the new tab
+        :return: a page object for the new tab that has been opened
         """
         sources = {
-            "Home Page": self.click_button_ident_a_with_displayed_text_name(button)
+            "Home Page": self.click_button_ident_a_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

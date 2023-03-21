@@ -37,4 +37,8 @@ class HomePage(BasePage):
 
     def is_text_visible_on_new_tab(self, new_tab, text_to_check):
         expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
-        new_tab.locator(expected_text_locator).is_visible()
+        try:
+            new_tab.locator(expected_text_locator).wait_for(state='visible')
+        except:
+            return False
+        return True
