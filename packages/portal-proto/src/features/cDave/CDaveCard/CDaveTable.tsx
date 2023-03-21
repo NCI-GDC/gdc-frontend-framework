@@ -25,16 +25,14 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedSurvivalPlots,
   continuous,
 }: CDaveTableProps) => {
+  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`;
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto ">
         <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
           <tr>
             <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1  ">
-              <span
-                className="pl-2"
-                id={`row_select_${fieldName.replaceAll(" ", "_")}`}
-              >
+              <span className="pl-2" id={rowSelectId}>
                 Select
               </span>
             </th>
@@ -78,10 +76,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       color="accent"
                       size="xs"
                       className="pt-1"
-                      aria-labelledby={`row_select_${fieldName.replaceAll(
-                        " ",
-                        "_",
-                      )}`}
+                      aria-labelledby={rowSelectId}
                     />
                   </td>
                   <td>
