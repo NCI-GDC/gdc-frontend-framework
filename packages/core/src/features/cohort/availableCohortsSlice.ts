@@ -24,7 +24,7 @@ import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
 import { createSetMutationFactory } from "../sets/createSetSlice";
-import { setCountQueryFactory, setCountSlice } from "../sets/setCountSlice";
+import { setCountQueryFactory } from "../sets/setCountSlice";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
