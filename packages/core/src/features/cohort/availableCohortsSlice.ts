@@ -23,12 +23,8 @@ import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
-import {
-  createGeneSetMutation,
-  createSetMutationFactory,
-  transformGeneIdResponse,
-} from "../sets/createSetSlice";
-import { setCountQueryFactory } from "../sets/setCountSlice";
+import { createSetMutationFactory } from "../sets/createSetSlice";
+import { setCountQueryFactory, setCountSlice } from "../sets/setCountSlice";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -176,6 +172,22 @@ export const createCaseSet = createAsyncThunk<
   },
 );
 
+interface SetIdResponse {
+  viewer: {
+    [index: string]: {
+      [docType: string]: {
+        hits: {
+          edges: {
+            node: {
+              [field: string]: string;
+            };
+          }[];
+        };
+      };
+    };
+  };
+}
+
 const setIdQueryFactory = async (
   field: string,
   filters: Record<string, any>,
@@ -185,7 +197,7 @@ const setIdQueryFactory = async (
 
   switch (field) {
     case "genes.gene_id":
-      response = await graphqlAPI<any>(
+      response = await graphqlAPI<SetIdResponse>(
         `query setInfo(
              $filters: FiltersArgument
          ) {
@@ -210,7 +222,7 @@ const setIdQueryFactory = async (
       );
 
     case "ssms.ssm_id":
-      response = await graphqlAPI<any>(
+      response = await graphqlAPI<SetIdResponse>(
         `query setInfo(
         $filters: FiltersArgument
     ) {
@@ -234,7 +246,7 @@ const setIdQueryFactory = async (
         (node) => node.node.ssm_id,
       );
     case "cases.case_id":
-      response = await graphqlAPI<any>(
+      response = await graphqlAPI<SetIdResponse>(
         `query setInfo(
         $filters: FiltersArgument
     ) {
