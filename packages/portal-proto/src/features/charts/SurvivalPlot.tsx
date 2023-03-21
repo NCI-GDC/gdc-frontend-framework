@@ -423,14 +423,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           {title}
         </div>
         <div className="flex flex-row items-center ml-auto gap-1">
-          <Menu
-            position="bottom-start"
-            offset={1}
-            transitionDuration={0}
-            classNames={{
-              item: "hover:bg-base-lighter hover:text-base-lighter-contrast",
-            }}
-          >
+          <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
               <div className="flex">
                 <Tooltip label="Download Survival Plot data or image">
@@ -442,7 +435,6 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
-                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
                 onClick={() =>
                   handleDownloadSVG(downloadRef, "survival-plot.svg")
                 }
@@ -450,25 +442,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 SVG
               </Menu.Item>
               <Menu.Item
-                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
                 onClick={() =>
                   handleDownloadPNG(downloadRef, "survival-plot.png")
                 }
               >
                 PNG
               </Menu.Item>
-              <Menu.Item
-                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
-                onClick={handleDownloadJSON}
-              >
-                JSON
-              </Menu.Item>
-              <Menu.Item
-                className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
-                onClick={handleDownloadTSV}
-              >
-                TSV
-              </Menu.Item>
+              <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
+              <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset Survival Plot Zoom">

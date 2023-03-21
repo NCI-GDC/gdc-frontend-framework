@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import VictoryBarChart from "../../charts/VictoryBarChart";
