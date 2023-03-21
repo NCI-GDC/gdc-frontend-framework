@@ -10,6 +10,14 @@ tags: gdc-data-portal-v2, regression, home-page, navigation
 ## Navigate to Home Page
 * On GDC Data Portal V2 app
 
+## Validate Navigation Buttons - different tab
+* These buttons on the "Home Page" should take the user to correct page in a new tab
+  |button_text                    |expected_landing_page|
+  |-------------------------------|---------------------|
+  |Explore Our Cancer Datasets    |Analysis             |
+  |Explore These Studies          |Projects             |
+  |Explore Cohort Builder         |Cohort               |
+
 ## Validate Navigation Buttons - same tab
 * Selecting these buttons should take the user to correct page in the same tab
   |button_text                    |expected_landing_page|

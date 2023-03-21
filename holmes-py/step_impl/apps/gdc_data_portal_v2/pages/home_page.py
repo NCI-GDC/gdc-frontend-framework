@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
-
+from ....base.base_page import GenericLocators
 
 class HomePageLocators:
     """A class for Home page locators. All home page locators should come here"""
@@ -14,9 +14,8 @@ class HomePageLocators:
 
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-home-page-{button_name}']"
 
-    BUTTON_BY_TEXT_IDENT = lambda text: f'a:has-text("{text}")'
-
     LIVE_STAT_BY_CATEGORY_IDENT = lambda expected_statistic: f'div[class="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between"] >> text="{expected_statistic}"'
+
 
 class HomePage(BasePage):
     def __init__(self, driver: Page, url):
@@ -32,10 +31,10 @@ class HomePage(BasePage):
         app_name = self.normalize_button_identifier(app_name)
         self.driver.locator(HomePageLocators.BUTTON_IDENT(app_name)).click()
 
-    def click_button_with_text(self, button_text:str):
-        text_button_locator = HomePageLocators.BUTTON_BY_TEXT_IDENT(button_text)
-        self.click(text_button_locator)
-
     def is_live_category_statistic_present(self, expected_statistic:str):
         expected_statistic_locator = HomePageLocators.LIVE_STAT_BY_CATEGORY_IDENT(expected_statistic)
         return self.is_visible(expected_statistic_locator)
+
+    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
+        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
+        new_tab.locator(expected_text_locator).is_visible()
