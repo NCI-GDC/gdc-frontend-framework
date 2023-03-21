@@ -1,17 +1,7 @@
-import { Button, createStyles, Menu } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    "&[data-hovered]": {
-      // TODO: remove with theme color other than blue
-      backgroundColor: theme.colors.blue[3],
-      color: theme.white,
-    },
-  },
-}));
 
 interface DropdownWithIconProps {
   /**
@@ -67,12 +57,9 @@ export const DropdownWithIcon = ({
   menuLabelCustomClass,
   customPosition,
 }: DropdownWithIconProps): JSX.Element => {
-  const { classes } = useStyles();
-
   return (
     <Menu
       width={!disableTargetWidth && "target"}
-      classNames={classes}
       {...(customPosition && { position: customPosition })}
       data-testid="menu-elem"
     >
@@ -107,7 +94,6 @@ export const DropdownWithIcon = ({
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
-            className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
             icon={icon && icon}
           >
             {title}

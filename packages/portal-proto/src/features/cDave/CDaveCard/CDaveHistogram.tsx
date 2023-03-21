@@ -110,15 +110,9 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
-                  SVG (Coming soon)
-                </Menu.Item>
-                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
-                  PNG (Coming soon)
-                </Menu.Item>
-                <Menu.Item className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest">
-                  JSON (Coming soon)
-                </Menu.Item>
+                <Menu.Item>SVG (Coming soon)</Menu.Item>
+                <Menu.Item>PNG (Coming soon)</Menu.Item>
+                <Menu.Item>JSON (Coming soon)</Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>
