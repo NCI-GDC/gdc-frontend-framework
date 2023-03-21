@@ -19,14 +19,14 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={""}
+        field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
     );
 
     expect(
-      getByRole("row", { name: "male 1,000 (66.67%)" }),
+      getByRole("row", { name: "Select male 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
 
@@ -42,7 +42,7 @@ describe("CDaveCard", () => {
     const { getByText } = render(
       <CDaveCard
         data={data}
-        field={""}
+        field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
@@ -66,14 +66,14 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={""}
+        field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
     );
 
     expect(
-      getByRole("row", { name: "missing 1,000 (66.67%)" }),
+      getByRole("row", { name: "Select missing 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
 
@@ -92,7 +92,7 @@ describe("CDaveCard", () => {
     const { getAllByRole } = render(
       <CDaveCard
         data={data}
-        field={""}
+        field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
@@ -116,7 +116,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 100 } } as any}
-        field={""}
+        field={"diagnosis.days_to_treatment_start"}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
@@ -144,7 +144,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 38 } } as any}
-        field={""}
+        field="diagnosis.days_to_treatment_start"
         updateFields={jest.fn()}
         initialDashboardRender
       />,
