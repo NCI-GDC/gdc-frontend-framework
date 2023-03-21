@@ -123,10 +123,10 @@ describe("CDaveCard", () => {
     );
 
     expect(
-      getByRole("row", { name: "7201 to <12255.8 10 (10.00%)" }),
+      getByRole("row", { name: "Select 7201 to <12255.8 10 (10.00%)" }),
     ).toBeInTheDocument();
     expect(
-      getByRole("row", { name: "12255.8 to <17310.6 90 (90.00%)" }),
+      getByRole("row", { name: "Select 12255.8 to <17310.6 90 (90.00%)" }),
     ).toBeInTheDocument();
   });
 
