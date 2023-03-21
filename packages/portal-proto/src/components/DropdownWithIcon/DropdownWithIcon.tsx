@@ -31,6 +31,7 @@ interface DropdownWithIconProps {
     title: string;
     onClick?: () => void;
     icon?: JSX.Element;
+    disabled?: boolean; // if true, disables the menu item
   }>;
   /**
    *    only provide menuLabelText if we want label for dropdown elements
@@ -44,6 +45,11 @@ interface DropdownWithIconProps {
    *    custom position for Menu
    */
   customPosition?: FloatingPosition;
+
+  /**
+   *   custom z-index for Menu default to 0
+   */
+  zIndex?: number;
 }
 
 export const DropdownWithIcon = ({
@@ -56,12 +62,14 @@ export const DropdownWithIcon = ({
   menuLabelText,
   menuLabelCustomClass,
   customPosition,
+  zIndex = 0,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
       data-testid="menu-elem"
+      zIndex={zIndex}
     >
       <Menu.Target>
         <Button
@@ -87,7 +95,7 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </>
         )}
-        {dropdownElements.map(({ title, onClick, icon }, idx) => (
+        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
               onClick && onClick();
@@ -95,6 +103,7 @@ export const DropdownWithIcon = ({
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
             icon={icon && icon}
+            disabled={disabled}
           >
             {title}
           </Menu.Item>

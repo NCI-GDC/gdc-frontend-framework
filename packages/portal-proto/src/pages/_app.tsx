@@ -171,7 +171,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 defaultProps: {
                   zIndex: 1,
                   classNames: {
-                    item: "text-base-min data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
+                    item: "text-base-min disabled:opacity-50 data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
                   },
                 },
               },
