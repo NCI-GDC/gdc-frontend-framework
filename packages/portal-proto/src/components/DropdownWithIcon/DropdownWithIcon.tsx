@@ -47,7 +47,7 @@ interface DropdownWithIconProps {
   customPosition?: FloatingPosition;
 
   /**
-   *   custom z-index for Menu, defaults to 0
+   *   custom z-index for Menu, defaults to undefined
    */
   zIndex?: number;
 }
