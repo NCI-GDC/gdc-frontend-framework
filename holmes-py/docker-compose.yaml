@@ -3,10 +3,9 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.holmes
-#      dockerfile: Dockerfile.playwright-base
+      dockerfile: Dockerfile
     environment:
-      - browser="headless chrome"
+      - browser="headless edge"
     volumes:
       - .:/app
-    command: gauge run ./specs/gdc_data_portal_v2/
+    command: gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec

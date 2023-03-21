@@ -1,6 +1,7 @@
-FROM node:16-bullseye
+FROM mcr.microsoft.com/playwright:v1.23.1-focal
 
 RUN apt-get update && apt-get install -y \
+    python3 \
     python3-pip \
     python3-dev \
     python3-tk \
@@ -15,7 +16,9 @@ RUN apt-get update && apt-get install -y \
     libxshmfence1 \
     libgbm1 \
     libasound2 \
-    libatspi2.0-0
+    libatspi2.0-0 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
@@ -23,7 +26,7 @@ COPY . /app
 RUN pip install -r /app/requirements.txt
 
 RUN npm install -g --force playwright@1.23.1 && \
-    playwright install
+    playwright install --with-deps
 
 RUN gauge install python
 RUN gauge install screenshot

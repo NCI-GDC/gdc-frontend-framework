@@ -29,6 +29,10 @@ class WebDriver:
             WebDriver.instance = playwright.firefox.launch(
                 headless=_headless
             )  # instance is PW browser
+        elif "webkit" in _browser:
+            WebDriver.instance = playwright.webkit.launch(
+                headless=_headless
+            )  # instance is PW browser
 
     @before_suite
     def start_page(self):
