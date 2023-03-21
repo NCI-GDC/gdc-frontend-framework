@@ -182,24 +182,21 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker run --name holmes-py --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec || true
-    - ls -la ./holmes-py
+    - docker run -v $(pwd):/app --name holmes-py --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec || true
+    - docker exec holmes-py ls -la /app/holmes-py
     - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - ls -la .gauge
     - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - ls -la downloads
     - docker cp holmes-py:/app/holmes-py/logs logs
-    - ls -la logs
     - docker cp holmes-py:/app/holmes-py/reports reports
-    - ls -la reports
-  #  rules:
+    - docker rm holmes-py
+#  rules:
 #    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
 #      when: on_success
   artifacts:
     when: always
     paths:
-      - .gauge
-      - downloads
-      - logs
-      - reports
+      - holmes-py/.gauge
+      - holmes-py/downloads
+      - holmes-py/logs
+      - holmes-py/reports
     expire_in: 1 month
