@@ -62,7 +62,7 @@ export const DropdownWithIcon = ({
   menuLabelText,
   menuLabelCustomClass,
   customPosition,
-  zIndex = 0,
+  zIndex = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
