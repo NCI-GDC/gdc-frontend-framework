@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - browser="headless edge"
+      - browser="headless chrome"
     volumes:
       - .:/app
     command: gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec
