@@ -59,12 +59,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
             ({ value, label, onClick, disabled = false }: ControlOption) => {
               if (value !== "placeholder") {
                 return (
-                  <Menu.Item
-                    key={label}
-                    onClick={onClick}
-                    disabled={disabled}
-                    className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
-                  >
+                  <Menu.Item key={label} onClick={onClick} disabled={disabled}>
                     {label}
                   </Menu.Item>
                 );
