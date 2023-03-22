@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Home Page - Live Stats
 Test-case       : PEAR-939
 
-tags: gdc-data-portal-v2, regression, home-page, live-stats
+tags: gdc-data-portal-v2, regression, home-page
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app
