@@ -183,12 +183,10 @@ Build and run UI tests:
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
     - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker exec holmes-py ls -la /app/holmes-py
     - docker cp holmes-py:/app/holmes-py/.gauge .gauge
     - docker cp holmes-py:/app/holmes-py/downloads downloads
     - docker cp holmes-py:/app/holmes-py/logs logs
     - docker cp holmes-py:/app/holmes-py/reports reports
-    - docker rm holmes-py
 #  rules:
 #    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
 #      when: on_success
