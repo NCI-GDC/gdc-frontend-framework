@@ -8,4 +8,4 @@ services:
       - browser="headless chrome"
     volumes:
       - .:/app
-    command: gauge run ./specs/gdc_data_portal_v2/analysis_center/navigation.spec
+    command: gauge run ./specs/gdc_data_portal_v2/
