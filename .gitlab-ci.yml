@@ -17,12 +17,12 @@ include:
 
 stages:
   - .pre
-  - build_and_run_ui_tests
   - test
   - build
   - unit
   - release
   - deploy
+  - build_and_run_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -187,9 +187,9 @@ Build and run UI tests:
     - docker cp holmes-py:/app/holmes-py/downloads downloads
     - docker cp holmes-py:/app/holmes-py/logs logs
     - docker cp holmes-py:/app/holmes-py/reports reports
-#  rules:
-#    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-#      when: on_success
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      when: on_success
   artifacts:
     when: always
     paths:
