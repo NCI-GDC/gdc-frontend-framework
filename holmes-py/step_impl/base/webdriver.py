@@ -15,6 +15,7 @@ from .utility import Utility
 class WebDriver:
     instance = None
     page = None
+    context = None
 
     @before_suite
     def init(self):
@@ -36,7 +37,8 @@ class WebDriver:
 
     @before_suite
     def start_page(self):
-        WebDriver.page = WebDriver.instance.new_page()
+        WebDriver.context = WebDriver.instance.new_context(ignore_https_errors=True)
+        WebDriver.page = WebDriver.context.new_page()
         try:
             screen_size = Utility.get_screen_size()
             WebDriver.page.set_viewport_size(
