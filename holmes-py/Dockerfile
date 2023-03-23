@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
-RUN pip install -r /app/requirements.txt
+RUN pip install -r /app/docker-requirements.txt
 
 RUN npm install -g --force playwright@1.23.1 && \
     playwright install --with-deps
