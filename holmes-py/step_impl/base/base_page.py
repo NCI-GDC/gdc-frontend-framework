@@ -2,6 +2,7 @@ from typing import List
 
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -13,6 +14,8 @@ class GenericLocators:
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
+    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
+
 class BasePage:
     def __init__(self, driver) -> None:
         self.driver = driver
@@ -20,9 +23,10 @@ class BasePage:
     def goto(self, url):
         self.driver.goto(url)
 
-    def click(self, locator):
+    # Force: Whether to bypass the actionability checks
+    def click(self, locator, force=False):
         self.wait_until_locator_is_visible(locator)
-        self.driver.locator(locator).click()
+        self.driver.locator(locator).click(force=force)
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
@@ -64,6 +68,14 @@ class BasePage:
         is_text_present = self.is_visible(locator)
         return is_text_present
 
+    def is_cohort_bar_case_count_present(self, case_count):
+        locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
+
     def is_data_testid_present(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         is_data_testid_present = self.is_visible(locator)
@@ -73,6 +85,10 @@ class BasePage:
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
+    def click_button_with_displayed_text_name(self, button_text_name):
+        locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
+        self.click(locator)
+
     def send_text_into_search_bar(self, text_to_send, aria_label):
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
         self.wait_until_locator_is_visible(locator)
@@ -80,10 +96,6 @@ class BasePage:
 
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
-
-    # wait for element to have non-empty bounding box and no visibility:hidden
-    def wait_until_locator_is_visible(self, locator):
-        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
 
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
