@@ -16,6 +16,32 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
+const shouldDisableInput = (
+  entityType: string,
+  count: number,
+  id: string,
+  selectedEntityType: "cohort" | "genes" | "mutations",
+  selectedEntities: string[],
+): boolean => {
+  return (
+    (selectedEntityType !== undefined && selectedEntityType !== entityType) ||
+    count === 0 ||
+    (selectedEntities.length === 3 && !selectedEntities.includes(id))
+  );
+};
+
+const selectEntity = (
+  entity: string,
+  selectedEntities: string[],
+  setSelectedEntities: (entities: string[]) => void,
+) => {
+  if (selectedEntities.includes(entity)) {
+    setSelectedEntities(selectedEntities.filter((e) => e !== entity));
+  } else {
+    setSelectedEntities([...selectedEntities, entity]);
+  }
+};
+
 const GeneCountCell = ({ setId }: { setId: string }): JSX.Element => {
   const { data, isSuccess } = useGeneSetCountQuery({ setId });
   return isSuccess ? data.toLocaleString() : "...";
@@ -24,6 +50,210 @@ const GeneCountCell = ({ setId }: { setId: string }): JSX.Element => {
 const MutationCountCell = ({ setId }: { setId: string }): JSX.Element => {
   const { data, isSuccess } = useSsmSetCountQuery({ setId });
   return isSuccess ? data.toLocaleString() : "...";
+};
+
+interface SelectCellProps {
+  readonly setId: string;
+  readonly selectedEntities: string[];
+  readonly selectedEntityType: "cohort" | "genes" | "mutations";
+  readonly setSelectedEntities: (entities: string[]) => void;
+  readonly setSelectedEntityType: (
+    type: "cohort" | "genes" | "mutations",
+  ) => void;
+}
+
+const GeneSelectCell: React.FC<SelectCellProps> = ({
+  setId,
+  selectedEntities,
+  selectedEntityType,
+  setSelectedEntities,
+  setSelectedEntityType,
+}: SelectCellProps) => {
+  const { data, isSuccess } = useGeneSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+  return (
+    <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
+      <span>
+        <Checkbox
+          classNames={{
+            input: "checked:bg-accent",
+          }}
+          disabled={shouldDisableInput(
+            "genes",
+            count,
+            setId,
+            selectedEntityType,
+            selectedEntities,
+          )}
+          checked={selectedEntities.includes(setId)}
+          onChange={() => {
+            selectEntity(setId, selectedEntities, setSelectedEntities);
+            setSelectedEntityType("genes");
+          }}
+          aria-labelledby={`gene-selection-${setId}`}
+        />
+      </span>
+    </Tooltip>
+  );
+};
+
+const MutationSelectCell: React.FC<SelectCellProps> = ({
+  setId,
+  selectedEntities,
+  selectedEntityType,
+  setSelectedEntities,
+  setSelectedEntityType,
+}: SelectCellProps) => {
+  const { data, isSuccess } = useSsmSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+
+  return (
+    <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
+      <span>
+        <Checkbox
+          classNames={{
+            input: "checked:bg-accent",
+          }}
+          disabled={shouldDisableInput(
+            "mutations",
+            count,
+            setId,
+            selectedEntityType,
+            selectedEntities,
+          )}
+          checked={selectedEntities.includes(setId)}
+          onChange={() => {
+            selectEntity(setId, selectedEntities, setSelectedEntities);
+            setSelectedEntityType("mutations");
+          }}
+          aria-labelledby={`mutation-selection-${setId}`}
+        />
+      </span>
+    </Tooltip>
+  );
+};
+
+interface LabelCellProps {
+  readonly setId: string;
+  readonly setName: string;
+  readonly selectedEntities: string[];
+  readonly selectedEntityType: "cohort" | "genes" | "mutations";
+}
+
+const GeneLabelCell: React.FC<LabelCellProps> = ({
+  setId,
+  setName,
+  selectedEntities,
+  selectedEntityType,
+}: LabelCellProps) => {
+  const { data, isSuccess } = useGeneSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+
+  return (
+    <label
+      id={`gene-selection-${setId}`}
+      className={
+        shouldDisableInput(
+          "genes",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        )
+          ? "text-base-lighter"
+          : undefined
+      }
+    >
+      {setName}
+    </label>
+  );
+};
+
+const MutationLabelCell: React.FC<LabelCellProps> = ({
+  setId,
+  setName,
+  selectedEntities,
+  selectedEntityType,
+}: LabelCellProps) => {
+  const { data, isSuccess } = useSsmSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+
+  return (
+    <label
+      id={`mutation-selection-${setId}`}
+      className={
+        shouldDisableInput(
+          "mutations",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        )
+          ? "text-base-lighter"
+          : undefined
+      }
+    >
+      {setName}
+    </label>
+  );
+};
+
+interface EntityTypeCellProps {
+  readonly setId: string;
+  readonly selectedEntities: string[];
+  readonly selectedEntityType: "cohort" | "genes" | "mutations";
+}
+
+const GeneEntityTypeCell: React.FC<EntityTypeCellProps> = ({
+  setId,
+  selectedEntities,
+  selectedEntityType,
+}: EntityTypeCellProps) => {
+  const { data, isSuccess } = useGeneSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+  return (
+    <span
+      className={
+        shouldDisableInput(
+          "genes",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        )
+          ? "text-base-lighter"
+          : undefined
+      }
+    >
+      Genes
+    </span>
+  );
+};
+
+const MutationEntityTypeCell: React.FC<EntityTypeCellProps> = ({
+  setId,
+  selectedEntities,
+  selectedEntityType,
+}: EntityTypeCellProps) => {
+  const { data, isSuccess } = useSsmSetCountQuery({ setId });
+  const count = isSuccess ? data : 0;
+  return (
+    <span
+      className={
+        shouldDisableInput(
+          "mutations",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        )
+          ? "text-base-lighter"
+          : undefined
+      }
+    >
+      Mutations
+    </span>
+  );
 };
 
 interface SelectionPanelProps {
@@ -57,79 +287,6 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   }, [selectedEntites]);
 
   const tableData = useMemo(() => {
-    const selectEntity = (entity: string) => {
-      if (selectedEntites.includes(entity)) {
-        setSelectedEntities(selectedEntites.filter((e) => e !== entity));
-      } else {
-        setSelectedEntities([...selectedEntites, entity]);
-      }
-    };
-
-    const GeneSelectCell = ({ setId }: { setId: string }): JSX.Element => {
-      const { data, isSuccess } = useGeneSetCountQuery({ setId });
-      const count = isSuccess ? data : 0;
-      return (
-        <Tooltip
-          label={"Set is either empty or deprecated"}
-          disabled={count > 0}
-        >
-          <span>
-            <Checkbox
-              classNames={{
-                input: "checked:bg-accent",
-              }}
-              disabled={
-                (selectedEntityType !== undefined &&
-                  selectedEntityType !== "genes") ||
-                count === 0 ||
-                (selectedEntites.length === 3 &&
-                  !selectedEntites.includes(setId))
-              }
-              checked={selectedEntites.includes(setId)}
-              onChange={() => {
-                selectEntity(setId);
-                setSelectedEntityType("genes");
-              }}
-              aria-labelledby={`gene-selection-${setId}`}
-            />
-          </span>
-        </Tooltip>
-      );
-    };
-
-    const MutationSelectCell = ({ setId }: { setId: string }): JSX.Element => {
-      const { data, isSuccess } = useSsmSetCountQuery({ setId });
-      const count = isSuccess ? data : 0;
-
-      return (
-        <Tooltip
-          label={"Set is either empty or deprecated"}
-          disabled={count > 0}
-        >
-          <span>
-            <Checkbox
-              classNames={{
-                input: "checked:bg-accent",
-              }}
-              disabled={
-                (selectedEntityType !== undefined &&
-                  selectedEntityType !== "mutations") ||
-                count === 0 ||
-                (selectedEntites.length === 3 &&
-                  !selectedEntites.includes(setId))
-              }
-              checked={selectedEntites.includes(setId)}
-              onChange={() => {
-                selectEntity(setId);
-                setSelectedEntityType("mutations");
-              }}
-              aria-labelledby={`mutation-selection-${setId}`}
-            />
-          </span>
-        </Tooltip>
-      );
-    };
-
     return [
       ...availableCohorts.map((cohort) => ({
         select: (
@@ -139,16 +296,16 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
                 classNames={{
                   input: "checked:bg-accent",
                 }}
-                disabled={
-                  (selectedEntityType !== undefined &&
-                    selectedEntityType !== "cohort") ||
-                  (cohort?.caseCount || 0) === 0 ||
-                  (selectedEntites.length === 3 &&
-                    !selectedEntites.includes(cohort.id))
-                }
+                disabled={shouldDisableInput(
+                  "cohort",
+                  cohort?.caseCount || 0,
+                  cohort.id,
+                  selectedEntityType,
+                  selectedEntites,
+                )}
                 checked={selectedEntites.includes(cohort.id)}
                 onChange={() => {
-                  selectEntity(cohort.id);
+                  selectEntity(cohort.id, selectedEntites, setSelectedEntities);
                   setSelectedEntityType("cohort");
                 }}
                 aria-labelledby={`cohort-selection-${cohort.id}`}
@@ -156,20 +313,95 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
             </span>
           </Tooltip>
         ),
-        entityType: "Cases",
-        name: <label id={`cohort-selection-${cohort.id}`}>{cohort.name}</label>,
+        entityType: (
+          <span
+            className={
+              shouldDisableInput(
+                "cohort",
+                cohort?.caseCount || 0,
+                cohort.id,
+                selectedEntityType,
+                selectedEntites,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            Cases
+          </span>
+        ),
+        name: (
+          <label
+            id={`cohort-selection-${cohort.id}`}
+            className={
+              shouldDisableInput(
+                "cohort",
+                cohort?.caseCount || 0,
+                cohort.id,
+                selectedEntityType,
+                selectedEntites,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {cohort.name}
+          </label>
+        ),
         count: cohort.caseCount.toLocaleString(),
       })),
       ...Object.entries(geneSets).map(([setId, setName]) => ({
-        select: <GeneSelectCell setId={setId} />,
-        entityType: "Genes",
-        name: <label id={`gene-selection-${setId}`}>{setName}</label>,
+        select: (
+          <GeneSelectCell
+            setId={setId}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+            setSelectedEntities={setSelectedEntities}
+            setSelectedEntityType={setSelectedEntityType}
+          />
+        ),
+        entityType: (
+          <GeneEntityTypeCell
+            setId={setId}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+          />
+        ),
+        name: (
+          <GeneLabelCell
+            setId={setId}
+            setName={setName}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+          />
+        ),
         count: <GeneCountCell setId={setId} />,
       })),
       ...Object.entries(mutationSets).map(([setId, setName]) => ({
-        select: <MutationSelectCell setId={setId} />,
-        entityType: "Mutations",
-        name: <label id={`mutation-selection-${setId}`}>{setName}</label>,
+        select: (
+          <MutationSelectCell
+            setId={setId}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+            setSelectedEntities={setSelectedEntities}
+            setSelectedEntityType={setSelectedEntityType}
+          />
+        ),
+        entityType: (
+          <MutationEntityTypeCell
+            setId={setId}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+          />
+        ),
+        name: (
+          <MutationLabelCell
+            setId={setId}
+            setName={setName}
+            selectedEntities={selectedEntites}
+            selectedEntityType={selectedEntityType}
+          />
+        ),
         count: <MutationCountCell setId={setId} />,
       })),
     ];
@@ -228,8 +460,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   };
 
   return (
-    <div>
-      <div className="bg-base-max flex flex-col flex-grow h-full p-4">
+    <>
+      <div className="p-4">
         <h2 className="font-heading text-lg font-bold py-2">
           Select 2 or 3 of the same set type
         </h2>
@@ -264,7 +496,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           columnSorting={"enable"}
         />
       </div>
-      <div className="flex flex-row justify-end ml-auto sticky bg-base-lightest py-2 px-4">
+      <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton
           className="mr-auto"
           onClick={() => {
@@ -287,7 +519,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           Run
         </DarkFunctionButton>
       </div>
-    </div>
+    </>
   );
 };
 
