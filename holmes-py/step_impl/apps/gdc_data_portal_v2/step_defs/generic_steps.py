@@ -15,18 +15,15 @@ from ....base.utility import Utility
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
 
-
 @before_spec
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
-
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
     APP.warning_modal.accept_warning()
-
 
 @step("Go to <page_name> page")
 def go_to_page(page_name):
@@ -103,6 +100,32 @@ def download_file_at_file_table(file:str, source:str):
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
 
+@step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")
+def upload_file(file_name:str, extension:str, folder_name:str, source:str, button:str):
+    """
+    upload_file performs an action to launch a file explorer,
+    and then uploads a specified file located in the resources folder.
+
+    :param file_name: The name of the file being uploaded
+    :param extension: The extension of the file being uploaded
+    :param folder_name: Name of the folder that contains the file being uploaded.
+    :param source: Specifies what function is causing the action to launch the file explorer
+    :param button: ID or Name of the button that is being clicked to launch the file explorer
+    :return: N/A
+    """
+    sources = {
+        "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
+    }
+    driver = WebDriver.page
+    with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
+        # Allows using sources without passing in contents of <file> as a parameter
+            sources.get(source)(button)
+    file_chooser = file_chooser_info.value
+    file_name = file_name.lower().replace(" ", "_")
+    folder_name = folder_name.lower().replace(" ", "_")
+    file_path = f"{Utility.parent_dir()}/holmes-py/resources/{folder_name}/{file_name}.{extension}"
+    file_chooser.set_files(file_path)
+
 @step("Read from <file_type>")
 def read_from_file(file_type):
     with open(data_store.spec[file_type],'r+') as f:
@@ -175,6 +198,11 @@ def is_text_present_on_the_page(expected_text: str):
     is_text_present = APP.home_page.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
+@step("The cohort bar case count should be <case_count>")
+def is_cohort_bar_case_count_present_on_the_page(case_count: str):
+    is_case_count_present = APP.home_page.is_cohort_bar_case_count_present(case_count)
+    assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
+
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
     is_data_testid_present = APP.home_page.is_data_testid_present(data_testid)
@@ -184,9 +212,14 @@ def is_data_testid_not_present_on_the_page(data_testid: str):
 def click_button_with_data_testid(data_testid: str):
     APP.home_page.click_button_data_testid(data_testid)
 
+@step("Select <button_text_name>")
+def click_button_with_displayed_text_name(button_text_name: str):
+    APP.home_page.click_button_with_displayed_text_name(button_text_name)
+
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     APP.home_page.send_text_into_search_bar(text, aria_label)
+
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):

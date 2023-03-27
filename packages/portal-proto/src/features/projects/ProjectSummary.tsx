@@ -5,12 +5,10 @@ import {
   ProjectDefaults,
   useFilesFacetsByNameFilter,
 } from "@gff/core";
-import SummaryCount from "../../components/Summary/SummaryCount";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { Button, LoadingOverlay, Menu, Tooltip } from "@mantine/core";
-import { MdFileDownload } from "react-icons/md";
+import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
 import {
   calculatePercentageAsNumber,
   humanify,
@@ -22,10 +20,14 @@ import Link from "next/link";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
 import {
+  HeaderTitle,
   PercentBar,
   PercentBarComplete,
   PercentBarLabel,
 } from "../shared/tailwindComponents";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { HorizontalTable } from "@/components/HorizontalTable";
+import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import PrimarySiteTable from "./PrimarySiteTable";
 
 export interface ContextualProjectViewProps {
@@ -348,59 +350,115 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       tableRows: rows,
     };
   };
+
+  const addLinkValue = () => (
+    <span className="text-base-lightest">
+      {getAnnotationsLinkParams() ? (
+        <Link href={getAnnotationsLinkParams()} passHref>
+          <a className="underline" target="_blank">
+            {projectData.annotation.count.toLocaleString()}
+          </a>
+        </Link>
+      ) : (
+        projectData.annotation.count.toLocaleString()
+      )}
+    </span>
+  );
+
+  const Cases = (
+    <span className="flex items-center gap-1">
+      <div className="text-[1rem] xl:text-2xl">
+        <FaUser />
+      </div>
+
+      <SingularOrPluralSpan
+        count={projectData.summary?.case_count}
+        title="Case"
+      />
+    </span>
+  );
+
+  const Files = (
+    <span className="flex items-center gap-1">
+      <div className="text-[1rem] xl:text-2xl">
+        <FaFile />
+      </div>
+
+      <SingularOrPluralSpan
+        count={projectData.summary?.file_count}
+        title="File"
+      />
+    </span>
+  );
+
+  const Annotations = (
+    <span className="flex items-center gap-1">
+      <div className="text-[1rem] xl:text-2xl">
+        <FaEdit />
+      </div>
+
+      <span>
+        {addLinkValue()}{" "}
+        {projectData.annotation.count > 1 ? "Annotations" : "Annotation"}
+      </span>
+    </span>
+  );
+
+  const message = projectData.hasControlledAccess ? (
+    <>
+      The project has controlled access data which requires dbGaP Access. See
+      instructions for{" "}
+      <a
+        href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+        className="text-utility-link underline"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Obtaining Access to Controlled Data.
+      </a>
+    </>
+  ) : null;
+
   return (
     <>
       <SummaryHeader
         iconText="pr"
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
-      />
-
-      <div
-        className={`flex flex-col mx-auto ${
-          projectData.isModal ? "mt-4" : "mt-20"
-        } w-10/12`}
-      >
-        <div className="flex flex-col gap-5">
-          <div className="self-end flex gap-3">
-            <Menu width="target">
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  className="px-1.5 min-h-7 w-34 text-primary border-primary border rounded"
-                  leftIcon={<MdFileDownload size="1.25em" />}
-                >
-                  Biospecimen
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV (Coming soon)
-                </Menu.Item>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON (Coming soon)
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-            <Menu width="150px">
-              <Menu.Target>
-                <Button
-                  variant="outline"
-                  className="px-1.5 min-h-7 w-26 text-primary border-primary border rounded"
-                  leftIcon={<MdFileDownload size="1.25em" />}
-                >
-                  Clinical
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV (Coming soon)
-                </Menu.Item>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON (Coming soon)
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+        leftElement={
+          <div className="flex gap-4">
+            <DropdownWithIcon
+              dropdownElements={[
+                {
+                  title: "TSV (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+                {
+                  title: "JSON (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+              ]}
+              TargetButtonChildren={
+                <span className="font-medium text-sm">Biospecimen</span>
+              }
+              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            />
+            <DropdownWithIcon
+              dropdownElements={[
+                {
+                  title: "TSV (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+                {
+                  title: "JSON (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+              ]}
+              TargetButtonChildren={
+                <span className="font-medium text-sm">Clinical</span>
+              }
+              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            />
             <Tooltip
               transition="fade"
               transitionDuration={200}
@@ -408,66 +466,56 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
 Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
+              position="bottom"
               multiline
               withArrow
             >
               <Button
                 variant="outline"
-                leftIcon={<MdFileDownload size="1.25em" />}
-                className="text-primary border-primary"
+                leftIcon={<DownloadIcon size="1.25em" />}
+                className="text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max"
+                classNames={{ label: "font-medium text-sm" }}
               >
                 Manifest
               </Button>
             </Tooltip>
           </div>
-          <div className="flex gap-4">
-            <div className="w-10/12">
-              <SummaryCard
-                message={
-                  projectData.hasControlledAccess ? (
-                    <>
-                      The project has controlled access data which requires
-                      dbGaP Access. See instructions for{" "}
-                      <a
-                        href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                        className="text-utility-link underline"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Obtaining Access to Controlled Data.
-                      </a>
-                    </>
-                  ) : null
-                }
-                tableData={formatDataForSummary()}
+        }
+        rightElement={
+          <div className="flex items-center gap-2 text-[1rem] xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+            Total of {Cases} {Files} {Annotations}
+          </div>
+        }
+      />
+
+      <div className={`mx-4 ${projectData.isModal ? "mt-4" : "mt-36"} `}>
+        <div className="mt-8">
+          <div className="flex justify-between gap-8">
+            <HeaderTitle>Summary</HeaderTitle>
+            {message && <div className="text-sm text-right">{message}</div>}
+          </div>
+          <div className="flex">
+            <div className="basis-1/2">
+              <HorizontalTable
+                tableData={formatDataForSummary().slice(
+                  0,
+                  formatDataForSummary().length === 4 ? 2 : 3,
+                )}
               />
             </div>
-            <div className="w-2/12">
-              <SummaryCount
-                title={"Cases"}
-                count={projectData.summary?.case_count.toLocaleString()}
-                Icon={FaUser}
-              />
-
-              <SummaryCount
-                title={"Files"}
-                count={projectData.summary?.file_count.toLocaleString()}
-                Icon={FaFile}
-              />
-
-              <SummaryCount
-                title={"Annotations"}
-                count={projectData.annotation?.count.toLocaleString()}
-                Icon={FaEdit}
-                href={getAnnotationsLinkParams()}
-                shouldOpenInNewTab
+            <div className="basis-1/2">
+              <HorizontalTable
+                tableData={formatDataForSummary().slice(
+                  formatDataForSummary().length === 4 ? 2 : 3,
+                  formatDataForSummary().length,
+                )}
               />
             </div>
           </div>
 
           {(projectData?.summary?.data_categories ||
             projectData?.summary?.experimental_strategies) && (
-            <div className="flex gap-4 mt-4 mb-14">
+            <div className="flex gap-8 mt-8 mb-14">
               {projectData?.summary?.data_categories && (
                 <CategoryTableSummary
                   title="Cases and File Counts by Data Category"

@@ -44,6 +44,7 @@ import {
   getSlideCountFromCaseSummary,
 } from "./utils";
 import { BasicTable } from "@/components/Tables/BasicTable";
+import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -388,7 +389,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const Files = (
     <span className="flex items-center gap-1">
       <FaFile size={24} />
-      <span>{filesCountTotal?.toLocaleString()} Files</span>
+      <SingularOrPluralSpan count={filesCountTotal} title="File" />
     </span>
   );
 
@@ -410,11 +411,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             leftIcon={<FaShoppingCart />}
-            className={`${
-              isAllFilesInCart
-                ? "bg-primary-darkest text-base-max"
-                : "text-primary bg-base-lightest"
-            } hover:bg-primary-darkest hover:text-base-max`}
+            className="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(
@@ -482,13 +479,22 @@ export const CaseView: React.FC<CaseViewProps> = ({
           )}
         </div>
 
-        <ClinicalSummary
-          diagnoses={diagnoses}
-          follow_ups={follow_ups}
-          demographic={demographic}
-          family_histories={family_histories}
-          exposures={exposures}
-        />
+        <div
+          className={`${
+            !(
+              data.summary.data_categories ||
+              data.summary.experimental_strategies
+            ) && "mt-14"
+          }`}
+        >
+          <ClinicalSummary
+            diagnoses={diagnoses}
+            follow_ups={follow_ups}
+            demographic={demographic}
+            family_histories={family_histories}
+            exposures={exposures}
+          />
+        </div>
 
         {clinicalFilteredFiles?.length > 0 && (
           <div className="mt-8">

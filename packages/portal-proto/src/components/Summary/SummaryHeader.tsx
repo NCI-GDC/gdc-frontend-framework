@@ -8,6 +8,7 @@ export interface SummaryHeaderProps {
   leftElement?: ReactNode;
   rightElement?: ReactNode;
   isModal?: boolean;
+  isFile?: boolean;
 }
 export const SummaryHeader = ({
   iconText,
@@ -15,6 +16,7 @@ export const SummaryHeader = ({
   leftElement,
   rightElement,
   isModal = false,
+  isFile = false,
 }: SummaryHeaderProps): JSX.Element => {
   return (
     <header
@@ -24,7 +26,9 @@ export const SummaryHeader = ({
     >
       <div className="flex flex-nowrap items-center gap-4">
         <SummaryHeaderIcon iconText={iconText} />
-        <SummaryHeaderTitle>{headerTitle}</SummaryHeaderTitle>
+        <SummaryHeaderTitle $isFileSummary={isFile}>
+          {headerTitle}
+        </SummaryHeaderTitle>
       </div>
       {(leftElement || rightElement) && (
         <>
