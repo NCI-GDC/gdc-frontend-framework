@@ -214,7 +214,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                     label: `${entityLabel}s`,
                   }}
                   handleChange={handleMatchedTableChange}
-                  columnSorting={"enable"}
+                  columnSorting={"enable"} //TODO Fix this will not work with multiple pages
                 />
               )}
             </div>
@@ -244,7 +244,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
                     label: `${entityLabel}s`,
                   }}
                   handleChange={handleUnmatchedTableChange}
-                  columnSorting={"enable"}
+                  columnSorting={"enable"} //TODO Fix this will not work with multiple pages
                 />
               )}
             </div>

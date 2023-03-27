@@ -89,7 +89,7 @@ interface VerticalTableProps {
    */
   columns: Columns[];
   /**
-   * ???
+   * ??? TODO remove
    */
   selectableRow: boolean;
   /**
@@ -281,7 +281,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [columns]);
 
   useEffect(() => {
-    if (status === "fulfilled") {
+    if (tableData) {
       setTable(tableData);
     }
     setShowLoading(status === "pending" || status === "uninitialized");

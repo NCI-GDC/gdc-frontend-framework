@@ -26,6 +26,7 @@ import {
   PercentBarComplete,
   PercentBarLabel,
 } from "../shared/tailwindComponents";
+import PrimarySiteTable from "./PrimarySiteTable";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -481,6 +482,14 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                   tableData={formatDataForExpCategoryTable()}
                 />
               )}
+            </div>
+          )}
+          {projectData?.primary_site?.length > 1 && (
+            <div className="">
+              <PrimarySiteTable
+                projectId={projectData?.project_id}
+                primarySites={projectData?.primary_site}
+              />
             </div>
           )}
         </div>

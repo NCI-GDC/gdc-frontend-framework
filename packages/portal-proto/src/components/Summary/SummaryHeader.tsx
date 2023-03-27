@@ -19,7 +19,7 @@ export const SummaryHeader = ({
   return (
     <header
       className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
-        isModal ? "sticky top-0 rounded-t-sm z-20" : "fixed z-10"
+        isModal ? "sticky top-0 rounded-t-sm z-[2000]" : "fixed z-[2000]"
       }`}
     >
       <div className="flex flex-nowrap items-center gap-4">

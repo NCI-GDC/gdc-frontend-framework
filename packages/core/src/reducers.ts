@@ -14,6 +14,10 @@ import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
 } from "./features/projects/projectsSlice";
+import {
+  projectPrimarySiteApiSliceReducer,
+  projectPrimarySiteApiSliceReducerPath,
+} from "./features/projects/projectsPrimarySiteSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
@@ -90,6 +94,7 @@ export const reducers = combineReducers({
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,
   [projectsApiSliceReducerPath]: projectsApiReducer,
+  [projectPrimarySiteApiSliceReducerPath]: projectPrimarySiteApiSliceReducer,
   [cohortApiSliceReducerPath]: cohortApiReducer,
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
