@@ -348,7 +348,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
             {cohort.name}
           </label>
         ),
-        count: cohort.caseCount.toLocaleString(),
+        count: (cohort?.caseCount || 0).toLocaleString(),
       })),
       ...Object.entries(geneSets).map(([setId, setName]) => ({
         select: (
@@ -405,6 +405,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         count: <MutationCountCell setId={setId} />,
       })),
     ];
+    // Prevent infinite rerender issue
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [
     JSON.stringify(availableCohorts),
     JSON.stringify(geneSets),
@@ -413,6 +415,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     selectedEntityType,
     setSelectedEntityType,
   ]);
+  /* eslint-enable */
 
   const {
     handlePageChange,
