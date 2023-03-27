@@ -2,26 +2,32 @@ import React, { ComponentType, ReactElement } from "react";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
 import { Provider } from "react-redux";
+import { MantineProvider } from "@mantine/core";
 import { SummaryModalContext, URLContext } from "src/utils/contexts";
+import { NotificationsProvider } from "@mantine/notifications";
 import store from "@/app/store";
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
-          <SummaryModalContext.Provider
-            value={{
-              entityMetadata: {
-                entity_type: null,
-                entity_id: null,
-              },
-              setEntityMetadata: jest.fn(),
-            }}
-          >
-            {children}
-          </SummaryModalContext.Provider>
-        </URLContext.Provider>
+        <MantineProvider>
+          <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
+            <NotificationsProvider position="top-center" zIndex={400}>
+              <SummaryModalContext.Provider
+                value={{
+                  entityMetadata: {
+                    entity_type: null,
+                    entity_id: null,
+                  },
+                  setEntityMetadata: jest.fn(),
+                }}
+              >
+                {children}
+              </SummaryModalContext.Provider>
+            </NotificationsProvider>
+          </URLContext.Provider>
+        </MantineProvider>
       </Provider>
     </CoreProvider>
   );
