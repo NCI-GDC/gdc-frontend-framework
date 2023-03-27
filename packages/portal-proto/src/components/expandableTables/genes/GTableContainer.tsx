@@ -41,6 +41,7 @@ import { convertDateToString } from "src/utils/date";
 import { saveAs } from "file-saver";
 import { FiDownload } from "react-icons/fi";
 import FunctionButton from "@/components/FunctionButton";
+import useSWR from "swr";
 
 export const SelectedRowContext =
   createContext<
@@ -191,21 +192,28 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const {
     data: mutatedGenesFreqData,
-    isFetching: mutatedGenesFreqFetching,
-    isError: mutatedGenesFreqError,
-  } = useMutatedGenesFreqData({
-    currentFilters: genomicFilters,
-    size: initialData?.genes_total,
-  });
+    error,
+    isLoading: exportPending,
+    // isFetching: mutatedGenesFreqFetching,
+    // isError: mutatedGenesFreqError,
+  } = useSWR(
+    "genesTable/json/dl",
+    useMutatedGenesFreqData({
+      currentFilters: genomicFilters,
+      size: initialData?.genes_total,
+    }),
+  );
 
-  const {
-    data: mutatedGenesFreqTSVData,
-    isFetching: mutatedGenesFreqTSVFetching,
-    isError: mutatedGenesFreqTSVError,
-  } = useMutatedGenesFreqDLQuery({
-    tableData,
-    geneIds: tableData.genes.map(({ gene_id: geneId }) => geneId),
-  });
+  // const {
+  //   data: mutatedGenesFreqData,
+  //   error,
+  //   isLoading: exportPending
+  //   // isFetching: mutatedGenesFreqFetching,
+  //   // isError: mutatedGenesFreqError,
+  // } = useSWR("genesTable/json/dl", useMutatedGenesFreqDLQuery({
+  //   tableData: initialData ?? [],
+  //   geneIds: initialData?.genes.map(({ gene_id: geneId }) => geneId),
+  // }));
 
   const exportMutatedGenes = useCallback(() => {
     const now = new Date();
@@ -219,88 +227,90 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     saveAs(blob, fileName);
   }, [mutatedGenesFreqData?.mutatedGenes]);
 
-  useEffect(() => {
-    if (mutatedGenesFreqError) {
-      setExportMutatedGenesPending(false);
-    } else if (exportMutatedGenesPending && !mutatedGenesFreqFetching) {
-      exportMutatedGenes();
-      setExportMutatedGenesPending(false);
-    }
-  }, [
-    mutatedGenesFreqFetching,
-    mutatedGenesFreqError,
-    exportMutatedGenesPending,
-    exportMutatedGenes,
-  ]);
+  // useEffect(() => {
+  //   if (mutatedGenesFreqError) {
+  //     setExportMutatedGenesPending(false);
+  //   } else if (exportMutatedGenesPending && !mutatedGenesFreqFetching) {
+  //     exportMutatedGenes();
+  //     setExportMutatedGenesPending(false);
+  //   }
+  // }, [
+  //   mutatedGenesFreqFetching,
+  //   mutatedGenesFreqError,
+  //   exportMutatedGenesPending,
+  //   exportMutatedGenes,
+  // ]);
 
-  const exportMutatedGenesTSV = useCallback(() => {
-    const now = new Date();
-    const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
-    const headers = [
-      "Gene ID",
-      "Symbol",
-      "Name",
-      "Cytoband",
-      "Type",
-      "# SSM Affected Cases in Cohort",
-      "# SSM Affected Cases Across the GDC",
-      "# CNV Gain",
-      "# CNV Loss",
-      "# Mutations",
-      "Annotations",
-    ];
-    const body = mutatedGenesFreqTSVData?.results
-      .map(
-        ({
-          gene_id,
-          symbol,
-          name,
-          cytoband,
-          biotype,
-          ssmsAffectedCasesInCohort,
-          ssmsAffectedCasesAcrossGDC,
-          cnvGain,
-          cnvLoss,
-          mutations,
-          is_cancer_gene_census,
-        }) => {
-          return [
-            gene_id,
-            symbol,
-            name,
-            cytoband,
-            biotype,
-            ssmsAffectedCasesInCohort,
-            ssmsAffectedCasesAcrossGDC,
-            cnvGain,
-            cnvLoss,
-            mutations,
-            is_cancer_gene_census,
-          ].join("\t");
-        },
-      )
-      .join("\n");
+  // todo: memo
 
-    const tsv = [headers.join("\t"), body].join("\n");
+  // const exportMutatedGenesTSV = useCallback(() => {
+  //   const now = new Date();
+  //   const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
+  //   const headers = [
+  //     "Gene ID",
+  //     "Symbol",
+  //     "Name",
+  //     "Cytoband",
+  //     "Type",
+  //     "# SSM Affected Cases in Cohort",
+  //     "# SSM Affected Cases Across the GDC",
+  //     "# CNV Gain",
+  //     "# CNV Loss",
+  //     "# Mutations",
+  //     "Annotations",
+  //   ];
+  //   const body = mutatedGenesFreqTSVData?.results
+  //     .map(
+  //       ({
+  //         gene_id,
+  //         symbol,
+  //         name,
+  //         cytoband,
+  //         biotype,
+  //         ssmsAffectedCasesInCohort,
+  //         ssmsAffectedCasesAcrossGDC,
+  //         cnvGain,
+  //         cnvLoss,
+  //         mutations,
+  //         is_cancer_gene_census,
+  //       }) => {
+  //         return [
+  //           gene_id,
+  //           symbol,
+  //           name,
+  //           cytoband,
+  //           biotype,
+  //           ssmsAffectedCasesInCohort,
+  //           ssmsAffectedCasesAcrossGDC,
+  //           cnvGain,
+  //           cnvLoss,
+  //           mutations,
+  //           is_cancer_gene_census,
+  //         ].join("\t");
+  //       },
+  //     )
+  //     .join("\n");
 
-    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+  //   const tsv = [headers.join("\t"), body].join("\n");
 
-    saveAs(blob, fileName);
-  }, [mutatedGenesFreqTSVData?.results]);
+  //   const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
 
-  useEffect(() => {
-    if (mutatedGenesFreqTSVError) {
-      setExportMutatedGenesTSVPending(false);
-    } else if (exportMutatedGenesTSVPending && !mutatedGenesFreqTSVFetching) {
-      exportMutatedGenesTSV();
-      setExportMutatedGenesTSVPending(false);
-    }
-  }, [
-    exportMutatedGenesTSV,
-    mutatedGenesFreqTSVFetching,
-    mutatedGenesFreqTSVError,
-    exportMutatedGenesTSVPending,
-  ]);
+  //   saveAs(blob, fileName);
+  // }, [mutatedGenesFreqTSVData?.results]);
+
+  // useEffect(() => {
+  //   if (mutatedGenesFreqTSVError) {
+  //     setExportMutatedGenesTSVPending(false);
+  //   } else if (exportMutatedGenesTSVPending && !mutatedGenesFreqTSVFetching) {
+  //     exportMutatedGenesTSV();
+  //     setExportMutatedGenesTSVPending(false);
+  //   }
+  // }, [
+  //   exportMutatedGenesTSV,
+  //   mutatedGenesFreqTSVFetching,
+  //   mutatedGenesFreqTSVError,
+  //   exportMutatedGenesTSVPending,
+  // ]);
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -402,7 +412,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex flex-row gap-2">
-                {mutatedGenesFreqFetching ? (
+                {exportPending ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -410,11 +420,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ) : (
                   <ButtonTooltip
                     label={`${
-                      mutatedGenesFreqFetching ? "" : "Export current view"
+                      // mutatedGenesFreqFetching ? "" :
+                      "Export current view"
                     }`}
                   >
                     <FunctionButton
-                      onClick={() => exportMutatedGenes()}
+                      onClick={() => console.log(mutatedGenesFreqData)}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -425,12 +436,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 )}
                 <ButtonTooltip
                   label={`${
-                    mutatedGenesFreqFetching ? "Fetching" : "Export"
+                    //  mutatedGenesFreqFetching ? "Fetching" :
+                    "Export"
                   } current view`}
                 >
                   <FunctionButton
-                    disabled={mutatedGenesFreqFetching}
-                    onClick={() => exportMutatedGenesTSV()}
+                    // disabled={mutatedGenesFreqFetching}
+                    // onClick={() => exportMutatedGenesTSV()}
                     className={
                       "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                     }
