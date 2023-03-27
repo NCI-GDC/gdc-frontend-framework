@@ -1,3 +1,6 @@
+import SelectionPanel from "@/features/set-operations/SelectionPanel";
+import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
   {
@@ -75,7 +78,7 @@ export const REGISTERED_APPS = [
     countsField: "repositoryCaseCount",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
-    selectAdditionalCohort: true,
+    selectionScreen: AdditionalCohortSelection,
   },
   // TODO uncomment to show gene expression card
   /*
@@ -102,7 +105,7 @@ export const REGISTERED_APPS = [
     description:
       "Display Venn diagram and find intersection or union, etc. of your cohorts.",
     id: "SetOperations",
-    selectAdditionalCohort: true,
+    selectionScreen: SelectionPanel,
   },
   {
     name: "OncoGrid",

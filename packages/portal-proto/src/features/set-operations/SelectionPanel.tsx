@@ -463,7 +463,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   };
 
   return (
-    <>
+    <div className="bg-base-max">
       <div className="p-4">
         <h2 className="font-heading text-lg font-bold py-2">
           Select 2 or 3 of the same set type
@@ -522,7 +522,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           Run
         </DarkFunctionButton>
       </div>
-    </>
+    </div>
   );
 };
 

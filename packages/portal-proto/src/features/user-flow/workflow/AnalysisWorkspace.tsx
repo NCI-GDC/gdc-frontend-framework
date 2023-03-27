@@ -19,7 +19,7 @@ import FeaturedToolCard from "./FeaturedToolCard";
 
 import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
-import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import AdditionalCohortSelection from "../../cohortComparison/AdditionalCohortSelection";
 import { clearComparisonCohorts } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
@@ -289,7 +289,9 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     [app],
   );
   useEffect(() => {
-    setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
+    setCohortSelectionOpen(
+      !isDemoMode && appInfo?.selectionScreen !== undefined,
+    );
 
     if (app) {
       scrollIntoView();
@@ -329,14 +331,13 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               setActiveApp={handleAppSelected}
               onDemoApp={isDemoMode}
             />
-            {/*
-            <AdditionalCohortSelection
-              app={app}
-              setOpen={setCohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-            />
-          */}
-            <SelectionPanel />
+            {appInfo?.selectionScreen && (
+              <appInfo.selectionScreen
+                app={appInfo}
+                setOpen={setCohortSelectionOpen}
+                setActiveApp={handleAppSelected}
+              />
+            )}
           </div>
         )}
       </CSSTransition>

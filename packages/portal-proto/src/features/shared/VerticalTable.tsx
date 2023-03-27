@@ -400,7 +400,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         ? column.isSortedDesc
                           ? "descending"
                           : "ascending"
-                        : "none"
+                        : undefined
                     }
                     tabIndex={column.canSort === false ? -1 : 0}
                     onKeyDown={(event) => {
