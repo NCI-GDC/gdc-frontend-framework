@@ -495,7 +495,7 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
         ?.map((by) => `${by.field}:${by.direction}`)
         .join(","),
       facets: request?.facets?.join(","),
-      from: 0,
+      from: request?.from || 0,
       size: chunkSize,
     }),
   });
@@ -547,7 +547,7 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
         } else {
           resolve({
             ...resData,
-            data: { hits, pagination: resData.data.pagination },
+            data: { ...resData.data, hits },
           });
         }
       });
