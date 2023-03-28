@@ -2,7 +2,7 @@ import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { graphqlAPISlice, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 export interface ProjectPrimarySites {
   readonly disease_types: string[];
-  readonly files__data_category: string[];
+  readonly files__experimental_strategy: string[];
   readonly casesTotal: number;
   readonly filesTotal: number;
 }
@@ -15,7 +15,7 @@ export interface ProjectPrimarySitesApiResponse {
             readonly key: string;
           }[];
         };
-        readonly files__data_category: {
+        readonly files__experimental_strategy: {
           readonly buckets: {
             readonly key: string;
           }[];
@@ -50,7 +50,7 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
                 total
               }
               aggregations(filters: $filters) {
-                files__data_category {
+                files__experimental_strategy {
                   buckets {
                     key
                   }
@@ -94,8 +94,8 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
             response.data.repository.cases.aggregations.disease_type.buckets.map(
               (obj) => obj.key,
             ),
-          files__data_category:
-            response.data.repository.cases.aggregations.files__data_category.buckets.map(
+          files__experimental_strategy:
+            response.data.repository.cases.aggregations.files__experimental_strategy.buckets.map(
               (obj) => obj.key,
             ),
           casesTotal: response.data.repository.cases.hits.total,

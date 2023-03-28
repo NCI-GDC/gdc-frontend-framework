@@ -79,9 +79,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
           return {
             primary_site: obj.originalArgs.primary_site,
             disease_type: obj.data.disease_types,
-            cases: obj.data.casesTotal,
-            experimental_strategy: obj.data.files__data_category.join(", "),
-            files: obj.data.filesTotal,
+            cases: obj.data.casesTotal?.toLocaleString(),
+            experimental_strategy:
+              obj.data.files__experimental_strategy.join(", "),
+            files: obj.data.filesTotal?.toLocaleString(),
           };
         } else {
           return {

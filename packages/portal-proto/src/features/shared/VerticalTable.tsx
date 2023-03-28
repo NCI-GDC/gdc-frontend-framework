@@ -556,7 +556,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       handleChange({
         newSearch: searchTerm,
       });
-    }, 500);
+    }, 250);
 
     return () => clearTimeout(delayDebounceFn);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -591,9 +591,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <MdClose
                         onClick={() => {
                           setSearchTerm("");
-                          handleChange({
-                            newSearch: "",
-                          });
                         }}
                         className="cursor-pointer"
                       />
@@ -602,9 +599,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
-                    handleChange({
-                      newSearch: e.target.value,
-                    });
                   }}
                 />
                 {showControls && (
