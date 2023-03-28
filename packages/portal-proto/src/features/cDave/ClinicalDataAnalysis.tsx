@@ -11,7 +11,11 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
-import { filterUsefulFacets, parseFieldName } from "./utils";
+import {
+  filterUsefulFacets,
+  parseFieldName,
+  flattenIfNestedAndOr,
+} from "./utils";
 
 export interface ClinicalDataAnalysisProps {
   onLoaded?: () => void;
@@ -34,19 +38,22 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     );
 
   const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      isDemoMode
-        ? {
-            mode: "and",
-            root: {
-              "cases.project.project_id": {
-                operator: "includes",
-                field: "cases.project.project_id",
-                operands: ["TCGA-LGG"],
+    flattenIfNestedAndOr(
+      buildCohortGqlOperator(
+        // nested AND/OR does not work with this query so flatten
+        isDemoMode
+          ? {
+              mode: "and",
+              root: {
+                "cases.project.project_id": {
+                  operator: "includes",
+                  field: "cases.project.project_id",
+                  operands: ["TCGA-LGG"],
+                },
               },
-            },
-          }
-        : selectCurrentCohortFilters(state),
+            }
+          : selectCurrentCohortFilters(state),
+      ),
     ),
   );
   const {
