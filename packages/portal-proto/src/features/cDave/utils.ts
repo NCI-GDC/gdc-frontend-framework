@@ -1,5 +1,12 @@
 import { omitBy, some, capitalize } from "lodash";
-import { NumericFromTo, Buckets, Stats } from "@gff/core";
+import {
+  NumericFromTo,
+  Buckets,
+  Stats,
+  GqlOperation,
+  GqlUnion,
+  GqlIntersection,
+} from "@gff/core";
 import { CAPITALIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
 import { CustomInterval, NamedFromTo } from "./types";
 
@@ -100,4 +107,34 @@ export const isInterval = (
   }
 
   return false;
+};
+
+/**
+ * Flatten nested ands into a root level and.
+ * This is necessary because the GDC GraphQL API does not appear to support nested ands
+ * for this type of query.
+ * @param filters
+ */
+export const flattenIfNestedAndOr = (filters: GqlOperation): GqlOperation => {
+  // if there are no filters, return;
+  if (filters === undefined) return filters;
+  const root = filters as GqlUnion | GqlIntersection;
+  if (root.content.length == 0) return filters;
+  // if the child is an and,or, flatten it
+  return root.content.reduce(
+    (acc: GqlIntersection, cur: GqlOperation) => {
+      if (cur.op === "and" || cur.op === "or") {
+        return {
+          op: "and",
+          content: [...acc.content, ...cur.content],
+        };
+      }
+      return {
+        // if the child is not an and,or, just add it to the list
+        op: "and",
+        content: [...acc.content, cur],
+      };
+    },
+    { op: "and", content: [] },
+  );
 };
