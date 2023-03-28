@@ -42,6 +42,7 @@ import { saveAs } from "file-saver";
 import { FiDownload } from "react-icons/fi";
 import FunctionButton from "@/components/FunctionButton";
 import useSWR from "swr";
+import { Equals } from "@gff/core/dist/features/gdcapi/filters";
 
 export const SelectedRowContext =
   createContext<
@@ -192,17 +193,38 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   const {
     data: mutatedGenesFreqData,
+    isLoading,
     error,
-    isLoading: exportPending,
-    // isFetching: mutatedGenesFreqFetching,
-    // isError: mutatedGenesFreqError,
+    // todo: replace useSWR with useSWRMutation to be able to use trigger
+    // trigger
   } = useSWR(
-    "genesTable/json/dl",
-    useMutatedGenesFreqData({
-      currentFilters: genomicFilters,
-      size: initialData?.genes_total,
-    }),
+    {
+      args: { size: initialData?.genes_total, filters: genomicFilters },
+      key: `genesTable/json/dl/${initialData?.genes_total}/${Object.keys(
+        genomicFilters.root,
+      )
+        .map((key) => {
+          const { operator: rootOp = "" } = genomicFilters.root[key];
+          const { field, operand, operator } = genomicFilters.root[
+            `${key}`
+          ] as Equals;
+          // const { field, operator, operands } = genomicFilters.root[`${key}`] as ExcludeIfAny
+          //  operands.length ? operands.join(",") : ""
+          return [rootOp, operator, field, operand].join(",");
+        })
+        .reduce((acc, x) => acc + x)}`,
+    },
+    ({ args: { filters: currentFilters, size } }) =>
+      useMutatedGenesFreqData({
+        currentFilters,
+        size,
+      }),
   );
+
+  useEffect(() => {
+    console.log("useswr hook", mutatedGenesFreqData);
+    console.log("err", error);
+  }, [mutatedGenesFreqData, error]);
 
   // const {
   //   data: mutatedGenesFreqData,
@@ -412,7 +434,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex flex-row gap-2">
-                {exportPending ? (
+                {isLoading ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -425,7 +447,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     }`}
                   >
                     <FunctionButton
-                      onClick={() => console.log(mutatedGenesFreqData)}
+                      // onClick={() => trigger()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
