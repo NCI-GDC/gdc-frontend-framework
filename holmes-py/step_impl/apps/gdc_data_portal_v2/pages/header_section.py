@@ -25,6 +25,7 @@ class HeaderSection(BasePage):
     # Pages in the data portal do not load instantaneously.
     # We want to wait for the main content of the page to load before continuing the test.
     def wait_for_page_to_load(self, page_to_load):
+        page_to_load = page_to_load.lower()
         if page_to_load == "analysis":
             self.wait_for_selector(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT)
         elif page_to_load == "projects":
