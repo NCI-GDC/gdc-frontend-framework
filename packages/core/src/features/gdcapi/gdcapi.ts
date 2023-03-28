@@ -473,7 +473,7 @@ export const fetchGdcFiles = async (
   return fetchGdcEntities("files", request);
 };
 
-const DEFAULT_CHUNK_SIZE = 10000;
+const DEFAULT_CHUNK_SIZE = 10;
 
 export const fetchGdcEntities = async <T extends Record<string, any>>(
   endpoint: string,

@@ -94,6 +94,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             },
           },
           fields: [...mappedToFields, ...matchAgainstIdentifiers],
+          size: 10000,
         },
         true,
       );
