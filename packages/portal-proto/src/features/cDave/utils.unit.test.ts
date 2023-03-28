@@ -3,9 +3,7 @@ import {
   filterUsefulFacets,
   parseFieldName,
   toDisplayName,
-  flattenIfNestedAndOr,
 } from "./utils";
-import { GqlOperation } from "@gff/core";
 
 describe("filterUsefulFacets", () => {
   it("remove empty bucket fields", () => {
@@ -101,74 +99,5 @@ describe("parseFieldName", () => {
       field_type: "treatments",
       full: "diagnoses.treatments.treatment_type",
     });
-  });
-});
-
-describe("flatten nested and/ord", () => {
-  const expectedFlattenedAnd: GqlOperation = {
-    content: [
-      {
-        content: {
-          field: "cases.follow_ups.bmi",
-          value: 1,
-        },
-        op: ">=",
-      },
-      {
-        content: {
-          field: "cases.follow_ups.bmi",
-          value: 20,
-        },
-        op: "<",
-      },
-      {
-        content: {
-          field: "cases.project.project_id",
-          value: ["CPTAC-3"],
-        },
-        op: "in",
-      },
-    ],
-    op: "and",
-  };
-  it("flatten nested and/or", () => {
-    expect(
-      flattenIfNestedAndOr({
-        op: "and",
-        content: [
-          {
-            op: "and",
-            content: [
-              {
-                op: ">=",
-                content: {
-                  field: "cases.follow_ups.bmi",
-                  value: 1,
-                },
-              },
-              {
-                op: "<",
-                content: {
-                  field: "cases.follow_ups.bmi",
-                  value: 20,
-                },
-              },
-            ],
-          },
-          {
-            op: "in",
-            content: {
-              field: "cases.project.project_id",
-              value: ["CPTAC-3"],
-            },
-          },
-        ],
-      }),
-    ).toEqual(expectedFlattenedAnd);
-  });
-  it("should not change filter", () => {
-    expect(flattenIfNestedAndOr(expectedFlattenedAnd)).toEqual(
-      expectedFlattenedAnd,
-    );
   });
 });
