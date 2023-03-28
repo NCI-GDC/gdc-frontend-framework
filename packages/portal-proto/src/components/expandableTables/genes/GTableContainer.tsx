@@ -220,12 +220,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         size,
       }),
   );
-
-  useEffect(() => {
-    console.log("useswr hook", mutatedGenesFreqData);
-    console.log("err", error);
-  }, [mutatedGenesFreqData, error]);
-
   // const {
   //   data: mutatedGenesFreqData,
   //   error,
