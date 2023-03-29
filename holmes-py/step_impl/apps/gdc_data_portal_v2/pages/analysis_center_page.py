@@ -45,6 +45,7 @@ class AnalysisCenterPage(BasePage):
         for navigation, location in nav_and_location:
             try:
                 self.click(navigation)
+                print(f'looking for {location}')
                 self.wait_until_locator_is_visible(location)
                 # Navigate back to the analysis center for the next test
                 self.click(AnalysisCenterLocators.ANALYSIS_CENTER_HEADER)

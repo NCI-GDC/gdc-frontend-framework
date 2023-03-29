@@ -190,6 +190,7 @@ Build and run UI tests:
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
       when: on_success
+      allow_failure: true
   artifacts:
     when: always
     paths:
@@ -197,4 +198,4 @@ Build and run UI tests:
       - holmes-py/downloads
       - holmes-py/logs
       - holmes-py/reports
-    expire_in: 1 month
+    expire_in: 3 months

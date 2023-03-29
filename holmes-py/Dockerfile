@@ -32,6 +32,8 @@ RUN gauge install python
 RUN gauge install screenshot
 RUN gauge install html-report
 
+ENV IS_DOCKER=1
+
 WORKDIR /app
 
 CMD [ "sh", "-c", "gauge run ./specs/gdc_data_portal_v2/" ]
