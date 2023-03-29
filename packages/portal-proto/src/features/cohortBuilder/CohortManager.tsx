@@ -598,7 +598,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
           <Tooltip label="Delete Cohort" position="bottom" withArrow>
             <CohortGroupButton
-            data-testid="deleteButton"
+              data-testid="deleteButton"
               onClick={() => {
                 if (isDefaultCohort) return;
                 setShowDelete(true);
