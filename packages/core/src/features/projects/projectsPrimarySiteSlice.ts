@@ -95,9 +95,9 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
               (obj) => obj.key,
             ),
           files__experimental_strategy:
-            response.data.repository.cases.aggregations.files__experimental_strategy.buckets.map(
-              (obj) => obj.key,
-            ),
+            response.data.repository.cases.aggregations.files__experimental_strategy.buckets
+              .map((obj) => obj.key)
+              .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
           casesTotal: response.data.repository.cases.hits.total,
           filesTotal: response.data.repository.files.hits.total,
         };
