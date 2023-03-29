@@ -8,9 +8,7 @@ class CohortBarLocators:
 
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
 
-    TEXT_IN_TEMP_COHORT_MESSAGE = lambda text: f'b:has-text("{text}")'
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = 'span:has-text("Set this as your current cohort.")'
-
 
 class CohortBar(BasePage):
 
@@ -39,11 +37,20 @@ class CohortBar(BasePage):
         locator = CohortBarLocators.SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE
         self.click(locator)
 
+    # Checks if cohort bar button is disabled
+    def is_cohort_bar_button_disabled(self, button_name:str):
+        locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
+        class_attribute_text = self.get_attribute(locator, "class")
+        # Cohort bar buttons are not disabled in the usual way of having the atribute "disabled".
+        # Because of that, we cannot use the method 'is_disabled' on the locator.
+        # So we read the locators class, and if it has "cursor-not-allowed" it indicates its disabled.
+        return "cursor-not-allowed" in class_attribute_text
+
     # Waits for a piece of text to appear in the temporary cohort modal
     # That modal appears after an action has been performed on a cohort
     # state (e.g create, save, delete, etc. )
     def wait_for_text_in_cohort_message(self, text):
-        locator = CohortBarLocators.TEXT_IN_TEMP_COHORT_MESSAGE(text)
+        locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
         try:
             self.wait_until_locator_is_visible(locator)
         except:
