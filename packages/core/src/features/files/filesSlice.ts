@@ -44,6 +44,7 @@ const fileTypes = [
   "masked_methylation_array",
   "protein_expression",
   "pathology_report",
+  "simple_germline_variation",
   "submitted_genotyping_array",
 ] as const;
 
@@ -151,6 +152,7 @@ const dataTypes = [
   "Raw CGI Variant",
   "Raw Intensities",
   "Raw Simple Somatic Mutation",
+  "Simple Germline Variation",
   "Single Cell Analysis",
   "Slide Image",
   "Splice Junction Quantification",
