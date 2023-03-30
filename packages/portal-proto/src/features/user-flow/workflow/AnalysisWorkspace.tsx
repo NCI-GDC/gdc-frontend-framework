@@ -15,7 +15,7 @@ import {
 } from "@/features/user-flow/workflow/utils";
 import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
-import FeaturedToolCard from "./FeaturedToolCard";
+import CoreToolCard from "./CoreToolCard";
 
 import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
@@ -92,14 +92,14 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   };
 
   return (
-    <div className="flex flex-col font-heading">
+    <div className="flex flex-col font-heading mb-4">
       <div
         data-tour="analysis_tool_management"
         className="flex flex-row  items-center shadow-lg bg-primary-lightest"
       >
-        <div data-tour="most_common_tools" className="mx-4 my-6 flex">
-          <h2 className="text-primary-content-darkest font-bold uppercase pr-6">
-            {"Featured Tools"}
+        <div data-tour="most_common_tools" className="mx-4 my-6 flex flex-col">
+          <h2 className="text-primary-content-darkest font-bold uppercase pr-6 mb-2">
+            Core Tools
           </h2>
           <Grid columns={12}>
             {recommendedApps
@@ -112,7 +112,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     xl={4}
                     style={{ minHeight: 64 }}
                   >
-                    <FeaturedToolCard
+                    <CoreToolCard
                       entry={{ ...{ applicable: true, ...x } }}
                       onClick={handleOpenAppClicked}
                     />
@@ -122,120 +122,20 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </Grid>
         </div>
       </div>
-      <div className="bg-base-max">
-        <Grid columns={12} className="p-3 my-2" gutter="md">
-          <Grid.Col
-            data-tour="analysis_tool_filters"
-            className="flex flex-col pr-1"
-            span={1}
-            xs={2}
-            sm={2}
-            md={2}
-            lg={2}
-            xl={2}
-          >
-            <div className="flex justify-between pb-4 text-primary-content-darkest">
-              <div>
-                <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
-                <h3 className="text-lg">Categories</h3>
-              </div>
-              <div className="flex flex-col justify-around items-end">
-                <Menu
-                  aria-label="Select tools sort"
-                  withinPortal={false}
-                  position="bottom-start"
-                  transition="pop-bottom-left"
-                  transitionDuration={150}
-                  classNames={{
-                    label: "text-primary-content-darkest",
-                    dropdown: "border-t-8 border-primary-darkest w-24",
-                  }}
-                >
-                  <Menu.Target>
-                    <ActionIcon
-                      variant="outline"
-                      className="text-primary hover:bg-primary-darker hover:text-white hover:border-primary-darker"
-                    >
-                      <SortIcon size={24} />
-                    </ActionIcon>
-                  </Menu.Target>
-                  <Menu.Dropdown>
-                    {sortOptions.map((option) => (
-                      <Menu.Item
-                        onClick={() => setSortType(option.value)}
-                        key={option.value}
-                      >
-                        {option.label}
-                      </Menu.Item>
-                    ))}
-                  </Menu.Dropdown>
-                </Menu>
-                {activeTags.length ? (
-                  <span
-                    className="cursor-pointer text-xs"
-                    tabIndex={0}
-                    role="button"
-                    onClick={() => setActiveTags([])}
-                    onKeyPress={(event) =>
-                      event.key === "Enter" ? setActiveTags([]) : undefined
-                    }
-                  >
-                    {"Clear all"}
-                  </span>
-                ) : (
-                  <span
-                    className="cursor-pointer text-xs"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() =>
-                      setActiveTags(appTags.map((tag) => tag.value))
-                    }
-                    onKeyPress={(event) =>
-                      event.key === "Enter"
-                        ? setActiveTags(appTags.map((tag) => tag.value))
-                        : undefined
-                    }
-                  >
-                    {"Select all"}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-row">
-              <Chip.Group
-                multiple
-                noWrap={false}
-                value={activeTags}
-                onChange={setActiveTags}
-                spacing={"xs"}
-              >
-                {appTags.map((x) => (
-                  <Chip
-                    key={x.value}
-                    size="xs"
-                    value={x.value}
-                    classNames={{
-                      label:
-                        "text-primary font-medium border border-solid border-primary hover:bg-primary-darker hover:text-primary-content-max hover:border-primary data-checked:text-primary-content-lightest data-checked:bg-primary-darkest ",
-                      checkIcon: "text-white",
-                      iconWrapper: "text-primary-content-min",
-                    }}
-                  >
-                    {x.name}
-                  </Chip>
-                ))}
-              </Chip.Group>
-            </div>
-          </Grid.Col>
+      <div className="bg-base-max mx-4 my-2">
+        <div>
+          <h2 className="font-bold text-lg pb-3 uppercase">Tools</h2>
+        </div>
 
+        <Grid columns={12} gutter="md">
           <Grid.Col
             data-tour="all_other_apps"
-            xs={9}
-            sm={9}
-            md={9}
-            lg={9}
-            xl={9}
-            span={11}
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            xl={12}
+            span={12}
           >
             <Grid className="mx-0" gutter="md">
               {activeApps

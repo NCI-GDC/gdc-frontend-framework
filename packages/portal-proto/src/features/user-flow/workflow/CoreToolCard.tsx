@@ -3,15 +3,15 @@ import { Image } from "@/components/Image";
 import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./utils";
 
-export interface FeaturedToolCardProps {
+export interface CoreToolCardProps {
   entry: AppRegistrationEntry;
   readonly onClick?: (x: AppRegistrationEntry) => void;
 }
 
-const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
+const CoreToolCard: React.FC<CoreToolCardProps> = ({
   entry,
   onClick,
-}: FeaturedToolCardProps) => {
+}: CoreToolCardProps) => {
   return (
     <Grid
       className="bg-base-max border-secondary-darkest border h-full items-center m-0 rounded-lg p-0"
@@ -53,4 +53,4 @@ const FeaturedToolCard: React.FC<FeaturedToolCardProps> = ({
   );
 };
 
-export default FeaturedToolCard;
+export default CoreToolCard;
