@@ -71,7 +71,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     loadingData = false;
   }
 
-  useMemo(() => {
+  useEffect(() => {
     //Check if all data is loaded before showing
     setTableData(
       primarySiteDetialsPromises.map((obj) => {
@@ -114,7 +114,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     ...paginationProps
   } = useStandardPagination(filteredTableData);
 
-  useMemo(() => {
+  useEffect(() => {
     // set default on load to be sorted by primary site
     handleSortByChange([
       {

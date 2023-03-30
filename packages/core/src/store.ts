@@ -18,7 +18,6 @@ import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
 import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
-import { projectPrimarySiteApiSliceMiddleware } from "./features/projects/projectsPrimarySiteSlice";
 import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import storage from "./storage-persist";
 
@@ -48,7 +47,6 @@ export const coreStore = configureStore({
         graphqlAPISliceMiddleware,
         endpointSliceMiddleware,
         projectApiSliceMiddleware,
-        projectPrimarySiteApiSliceMiddleware,
       )
       .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
 });

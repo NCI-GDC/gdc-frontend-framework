@@ -43,7 +43,7 @@ const useStandardPagination = (
     setActiveSort(x);
   };
 
-  useMemo(() => {
+  useEffect(() => {
     // if data changes set to first page
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps

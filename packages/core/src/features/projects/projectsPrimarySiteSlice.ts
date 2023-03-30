@@ -1,4 +1,4 @@
-import { Middleware, Reducer } from "@reduxjs/toolkit";
+import { Reducer } from "@reduxjs/toolkit";
 import { graphqlAPISlice, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 export interface ProjectPrimarySites {
   readonly disease_types: string[];
@@ -108,8 +108,6 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
 
 export const { useGetProjectPrimarySitesQuery } = projectsPrimarySiteSlice;
 
-export const projectPrimarySiteApiSliceMiddleware =
-  projectsPrimarySiteSlice.middleware as Middleware;
 export const projectPrimarySiteApiSliceReducerPath: string =
   projectsPrimarySiteSlice.reducerPath;
 export const projectPrimarySiteApiSliceReducer: Reducer =

@@ -533,7 +533,7 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             </div>
           )}
           {projectData?.primary_site?.length > 1 && (
-            <div className="">
+            <div className="mb-16">
               <PrimarySiteTable
                 projectId={projectData?.project_id}
                 primarySites={projectData?.primary_site}
