@@ -5,6 +5,8 @@ import "isomorphic-fetch";
 import { GDC_API, GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "src/coreCreateApi";
 import { caseSummaryDefaults } from "../cases/types";
+import Queue from "queue";
+import md5 from "blueimp-md5";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -471,12 +473,15 @@ export const fetchGdcFiles = async (
   return fetchGdcEntities("files", request);
 };
 
+const DEFAULT_CHUNK_SIZE = 10;
+
 export const fetchGdcEntities = async <T extends Record<string, any>>(
   endpoint: string,
   request?: GdcApiRequest,
   fetchAll = false,
-  previousHits: Record<string, any>[] = [],
 ): Promise<GdcApiResponse<T>> => {
+  const chunkSize = request?.size ?? DEFAULT_CHUNK_SIZE;
+
   const res = await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
     method: "POST",
     headers: {
@@ -490,43 +495,63 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
         ?.map((by) => `${by.field}:${by.direction}`)
         .join(","),
       facets: request?.facets?.join(","),
+      from: request?.from || 0,
+      size: chunkSize,
     }),
   });
 
   if (res.ok) {
-    const resPromise = res.json();
+    const resData: GdcApiResponse<T> = await res.json();
+    const queue = Queue({ concurrency: 6 });
+    let { hits } = resData.data;
 
     if (fetchAll) {
-      let fullResponse = {} as GdcApiResponse<T>;
-
-      const updatedPromise = await resPromise.then((responseData) => {
-        fullResponse = {
-          ...responseData,
-          data: {
-            hits: [...previousHits, ...responseData?.data?.hits],
-            pagination: responseData?.data?.pagination,
-          },
-        };
-        return fullResponse;
-      });
-
-      if (
-        fullResponse?.data?.pagination?.page <=
-          fullResponse?.data?.pagination?.pages &&
-        fullResponse?.data.pagination.pages !== 0
+      for (
+        let count = chunkSize;
+        count < (resData?.data?.pagination?.total || 0);
+        count += chunkSize
       ) {
-        return fetchGdcEntities(
-          endpoint,
-          { ...request, from: (request?.from || 0) + (request?.size || 10) },
-          true,
-          [...fullResponse.data.hits],
-        );
+        queue.push((callback) => {
+          const newHash = md5(JSON.stringify(request));
+          fetch(`${GDC_APP_API_AUTH}/${endpoint}?hash=${newHash}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...request,
+              fields: request?.fields?.join(","),
+              expand: request?.expand?.join(","),
+              sort: request?.sortBy
+                ?.map((by) => `${by.field}:${by.direction}`)
+                .join(","),
+              facets: request?.facets?.join(","),
+              from: count,
+              size: chunkSize,
+            }),
+          }).then(async (res) => {
+            const data: GdcApiResponse<T> = await res.json();
+            hits = [...hits, ...data.data.hits];
+            if (callback) {
+              callback();
+            }
+          });
+        });
       }
-
-      return updatedPromise;
     }
 
-    return resPromise;
+    return new Promise((resolve, reject) => {
+      queue.start((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({
+            ...resData,
+            data: { ...resData.data, hits },
+          });
+        }
+      });
+    });
   }
 
   throw await buildFetchError(res, request);
@@ -586,6 +611,7 @@ export const endpointSlice = coreCreateApi({
 
     return { data: results };
   },
+  refetchOnReconnect: true,
   endpoints: (builder) => ({
     getGenes: builder.query({
       query: (request: GdcApiRequest) => ({
