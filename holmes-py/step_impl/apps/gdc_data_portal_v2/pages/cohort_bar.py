@@ -6,12 +6,14 @@ from ....base.base_page import GenericLocators
 class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
+    COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> div:text("{cohort_name}")'
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
     SECOND_SAVE_MODAL = 'div:text("Save Cohort") >> ..  >> .. >> div:text("You cannot undo this action.")'
 
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = 'span:has-text("Set this as your current cohort.")'
+    X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
 
-    X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> button[type="button"]'
+
 
 class CohortBar(BasePage):
 
@@ -28,12 +30,10 @@ class CohortBar(BasePage):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
         self.click(locator)
 
-    # After import cohort button has been clicked, we make sure the correct modal has loaded.
-    # Then, we click the 'browse' button to open the file explorer.
-    def click_import_cohort_browse(self, button_text_name:str):
-        self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
-        # It does not click the 'browse' button without force parameter set to 'True'
-        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
+
+    def select_cohort_from_dropdown(self, cohort_name:str):
+        locator = CohortBarLocators.COHORT_FROM_DROPDOWN_LIST(cohort_name)
+        self.click(locator)
 
     # Clicks "Set this as your current cohort." in the temp message
     def click_set_as_current_cohort_from_temp_message(self):
@@ -49,17 +49,25 @@ class CohortBar(BasePage):
         # So we read the locators class, and if it has "cursor-not-allowed" it indicates its disabled.
         return "cursor-not-allowed" in class_attribute_text
 
+    # After import cohort button has been clicked, we make sure the correct modal has loaded.
+    # Then, we click the 'browse' button to open the file explorer.
+    def click_import_cohort_browse(self, button_text_name:str):
+        self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
+        # It does not click the 'browse' button without force parameter set to 'True'
+        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
+
     # Waits for a piece of text to appear in the temporary cohort modal
     # That modal appears after an action has been performed on a cohort
     # state (e.g create, save, delete, etc. )
-    def wait_for_text_in_cohort_message(self, text):
+    def wait_for_text_in_cohort_message(self, text, action):
         text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
         try:
             self.wait_until_locator_is_visible(text_locator)
-            # Remove the message after locating it.
-            # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
-            x_button_locator = text_locator + CohortBarLocators.X_BUTTON_IN_TEMP_COHORT_MESSAGE
-            self.click(x_button_locator)
+            if action.lower() == "remove modal":
+                # Remove the message after locating it.
+                # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
+                x_button_locator = text_locator + CohortBarLocators.X_BUTTON_IN_TEMP_COHORT_MESSAGE
+                self.click(x_button_locator)
         except:
             return False
         return True
