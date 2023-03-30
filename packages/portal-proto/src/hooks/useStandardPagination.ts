@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { PaginationOptions } from "@/features/shared/VerticalTable";
 import { SortingRule } from "react-table";
 
