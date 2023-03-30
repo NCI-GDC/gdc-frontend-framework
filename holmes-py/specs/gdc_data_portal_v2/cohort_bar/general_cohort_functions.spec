@@ -1,8 +1,8 @@
 # Cohort Bar - Save Cohort
 Date Created    : 03/29/2023
-Version			: 1.0
-Owner		    : GDC QA
-Description		: Test Cohort Bar - saving a cohort
+Version			    : 1.0
+Owner		        : GDC QA
+Description		  : Test Cohort Bar - saving a cohort
 Test-case       : PEAR-492
 
 tags: gdc-data-portal-v2, regression, cohort-bar
@@ -11,7 +11,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
-Ensure that 'All GDC' is the current cohort when this is executed
+Note: 'All GDC' must be the current cohort when this is executed
 ## Default cohort All GDC should not be discarded, edited, or deleted
 * "Save" should be disabled in the Cohort Bar
 
