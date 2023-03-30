@@ -7,8 +7,11 @@ class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
+    SECOND_SAVE_MODAL = 'div:text("Save Cohort") >> ..  >> .. >> div:text("You cannot undo this action.")'
 
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = 'span:has-text("Set this as your current cohort.")'
+
+    X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> button[type="button"]'
 
 class CohortBar(BasePage):
 
@@ -50,7 +53,19 @@ class CohortBar(BasePage):
     # That modal appears after an action has been performed on a cohort
     # state (e.g create, save, delete, etc. )
     def wait_for_text_in_cohort_message(self, text):
-        locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
+        text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
+        try:
+            self.wait_until_locator_is_visible(text_locator)
+            # Remove the message after locating it.
+            # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
+            x_button_locator = text_locator + CohortBarLocators.X_BUTTON_IN_TEMP_COHORT_MESSAGE
+            self.click(x_button_locator)
+        except:
+            return False
+        return True
+
+    def is_secondary_cohort_bar_save_screen_present(self):
+        locator = CohortBarLocators.SECOND_SAVE_MODAL
         try:
             self.wait_until_locator_is_visible(locator)
         except:
