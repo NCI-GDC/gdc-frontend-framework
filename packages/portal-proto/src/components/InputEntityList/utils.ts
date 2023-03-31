@@ -3,11 +3,18 @@ interface Match {
   readonly value: string;
 }
 
+export interface MatchResults {
+  readonly givenIdentifiers: Match[];
+  readonly mappedTo: Match[];
+  readonly output: Match[];
+}
+
 /**
   Parses through the API response to figure out what fields our matched values correspond to
   @param data: API response for the matches
   @param mappedToFields: fields we mapped to
   @param givenIdentifierFields: fields that we accept from the user
+  @param outputField: field used for creating set
   @param tokens: the list of identifiers the user input
 **/
 
@@ -15,27 +22,30 @@ export const getMatchedIdentifiers = (
   data: readonly Record<string, any>[],
   mappedToFields: string[],
   givenIdentifierFields: string[],
-  tokens: string[],
   outputField: string,
-): { mappedTo: Match[]; output: Match[]; givenIdentifiers: Match[] }[] => {
+  tokens: string[],
+): MatchResults[] => {
   const matchedData = [];
+  const caseInsensitiveTokens = new Set(tokens.map((t) => t.toLowerCase()));
+
   data.forEach((d) => {
-    const mappedTo: Match[] = [];
-    // fields we are mapping to don't need to be compared to user input
-    findAllIdentifiers(d, mappedToFields, undefined, "", mappedTo);
+    const matches: MatchResults = {
+      givenIdentifiers: [],
+      mappedTo: [],
+      output: [],
+    };
+    findAllIdentifiers(
+      d,
+      givenIdentifierFields,
+      mappedToFields,
+      outputField,
+      caseInsensitiveTokens,
+      "",
+      matches,
+    );
 
-    const output: Match[] = [];
-    findAllIdentifiers(d, [outputField], undefined, "", output);
-
-    const givenIdentifiers: Match[] = [];
-    findAllIdentifiers(d, givenIdentifierFields, tokens, "", givenIdentifiers);
-
-    if (givenIdentifiers.length > 0) {
-      matchedData.push({
-        mappedTo,
-        output,
-        givenIdentifiers,
-      });
+    if (matches.givenIdentifiers.length > 0) {
+      matchedData.push(matches);
     }
   });
 
@@ -45,18 +55,22 @@ export const getMatchedIdentifiers = (
 /**
  * Recursively looks through API response to match values input by user to their API fields
  * @param object: object we are recursively searching through
- * @param searchFields: list of fields we are matching against
- * @param tokens: the list of identifiers the user input, if undefined don't compare against user input
+ * @param givenIdentifierFields: fields that we accept from the user
+ * @param mappedToFields: fields we mapped to
+ * @param outputField: field used for creating set
+ * @param tokens: the list of identifiers the user input
  * @param path: accumulator for the path we are currently searching on, i.e. "samples.sample_id"
- * @param results: array of matches we find
+ * @param results: object of matches we find
  */
 
 const findAllIdentifiers = (
   object: Record<string, any> | string,
-  searchFields: string[],
-  tokens: string[],
+  givenIdentifierFields: string[],
+  mappedToFields: string[],
+  outputField: string,
+  tokens: Set<string>,
   path = "",
-  results = [],
+  results: MatchResults,
 ) => {
   if (object === undefined || object === null || typeof object === "string") {
     return;
@@ -68,31 +82,73 @@ const findAllIdentifiers = (
     if (Array.isArray(object[k])) {
       object[k].forEach((v) => {
         if (
-          searchFields.includes(fullPath) &&
-          (tokens === undefined ||
-            tokens.map((t) => t.toLowerCase()).includes(v.toLowerCase()))
+          givenIdentifierFields.includes(fullPath) &&
+          tokens.has(v.toLowerCase())
         ) {
-          results.push({
+          results.givenIdentifiers.push({
             field: fullPath,
             value: v,
           });
         }
 
-        findAllIdentifiers(v, searchFields, tokens, fullPath, results);
+        if (mappedToFields.includes(fullPath)) {
+          results.mappedTo.push({
+            field: fullPath,
+            value: v,
+          });
+        }
+
+        if (outputField === fullPath) {
+          results.output.push({
+            field: fullPath,
+            value: v,
+          });
+        }
+
+        findAllIdentifiers(
+          v,
+          givenIdentifierFields,
+          mappedToFields,
+          outputField,
+          tokens,
+          fullPath,
+          results,
+        );
       });
     } else {
       if (
-        searchFields.includes(fullPath) &&
-        (tokens === undefined ||
-          tokens.map((t) => t.toLowerCase()).includes(object[k].toLowerCase()))
+        givenIdentifierFields.includes(fullPath) &&
+        tokens.has(object[k].toLowerCase())
       ) {
-        results.push({
+        results.givenIdentifiers.push({
           field: fullPath,
           value: object[k],
         });
       }
 
-      findAllIdentifiers(object[k], searchFields, tokens, fullPath, results);
+      if (mappedToFields.includes(fullPath)) {
+        results.mappedTo.push({
+          field: fullPath,
+          value: object[k],
+        });
+      }
+
+      if (outputField === fullPath) {
+        results.output.push({
+          field: fullPath,
+          value: object[k],
+        });
+      }
+
+      findAllIdentifiers(
+        object[k],
+        givenIdentifierFields,
+        mappedToFields,
+        outputField,
+        tokens,
+        fullPath,
+        results,
+      );
     }
   });
 };

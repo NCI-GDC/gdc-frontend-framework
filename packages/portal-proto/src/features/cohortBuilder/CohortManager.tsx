@@ -42,8 +42,6 @@ import {
   useGetCasesQuery,
   Operation,
   updateActiveCohortFilter,
-  FilterGroup,
-  addNewCohortGroups,
   addNewCohortWithFilterAndMessage,
   showModal,
   CoreDispatch,
@@ -290,12 +288,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
-  const updateCohortFilters = (field: string, operation: Operation, groups) => {
-    coreDispatch(updateActiveCohortFilter({ field, operation, groups }));
-  };
-
-  const useAddNewFilterGroups = () => {
-    return (groups: FilterGroup[]) => coreDispatch(addNewCohortGroups(groups));
+  const updateCohortFilters = (field: string, operation: Operation) => {
+    coreDispatch(updateActiveCohortFilter({ field, operation }));
   };
 
   return (
@@ -477,27 +471,24 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         <CaseSetModal
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {modal === Modals.GlobalGeneSetModal && (
         <GeneSetModal
           modalTitle="Filter Current Cohort by Genes"
-          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort."
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {modal === Modals.GlobalMutationSetModal && (
         <MutationSetModal
           modalTitle="Filter Current Cohort by Mutations"
-          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort."
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
           selectSetInstructions="Select one or more sets below to filter your cohort."
           updateFilters={updateCohortFilters}
           existingFiltersHook={useCohortFacetFilters}
-          useAddNewFilterGroups={useAddNewFilterGroups}
         />
       )}
       {/*  Modals End   */}
@@ -511,6 +502,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               withArrow
             >
               <CohortGroupButton
+                data-testid="discardButton"
                 onClick={() => {
                   if (!cohortModified) {
                     return;
@@ -527,7 +519,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               </CohortGroupButton>
             </Tooltip>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col" data-testid="cohort-list-dropdown">
               <Select
                 data={menu_items}
                 searchable
@@ -544,6 +536,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
                 }}
                 aria-label="Select cohort"
+                data-testid="switchButton"
                 rightSection={
                   <DownArrowIcon size={20} className="text-primary" />
                 }
@@ -596,6 +589,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
           <Tooltip label="Delete Cohort" position="bottom" withArrow>
             <CohortGroupButton
+              data-testid="deleteButton"
               onClick={() => {
                 if (isDefaultCohort) return;
                 setShowDelete(true);
@@ -604,7 +598,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 isDefaultCohort && "cursor-not-allowed bg-base-light"
               }`}
               $buttonDisabled={isDefaultCohort}
-              data-testid="deleteButton"
             >
               <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>
