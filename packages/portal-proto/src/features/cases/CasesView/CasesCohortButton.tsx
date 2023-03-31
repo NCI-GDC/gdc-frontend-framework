@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState, useEffect } from "react";
 import {
   useCoreSelector,
   selectSelectedCases,
@@ -8,6 +7,7 @@ import {
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
+  useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import {
   SelectCohortsModal,
@@ -21,6 +21,8 @@ export const CasesCohortButton = (): JSX.Element => {
   const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
     selectSelectedCases(state),
   );
+  const [name, setName] = useState(undefined);
+  const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
@@ -28,31 +30,28 @@ export const CasesCohortButton = (): JSX.Element => {
   const onNameChange = (name: string) =>
     cohorts.every((cohort) => cohort.name !== name);
 
-  const createCohortFromCases = (name: string) => {
-    const filters: FilterSet = {
-      mode: "and",
-      root: {
-        "cases.case_id": {
-          operator: "includes",
-          field: "cases.case_id",
-          operands: pickedCases,
+  useEffect(() => {
+    if (response.isSuccess) {
+      const filters: FilterSet = {
+        mode: "and",
+        root: {
+          "cases.case_id": {
+            operator: "includes",
+            field: "cases.case_id",
+            operands: [`set_id:${response.data}`],
+          },
         },
-      },
-    };
-    coreDispatch(resetSelectedCases());
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        message: "newCasesCohort",
-        name,
-        group: {
-          ids: [...pickedCases],
-          field: "cases.case_id",
-          groupId: uuidv4(),
-        },
-      }),
-    );
-  };
+      };
+      coreDispatch(resetSelectedCases());
+      coreDispatch(
+        addNewCohortWithFilterAndMessage({
+          filters: filters,
+          message: "newCasesCohort",
+          name,
+        }),
+      );
+    }
+  }, [response.isSuccess, name, coreDispatch, response.data]);
 
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
@@ -115,7 +114,10 @@ export const CasesCohortButton = (): JSX.Element => {
           opened
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
-            createCohortFromCases(newName);
+            setName(newName);
+            if (pickedCases.length > 1) {
+              createSet({ values: pickedCases });
+            }
           }}
           onNameChange={onNameChange}
         />
