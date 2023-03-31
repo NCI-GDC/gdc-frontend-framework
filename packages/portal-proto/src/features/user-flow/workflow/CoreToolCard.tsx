@@ -13,8 +13,8 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
   onClick,
 }: CoreToolCardProps) => {
   return (
-    <Grid className="border-secondary-darkest border h-full items-center m-0 rounded-md p-0">
-      <Grid.Col span={2}>
+    <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">
+      <Grid.Col span={2} className="self-center">
         <Image
           className="m-auto"
           src={`/user-flow/${entry.icon}`}
