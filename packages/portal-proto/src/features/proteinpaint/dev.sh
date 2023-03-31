@@ -11,10 +11,10 @@ else
 	npm link ../proteinpaint/client
 fi
 
-# An issue with npm link and workspaces: the non-linked @stjude/proteinpaint-client package
+# An issue with npm link and workspaces: the non-linked @sjcrh/proteinpaint-client package
 # may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
 # must ensure only the linked module is used for bundling so delete
-rm -rf packages/portal-proto/node_modules/@stjude
+rm -rf packages/portal-proto/node_modules/@sjcrh
 # also not able to do a simpler
 # `cd packages/portal-proto && npm link path/to/proteinpaint/client`,
 # where the linked module would be in portal-proto/node_modules instead of the
