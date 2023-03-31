@@ -191,35 +191,68 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
+  const fetcher = (tableData, geneIds, size, query, variables) => {
+    // const query = getMutatedGenesQuery(geneIds);
+
+    return fetch("https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query, variables }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   const {
-    data: mutatedGenesFreqData,
+    data: mutatedGenesFrequencyTableJSON,
     isLoading,
     error,
-    // todo: replace useSWR with useSWRMutation to be able to use trigger
-    // trigger
   } = useSWR(
     {
-      args: { size: initialData?.genes_total, filters: genomicFilters },
-      key: `genesTable/json/dl/${initialData?.genes_total}/${Object.keys(
-        genomicFilters.root,
-      )
-        .map((key) => {
-          const { operator: rootOp = "" } = genomicFilters.root[key];
-          const { field, operand, operator } = genomicFilters.root[
-            `${key}`
-          ] as Equals;
-          // const { field, operator, operands } = genomicFilters.root[`${key}`] as ExcludeIfAny
-          //  operands.length ? operands.join(",") : ""
-          return [rootOp, operator, field, operand].join(",");
-        })
-        .reduce((acc, x) => acc + x)}`,
+      variables: genomicFilters,
+      tableData: initialData ?? [],
+      geneIds: initialData?.genes.map(({ gene_id: geneId }) => geneId),
+      size: genesTotal,
     },
-    ({ args: { filters: currentFilters, size } }) =>
-      useMutatedGenesFreqData({
-        currentFilters,
-        size,
-      }),
+    fetcher,
   );
+
+  // const {
+  //   data: mutatedGenesFreqData,
+  //   isLoading,
+  //   error,
+  //   // todo: replace useSWR with useSWRMutation to be able to use trigger
+  //   // trigger
+  // } = useSWR(
+  //   {
+  //     args: { size: initialData?.genes_total, filters: genomicFilters },
+  //     key: `genesTable/json/dl/${initialData?.genes_total}/${Object.keys(
+  //       genomicFilters.root,
+  //     )
+  //       .map((key) => {
+  //         const { operator: rootOp = "" } = genomicFilters.root[key];
+  //         const { field, operand, operator } = genomicFilters.root[
+  //           `${key}`
+  //         ] as Equals;
+  //         // const { field, operator, operands } = genomicFilters.root[`${key}`] as ExcludeIfAny
+  //         //  operands.length ? operands.join(",") : ""
+  //         return [rootOp, operator, field, operand].join(",");
+  //       })
+  //       .reduce((acc, x) => acc + x)}`,
+  //   },
+  //   ({ args: { filters: currentFilters, size } }) =>
+  //     useMutatedGenesFreqData({
+  //       currentFilters,
+  //       size,
+  //     }),
+  // );
   // const {
   //   data: mutatedGenesFreqData,
   //   error,
@@ -231,17 +264,17 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   //   geneIds: initialData?.genes.map(({ gene_id: geneId }) => geneId),
   // }));
 
-  const exportMutatedGenes = useCallback(() => {
-    const now = new Date();
-    const fileName = `genes.${convertDateToString(now)}.json`;
-    const blob = new Blob(
-      [JSON.stringify(mutatedGenesFreqData?.mutatedGenes, null, 2)],
-      {
-        type: "text/json",
-      },
-    );
-    saveAs(blob, fileName);
-  }, [mutatedGenesFreqData?.mutatedGenes]);
+  // const exportMutatedGenes = useCallback(() => {
+  //   const now = new Date();
+  //   const fileName = `genes.${convertDateToString(now)}.json`;
+  //   const blob = new Blob(
+  //     [JSON.stringify(mutatedGenesFreqData?.mutatedGenes, null, 2)],
+  //     {
+  //       type: "text/json",
+  //     },
+  //   );
+  //   saveAs(blob, fileName);
+  // }, [mutatedGenesFreqData?.mutatedGenes]);
 
   // useEffect(() => {
   //   if (mutatedGenesFreqError) {
