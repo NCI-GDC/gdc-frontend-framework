@@ -86,12 +86,6 @@ class BasePage:
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
-    def is_data_testid_disabled(self, data_testid):
-        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
-        is_data_testid_disabled = self.is_disabled(locator)
-        print(is_data_testid_disabled)
-        return is_data_testid_disabled
-
     def click_button_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
