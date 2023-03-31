@@ -492,7 +492,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     );
   };
 
-  //For smoother setting of pagination so the values don't bounce around when loading new data
+  // For smoother setting of pagination so the values don't bounce around when loading new data
   const [pageSize, setPageSize] = useState(10);
   const [pageOn, setPageOn] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
