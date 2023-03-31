@@ -13,10 +13,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
   onClick,
 }: CoreToolCardProps) => {
   return (
-    <Grid
-      className="bg-base-max border-secondary-darkest border h-full items-center m-0 rounded-lg p-0"
-      justify="space-between"
-    >
+    <Grid className="border-secondary-darkest border h-full items-center m-0 rounded-md p-0">
       <Grid.Col span={2}>
         <Image
           className="m-auto"
@@ -27,11 +24,10 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
         />
       </Grid.Col>
       <Grid.Col span={8} className="text-base-content-darkest">
-        <Text size={"sm"} className="font-heading font-bold">
+        <Text size="sm" className="font-heading font-bold">
           {entry.name}
         </Text>
-        <Text size={"xs"} className="font-content">
-          {" "}
+        <Text size="xs" className="font-content">
           {entry.description}
         </Text>
       </Grid.Col>
@@ -46,7 +42,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
           onClick={() => onClick(entry)}
           aria-label={`Navigate to ${entry.name}`}
         >
-          <MdPlayArrow size={30} color={"white"} />
+          <MdPlayArrow size={30} color="white" />
         </ActionIcon>
       </Grid.Col>
     </Grid>
