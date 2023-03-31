@@ -40,7 +40,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     <Card
       shadow="sm"
       p={6}
-      className={`bg-base-max border-secondary-darkest overflow-visible border h-full ${
+      className={`bg-base-max border-secondary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"
       }
        `}
