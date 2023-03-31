@@ -151,7 +151,11 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       tableData={displayedData}
       columns={columnListOrder}
       selectableRow={false}
-      additionalControls={<HeaderTitle>Primary Sites</HeaderTitle>}
+      additionalControls={
+        <div className="self-end">
+          <HeaderTitle>Primary Sites</HeaderTitle>
+        </div>
+      }
       columnSorting="manual"
       pagination={{
         ...paginationProps,

@@ -571,7 +571,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
-        {additionalControls && <div>{additionalControls}</div>}
+        {additionalControls && <div className="flex">{additionalControls}</div>}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
             {search?.enabled && (
