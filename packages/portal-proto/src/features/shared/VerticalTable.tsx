@@ -644,7 +644,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         )}
       </div>
       <div className="overflow-y-auto w-full relative">
-        <LoadingOverlay visible={showLoading} />
+        <LoadingOverlay visible={showLoading} zIndex={0} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (
