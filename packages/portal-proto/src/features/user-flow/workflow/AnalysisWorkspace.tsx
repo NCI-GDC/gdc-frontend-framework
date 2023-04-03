@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, createContext } from "react";
 import { useRouter } from "next/router";
 import { Chip, Menu, Grid, ActionIcon } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -17,12 +17,8 @@ import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import FeaturedToolCard from "./FeaturedToolCard";
 
-import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
-import AdditionalCohortSelection from "../../cohortComparison/AdditionalCohortSelection";
-import { clearComparisonCohorts } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import SelectionPanel from "@/features/set-operations/SelectionPanel";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -177,7 +173,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     tabIndex={0}
                     role="button"
                     onClick={() => setActiveTags([])}
-                    onKeyPress={(event) =>
+                    onKeyDown={(event) =>
                       event.key === "Enter" ? setActiveTags([]) : undefined
                     }
                   >
@@ -191,7 +187,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                     onClick={() =>
                       setActiveTags(appTags.map((tag) => tag.value))
                     }
-                    onKeyPress={(event) =>
+                    onKeyDown={(event) =>
                       event.key === "Enter"
                         ? setActiveTags(appTags.map((tag) => tag.value))
                         : undefined
@@ -273,6 +269,13 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   );
 };
 
+export const SelectionScreenContext = createContext({
+  selectionScreenOpen: false,
+  setSelectionScreenOpen: undefined,
+  app: undefined,
+  setActiveApp: undefined,
+});
+
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
 }
@@ -284,10 +287,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
-  const appInfo = useMemo(
-    () => REGISTERED_APPS.find((a) => a.id === app),
-    [app],
-  );
+  const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+
   useEffect(() => {
     setCohortSelectionOpen(
       !isDemoMode && appInfo?.selectionScreen !== undefined,
@@ -295,8 +296,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
     if (app) {
       scrollIntoView();
-    } else {
-      clearComparisonCohorts();
     }
   }, [app, isDemoMode, appInfo, scrollIntoView]);
 
@@ -310,52 +309,23 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   return (
     <div ref={(ref) => (targetRef.current = ref)}>
-      <CSSTransition in={cohortSelectionOpen} timeout={500}>
-        {(state) => (
-          <div
-            className={
-              {
-                entering:
-                  "animate-slide-up min-h-[550px] w-full flex flex-col absolute z-[200]",
-                entered: "min-h-[550px] w-full flex flex-col absolute z-[200]",
-                exiting:
-                  "animate-slide-down min-h-[550px] w-full flex flex-col absolute z-[200]",
-                exited: "hidden translate-x-0",
-              }[state]
-            }
-          >
-            <AnalysisBreadcrumbs
-              currentApp={app}
-              setCohortSelectionOpen={setCohortSelectionOpen}
-              cohortSelectionOpen={cohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-              onDemoApp={isDemoMode}
-            />
-            {appInfo?.selectionScreen && (
-              <appInfo.selectionScreen
-                app={appInfo}
-                setOpen={setCohortSelectionOpen}
-                setActiveApp={handleAppSelected}
-              />
-            )}
-          </div>
-        )}
-      </CSSTransition>
-      {app && !cohortSelectionOpen && (
-        <>
-          <AnalysisBreadcrumbs
-            currentApp={app}
-            setCohortSelectionOpen={setCohortSelectionOpen}
-            cohortSelectionOpen={cohortSelectionOpen}
-            setActiveApp={handleAppSelected}
-            onDemoApp={isDemoMode}
-            rightComponent={
-              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
-            }
-          />
-          <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
-        </>
-      )}
+      <SelectionScreenContext.Provider
+        value={{
+          selectionScreenOpen: cohortSelectionOpen,
+          setSelectionScreenOpen: setCohortSelectionOpen,
+          app,
+          setActiveApp: handleAppSelected,
+        }}
+      >
+        <AnalysisBreadcrumbs
+          onDemoApp={isDemoMode}
+          rightComponent={
+            app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
+          }
+        />
+        <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
+      </SelectionScreenContext.Provider>
+
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );

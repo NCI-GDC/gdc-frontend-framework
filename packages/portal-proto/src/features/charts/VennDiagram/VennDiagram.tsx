@@ -136,7 +136,11 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     y: [...dataLabelPositions.map((d) => d.y)],
     type: "scatter",
     mode: "text+markers",
-    text: [...sortedChartData.map((d) => d.value)],
+    text: [
+      ...sortedChartData.map((d) =>
+        d?.value !== undefined ? d.value.toLocaleString() : undefined,
+      ),
+    ],
     hoverinfo: "none",
     marker: {
       size: 30,

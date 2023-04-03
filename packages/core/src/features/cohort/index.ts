@@ -76,11 +76,6 @@ import {
   CountsData,
 } from "./countSlice";
 
-import {
-  setComparisonCohorts,
-  clearComparisonCohorts,
-  selectComparisonCohorts,
-} from "./comparisonCohortsSlice";
 import { defaultCohortNameGenerator } from "./utils";
 
 export {
@@ -117,9 +112,6 @@ export {
   selectCohortBuilderConfig,
   selectCohortBuilderConfigFilters,
   selectCohortBuilderConfigCategory,
-  setComparisonCohorts,
-  clearComparisonCohorts,
-  selectComparisonCohorts,
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,

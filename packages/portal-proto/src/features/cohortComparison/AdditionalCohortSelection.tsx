@@ -3,8 +3,6 @@ import { Button } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohortName,
-  setComparisonCohorts,
-  useCoreDispatch,
   selectAvailableCohorts,
 } from "@gff/core";
 import {
@@ -17,14 +15,15 @@ interface AdditionalCohortSelectionProps {
   readonly app: Record<string, any>;
   readonly setActiveApp?: (id: string, demoMode?: boolean) => void;
   readonly setOpen: (open: boolean) => void;
+  readonly setComparisonCohort: (cohort) => void;
 }
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   app,
   setActiveApp,
   setOpen,
+  setComparisonCohort,
 }: AdditionalCohortSelectionProps) => {
-  const dispatch = useCoreDispatch();
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
@@ -123,7 +122,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               variant={"filled"}
               className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base text-primary-contrast hover:bg-primary-lighter"
               onClick={() => {
-                dispatch(setComparisonCohorts([selectedCohort]));
+                setComparisonCohort(selectedCohort);
                 closeCohortSelection();
               }}
             >
