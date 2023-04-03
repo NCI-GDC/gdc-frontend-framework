@@ -1,6 +1,5 @@
 from pathlib import Path
-from os import path
-import pyautogui
+from os import path, getenv
 import time
 
 
@@ -23,8 +22,11 @@ class Utility:
         return path.isfile(file_path)
 
     def get_screen_size():
-        width, height = pyautogui.size()
-        return {"width": width, "height": height}
+        # Try/except around pyautogui as a workaround to this not working within Docker runs
+        if not getenv('IS_DOCKER'):
+            import pyautogui
+            width, height = pyautogui.size()
+            return {"width": width, "height": height}
 
     def validate_json_key_exists(json_obj, json_key, fails):
         try:
