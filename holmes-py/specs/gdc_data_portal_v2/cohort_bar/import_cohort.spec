@@ -16,7 +16,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Upload "organoid" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "organoid" in the Cohort Bar section
-* "Create" "organoid" in the Cohort Bar section
+* "Create" "organoid" and "keep modal" in the Cohort Bar section
 * Set as current cohort
 * The cohort bar case count should be "70"
 * Select "Clear All"
@@ -27,11 +27,11 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Upload "data portal v1 tcga chol" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "data portal v1" in the Cohort Bar section
-* "Create" "data portal v1" in the Cohort Bar section
+* "Create" "data portal v1" and "remove modal" in the Cohort Bar section
 
 ## Import Cohort with all Case Identifiers
 * Select "Upload" from the Cohort Bar
 * Upload "Cases List" "txt" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "cases list" in the Cohort Bar section
-* "Create" "cases list" in the Cohort Bar section
+* "Create" "cases list" and "remove modal" in the Cohort Bar section

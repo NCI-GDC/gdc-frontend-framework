@@ -36,6 +36,9 @@ class BasePage:
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
 
+    def get_attribute(self, locator, name: str):
+        return self.driver.locator(locator).get_attribute(name)
+
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
 
