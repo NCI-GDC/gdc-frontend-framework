@@ -37,12 +37,12 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
-import { convertDateToString } from "src/utils/date";
-import { saveAs } from "file-saver";
+// import { convertDateToString } from "src/utils/date";
+// import { saveAs } from "file-saver";
 import { FiDownload } from "react-icons/fi";
 import FunctionButton from "@/components/FunctionButton";
-import useSWR from "swr";
-import { Equals } from "@gff/core/dist/features/gdcapi/filters";
+import useSWRMutation from "swr/mutation";
+import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
 
 export const SelectedRowContext =
   createContext<
@@ -191,18 +191,42 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [status, initialData]);
 
-  const fetcher = (tableData, geneIds, size, query, variables) => {
-    // const query = getMutatedGenesQuery(geneIds);
+  // const {
+  //   data: mutatedGenesFrequencyTableJSON,
+  //   isLoading,
+  //   error,
+  // } = useSWRMutation(
+  //   {
+  //     query: ``,
+  //     variables: genomicFilters,
+  //     tableData: initialData ?? [],
+  //     geneIds: initialData?.genes.map(({ gene_id: geneId }) => geneId),
+  //     size: genesTotal,
+  //   },
+  //   gqlFetcher,
+  // );
 
-    return fetch("https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr", {
-      method: "post",
+  // const processData = (response: any) => {
+  //   console.log('response', response);
+  //   debugger;
+  // }
+
+  const fetcher = (
+    url: string,
+    query: string,
+    variables: Record<string, any>,
+  ): any => {
+    return fetch(url, {
+      method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query, variables }),
     })
       .then((response) => response.json())
       .then((data) => {
+        // process data
         return data;
       })
       .catch((e) => {
@@ -210,18 +234,37 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       });
   };
 
-  const {
-    data: mutatedGenesFrequencyTableJSON,
-    isLoading,
-    error,
-  } = useSWR(
+  const { trigger, isMutating } = useSWRMutation(
     {
+      url: `${GDC_APP_API_AUTH}/graphql`,
+      query: `
+    query MutatedGenesFreq(
+      $score: String
+      ) {
+        viewer {
+          explore {
+            genes {
+              hits(
+                first: ${`${genesTotal}`}
+                score: $score
+                ) {
+                edges {
+                  node {
+                    symbol
+                    name
+                    cytoband
+                    biotype
+                    gene_id
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`,
       variables: genomicFilters,
-      tableData: initialData ?? [],
-      geneIds: initialData?.genes.map(({ gene_id: geneId }) => geneId),
-      size: genesTotal,
     },
-    fetcher,
+    ({ url, query, variables }) => fetcher(url, query, variables),
   );
 
   // const {
@@ -461,7 +504,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex flex-row gap-2">
-                {isLoading ? (
+                {isMutating ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -492,6 +535,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   <FunctionButton
                     // disabled={mutatedGenesFreqFetching}
                     // onClick={() => exportMutatedGenesTSV()}
+                    onClick={() => trigger()}
                     className={
                       "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                     }
