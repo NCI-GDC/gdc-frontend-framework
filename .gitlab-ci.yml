@@ -22,7 +22,7 @@ stages:
   - unit
   - release
   - deploy
-  - build_and_run_ui_tests
+  - run_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -173,8 +173,8 @@ Push tagged container:
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
-Build and run UI tests:
-  stage: build_and_run_ui_tests
+Build UI tests Docker image:
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -182,13 +182,28 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      when: on_success
+      allow_failure: true
+
+Run UI tests against QA yellow:
+  stage: run_ui_tests
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  script:
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
     - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
     - docker cp holmes-py:/app/holmes-py/.gauge .gauge
     - docker cp holmes-py:/app/holmes-py/downloads downloads
     - docker cp holmes-py:/app/holmes-py/logs logs
     - docker cp holmes-py:/app/holmes-py/reports reports
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/yellow"'
       when: on_success
       allow_failure: true
   artifacts:
@@ -199,3 +214,17 @@ Build and run UI tests:
       - holmes-py/logs
       - holmes-py/reports
     expire_in: 3 months
+
+Run UI tests against QA UAT:
+  extends: .run_ui_tests
+  script:
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_UAT --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
+    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
+    - docker cp holmes-py:/app/holmes-py/downloads downloads
+    - docker cp holmes-py:/app/holmes-py/logs logs
+    - docker cp holmes-py:/app/holmes-py/reports reports
+  rules:
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
+      when: on_success
+      allow_failure: true
