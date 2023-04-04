@@ -45,6 +45,9 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import { FiDownload } from "react-icons/fi";
 import FunctionButton from "@/components/FunctionButton";
+import useSWRMutation from "swr/mutation";
+import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
+import { fetcher } from "../utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -236,13 +239,94 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   // todo: refactor to use REST endpt for json
 
   const {
+    trigger: mutationsFreqTrigger,
+    isMutating: mutationsFreqIsMutating,
     data: mutationsFreqData,
-    isFetching: mutationsFreqFetching,
-    // isError: mutationsFreqError,
-  } = useMutationsFreqData({
-    size: pageSize * (page + 1),
-    genomicFilters,
-  });
+  } = useSWRMutation(
+    {
+      url: `${GDC_APP_API_AUTH}/graphql`,
+      query: `query MutationsFreqQuery(
+        $filters_consequence: FiltersArgument
+        $filters_ssms_table: FiltersArgument
+        $score: String
+        $sort: [Sort]
+        $offset: Int
+        $size: Int
+        ) {
+          viewer {
+            explore {
+              ssms {
+                hits(first: $size, offset: $offset, filters: $filters_ssms_table, score: $score, sort: $sort) {
+                  total
+                  edges {
+                    node {
+                      id
+                      score
+                      genomic_dna_change
+                      mutation_subtype
+                      ssm_id
+                      consequence {
+                        hits(first: 1, filters: $filters_consequence) {
+                          edges {
+                            node {
+                              transcript {
+                                is_canonical
+                                annotation {
+                                vep_impact
+                                polyphen_impact
+                                sift_impact
+                                }
+                                consequence_type
+                                gene {
+                                  gene_id
+                                  symbol
+                                }
+                                aa_change
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`,
+      variables: combinedFilters,
+    },
+    ({ url, query, variables }) => fetcher(url, query, variables),
+  );
+
+  // const { trigger: mutationsFreqTSVTrigger, isMutating: mutationsFreqTSVIsMutating, data: mutationsFreqTSVData } = useSWRMutation(
+  //   {
+  //     url: `${GDC_APP_API_AUTH}/graphql`,
+  //     query: `query mutationsFreqTSVQuery(${getGQLParams(ids, version)}
+  //     ){
+  //       explore {
+  //         cases {
+  //         denominators: aggregations(filters: $filters_case) {
+  //           project__project_id {
+  //               buckets {
+  //                   key
+  //                   doc_count
+  //               }
+  //           }
+  //         }`,
+  //     variables: combinedFilters,
+  //   },
+  //   ({ url, query, variables }) => fetcher(url, query, variables),
+  // );
+
+  // const {
+  //   data: mutationsFreqData,
+  //   isFetching: mutationsFreqFetching,
+  //   // isError: mutationsFreqError,
+  // } = useMutationsFreqData({
+  //   size: pageSize * (page + 1),
+  //   genomicFilters,
+  // });
 
   const {
     data: mutationsFreqTSVData,
@@ -397,7 +481,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex gap-2">
-                {mutationsFreqFetching ? (
+                {mutationsFreqIsMutating ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -405,12 +489,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 ) : (
                   <ButtonTooltip
                     label={`${
-                      mutationsFreqFetching ? "" : "Export All Except #Cases"
+                      mutationsFreqIsMutating ? "" : "Export All Except #Cases"
                     }`}
                   >
                     <FunctionButton
                       disabled={true}
-                      onClick={() => exportMutationsFreq()}
+                      onClick={() => mutationsFreqTrigger()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -419,7 +503,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     </FunctionButton>
                   </ButtonTooltip>
                 )}
-                {mutationsFreqTSVFetching ? (
+                {mutationsFreqIsMutating ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -427,11 +511,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 ) : (
                   <ButtonTooltip
                     label={`${
-                      mutationsFreqTSVFetching ? "" : "Export current view"
+                      mutationsFreqIsMutating ? "" : "Export current view"
                     }`}
                   >
                     <FunctionButton
-                      onClick={() => exportMutationsFreqTSV()}
+                      // onClick={() => mutationsFreqTSVTrigger()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }

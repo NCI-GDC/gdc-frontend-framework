@@ -95,13 +95,6 @@ export const getAliasFilters = (
           },
           op: "in",
         },
-        {
-          op: "NOT",
-          content: {
-            field: "cases.gene.ssm.observation.observation_id",
-            value: "MISSING",
-          },
-        },
       ],
     };
   }

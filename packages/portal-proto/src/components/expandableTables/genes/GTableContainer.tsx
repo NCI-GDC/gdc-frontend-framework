@@ -43,6 +43,7 @@ import { FiDownload } from "react-icons/fi";
 import FunctionButton from "@/components/FunctionButton";
 import useSWRMutation from "swr/mutation";
 import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
+import { fetcher } from "../utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -211,30 +212,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   //   debugger;
   // }
 
-  const fetcher = (
-    url: string,
-    query: string,
-    variables: Record<string, any>,
-  ): any => {
-    return fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query, variables }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // process data
-        return data;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  const { trigger, isMutating } = useSWRMutation(
+  const {
+    trigger: mutatedGenesTrigger,
+    isMutating: mutatedGenesIsMutating,
+    data: mutatedGenesData,
+  } = useSWRMutation(
     {
       url: `${GDC_APP_API_AUTH}/graphql`,
       query: `
@@ -504,7 +486,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex flex-row gap-2">
-                {isMutating ? (
+                {mutatedGenesIsMutating ? (
                   <FunctionButton disabled={true}>
                     <Loader size="sm" className="p-1" />
                     <FiDownload title="download" size={16} />
@@ -517,7 +499,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     }`}
                   >
                     <FunctionButton
-                      // onClick={() => trigger()}
+                      onClick={() => mutatedGenesTrigger()}
                       className={
                         "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                       }
@@ -528,14 +510,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 )}
                 <ButtonTooltip
                   label={`${
-                    //  mutatedGenesFreqFetching ? "Fetching" :
+                    //  mutationsFreqIsMutating ?
+                    //  "Fetching" :
                     "Export"
                   } current view`}
                 >
                   <FunctionButton
                     // disabled={mutatedGenesFreqFetching}
                     // onClick={() => exportMutatedGenesTSV()}
-                    onClick={() => trigger()}
+                    // onClick={() => mutationsFreqTrigger()}
                     className={
                       "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
                     }
