@@ -187,17 +187,20 @@ const FilesTables: React.FC = () => {
       platform: file.platform || "--",
       file_size: fileSize(file.file_size),
       annotations: (
-        <>
+        <span className="font-content">
           {getAnnotationsLinkParamsFromFiles(file) ? (
             <Link href={getAnnotationsLinkParamsFromFiles(file)} passHref>
-              <a className="text-utility-link underline" target="_blank">
+              <a
+                className="text-utility-link underline font-content"
+                target="_blank"
+              >
                 {file.annotations.length}
               </a>
             </Link>
           ) : (
             file?.annotations?.length ?? 0
           )}
-        </>
+        </span>
       ),
     }));
   }

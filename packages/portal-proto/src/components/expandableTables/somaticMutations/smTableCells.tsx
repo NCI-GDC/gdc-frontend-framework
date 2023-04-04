@@ -23,7 +23,7 @@ export const ProteinChange = ({
     <div className="flex flex-row w-max justify-start font-content">
       {shouldLink ? (
         <button
-          className="text-utility-link underline mx-0.5"
+          className="text-utility-link underline mx-0.5 font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "genes",

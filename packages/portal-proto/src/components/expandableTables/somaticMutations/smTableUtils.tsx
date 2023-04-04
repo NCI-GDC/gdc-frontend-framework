@@ -200,7 +200,7 @@ export const createTableColumn = (
                         <span>{label}</span>
                       ) : isModal && !geneSymbol ? (
                         <button
-                          className="text-utility-link underline"
+                          className="text-utility-link underline font-content"
                           onClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
