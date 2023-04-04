@@ -309,23 +309,24 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   return (
     <div ref={(ref) => (targetRef.current = ref)}>
-      <SelectionScreenContext.Provider
-        value={{
-          selectionScreenOpen: cohortSelectionOpen,
-          setSelectionScreenOpen: setCohortSelectionOpen,
-          app,
-          setActiveApp: handleAppSelected,
-        }}
-      >
-        <AnalysisBreadcrumbs
-          onDemoApp={isDemoMode}
-          rightComponent={
-            app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
-          }
-        />
-        <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
-      </SelectionScreenContext.Provider>
-
+      {app && (
+        <SelectionScreenContext.Provider
+          value={{
+            selectionScreenOpen: cohortSelectionOpen,
+            setSelectionScreenOpen: setCohortSelectionOpen,
+            app,
+            setActiveApp: handleAppSelected,
+          }}
+        >
+          <AnalysisBreadcrumbs
+            onDemoApp={isDemoMode}
+            rightComponent={
+              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
+            }
+          />
+          <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
+        </SelectionScreenContext.Provider>
+      )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>
   );
