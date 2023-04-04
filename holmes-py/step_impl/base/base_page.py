@@ -1,7 +1,8 @@
 from typing import List
-
+from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
@@ -15,6 +16,7 @@ class GenericLocators:
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
+    BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -33,6 +35,9 @@ class BasePage:
 
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
+
+    def get_attribute(self, locator, name: str):
+        return self.driver.locator(locator).get_attribute(name)
 
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
@@ -89,6 +94,10 @@ class BasePage:
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
+    def click_button_ident_a_with_displayed_text_name(self, button_text_name):
+        locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
     def send_text_into_search_bar(self, text_to_send, aria_label):
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
         self.wait_until_locator_is_visible(locator)
@@ -112,3 +121,21 @@ class BasePage:
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
         text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
         self.click(text_locator)
+
+    def perform_action_handle_new_tab(self, source:str, button:str):
+        """
+        perform_action_handle_new_tab performs an action to open a new tab,
+        and then returns a page object for that new tab.
+
+        :param source: Specifies what function is causing the action to open the new tab
+        :param button: ID or Name of the button that is being clicked to open the new tab
+        :return: a page object for the new tab that has been opened
+        """
+        sources = {
+            "Home Page": self.click_button_ident_a_with_displayed_text_name
+        }
+        driver = WebDriver.page
+        with driver.context.expect_page() as tab:
+           sources.get(source)(button)
+        new_tab = tab.value
+        return new_tab
