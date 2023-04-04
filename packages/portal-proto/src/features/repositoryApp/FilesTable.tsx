@@ -120,7 +120,7 @@ const FilesTables: React.FC = () => {
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
         <button
-          className="text-utility-link underline"
+          className="text-utility-link underline font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "file",
@@ -134,7 +134,7 @@ const FilesTables: React.FC = () => {
       access: <FileAccessBadge access={file.access} />,
       file_name: (
         <button
-          className="text-utility-link underline"
+          className="text-utility-link underline font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "file",
@@ -147,7 +147,7 @@ const FilesTables: React.FC = () => {
       ),
       cases: (
         <button
-          className={`${
+          className={`font-content ${
             file.cases?.length > 0
               ? "text-utility-link underline"
               : "cursor-default"
@@ -169,7 +169,7 @@ const FilesTables: React.FC = () => {
 
       project_id: (
         <button
-          className="text-utility-link underline"
+          className="text-utility-link underline font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "project",

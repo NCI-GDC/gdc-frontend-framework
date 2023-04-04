@@ -38,7 +38,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     <animated.tr
       style={unitSpring}
       key={row.id}
-      className={`border ${
+      className={`border font-content ${
         selected
           ? `border-x-4 border-y-0 border-activeColor`
           : `border-base-lighter`

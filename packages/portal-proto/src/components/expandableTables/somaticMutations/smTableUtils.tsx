@@ -259,6 +259,7 @@ export const createTableColumn = (
                           },
                           style: { cursor: "pointer" },
                         }}
+                        className="font-content"
                       >
                         {!row.getIsExpanded() ? (
                           <DownIcon size="1.25em" className="text-accent" />
