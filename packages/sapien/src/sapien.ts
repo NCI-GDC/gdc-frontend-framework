@@ -145,6 +145,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .attr("fill", "rgb(10, 10, 10)")
     .attr("font-size", labelSize)
     .style("text-anchor", "end")
+    .style("font-family", "Noto Sans")
     .text((d: any) => d[primarySiteKey])
     .on("mouseover", function (d: any) {
       // needs `this`

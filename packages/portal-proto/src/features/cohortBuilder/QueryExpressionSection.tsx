@@ -261,7 +261,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
         </QueryExpressionsExpandedContext.Provider>
       ) : (
-        <span className="text-md p-3 text-primary-darkest ">
+        <span className="text-md p-3 text-primary-darkest font-content">
           Currently viewing all cases in the GDC. Further refine your cohort
           with tools such as the Cohort Builder.
         </span>

@@ -143,7 +143,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-lg uppercase">{colData.header}</h3>
             <ul className="py-3 font-semibold space-y-2">
               {colData.links.map((linkData, linkI) => (
-                <li key={linkI}>
+                <li key={linkI} className="font-content">
                   {linkData.normalLink ? (
                     <Link href={linkData.url}>{linkData.title}</Link>
                   ) : (

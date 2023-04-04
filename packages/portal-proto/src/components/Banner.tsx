@@ -50,7 +50,7 @@ const Banner: React.FC<BannerProps> = ({
 
   return (
     <div
-      className={`w-full p-1 flex justify-between border-solid border-y-1 border-primary-content-lighter ${backgroundColor[level]}`}
+      className={`w-full p-1 flex justify-between border-solid border-y-1 border-primary-content-lighter ${backgroundColor[level]} font-content`}
     >
       <div className="flex items-center">
         {icon[level]}

@@ -28,7 +28,7 @@ const Homepage = (): JSX.Element => {
             <h2 className="mt-2 items-center font-heading font-bold text-md text-summarybar-text">
               Harmonized Cancer Datasets
             </h2>
-            <p className="items-center tracking-wide text-primary-content-darkest w-[75%]">
+            <p className="items-center tracking-wide text-primary-content-darkest w-[75%] font-content">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response
               to therapy.
