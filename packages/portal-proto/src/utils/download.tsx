@@ -219,7 +219,6 @@ const download = async ({
     const form = document.createElement("form");
     form.method = method.toUpperCase();
     form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
-    console.log(fields);
     form.innerHTML = fields;
 
     getBody(iFrame).appendChild(form);
