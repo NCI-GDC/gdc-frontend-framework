@@ -186,6 +186,8 @@ Build UI tests Docker image:
 
 .run_ui_tests:
   stage: run_ui_tests
+  variables:
+    browser: "headless chrome"
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -195,38 +197,45 @@ Build UI tests Docker image:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: on_success
+  script:
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT="$APP_ENVIRONMENT" --env browser="$BROWSER" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
+    - REPORT_DIR="reports_${APP_ENVIRONMENT}_${BROWSER// /_}"
+    - mkdir -p $REPORT_DIR
+    - docker cp holmes-py:/app/holmes-py/.gauge $REPORT_DIR/.gauge
+    - docker cp holmes-py:/app/holmes-py/downloads $REPORT_DIR/downloads
+    - docker cp holmes-py:/app/holmes-py/logs $REPORT_DIR/logs
+    - docker cp holmes-py:/app/holmes-py/reports $REPORT_DIR/reports
   artifacts:
     when: always
     paths:
       - holmes-py/.gauge
       - holmes-py/downloads
       - holmes-py/logs
-      - holmes-py/reports
+      - holmes-py/reports*
     expire_in: 3 months
 
-Run UI tests against QA yellow:
+Run UI tests QA Yellow:
   extends: .run_ui_tests
-  script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - docker cp holmes-py:/app/holmes-py/logs logs
-    - docker cp holmes-py:/app/holmes-py/reports reports
+  stage: run_ui_tests
+  variables:
+    APP_ENVIRONMENT: "QA_YELLOW"
+  parallel:
+    matrix:
+      - browser: ["headless chrome", "headless firefox", "headless safari"]
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/yellow"'
       when: on_success
       allow_failure: true
 
-Run UI tests against QA UAT:
+Run UI tests QA UAT:
   extends: .run_ui_tests
-  script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_UAT --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - docker cp holmes-py:/app/holmes-py/logs logs
-    - docker cp holmes-py:/app/holmes-py/reports reports
+  stage: run_ui_tests
+  variables:
+    APP_ENVIRONMENT: "QA_UAT"
+  parallel:
+    matrix:
+      - browser: [ "headless chrome", "headless firefox", "headless safari" ]
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
       when: on_success
