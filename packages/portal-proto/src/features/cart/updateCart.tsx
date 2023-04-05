@@ -239,8 +239,9 @@ export const AddToCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
-      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+      className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
       onClick={() => addToCart(files, currentCart, dispatch)}
+      variant="outline"
     >
       <CartIcon className="mr-2" /> Add to Cart
     </Button>
@@ -267,7 +268,8 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
   ) : (
     <Button
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="text-primary-contrast bg-primary hover:bg-primary-darker hover:text-primary-contrast-darker"
+      className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
+      variant="outline"
     >
       <CartIcon className="mr-2" />
       Remove From Cart

@@ -22,9 +22,10 @@ export const BAMSlicingButton = ({
   const { username } = userInfo?.data || {};
   return (
     <Button
-      className="text-base-lightest bg-primary hover:bg-primary-darker"
+      className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
       leftIcon={<FaCut />}
       loading={isActive}
+      variant="outline"
       onClick={() => {
         if (username && userCanDownloadFile({ user: userInfo.data, file })) {
           dispatch(showModal({ modal: Modals.BAMSlicingModal }));

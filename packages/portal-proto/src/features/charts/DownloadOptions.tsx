@@ -29,12 +29,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   }, [jsonData, chartName]);
 
   return (
-    <Menu
-      width="auto"
-      classNames={{
-        item: "data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
-      }}
-    >
+    <Menu width="auto">
       <Menu.Target>
         <Tooltip label="Download image or data">
           <DownloadButton aria-label="Download button with an icon">

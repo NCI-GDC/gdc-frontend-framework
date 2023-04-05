@@ -10,10 +10,6 @@ import {
   useGenomicFilterByName,
   useGenomicFacetFilter,
   useGenesFacetValues,
-  useAddNewGenomicFilterGroups,
-  useFilterGroups,
-  useRemoveFilterGroup,
-  useClearFilterGroups,
 } from "@/features/genomic/hooks";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -57,7 +53,6 @@ const GeneAndSSMFilterPanel = ({
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
           existingFiltersHook={useGenomicFacetFilter}
-          useAddNewFilterGroups={useAddNewGenomicFilterGroups}
         />
       )}
       {modal === Modals.LocalMutationSetModal && (
@@ -67,7 +62,6 @@ const GeneAndSSMFilterPanel = ({
           selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
           updateFilters={updateFilters}
           existingFiltersHook={useGenomicFacetFilter}
-          useAddNewFilterGroups={useAddNewGenomicFilterGroups}
         />
       )}
       {FilterFacets.map((x, index) => {
@@ -109,9 +103,6 @@ const GeneAndSSMFilterPanel = ({
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
                 useClearFilter: useClearGenomicFilters,
                 useGetFacetValues: useGenomicFilterByName,
-                useFilterGroups: useFilterGroups,
-                useRemoveFilterGroup: useRemoveFilterGroup,
-                useClearGroups: useClearFilterGroups,
               }}
             />
           );

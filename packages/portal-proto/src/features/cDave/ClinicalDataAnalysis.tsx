@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
@@ -73,7 +73,13 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   }, [isFetching, onLoaded]);
 
   return isFetching ? (
-    <Loader size={80} data-testid="please_wait_spinner" />
+    <div className="flex relative justify-center items-center h-screen/2">
+      <LoadingOverlay
+        loaderProps={{ size: "xl", color: "primary" }}
+        visible={isFetching}
+        data-testid="please_wait_spinner"
+      />
+    </div>
   ) : (
     <>
       {isDemoMode && (
