@@ -88,7 +88,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         });
       }
     },
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,

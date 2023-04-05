@@ -2,12 +2,12 @@ import {
   useEffect,
   useState,
   useReducer,
-  useCallback,
+  // useCallback,
   createContext,
 } from "react";
 import {
-  useMutationsFreqData,
-  useMutationsFreqDLQuery,
+  // useMutationsFreqData,
+  // useMutationsFreqDLQuery,
   GDCSsmsTable,
   FilterSet,
   usePrevious,
@@ -36,8 +36,8 @@ import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue } from "@mantine/hooks";
-import saveAs from "file-saver";
-import { convertDateToString } from "src/utils/date";
+// import saveAs from "file-saver";
+// import { convertDateToString } from "src/utils/date";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -296,8 +296,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         }`,
       variables: combinedFilters,
     },
-    ({ url, query, variables }) => fetcher(url, query, variables),
+    ({ url, query, variables }) =>
+      fetcher(url, query, variables, "mutations-frequency-table-json"),
   );
+
+  useEffect(() => {
+    console.log("mutationsFreqData", mutationsFreqData);
+  }, [mutationsFreqData]);
 
   // const { trigger: mutationsFreqTSVTrigger, isMutating: mutationsFreqTSVIsMutating, data: mutationsFreqTSVData } = useSWRMutation(
   //   {
@@ -328,75 +333,75 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   //   genomicFilters,
   // });
 
-  const {
-    data: mutationsFreqTSVData,
-    isFetching: mutationsFreqTSVFetching,
-    // isError: mutationsFreqTSVError,
-  } = useMutationsFreqDLQuery({
-    tableData,
-    ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
-  });
+  // const {
+  //   data: mutationsFreqTSVData,
+  //   isFetching: mutationsFreqTSVFetching,
+  //   // isError: mutationsFreqTSVError,
+  // } = useMutationsFreqDLQuery({
+  //   tableData,
+  //   ssmsIds: tableData.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
+  // });
 
-  const exportMutationsFreq = useCallback(() => {
-    const now = new Date();
-    const fileName = `mutations.${convertDateToString(now)}.json`;
-    if (mutationsFreqData?.mutations) {
-      const blob = new Blob(
-        [JSON.stringify(mutationsFreqData?.mutations, null, 2)],
-        {
-          type: "text/json",
-        },
-      );
-      saveAs(blob, fileName);
-    }
-  }, [mutationsFreqData?.mutations]);
+  // const exportMutationsFreq = useCallback(() => {
+  //   const now = new Date();
+  //   const fileName = `mutations.${convertDateToString(now)}.json`;
+  //   if (mutationsFreqData?.mutations) {
+  //     const blob = new Blob(
+  //       [JSON.stringify(mutationsFreqData?.mutations, null, 2)],
+  //       {
+  //         type: "text/json",
+  //       },
+  //     );
+  //     saveAs(blob, fileName);
+  //   }
+  // }, [mutationsFreqData?.mutations]);
 
-  const exportMutationsFreqTSV = useCallback(() => {
-    const now = new Date();
-    const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
+  // const exportMutationsFreqTSV = useCallback(() => {
+  //   const now = new Date();
+  //   const fileName = `frequent-mutations.${convertDateToString(now)}.tsv`;
 
-    const headers = [
-      "DNA Change",
-      "Protein Change",
-      "Mutation ID",
-      "Type",
-      "Consequences",
-      "# Affected Cases in Cohort",
-      "# Affected Cases Across the GDC",
-      "Impact",
-    ];
-    const body = (mutationsFreqTSVData?.results || [])
-      .map(
-        ({
-          dnaChange,
-          proteinChange,
-          mutationId,
-          type,
-          consequences,
-          ssmsAffectedCasesInCohort,
-          ssmsAffectedCasesAcrossGDC,
-          impact,
-        }) => {
-          return [
-            dnaChange,
-            proteinChange,
-            mutationId,
-            type,
-            consequences,
-            ssmsAffectedCasesInCohort,
-            ssmsAffectedCasesAcrossGDC,
-            impact,
-          ].join("\t");
-        },
-      )
-      .join("\n");
+  //   const headers = [
+  //     "DNA Change",
+  //     "Protein Change",
+  //     "Mutation ID",
+  //     "Type",
+  //     "Consequences",
+  //     "# Affected Cases in Cohort",
+  //     "# Affected Cases Across the GDC",
+  //     "Impact",
+  //   ];
+  //   const body = (mutationsFreqTSVData?.results || [])
+  //     .map(
+  //       ({
+  //         dnaChange,
+  //         proteinChange,
+  //         mutationId,
+  //         type,
+  //         consequences,
+  //         ssmsAffectedCasesInCohort,
+  //         ssmsAffectedCasesAcrossGDC,
+  //         impact,
+  //       }) => {
+  //         return [
+  //           dnaChange,
+  //           proteinChange,
+  //           mutationId,
+  //           type,
+  //           consequences,
+  //           ssmsAffectedCasesInCohort,
+  //           ssmsAffectedCasesAcrossGDC,
+  //           impact,
+  //         ].join("\t");
+  //       },
+  //     )
+  //     .join("\n");
 
-    const tsv = [headers.join("\t"), body].join("\n");
+  //   const tsv = [headers.join("\t"), body].join("\n");
 
-    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+  //   const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
 
-    saveAs(blob, fileName);
-  }, [mutationsFreqTSVData?.results]);
+  //   saveAs(blob, fileName);
+  // }, [mutationsFreqTSVData?.results]);
 
   return (
     <>

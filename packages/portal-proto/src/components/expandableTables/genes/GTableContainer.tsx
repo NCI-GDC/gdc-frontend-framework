@@ -7,8 +7,8 @@ import {
   useCoreSelector,
   selectSetsByType,
   useGeneSetCountQuery,
-  useMutatedGenesFreqData,
-  useMutatedGenesFreqDLQuery,
+  // useMutatedGenesFreqData,
+  // useMutatedGenesFreqDLQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
@@ -18,7 +18,7 @@ import {
   useEffect,
   useReducer,
   useState,
-  useCallback,
+  // useCallback,
 } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { Loader } from "@mantine/core";
@@ -91,10 +91,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
 
-  const [exportMutatedGenesPending, setExportMutatedGenesPending] =
-    useState(false);
-  const [exportMutatedGenesTSVPending, setExportMutatedGenesTSVPending] =
-    useState(false);
+  // const [exportMutatedGenesPending, setExportMutatedGenesPending] =
+  //   useState(false);
+  // const [exportMutatedGenesTSVPending, setExportMutatedGenesTSVPending] =
+  //   useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -246,8 +246,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       }`,
       variables: genomicFilters,
     },
-    ({ url, query, variables }) => fetcher(url, query, variables),
+    ({ url, query, variables }) =>
+      fetcher(url, query, variables, "mutated-genes-frequency-table-json"),
   );
+
+  useEffect(() => {
+    console.log("mutatedGenesData", mutatedGenesData);
+  }, [mutatedGenesData]);
 
   // const {
   //   data: mutatedGenesFreqData,
