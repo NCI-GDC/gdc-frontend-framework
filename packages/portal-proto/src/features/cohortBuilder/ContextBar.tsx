@@ -247,6 +247,7 @@ const ContextBar: React.FC = () => {
         isCollapsed={isGroupCollapsed}
         toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
         onlyIcon={false}
+        isContextBar={true}
       >
         <div className="flex flex-col bg-nci-violet-lightest">
           <div className="relative p-2">
@@ -360,11 +361,21 @@ const ContextBar: React.FC = () => {
           </div>
         </div>
       </CollapsibleContainer>
-      <QueryExpressionSection
-        filters={filters}
-        currentCohortName={currentCohortName}
-        currentCohortId={currentCohortId}
-      />
+      <div
+        className={`${
+          isGroupCollapsed
+            ? "mt-24"
+            : activeTab === "summary"
+            ? "mt-[350px]"
+            : "mt-[800px]"
+        }`}
+      >
+        <QueryExpressionSection
+          filters={filters}
+          currentCohortName={currentCohortName}
+          currentCohortId={currentCohortId}
+        />
+      </div>
     </div>
   );
 };
