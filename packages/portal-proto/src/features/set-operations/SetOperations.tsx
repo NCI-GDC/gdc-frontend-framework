@@ -1,18 +1,29 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
+import {
+  UseMutation,
+  UseQuery,
+} from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import {
+  QueryDefinition,
+  MutationDefinition,
+} from "@reduxjs/toolkit/dist/query";
 import { pickBy, upperFirst } from "lodash";
-import { Checkbox, Badge, Tooltip } from "@mantine/core";
+import { Checkbox, Badge, Tooltip, ActionIcon, Loader } from "@mantine/core";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
+  useCoreDispatch,
+  GqlOperation,
 } from "@gff/core";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { convertDateToString } from "src/utils/date";
 import { GeneCountCell, MutationCountCell } from "./CountCell";
 import { SelectedEntities, SetOperationEntityType } from "./types";
+import download from "src/utils/download";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
@@ -453,6 +464,76 @@ const CountButton: React.FC<CountButtonProps> = ({
   );
 };
 
+interface DownloadButtonProps {
+  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
+  readonly entityType: SetOperationEntityType;
+  readonly filters: GqlOperation;
+  readonly setKey: string;
+}
+
+const DownloadButton: React.FC<DownloadButtonProps> = ({
+  createSetHook,
+  entityType,
+  filters,
+  setKey,
+}: DownloadButtonProps) => {
+  const [loading, setLoading] = useState(false);
+  const [createSet, response] = createSetHook();
+  const dispatch = useCoreDispatch();
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    }
+  }, [response.isLoading]);
+
+  useEffect(() => {
+    if (response.isSuccess) {
+      download({
+        params: {
+          attachment: true,
+          format: "tsv",
+          sets: [
+            {
+              id: response.data,
+              type: entityType === "mutations" ? "ssm" : "gene",
+              filename: `${setKey
+                .replace(/∩/g, "intersection")
+                .replace(/∪/g, "union")}-set-ids.${convertDateToString(
+                new Date(),
+              )}.tsv`,
+            },
+          ],
+        },
+        endpoint: "tar_sets",
+        method: "POST",
+        dispatch,
+        options: {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+        form: true,
+        done: () => setLoading(false),
+      });
+    }
+  }, [response.isSuccess, dispatch, entityType, response.data, setKey]);
+
+  return (
+    <Tooltip label="Export as TSV" withArrow>
+      <ActionIcon
+        onClick={() => createSet({ filters })}
+        color="primary"
+        variant="outline"
+        className="bg-base-max float-right"
+      >
+        {loading ? <Loader size={14} /> : <DownloadIcon />}
+      </ActionIcon>
+    </Tooltip>
+  );
+};
+
 interface SetOperationsProps {
   readonly sets: SelectedEntities;
   readonly entityType: "cohort" | "genes" | "mutations";
@@ -522,6 +603,12 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         disableSortBy: true,
       },
       { id: "count", columnName: "# Items", visible: true },
+      {
+        id: "download",
+        columnName: "Download",
+        visible: true,
+        disableSortBy: true,
+      },
     ],
     [],
   );
@@ -572,6 +659,18 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             entityType={entityType}
           />
         ),
+        download: (
+          <DownloadButton
+            filters={createSetFiltersByKey(row.key, entityType, sets)}
+            entityType={entityType}
+            setKey={row.key}
+            createSetHook={
+              entityType === "mutations"
+                ? useCreateSsmsSetFromFiltersMutation
+                : useCreateGeneSetFromFiltersMutation
+            }
+          />
+        ),
       })),
     [selectedSets, data, entityType, sets],
   );
@@ -581,7 +680,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
     content: Object.keys(pickBy(selectedSets, (v) => v)).map((set) =>
       createSetFiltersByKey(set, entityType, sets),
     ),
-  };
+  } as GqlOperation;
   const { data: totalSelectedSets } = queryHook({
     filters: {
       filters: unionFilter,
@@ -639,6 +738,18 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                         : 0
                     }
                     filters={unionFilter}
+                    entityType={entityType}
+                  />
+                </td>
+                <td className="p-2">
+                  <DownloadButton
+                    setKey="union-of"
+                    filters={unionFilter}
+                    createSetHook={
+                      entityType === "mutations"
+                        ? useCreateSsmsSetFromFiltersMutation
+                        : useCreateGeneSetFromFiltersMutation
+                    }
                     entityType={entityType}
                   />
                 </td>
