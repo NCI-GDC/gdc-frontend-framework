@@ -29,6 +29,9 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import useSWRMutation from "swr/mutation";
+import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
+import { fetcher, getFilters } from "../shared/utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -189,6 +192,61 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  const {
+    trigger: mutatedGenesJSONTrigger,
+    isMutating: mutatedGenesJSONIsMutating,
+    data: mutatedGenesJSONData,
+  } = useSWRMutation(
+    {
+      url: `${GDC_APP_API_AUTH}`,
+      query: ``,
+      variables: {},
+    },
+    ({ url, query, variables }) =>
+      fetcher(url, "mutated-genes-frequency-table-json", query, variables),
+  );
+
+  const {
+    trigger: mutatedGenesTSVTrigger,
+    isMutating: mutatedGenesTSVIsMutating,
+    data: mutatedGenesTSVData,
+  } = useSWRMutation(
+    {
+      url: `${GDC_APP_API_AUTH}/graphql`,
+      query: `
+      query MutatedGenesFreq(
+        $score: String
+        ) {
+          viewer {
+            explore {
+              genes {
+                hits(
+                  first: ${`${gTotal}`}
+                  score: $score
+                  ) {
+                  edges {
+                    node {
+                      symbol
+                      name
+                      cytoband
+                      biotype
+                      gene_id
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }`,
+      variables: getFilters(
+        "mutatedGenesTSV",
+        initialData?.genes.map(({ gene_id: geneId }) => geneId),
+      ),
+    },
+    ({ url, query, variables }) =>
+      fetcher(url, "mutated-genes-frequency-table-tsv", query, variables),
+  );
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -271,14 +329,23 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             ]}
             additionalControls={
               <div className="flex gap-2">
-                <ButtonTooltip
-                  label="Export All Except #Cases and #Mutations"
-                  comingSoon={true}
-                >
-                  <FunctionButton>JSON</FunctionButton>
+                <ButtonTooltip label="Export All Except #Cases and #Mutations">
+                  <FunctionButton
+                    onClick={() => {
+                      mutatedGenesJSONTrigger();
+                    }}
+                  >
+                    JSON
+                  </FunctionButton>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton>TSV</FunctionButton>
+                  <FunctionButton
+                    onClick={() => {
+                      mutatedGenesTSVTrigger();
+                    }}
+                  >
+                    TSV
+                  </FunctionButton>
                 </ButtonTooltip>
               </div>
             }

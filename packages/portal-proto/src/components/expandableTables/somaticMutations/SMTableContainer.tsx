@@ -33,6 +33,9 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
+import useSWRMutation from "swr/mutation";
+import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
+import { fetcher, getFilters } from "../shared/utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -220,6 +223,37 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         })
       : combinedFilters;
 
+  const {
+    trigger: mutationsFreqJSONTrigger,
+    isMutating: mutationsFreqJSONIsMutating,
+    data: mutationsFreqJSONData,
+  } = useSWRMutation(
+    {
+      url: `${GDC_APP_API_AUTH}`,
+      query: ``,
+      variables: {},
+    },
+    ({ url, query, variables }) =>
+      fetcher(url, "mutations-frequency-table-json", query, variables),
+  );
+
+  const {
+    trigger: mutationsFreqTSVTrigger,
+    isMutating: mutationsFreqTSVIsMutating,
+    data: mutationsFreqTSVData,
+  } = useSWRMutation(
+    {
+      url: `${GDC_APP_API_AUTH}/graphql`,
+      query: ``,
+      variables: getFilters(
+        "mutationsFreqTSV",
+        tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
+      ),
+    },
+    ({ url, query, variables }) =>
+      fetcher(url, "mutations-frequency-table-tsv", query, variables),
+  );
+
   return (
     <>
       <SelectedRowContext.Provider
@@ -304,10 +338,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton>JSON</FunctionButton>
+                  <FunctionButton onClick={() => mutationsFreqJSONTrigger()}>
+                    JSON
+                  </FunctionButton>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view">
-                  <FunctionButton>TSV</FunctionButton>
+                  <FunctionButton onClick={() => mutationsFreqTSVTrigger()}>
+                    TSV
+                  </FunctionButton>
                 </ButtonTooltip>
               </div>
             }
