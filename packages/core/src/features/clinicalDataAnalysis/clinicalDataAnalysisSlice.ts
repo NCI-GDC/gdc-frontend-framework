@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, Reducer } from "@reduxjs/toolkit";
 import {
   createUseCoreDataHook,
   DataStatus,
@@ -8,7 +8,14 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GqlOperation } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { Buckets, Stats } from "../gdcapi/gdcapi";
+import {
+  Buckets,
+  endpointSlice,
+  GdcApiRequest,
+  GdcApiResponse,
+  ProjectDefaults,
+  Stats,
+} from "../gdcapi/gdcapi";
 
 const graphQLQuery = `
   query ClinicalAnalysisResult(
@@ -29,6 +36,21 @@ const graphQLQuery = `
 `;
 
 export const fetchClinicalAnalysisResult = createAsyncThunk<
+  GraphQLApiResponse,
+  {
+    filters: GqlOperation;
+    facets: string[];
+  },
+  { dispatch: CoreDispatch; state: CoreState }
+>("clinicalAnalysisResult", async ({ filters, facets }) => {
+  const graphQLFilters = {
+    filters,
+    facets,
+  };
+  return await graphqlAPI(graphQLQuery, graphQLFilters);
+});
+
+export const fetchClinicalAnalysisResultUsingCasesAPI = createAsyncThunk<
   GraphQLApiResponse,
   {
     filters: GqlOperation;
@@ -98,3 +120,33 @@ export const useClinicalAnalysis = createUseCoreDataHook(
   fetchClinicalAnalysisResult,
   selectClinicalAnalysisData,
 );
+
+/**
+ * replacing the above with RTK Query equivalent
+ */
+
+export const clinicalAnalysisApiSlice = endpointSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    getClinicalAnalysis: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "cases",
+        fetchAll: false,
+      }),
+      transformResponse: (response: GdcApiResponse<ProjectDefaults>) => {
+        if (response.data.aggregations)
+          return {
+            data: response.data.aggregations,
+          };
+        return {
+          data: {},
+        };
+      },
+    }),
+  }),
+});
+
+export const { useGetClinicalAnalysisQuery } = clinicalAnalysisApiSlice;
+
+export const clinicalAnalysisApiReducer: Reducer =
+  clinicalAnalysisApiSlice.reducer as Reducer;

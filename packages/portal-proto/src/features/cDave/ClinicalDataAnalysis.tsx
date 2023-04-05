@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
-  useClinicalAnalysis,
   useClinicalFields,
+  useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
@@ -53,10 +53,19 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     data: cDaveResult,
     isFetching,
     isSuccess,
-  } = useClinicalAnalysis({
-    filters: cohortFilters,
+  } = useGetClinicalAnalysisQuery({
+    case_filters: cohortFilters,
     facets: cDaveFields.map((f) => f.full),
+    size: 0,
   });
+
+  console.log(
+    "cDaveResult",
+    cDaveResult,
+    cDaveFields.map((f) => f.full),
+    isFetching,
+    isSuccess,
+  );
 
   const updateFields = (field: string) => {
     if (activeFields.includes(field)) {
