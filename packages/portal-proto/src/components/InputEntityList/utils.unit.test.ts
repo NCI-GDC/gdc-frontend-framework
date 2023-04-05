@@ -52,8 +52,8 @@ describe("getMatchedIdentifiers", () => {
         data,
         mappedToFields,
         givenIdentifierFields,
-        tokens,
         outputField,
+        tokens,
       ),
     ).toEqual([
       {
@@ -96,8 +96,8 @@ describe("getMatchedIdentifiers", () => {
         data,
         mappedToFields,
         givenIdentifierFields,
-        tokens,
         outputField,
+        tokens,
       ),
     ).toEqual([
       {
@@ -144,8 +144,8 @@ describe("getMatchedIdentifiers", () => {
         data,
         mappedToFields,
         matchAgainstIdentifiers,
-        tokens,
         outputField,
+        tokens,
       ),
     ).toEqual([
       {
@@ -194,8 +194,8 @@ describe("getMatchedIdentifiers", () => {
         data,
         mappedToFields,
         matchAgainstIdentifiers,
-        tokens,
         outputField,
+        tokens,
       ),
     ).toEqual([
       {

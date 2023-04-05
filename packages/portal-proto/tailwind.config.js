@@ -798,6 +798,10 @@ module.exports = {
         "screen/4": "calc(100vw / 4)",
         "screen/5": "calc(100vw / 5)",
       },
+      flexBasis: {
+        coretools: "400px",
+        tools: "188px",
+      },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
       },

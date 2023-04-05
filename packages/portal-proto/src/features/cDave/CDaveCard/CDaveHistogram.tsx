@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { CategoricalBins } from "../types";
-
 import { COLOR_MAP } from "../constants";
 import { flattenBinnedData } from "../utils";
 
@@ -102,13 +101,14 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 >
                   <ActionIcon
                     variant="outline"
-                    className="bg-base-max text-base-contrast-max border-primary-darkest"
+                    className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    <DownloadIcon />
+                    <DownloadIcon className="text-primary" />
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
+
               <Menu.Dropdown>
                 <Menu.Item>SVG (Coming soon)</Menu.Item>
                 <Menu.Item>PNG (Coming soon)</Menu.Item>

@@ -573,7 +573,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
   return (
     <div className="grow overflow-hidden">
-      <div className="flex justify-between">
+      <div
+        className={`flex ${
+          !additionalControls ? "justify-end" : "justify-between"
+        }`}
+      >
         {additionalControls && <div>{additionalControls}</div>}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
@@ -586,7 +590,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   classNames={{
                     input:
                       "border-base-lighter focus:border-2 focus:drop-shadow-xl",
-                    wrapper: "w-72 mr-1",
+                    wrapper: "w-72",
                   }}
                   size="sm"
                   rightSection={

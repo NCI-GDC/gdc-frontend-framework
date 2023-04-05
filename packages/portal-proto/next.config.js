@@ -3,7 +3,7 @@ const withTM = require("next-transpile-modules")([
   "@oncojs/survivalplot",
   "@oncojs/react-survivalplot",
   "oncogrid",
-  "@stjude/proteinpaint-client",
+  "@sjcrh/proteinpaint-client",
 ]);
 
 /**
