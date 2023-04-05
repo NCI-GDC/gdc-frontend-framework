@@ -68,7 +68,7 @@ export const HorizontalTable = ({
               <th
                 className={`w-4/12 align-top px-2 ${
                   !slideImageDetails && "py-2.5"
-                } border-base-lighter border-1 whitespace-nowrap font-semibold font-content-noto`}
+                } border-base-lighter border-1 whitespace-nowrap font-semibold font-heading`}
                 key={`head-${obj.headerName}`}
               >
                 {obj.headerName}
