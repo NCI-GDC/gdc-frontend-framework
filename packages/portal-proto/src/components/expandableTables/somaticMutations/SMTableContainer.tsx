@@ -229,12 +229,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     data: mutationsFreqJSONData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}`,
-      query: ``,
-      variables: {},
+      url: `${GDC_APP_API_AUTH}/ssms?fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&size=${smTotal}`,
     },
-    ({ url, query, variables }) =>
-      fetcher(url, "mutations-frequency-table-json", query, variables),
+    ({ url }) => fetcher(url, "mutations-frequency-table-json"),
   );
 
   const {

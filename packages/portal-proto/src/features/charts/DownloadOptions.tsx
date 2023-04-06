@@ -24,10 +24,6 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     }).then((r) => r);
   };
 
-  useEffect(() => {
-    console.log(`hi json for ${chartName}`, jsonData);
-  }, [jsonData, chartName]);
-
   return (
     <Menu width="auto">
       <Menu.Target>

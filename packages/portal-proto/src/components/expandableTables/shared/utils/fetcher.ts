@@ -99,10 +99,8 @@ const downloadFeature = (
   feature: string,
   options?: Record<string, any>,
 ) => {
-  console.log("feature", feature);
   switch (feature) {
     case "mutated-genes-frequency-table-json": {
-      console.log("data", data, "options", options);
       //   const { genes, cnvCases, filteredCases, mutationCounts } =
       //   options?.tableData;
 
