@@ -1,3 +1,6 @@
+.survival-plot {
+  font-family: "Noto Sans";
+}
 .survival-plot .axis path,
 .survival-plot .axis line {
   fill: none;
@@ -7,6 +10,7 @@
 .survival-plot .axis .tick text {
   fill: #888;
   font-size: 0.75rem;
+  font-family: "Noto Sans";
 }
 .survival-plot .axis .axis-label {
   color: rgb(107, 98, 98);

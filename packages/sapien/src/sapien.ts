@@ -122,8 +122,9 @@ export const createHumanBody: TCreateHumanBody = ({
         .attr("y", plotHeight + 26)
         .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
         .attr("fill", "rgba(94,94,94,0.7)")
-        .attr("font-size", "11px")
+        .attr("font-size", "12px")
         .style("text-anchor", "middle")
+        .style("font-family", "Noto Sans")
         .text(() => xAxisLabel);
     }
   }

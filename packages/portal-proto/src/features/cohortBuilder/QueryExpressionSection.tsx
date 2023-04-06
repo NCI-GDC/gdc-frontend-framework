@@ -251,7 +251,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               ref={filtersRef}
             >
               {noFilters ? (
-                <p className="pb-2">No filters currently applied.</p>
+                <p className="pb-2 font-content">
+                  No filters currently applied.
+                </p>
               ) : (
                 Object.keys(filters.root).map((k) => {
                   return convertFilterToComponent(filters.root[k]);
