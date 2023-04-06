@@ -198,12 +198,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     data: mutatedGenesJSONData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}`,
-      query: ``,
-      variables: {},
+      url: `${GDC_APP_API_AUTH}/genes?fields=biotype,symbol,cytoband,name,gene_id&size=${gTotal}`,
     },
-    ({ url, query, variables }) =>
-      fetcher(url, "mutated-genes-frequency-table-json", query, variables),
+    ({ url }) => fetcher(url, "mutated-genes-frequency-table-json"),
   );
 
   const {

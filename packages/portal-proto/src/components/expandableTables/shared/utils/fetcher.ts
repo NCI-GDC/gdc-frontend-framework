@@ -25,10 +25,6 @@ export interface DownloadFeature {
     | MutationsFrequencyTableTSV;
 }
 
-// appendFilters(initialMutatedGenesJSONFilters, ["id1", "id2", "id3"])
-
-const initialMutatedGenesJSONFilters = {};
-
 const initialMutatedGenesTSVFilters = {
   filters_case: {
     content: [
@@ -43,8 +39,6 @@ const initialMutatedGenesTSVFilters = {
     op: "and",
   },
 };
-
-const initialMutationsFreqJSONFilters = {};
 
 const initialMutationsFreqTSVFilters = {};
 
@@ -70,10 +64,6 @@ const getGeneFilter = (id) => {
   };
 };
 
-const getSMFilter = (id) => {
-  return {};
-};
-
 const appendFilters = (
   initial: Record<string, any>,
   appending: string[],
@@ -87,15 +77,8 @@ const appendFilters = (
 
 export const getFilters = (feature: string, ids: string[]) => {
   switch (feature) {
-    case "mutatedGenesJSON": {
-      // return appendFilters(initialMutatedGenesJSONFilters, ids)
-    }
     case "mutatedGenesTSV": {
       return appendFilters(initialMutatedGenesTSVFilters, ids);
-    }
-    case "mutationsFreqJSON": {
-      // return
-      return {};
     }
     case "mutationsFreqTSV": {
       return appendFilters(initialMutationsFreqTSVFilters, ids);
@@ -220,12 +203,12 @@ export const fetcher = (
   variables?: Record<string, any>,
 ): any => {
   return fetch(url, {
-    method: "POST",
+    method: query && variables ? "POST" : "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query, variables }),
+    ...(query && variables && { body: JSON.stringify({ query, variables }) }),
   })
     .then((response) => response.json())
     .then((data) => {
