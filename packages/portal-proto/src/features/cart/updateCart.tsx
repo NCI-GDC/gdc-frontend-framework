@@ -261,7 +261,7 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="mx-auto text-primary-content-darkest border-primary-darkest"
+      className="mx-auto text-primary border-primary"
     >
       <TrashIcon />
     </ActionIcon>

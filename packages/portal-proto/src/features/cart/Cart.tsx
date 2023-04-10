@@ -1,7 +1,10 @@
-import { Grid } from "@mantine/core";
+import { ActionIcon, Grid } from "@mantine/core";
 import tw from "tailwind-styled-components";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
-
+import {
+  MdExpandLess as ExpandLessIcon,
+  MdExpandMore as ExpandMoreIcon,
+} from "react-icons/md";
 import {
   useCartSummary,
   useCoreSelector,
@@ -13,32 +16,26 @@ import ProjectTable from "./ProjectTable";
 import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
 import { groupByAccess } from "./utils";
-
-const H2 = tw.h2`
-  uppercase
-  text-primary-content-darkest
-  font-montserrat
-  text-md
-  font-semibold
-  pb-2
-`;
+import { FaExclamationCircle } from "react-icons/fa";
+import { useState } from "react";
+import { FiExternalLink } from "react-icons/fi";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 const H3 = tw.h3`
-  text-primary-content-darkest
-  font-montserrat
+  font-heading
   text-md
-  font-medium
+  font-bold
+  text-sm
 `;
 
 const P = tw.p`
-  pt-2
-  pb-4
-  font-montserrat
-  text-primary-content-darkest
+  font-content
   font-normal
+  text-sm
 `;
 
 const Cart: React.FC = () => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
   const { data: userDetails } = useUserDetails();
@@ -70,54 +67,106 @@ const Cart: React.FC = () => {
         filesByCanAccess={filesByCanAccess}
         dbGapList={dbGapList}
       />
-      <Grid className="mt-8 mx-2">
-        <Grid.Col span={6}>
-          <div className="bg-base-lightest p-4 border border-solid border-base-lighter">
-            <H2>How to download files in my Cart?</H2>
-            <H3>Download Manifest:</H3>
-            <P>
-              Download a manifest for use with the{" "}
-              <a
-                href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-content"
-              >
-                GDC Data Transfer Tool
-              </a>
-              . The GDC Data Transfer Tool is recommended for transferring large
-              volumes of data.
-            </P>
-            <H3>Download Cart:</H3>
-            <P>Download Files in your Cart directly from the Web Browser.</P>
-            <H3>Download Reference Files:</H3>
-            <P>
-              Download{" "}
-              <a
-                href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-content"
-              >
-                GDC Reference Files
-              </a>{" "}
-              for use in your genomic data analysis.
-            </P>
+      <div className="mt-4 mx-4">
+        <div
+          className={`${
+            isCollapsed && "h-10"
+          } flex border border-[#C7501A] text-secondary-contrast-lighter`}
+        >
+          <div
+            className={`flex w-12 bg-[#C7501A] justify-center ${
+              isCollapsed ? "items-center pt-0" : "pt-1.5"
+            } `}
+          >
+            <FaExclamationCircle color="white" className="h-6 w-6" />
           </div>
-          <div className="pt-5">
-            <H2>File counts by authorization level</H2>
+          <div
+            className={`bg-[#C7501A33] w-full pl-4 pt-0.5 ${
+              isCollapsed && "flex items-center pt-0"
+            }`}
+          >
+            <span className="text-sm font-bold uppercase font-heading">
+              How to download files in my cart?
+            </span>
+            {!isCollapsed && (
+              <>
+                <div className="mb-2">
+                  <H3>Download Manifest:</H3>
+                  <P>
+                    Download a manifest for use with the{" "}
+                    <a
+                      href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#1D6796] font-bold underline"
+                    >
+                      <FiExternalLink className="inline" /> GDC Data Transfer
+                      Tool
+                    </a>
+                    . The GDC Data Transfer Tool is recommended for transferring
+                    large volumes of data.
+                  </P>
+                </div>
+
+                <div className="mb-2">
+                  <H3>Download Cart:</H3>
+                  <P>
+                    Download Files in your Cart directly from the Web Browser.
+                  </P>
+                </div>
+
+                <div className="mb-2">
+                  <H3>Download Reference Files:</H3>
+                  <P>
+                    Download{" "}
+                    <a
+                      href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-[#1D6796] font-bold"
+                    >
+                      <FiExternalLink className="inline" /> GDC Reference Files
+                    </a>{" "}
+                    for use in your genomic data analysis.
+                  </P>
+                </div>
+              </>
+            )}
+          </div>
+          <div
+            className={`bg-[#C7501A33] ${isCollapsed && "flex items-center"}`}
+          >
+            <ActionIcon
+              variant="transparent"
+              className="text-[#C7501A] hover:cursor-pointer rounded-none mr-4"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ExpandMoreIcon size="1.75em" />
+              ) : (
+                <ExpandLessIcon size="1.75em" />
+              )}
+            </ActionIcon>
+          </div>
+        </div>
+
+        <div className="flex gap-8 mt-4">
+          <div className="flex-1">
+            <HeaderTitle>File counts by authorization level</HeaderTitle>
             <AuthorizationTable filesByCanAccess={filesByCanAccess} />
           </div>
-        </Grid.Col>
-        <Grid.Col span={6} className="px-4">
-          <H2>File counts by project</H2>
-          <ProjectTable projectData={summaryData} />
-        </Grid.Col>
-        <Grid.Col span={12} className="p-4">
-          <H2>Cart Items</H2>
+          <div className="flex-1">
+            <HeaderTitle>File counts by project</HeaderTitle>
+            <ProjectTable projectData={summaryData} />
+          </div>
+        </div>
+        <div className="mb-16 mt-6">
+          <div className="mb-4">
+            <HeaderTitle>Cart Items</HeaderTitle>
+          </div>
           <FilesTable filesByCanAccess={filesByCanAccess} />
-        </Grid.Col>
-      </Grid>
+        </div>
+      </div>
     </>
   );
 };

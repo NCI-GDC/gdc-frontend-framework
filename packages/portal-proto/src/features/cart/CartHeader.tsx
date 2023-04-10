@@ -19,7 +19,7 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { FaDownload as DownloadIcon } from "react-icons/fa";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -27,7 +27,7 @@ import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
 
 const buttonStyle =
-  "bg-base-lightest text-base-contrast-lightest border-base-darkest";
+  "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
 
 // 5GB
 const MAX_CART_SIZE = 5 * 10e8;
@@ -137,7 +137,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
         data-testid="cart-header"
       >
-        <Menu>
+        <Menu width="target">
           <Menu.Target>
             <Button
               classNames={{
@@ -158,6 +158,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 setDownloadActive(true);
                 downloadManifest(cart, setDownloadActive, dispatch);
               }}
+              icon={<DownloadIcon />}
             >
               Manifest
             </Menu.Item>
@@ -171,12 +172,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   dispatch,
                 );
               }}
+              icon={<DownloadIcon />}
             >
               Cart
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <Menu>
+        <Menu width="target">
           <Menu.Target>
             <Button
               classNames={{
@@ -192,10 +194,18 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>Clinical: TSV (Coming soon)</Menu.Item>
-            <Menu.Item>Clinical: JSON (Coming soon)</Menu.Item>
-            <Menu.Item>Biospecimen: TSV (Coming soon)</Menu.Item>
-            <Menu.Item>Biospecimen: JSON (Coming soon)</Menu.Item>
+            <Menu.Item icon={<DownloadIcon />}>
+              Clinical: TSV (Coming soon)
+            </Menu.Item>
+            <Menu.Item icon={<DownloadIcon />}>
+              Clinical: JSON (Coming soon)
+            </Menu.Item>
+            <Menu.Item icon={<DownloadIcon />}>
+              Biospecimen: TSV (Coming soon)
+            </Menu.Item>
+            <Menu.Item icon={<DownloadIcon />}>
+              Biospecimen: JSON (Coming soon)
+            </Menu.Item>
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
@@ -203,7 +213,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               activeText="Processing"
               inactiveText="Sample Sheet"
               preventClickEvent
-              showIcon={false}
+              showIcon={true}
               endpoint="files"
               setActive={setSampleSheetDownloadActive}
               active={sampleSheetDownloadActice}
@@ -244,12 +254,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 tsv_format: "sample-sheet",
               }}
             />
+            <Menu.Divider />
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
               activeText="Processing"
               inactiveText="Metadata"
-              showIcon={false}
+              showIcon={true}
               variant="subtle"
               preventClickEvent
               endpoint="files"
