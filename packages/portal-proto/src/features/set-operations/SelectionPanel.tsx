@@ -278,7 +278,9 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         visible: true,
         Cell: ({ value, row }: { value: string; row: Row }) => (
           <label
-            id={`gene-selection-${row.values.setId}`}
+            id={`${row.values.entityType}-selection-${
+              (row.original as Record<string, any>).setId
+            }`}
             className={
               shouldDisableInput(
                 row.values.entityType,
