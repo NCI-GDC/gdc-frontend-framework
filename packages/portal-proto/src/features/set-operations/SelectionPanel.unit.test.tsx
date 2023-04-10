@@ -13,11 +13,14 @@ jest.spyOn(core, "selectSetsByType").mockImplementation((_, setType) =>
       },
 );
 jest
-  .spyOn(core, "useGeneSetCountQuery")
-  .mockImplementation(() => ({ isSuccess: true, data: 100 } as any));
+  .spyOn(core, "useGeneSetCountsQuery")
+  .mockImplementation(() => ({ isSuccess: true, data: { 123: 10 } } as any));
 jest
-  .spyOn(core, "useSsmSetCountQuery")
-  .mockImplementation(() => ({ isSuccess: true, data: 100 } as any));
+  .spyOn(core, "useSsmSetCountsQuery")
+  .mockImplementation(
+    () =>
+      ({ isSuccess: true, data: { 1: 100, 2: 200, 3: 100, 4: 100 } } as any),
+  );
 
 describe("<SelectionPanel />", () => {
   it("selecting one type of entity disables the others", () => {
