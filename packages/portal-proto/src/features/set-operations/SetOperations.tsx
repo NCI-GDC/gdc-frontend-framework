@@ -546,7 +546,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
           <CountButton
             count={value}
             filters={createSetFiltersByKey(
-              row?.original?.operationKey,
+              (row.original as Record<string, any>).operationKey,
               entityType,
               sets,
             )}

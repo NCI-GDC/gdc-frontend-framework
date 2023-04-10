@@ -260,7 +260,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               shouldDisableInput(
                 row.values.entityType,
                 row.values.count,
-                row.original.setId,
+                (row.original as Record<string, any>).setId,
                 selectedEntityType,
                 selectedEntities,
               )
@@ -283,7 +283,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               shouldDisableInput(
                 row.values.entityType,
                 row.values.count,
-                row.original.setId,
+                (row.original as Record<string, any>).setId,
                 selectedEntityType,
                 selectedEntities,
               )
@@ -305,7 +305,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               shouldDisableInput(
                 row.values.entityType,
                 row.values.count,
-                row.original.setId,
+                (row.original as Record<string, any>).setId,
                 selectedEntityType,
                 selectedEntities,
               )
