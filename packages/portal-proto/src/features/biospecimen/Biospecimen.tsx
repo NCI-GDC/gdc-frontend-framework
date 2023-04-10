@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
-import {
-  MdOutlineSearch,
-  MdFileDownload,
-  MdOutlineClear,
-} from "react-icons/md";
-import { Button, Input, LoadingOverlay, Menu } from "@mantine/core";
+import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
+import { Button, Input, LoadingOverlay } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -19,6 +15,8 @@ import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 interface BiospecimenProps {
   caseId: string;
@@ -122,36 +120,35 @@ export const Biospecimen = ({
         Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (
         <>
-          <div className="flex justify-between">
-            <div className="self-end">
-              <HeaderTitle>Biospecimen</HeaderTitle>
-            </div>
-
-            <Menu width="target">
-              <Menu.Target>
-                <Button className="px-1.5 min-h-7 w-28 border-base-lightest border rounded text-primary-content-lightest bg-primary hover:bg-primary-darker">
-                  <MdFileDownload size="1.25em" />
-                  Download
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  TSV
-                </Menu.Item>
-                <Menu.Item icon={<MdFileDownload size="1.25em" />}>
-                  JSON
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+          <div className="mb-2">
+            <HeaderTitle>Biospecimen</HeaderTitle>
           </div>
 
+          <DropdownWithIcon
+            dropdownElements={[
+              {
+                title: "TSV (Coming soon)",
+                icon: <DownloadIcon size={16} aria-label="download icon" />,
+              },
+              {
+                title: "JSON (Coming soon)",
+                icon: <DownloadIcon size={16} aria-label="download icon" />,
+              },
+            ]}
+            TargetButtonChildren="Download"
+            LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+          />
+
           <div className="flex mt-2 gap-4">
-            <div className="basis-1/4">
-              <div className="flex mb-4">
+            <div className="basis-4/12">
+              <div className="flex mb-4 gap-4">
                 <Input
                   icon={<MdOutlineSearch size={24} />}
                   placeholder="Search"
-                  className="w-96"
+                  className="basis-5/6"
+                  classNames={{
+                    input: "border-base-lighter",
+                  }}
                   onChange={(e) => {
                     if (e.target.value.length === 0) {
                       setExpandedCount(0);
@@ -190,8 +187,9 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="ml-4 w-32 text-primary-content-lightest bg-primary hover:bg-primary-darker "
+                  className="text-primary hover:bg-primary-darker hover:text-base-lightest"
                   disabled={searchText.length > 0}
+                  variant="outline"
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
                 </Button>

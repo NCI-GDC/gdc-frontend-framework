@@ -1,10 +1,12 @@
 {
   "name": "@gff/lighthouse",
-  "version": "1.0.0",
+  "version": "2.3.0",
   "description": "Use lighthouse to audit Portal v2",
   "main": "index.js",
   "scripts": {
-    "audit": "node src/audit.mjs"
+    "audit": "node src/audit.mjs",
+    "test": "test",
+    "test:all": "echo No tests yet"
   },
   "repository": {
     "type": "git",

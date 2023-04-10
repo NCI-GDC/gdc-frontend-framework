@@ -655,6 +655,35 @@ const v2AccentCoolContent = {
   min: "#061215",
 };
 
+// got these from v1 (portal-ui)
+// https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/theme/versions/active.ts#L88
+const vep = {
+  high: "rgb(185, 36, 36)",
+  moderate: "#634d0c",
+  modifier: "#634d0c",
+  low: "#015c0a",
+};
+
+const sift = {
+  deleterious: "rgb(185, 36, 36)",
+  deleterious_low_confidence: "#634d0c",
+  tolerated: "#634d0c",
+  tolerated_low_confidence: "#015c0a",
+};
+
+const polyphen = {
+  benign: "#015c0a",
+  possibly_damaging: "#634d0c",
+  probably_damaging: "rgb(185, 36, 36)",
+  unknown: "rgb(107,98,98)",
+};
+
+const impact = {
+  vep,
+  sift,
+  polyphen,
+};
+
 module.exports = {
   important: "#__next",
   content: [
@@ -747,6 +776,7 @@ module.exports = {
           text: "#42346F",
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
+          borderAlt: "#F0E4CB",
         },
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#976F21", //lighter orangish
@@ -768,6 +798,10 @@ module.exports = {
         "screen/4": "calc(100vw / 4)",
         "screen/5": "calc(100vw / 5)",
       },
+      flexBasis: {
+        coretools: "400px",
+        tools: "188px",
+      },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
       },
@@ -779,6 +813,8 @@ module.exports = {
       },
       backgroundImage: {
         "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
+        "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
+        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
@@ -887,6 +923,7 @@ module.exports = {
             "chart-contrast": nciTealContrast,
             utility: utility,
             "utility-contrast": utilityContrast,
+            impact: impact,
           },
         },
       },

@@ -9,10 +9,8 @@ import {
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
-import {
-  MdDownload as DownloadIcon,
-  MdRestartAlt as ResetIcon,
-} from "react-icons/md";
+import { MdRestartAlt as ResetIcon } from "react-icons/md";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Box, Menu, Tooltip } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
@@ -102,11 +100,10 @@ export const useSurvival: survival = (
               </div>,
             );
           },
-          onClickDonor: (e, { project_id, submitter_id, id }) => {
+          onClickDonor: (e, { id }) => {
             setEntityMetadata({
               entity_type: "case",
               entity_id: id,
-              entity_name: `${project_id} / ${submitter_id}`,
             });
           },
 
@@ -425,16 +422,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
           {title}
         </div>
-        <div className="flex flex-row items-center ml-auto mt-2 gap-1">
-          <Menu
-            position="bottom-start"
-            offset={1}
-            transitionDuration={0}
-            zIndex={10}
-            classNames={{
-              item: "hover:bg-base-lighter hover:text-base-lighter-contrast",
-            }}
-          >
+        <div className="flex flex-row items-center ml-auto gap-1">
+          <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
               <div className="flex">
                 <Tooltip label="Download Survival Plot data or image">

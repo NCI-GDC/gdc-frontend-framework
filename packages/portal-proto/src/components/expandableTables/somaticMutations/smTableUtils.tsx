@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
-import ToggleSpring from "../shared/ToggleSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import {
+  IoMdTrendingDown as SurvivalIcon,
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
@@ -49,17 +51,11 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <div className="ml-0">
-                <TableHeader
-                  title={startCase(accessor)}
-                  tooltip={""}
-                  className="ml-1 mr-2"
-                />
-              </div>
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
-                <div className="ml-1.5 mr-2">
+                <>
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -69,7 +65,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -83,19 +79,14 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start ml-3">
+                <>
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledSsms.includes(row.original?.mutationID)}
-                      margin={`my-0.5 ml-0`}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -124,7 +115,7 @@ export const createTableColumn = (
                       disabled={isDemoMode}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -138,11 +129,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               if (row.depth > 0) {
@@ -161,7 +148,7 @@ export const createTableColumn = (
                 ? `Click to remove ${selected.name} from plot`
                 : `Click to plot ${selected.name}`;
               return (
-                <div className="flex justify-start">
+                <>
                   {row.getCanExpand() && (
                     <ToggledCheck
                       margin="ml-0.5"
@@ -174,7 +161,7 @@ export const createTableColumn = (
                       tooltip={tooltip}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -193,7 +180,6 @@ export const createTableColumn = (
                   title={startCase(accessor)}
                   tooltip={`Genomic DNA Change, shown as
                    {chromosome}:g{start}{ref}>{tumor}`}
-                  className="flex justify-start"
                 />
               </div>
             ),
@@ -204,22 +190,21 @@ export const createTableColumn = (
                 : originalLabel;
               const ssmsId = row.original[`mutationID`];
               return (
-                <div className="font-content flex justify-start">
+                <div className="font-content">
                   {label !== "" ? (
                     <Tooltip
                       label={originalLabel}
                       disabled={!originalLabel?.length}
                     >
                       {isConsequenceTable ? (
-                        <span className="text-xs">{label}</span>
-                      ) : isModal ? (
+                        <span>{label}</span>
+                      ) : isModal && !geneSymbol ? (
                         <button
-                          className="text-utility-link underline text-xs"
+                          className="text-utility-link underline"
                           onClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
                               entity_id: ssmsId,
-                              entity_name: originalLabel,
                             })
                           }
                         >
@@ -227,9 +212,7 @@ export const createTableColumn = (
                         </button>
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link text-xs">
-                            {label}
-                          </a>
+                          <a className="underline text-utility-link">{label}</a>
                         </Link>
                       )}
                     </Tooltip>
@@ -252,11 +235,10 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                  Across the GDC`}
+                 Across the GDC`}
                 tooltip={`# Cases where Mutation is observed /
                   # Cases tested for Simple Somatic Mutations portal wide
                   Expand to see breakdown by project`}
-                className="flex flex-row justify-start w-32"
               />
             ),
             cell: ({ row }) => {
@@ -264,18 +246,11 @@ export const createTableColumn = (
                 "affectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex items-center gap-2">
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      orientation="horizontal"
-                    />
-                  )}
-                  {row.getCanExpand() && (
-                    <div className="text-center content-center mr-6">
+                    <div className="flex items-center">
                       <button
-                        aria-controls={`expandedSubrow`}
+                        aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
@@ -285,14 +260,16 @@ export const createTableColumn = (
                           style: { cursor: "pointer" },
                         }}
                       >
-                        <ToggleSpring
-                          isExpanded={row.getIsExpanded()}
-                          icon={
-                            <MdKeyboardArrowDown size="0.75em" color="white" />
-                          }
-                        />
+                        {!row.getIsExpanded() ? (
+                          <DownIcon size="1.25em" className="text-accent" />
+                        ) : (
+                          <UpIcon size="1.25em" className="text-accent" />
+                        )}
                       </button>
                     </div>
+                  )}
+                  {row.getCanExpand() && (
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -311,10 +288,10 @@ export const createTableColumn = (
               <TableHeader
                 title={`# Affected Cases
                    in ${geneSymbol ? geneSymbol : "Cohort"}`}
-                className="flex justify-start"
                 tooltip={`# Cases where Mutation is observed in ${
                   geneSymbol ?? "Cohort"
-                } / # Cases tested for Simple Somatic Mutations in Cohort`}
+                } /
+                # Cases tested for Simple Somatic Mutations in Cohort`}
               />
             ),
             cell: ({ row }) => {
@@ -323,15 +300,9 @@ export const createTableColumn = (
                 "affectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex flex-row justify-between flex-nowrap items-center">
+                <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <>
-                      <RatioSpring
-                        index={0}
-                        item={{ numerator, denominator }}
-                        orientation="horizontal"
-                      />
-                    </>
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -347,11 +318,7 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex justify-start"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               return (
@@ -379,13 +346,12 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={"Consequences for canonical transcript"}
-                className="flex flex-row justify-start mr-2"
+                tooltip="Consequences for canonical transcript"
               />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start font-content text-sx">
+                <div className="font-content">
                   {row.getCanExpand() && (
                     <Consequences consequences={row.original["consequences"]} />
                   )}
@@ -403,43 +369,63 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => {
-              const TwIconDiv = tw.div`w-7 h-6 text-white border rounded-md flex justify-center items-center`;
+              const TwIconDiv = tw.div`w-7 h-6 text-base-max border rounded-md flex justify-center items-center mx-1`;
               return (
                 <Tooltip
                   label={
                     <div className="flex flex-col gap-1">
                       <Text>Impact for canonical transcript:</Text>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         VEP:
-                        <TwIconDiv className="bg-red-500 mx-1">HI</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-high">HI</TwIconDiv>
                         high
-                        <TwIconDiv className="bg-green-500 mx-1">LO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-low">LO</TwIconDiv>
                         low
-                        <TwIconDiv className=" bg-gray-500 mx-1">MO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-moderate">
+                          MO
+                        </TwIconDiv>
                         moderate
-                        <TwIconDiv className=" bg-gray-500 mx-1">MR</TwIconDiv>
+                        <TwIconDiv className="bg-impact-vep-modifier">
+                          MR
+                        </TwIconDiv>
                         modifier
                       </div>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         SIFT:
-                        <TwIconDiv className=" bg-red-500 mx-1">DH</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-deleterious">
+                          DH
+                        </TwIconDiv>
                         deleterious
-                        <TwIconDiv className=" bg-gray-500 mx-1">DL</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-deleterious_low_confidence">
+                          DL
+                        </TwIconDiv>
                         deleterious_low_confidence
-                        <TwIconDiv className=" bg-gray-500 mx-1">TO</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-tolerated">
+                          TO
+                        </TwIconDiv>
                         tolerated
-                        <TwIconDiv className=" bg-green-500 mx-1">TL</TwIconDiv>
+                        <TwIconDiv className=" bg-impact-sift-tolerated_low_confidence">
+                          TL
+                        </TwIconDiv>
                         tolerated_low_confidence
                       </div>
-                      <div className="flex flex-row items-bottom gap-1">
+                      <div className="flex gap-1">
                         PolyPhen:
-                        <TwIconDiv className=" bg-green-500 mx-1">BE</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-benign">
+                          BE
+                        </TwIconDiv>
                         benign
-                        <TwIconDiv className=" bg-gray-500 mx-1">PO</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-possibly_damaging">
+                          PO
+                        </TwIconDiv>
                         possibly_damaging
-                        <TwIconDiv className=" bg-red-500 mx-1">PR</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-probably_damaging">
+                          PR
+                        </TwIconDiv>
                         probably_damaging
-                        <TwIconDiv className=" bg-gray-500 mx-1">UN</TwIconDiv>
+                        <TwIconDiv className="bg-impact-polyphen-unknown">
+                          UN
+                        </TwIconDiv>
                         unknown
                       </div>
                     </div>
@@ -457,7 +443,7 @@ export const createTableColumn = (
                   }}
                   position={geneSymbol && isModal ? "left-start" : "top"}
                 >
-                  <div className="font-heading text-left text-xs whitespace-pre-line">
+                  <div className="font-heading text-left whitespace-pre-line">
                     Impact
                   </div>
                 </Tooltip>
@@ -465,7 +451,7 @@ export const createTableColumn = (
             },
             cell: ({ row }) => {
               return (
-                <div className="flex flex-row justify-start">
+                <div className="flex">
                   {row.getCanExpand() && (
                     <Impacts impact={row.original["impact"]} />
                   )}
@@ -483,18 +469,12 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="Gene Strand"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="Gene Strand" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               return (
-                <div className="flex justify-start ml-4 ">
-                  <div className="font-content text-lg font-bold">
-                    {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
-                  </div>
+                <div className="font-content text-lg font-bold">
+                  {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
                 </div>
               );
             },
@@ -509,24 +489,18 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="AA Change"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="AA Change" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               const label = row.original["aa_change"];
               return (
-                <div className="flex justify-start ml-4 ">
+                <>
                   {label !== null ? (
-                    <div className="font-content text-xs">{label}</div>
+                    <span>{label}</span>
                   ) : (
-                    <div className="font-content text-center text-lg ml-3">
-                      {"--"}
-                    </div>
+                    <span className="text-center text-lg">--</span>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -540,32 +514,20 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title="Transcript"
-                tooltip={""}
-                className="flex flex-row justify-start w-18"
-              />
+              <TableHeader title="Transcript" tooltip={""} className="w-18" />
             ),
             cell: ({ row }) => {
               const transcript_id = row.original?.transcript_id;
               const isC = row.original["is_canonical"] as boolean;
               return (
-                <div className="flex flex-row justify-start ">
+                <div>
                   {transcript_id ? (
-                    <div className="flex flex-row flex-nowrap font-content items-center text-sm">
-                      <AnchorLink
-                        href={externalLinks.transcript(transcript_id)}
-                        title={transcript_id}
-                        toolTipLabel={"transcript_id"}
-                      />
-                      {isC ? (
-                        <Tooltip label={"Canonical"}>
-                          <div className="rounded-full bg-primary text-primary-contrast flex justify-center text-center ml-1.5 w-5 h-5 aspect-square">
-                            C
-                          </div>
-                        </Tooltip>
-                      ) : null}
-                    </div>
+                    <AnchorLink
+                      href={externalLinks.transcript(transcript_id)}
+                      title={transcript_id}
+                      toolTipLabel={isC ? "Canonical" : undefined}
+                      iconText={isC ? "C" : undefined}
+                    />
                   ) : null}
                 </div>
               );
@@ -581,26 +543,16 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
+              <TableHeader title={startCase(accessor)} tooltip={""} />
+            ),
+            cell: ({ row }) => (
+              <TableCell
+                row={row}
+                accessor={accessor}
+                anchor={false}
                 tooltip={""}
-                className="flex flex-row justify-start w-32 ml-4"
               />
             ),
-            cell: ({ row }) => {
-              return (
-                <div className="flex justify-start ml-4 ">
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
-                </div>
-              );
-            },
           },
         ],
       };
@@ -612,24 +564,18 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="flex flex-row justify-start ml-1.5"
-              />
+              <TableHeader title={startCase(accessor)} tooltip={""} />
             ),
             cell: ({ row }) => {
               const geneSymbol = row.original["gene_id"];
               return (
-                <div className="flex justify-start ml-1.5">
-                  <Link href={`/genes/${geneSymbol}`}>
-                    <a className="text-utility-link font-content text-xs underline">
-                      {row.original[`${accessor}`]
-                        ? row.original[`${accessor}`]
-                        : ""}
-                    </a>
-                  </Link>
-                </div>
+                <Link href={`/genes/${geneSymbol}`}>
+                  <a className="text-utility-link font-content underline">
+                    {row.original[`${accessor}`]
+                      ? row.original[`${accessor}`]
+                      : ""}
+                  </a>
+                </Link>
               );
             },
           },
@@ -644,26 +590,16 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
+              <TableHeader title={startCase(accessor)} tooltip={""} />
+            ),
+            cell: ({ row }) => (
+              <TableCell
+                row={row}
+                accessor={accessor}
+                anchor={false}
                 tooltip={""}
-                className="flex flex-row justify-start"
               />
             ),
-            cell: ({ row }) => {
-              return (
-                <div className="flex justify-start">
-                  <>
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
-                  </>
-                </div>
-              );
-            },
           },
         ],
       };

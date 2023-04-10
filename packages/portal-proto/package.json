@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
-    "@gff/core": "2.2.0",
+    "@gff/core": "2.3.0",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.10.2",
     "@mantine/form": "^5.10.2",
@@ -24,7 +24,7 @@
     "@mantine/notifications": "^5.10.2",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "^1.8.5",
-    "@stjude/proteinpaint-client": "https://pecan.stjude.cloud/static/Pk983gP.Rl2410y45/ydbD5DBW0BdkjXJq/stjude-proteinpaint-client-2.11.1.tgz",
+    "@sjcrh/proteinpaint-client": "^2.12.1",
     "filesize": "^8.0.7",
     "html-to-image": "^1.11.4",
     "minisearch": "^3.0.4",
@@ -85,6 +85,6 @@
     "victory": "^36.4.0"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }

@@ -19,8 +19,8 @@ import tailwindConfig from "../../tailwind.config";
 
 // import gdc apps here.
 // their default exports will trigger registration.
-import "@/features/projectsCenter/ProjectsCenter";
-import "@/features/repositoryApp/RepositoryApp";
+import "@/features/projectsCenter/registerApp";
+import "@/features/repositoryApp/registerApp";
 import "@/features/genomic/registerApp";
 import "@/features/oncoGrid/registerApp";
 
@@ -99,7 +99,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
     entity_type: null,
     entity_id: null,
-    entity_name: null,
   });
 
   const defaultTailwindColorTheme =
@@ -165,6 +164,14 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                     tooltip:
                       "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
+                  },
+                },
+              },
+              Menu: {
+                defaultProps: {
+                  zIndex: 1,
+                  classNames: {
+                    item: "text-base-min disabled:opacity-50 data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
                   },
                 },
               },

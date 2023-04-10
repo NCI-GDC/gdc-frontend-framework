@@ -1,17 +1,7 @@
-import { Button, createStyles, Menu } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    "&[data-hovered]": {
-      // TODO: remove with theme color other than blue
-      backgroundColor: theme.colors.blue[3],
-      color: theme.white,
-    },
-  },
-}));
 
 interface DropdownWithIconProps {
   /**
@@ -35,11 +25,13 @@ interface DropdownWithIconProps {
    */
   targetButtonDisabled?: boolean;
   /**
-   *    array dropdown items. Need to pass title, onClick event handler is optional
+   *    array dropdown items. Need to pass title, onClick and icon event handler is optional
    */
   dropdownElements: Array<{
     title: string;
     onClick?: () => void;
+    icon?: JSX.Element;
+    disabled?: boolean; // if true, disables the menu item
   }>;
   /**
    *    only provide menuLabelText if we want label for dropdown elements
@@ -53,6 +45,11 @@ interface DropdownWithIconProps {
    *    custom position for Menu
    */
   customPosition?: FloatingPosition;
+
+  /**
+   *   custom z-index for Menu, defaults to undefined
+   */
+  zIndex?: number;
 }
 
 export const DropdownWithIcon = ({
@@ -65,15 +62,14 @@ export const DropdownWithIcon = ({
   menuLabelText,
   menuLabelCustomClass,
   customPosition,
+  zIndex = undefined,
 }: DropdownWithIconProps): JSX.Element => {
-  const { classes } = useStyles();
-
   return (
     <Menu
       width={!disableTargetWidth && "target"}
-      classNames={classes}
       {...(customPosition && { position: customPosition })}
       data-testid="menu-elem"
+      zIndex={zIndex}
     >
       <Menu.Target>
         <Button
@@ -99,14 +95,15 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </>
         )}
-        {dropdownElements.map(({ title, onClick }, idx) => (
+        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
               onClick && onClick();
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
-            className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+            icon={icon && icon}
+            disabled={disabled}
           >
             {title}
           </Menu.Item>
