@@ -165,8 +165,8 @@ Push latest container:
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  except:
+    - schedules
 
 Push tagged container:
   stage: release
