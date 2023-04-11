@@ -44,10 +44,6 @@ export const Footer: React.FC = () => {
           url: "https://portal.gdc.cancer.gov/submission",
         },
         {
-          title: "Legacy Archive",
-          url: "https://portal.gdc.cancer.gov/legacy-archive",
-        },
-        {
           title: "Publications",
           url: "https://gdc.cancer.gov/about-data/publications",
         },

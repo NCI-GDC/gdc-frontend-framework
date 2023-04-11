@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - browser="headless chrome"
+    volumes:
+      - .:/app
+    command: gauge run ./specs/gdc_data_portal_v2/

@@ -11,6 +11,7 @@ import {
 import { pickBy, upperFirst } from "lodash";
 import { Checkbox, Badge, Tooltip, ActionIcon, Loader } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { Row } from "react-table";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
@@ -21,7 +22,6 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { convertDateToString } from "src/utils/date";
-import { GeneCountCell, MutationCountCell } from "./CountCell";
 import { SelectedEntities, SetOperationEntityType } from "./types";
 import download from "src/utils/download";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
@@ -37,6 +37,9 @@ interface SetOperationsExternalProps {
   readonly sets: SelectedEntities;
   readonly entityType: SetOperationEntityType;
   readonly queryHook: UseQuery<QueryDefinition<any, any, any, any, string>>;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
 }
 
 const createSetFiltersByKey = (
@@ -257,6 +260,7 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
   sets,
   entityType,
   queryHook,
+  countHook,
 }: SetOperationsExternalProps) => {
   const { data: intersectionData } = queryHook({
     filters: {
@@ -288,6 +292,7 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
       entityType={entityType}
       data={data}
       queryHook={queryHook}
+      countHook={countHook}
     />
   );
 };
@@ -296,6 +301,7 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
   sets,
   entityType,
   queryHook,
+  countHook,
 }: SetOperationsExternalProps) => {
   const { data: intersectionData } = queryHook({
     filters: {
@@ -398,6 +404,7 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
       entityType={entityType}
       data={data}
       queryHook={queryHook}
+      countHook={countHook}
     />
   );
 };
@@ -453,7 +460,7 @@ const CountButton: React.FC<CountButtonProps> = ({
           <Badge
             variant="outline"
             radius="xs"
-            className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-full`}
+            className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-20`}
             color={disabled ? "base" : "primary"}
           >
             {count !== undefined ? count.toLocaleString() : undefined}
@@ -542,7 +549,10 @@ interface SetOperationsProps {
     readonly key: string;
     readonly value: number;
   }[];
-  readonly queryHook: UseQuery<QueryDefinition<any, any, any, any, string>>;
+  readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
 }
 
 const SetOperations: React.FC<SetOperationsProps> = ({
@@ -550,12 +560,13 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   entityType,
   data,
   queryHook,
+  countHook,
 }: SetOperationsProps) => {
   const isDemoMode = useIsDemoApp();
-
   const [selectedSets, setSelectedSets] = useState(
     Object.fromEntries(data.map((set) => [set.key, false])),
   );
+  const { data: summaryCounts } = countHook({ setIds: sets.map((s) => s.id) });
 
   const chartData = data.map((set) => ({
     key: set.key,
@@ -583,7 +594,13 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         visible: true,
         disableSortBy: true,
       },
-      { id: "count", columnName: "# Items", visible: true },
+      {
+        id: "count",
+        columnName: "# Items",
+        visible: true,
+        Cell: ({ value }) =>
+          value !== undefined ? value.toLocaleString() : "...",
+      },
     ],
     [],
   );
@@ -602,7 +619,22 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         visible: true,
         disableSortBy: true,
       },
-      { id: "count", columnName: "# Items", visible: true },
+      {
+        id: "count",
+        columnName: "# Items",
+        visible: true,
+        Cell: ({ value, row }: { value: number; row: Row }) => (
+          <CountButton
+            count={value}
+            filters={createSetFiltersByKey(
+              (row.original as Record<string, any>).operationKey,
+              entityType,
+              sets,
+            )}
+            entityType={entityType}
+          />
+        ),
+      },
       {
         id: "download",
         columnName: "Download",
@@ -610,7 +642,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         disableSortBy: true,
       },
     ],
-    [],
+    [entityType, sets],
   );
 
   const summaryTableData = useMemo(
@@ -623,26 +655,21 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         ),
         entityType: upperFirst(entityType),
         name: set.name,
-        count:
-          entityType === "genes" ? (
-            <GeneCountCell setId={set.id} />
-          ) : (
-            <MutationCountCell setId={set.id} />
-          ),
+        count: summaryCounts?.[set.id],
       })),
-    [entityType, sets],
+    [entityType, sets, summaryCounts],
   );
 
   const tableData = useMemo(
     () =>
-      data.map((row) => ({
+      data.map((r) => ({
         select: (
           <Checkbox
             classNames={{
               input: "checked:bg-accent",
             }}
-            checked={selectedSets[row.key]}
-            value={row.key}
+            checked={selectedSets[r.key]}
+            value={r.key}
             onChange={(e) =>
               setSelectedSets({
                 ...selectedSets,
@@ -651,19 +678,14 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             }
           />
         ),
-        setOperation: row.label,
-        count: (
-          <CountButton
-            count={row.value}
-            filters={createSetFiltersByKey(row.key, entityType, sets)}
-            entityType={entityType}
-          />
-        ),
+        setOperation: r.label,
+        count: r.value,
+        operationKey: r.key,
         download: (
           <DownloadButton
-            filters={createSetFiltersByKey(row.key, entityType, sets)}
+            filters={createSetFiltersByKey(r.key, entityType, sets)}
             entityType={entityType}
-            setKey={row.key}
+            setKey={r.label}
             createSetHook={
               entityType === "mutations"
                 ? useCreateSsmsSetFromFiltersMutation
@@ -672,7 +694,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
           />
         ),
       })),
-    [selectedSets, data, entityType, sets],
+    [selectedSets, data],
   );
 
   const unionFilter = {

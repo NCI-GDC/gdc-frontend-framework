@@ -18,7 +18,10 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
         />
       </div>
-      <div className="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between">
+      <div
+        className="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between"
+        data-testid="homepage-live-statistics"
+      >
         <SummaryStatsItem
           title="Projects"
           count={countsInfo.projectsCounts}

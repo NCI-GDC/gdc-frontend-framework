@@ -26,7 +26,7 @@ Example: run the following command in your CLI before running tests
 1. Run tests in particular environment
 ```bash
 # localhost
-export APP_ENVIRONMENT=_LOCAL
+export APP_ENVIRONMENT=LOCAL
 
 # Shared QA / Prod
 unset APP_ENVIRONMENT

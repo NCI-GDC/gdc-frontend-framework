@@ -54,7 +54,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   }, []);
 
   return (
-    <Card shadow="sm" radius="md" ref={(ref) => (targetRef.current = ref)}>
+    <Card
+      shadow="sm"
+      radius="md"
+      ref={(ref) => (targetRef.current = ref)}
+      className="border-1 border-base-lightest"
+    >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
         <div className="flex gap-1">
@@ -68,13 +73,20 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "histogram" && !noData
-                  ? "bg-primary-darkest text-primary-contrast-darkest"
-                  : "border-primary-darkest text-primary-content-darkest"
+                  ? "bg-primary"
+                  : "border-primary"
               }
               onClick={() => setChartType("histogram")}
+              aria-label={`Select ${fieldName} histogram plot`}
               disabled={noData}
             >
-              <BarChartIcon />
+              <BarChartIcon
+                className={
+                  chartType === "histogram" && !noData
+                    ? "text-primary-contrast"
+                    : "text-primary"
+                }
+              />
             </ActionIcon>
           </Tooltip>
           <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
@@ -82,13 +94,20 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               variant="outline"
               className={
                 chartType === "survival"
-                  ? "bg-primary-darkest text-primary-contrast-darkest"
-                  : "border-primary-darkest text-primary-content-darkest"
+                  ? "bg-primary text-primary"
+                  : "border-primary text-primary-content"
               }
               onClick={() => setChartType("survival")}
+              aria-label={`Select ${fieldName} survival plot`}
               disabled={noData}
             >
-              <SurvivalChartIcon />
+              <SurvivalChartIcon
+                className={
+                  chartType === "survival"
+                    ? "text-primary-contrast"
+                    : "text-primary"
+                }
+              />
             </ActionIcon>
           </Tooltip>
           <Tooltip
@@ -99,9 +118,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           >
             <ActionIcon
               onClick={() => updateFields(field)}
-              className="border-primary-darkest text-primary-content-darkest"
+              className="border-primary text-primary-content"
+              aria-label={`Remove ${fieldName} card`}
             >
-              <CloseIcon />
+              <CloseIcon className="text-primary" />
             </ActionIcon>
           </Tooltip>
         </div>

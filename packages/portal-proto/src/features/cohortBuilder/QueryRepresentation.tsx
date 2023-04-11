@@ -24,9 +24,10 @@ import {
   selectCurrentCohortId,
   useGeneSymbol,
   updateActiveCohortFilter,
-  selectCurrentCohortGroupsByField,
-  selectAllSets,
-  removeCohortGroup,
+  useGeneSetCountQuery,
+  useSsmSetCountQuery,
+  useCaseSetCountQuery,
+  removeCohortSet,
 } from "@gff/core";
 import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
 import {
@@ -36,8 +37,20 @@ import {
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import QueryRepresentationLabel from "@/features/facets/QueryRepresentationLabel";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 
+const RemoveButton = ({ value }: { value: string }) => (
+  <ActionIcon
+    size="xs"
+    color="white"
+    radius="xl"
+    variant="transparent"
+    aria-label={`remove ${value}`}
+  >
+    <ClearIcon size={10} />
+  </ActionIcon>
+);
 const QueryRepresentationText = tw.div`
 flex truncate ... px-2 py-1 bg-base-max h-full
 `;
@@ -112,11 +125,6 @@ const IncludeExcludeQueryElement: React.FC<
     selectCurrentCohortId(state),
   );
 
-  const groups = useCoreSelector((state) =>
-    selectCurrentCohortGroupsByField(state, field),
-  );
-  const setInfo = useCoreSelector((state) => selectAllSets(state));
-
   useEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
       setQueryExpressionsExpanded({
@@ -140,57 +148,6 @@ const IncludeExcludeQueryElement: React.FC<
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
-  );
-  const tempOperands = [...operands];
-  const displayOperands = [];
-
-  if (groups) {
-    // Replace operands from groups
-    groups.forEach((group) => {
-      const setName = setInfo?.[group?.setType]?.[group?.setId];
-      if (setName) {
-        displayOperands.push({ label: setName, group });
-      } else {
-        displayOperands.push({
-          label: `${group.ids.length} input ${fieldName.toLowerCase()}s`,
-          group,
-        });
-      }
-
-      group.ids.forEach((id) => {
-        const index = tempOperands.findIndex((o) => o === id);
-        if (index >= 0) {
-          tempOperands.splice(index, 1);
-        }
-      });
-    });
-  }
-
-  tempOperands.forEach((operand) => {
-    if (operand.toString().includes("set_id:")) {
-      return;
-    }
-
-    if (field === "genes.gene_id") {
-      displayOperands.push({
-        label: isSuccess ? geneSymbolDict[operand.toString()] ?? "..." : "...",
-        value: operand,
-      });
-    } else {
-      displayOperands.push({ label: operand, value: operand });
-    }
-  });
-
-  const RemoveButton = ({ value }: { value: string }) => (
-    <ActionIcon
-      size="xs"
-      color="white"
-      radius="xl"
-      variant="transparent"
-      aria-label={`remove ${value}`}
-    >
-      <ClearIcon size={10} />
-    </ActionIcon>
   );
 
   return (
@@ -222,13 +179,13 @@ const IncludeExcludeQueryElement: React.FC<
       />
       {!expanded ? (
         <b className="text-primary-darkest px-2 py-1 flex items-center">
-          {displayOperands.length}
+          {operands.length}
         </b>
       ) : (
         <QueryRepresentationText>
           <Group spacing="xs">
-            {displayOperands.map((x, i) => {
-              const value = x?.group ? x.label : x.value.toString();
+            {operands.map((x, i) => {
+              const value = x.toString();
               return (
                 <Badge
                   key={`query-rep-${field}-${value}-${i}`}
@@ -239,20 +196,7 @@ const IncludeExcludeQueryElement: React.FC<
                   className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
-                    const newOperands = [...operands];
-                    if (x.group) {
-                      x.group.ids.forEach((id) => {
-                        const index = newOperands.findIndex((o) => o === id);
-                        if (index >= 0) {
-                          newOperands.splice(index, 1);
-                        }
-                      });
-                    } else {
-                      const index = newOperands.findIndex((o) => o === x.value);
-                      if (index >= 0) {
-                        newOperands.splice(index, 1);
-                      }
-                    }
+                    const newOperands = operands.filter((o) => o !== x);
 
                     if (newOperands.length === 0) {
                       setQueryExpressionsExpanded({
@@ -273,16 +217,28 @@ const IncludeExcludeQueryElement: React.FC<
                         }),
                       );
 
-                    if (x.group) {
-                      dispatch(removeCohortGroup(x.group));
+                    if (value.includes("set_id:")) {
+                      dispatch(removeCohortSet(value.split("set_id:")[1]));
                     }
                   }}
                 >
                   <OverflowTooltippedLabel
                     label={value}
-                    className="flex-grow font-heading text-md font-content-noto"
+                    className="flex-grow text-md font-content-noto"
                   >
-                    {x.label}
+                    <QueryRepresentationLabel
+                      value={value}
+                      field={field}
+                      geneSymbolDict={geneSymbolDict}
+                      geneSymbolSuccess={isSuccess}
+                      countHook={
+                        field === "genes.gene_id"
+                          ? useGeneSetCountQuery
+                          : field === "ssms.ssm_id"
+                          ? useSsmSetCountQuery
+                          : useCaseSetCountQuery
+                      }
+                    />
                   </OverflowTooltippedLabel>
                 </Badge>
               );

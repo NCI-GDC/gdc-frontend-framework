@@ -14,11 +14,15 @@ export const SummaryCard = ({
 }: SummaryCardProps): JSX.Element => {
   return (
     <div>
-      <div className={`p-2 pl-0 pb-0 ${title.length === 0 && "mb-7"}`}>
+      <div
+        className={`p-2 pl-0 pb-0 ${
+          title.length === 0 && !message && "mb-7"
+        } flex justify-between`}
+      >
         <HeaderTitle>{title}</HeaderTitle>
+        {message && <div className="text-sm">{message}</div>}
       </div>
 
-      {message && <div className="text-sm">{message}</div>}
       <div className={message && "mt-2"}>
         <HorizontalTable tableData={tableData} />
       </div>

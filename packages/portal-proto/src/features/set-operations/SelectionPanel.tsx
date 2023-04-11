@@ -1,12 +1,13 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import { Checkbox, Tooltip } from "@mantine/core";
+import { upperFirst } from "lodash";
+import { Row } from "react-table";
 import {
   useCoreSelector,
-  //selectAvailableCohorts,
   selectSetsByType,
-  useGeneSetCountQuery,
-  useSsmSetCountQuery,
+  useGeneSetCountsQuery,
+  useSsmSetCountsQuery,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -15,7 +16,6 @@ import {
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import { GeneCountCell, MutationCountCell } from "./CountCell";
 import {
   SelectedEntities,
   SelectedEntity,
@@ -51,37 +51,42 @@ const selectEntity = (
 
 interface SelectCellProps {
   readonly setId: string;
+  readonly name: string;
+  readonly count: number;
+  readonly disabled: boolean;
+  readonly entityType: SetOperationEntityType;
   readonly selectedEntities: SelectedEntities;
   readonly selectedEntityType: SetOperationEntityType;
   readonly setSelectedEntities: (entities: SelectedEntities) => void;
   readonly setSelectedEntityType: (type: SetOperationEntityType) => void;
-  readonly name: string;
 }
 
-const GeneSelectCell: React.FC<SelectCellProps> = ({
+const SelectCell: React.FC<SelectCellProps> = ({
   setId,
+  name,
+  entityType,
+  disabled,
+  count,
   selectedEntities,
   selectedEntityType,
   setSelectedEntities,
   setSelectedEntityType,
-  name,
 }: SelectCellProps) => {
-  const { data, isSuccess } = useGeneSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
   return (
-    <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
+    <Tooltip
+      label={
+        selectedEntityType !== undefined && selectedEntityType !== entityType
+          ? "Please choose only one entity type"
+          : "Set is either empty or deprecated"
+      }
+      disabled={count > 0 && selectedEntityType === entityType}
+    >
       <span>
         <Checkbox
           classNames={{
             input: "checked:bg-accent",
           }}
-          disabled={shouldDisableInput(
-            "genes",
-            count,
-            setId,
-            selectedEntityType,
-            selectedEntities,
-          )}
+          disabled={disabled}
           checked={selectedEntities.map((e) => e.id).includes(setId)}
           onChange={() => {
             selectEntity(
@@ -89,176 +94,12 @@ const GeneSelectCell: React.FC<SelectCellProps> = ({
               selectedEntities,
               setSelectedEntities,
             );
-            setSelectedEntityType("genes");
+            setSelectedEntityType(entityType);
           }}
-          aria-labelledby={`gene-selection-${setId}`}
+          aria-labelledby={`${entityType}-selection-${setId}`}
         />
       </span>
     </Tooltip>
-  );
-};
-
-const MutationSelectCell: React.FC<SelectCellProps> = ({
-  setId,
-  selectedEntities,
-  selectedEntityType,
-  setSelectedEntities,
-  setSelectedEntityType,
-  name,
-}: SelectCellProps) => {
-  const { data, isSuccess } = useSsmSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
-
-  return (
-    <Tooltip label={"Set is either empty or deprecated"} disabled={count > 0}>
-      <span>
-        <Checkbox
-          classNames={{
-            input: "checked:bg-accent",
-          }}
-          disabled={shouldDisableInput(
-            "mutations",
-            count,
-            setId,
-            selectedEntityType,
-            selectedEntities,
-          )}
-          checked={selectedEntities.map((e) => e.id).includes(setId)}
-          onChange={() => {
-            selectEntity(
-              { id: setId, name },
-              selectedEntities,
-              setSelectedEntities,
-            );
-            setSelectedEntityType("mutations");
-          }}
-          aria-labelledby={`mutation-selection-${setId}`}
-        />
-      </span>
-    </Tooltip>
-  );
-};
-
-interface LabelCellProps {
-  readonly setId: string;
-  readonly setName: string;
-  readonly selectedEntities: SelectedEntities;
-  readonly selectedEntityType: SetOperationEntityType;
-}
-
-const GeneLabelCell: React.FC<LabelCellProps> = ({
-  setId,
-  setName,
-  selectedEntities,
-  selectedEntityType,
-}: LabelCellProps) => {
-  const { data, isSuccess } = useGeneSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
-
-  return (
-    <label
-      id={`gene-selection-${setId}`}
-      className={
-        shouldDisableInput(
-          "genes",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        )
-          ? "text-base-lighter"
-          : undefined
-      }
-    >
-      {setName}
-    </label>
-  );
-};
-
-const MutationLabelCell: React.FC<LabelCellProps> = ({
-  setId,
-  setName,
-  selectedEntities,
-  selectedEntityType,
-}: LabelCellProps) => {
-  const { data, isSuccess } = useSsmSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
-
-  return (
-    <label
-      id={`mutation-selection-${setId}`}
-      className={
-        shouldDisableInput(
-          "mutations",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        )
-          ? "text-base-lighter"
-          : undefined
-      }
-    >
-      {setName}
-    </label>
-  );
-};
-
-interface EntityTypeCellProps {
-  readonly setId: string;
-  readonly selectedEntities: SelectedEntities;
-  readonly selectedEntityType: SetOperationEntityType;
-}
-
-const GeneEntityTypeCell: React.FC<EntityTypeCellProps> = ({
-  setId,
-  selectedEntities,
-  selectedEntityType,
-}: EntityTypeCellProps) => {
-  const { data, isSuccess } = useGeneSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
-  return (
-    <span
-      className={
-        shouldDisableInput(
-          "genes",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        )
-          ? "text-base-lighter"
-          : undefined
-      }
-    >
-      Genes
-    </span>
-  );
-};
-
-const MutationEntityTypeCell: React.FC<EntityTypeCellProps> = ({
-  setId,
-  selectedEntities,
-  selectedEntityType,
-}: EntityTypeCellProps) => {
-  const { data, isSuccess } = useSsmSetCountQuery({ setId });
-  const count = isSuccess ? data : 0;
-  return (
-    <span
-      className={
-        shouldDisableInput(
-          "mutations",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        )
-          ? "text-base-lighter"
-          : undefined
-      }
-    >
-      Mutations
-    </span>
   );
 };
 
@@ -281,15 +122,18 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   selectedEntityType,
   setSelectedEntityType,
 }: SelectionPanelProps) => {
-  // TODO: implement cohorts in set operations
-  //const availableCohorts = useCoreSelector((state) =>
-  //  selectAvailableCohorts(state),
-  //);
-  const availableCohorts = [];
+  const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([]);
   const geneSets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const mutationSets = useCoreSelector((state) =>
     selectSetsByType(state, "ssms"),
   );
+  const { data: geneCounts } = useGeneSetCountsQuery({
+    setIds: Object.keys(geneSets),
+  });
+
+  const { data: mutationCounts } = useSsmSetCountsQuery({
+    setIds: Object.keys(mutationSets),
+  });
 
   useEffect(() => {
     if (selectedEntities.length === 0) {
@@ -299,141 +143,91 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
 
   const tableData = useMemo(() => {
     return [
-      ...availableCohorts.map((cohort) => ({
-        select: (
-          <Tooltip label={"Cohort is empty"} disabled={cohort.caseCount > 0}>
-            <span>
-              <Checkbox
-                classNames={{
-                  input: "checked:bg-accent",
-                }}
-                disabled={shouldDisableInput(
-                  "cohort",
-                  cohort?.caseCount || 0,
-                  cohort.id,
-                  selectedEntityType,
-                  selectedEntities,
-                )}
-                checked={selectedEntities.map((e) => e.id).includes(cohort.id)}
-                onChange={() => {
-                  selectEntity(
-                    {
-                      id: cohort.id,
-                      name: cohort.name,
-                    },
-                    selectedEntities,
-                    setSelectedEntities,
-                  );
-                  setSelectedEntityType("cohort");
-                }}
-                aria-labelledby={`cohort-selection-${cohort.id}`}
-              />
-            </span>
-          </Tooltip>
-        ),
-        entityType: (
-          <span
-            className={
-              shouldDisableInput(
-                "cohort",
-                cohort?.caseCount || 0,
-                cohort.id,
-                selectedEntityType,
-                selectedEntities,
-              )
-                ? "text-base-lighter"
-                : undefined
-            }
-          >
-            Cases
-          </span>
-        ),
-        name: (
-          <label
-            id={`cohort-selection-${cohort.id}`}
-            className={
-              shouldDisableInput(
-                "cohort",
-                cohort?.caseCount || 0,
-                cohort.id,
-                selectedEntityType,
-                selectedEntities,
-              )
-                ? "text-base-lighter"
-                : undefined
-            }
-          >
-            {cohort.name}
-          </label>
-        ),
-        count: (cohort?.caseCount || 0).toLocaleString(),
-      })),
-      ...Object.entries(geneSets).map(([setId, setName]) => ({
-        select: (
-          <GeneSelectCell
-            setId={setId}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-            setSelectedEntities={setSelectedEntities}
-            setSelectedEntityType={setSelectedEntityType}
-            name={setName}
-          />
-        ),
-        entityType: (
-          <GeneEntityTypeCell
-            setId={setId}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-          />
-        ),
-        name: (
-          <GeneLabelCell
-            setId={setId}
-            setName={setName}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-          />
-        ),
-        count: <GeneCountCell setId={setId} />,
-      })),
-      ...Object.entries(mutationSets).map(([setId, setName]) => ({
-        select: (
-          <MutationSelectCell
-            setId={setId}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-            setSelectedEntities={setSelectedEntities}
-            setSelectedEntityType={setSelectedEntityType}
-            name={setName}
-          />
-        ),
-        entityType: (
-          <MutationEntityTypeCell
-            setId={setId}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-          />
-        ),
-        name: (
-          <MutationLabelCell
-            setId={setId}
-            setName={setName}
-            selectedEntities={selectedEntities}
-            selectedEntityType={selectedEntityType}
-          />
-        ),
-        count: <MutationCountCell setId={setId} />,
-      })),
-    ];
+      ...Object.entries(geneSets).map(([setId, setName]) => {
+        const count = geneCounts?.[setId] || 0;
+        const disabled = shouldDisableInput(
+          "genes",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        );
+        return {
+          select: (
+            <SelectCell
+              setId={setId}
+              name={setName}
+              disabled={disabled}
+              count={count}
+              entityType="genes"
+              selectedEntities={selectedEntities}
+              selectedEntityType={selectedEntityType}
+              setSelectedEntities={setSelectedEntities}
+              setSelectedEntityType={setSelectedEntityType}
+              key={`gene-select-${setId}`}
+            />
+          ),
+          entityType: "genes",
+          name: setName,
+          setId,
+          count,
+        };
+      }),
+      ...Object.entries(mutationSets).map(([setId, setName]) => {
+        const count = mutationCounts?.[setId] || 0;
+        const disabled = shouldDisableInput(
+          "mutations",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        );
+        return {
+          select: (
+            <SelectCell
+              setId={setId}
+              name={setName}
+              disabled={disabled}
+              count={count}
+              entityType="mutations"
+              selectedEntities={selectedEntities}
+              selectedEntityType={selectedEntityType}
+              setSelectedEntities={setSelectedEntities}
+              setSelectedEntityType={setSelectedEntityType}
+              key={`mutation-select-${setId}`}
+            />
+          ),
+          entityType: "mutations",
+          name: setName,
+          setId,
+          count: count,
+        };
+      }),
+    ].sort((a, b) => {
+      for (const sort of sortBy) {
+        if (typeof a[sort.id] === "string") {
+          return sort.desc
+            ? b[sort.id].localeCompare(a[sort.id])
+            : a[sort.id].localeCompare(b[sort.id]);
+        } else {
+          if (a[sort.id] > b[sort.id]) return sort.desc ? -1 : 1;
+          if (a[sort.id] < b[sort.id]) return sort.desc ? 1 : -1;
+        }
+      }
+      return 0;
+    });
     // Prevent infinite rerender issue
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [
-    JSON.stringify(availableCohorts),
     JSON.stringify(geneSets),
+    JSON.stringify(geneCounts),
     JSON.stringify(mutationSets),
+    JSON.stringify(mutationCounts),
     selectedEntities,
+    setSelectedEntities,
     selectedEntityType,
     setSelectedEntityType,
+    sortBy,
   ]);
   /* eslint-enable */
 
@@ -460,19 +254,80 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         id: "entityType",
         columnName: "Entity Type",
         visible: true,
+        Cell: ({ value, row }: { value: string; row: Row }) => (
+          <span
+            className={
+              shouldDisableInput(
+                row.values.entityType,
+                row.values.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {upperFirst(value)}
+          </span>
+        ),
       },
       {
         id: "name",
         columnName: "Name",
         visible: true,
+        Cell: ({ value, row }: { value: string; row: Row }) => (
+          <label
+            id={`${row.values.entityType}-selection-${
+              (row.original as Record<string, any>).setId
+            }`}
+            className={
+              shouldDisableInput(
+                row.values.entityType,
+                row.values.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {value}
+          </label>
+        ),
       },
-      { id: "count", columnName: "# Items", visible: true },
+      {
+        id: "count",
+        columnName: "# Items",
+        visible: true,
+        Cell: ({ value, row }: { value: number; row: Row }) => (
+          <span
+            className={
+              shouldDisableInput(
+                row.values.entityType,
+                row.values.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {value.toLocaleString()}
+          </span>
+        ),
+      },
     ],
-    [],
+    [selectedEntityType, selectedEntities],
   );
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
+      case "sortBy":
+        setSortBy(obj.sortBy);
+        break;
       case "newPageSize":
         handlePageSizeChange(obj.newPageSize);
         break;
@@ -488,10 +343,13 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         <h2 className="font-heading text-lg font-bold py-2">
           Select 2 or 3 of the same set type
         </h2>
-        <p className="pb-2">
+        <p>
           Display a Venn diagram and compare/contrast your cohorts or sets of
-          the same type. Create cohorts in the Analysis Center. Create
-          gene/mutation sets in Manage Sets or in analysis tools (e.g.{" "}
+          the same type.
+        </p>
+        <p className="pb-2">
+          Create cohorts in the Analysis Center. Create gene/mutation sets in
+          Manage Sets or in analysis tools (e.g.{" "}
           <Link
             className="text-utility-link"
             href="/analysis_page?app=MutationFrequencyApp"
@@ -502,22 +360,24 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           </Link>
           ).
         </p>
-        <VerticalTable
-          tableData={displayedData}
-          columns={columns}
-          selectableRow={false}
-          showControls={false}
-          pagination={{
-            page,
-            pages,
-            size,
-            from,
-            total,
-            label: "sets",
-          }}
-          handleChange={handleChange}
-          columnSorting={"enable"}
-        />
+        <div className="w-3/4">
+          <VerticalTable
+            tableData={displayedData}
+            columns={columns}
+            selectableRow={false}
+            showControls={false}
+            pagination={{
+              page,
+              pages,
+              size,
+              from,
+              total,
+              label: "sets",
+            }}
+            handleChange={handleChange}
+            columnSorting={"manual"}
+          />
+        </div>
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton
