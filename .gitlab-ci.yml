@@ -216,9 +216,9 @@ trigger_ui_tests_yellow:
       - local: '.gitlab-ci-holmes-py.yml'
     strategy: depend
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
       when: on_success
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      allow_failure: true
 
 trigger_ui_tests_uat:
   stage: trigger_ui_tests
@@ -229,6 +229,19 @@ trigger_ui_tests_uat:
       - local: '.gitlab-ci-holmes-py.yml'
     strategy: depend
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
       when: on_success
+      allow_failure: true
+
+trigger_ui_tests_scheduled:
+  stage: trigger_ui_tests
+  trigger:
+    include:
+      - local: '.gitlab-ci-holmes-py.yml'
+    strategy: depend
+  rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+  parallel:
+    matrix:
+      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
