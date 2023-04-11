@@ -193,27 +193,3 @@ const downloadFeature = (
     }
   }
 };
-
-export const fetcher = (
-  url: string,
-  feature: string,
-  query?: string,
-  variables?: Record<string, any>,
-): any => {
-  return fetch(url, {
-    method: query && variables ? "POST" : "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    ...(query && variables && { body: JSON.stringify({ query, variables }) }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      downloadFeature(data, feature);
-      return data;
-    })
-    .catch((e) => {
-      console.log(e);
-    });
-};

@@ -31,7 +31,9 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import useSWRMutation from "swr/mutation";
 import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
-import { fetcher, getFilters } from "../shared/utils/fetcher";
+import { getFilters } from "../shared/utils/fetcher";
+import saveAs from "file-saver";
+import { swrFetcher } from "@gff/core/src/features/gdcapi/swr";
 
 export const SelectedRowContext =
   createContext<
@@ -192,16 +194,38 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  // const colNameMap = (id) => {
+  //   switch(id){
+  //     case "gene_id": {
+  //       return "geneID"
+  //     }
+  //     case "biotype": {
+  //       return "biotype"
+  //     }
+  //     case "cytoband": {
+  //       return "cytoband"
+  //     }
+  //     case ""
+  //   }
+  // }
+
+  // buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
+
   const {
     trigger: mutatedGenesJSONTrigger,
     isMutating: mutatedGenesJSONIsMutating,
     data: mutatedGenesJSONData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}/genes?fields=biotype,symbol,cytoband,name,gene_id&size=${gTotal}`,
+      endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id"&size=${100}`,
     },
-    ({ url }) => fetcher(url, "mutated-genes-frequency-table-json"),
+    ({ endpoint }) =>
+      swrFetcher(endpoint, "mutated-genes-frequency-table-json"),
   );
+
+  useEffect(() => {
+    console.log("mtns freq data", mutatedGenesJSONData);
+  }, [mutatedGenesJSONData]);
 
   const {
     trigger: mutatedGenesTSVTrigger,
@@ -209,7 +233,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     data: mutatedGenesTSVData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}/graphql`,
+      endpoint: `${GDC_APP_API_AUTH}/graphql`,
       query: `
       query MutatedGenesFreq(
         $score: String
@@ -235,13 +259,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             }
           }
         }`,
+      // variables: buildGqlOperator(joinFilter(cohortFilters, genomicFilters));
       variables: getFilters(
         "mutatedGenesTSV",
         initialData?.genes.map(({ gene_id: geneId }) => geneId),
       ),
     },
-    ({ url, query, variables }) =>
-      fetcher(url, "mutated-genes-frequency-table-tsv", query, variables),
+    ({ endpoint, query, variables }) =>
+      swrFetcher(
+        endpoint,
+        "mutated-genes-frequency-table-tsv",
+        query,
+        variables,
+      ),
   );
 
   return (

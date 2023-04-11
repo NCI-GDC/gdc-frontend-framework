@@ -35,7 +35,8 @@ import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import useSWRMutation from "swr/mutation";
 import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
-import { fetcher, getFilters } from "../shared/utils/fetcher";
+import { getFilters } from "../shared/utils/fetcher";
+import { swrFetcher } from "@gff/core/src/features/gdcapi/swr";
 
 export const SelectedRowContext =
   createContext<
@@ -229,12 +230,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     data: mutationsFreqJSONData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}/ssms?size=190632&attachment=true&format=JSON&fields=genomic_dna_change%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id&filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D&pretty=true&filename=mutations.2023-04-07.json&downloadCookieKey=80b021f0f&downloadCookiePath=%2F`,
-      // url: `${GDC_APP_API_AUTH}/ssms?pretty=true&fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&size=${smTotal}`,
+      endpoint: `${GDC_APP_API_AUTH}/ssms?fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&size=${100}&%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id&filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D`,
     },
-    ({ url }) => fetcher(url, "mutations-frequency-table-json"),
+    ({ endpoint }) => swrFetcher(endpoint, "mutations-frequency-table-json"),
   );
-
   // {"content":[{"content":{"field":"genes.is_cancer_gene_census","value":["true"]},"op":"in"}],"op":"and"}
 
   // &filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D
@@ -249,15 +248,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     data: mutationsFreqTSVData,
   } = useSWRMutation(
     {
-      url: `${GDC_APP_API_AUTH}/graphql`,
+      endpoint: `${GDC_APP_API_AUTH}/graphql`,
       query: ``,
       variables: getFilters(
         "mutationsFreqTSV",
         tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
       ),
     },
-    ({ url, query, variables }) =>
-      fetcher(url, "mutations-frequency-table-tsv", query, variables),
+    ({ endpoint, query, variables }) => swrFetcher(endpoint, query, variables),
   );
 
   return (
