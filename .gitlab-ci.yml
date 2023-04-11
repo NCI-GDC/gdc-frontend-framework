@@ -14,6 +14,8 @@ include:
   parallel:
     matrix:
       - DEPLOY_SERVICE_LIST: [ portal2 ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
 
 stages:
   - .pre
@@ -234,7 +236,7 @@ trigger_ui_tests_uat:
       allow_failure: true
 
 trigger_ui_tests_scheduled:
-  stage: trigger_ui_tests
+  stage: trigger_ui_tests_scheduled
   trigger:
     include:
       - local: '.gitlab-ci-holmes-py.yml'
