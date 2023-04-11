@@ -476,6 +476,7 @@ interface DownloadButtonProps {
   readonly entityType: SetOperationEntityType;
   readonly filters: GqlOperation;
   readonly setKey: string;
+  readonly disabled: boolean;
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
@@ -483,6 +484,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   entityType,
   filters,
   setKey,
+  disabled,
 }: DownloadButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [createSet, response] = createSetHook();
@@ -528,15 +530,21 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   }, [response.isSuccess, dispatch, entityType, response.data, setKey]);
 
   return (
-    <Tooltip label="Export as TSV" withArrow>
-      <ActionIcon
-        onClick={() => createSet({ filters })}
-        color="primary"
-        variant="outline"
-        className="bg-base-max float-right"
-      >
-        {loading ? <Loader size={14} /> : <DownloadIcon />}
-      </ActionIcon>
+    <Tooltip
+      label={disabled ? "No items to export" : "Export as TSV"}
+      withArrow
+    >
+      <div className="w-fit">
+        <ActionIcon
+          onClick={() => createSet({ filters })}
+          color="primary"
+          variant="outline"
+          className={`${disabled ? "bg-base-lighter" : "bg-base-max"}`}
+          disabled={disabled}
+        >
+          {loading ? <Loader size={14} /> : <DownloadIcon />}
+        </ActionIcon>
+      </div>
     </Tooltip>
   );
 };
@@ -691,10 +699,11 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 ? useCreateSsmsSetFromFiltersMutation
                 : useCreateGeneSetFromFiltersMutation
             }
+            disabled={r.value === 0}
           />
         ),
       })),
-    [selectedSets, data],
+    [selectedSets, data, entityType, sets],
   );
 
   const unionFilter = {
@@ -708,6 +717,10 @@ const SetOperations: React.FC<SetOperationsProps> = ({
       filters: unionFilter,
     },
   });
+  const totalCount =
+    Object.keys(pickBy(selectedSets, (v) => v)).length > 0
+      ? totalSelectedSets
+      : 0;
 
   const onClickHandler = (clickedKey: string) => {
     setSelectedSets({
@@ -754,11 +767,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 <td />
                 <td>
                   <CountButton
-                    count={
-                      Object.keys(pickBy(selectedSets, (v) => v)).length > 0
-                        ? totalSelectedSets
-                        : 0
-                    }
+                    count={totalCount}
                     filters={unionFilter}
                     entityType={entityType}
                   />
@@ -773,6 +782,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                         : useCreateGeneSetFromFiltersMutation
                     }
                     entityType={entityType}
+                    disabled={totalCount === 0}
                   />
                 </td>
               </tr>
