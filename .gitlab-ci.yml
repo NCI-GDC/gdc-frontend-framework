@@ -236,7 +236,7 @@ trigger_ui_tests_uat:
       allow_failure: true
 
 trigger_ui_tests_scheduled:
-  stage: trigger_ui_tests_scheduled
+  stage: trigger_ui_tests
   trigger:
     include:
       - local: '.gitlab-ci-holmes-py.yml'
