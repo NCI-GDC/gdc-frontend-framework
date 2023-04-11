@@ -84,7 +84,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <span>
         <Checkbox
           classNames={{
-            input: "checked:bg-accent",
+            input: "checked:bg-accent checked:border-accent",
           }}
           disabled={disabled}
           checked={selectedEntities.map((e) => e.id).includes(setId)}
@@ -383,6 +383,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         <FunctionButton
           className="mr-auto"
           onClick={() => {
+            setSelectedEntityType(undefined);
+            setSelectedEntities([]);
             setActiveApp(app, true);
             setOpen(false);
           }}

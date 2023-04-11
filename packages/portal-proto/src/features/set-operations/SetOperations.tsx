@@ -442,7 +442,7 @@ const CountButton: React.FC<CountButtonProps> = ({
         ))}
       <Tooltip label={"Save as new set"} withArrow>
         <button
-          className="w-full"
+          className="w-fit"
           disabled={disabled}
           onClick={() => setShowSaveModal(true)}
         >
@@ -579,7 +579,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         select: (
           <Checkbox
             classNames={{
-              input: "checked:bg-accent",
+              input: "checked:bg-accent checked:border-accent",
             }}
             checked={selectedSets[r.key]}
             value={r.key}
