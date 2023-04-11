@@ -143,11 +143,14 @@ const Cart: React.FC = () => {
               className="text-[#C7501A] hover:cursor-pointer rounded-none mr-4"
               onClick={() => setIsCollapsed(!isCollapsed)}
               data-testid="expand-collapse-button"
+              aria-label={
+                isCollapsed ? "expand more button" : "collapse button"
+              }
             >
               {isCollapsed ? (
-                <ExpandMoreIcon size="1.75em" />
+                <ExpandMoreIcon size="1.75em" aria-label="expand more icon" />
               ) : (
-                <ExpandLessIcon size="1.75em" />
+                <ExpandLessIcon size="1.75em" aria-label="collapse icon" />
               )}
             </ActionIcon>
           </div>
@@ -164,9 +167,7 @@ const Cart: React.FC = () => {
           </div>
         </div>
         <div className="mt-6">
-          <div className="mb-4">
-            <HeaderTitle>Cart Items</HeaderTitle>
-          </div>
+          <HeaderTitle>Cart Items</HeaderTitle>
           <FilesTable filesByCanAccess={filesByCanAccess} />
         </div>
       </div>

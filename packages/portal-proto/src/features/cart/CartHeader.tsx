@@ -182,7 +182,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: `${buttonStyle} ml-2`,
+                root: buttonStyle,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
