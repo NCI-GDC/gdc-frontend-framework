@@ -203,7 +203,7 @@ trigger_ui_tests:
   stage: trigger_ui_tests
   trigger:
     include:
-      - local: '.gitlab-ci-holmes-py.yml'
+      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
     strategy: depend
   parallel:
     matrix:
@@ -215,7 +215,7 @@ trigger_ui_tests_yellow:
     APP_ENVIRONMENT: QA_YELLOW
   trigger:
     include:
-      - local: '.gitlab-ci-holmes-py.yml'
+      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
     strategy: depend
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
@@ -228,7 +228,7 @@ trigger_ui_tests_uat:
     APP_ENVIRONMENT: QA_UAT
   trigger:
     include:
-      - local: '.gitlab-ci-holmes-py.yml'
+      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
     strategy: depend
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
@@ -239,7 +239,7 @@ trigger_ui_tests_scheduled:
   stage: trigger_ui_tests
   trigger:
     include:
-      - local: '.gitlab-ci-holmes-py.yml'
+      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
     strategy: depend
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
