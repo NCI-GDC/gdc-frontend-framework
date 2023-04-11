@@ -134,7 +134,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         />
       )}
       <div
-        className="bg-primary-darkest text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
+        className="bg-primary text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
         data-testid="cart-header"
       >
         <Menu width="target">
@@ -357,7 +357,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               leftIcon={<TrashIcon />}
               rightIcon={<DropdownIcon size={20} />}
               classNames={{
-                root: "bg-nci-red-darker", //TODO: find good color theme for this
+                root: "bg-nci-red-darker font-normal text-base-max", //TODO: find good color theme for this
                 rightIcon: "border-l pl-1 -mr-2",
               }}
             >
