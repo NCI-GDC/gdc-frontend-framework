@@ -67,29 +67,29 @@ const Cart: React.FC = () => {
         filesByCanAccess={filesByCanAccess}
         dbGapList={dbGapList}
       />
-      <div className="mt-4 mx-4">
+      <div className="mt-4 mx-4 mb-16">
         <div
           className={`${
-            isCollapsed && "h-10"
+            isCollapsed ? "h-10" : ""
           } flex border border-[#C7501A] text-secondary-contrast-lighter`}
         >
           <div
             className={`flex w-12 bg-[#C7501A] justify-center ${
-              isCollapsed ? "items-center pt-0" : "pt-1.5"
+              isCollapsed ? "items-center" : "pt-[7px]"
             } `}
           >
             <FaExclamationCircle color="white" className="h-6 w-6" />
           </div>
           <div
-            className={`bg-[#C7501A33] w-full pl-4 pt-0.5 ${
-              isCollapsed && "flex items-center pt-0"
+            className={`bg-[#C7501A33] w-full h-full pl-4 ${
+              isCollapsed ? "flex items-center" : "pt-[7px]"
             }`}
           >
             <span className="text-sm font-bold uppercase font-heading">
               How to download files in my cart?
             </span>
             {!isCollapsed && (
-              <>
+              <div data-testid="download-info">
                 <div className="mb-2">
                   <H3>Download Manifest:</H3>
                   <P>
@@ -130,16 +130,19 @@ const Cart: React.FC = () => {
                     for use in your genomic data analysis.
                   </P>
                 </div>
-              </>
+              </div>
             )}
           </div>
           <div
-            className={`bg-[#C7501A33] ${isCollapsed && "flex items-center"}`}
+            className={`bg-[#C7501A33] ${
+              isCollapsed ? "flex items-center" : ""
+            }`}
           >
             <ActionIcon
               variant="transparent"
               className="text-[#C7501A] hover:cursor-pointer rounded-none mr-4"
               onClick={() => setIsCollapsed(!isCollapsed)}
+              data-testid="expand-collapse-button"
             >
               {isCollapsed ? (
                 <ExpandMoreIcon size="1.75em" />
@@ -160,7 +163,7 @@ const Cart: React.FC = () => {
             <ProjectTable projectData={summaryData} />
           </div>
         </div>
-        <div className="mb-16 mt-6">
+        <div className="mt-6">
           <div className="mb-4">
             <HeaderTitle>Cart Items</HeaderTitle>
           </div>
