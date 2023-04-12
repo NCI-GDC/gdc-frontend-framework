@@ -1,13 +1,13 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
-import { useState } from "react";
 import { createStyles, Table, ScrollArea } from "@mantine/core";
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   header: {
     position: "sticky",
     top: 0,
-    backgroundColor: theme.colors.gray[8],
     transition: "box-shadow 150ms ease",
+    height: "56px",
+    backgroundColor: "#FFFFFF",
 
     "&::after": {
       content: '""',
@@ -15,12 +15,8 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `1px solid ${theme.colors.gray[2]}`,
+      borderBottom: "4px solid #c5c5c5",
     },
-  },
-
-  scrolled: {
-    boxShadow: theme.shadows.sm,
   },
 }));
 
@@ -29,38 +25,40 @@ interface ScrollableTableWithFixedHeaderProps {
     readonly headers: string[];
     readonly tableRows: any[];
   };
+  readonly scrollAreaHeight: number;
+  readonly tableMinWidth?: number;
 }
 
 export function ScrollableTableWithFixedHeader({
   tableData,
+  scrollAreaHeight,
+  tableMinWidth = undefined,
 }: ScrollableTableWithFixedHeaderProps): JSX.Element {
   const { classes, cx } = useStyles();
-  const [scrolled, setScrolled] = useState(false);
 
   return (
-    <ScrollArea
-      sx={{ height: 500 }}
-      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-      data-testid="scrolltable"
-    >
-      <Table striped sx={{ minWidth: 700 }}>
-        <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-          <tr>
+    <ScrollArea sx={{ height: scrollAreaHeight }} data-testid="scrolltable">
+      <Table sx={{ minWidth: tableMinWidth }}>
+        <thead className={cx(classes.header)}>
+          <tr className="border-1 border-base-lighter border-t-0">
             {tableData.headers.map((text, index) => (
-              <th key={index} className="bg-base-lighter">
-                {text}
-              </th>
+              <th key={index}>{text}</th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="font-content border-1 border-base-lighter">
           {tableData.tableRows.map((row, index) => (
             <tr
               key={index}
-              className={index % 2 ? "bg-white" : "bg-gdc-blue-warm-lightest"}
+              className={`border border-base-lighter ${
+                index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
+              }`}
             >
               {Object.values(row).map((item, index) => (
-                <td key={index} className="text-sm p-1 pl-2.5">
+                <td
+                  key={index}
+                  className="text-sm px-2 py-2.5 border-y border-base-lighter"
+                >
                   {typeof item === "undefined" ? "--" : item}
                 </td>
               ))}
