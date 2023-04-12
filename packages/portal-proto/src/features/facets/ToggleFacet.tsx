@@ -89,7 +89,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         <p className="px-2">{valueLabel}</p>
       </div>
       <div className="w-full ">
-        <div className="flex flex row flex-nowrap justify-between items-center p-2 ">
+        <div className="flex flex-nowrap justify-between items-center p-2 ">
           <LoadingOverlay visible={!isSuccess} />
           <Switch
             color="accent"
@@ -97,7 +97,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             onChange={(event) => setValue(event.currentTarget.checked)}
             aria-label="toggle facet value"
           />
-          <p>
+          <p className="font-content">
             {data === undefined || Object.keys(data).length == 0
               ? "No data for this field"
               : data["1"].toLocaleString("en-US")}

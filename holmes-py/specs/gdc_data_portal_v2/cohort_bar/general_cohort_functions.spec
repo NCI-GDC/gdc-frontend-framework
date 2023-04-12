@@ -38,7 +38,7 @@ Note: 'All GDC' must be the current cohort when this is executed
 * "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 This step is unstable with occasional failures. Going to fully wait for the page to load
 as this text should not be visible by then.
-* Pause "2" seconds
+* Pause "3" seconds
 * Is text "Changes not saved" not present on the page
 
 Need to reset what cohort is selected for subsequent tests

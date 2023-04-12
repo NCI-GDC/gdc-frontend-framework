@@ -3,6 +3,7 @@ import { MdDownload as DownloadIcon, MdSave as SaveIcon } from "react-icons/md";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { pickBy } from "lodash";
+import { DemoText } from "../shared/tailwindComponents";
 const VennDiagram = dynamic(() => import("../../features/charts/VennDiagram"), {
   ssr: false,
 });
@@ -62,10 +63,10 @@ const SetOperationsDemo: React.FC = () => {
     <div className="flex flex-col">
       <div>
         <h1 className="text-2xl">Set Operations</h1>
-        <p>
+        <DemoText>
           Demo showing high impact mutations overlap in Bladder between Mutect,
           Varscan and Muse pipelines.
-        </p>
+        </DemoText>
       </div>
       <div className="flex flex-row pt-2">
         <VennDiagram

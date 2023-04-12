@@ -129,7 +129,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           ) : null}
         </div>
       </FacetHeader>
-      <div className="flex flex row flex-nowrap items-center p-2 ">
+      <div className="flex flex-nowrap items-center p-2 ">
         <DatePicker
           allowFreeInput
           clearable
