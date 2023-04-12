@@ -366,7 +366,7 @@ const ContextBar: React.FC = () => {
           isGroupCollapsed
             ? "mt-24"
             : activeTab === "summary"
-            ? "mt-[350px]"
+            ? "mt-[380px]"
             : "mt-[800px]"
         }`}
       >
