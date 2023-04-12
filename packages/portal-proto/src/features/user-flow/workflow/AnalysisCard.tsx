@@ -135,7 +135,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             } transition-opacity`}
             ref={descRef}
           >
-            <p className="p-2">{entry.description}</p>
+            <p className="p-2 font-content">{entry.description}</p>
           </div>
         </div>
         {entry.hideCounts ? (

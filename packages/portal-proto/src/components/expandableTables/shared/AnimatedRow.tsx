@@ -38,7 +38,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     <animated.tr
       style={unitSpring}
       key={row.id}
-      className={`border ${
+      className={`border font-content ${
         selected
           ? `border-x-4 border-y-0 border-activeColor`
           : `border-base-lighter`
@@ -46,7 +46,7 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     >
       {row.getVisibleCells().map((cell, cellIdx) => {
         return (
-          <animated.td key={cell.id} className="py-2 px-2">
+          <animated.td key={cell.id} className="py-2 px-2 font-content">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {row.id.includes(".") && cellIdx === 0 && subrow}
           </animated.td>

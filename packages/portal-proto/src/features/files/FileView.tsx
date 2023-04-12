@@ -604,22 +604,16 @@ export const FileView: React.FC<FileViewProps> = ({
                     {
                       title: "TSV",
                       icon: (
-                        <DownloadIcon
-                          size={16}
-                          aria-label="download icon"
-                          onClick={handleDownloadTSV}
-                        />
+                        <DownloadIcon size={16} aria-label="download icon" />
                       ),
+                      onClick: handleDownloadTSV,
                     },
                     {
                       title: "JSON",
                       icon: (
-                        <DownloadIcon
-                          size={16}
-                          aria-label="download icon"
-                          onClick={downloadVersionJSON}
-                        />
+                        <DownloadIcon size={16} aria-label="download icon" />
                       ),
+                      onClick: downloadVersionJSON,
                     },
                   ]}
                   TargetButtonChildren="Download"

@@ -32,7 +32,7 @@ const HPCard = ({
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
         </h2>
-        <p className="py-1">{body}</p>
+        <p className="py-1 font-content">{body}</p>
         {typeof href === "string" ? (
           <a
             href={href}

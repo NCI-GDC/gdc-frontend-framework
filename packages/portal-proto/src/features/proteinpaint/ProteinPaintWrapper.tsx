@@ -12,6 +12,7 @@ import {
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
+import { DemoText } from "../shared/tailwindComponents";
 
 const basepath = PROTEINPAINT_API;
 
@@ -103,9 +104,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   return (
     <div>
       {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing MYC variants for all GDC."}
-        </span>
+        <DemoText>Demo showing MYC variants for all GDC.</DemoText>
       )}
       <div
         ref={divRef}

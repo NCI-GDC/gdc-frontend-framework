@@ -28,7 +28,7 @@ const Homepage = (): JSX.Element => {
             <h2 className="mt-2 items-center font-heading font-bold text-md text-summarybar-text">
               Harmonized Cancer Datasets
             </h2>
-            <p className="items-center tracking-wide text-primary-content-darkest w-[75%]">
+            <p className="items-center tracking-wide text-primary-content-darkest w-[75%] font-content">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response
               to therapy.
@@ -77,22 +77,24 @@ const Homepage = (): JSX.Element => {
       <HPCardImgAlt
         head="Access Harmonized Clinical and Genomic Data"
         body={
-          <>
+          <p className="font-content">
             <p>
               Harmonized clinical and genomic data allow for convenient
               cross-analysis and comparison.
             </p>
+            <br />
             <p>
               Clinical data, including demographics, diagnosis and treatment
               information, are standardized across hundreds of distinct
               properties.
             </p>
+            <br />
             <p>
               State-of-the-art bioinformatics workflows are employed to align
               sequencing reads, ranging from whole genome to single-cell RNA,
               and generate high-level derived data.
             </p>
-          </>
+          </p>
         }
         linkText="Learn More About Our Harmonization Process"
         href="https://gdc.cancer.gov/about-data/gdc-data-processing"
@@ -102,11 +104,11 @@ const Homepage = (): JSX.Element => {
       <HPCardImg
         head="Visualize Genomic Alterations and Clinical Features"
         body={
-          <>
+          <p className="font-content font-medium">
             Create and refine custom cohorts of cancer patients for in silico
             studies using a variety of clinical and biospecimen filters in the
             Cohort Builder.
-          </>
+          </p>
         }
         linkText="Explore Cohort Builder"
         href={{
@@ -155,7 +157,7 @@ const Homepage = (): JSX.Element => {
             ))}
           </ul>
           <div className="text-left">
-            <p>
+            <p className="font-content">
               Analyze your custom cohorts by applying the GDC&apos;s collection
               of tools for visualizing clinical features, genomic alterations,
               and other cancer drivers.
@@ -179,21 +181,23 @@ const Homepage = (): JSX.Element => {
           </>
         }
         body={
-          <>
+          <p className="font-content">
             <p>
               Seamlessly download clinical, biospecimen, and genomic data from
               your cohorts for further analysis.
             </p>
+            <br />
             <p>
               Browse through the files associated with your cohorts in the
               Repository app.
             </p>
+            <br />
             <p>
               Find the files you want with the filters available, whether you
               are looking for somatic variants, gene expression data, slide
               images, or even files generated from a specific workflow.
             </p>
-          </>
+          </p>
         }
         linkText="Explore Repository"
         href={{

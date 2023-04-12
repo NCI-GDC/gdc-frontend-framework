@@ -251,7 +251,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               ref={filtersRef}
             >
               {noFilters ? (
-                <p className="pb-2">No filters currently applied.</p>
+                <p className="pb-2 font-content">
+                  No filters currently applied.
+                </p>
               ) : (
                 Object.keys(filters.root).map((k) => {
                   return convertFilterToComponent(filters.root[k]);
@@ -261,7 +263,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
         </QueryExpressionsExpandedContext.Provider>
       ) : (
-        <span className="text-md p-3 text-primary-darkest ">
+        <span className="text-md p-3 text-primary-darkest font-content">
           Currently viewing all cases in the GDC. Further refine your cohort
           with tools such as the Cohort Builder.
         </span>
