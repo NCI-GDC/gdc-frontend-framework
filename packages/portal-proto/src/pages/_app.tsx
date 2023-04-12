@@ -157,6 +157,24 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               xl: 1800,
             },
             components: {
+              TextInput: {
+                defaultProps: {
+                  styles: {
+                    input: {
+                      fontFamily: '"Noto Sans", "sans-serif"',
+                    },
+                  },
+                },
+              },
+              Input: {
+                defaultProps: {
+                  styles: {
+                    input: {
+                      fontFamily: '"Noto Sans", "sans-serif"',
+                    },
+                  },
+                },
+              },
               Tooltip: {
                 defaultProps: {
                   arrowSize: 10,

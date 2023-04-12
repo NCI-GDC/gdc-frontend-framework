@@ -30,6 +30,7 @@ import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { DemoText } from "../shared/tailwindComponents";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -255,9 +256,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     <>
       <>
         {isDemoMode && (
-          <span className="font-heading italic px-2 py-4 mt-4">
-            {"Demo showing cases with low grade gliomas (TCGA-LGG project)."}
-          </span>
+          <DemoText>
+            Demo showing cases with low grade gliomas (TCGA-LGG project).
+          </DemoText>
         )}
       </>
       <div className="flex flex-row w-100">

@@ -5,9 +5,12 @@ export const NumeratorDenominator = ({
   numerator: number;
   denominator: number;
 }): JSX.Element => (
-  <span className="flex flex-wrap" data-testid="numeratorDenominatorTest">
+  <span
+    className="flex flex-wrap font-content"
+    data-testid="numeratorDenominatorTest"
+  >
     <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
-    <span>&#47;</span>
+    <span className="mx-0.5">&#47;</span>
     <span className="mr-0.5">{denominator.toLocaleString()}</span>
     <span>
       (

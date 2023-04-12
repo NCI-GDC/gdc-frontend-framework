@@ -101,7 +101,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <button
-                className="text-utility-link underline"
+                className="text-utility-link underline font-content"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
@@ -115,7 +115,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             access: <FileAccessBadge access={file.access} />,
             name: (
               <button
-                className="text-utility-link underline"
+                className="text-utility-link underline font-content"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
@@ -128,7 +128,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             ),
             cases: (
               <button
-                className={`${
+                className={`font-content ${
                   file.cases?.length > 0
                     ? "text-utility-link underline"
                     : "cursor-default"
@@ -149,7 +149,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             ),
             project: (
               <button
-                className="text-utility-link underline"
+                className="text-utility-link underline font-content"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "project",
