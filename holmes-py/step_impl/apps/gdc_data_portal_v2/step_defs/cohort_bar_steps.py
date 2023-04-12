@@ -33,6 +33,11 @@ def button_should_be_disabled_on_cohort_bar(button_name: str):
     is_button_disabled = APP.cohort_bar.is_cohort_bar_button_disabled(button_name)
     assert is_button_disabled, f"The cohort bar button {button_name} is NOT disabled"
 
+@step("<cohort_name> should be the active cohort")
+def is_expected_active_cohort_present(cohort_name: str):
+    is_expected_active_cohort_present = APP.cohort_bar.is_expected_active_cohort_present(cohort_name)
+    assert is_expected_active_cohort_present, f"The expected active cohort '{cohort_name}' is NOT active"
+
 @step("Select <cohort_name> from the Cohort Bar dropdown list")
 def select_cohort_from_dropdown(cohort_name: str):
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
