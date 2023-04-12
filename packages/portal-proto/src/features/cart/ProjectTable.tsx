@@ -19,7 +19,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   }));
 
   return (
-    <div className="border-t-1 border-t-base-lighter">
+    <div className="border-y-1 border-y-base-lighter">
       <ScrollableTableWithFixedHeader
         tableData={{
           headers: columnListOrder,

@@ -72,7 +72,7 @@ export const UserProfileModal = ({
       <div
         className={`${
           !data ? "py-15px" : "py-5px"
-        } mt-4 border-t border-t-base-lighter`}
+        } mt-4 border-y-1 border-y-base-lighter`}
       >
         {data.length > 0 ? (
           <ScrollableTableWithFixedHeader

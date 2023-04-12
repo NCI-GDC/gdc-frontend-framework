@@ -37,8 +37,13 @@ export function ScrollableTableWithFixedHeader({
   const { classes, cx } = useStyles();
 
   return (
-    <ScrollArea sx={{ height: scrollAreaHeight }} data-testid="scrolltable">
-      <Table sx={{ minWidth: tableMinWidth }}>
+    <ScrollArea
+      sx={{ height: scrollAreaHeight }}
+      data-testid="scrolltable"
+      type="always"
+      tabIndex={0}
+    >
+      <Table sx={{ minWidth: tableMinWidth }} tabIndex={0}>
         <thead className={cx(classes.header)}>
           <tr className="border-1 border-base-lighter border-t-0">
             {tableData.headers.map((text, index) => (
