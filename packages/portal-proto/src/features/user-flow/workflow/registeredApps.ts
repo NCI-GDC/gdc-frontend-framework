@@ -22,6 +22,8 @@ export const REGISTERED_APPS = [
     id: "CDave",
     description:
       "Use clinical variables to perform basic statistical analysis of your cohort.",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
   },
   {
     name: "Cohort Builder",
@@ -75,6 +77,8 @@ export const REGISTERED_APPS = [
     countsField: "repositoryCaseCount",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
     selectAdditionalCohort: true,
   },
   // TODO uncomment to show gene expression card
