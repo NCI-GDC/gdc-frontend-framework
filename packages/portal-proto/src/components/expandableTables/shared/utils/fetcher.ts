@@ -8,23 +8,6 @@ export interface MutatedGenesFrequencyTable {
   };
 }
 
-export type MutatedGenesFrequencyTableJSON =
-  Partial<MutatedGenesFrequencyTable>;
-
-export interface MutatedGenesFrequencyTableTSV {}
-
-export interface MutationsFrequencyTableJSON {}
-
-export interface MutationsFrequencyTableTSV {}
-
-export interface DownloadFeature {
-  data:
-    | MutatedGenesFrequencyTableJSON
-    | MutatedGenesFrequencyTableTSV
-    | MutationsFrequencyTableJSON
-    | MutationsFrequencyTableTSV;
-}
-
 const initialMutatedGenesTSVFilters = {
   filters_case: {
     content: [
@@ -95,7 +78,7 @@ export const getFilters = (feature: string, ids: string[]) => {
 // 4 mutations freq tsv
 
 const downloadFeature = (
-  data: DownloadFeature,
+  data: any,
   feature: string,
   options?: Record<string, any>,
 ) => {

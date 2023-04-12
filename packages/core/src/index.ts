@@ -7,7 +7,6 @@ export * from "./constants";
 export * from "./features/gdcapi/gdcapi";
 export * from "./features/gdcapi/filters";
 export * from "./features/gdcapi/gdcgraphql";
-export * from "./features/gdcapi/swr";
 export * from "./features/imageDetails/imageDetailsSlice";
 export * from "./features/imageDetails/imageViewer";
 export * from "./features/facets/facetSlice";

@@ -32,8 +32,7 @@ import { filtersToName } from "src/utils";
 import useSWRMutation from "swr/mutation";
 import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
 import { getFilters } from "../shared/utils/fetcher";
-import saveAs from "file-saver";
-import { swrFetcher } from "@gff/core/src/features/gdcapi/swr";
+import { swrFetcher } from "@gff/core/src/features/gdcapi/gdcapi";
 
 export const SelectedRowContext =
   createContext<
@@ -217,10 +216,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     data: mutatedGenesJSONData,
   } = useSWRMutation(
     {
-      endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id"&size=${100}`,
+      endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id`,
+      size: gTotal,
     },
-    ({ endpoint }) =>
-      swrFetcher(endpoint, "mutated-genes-frequency-table-json"),
+    ({ endpoint, size }) => swrFetcher(endpoint, size),
   );
 
   useEffect(() => {
@@ -259,19 +258,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             }
           }
         }`,
+      size: initialData?.genes?.length ?? 0,
       // variables: buildGqlOperator(joinFilter(cohortFilters, genomicFilters));
       variables: getFilters(
         "mutatedGenesTSV",
         initialData?.genes.map(({ gene_id: geneId }) => geneId),
       ),
     },
-    ({ endpoint, query, variables }) =>
-      swrFetcher(
-        endpoint,
-        "mutated-genes-frequency-table-tsv",
-        query,
-        variables,
-      ),
+    ({ endpoint, size, query, variables }) =>
+      swrFetcher(endpoint, size, query, variables),
   );
 
   return (
