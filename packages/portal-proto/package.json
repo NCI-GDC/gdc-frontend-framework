@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
+    "@fontsource/montserrat": "^4.5.14",
+    "@fontsource/noto-sans": "^4.5.11",
     "@gff/core": "2.3.0",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.10.2",
@@ -44,8 +46,7 @@
     "react-select-search": "^3.0.8",
     "react-tabs": "^4.2.1",
     "react-transition-group": "^4.4.2",
-    "tailwind-styled-components": "2.1.8",
-    "typeface-montserrat": "^1.1.13"
+    "tailwind-styled-components": "2.1.8"
   },
   "license": "Apache-2",
   "devDependencies": {

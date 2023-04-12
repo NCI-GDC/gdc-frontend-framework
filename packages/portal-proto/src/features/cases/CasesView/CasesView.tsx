@@ -200,7 +200,7 @@ export const ContextualCasesView: React.FC = () => {
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
               <button
-                className="text-utility-link underline"
+                className="text-utility-link underline font-content"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "case",
@@ -216,7 +216,7 @@ export const ContextualCasesView: React.FC = () => {
           project_id: (
             <OverflowTooltippedLabel label={datum.project_id}>
               <button
-                className="text-utility-link underline"
+                className="text-utility-link underline font-content"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "project",

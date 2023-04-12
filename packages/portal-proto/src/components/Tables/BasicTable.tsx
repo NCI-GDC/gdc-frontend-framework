@@ -37,7 +37,7 @@ export const BasicTable = ({ tableData }: TempTableProps): JSX.Element => {
             key={uuidv4()}
             className={`${
               index % 2 ? "bg-base-lightest" : "bg-base-max "
-            } border-base-lighter`}
+            } border-base-lighter font-content`}
           >
             {Object.values(row).map((item, index) => (
               <td

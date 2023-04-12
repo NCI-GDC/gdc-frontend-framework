@@ -76,6 +76,9 @@ export const SaveOrCreateCohortModal = ({
             description: {
               marginTop: "5px",
             },
+            input: {
+              fontFamily: "Noto Sans, sans-serif",
+            },
           })}
           data-autofocus
           maxLength={100}

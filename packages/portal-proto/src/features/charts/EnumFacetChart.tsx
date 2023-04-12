@@ -202,7 +202,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
             dx={12}
             dy={-15}
             textAnchor={"start"}
-            style={[{ fontSize: 23 }]}
+            style={[{ fontSize: 23, fontFamily: "Noto Sans, sans-serif" }]}
             text={({ datum }) => data[datum - 1]?.truncatedXName}
           />
         }
