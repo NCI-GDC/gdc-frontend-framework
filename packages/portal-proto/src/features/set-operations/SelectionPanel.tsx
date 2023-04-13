@@ -77,9 +77,14 @@ const SelectCell: React.FC<SelectCellProps> = ({
       label={
         selectedEntityType !== undefined && selectedEntityType !== entityType
           ? "Please choose only one entity type"
-          : "Set is either empty or deprecated"
+          : count === 0
+          ? "Set is either empty or deprecated"
+          : undefined
       }
-      disabled={count > 0 && selectedEntityType === entityType}
+      disabled={
+        count > 0 &&
+        (selectedEntityType === undefined || selectedEntityType === entityType)
+      }
     >
       <span>
         <Checkbox

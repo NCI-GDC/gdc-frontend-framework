@@ -653,7 +653,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
               <tr>
                 <td className="p-2 font-bold">Union of selected sets:</td>
                 <td />
-                <td>
+                <td className="pl-2">
                   <CountButton
                     count={
                       Object.keys(pickBy(selectedSets, (v) => v)).length > 0
