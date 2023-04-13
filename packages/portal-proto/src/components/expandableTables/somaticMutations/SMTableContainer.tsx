@@ -10,6 +10,8 @@ import {
   useCoreSelector,
   selectSetsByType,
   joinFilters,
+  GDC_APP_API_AUTH,
+  swrFetcher,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -34,9 +36,7 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import useSWRMutation from "swr/mutation";
-import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
 import { getFilters } from "../shared/utils/fetcher";
-import { swrFetcher } from "@gff/core/src/features/gdcapi/gdcapi";
 
 export const SelectedRowContext =
   createContext<

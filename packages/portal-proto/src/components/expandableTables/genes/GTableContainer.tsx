@@ -10,6 +10,8 @@ import {
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
+  swrFetcher,
+  GDC_APP_API_AUTH,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -30,9 +32,7 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import useSWRMutation from "swr/mutation";
-import { GDC_APP_API_AUTH } from "@gff/core/src/constants";
 import { getFilters } from "../shared/utils/fetcher";
-import { swrFetcher } from "@gff/core/src/features/gdcapi/gdcapi";
 
 export const SelectedRowContext =
   createContext<

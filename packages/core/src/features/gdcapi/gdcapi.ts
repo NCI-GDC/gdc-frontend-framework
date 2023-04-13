@@ -567,19 +567,19 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
   throw await buildFetchError(res, request);
 };
 
-const getChunk = (size: number) => {
-  // ex. input: 2,788,123 mutations
-  //  c = Math.ceiling(Math.log(size))
-  //  k =  size - e^(Nc)
-  //     output: [c, 2c, ..., Nc - k]
-  return;
-};
+// const getChunk = (size: number) => {
+//   // ex. input: 2,788,123 mutations
+//   //  c = Math.ceiling(Math.log(size))
+//   //  k =  size - e^(Nc)
+//   //     output: [c, 2c, ..., Nc - k]
+//   return;
+// };
 
 // const batchFetch = (size: number) => {
 //   return
 // }
 
-export const swrFetcher = <T extends Record<string, any>>(
+export const swrFetcher = async <T extends Record<string, any>>(
   endpoint: string,
   size: number,
   query?: string,
@@ -587,7 +587,7 @@ export const swrFetcher = <T extends Record<string, any>>(
 ): Promise<GdcApiResponse<T>> => {
   const someMax = 100;
   if (size && size > someMax) {
-    const batched = getChunk(size);
+    // const batched = getChunk(size);
     // Promise.all((resolveAll) => {
     // batched.forEach((batch) => {
     // const hash = md5(batch);
