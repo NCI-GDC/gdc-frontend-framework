@@ -104,7 +104,7 @@ export const REGISTERED_APPS = [
     hideCounts: true,
     countsField: "repositoryCaseCount",
     description:
-      "Display Venn diagram and find intersection or union, etc. of your cohorts.",
+      "Display a Venn diagram and compare/contrast your cohorts or sets of the same type.",
     id: "SetOperations",
     selectAdditionalCohort: true,
   },
