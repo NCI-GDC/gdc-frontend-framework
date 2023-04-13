@@ -16,7 +16,6 @@ import tw from "tailwind-styled-components";
 import saveAs from "file-saver";
 import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
-  DEFAULT_COHORT_ID,
   addNewCohort,
   removeCohort,
   copyCohort,
@@ -46,7 +45,7 @@ import {
   showModal,
   CoreDispatch,
 } from "@gff/core";
-import { useCohortFacetFilters } from "./CohortGroup";
+import { useCohortFacetFilters } from "./utils";
 import CountButton from "./CountButton";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
@@ -238,11 +237,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     data: caseIds,
     isFetching: isFetchingCaseIds,
     isError: isErrorCaseIds,
-  } = useGetCasesQuery({
-    filters: buildCohortGqlOperator(currentCohort.filters),
-    fields: ["case_id"],
-    size: 50000,
-  });
+  } = useGetCasesQuery(
+    {
+      filters: buildCohortGqlOperator(currentCohort?.filters ?? undefined),
+      fields: ["case_id"],
+      size: 50000,
+    },
+    { skip: currentCohort === undefined },
+  );
 
   useEffect(() => {
     if (isErrorCaseIds) {
@@ -277,16 +279,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const menu_items = [
-    { value: cohorts[0].id, label: cohorts[0].name },
     ...cohorts // Make ALL GDC always first
-      .slice(1)
       .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
       .map((x) => {
         return { value: x.id, label: x.name };
       }),
   ];
-
-  const isDefaultCohort = startingId === DEFAULT_COHORT_ID;
 
   const updateCohortFilters = (field: string, operation: Operation) => {
     coreDispatch(updateActiveCohortFilter({ field, operation }));
@@ -563,43 +561,39 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           <Tooltip label="Save Cohort" position="bottom" withArrow>
             <CohortGroupButton
               onClick={() => {
-                if (isDefaultCohort) return;
                 !currentCohort?.saved
                   ? setShowSaveCohort(true)
                   : setShowUpdateCohort(true);
               }}
-              $buttonDisabled={isDefaultCohort}
+              $buttonDisabled={!cohortModified}
               data-testid="saveButton"
               className={`${
-                isDefaultCohort && "cursor-not-allowed bg-base-light"
+                !cohortModified && "cursor-not-allowed bg-base-light"
               }`}
             >
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
           </Tooltip>
-
+          <Tooltip label="Delete Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              data-testid="deleteButton"
+              onClick={() => {
+                setShowDelete(true);
+              }}
+              //className={`${
+              //  isDefaultCohort && "cursor-not-allowed bg-base-light"
+              //}`}
+              //$buttonDisabled={isDefaultCohort}
+            >
+              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+            </CohortGroupButton>
+          </Tooltip>
           <Tooltip label="Add New Cohort" position="bottom" withArrow>
             <CohortGroupButton
               onClick={() => setShowCreateCohort(true)}
               data-testid="addButton"
             >
               <AddIcon size="1.5em" aria-label="Add cohort" />
-            </CohortGroupButton>
-          </Tooltip>
-
-          <Tooltip label="Delete Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              data-testid="deleteButton"
-              onClick={() => {
-                if (isDefaultCohort) return;
-                setShowDelete(true);
-              }}
-              className={`${
-                isDefaultCohort && "cursor-not-allowed bg-base-light"
-              }`}
-              $buttonDisabled={isDefaultCohort}
-            >
-              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
             </CohortGroupButton>
           </Tooltip>
 

@@ -2,7 +2,7 @@ import { DataStatus } from "../../dataAccess";
 
 export const COHORTS = [
   {
-    name: "All GDC",
+    name: "New Unsaved Cohort",
     id: "ALL-GDC-COHORT",
     filters: { mode: "and", root: {} },
     caseSet: {
