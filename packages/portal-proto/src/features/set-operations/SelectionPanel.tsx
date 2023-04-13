@@ -345,14 +345,14 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   return (
     <div className="bg-base-max">
       <div className="p-4">
-        <h2 className="font-heading text-lg font-bold py-2">
+        <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
           Select 2 or 3 of the same set type
         </h2>
-        <p>
+        <p className="font-content">
           Display a Venn diagram and compare/contrast your cohorts or sets of
           the same type.
         </p>
-        <p className="pb-2">
+        <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in
           Manage Sets or in analysis tools (e.g.{" "}
           <Link

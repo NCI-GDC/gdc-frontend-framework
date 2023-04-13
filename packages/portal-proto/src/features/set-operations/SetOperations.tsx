@@ -620,7 +620,6 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   return (
     <div className="flex flex-col p-2">
       <div>
-        <h1 className="text-2xl">Set Operations</h1>
         {isDemoMode && (
           <p>
             Demo showing high impact mutations overlap in Bladder between
