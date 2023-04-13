@@ -116,7 +116,7 @@ export const Footer: React.FC = () => {
         <div>
           <h3 className="font-bold text-lg">National Cancer Institute</h3>
           <h4 className="font-bold">at the National Institutes of Health</h4>
-          <ul className="py-4 text-sm space-y-1">
+          <ul className="py-4 text-sm space-y-1 font-content">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
             </li>
@@ -143,7 +143,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-lg uppercase">{colData.header}</h3>
             <ul className="py-3 font-semibold space-y-2">
               {colData.links.map((linkData, linkI) => (
-                <li key={linkI}>
+                <li key={linkI} className="font-content">
                   {linkData.normalLink ? (
                     <Link href={linkData.url}>{linkData.title}</Link>
                   ) : (
@@ -158,15 +158,18 @@ export const Footer: React.FC = () => {
         ))}
       </div>
       <div>
-        <ul className="divide-x divide-solid p-8">
+        <ul className="divide-x divide-solid p-8 font-content">
           {footerLinkCloud.map((linkData, index) => (
-            <li className="inline-block px-1 leading-none" key={index}>
+            <li
+              className="inline-block px-1 leading-none font-bold"
+              key={index}
+            >
               <ExternalLink href={linkData.url}>{linkData.title}</ExternalLink>
             </li>
           ))}
         </ul>
       </div>
-      <div className="text-sm leading-none">
+      <div className="text-sm leading-none font-content">
         NIH... Turning Discovery Into Health{" "}
         <span className="text-[1rem]">&reg;</span>
       </div>

@@ -9,7 +9,7 @@ class HeaderSectionLocators:
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
     PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
-    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter-NAH']"
+    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter']"
 
 class HeaderSection(BasePage):
 

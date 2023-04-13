@@ -23,7 +23,7 @@ export const ProteinChange = ({
     <div className="flex flex-row w-max justify-start font-content">
       {shouldLink ? (
         <button
-          className="text-utility-link underline mx-0.5"
+          className="text-utility-link underline mx-0.5 font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "genes",
@@ -66,7 +66,7 @@ export const Consequences = ({
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
-  const twIconStyles = `w-7 h-6 text-base-max font-bold border rounded-md flex justify-center items-center`;
+  const twIconStyles = `w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center`;
   const blankIconStyles = `w-7 h-6 font-bold flex justify-center items-center`;
 
   return (

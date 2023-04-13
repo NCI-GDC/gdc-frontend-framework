@@ -103,7 +103,7 @@ export const SearchInput: React.FC = () => {
         <MdSearch size="1.5em" />
         <input
           type="search"
-          placeholder={`Search`}
+          placeholder="Search"
           value={searchTerm}
           onChange={onSearchChanged}
           className="border-none focus:outline-0 grow-1 w-full"
