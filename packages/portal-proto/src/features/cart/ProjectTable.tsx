@@ -25,7 +25,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
           headers: columnListOrder,
           tableRows: tableData,
         }}
-        scrollAreaHeight={259}
+        // max row * height of table row + height of the table header
+        scrollAreaHeight={5 * 40.556 + 56}
       />
     </div>
   );

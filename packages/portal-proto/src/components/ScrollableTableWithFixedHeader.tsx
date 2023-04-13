@@ -37,10 +37,10 @@ export function ScrollableTableWithFixedHeader({
   const { classes, cx } = useStyles();
 
   return (
-    <ScrollArea
-      sx={{ height: scrollAreaHeight }}
+    <ScrollArea.Autosize
+      maxHeight={scrollAreaHeight}
       data-testid="scrolltable"
-      type="always"
+      type="auto"
       tabIndex={0}
     >
       <Table sx={{ minWidth: tableMinWidth }} tabIndex={0}>
@@ -71,6 +71,6 @@ export function ScrollableTableWithFixedHeader({
           ))}
         </tbody>
       </Table>
-    </ScrollArea>
+    </ScrollArea.Autosize>
   );
 }
