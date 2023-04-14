@@ -404,7 +404,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const message = projectData.hasControlledAccess ? (
-    <>
+    <p className="font-content">
       The project has controlled access data which requires dbGaP Access. See
       instructions for{" "}
       <a
@@ -415,7 +415,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       >
         Obtaining Access to Controlled Data.
       </a>
-    </>
+    </p>
   ) : null;
 
   return (

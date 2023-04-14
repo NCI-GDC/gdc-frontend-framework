@@ -12,6 +12,7 @@ import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
+import { DemoText } from "../shared/tailwindComponents";
 
 export interface ClinicalDataAnalysisProps {
   onLoaded?: () => void;
@@ -92,9 +93,9 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   ) : (
     <>
       {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing cases with low grade gliomas (TCGA-LGG project)."}
-        </span>
+        <DemoText>
+          Demo showing cases with low grade gliomas (TCGA-LGG project).
+        </DemoText>
       )}
 
       <div className="flex">

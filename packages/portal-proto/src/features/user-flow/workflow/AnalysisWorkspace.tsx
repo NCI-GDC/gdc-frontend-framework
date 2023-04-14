@@ -79,7 +79,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
       </div>
       <div className="mx-4 my-2">
         <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
-          Tools
+          Analysis Tools
         </h2>
 
         <div className="flex gap-6 flex-wrap">

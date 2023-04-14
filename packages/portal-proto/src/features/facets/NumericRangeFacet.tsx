@@ -184,7 +184,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             return (
               <div
                 key={`${field}_${rangeKey}`}
-                className="flex flex-row justify-start items-center form-check mb-1"
+                className="flex justify-start items-center form-check mb-1 font-content"
               >
                 <input
                   type="radio"
@@ -303,8 +303,8 @@ const FromTo: React.FC<FromToProps> = ({
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-col text-base-contrast-max bg-base-max text-md ">
-        <div className="flex flex-row justify-end items-center flex-nowrap border">
+      <div className="flex flex-col text-base-contrast-max bg-base-max text-md">
+        <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
           <div className="basis-1/5 text-center">From</div>
           <SegmentedControl
             className="basis-2/5"
@@ -335,7 +335,7 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="input from value"
           />
         </div>
-        <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border ">
+        <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border font-content">
           <div className="basis-1/5 text-center">To</div>
           <SegmentedControl
             className="basis-2/5"
@@ -548,7 +548,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             }`}
           >
             {totalBuckets == 0 ? (
-              <div className="mx-4">No data for this field</div>
+              <div className="mx-4 font-content">No data for this field</div>
             ) : isSuccess ? (
               <RangeValueSelector
                 field={`${field}`}

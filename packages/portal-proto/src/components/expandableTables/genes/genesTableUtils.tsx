@@ -442,7 +442,7 @@ export const createTableColumn = (
                 : "";
               return (
                 <button
-                  className="text-utility-link underline"
+                  className="text-utility-link underline font-content"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
