@@ -5,14 +5,14 @@ describe("<AnalysisBreadcrumb />", () => {
   it("Apps without selection only displays name", () => {
     const { queryByText } = render(
       <AnalysisBreadcrumbs
-        currentApp="OncoGridApp"
+        currentApp="MutationFrequencyApp"
         setActiveApp={jest.fn()}
         cohortSelectionOpen={false}
         setCohortSelectionOpen={jest.fn()}
       />,
     );
 
-    expect(queryByText("OncoGrid")).toBeInTheDocument();
+    expect(queryByText("Mutation Frequency")).toBeInTheDocument();
     expect(queryByText("Results")).not.toBeInTheDocument();
   });
 
