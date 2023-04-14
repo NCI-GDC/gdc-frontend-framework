@@ -38,8 +38,9 @@ def is_expected_active_cohort_present(cohort_name: str):
     is_expected_active_cohort_present = APP.cohort_bar.is_expected_active_cohort_present(cohort_name)
     assert is_expected_active_cohort_present, f"The expected active cohort '{cohort_name}' is NOT active"
 
-@step("Select <cohort_name> from the Cohort Bar dropdown list")
+@step("Switch cohort to <cohort_name> from the Cohort Bar dropdown list")
 def select_cohort_from_dropdown(cohort_name: str):
+    click_button_on_cohort_bar("Switch")
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
 
 @step("Set as current cohort")
