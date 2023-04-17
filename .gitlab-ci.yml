@@ -7,6 +7,10 @@ include:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
 
+.default_rules: &default_rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+
 .services:
   allow_failure: true
   stage: deploy
@@ -14,8 +18,7 @@ include:
   parallel:
     matrix:
       - DEPLOY_SERVICE_LIST: [ portal2 ]
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 stages:
   - .pre
@@ -24,7 +27,7 @@ stages:
   - unit
   - release
   - deploy
-  - trigger_ui_tests
+  - .trigger_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -54,8 +57,7 @@ Install npm packages:
       - node_modules/
       - .npm/
     policy: push
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Linting:
   stage: test
@@ -69,8 +71,7 @@ Linting:
       - node_modules/
       - .npm/
     policy: pull
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Prettier Checks:
   stage: test
@@ -84,8 +85,7 @@ Prettier Checks:
       - node_modules/
       - .npm/
     policy: pull
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Build core and compile portal:
   stage: build
@@ -112,8 +112,7 @@ Build core and compile portal:
         - packages/
         - dist/
       policy: push
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Run unit tests:
   stage: unit
@@ -132,8 +131,7 @@ Run unit tests:
         - packages/
         - dist/
       policy: pull
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Build and push container:
   stage: release
@@ -147,8 +145,7 @@ Build and push container:
   script:
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+  <<: *default_rules
 
 Push latest container:
   stage: release
@@ -199,8 +196,7 @@ Build UI tests Docker image:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
-trigger_ui_tests:
-  stage: trigger_ui_tests
+.trigger_ui_tests:
   trigger:
     include:
       - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
@@ -210,39 +206,29 @@ trigger_ui_tests:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
 trigger_ui_tests_yellow:
-  stage: trigger_ui_tests
+  stage: .trigger_ui_tests
   variables:
     APP_ENVIRONMENT: QA_YELLOW
-  trigger:
-    include:
-      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
-    strategy: depend
+  needs:
+    - deploy_qa/uat
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
-      when: on_success
       allow_failure: true
 
 trigger_ui_tests_uat:
-  stage: trigger_ui_tests
+  stage: .trigger_ui_tests
   variables:
     APP_ENVIRONMENT: QA_UAT
-  trigger:
-    include:
-      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
-    strategy: depend
+  needs:
+    - deploy_qa/uat
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
-      when: on_success
       allow_failure: true
 
 trigger_ui_tests_scheduled:
-  stage: trigger_ui_tests
-  trigger:
-    include:
-      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
-    strategy: depend
+  stage: .trigger_ui_tests
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
       when: always
   parallel:
     matrix:
