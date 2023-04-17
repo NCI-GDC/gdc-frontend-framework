@@ -635,6 +635,7 @@ const slice = createSlice({
           state,
           newCohort({ customName: "New Unsaved Cohort" }),
         );
+        state.currentCohort = selector.selectAll(state)[0].id;
       }
       // TODO ??? remove
       /*

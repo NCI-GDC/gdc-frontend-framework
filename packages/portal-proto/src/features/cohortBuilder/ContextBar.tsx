@@ -23,7 +23,6 @@ import {
   selectCohortMessage,
   selectCurrentCohortName,
   clearCohortMessage,
-  setCohortList,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
   setActiveCohortList,
@@ -32,6 +31,7 @@ import {
   Modals,
   showModal,
   addNewCohort,
+  setCurrentCohortId,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -66,12 +66,8 @@ const ContextBar: React.FC = () => {
     // or call to fetch the cohort list errored out.
     // In that case we need to check if the error is due to context id not being provided.
     // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
-    if (
-      (cohortsListData !== undefined && cohortsListData.length === 0) ||
-      (cohortsListData === undefined && isSuccess)
-    ) {
+    if (cohortsListData === undefined && cohorts.length === 0 && isSuccess) {
       coreDispatch(addNewCohort("New Unsaved Cohort"));
-      coreDispatch(setActiveCohortList(cohorts));
     }
     if (cohortsListData) {
       const updatedList: Cohort[] = cohortsListData.map((data) => ({
@@ -94,11 +90,17 @@ const ContextBar: React.FC = () => {
       const noGdcContext =
         ((getCohortError as Error)?.data.message as string) ===
         "Bad Request: [400] - Context id not provided.";
-      if (noGdcContext) {
-        coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
-      }
+      //if (noGdcContext) {
+      //  coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
+      //}
     }
-  }, [getCohortError, coreDispatch, cohortsListData, isSuccess]);
+  }, [
+    getCohortError,
+    coreDispatch,
+    cohortsListData,
+    cohorts.length,
+    isSuccess,
+  ]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(
@@ -106,10 +108,21 @@ const ContextBar: React.FC = () => {
   );
 
   useEffect(() => {
-    if (currentIndex === undefined && cohorts.length > 0) {
+    if (
+      (currentIndex === undefined ||
+        !cohorts.map((cohort) => cohort.id).includes(currentIndex)) &&
+      cohorts.length > 0
+    ) {
+      setCurrentIndex(cohorts[0].id);
+      coreDispatch(setCurrentCohortId(cohorts[0].id));
+    }
+
+    /*
+    if (!cohorts.map(cohort => cohort.id).includes(currentIndex) && cohorts.length > 0) {
       setCurrentIndex(cohorts[0].id);
     }
-  }, [cohorts, currentIndex]);
+    */
+  }, [cohorts, currentIndex, coreDispatch]);
 
   const setCohort = (id: string) => {
     coreDispatch(setActiveCohort(id));

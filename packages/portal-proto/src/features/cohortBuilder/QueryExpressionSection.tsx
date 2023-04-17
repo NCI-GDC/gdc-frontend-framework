@@ -195,63 +195,39 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   aria-expanded={!allQueryExpressionsCollapsed}
                   disabled={noFilters}
                 >
-                  Clear All
+                  {allQueryExpressionsCollapsed ? (
+                    <>
+                      <LeftArrowIcon size={20} className="text-primary" />
+                      <RightArrowIcon size={20} className="text-primary" />
+                    </>
+                  ) : (
+                    <>
+                      <RightArrowIcon size={20} className="text-white" />
+                      <LeftArrowIcon size={20} className="text-white" />
+                    </>
+                  )}
                 </ActionIcon>
-                <div className="display flex gap-2 ml-auto mr-3">
-                  <ActionIcon
-                    variant={
-                      allQueryExpressionsCollapsed ? "filled" : "outline"
-                    }
-                    color="white"
-                    onClick={() =>
-                      allQueryExpressionsCollapsed
-                        ? setExpandedState({
-                            type: "expandAll",
-                            cohortId: currentCohortId,
-                          })
-                        : setExpandedState({
-                            type: "collapseAll",
-                            cohortId: currentCohortId,
-                          })
-                    }
-                    aria-label="Expand/collapse all queries"
-                    aria-expanded={!allQueryExpressionsCollapsed}
-                    disabled={noFilters}
-                  >
-                    {allQueryExpressionsCollapsed ? (
-                      <>
-                        <LeftArrowIcon size={20} className="text-primary" />
-                        <RightArrowIcon size={20} className="text-primary" />
-                      </>
-                    ) : (
-                      <>
-                        <RightArrowIcon size={20} className="text-white" />
-                        <LeftArrowIcon size={20} className="text-white" />
-                      </>
-                    )}
-                  </ActionIcon>
-                  <ActionIcon
-                    variant={filtersSectionCollapsed ? "outline" : "filled"}
-                    color={filtersSectionCollapsed ? "white" : "white"}
-                    onClick={() =>
-                      setFiltersSectionCollapsed(!filtersSectionCollapsed)
-                    }
-                    aria-label="Expand/collapse filters section"
-                    aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                    className={`data-disabled:bg-gray-300`}
-                  >
-                    {filtersSectionCollapsed ? (
-                      <>
-                        <DownArrowIcon size={30} className="text-white" />
-                      </>
-                    ) : (
-                      <>
-                        <UpArrowIcon size={30} className="text-primary" />
-                      </>
-                    )}
-                  </ActionIcon>
-                </div>
+                <ActionIcon
+                  variant={filtersSectionCollapsed ? "outline" : "filled"}
+                  color={filtersSectionCollapsed ? "white" : "white"}
+                  onClick={() =>
+                    setFiltersSectionCollapsed(!filtersSectionCollapsed)
+                  }
+                  aria-label="Expand/collapse filters section"
+                  aria-expanded={!filtersSectionCollapsed}
+                  disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                  className={`data-disabled:bg-gray-300`}
+                >
+                  {filtersSectionCollapsed ? (
+                    <>
+                      <DownArrowIcon size={30} className="text-white" />
+                    </>
+                  ) : (
+                    <>
+                      <UpArrowIcon size={30} className="text-primary" />
+                    </>
+                  )}
+                </ActionIcon>
               </div>
             </>
           </div>
