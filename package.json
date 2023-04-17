@@ -54,7 +54,6 @@
     "react-table": "^7.7.12",
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
-    "swr": "^2.1.2",
     "tinycolor2": "^1.4.2",
     "url-join": "^5.0.0"
   },
