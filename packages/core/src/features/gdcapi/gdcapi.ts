@@ -449,16 +449,6 @@ export interface GenesDefaults {
   readonly name: string;
 }
 
-// export interface MutatedGenesFrequencyTableJSON {
-// }
-
-// export interface MutatedGenesFrequencyTableTSV {
-// }
-
-// export interface MutationsFrequencyTableJSON { }
-
-// export interface MutationsFrequencyTableTSV { }
-
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
@@ -565,76 +555,6 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
   }
 
   throw await buildFetchError(res, request);
-};
-
-// const getChunk = (size: number) => {
-//   // ex. input: 2,788,123 mutations
-//   //  c = Math.ceiling(Math.log(size))
-//   //  k =  size - e^(Nc)
-//   //     output: [c, 2c, ..., Nc - k]
-//   return;
-// };
-
-// const batchFetch = (size: number) => {
-//   return
-// }
-
-export const swrFetcher = async <T extends Record<string, any>>(
-  endpoint: string,
-  size: number,
-  query?: string,
-  variables?: Record<string, unknown>,
-): Promise<GdcApiResponse<T>> => {
-  const someMax = 100;
-  if (size && size > someMax) {
-    // const batched = getChunk(size);
-    // Promise.all((resolveAll) => {
-    // batched.forEach((batch) => {
-    // const hash = md5(batch);
-    // const chunk = await fetch(`${endpoint}?hash=${hash}`, ...{ size: indexOf(batch) }  )
-    // });
-    // return {
-    //   data:  { ...data, chunk }
-    // }
-    // })
-    return fetch(endpoint, {
-      method: query && variables ? "POST" : "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      ...(query &&
-        variables && {
-          body: JSON.stringify({
-            query,
-            variables: { ...variables, size: size / 2 },
-          }),
-        }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      })
-      .catch((e) => e as Error);
-  } else {
-    const vars = { ...variables, size };
-    return fetch(endpoint, {
-      method: query && variables ? "POST" : "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      ...(query &&
-        variables && {
-          body: JSON.stringify({ query, variables: vars }),
-        }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      })
-      .catch((e) => e as Error);
-  }
 };
 
 export const getGdcHistory = async (
