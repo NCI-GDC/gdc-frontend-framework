@@ -226,7 +226,7 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities[newState.currentCohort]?.filters).toEqual(
+    expect(newState.entities["0000-0000-1001-0000"]?.filters).toEqual(
       populatedFilters,
     );
   });
@@ -243,9 +243,7 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities[newState.currentCohort]?.filters).toEqual(
-      TwoPopulatedFilters,
-    );
+    expect(newState.entities["asdf"]?.filters).toEqual(TwoPopulatedFilters);
   });
 
   test("should not add a duplicate filter to the current cohort", () => {
@@ -260,7 +258,7 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities[newState.currentCohort]?.filters).toEqual({
+    expect(newState.entities["asdf"]?.filters).toEqual({
       mode: "and",
       root: {
         "cases.primary_site": {
