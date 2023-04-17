@@ -63,6 +63,7 @@ const GeneMutationChart: FC<{ which }> = ({ which }: { which: string }) => {
       tickfont: {
         size: 10,
         color: "rgb(107, 107, 107)",
+        family: "Noto Sans",
       },
     },
     yaxis: {

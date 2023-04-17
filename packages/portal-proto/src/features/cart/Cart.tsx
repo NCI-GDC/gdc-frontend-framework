@@ -33,7 +33,7 @@ const H3 = tw.h3`
 const P = tw.p`
   pt-2
   pb-4
-  font-montserrat
+  font-content
   text-primary-content-darkest
   font-normal
 `;
@@ -81,7 +81,7 @@ const Cart: React.FC = () => {
                 href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-content"
+                className="text-utility-link underline"
               >
                 GDC Data Transfer Tool
               </a>
@@ -97,7 +97,7 @@ const Cart: React.FC = () => {
                 href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-content"
+                className="text-utility-link underline"
               >
                 GDC Reference Files
               </a>{" "}

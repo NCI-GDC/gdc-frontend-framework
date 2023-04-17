@@ -180,7 +180,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     <>
       <div className="max-h-96 overflow-y-auto">
         <div className="px-4">
-          <p className="mb-2 text-sm">{inputInstructions}</p>
+          <p className="mb-2 text-sm font-content">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
             <label className="font-bold text-sm" htmlFor="indentifier-input">
               Type or copy-and-paste a list of {entityLabel} identifiers
@@ -210,6 +210,9 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
                 ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
                 : undefined
             }
+            classNames={{
+              input: "font-content",
+            }}
             spellCheck={false}
             autoComplete={"off"}
           />

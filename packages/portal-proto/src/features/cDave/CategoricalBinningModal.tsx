@@ -187,7 +187,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         header: "text-xl",
       }}
     >
-      <p>
+      <p className="font-content">
         Organize values into groups of your choosing. Click <b>Save Bins</b> to
         update the analysis plots.
       </p>
@@ -389,7 +389,7 @@ const ListValue: React.FC<ListValueProps> = ({
     <li
       className={`${
         selectedValues?.[name] ? "bg-accent-warm-light" : ""
-      } cursor-pointer list-inside`}
+      } cursor-pointer list-inside font-content`}
     >
       <div
         onClick={() => {
@@ -481,7 +481,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
   }, [editing]);
 
   return (
-    <li>
+    <li className="font-content">
       {editing ? (
         <TextInput
           ref={ref}
