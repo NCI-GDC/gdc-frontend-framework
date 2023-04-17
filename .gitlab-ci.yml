@@ -226,7 +226,7 @@ trigger_ui_tests_uat:
       allow_failure: true
 
 trigger_ui_tests_scheduled:
-  stage: .trigger_ui_tests
+  extends: .trigger_ui_tests
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
       when: always
