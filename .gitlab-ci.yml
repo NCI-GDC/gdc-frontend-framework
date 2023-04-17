@@ -206,21 +206,25 @@ Build UI tests Docker image:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
 trigger_ui_tests_yellow:
+  extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
     APP_ENVIRONMENT: QA_YELLOW
   needs:
-    - deploy_qa/uat
+    - job: deploy_qa/uat
+      artifacts: true
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
       allow_failure: true
 
 trigger_ui_tests_uat:
+  extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
     APP_ENVIRONMENT: QA_UAT
   needs:
-    - deploy_qa/uat
+    - job: deploy_qa/uat
+      artifacts: true
   rules:
     - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
       allow_failure: true
