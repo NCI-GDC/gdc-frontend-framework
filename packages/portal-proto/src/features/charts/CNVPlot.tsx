@@ -55,11 +55,11 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return null;
   }
 
-  const caseData = data.cases.filter(
+  const caseData = data?.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
 
-  const caseTotal = <CountSpan>{data.caseTotal.toLocaleString()}</CountSpan>;
+  const caseTotal = <CountSpan>{data?.caseTotal.toLocaleString()}</CountSpan>;
   const mutationTotal = (
     <CountSpan>{data.mutationTotal.toLocaleString()}</CountSpan>
   );
@@ -141,6 +141,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const onClickHandler = (mouseEvent) => {
     router.push(`/projects/${mouseEvent.points[0].x}`);
   };
+
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
     <div className="border border-base-lighter p-4">
@@ -150,10 +151,12 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           filename={CHART_NAME}
           divId={chartDivId}
           jsonData={{
-            ...data?.cases.map(({ project, ssmCount, totalCount }) => {
+            ...sortedData.map(({ project: symbol, gain, loss, total }) => {
               return {
-                project,
-                value: (ssmCount / totalCount).toFixed(2),
+                symbol,
+                gain,
+                loss,
+                total,
               };
             }),
           }}

@@ -10,8 +10,6 @@ import {
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
-  swrFetcher,
-  GDC_APP_API_AUTH,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -31,8 +29,6 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
-import useSWRMutation from "swr/mutation";
-import { getFilters } from "../shared/utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -193,81 +189,66 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
-  // const colNameMap = (id) => {
-  //   switch(id){
-  //     case "gene_id": {
-  //       return "geneID"
-  //     }
-  //     case "biotype": {
-  //       return "biotype"
-  //     }
-  //     case "cytoband": {
-  //       return "cytoband"
-  //     }
-  //     case ""
-  //   }
-  // }
-
   // buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
 
-  const {
-    trigger: mutatedGenesJSONTrigger,
-    isMutating: mutatedGenesJSONIsMutating,
-    data: mutatedGenesJSONData,
-  } = useSWRMutation(
-    {
-      endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id`,
-      size: gTotal,
-    },
-    ({ endpoint, size }) => swrFetcher(endpoint, size),
-  );
+  // pear-117
 
-  useEffect(() => {
-    console.log("mtns freq data", mutatedGenesJSONData);
-  }, [mutatedGenesJSONData]);
+  // const {
+  //   trigger: mutatedGenesJSONTrigger,
+  //   isMutating: mutatedGenesJSONIsMutating,
+  //   data: mutatedGenesJSONData,
+  // } = useSWRMutation(
+  //   {
+  //     endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id`,
+  //     size: gTotal,
+  //   },
+  //   ({ endpoint, size }) => swrFetcher(endpoint, size),
+  // );
 
-  const {
-    trigger: mutatedGenesTSVTrigger,
-    isMutating: mutatedGenesTSVIsMutating,
-    data: mutatedGenesTSVData,
-  } = useSWRMutation(
-    {
-      endpoint: `${GDC_APP_API_AUTH}/graphql`,
-      query: `
-      query MutatedGenesFreq(
-        $score: String
-        ) {
-          viewer {
-            explore {
-              genes {
-                hits(
-                  first: ${`${gTotal}`}
-                  score: $score
-                  ) {
-                  edges {
-                    node {
-                      symbol
-                      name
-                      cytoband
-                      biotype
-                      gene_id
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }`,
-      size: initialData?.genes?.length ?? 0,
-      // variables: buildGqlOperator(joinFilter(cohortFilters, genomicFilters));
-      variables: getFilters(
-        "mutatedGenesTSV",
-        initialData?.genes.map(({ gene_id: geneId }) => geneId),
-      ),
-    },
-    ({ endpoint, size, query, variables }) =>
-      swrFetcher(endpoint, size, query, variables),
-  );
+  // pear-118
+
+  // const {
+  //   trigger: mutatedGenesTSVTrigger,
+  //   isMutating: mutatedGenesTSVIsMutating,
+  //   data: mutatedGenesTSVData,
+  // } = useSWRMutation(
+  //   {
+  //     endpoint: `${GDC_APP_API_AUTH}/graphql`,
+  //     query: `
+  //     query MutatedGenesFreq(
+  //       $score: String
+  //       ) {
+  //         viewer {
+  //           explore {
+  //             genes {
+  //               hits(
+  //                 first: ${`${gTotal}`}
+  //                 score: $score
+  //                 ) {
+  //                 edges {
+  //                   node {
+  //                     symbol
+  //                     name
+  //                     cytoband
+  //                     biotype
+  //                     gene_id
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }`,
+  //     size: initialData?.genes?.length ?? 0,
+  //     // variables: buildGqlOperator(joinFilter(cohortFilters, genomicFilters));
+  //     variables: getFilters(
+  //       "mutatedGenesTSV",
+  //       initialData?.genes.map(({ gene_id: geneId }) => geneId),
+  //     ),
+  //   },
+  //   ({ endpoint, size, query, variables }) =>
+  //     swrFetcher(endpoint, size, query, variables),
+  // );
 
   return (
     <>
@@ -353,18 +334,18 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases and #Mutations">
                   <FunctionButton
-                    onClick={() => {
-                      mutatedGenesJSONTrigger();
-                    }}
+                  // onClick={() => {
+                  //   mutatedGenesJSONTrigger();
+                  // }}
                   >
                     JSON
                   </FunctionButton>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view" comingSoon={true}>
                   <FunctionButton
-                    onClick={() => {
-                      mutatedGenesTSVTrigger();
-                    }}
+                  // onClick={() => {
+                  //   mutatedGenesTSVTrigger();
+                  // }}
                   >
                     TSV
                   </FunctionButton>

@@ -111,7 +111,14 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           title={title}
           filename={CHART_NAME}
           divId={chartDivId}
-          jsonData={{ ...data }}
+          jsonData={{
+            ...sortedData.map(({ project: field, percent: value }) => {
+              return {
+                field,
+                value,
+              };
+            }),
+          }}
         />
       </div>
       <div className="">

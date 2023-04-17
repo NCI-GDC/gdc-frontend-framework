@@ -10,8 +10,6 @@ import {
   useCoreSelector,
   selectSetsByType,
   joinFilters,
-  GDC_APP_API_AUTH,
-  swrFetcher,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -35,8 +33,6 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
-import useSWRMutation from "swr/mutation";
-import { getFilters } from "../shared/utils/fetcher";
 
 export const SelectedRowContext =
   createContext<
@@ -224,42 +220,42 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         })
       : combinedFilters;
 
-  const {
-    trigger: mutationsFreqJSONTrigger,
-    isMutating: mutationsFreqJSONIsMutating,
-    data: mutationsFreqJSONData,
-  } = useSWRMutation(
-    {
-      endpoint: `${GDC_APP_API_AUTH}/ssms?fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&size=${100}&%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id&filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D`,
-      size: smTotal ?? 0,
-    },
-    ({ endpoint, size }) => swrFetcher(endpoint, size),
-  );
+  // pear-127
+
+  // const {
+  //   trigger: mutationsFreqJSONTrigger,
+  //   isMutating: mutationsFreqJSONIsMutating,
+  //   data: mutationsFreqJSONData,
+  // } = useSWRMutation(
+  //   {
+  //     endpoint: `${GDC_APP_API_AUTH}/ssms?fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&size=${100}&%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id&filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D`,
+  //     size: smTotal ?? 0,
+  //   },
+  //   ({ endpoint, size }) => swrFetcher(endpoint, size),
+  // );
   // {"content":[{"content":{"field":"genes.is_cancer_gene_census","value":["true"]},"op":"in"}],"op":"and"}
 
   // &filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D
 
-  useEffect(() => {
-    console.log("mtnsfreqjsondata", mutationsFreqJSONData);
-  }, [mutationsFreqJSONData]);
+  // pear-128
 
-  const {
-    trigger: mutationsFreqTSVTrigger,
-    isMutating: mutationsFreqTSVIsMutating,
-    data: mutationsFreqTSVData,
-  } = useSWRMutation(
-    {
-      endpoint: `${GDC_APP_API_AUTH}/graphql`,
-      query: ``,
-      variables: getFilters(
-        "mutationsFreqTSV",
-        tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
-      ),
-      size: tableData?.ssms?.length ?? 0,
-    },
-    ({ endpoint, size, query, variables }) =>
-      swrFetcher(endpoint, size, query, variables),
-  );
+  // const {
+  //   trigger: mutationsFreqTSVTrigger,
+  //   isMutating: mutationsFreqTSVIsMutating,
+  //   data: mutationsFreqTSVData,
+  // } = useSWRMutation(
+  //   {
+  //     endpoint: `${GDC_APP_API_AUTH}/graphql`,
+  //     query: ``,
+  //     variables: getFilters(
+  //       "mutationsFreqTSV",
+  //       tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id),
+  //     ),
+  //     size: tableData?.ssms?.length ?? 0,
+  //   },
+  //   ({ endpoint, size, query, variables }) =>
+  //     swrFetcher(endpoint, size, query, variables),
+  // );
 
   return (
     <>
@@ -345,14 +341,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton onClick={() => mutationsFreqJSONTrigger()}>
-                    JSON
-                  </FunctionButton>
+                  {/* onClick={() => mutationsFreqJSONTrigger()} */}
+                  <FunctionButton>JSON</FunctionButton>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view">
-                  <FunctionButton onClick={() => mutationsFreqTSVTrigger()}>
-                    TSV
-                  </FunctionButton>
+                  {/* onClick={() => mutationsFreqTSVTrigger()} */}
+                  <FunctionButton>TSV</FunctionButton>
                 </ButtonTooltip>
               </div>
             }
