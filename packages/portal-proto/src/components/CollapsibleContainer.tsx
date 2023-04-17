@@ -24,9 +24,13 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     onlyIcon = true,
     isContextBar = false,
   } = props;
-
   return (
-    <div className={`flex flex-col ${isContextBar && "fixed w-full z-[200]"}`}>
+    <div
+      className={`flex flex-col ${
+        isContextBar &&
+        "sticky top-[115px] w-full z-[100] overflow-y-auto max-h-screen-90vh"
+      }`}
+    >
       <div className="flex flex-row">
         <div className="flex-grow">
           <Top />

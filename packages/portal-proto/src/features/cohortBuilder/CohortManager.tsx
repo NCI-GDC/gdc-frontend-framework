@@ -500,6 +500,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               label="Discard Unsaved Changes"
               position="bottom"
               withArrow
+              withinPortal={true}
             >
               <CohortGroupButton
                 data-testid="discardButton"
@@ -525,7 +526,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 searchable
                 clearable={false}
                 value={startingId}
-                zIndex={1}
+                withinPortal={true}
+                zIndex={110}
                 onChange={(x) => {
                   onSelectionChanged(x);
                 }}
@@ -560,7 +562,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       </div>
       {!hide_controls ? (
         <>
-          <Tooltip label="Save Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Save Cohort"
+            position="bottom"
+            withArrow
+            withinPortal={true}
+          >
             <CohortGroupButton
               onClick={() => {
                 if (isDefaultCohort) return;
@@ -578,7 +585,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
           </Tooltip>
 
-          <Tooltip label="Add New Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Add New Cohort"
+            position="bottom"
+            withArrow
+            withinPortal={true}
+          >
             <CohortGroupButton
               onClick={() => setShowCreateCohort(true)}
               data-testid="addButton"
@@ -587,7 +599,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
           </Tooltip>
 
-          <Tooltip label="Delete Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Delete Cohort"
+            position="bottom"
+            withArrow
+            withinPortal={true}
+          >
             <CohortGroupButton
               data-testid="deleteButton"
               onClick={() => {
@@ -603,7 +620,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
           </Tooltip>
 
-          <Tooltip label="Import New Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Import New Cohort"
+            position="bottom"
+            withArrow
+            withinPortal={true}
+          >
             <CohortGroupButton
               data-testid="uploadButton"
               onClick={() =>
@@ -614,7 +636,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
             </CohortGroupButton>
           </Tooltip>
 
-          <Tooltip label="Export Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Export Cohort"
+            position="bottom"
+            withArrow
+            withinPortal={true}
+          >
             <CohortGroupButton
               data-testid="downloadButton"
               className={`${

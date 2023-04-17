@@ -232,10 +232,7 @@ const ContextBar: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (
-    <div
-      className="font-heading bg-base-max flex flex-col"
-      data-tour="context_bar"
-    >
+    <>
       <CollapsibleContainer
         Top={() => (
           <CohortManager
@@ -361,22 +358,13 @@ const ContextBar: React.FC = () => {
           </div>
         </div>
       </CollapsibleContainer>
-      <div
-        className={`${
-          isGroupCollapsed
-            ? "mt-24"
-            : activeTab === "summary"
-            ? "mt-[380px]"
-            : "mt-[800px]"
-        }`}
-      >
-        <QueryExpressionSection
-          filters={filters}
-          currentCohortName={currentCohortName}
-          currentCohortId={currentCohortId}
-        />
-      </div>
-    </div>
+
+      <QueryExpressionSection
+        filters={filters}
+        currentCohortName={currentCohortName}
+        currentCohortId={currentCohortId}
+      />
+    </>
   );
 };
 
