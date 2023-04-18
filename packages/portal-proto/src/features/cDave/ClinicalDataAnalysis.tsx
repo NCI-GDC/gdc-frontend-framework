@@ -34,6 +34,8 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         FACET_SORT[d.field_type].includes(d.field_name),
     );
 
+  console.log("use clinical fields", fields, cDaveFields);
+
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(
       isDemoMode

@@ -37,6 +37,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     selectFacetDefinitionByName(state, `cases.${field}`),
   );
 
+  console.log("facet", facet, data);
+
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
