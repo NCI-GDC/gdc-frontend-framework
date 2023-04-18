@@ -293,7 +293,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                     onClick={() => {
                       setMutatedGenesFrequencyDownloadActive(true);
                       download({
-                        endpoint: "ssms",
+                        endpoint: "genes",
                         method: "POST",
                         options: {
                           method: "POST",
@@ -304,34 +304,20 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                         dispatch,
                         params: {
                           fields: [
-                            "genomic_dna_change",
-                            "mutation_subtype",
-                            "consequence.transcript.consequence_type",
-                            "consequence.transcript.annotation.vep_impact",
-                            "consequence.transcript.annotation.sift_impact",
-                            "consequence.transcript.annotation.polyphen_impact",
-                            "consequence.transcript.is_canonical",
-                            "consequence.transcript.gene.gene_id",
-                            "consequence.transcript.gene.symbol",
-                            "consequence.transcript.aa_change",
-                            "ssm_id",
+                            "symbol",
+                            "name",
+                            "cytoband",
+                            "biotype",
+                            "gene_id",
+                            "is_cancer_gene_census",
                           ],
-                          filters: {
-                            content: [
-                              {
-                                content: {
-                                  field: "genes.is_cancer_gene_census",
-                                  value: ["true"],
-                                },
-                                op: "in",
-                              },
-                            ],
-                            op: "and",
+                          filters: buildCohortGqlOperator(
+                            joinFilters(cohortFilters, genomicFilters),
+                          ),
+                          done: () => {
+                            setMutatedGenesFrequencyDownloadActive(false);
                           },
-                          size: gTotal,
                         },
-                        done: () =>
-                          setMutatedGenesFrequencyDownloadActive(false),
                       });
                     }}
                   >

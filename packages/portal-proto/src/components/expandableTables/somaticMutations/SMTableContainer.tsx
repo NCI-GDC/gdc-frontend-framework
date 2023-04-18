@@ -11,6 +11,7 @@ import {
   selectSetsByType,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -24,6 +25,7 @@ import {
   DEFAULT_SMTABLE_ORDER,
   SsmToggledHandler,
 } from "./types";
+import { Button, Loader } from "@mantine/core";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
@@ -34,6 +36,7 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
+import download from "src/utils/download";
 
 export const SelectedRowContext =
   createContext<
@@ -95,6 +98,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     offset: 0,
     ssms: [],
   });
+
+  const dispatch = useCoreDispatch();
+  const [
+    mutationsFrequencyDownloadActive,
+    setMutationsFrequencyDownloadActive,
+  ] = useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -305,7 +314,45 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton>JSON</FunctionButton>
+                  <Button
+                    onClick={() => {
+                      setMutationsFrequencyDownloadActive(true);
+                      download({
+                        endpoint: "ssms",
+                        method: "POST",
+                        options: {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                        },
+                        dispatch,
+                        params: {
+                          fields: [
+                            "genomic_dna_change",
+                            "mutation_subtype",
+                            "consequence.transcript.consequence_type",
+                            "consequence.transcript.annotation.vep_impact",
+                            "consequence.transcript.annotation.sift_impact",
+                            "consequence.transcript.annotation.polyphen_impact",
+                            "consequence.transcript.is_canonical",
+                            "consequence.transcript.gene.gene_id",
+                            "consequence.transcript.gene.symbol",
+                            "consequence.transcript.aa_change",
+                            "ssm_id",
+                          ],
+                          filters: buildCohortGqlOperator(
+                            joinFilters(cohortFilters, genomicFilters),
+                          ),
+                          done: () => {
+                            setMutationsFrequencyDownloadActive(false);
+                          },
+                        },
+                      });
+                    }}
+                  >
+                    JSON
+                  </Button>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view">
                   <FunctionButton>TSV</FunctionButton>
