@@ -42,7 +42,7 @@ const INITIAL_STATE = {
   message: undefined,
 } as EntityState<Cohort> & {
   currentCohort: string;
-  message: string | undefined;
+  message: string[] | undefined;
 };
 
 const APP_INITIAL_STATE = {
@@ -321,7 +321,7 @@ describe("filter by prefix", () => {
         ...state.cohort,
         availableCohorts: {
           currentCohort: "000-000-000-1",
-          message: "newCohort|New Cohort",
+          message: ["newCohort|New Cohort"],
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -653,7 +653,7 @@ describe("add, update, and remove cohort", () => {
   test("should not remove the first cohort", () => {
     const removeState = {
       currentCohort: "ALL-GDC-COHORT",
-      message: "deleteCohort|New Cohort 2|000-000-000-1",
+      message: ["deleteCohort|New Cohort 2|000-000-000-1"],
       ids: ["ALL-GDC-COHORT", "000-000-000-1"],
       entities: {
         "ALL-GDC-COHORT": {
