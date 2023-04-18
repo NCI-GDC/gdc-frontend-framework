@@ -44,67 +44,40 @@ import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import QueryExpressionSection from "./QueryExpressionSection";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
-interface Error {
-  data: {
-    message: string;
-  };
-  status: number;
-}
-
 const ContextBar: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const {
-    data: cohortsListData,
-    error: getCohortError,
-    isFetching,
-  } = useGetCohortsByContextIdQuery();
+  const { data: cohortsListData, isFetching } = useGetCohortsByContextIdQuery();
 
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   useEffect(() => {
     // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
-    // or call to fetch the cohort list errored out.
-    // In that case we need to check if the error is due to context id not being provided.
-    // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
-    if (
-      (cohortsListData === undefined || cohortsListData.length === 0) &&
-      cohorts.length === 0 &&
-      !isFetching
-    ) {
-      coreDispatch(addNewCohort("New Unsaved Cohort"));
-    }
-    if (cohortsListData) {
-      const updatedList: Cohort[] = cohortsListData.map((data) => ({
-        id: data.id,
-        name: data.name,
-        filters: buildGqlOperationToFilterSet(data.filters),
-        caseSet: {
-          caseSetId: buildGqlOperationToFilterSet(data.filters),
-          status: "fulfilled" as DataStatus,
-        },
-        modified_datetime: data.modified_datetime,
-        saved: true,
-        modified: false,
-        caseCount: data?.case_ids.length,
-      }));
-      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+    // or call to fetch the cohort list errored out. We need to create a default cohort for them.
+    if (!isFetching) {
+      if (cohortsListData === undefined || cohortsListData.length === 0) {
+        if (cohorts.length === 0) {
+          coreDispatch(addNewCohort("New Unsaved Cohort"));
+        }
+      } else {
+        const updatedList: Cohort[] = cohortsListData.map((data) => ({
+          id: data.id,
+          name: data.name,
+          filters: buildGqlOperationToFilterSet(data.filters),
+          caseSet: {
+            caseSetId: buildGqlOperationToFilterSet(data.filters),
+            status: "fulfilled" as DataStatus,
+          },
+          modified_datetime: data.modified_datetime,
+          saved: true,
+          modified: false,
+          caseCount: data?.case_ids.length,
+        }));
+        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
 
-      // TODO determine if setActiveCohortList is really needed
-    } else if ((getCohortError as Error)?.status === 400) {
-      const noGdcContext =
-        ((getCohortError as Error)?.data.message as string) ===
-        "Bad Request: [400] - Context id not provided.";
-      //if (noGdcContext) {
-      //  coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
-      //}
+        // TODO determine if setActiveCohortList is really needed
+      }
     }
-  }, [
-    getCohortError,
-    coreDispatch,
-    cohortsListData,
-    cohorts.length,
-    isFetching,
-  ]);
+  }, [coreDispatch, cohortsListData, isFetching, cohorts.length]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(
@@ -120,12 +93,6 @@ const ContextBar: React.FC = () => {
       setCurrentIndex(cohorts[0].id);
       coreDispatch(setCurrentCohortId(cohorts[0].id));
     }
-
-    /*
-    if (!cohorts.map(cohort => cohort.id).includes(currentIndex) && cohorts.length > 0) {
-      setCurrentIndex(cohorts[0].id);
-    }
-    */
   }, [cohorts, currentIndex, coreDispatch]);
 
   const setCohort = (id: string) => {

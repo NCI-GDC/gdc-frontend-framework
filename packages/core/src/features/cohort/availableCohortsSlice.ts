@@ -643,15 +643,6 @@ const slice = createSlice({
           `newCohort|${createdCohort.name}|${createdCohort.id}`,
         ];
       }
-      // TODO ??? remove
-      /*
-      // TODO: this will be removed after cohort id issue is fixed in the BE
-      // This is just a hack to remove cohort without triggering notification and changing the cohort to the default
-      if (action?.payload?.shouldShowMessage) {
-        state.message = `deleteCohort|${removedCohort?.name}|${state.currentCohort}`;
-        state.currentCohort = DEFAULT_COHORT_ID;
-      }
-      */
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -662,14 +653,6 @@ const slice = createSlice({
         },
       };
 
-      //if (state.currentCohort === DEFAULT_COHORT_ID) {
-      //  // create a new cohort and add it
-      //  // as the GDC All Cohort is immutable
-      //  const cohort = newCohort({ filters });
-      //  cohortsAdapter.addOne(state, cohort);
-      //  state.currentCohort = cohort.id;
-      //  state.message = `newCohort|${cohort.name}|${cohort.id}`;
-      //} else {
       const caseSetIds =
         state.entities[getCurrentCohort(state)]?.caseSet?.caseSetIds;
       if (caseSetIds) {
@@ -910,24 +893,6 @@ const slice = createSlice({
           },
         };
 
-        //if (state.currentCohort === DEFAULT_COHORT_ID) {
-        //  // create a new cohort and add it
-        //  // as the GDC All Cohort is immutable
-        //  const cohort = newCohort({ filters });
-        //  cohortsAdapter.addOne(state, {
-        //    ...cohort,
-        //    caseSet: {
-        //      filters: caseSetFilters,
-        //      status: "fulfilled",
-        //      caseSetIds: caseSetIds,
-        //    },
-        //  });
-        //  state.currentCohort = cohort.id;
-        //  state.message = `newCohort|${cohort.name}|${cohort.id}`;
-        //}
-        //// update the current cohort with the all the filters (for query expression and cohort persistence)
-        //// caseSet is assigned the caseSet filters + the filters not represented by the caseSets.
-        //else {
         cohortsAdapter.updateOne(state, {
           id: currentCohort,
           changes: {
