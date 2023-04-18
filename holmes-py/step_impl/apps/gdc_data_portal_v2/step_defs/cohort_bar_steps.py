@@ -13,7 +13,9 @@ def start_app():
 
 @step("Select <button> from the Cohort Bar")
 def click_button_on_cohort_bar(button_name: str):
+    time.sleep(0.5)
     APP.cohort_bar.click_cohort_bar_button(button_name)
+    time.sleep(0.5)
 
 @step("<button_name> <cohort_name> and <action> in the Cohort Bar section")
 def name_cohort_and_click_button(button_name: str, cohort_name: str, action: str):

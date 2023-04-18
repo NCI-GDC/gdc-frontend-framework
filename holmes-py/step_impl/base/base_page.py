@@ -74,8 +74,11 @@ class BasePage:
 
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
-        is_text_present = self.is_visible(locator)
-        return is_text_present
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     def is_text_not_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
