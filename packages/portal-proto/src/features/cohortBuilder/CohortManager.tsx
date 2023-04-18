@@ -322,7 +322,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 .unwrap()
                 .then(() => deleteCohort())
                 .catch(() =>
-                  coreDispatch(setCohortMessage("error|deleting|allId")),
+                  coreDispatch(setCohortMessage(["error|deleting|allId"])),
                 );
             } else {
               deleteCohort();
@@ -351,7 +351,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   discardChanges(buildGqlOperationToFilterSet(payload.filters));
                 })
                 .catch(() =>
-                  coreDispatch(setCohortMessage("error|discarding|allId")),
+                  coreDispatch(setCohortMessage(["error|discarding|allId"])),
                 );
             } else {
               discardChanges(undefined);
@@ -389,11 +389,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               .unwrap()
               .then(() =>
                 coreDispatch(
-                  setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
+                  setCohortMessage([`savedCohort|${cohortName}|${cohortId}`]),
                 ),
               )
               .catch(() =>
-                coreDispatch(setCohortMessage("error|saving|allId")),
+                coreDispatch(setCohortMessage(["error|saving|allId"])),
               );
           }}
         />
@@ -433,7 +433,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 // the BE.
                 coreDispatch(setCurrentCohortId(payload.id));
                 coreDispatch(
-                  setCohortMessage(`savedCohort|${newName}|${payload.id}`),
+                  setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
                 );
                 onSelectionChanged(payload.id);
                 coreDispatch(
@@ -444,7 +444,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 );
               })
               .catch(() =>
-                coreDispatch(setCohortMessage("error|saving|allId")),
+                coreDispatch(setCohortMessage(["error|saving|allId"])),
               );
           }}
           onNameChange={onSaveCohort}

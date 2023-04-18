@@ -625,9 +625,13 @@ const slice = createSlice({
         state,
         action?.payload?.currentID || getCurrentCohort(state),
       );
-      state.message = [
-        `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
-      ];
+      // TODO: this will be removed after cohort id issue is fixed in the BE
+      // This is just a hack to remove cohort without triggering notification
+      if (action?.payload.shouldShowMessage) {
+        state.message = [
+          `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
+        ];
+      }
 
       // If we've removed the last cohort a user has, auto generate a default one for them
       const selector = cohortsAdapter.getSelectors();
