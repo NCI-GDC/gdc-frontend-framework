@@ -10,6 +10,7 @@ import {
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -194,7 +195,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
         {showSaveModal && (
           <SaveSelectionAsSetModal
-            filters={setFilters}
+            filters={buildCohortGqlOperator(setFilters)}
             initialSetName={
               Object.keys(selectedGenes).length === 0
                 ? filtersToName(setFilters)
