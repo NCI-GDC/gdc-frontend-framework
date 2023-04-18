@@ -311,6 +311,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                             "gene_id",
                             "is_cancer_gene_census",
                           ],
+                          size: gTotal,
                           filters: buildCohortGqlOperator(
                             joinFilters(cohortFilters, genomicFilters),
                           ),

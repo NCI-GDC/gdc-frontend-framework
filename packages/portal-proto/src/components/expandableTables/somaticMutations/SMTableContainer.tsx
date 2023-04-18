@@ -344,6 +344,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                           filters: buildCohortGqlOperator(
                             joinFilters(cohortFilters, genomicFilters),
                           ),
+                          size: smTotal,
                           done: () => {
                             setMutationsFrequencyDownloadActive(false);
                           },
