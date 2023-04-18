@@ -279,14 +279,13 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded
-          ? "w-80 bg-base-max shadow-md overflow-y-scroll -ml-2"
-          : ""
-      } flex flex-col min-h-[560px] max-h-screen`}
+        controlsExpanded ? "w-80 bg-base-max shadow-md overflow-y-scroll" : ""
+      } pl-4 pt-2 flex flex-col min-h-[560px] max-h-screen`}
     >
       <Tooltip
         withArrow
         withinPortal
+        offset={-2}
         label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
       >
         <ActionIcon
