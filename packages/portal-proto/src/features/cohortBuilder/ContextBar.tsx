@@ -72,9 +72,9 @@ const ContextBar: React.FC = () => {
           modified: false,
           caseCount: data?.case_ids.length,
         }));
-        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
-
         // TODO determine if setActiveCohortList is really needed
+
+        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       }
     }
   }, [coreDispatch, cohortsListData, isFetching, cohorts.length]);

@@ -574,20 +574,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               <SaveIcon size="1.5em" aria-label="Save cohort" />
             </CohortGroupButton>
           </Tooltip>
-          <Tooltip label="Delete Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              data-testid="deleteButton"
-              onClick={() => {
-                setShowDelete(true);
-              }}
-              //className={`${
-              //  isDefaultCohort && "cursor-not-allowed bg-base-light"
-              //}`}
-              //$buttonDisabled={isDefaultCohort}
-            >
-              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-            </CohortGroupButton>
-          </Tooltip>
           <Tooltip label="Add New Cohort" position="bottom" withArrow>
             <CohortGroupButton
               onClick={() => setShowCreateCohort(true)}
@@ -596,7 +582,16 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               <AddIcon size="1.5em" aria-label="Add cohort" />
             </CohortGroupButton>
           </Tooltip>
-
+          <Tooltip label="Delete Cohort" position="bottom" withArrow>
+            <CohortGroupButton
+              data-testid="deleteButton"
+              onClick={() => {
+                setShowDelete(true);
+              }}
+            >
+              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+            </CohortGroupButton>
+          </Tooltip>
           <Tooltip label="Import New Cohort" position="bottom" withArrow>
             <CohortGroupButton
               data-testid="uploadButton"

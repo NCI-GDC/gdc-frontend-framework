@@ -697,7 +697,6 @@ const slice = createSlice({
             modified_datetime: new Date().toISOString(),
           },
         });
-      //}
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
       // todo clear case set if not needed
@@ -910,7 +909,6 @@ const slice = createSlice({
             },
           },
         });
-        //}
       })
       .addCase(createCaseSet.pending, (state) => {
         cohortsAdapter.updateOne(state, {
