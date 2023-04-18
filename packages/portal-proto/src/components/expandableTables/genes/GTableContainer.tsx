@@ -11,11 +11,14 @@ import {
   useRemoveFromGeneSetMutation,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
+import { Button, Loader } from "@mantine/core";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
 import TablePlaceholder from "../shared/TablePlaceholder";
@@ -23,12 +26,12 @@ import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
+import download from "src/utils/download";
 import { filtersToName } from "src/utils";
 
 export const SelectedRowContext =
@@ -76,6 +79,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
+  const dispatch = useCoreDispatch();
+  const [
+    mutatedGenesFrequencyDownloadActive,
+    setMutatedGenesFrequencyDownloadActive,
+  ] = useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -273,10 +281,65 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                  <FunctionButton>JSON</FunctionButton>
+                  <Button
+                    variant="outline"
+                    leftIcon={
+                      mutatedGenesFrequencyDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1.25em" />
+                      )
+                    }
+                    onClick={() => {
+                      setMutatedGenesFrequencyDownloadActive(true);
+                      download({
+                        endpoint: "ssms",
+                        method: "POST",
+                        options: {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                        },
+                        dispatch,
+                        params: {
+                          fields: [
+                            "genomic_dna_change",
+                            "mutation_subtype",
+                            "consequence.transcript.consequence_type",
+                            "consequence.transcript.annotation.vep_impact",
+                            "consequence.transcript.annotation.sift_impact",
+                            "consequence.transcript.annotation.polyphen_impact",
+                            "consequence.transcript.is_canonical",
+                            "consequence.transcript.gene.gene_id",
+                            "consequence.transcript.gene.symbol",
+                            "consequence.transcript.aa_change",
+                            "ssm_id",
+                          ],
+                          filters: {
+                            content: [
+                              {
+                                content: {
+                                  field: "genes.is_cancer_gene_census",
+                                  value: ["true"],
+                                },
+                                op: "in",
+                              },
+                            ],
+                            op: "and",
+                          },
+                          size: gTotal,
+                        },
+                        done: () =>
+                          setMutatedGenesFrequencyDownloadActive(false),
+                      });
+                    }}
+                  >
+                    JSON
+                  </Button>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton>TSV</FunctionButton>
+                  <Button>TSV</Button>
                 </ButtonTooltip>
               </div>
             }
