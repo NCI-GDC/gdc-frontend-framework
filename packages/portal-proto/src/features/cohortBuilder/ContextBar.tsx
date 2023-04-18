@@ -56,7 +56,7 @@ const ContextBar: React.FC = () => {
   const {
     data: cohortsListData,
     error: getCohortError,
-    isSuccess,
+    isFetching,
   } = useGetCohortsByContextIdQuery();
 
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
@@ -66,7 +66,11 @@ const ContextBar: React.FC = () => {
     // or call to fetch the cohort list errored out.
     // In that case we need to check if the error is due to context id not being provided.
     // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
-    if (cohortsListData === undefined && cohorts.length === 0 && isSuccess) {
+    if (
+      (cohortsListData === undefined || cohortsListData.length === 0) &&
+      cohorts.length === 0 &&
+      !isFetching
+    ) {
       coreDispatch(addNewCohort("New Unsaved Cohort"));
     }
     if (cohortsListData) {
@@ -99,7 +103,7 @@ const ContextBar: React.FC = () => {
     coreDispatch,
     cohortsListData,
     cohorts.length,
-    isSuccess,
+    isFetching,
   ]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
