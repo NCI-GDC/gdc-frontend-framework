@@ -527,7 +527,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 clearable={false}
                 value={startingId}
                 withinPortal={true}
-                zIndex={110}
+                zIndex={310}
                 onChange={(x) => {
                   onSelectionChanged(x);
                 }}
