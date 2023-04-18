@@ -18,7 +18,7 @@ from ..gdc_data_portal_v2.pages.cohort_bar import CohortBar
 
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
-        app_endpoint_var = "APP_ENDPOINT" if not os.getenv(
+        app_endpoint_var = "APP_ENDPOINT_PROD" if not os.getenv(
             'APP_ENVIRONMENT') else f"APP_ENDPOINT_{os.environ['APP_ENVIRONMENT']}"
         self.url = f"{os.getenv(app_endpoint_var)}/"
         self.driver = webdriver
