@@ -189,67 +189,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
-  // buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)),
-
-  // pear-117
-
-  // const {
-  //   trigger: mutatedGenesJSONTrigger,
-  //   isMutating: mutatedGenesJSONIsMutating,
-  //   data: mutatedGenesJSONData,
-  // } = useSWRMutation(
-  //   {
-  //     endpoint: `${GDC_APP_API_AUTH}/genes?fields="biotype,symbol,cytoband,name,gene_id`,
-  //     size: gTotal,
-  //   },
-  //   ({ endpoint, size }) => swrFetcher(endpoint, size),
-  // );
-
-  // pear-118
-
-  // const {
-  //   trigger: mutatedGenesTSVTrigger,
-  //   isMutating: mutatedGenesTSVIsMutating,
-  //   data: mutatedGenesTSVData,
-  // } = useSWRMutation(
-  //   {
-  //     endpoint: `${GDC_APP_API_AUTH}/graphql`,
-  //     query: `
-  //     query MutatedGenesFreq(
-  //       $score: String
-  //       ) {
-  //         viewer {
-  //           explore {
-  //             genes {
-  //               hits(
-  //                 first: ${`${gTotal}`}
-  //                 score: $score
-  //                 ) {
-  //                 edges {
-  //                   node {
-  //                     symbol
-  //                     name
-  //                     cytoband
-  //                     biotype
-  //                     gene_id
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }`,
-  //     size: initialData?.genes?.length ?? 0,
-  //     // variables: buildGqlOperator(joinFilter(cohortFilters, genomicFilters));
-  //     variables: getFilters(
-  //       "mutatedGenesTSV",
-  //       initialData?.genes.map(({ gene_id: geneId }) => geneId),
-  //     ),
-  //   },
-  //   ({ endpoint, size, query, variables }) =>
-  //     swrFetcher(endpoint, size, query, variables),
-  // );
-
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -333,22 +272,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                  <FunctionButton
-                  // onClick={() => {
-                  //   mutatedGenesJSONTrigger();
-                  // }}
-                  >
-                    JSON
-                  </FunctionButton>
+                  <FunctionButton>JSON</FunctionButton>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton
-                  // onClick={() => {
-                  //   mutatedGenesTSVTrigger();
-                  // }}
-                  >
-                    TSV
-                  </FunctionButton>
+                  <FunctionButton>TSV</FunctionButton>
                 </ButtonTooltip>
               </div>
             }
