@@ -157,6 +157,7 @@ interface VerticalTableProps {
    * Optional default table sort state
    */
   initialSort?: Array<SortingRule<any>>;
+  footer?: React.ReactNode;
 }
 
 /**
@@ -269,6 +270,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   },
   search,
   initialSort = [],
+  footer = undefined,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
@@ -400,7 +402,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         ? column.isSortedDesc
                           ? "descending"
                           : "ascending"
-                        : "none"
+                        : undefined
                     }
                     tabIndex={column.canSort === false ? -1 : 0}
                     onKeyDown={(event) => {
@@ -488,6 +490,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             })
           )}
         </tbody>
+        {footer && (
+          <tfoot className="font-heading text-sm text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-t-4 h-full">
+            {footer}
+          </tfoot>
+        )}
       </table>
     );
   };
