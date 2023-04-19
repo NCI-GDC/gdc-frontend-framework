@@ -9,6 +9,7 @@ import {
   caseFileType,
   Demographic,
   caseSummaryDefaults,
+  FilterSet,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -45,6 +46,8 @@ import {
 } from "./utils";
 import { BasicTable } from "@/components/Tables/BasicTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
+import SMTableContainer from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { DEFAULT_CASE_SUMMARY_SSMS_TABLE_ORDER } from "./SMTableConfig";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -403,6 +406,28 @@ export const CaseView: React.FC<CaseViewProps> = ({
     </span>
   );
 
+  const projectFilter: FilterSet = {
+    mode: "and",
+    root: {
+      "cases.project.project_id": {
+        operator: "includes",
+        field: "cases.project.project_id",
+        operands: [data.project.project_id],
+      },
+    },
+  };
+
+  const caseFilter: FilterSet = {
+    mode: "and",
+    root: {
+      "cases.project.project_id": {
+        operator: "includes",
+        field: "cases.case_id",
+        operands: [data.case_id],
+      },
+    },
+  };
+
   return (
     <>
       <SummaryHeader
@@ -511,7 +536,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           ref={targetRef}
           id="biospecimen"
           className={
-            biospecimenFilteredFiles?.length === 0 ? "mb-16" : undefined
+            biospecimenFilteredFiles?.length === 0 ? "mb-8" : undefined
           }
         >
           <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
@@ -526,6 +551,16 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <BasicTable tableData={formatDataForBioSpecimenFiles()} />
           </div>
         )}
+
+        <div className="mb-16">
+          <SMTableContainer
+            projectId={data.project.project_id}
+            columnsList={DEFAULT_CASE_SUMMARY_SSMS_TABLE_ORDER}
+            cohortFilters={projectFilter}
+            caseFilter={caseFilter}
+            genomicFilters={undefined}
+          />
+        </div>
       </div>
     </>
   );
