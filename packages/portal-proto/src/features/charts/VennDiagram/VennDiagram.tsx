@@ -87,6 +87,9 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
       t: 0,
       b: 0,
     },
+    font: {
+      color: "#333333",
+    },
   };
 
   const [layout, setLayout] = useState(initialLayout);
@@ -146,6 +149,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
       size: 30,
       opacity: 0,
     },
+
     showlegend: false,
   };
 

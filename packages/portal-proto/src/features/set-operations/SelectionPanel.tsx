@@ -77,14 +77,19 @@ const SelectCell: React.FC<SelectCellProps> = ({
       label={
         selectedEntityType !== undefined && selectedEntityType !== entityType
           ? "Please choose only one entity type"
-          : "Set is either empty or deprecated"
+          : count === 0
+          ? "Set is either empty or deprecated"
+          : undefined
       }
-      disabled={count > 0 && selectedEntityType === entityType}
+      disabled={
+        count > 0 &&
+        (selectedEntityType === undefined || selectedEntityType === entityType)
+      }
     >
       <span>
         <Checkbox
           classNames={{
-            input: "checked:bg-accent",
+            input: "checked:bg-accent checked:border-accent",
           }}
           disabled={disabled}
           checked={selectedEntities.map((e) => e.id).includes(setId)}
@@ -340,14 +345,14 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   return (
     <div className="bg-base-max">
       <div className="p-4">
-        <h2 className="font-heading text-lg font-bold py-2">
+        <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
           Select 2 or 3 of the same set type
         </h2>
-        <p>
+        <p className="font-content">
           Display a Venn diagram and compare/contrast your cohorts or sets of
           the same type.
         </p>
-        <p className="pb-2">
+        <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in
           Manage Sets or in analysis tools (e.g.{" "}
           <Link
@@ -383,6 +388,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         <FunctionButton
           className="mr-auto"
           onClick={() => {
+            setSelectedEntityType(undefined);
+            setSelectedEntities([]);
             setActiveApp(app, true);
             setOpen(false);
           }}

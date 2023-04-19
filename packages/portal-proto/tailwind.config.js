@@ -808,7 +808,7 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
-        content: ["Montserrat", "sans-serif"],
+        content: ["Noto Sans", "sans-serif"],
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {

@@ -7,6 +7,10 @@ include:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
 
+.default_rules: &default_rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+
 .services:
   allow_failure: true
   stage: deploy
@@ -14,6 +18,7 @@ include:
   parallel:
     matrix:
       - DEPLOY_SERVICE_LIST: [ portal2 ]
+  <<: *default_rules
 
 stages:
   - .pre
@@ -21,8 +26,9 @@ stages:
   - build
   - unit
   - release
+  - build_ui_tests_image
   - deploy
-  - build_and_run_ui_tests
+  - .trigger_ui_tests
 
 image: docker.osdc.io/node:16-alpine3.15
 
@@ -52,7 +58,7 @@ Install npm packages:
       - node_modules/
       - .npm/
     policy: push
-
+  <<: *default_rules
 
 Linting:
   stage: test
@@ -66,6 +72,7 @@ Linting:
       - node_modules/
       - .npm/
     policy: pull
+  <<: *default_rules
 
 Prettier Checks:
   stage: test
@@ -79,6 +86,7 @@ Prettier Checks:
       - node_modules/
       - .npm/
     policy: pull
+  <<: *default_rules
 
 Build core and compile portal:
   stage: build
@@ -105,6 +113,7 @@ Build core and compile portal:
         - packages/
         - dist/
       policy: push
+  <<: *default_rules
 
 Run unit tests:
   stage: unit
@@ -123,6 +132,7 @@ Run unit tests:
         - packages/
         - dist/
       policy: pull
+  <<: *default_rules
 
 Build and push container:
   stage: release
@@ -136,6 +146,7 @@ Build and push container:
   script:
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+  <<: *default_rules
 
 Push latest container:
   stage: release
@@ -154,6 +165,8 @@ Push latest container:
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+  except:
+    - schedules
 
 Push tagged container:
   stage: release
@@ -173,8 +186,8 @@ Push tagged container:
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
-Build and run UI tests:
-  stage: build_and_run_ui_tests
+Build UI tests Docker image:
+  stage: build_ui_tests_image
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -182,20 +195,47 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - docker cp holmes-py:/app/holmes-py/logs logs
-    - docker cp holmes-py:/app/holmes-py/reports reports
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+
+.trigger_ui_tests:
+  stage: .trigger_ui_tests
+  trigger:
+    include:
+      - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
+    strategy: depend
+  parallel:
+    matrix:
+      - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
+
+trigger_ui_tests_yellow:
+  extends: .trigger_ui_tests
+  stage: .trigger_ui_tests
+  variables:
+    APP_ENVIRONMENT: QA_YELLOW
+  needs:
+    - job: deploy_qa/uat
+      artifacts: true
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-      when: on_success
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
       allow_failure: true
-  artifacts:
-    when: always
-    paths:
-      - holmes-py/.gauge
-      - holmes-py/downloads
-      - holmes-py/logs
-      - holmes-py/reports
-    expire_in: 3 months
+
+trigger_ui_tests_uat:
+  extends: .trigger_ui_tests
+  stage: .trigger_ui_tests
+  variables:
+    APP_ENVIRONMENT: QA_UAT
+  needs:
+    - job: deploy_qa/uat
+      artifacts: true
+  rules:
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+      allow_failure: true
+
+trigger_ui_tests_scheduled:
+  extends: .trigger_ui_tests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
+      when: always
+  parallel:
+    matrix:
+      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]

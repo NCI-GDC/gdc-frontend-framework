@@ -10,6 +10,7 @@ import {
   useUserDetails,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
+import { DemoText } from "../shared/tailwindComponents";
 
 const basepath = PROTEINPAINT_API;
 
@@ -68,11 +69,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
-      {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing cases with Gliomas."}
-        </span>
-      )}
+      {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
       <div
         ref={divRef}
         style={{ margin: "2em" }}
