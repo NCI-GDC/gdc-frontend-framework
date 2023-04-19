@@ -51,7 +51,7 @@ const Cart: React.FC = () => {
   return cart.length === 0 ? (
     <Grid justify="center" className="bg-base-lightest flex-grow">
       <Grid.Col span={4} className="mt-20 flex flex-col items-center">
-        <div className="h-[150px] w-[150px] rounded-[50%] bg-[#e0e9f0] flex justify-center items-center">
+        <div className="h-[150px] w-[150px] rounded-[50%] bg-emptyCartLighterColor flex justify-center items-center">
           <CartIcon size={80} className="text-primary-darkest" />
         </div>
         <p className="uppercase text-primary-darkest text-2xl font-montserrat mt-4">
@@ -71,17 +71,13 @@ const Cart: React.FC = () => {
         <div
           className={`${
             isCollapsed ? "h-10" : ""
-          } flex border border-[#C7501A] text-secondary-contrast-lighter`}
+          } flex border border-cartDarkerOrange text-secondary-contrast-lighter`}
         >
-          <div
-            className={`flex w-12 bg-[#C7501A] justify-center ${
-              isCollapsed ? "items-center" : "pt-[7px]"
-            } `}
-          >
+          <div className="flex w-12 bg-cartDarkerOrange justify-center p-2">
             <FaExclamationCircle color="white" className="h-6 w-6" />
           </div>
           <div
-            className={`bg-[#C7501A33] w-full h-full pl-4 ${
+            className={`bg-cartLighterOrange w-full h-full pl-4 ${
               isCollapsed ? "flex items-center" : "pt-[7px]"
             }`}
           >
@@ -98,7 +94,7 @@ const Cart: React.FC = () => {
                       href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#1D6796] font-bold underline"
+                      className="text-linkDarkerColor font-bold underline"
                     >
                       <FiExternalLink className="inline" /> GDC Data Transfer
                       Tool
@@ -123,7 +119,7 @@ const Cart: React.FC = () => {
                       href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline text-[#1D6796] font-bold"
+                      className="underline text-linkDarkerColor font-bold"
                     >
                       <FiExternalLink className="inline" /> GDC Reference Files
                     </a>{" "}
@@ -134,13 +130,13 @@ const Cart: React.FC = () => {
             )}
           </div>
           <div
-            className={`bg-[#C7501A33] ${
+            className={`bg-cartLighterOrange ${
               isCollapsed ? "flex items-center" : ""
             }`}
           >
             <ActionIcon
               variant="transparent"
-              className="text-[#C7501A] hover:cursor-pointer rounded-none mr-4"
+              className="text-cartDarkerOrange hover:cursor-pointer rounded-none mr-4"
               onClick={() => setIsCollapsed(!isCollapsed)}
               data-testid="expand-collapse-button"
               aria-label={

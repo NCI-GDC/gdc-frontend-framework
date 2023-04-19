@@ -95,19 +95,23 @@ describe("<Cart />", () => {
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
     jest.spyOn(core, "useGetFilesQuery").mockReturnValue({} as any);
 
-    const { getByText, getByTestId, queryByTestId, queryByText } = render(
-      <Cart />,
-    );
+    const {
+      getByText,
+      getByTestId,
+      queryByTestId,
+      queryByText,
+      getByLabelText,
+    } = render(<Cart />);
     expect(getByText("How to download files in my cart?")).toBeInTheDocument();
     expect(queryByTestId("download-info")).toBeNull();
 
     // expand
-    await userEvent.click(getByTestId("expand-collapse-button"));
+    await userEvent.click(getByLabelText("expand more button"));
     expect(getByTestId("download-info")).toBeDefined();
     expect(getByText("Download Manifest:")).toBeInTheDocument();
 
     // collapse
-    await userEvent.click(getByTestId("expand-collapse-button"));
+    await userEvent.click(getByLabelText("collapse button"));
     expect(queryByTestId("download-info")).toBeNull();
     expect(queryByText("Download Manifest:")).toBeNull();
   });
