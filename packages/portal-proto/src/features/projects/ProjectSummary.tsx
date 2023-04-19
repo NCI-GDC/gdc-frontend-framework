@@ -1,9 +1,15 @@
+import React, { useState } from "react";
 import {
   useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
   useFilesFacetsByNameFilter,
+  useCoreDispatch,
+  FilterSet,
+  useCoreSelector,
+  selectAvailableCohorts,
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
@@ -28,6 +34,7 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -125,6 +132,33 @@ export interface ProjectViewProps extends ProjectDefaults {
 export const ProjectView: React.FC<ProjectViewProps> = (
   projectData: ProjectViewProps,
 ) => {
+  const coreDispatch = useCoreDispatch();
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
+  const createCohortFromProjects = (name: string) => {
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          operator: "=",
+          field: "cases.project.project_id",
+          operand: projectData.project_id,
+        },
+      },
+    };
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        name,
+        message: "newProjectsCohort",
+      }),
+    );
+  };
+
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
   const formatDataForSummary = () => {
     const {
       project_id,
@@ -442,6 +476,26 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               }
               LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
             />
+            <Button
+              color="primary"
+              variant="outline"
+              className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary font-medium text-sm"
+              onClick={() => setShowCreateCohort(true)}
+            >
+              Create New Cohort
+            </Button>
+            {showCreateCohort && (
+              <SaveOrCreateCohortModal
+                entity="cohort"
+                action="create"
+                opened
+                onClose={() => setShowCreateCohort(false)}
+                onActionClick={(newName: string) => {
+                  createCohortFromProjects(newName);
+                }}
+                onNameChange={onNameChange}
+              />
+            )}
             <DropdownWithIcon
               dropdownElements={[
                 {
