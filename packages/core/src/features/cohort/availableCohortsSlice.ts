@@ -640,12 +640,15 @@ const slice = createSlice({
           state,
           newCohort({ customName: "New Unsaved Cohort" }),
         );
+        const selector = cohortsAdapter.getSelectors();
         const createdCohort = selector.selectAll(state)[0];
         state.currentCohort = createdCohort.id;
         state.message = [
           `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
           `newCohort|${createdCohort.name}|${createdCohort.id}`,
         ];
+      } else {
+        state.currentCohort = selector.selectAll(state)[0].id;
       }
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {

@@ -85,11 +85,7 @@ const ContextBar: React.FC = () => {
   );
 
   useEffect(() => {
-    if (
-      (currentIndex === undefined ||
-        !cohorts.map((cohort) => cohort.id).includes(currentIndex)) &&
-      cohorts.length > 0
-    ) {
+    if (currentIndex === undefined && cohorts.length > 0) {
       setCurrentIndex(cohorts[0].id);
       coreDispatch(setCurrentCohortId(cohorts[0].id));
     }

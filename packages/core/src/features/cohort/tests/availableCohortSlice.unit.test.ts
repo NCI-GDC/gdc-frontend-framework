@@ -243,7 +243,9 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities["asdf"]?.filters).toEqual(TwoPopulatedFilters);
+    expect(newState.entities["0000-0000-1000-0000"]?.filters).toEqual(
+      TwoPopulatedFilters,
+    );
   });
 
   test("should not add a duplicate filter to the current cohort", () => {
@@ -258,7 +260,7 @@ describe("addFilter", () => {
         },
       }),
     );
-    expect(newState.entities["asdf"]?.filters).toEqual({
+    expect(newState.entities["0000-0000-1000-0000"]?.filters).toEqual({
       mode: "and",
       root: {
         "cases.primary_site": {
@@ -382,7 +384,7 @@ describe("add, update, and remove cohort", () => {
     .mockReturnValueOnce("000-000-000-1")
     .mockReturnValueOnce("000-000-000-2")
     .mockReturnValueOnce("000-000-000-3")
-    .mockReturnValueOnce("000-000-000-4");
+    .mockReturnValue("000-000-000-4");
   jest
     .spyOn(cohortSlice, "createCohortName")
     .mockReturnValueOnce("New Cohort")
@@ -406,7 +408,7 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: "newCohort|test|000-000-000-1",
+      message: ["newCohort|test|000-000-000-1"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -464,7 +466,7 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: "newProjectsCohort|New Cohort 2|000-000-000-2",
+      message: ["newProjectsCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
@@ -530,7 +532,7 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
-      message: "newCohort|test|000-000-000-3",
+      message: ["newCohort|test|000-000-000-3"],
       ids: ["000-000-000-1", "000-000-000-3"],
       entities: {
         "000-000-000-1": {
@@ -605,12 +607,12 @@ describe("add, update, and remove cohort", () => {
       {
         currentCohort: "000-000-000-2",
         message: undefined,
-        ids: ["ALL-GDC-COHORT", "000-000-000-2"],
+        ids: ["000-000-000-1", "000-000-000-2"],
         entities: {
-          "ALL-GDC-COHORT": {
-            name: "All GDC",
+          "000-000-000-1": {
+            name: "New Cohort 1",
             filters: { mode: "and", root: {} },
-            id: "ALL-GDC-COHORT",
+            id: "000-000-000-1",
             caseSet: {
               status: "uninitialized",
             },
@@ -632,14 +634,14 @@ describe("add, update, and remove cohort", () => {
       removeCohort({ shouldShowMessage: true }),
     );
     expect(availableCohorts).toEqual({
-      currentCohort: "ALL-GDC-COHORT",
-      message: "deleteCohort|New Cohort 2|000-000-000-2",
-      ids: ["ALL-GDC-COHORT"],
+      currentCohort: "000-000-000-1",
+      message: ["deleteCohort|New Cohort 2|000-000-000-2"],
+      ids: ["000-000-000-1"],
       entities: {
-        "ALL-GDC-COHORT": {
-          name: "All GDC",
+        "000-000-000-1": {
+          name: "New Cohort 1",
           filters: { mode: "and", root: {} },
-          id: "ALL-GDC-COHORT",
+          id: "000-000-000-1",
           caseSet: {
             status: "uninitialized",
           },
@@ -650,26 +652,12 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should not remove the first cohort", () => {
+  test("should create new unsaved cohort when removing last cohort", () => {
     const removeState = {
-      currentCohort: "ALL-GDC-COHORT",
+      currentCohort: "000-000-000-1",
       message: ["deleteCohort|New Cohort 2|000-000-000-1"],
-      ids: ["ALL-GDC-COHORT", "000-000-000-1"],
+      ids: ["000-000-000-1"],
       entities: {
-        "ALL-GDC-COHORT": {
-          name: "All GDC",
-          filters: { mode: "and", root: {} },
-          id: "ALL-GDC-COHORT",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized" as DataStatus,
-          },
-          modified: false,
-          modified_datetime: new Date().toISOString(),
-        },
         "000-000-000-1": {
           name: "New Cohort",
           filters: { mode: "and", root: {} },
@@ -691,7 +679,9 @@ describe("add, update, and remove cohort", () => {
       removeState,
       removeCohort({ shouldShowMessage: true }),
     );
-    expect(availableCohorts).toEqual(removeState);
+    expect(Object.values(availableCohorts.entities)[0]?.name).toEqual(
+      "New Unsaved Cohort",
+    );
   });
 
   test("should add new cohort with filter and message, and make current cohort", () => {
@@ -733,7 +723,7 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-4",
-      message: "newProjectsCohort|New Cohort 2|000-000-000-4",
+      message: ["newProjectsCohort|New Cohort 2|000-000-000-4"],
       ids: ["000-000-000-1", "000-000-000-4"],
       entities: {
         "000-000-000-1": {
