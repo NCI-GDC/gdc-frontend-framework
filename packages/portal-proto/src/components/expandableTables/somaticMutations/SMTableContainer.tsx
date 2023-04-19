@@ -11,6 +11,7 @@ import {
   selectSetsByType,
   joinFilters,
   buildCohortGqlOperator,
+  useGetSomaticMutationTableSubrowQuery,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -33,7 +34,8 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
-import FunctionButton from "@/components/FunctionButton";
+import { Button, Loader } from "@mantine/core";
+import useSWRMutation from "swr/mutation";
 
 export const SelectedRowContext =
   createContext<
@@ -221,6 +223,30 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         })
       : combinedFilters;
 
+  const {
+    trigger: mutationsFrequencyDownloadTrigger,
+    isMutating: mutationsFrequencyDownloadIsMutating,
+    data: mutationsFrequencyDownloadData,
+  } = useSWRMutation(
+    { ids: tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id) },
+    ({ ids }) =>
+      Promise.all(
+        ids.map((id) => {
+          const subs = [];
+          try {
+            const result = useGetSomaticMutationTableSubrowQuery({ id });
+            subs.push(result);
+          } catch (e) {
+            console.log("error", e);
+          }
+          return subs;
+        }),
+      ),
+    {
+      onSuccess: (data) => console.log(data),
+    },
+  );
+
   return (
     <>
       <SelectedRowContext.Provider
@@ -305,10 +331,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             additionalControls={
               <div className="flex gap-2">
                 <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton>JSON</FunctionButton>
+                  <Button>JSON</Button>
                 </ButtonTooltip>
                 <ButtonTooltip label="Export current view">
-                  <FunctionButton>TSV</FunctionButton>
+                  <Button onClick={() => mutationsFrequencyDownloadTrigger()}>
+                    TSV
+                  </Button>
                 </ButtonTooltip>
               </div>
             }

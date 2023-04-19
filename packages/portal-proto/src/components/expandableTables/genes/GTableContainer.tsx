@@ -11,6 +11,7 @@ import {
   useRemoveFromGeneSetMutation,
   joinFilters,
   buildCohortGqlOperator,
+  useGetGeneTableSubrowQuery,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -30,6 +31,8 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import { Button, Loader } from "@mantine/core";
+import useSWRMutation from "swr/mutation";
 
 export const SelectedRowContext =
   createContext<
@@ -190,6 +193,30 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  const {
+    trigger: mutatedGenesFrequencyDownloadTrigger,
+    isMutating: mutatedGenesFrequencyDownloadIsMutating,
+    data: mutatedGenesFrequencyDownloadData,
+  } = useSWRMutation(
+    { ids: initialData?.genes.map(({ gene_id: geneId }) => geneId) },
+    ({ ids }) =>
+      Promise.all(
+        ids.map((id) => {
+          const subs = [];
+          try {
+            const result = useGetGeneTableSubrowQuery({ id });
+            subs.push(result);
+          } catch (e) {
+            console.log("error", e);
+          }
+          return subs;
+        }),
+      ),
+    {
+      onSuccess: (data) => console.log(data),
+    },
+  );
+
   return (
     <>
       <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
@@ -278,8 +305,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 >
                   <FunctionButton>JSON</FunctionButton>
                 </ButtonTooltip>
-                <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton>TSV</FunctionButton>
+                <ButtonTooltip label="Export current view">
+                  <Button
+                    onClick={() => mutatedGenesFrequencyDownloadTrigger()}
+                  >
+                    TSV
+                  </Button>
                 </ButtonTooltip>
               </div>
             }
