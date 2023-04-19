@@ -36,7 +36,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
         </div>
       }
     >
-      <div className="mx-2">{analysisApp}</div>
+      <div>{analysisApp}</div>
     </Suspense>
   );
 };

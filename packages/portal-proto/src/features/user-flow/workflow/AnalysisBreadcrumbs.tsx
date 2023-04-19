@@ -1,33 +1,30 @@
+import React, { useContext } from "react";
 import { MdClose, MdCircle } from "react-icons/md";
 import { Button } from "@mantine/core";
+import { SelectionScreenContext } from "./AnalysisWorkspace";
 import { REGISTERED_APPS } from "./registeredApps";
 
 interface AnalysisBreadcrumbsProps {
-  readonly currentApp: string;
-  readonly setCohortSelectionOpen: (open: boolean) => void;
-  readonly cohortSelectionOpen: boolean;
-  readonly setActiveApp: (app: string) => void;
   readonly rightComponent?: React.ReactElement;
   readonly onDemoApp?: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
-  currentApp,
-  setCohortSelectionOpen,
-  cohortSelectionOpen,
-  setActiveApp,
   rightComponent,
   onDemoApp,
 }: AnalysisBreadcrumbsProps) => {
-  const appInfo = REGISTERED_APPS.find((app) => app.id === currentApp);
+  const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
+    useContext(SelectionScreenContext);
+  const appInfo = REGISTERED_APPS.find((a) => a.id === app);
 
-  const displayAdditionalSteps = !onDemoApp && appInfo?.selectAdditionalCohort;
+  const displayAdditionalSteps =
+    !onDemoApp && appInfo?.selectionScreen !== undefined;
 
   return (
-    <div className="w-full bg-primary p-2 flex items-center ">
+    <div className="w-full bg-primary px-4 py-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
-        className="bg-base-lightest text-primary-content-darkest"
+        className="bg-base-max text-primary-content-darkest px-2"
         aria-label="Close app"
       >
         <MdClose size={20} />
@@ -41,25 +38,25 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
       </span>
       {displayAdditionalSteps && (
         <>
-          {appInfo?.selectAdditionalCohort && (
+          {appInfo?.selectionScreen !== undefined && (
             <>
               <MdCircle size={8} color="white" />
               <span
                 className={`p-2 mx-2 uppercase cursor-pointer text-white ${
-                  cohortSelectionOpen ? "font-bold" : ""
+                  selectionScreenOpen ? "font-bold" : ""
                 }`}
                 role="button"
                 tabIndex={0}
-                onClick={() => setCohortSelectionOpen(true)}
-                onKeyPress={(e) =>
-                  e.key === "Enter" ? setCohortSelectionOpen(true) : null
+                onClick={() => setSelectionScreenOpen(true)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" ? setSelectionScreenOpen(true) : null
                 }
               >
                 Selection
               </span>
             </>
           )}
-          {!cohortSelectionOpen && (
+          {!selectionScreenOpen && (
             <>
               <MdCircle size={8} color="white" />
               <span className="p-2 mx-2 uppercase font-bold text-white">

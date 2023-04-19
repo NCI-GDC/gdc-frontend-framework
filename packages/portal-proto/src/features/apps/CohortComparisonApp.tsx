@@ -1,13 +1,15 @@
+import React, { useContext, useState } from "react";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortName,
-  selectComparisonCohorts,
   FilterSet,
   selectCurrentCohortFilterSet,
   selectAvailableCohortByName,
 } from "@gff/core";
+import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import CohortComparison from "../cohortComparison/CohortComparison";
+import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
 
 export const cohortDemo1: {
   filter: FilterSet;
@@ -68,12 +70,13 @@ const CohortComparisonApp: React.FC = () => {
     selectCurrentCohortFilterSet(state),
   );
 
-  const comparisonCohort = useCoreSelector((state) =>
-    selectComparisonCohorts(state),
-  )[0];
+  const [comparisonCohort, setComparisonCohort] = useState();
   const comparisonCohortFilter = useCoreSelector(
     (state) => selectAvailableCohortByName(state, comparisonCohort)?.filters,
   );
+
+  const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
+    useContext(SelectionScreenContext);
 
   const cohorts = isDemoMode
     ? { primary_cohort: cohortDemo1, comparison_cohort: cohortDemo2 }
@@ -88,7 +91,16 @@ const CohortComparisonApp: React.FC = () => {
         },
       };
 
-  return <CohortComparison cohorts={cohorts} demoMode={isDemoMode} />;
+  return selectionScreenOpen ? (
+    <AdditionalCohortSelection
+      app={app}
+      setOpen={setSelectionScreenOpen}
+      setActiveApp={setActiveApp}
+      setComparisonCohort={setComparisonCohort}
+    />
+  ) : (
+    <CohortComparison cohorts={cohorts} demoMode={isDemoMode} />
+  );
 };
 
 export default CohortComparisonApp;
