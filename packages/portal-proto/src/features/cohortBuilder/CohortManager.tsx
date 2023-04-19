@@ -279,7 +279,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const menu_items = [
-    ...cohorts // Make ALL GDC always first
+    ...cohorts
       .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
       .map((x) => {
         return { value: x.id, label: x.name };
@@ -531,7 +531,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   root: "border-secondary-darkest w-80 p-0 pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
-                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter first:border-b-2 first:rounded-none first:border-primary",
+                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter",
                 }}
                 aria-label="Select cohort"
                 data-testid="switchButton"
