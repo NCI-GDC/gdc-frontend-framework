@@ -18,6 +18,8 @@ import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
 import { NumeratorDenominator } from "@/components/expandableTables/shared/NumeratorDenominator";
+import { convertDateToString } from "src/utils/date";
+import saveAs from "file-saver";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -297,7 +299,76 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       additionalControls={
         <div className="flex gap-2 mb-2">
           <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton
+            onClick={() => {
+              const now = new Date();
+              const fileName = `frequent-mutations.${convertDateToString(
+                now,
+              )}.tsv`;
+              const headers = isGene
+                ? [
+                    "Project",
+                    "Disease Type",
+                    "Primary Site",
+                    "# SSM Affected Cases",
+                    "# CNV Gains",
+                    "# CNV Losses",
+                    "# Mutations",
+                  ]
+                : [
+                    "Project",
+                    "Disease Type",
+                    "Primary Site",
+                    "# SSM Affected Cases",
+                  ];
+              const body = isGene
+                ? formattedData
+                    .map(
+                      ({
+                        project,
+                        disease_type,
+                        primary_site,
+                        ssm_affected_cases,
+                        cnv_gains,
+                        cnv_losses,
+                        num_mutations,
+                      }) => {
+                        return [
+                          project,
+                          disease_type,
+                          primary_site,
+                          ssm_affected_cases,
+                          cnv_gains,
+                          cnv_losses,
+                          num_mutations,
+                        ].join("\t");
+                      },
+                    )
+                    .join("\n")
+                : formattedData
+                    .map(
+                      ({
+                        project,
+                        disease_type,
+                        primary_site,
+                        ssm_affected_cases,
+                      }) => {
+                        return [
+                          project,
+                          disease_type,
+                          primary_site,
+                          ssm_affected_cases,
+                        ].join("\t");
+                      },
+                    )
+                    .join("\n");
+              const tsv = [headers.join("\t"), body].join("\n");
+              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+              saveAs(blob, fileName);
+            }}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       pagination={{
