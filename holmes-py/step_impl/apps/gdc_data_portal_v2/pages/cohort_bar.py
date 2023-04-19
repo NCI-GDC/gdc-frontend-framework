@@ -7,6 +7,8 @@ class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
     COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> div:text("{cohort_name}")'
+    ACTIVE_COHORT = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
+
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
     SECOND_SAVE_MODAL = 'div:text("Save Cohort") >> ..  >> .. >> div:text("You cannot undo this action.")'
 
@@ -30,7 +32,6 @@ class CohortBar(BasePage):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
         self.click(locator)
 
-
     def select_cohort_from_dropdown(self, cohort_name:str):
         locator = CohortBarLocators.COHORT_FROM_DROPDOWN_LIST(cohort_name)
         self.click(locator)
@@ -39,6 +40,10 @@ class CohortBar(BasePage):
     def click_set_as_current_cohort_from_temp_message(self):
         locator = CohortBarLocators.SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE
         self.click(locator)
+
+    def is_expected_active_cohort_present(self, cohort_name:str):
+        locator = CohortBarLocators.ACTIVE_COHORT(cohort_name)
+        return self.is_visible(locator)
 
     # Checks if cohort bar button is disabled
     def is_cohort_bar_button_disabled(self, button_name:str):
