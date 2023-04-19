@@ -431,13 +431,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="flex flex-row items-center ml-auto gap-1">
           <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
-              <div className="flex">
-                <Tooltip label="Download Survival Plot data or image">
-                  <DownloadButton aria-label="Download button with an icon">
-                    <DownloadIcon size="1.25em" />
-                  </DownloadButton>
-                </Tooltip>
-              </div>
+              <Tooltip label="Download Survival Plot data or image">
+                <DownloadButton aria-label="Download button with an icon">
+                  <DownloadIcon size="1.25em" />
+                </DownloadButton>
+              </Tooltip>
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
