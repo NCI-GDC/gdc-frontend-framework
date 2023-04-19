@@ -6,6 +6,7 @@ import {
   useClinicalFields,
   useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
+  convertFacetNameToGQL,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import Controls from "./Controls";
@@ -24,17 +25,24 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
-
   const { data: fields } = useClinicalFields();
-  const cDaveFields = Object.values(fields)
+
+  console.log("activeFields", activeFields, fields);
+
+  const gql_active_fields = activeFields.map((f) => convertFacetNameToGQL(f));
+
+  const cDaveFields = Object.values(
+    fields?.reduce((acc, curr) => {
+      if (gql_active_fields.includes(curr.name)) acc[curr.name] = curr;
+      return acc;
+    }, []),
+  )
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
     .filter(
       (d) =>
         FACET_SORT?.[d.field_type] &&
         FACET_SORT[d.field_type].includes(d.field_name),
     );
-
-  console.log("use clinical fields", fields, cDaveFields);
 
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(
@@ -61,14 +69,6 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     facets: cDaveFields.map((f) => f.full),
     size: 0,
   });
-
-  console.log(
-    "cDaveResult",
-    cDaveResult,
-    cDaveFields.map((f) => f.full),
-    isFetching,
-    isSuccess,
-  );
 
   const updateFields = (field: string) => {
     if (activeFields.includes(field)) {

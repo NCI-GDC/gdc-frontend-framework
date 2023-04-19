@@ -78,6 +78,7 @@ export type gdcEndpoint =
 
 export interface GdcApiRequest {
   readonly filters?: GqlOperation;
+  readonly case_filters?: GqlOperation;
   readonly fields?: ReadonlyArray<string>;
   readonly expand?: ReadonlyArray<string>;
   readonly format?: "JSON" | "TSV" | "XML";

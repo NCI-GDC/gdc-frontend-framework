@@ -4,10 +4,15 @@ import {
   clinicalAnalysisApiReducer,
 } from "./clinicalDataAnalysisSlice";
 import {
+  fetchClinicalFieldsResult,
   useClinicalFields,
   clinicalFieldsReducer,
 } from "./clinicalFieldsSlice";
-export { useClinicalFields, useGetClinicalAnalysisQuery };
+export {
+  fetchClinicalFieldsResult,
+  useClinicalFields,
+  useGetClinicalAnalysisQuery,
+};
 
 export const clinicalDataAnalysisReducer = combineReducers({
   fields: clinicalFieldsReducer,
