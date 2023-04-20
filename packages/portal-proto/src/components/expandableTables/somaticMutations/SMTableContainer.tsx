@@ -342,17 +342,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                             "ssm_id",
                           ].join(","),
                           filters: geneSymbol
-                            ? joinFilters(combinedFilters, {
-                                mode: "and",
-                                root: {
-                                  "genes.symbol": {
-                                    field: "genes.symbol",
-                                    operator: "includes",
-                                    operands: [geneSymbol],
+                            ? buildCohortGqlOperator(
+                                joinFilters(combinedFilters, {
+                                  mode: "and",
+                                  root: {
+                                    "genes.symbol": {
+                                      field: "genes.symbol",
+                                      operator: "includes",
+                                      operands: [geneSymbol],
+                                    },
                                   },
-                                },
-                              })
-                            : combinedFilters,
+                                }),
+                              )
+                            : buildCohortGqlOperator(combinedFilters),
                           size: smTotal,
                         },
                         done: () => {
