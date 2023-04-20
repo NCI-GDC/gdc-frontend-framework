@@ -100,7 +100,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
           title={title}
           divId={CHART_NAME}
           filename={CHART_NAME}
-          jsonData={{}}
+          jsonData={[]}
         />
       ) : null}
       <div className="w-100 h-100">

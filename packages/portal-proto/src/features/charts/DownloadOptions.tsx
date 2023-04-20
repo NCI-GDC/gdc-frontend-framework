@@ -6,7 +6,7 @@ import { DownloadButton } from "@/features/shared/tailwindComponents";
 interface ChartDownloadProps {
   readonly chartDivId: string;
   readonly chartName: string;
-  readonly jsonData: Record<string, unknown>;
+  readonly jsonData: Array<any>;
 }
 
 const DownloadOptions: React.FC<ChartDownloadProps> = ({

@@ -9,7 +9,7 @@ export interface ChartTitleBarProps {
   readonly title?: ReactNode;
   readonly filename: string;
   readonly divId: string;
-  readonly jsonData: Record<string, unknown>;
+  readonly jsonData: Array<any>;
 }
 
 const ChartTitleBar: React.FC<ChartTitleBarProps> = ({

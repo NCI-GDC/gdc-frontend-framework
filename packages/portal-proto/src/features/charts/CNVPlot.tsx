@@ -148,9 +148,9 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
       <div>
         <ChartTitleBar
           title={title}
-          filename={CHART_NAME}
+          filename={`cancer-distribution-bar-chart`}
           divId={chartDivId}
-          jsonData={{
+          jsonData={[
             ...sortedData.map(({ project: symbol, gain, loss, total }) => {
               return {
                 symbol,
@@ -159,7 +159,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
                 total,
               };
             }),
-          }}
+          ]}
         />
       </div>
       <div>
