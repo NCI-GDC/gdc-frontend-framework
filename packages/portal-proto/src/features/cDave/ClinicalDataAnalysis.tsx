@@ -6,7 +6,6 @@ import {
   useClinicalFields,
   useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
-  convertFacetNameToGQL,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import Controls from "./Controls";
@@ -24,19 +23,11 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
 }: ClinicalDataAnalysisProps) => {
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
-  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
+  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
+
   const { data: fields } = useClinicalFields();
 
-  console.log("activeFields", activeFields, fields);
-
-  const gql_active_fields = activeFields.map((f) => convertFacetNameToGQL(f));
-
-  const cDaveFields = Object.values(
-    fields?.reduce((acc, curr) => {
-      if (gql_active_fields.includes(curr.name)) acc[curr.name] = curr;
-      return acc;
-    }, []),
-  )
+  const cDaveFields = Object.values(fields)
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
     .filter(
       (d) =>
@@ -90,6 +81,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         loaderProps={{ size: "xl", color: "primary" }}
         visible={isFetching}
         data-testid="please_wait_spinner"
+        zIndex={0}
       />
     </div>
   ) : (
