@@ -100,7 +100,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         </DemoText>
       )}
 
-      <div className="flex">
+      <div className="flex gap-4">
         <Controls
           updateFields={updateFields}
           cDaveFields={cDaveFields}

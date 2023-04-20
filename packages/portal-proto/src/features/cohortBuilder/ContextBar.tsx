@@ -4,7 +4,6 @@ import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
-import { useCohortFacetFilters } from "./CohortGroup";
 import CohortManager from "./CohortManager";
 import {
   DeleteCohortNotification,
@@ -41,7 +40,6 @@ import {
 } from "react-icons/md";
 import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import QueryExpressionSection from "./QueryExpressionSection";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 interface Error {
@@ -228,144 +226,134 @@ const ContextBar: React.FC = () => {
     },
   ] as ReadonlyArray<SummaryFacetInfo>);
 
-  const filters = useCohortFacetFilters();
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
   return (
-    <div
-      className="font-heading bg-base-max flex flex-col"
-      data-tour="context_bar"
+    <CollapsibleContainer
+      Top={() => (
+        <CohortManager
+          cohorts={cohorts}
+          onSelectionChanged={handleCohortSelection}
+          startingId={currentIndex}
+        />
+      )}
+      isCollapsed={isGroupCollapsed}
+      toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
+      onlyIcon={false}
+      isContextBar={true}
     >
-      <CollapsibleContainer
-        Top={() => (
-          <CohortManager
-            cohorts={cohorts}
-            onSelectionChanged={handleCohortSelection}
-            startingId={currentIndex}
-          />
-        )}
-        isCollapsed={isGroupCollapsed}
-        toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
-        onlyIcon={false}
-      >
-        <div className="flex flex-col bg-nci-violet-lightest">
-          <div className="relative p-2">
-            <div className="flex flex-row absolute ml-2 gap-4">
-              <DropdownWithIcon
-                dropdownElements={[
-                  { title: "Add to Cart" },
-                  { title: "Download Manifest" },
-                  { title: "Metadata" },
-                  { title: "Sample Sheet" },
-                ]}
-                TargetButtonChildren={
-                  <CountButton countName="fileCount" label="Files" />
-                }
-                LeftIcon={
-                  <DownloadIcon size="1rem" aria-label="Files dropdown" />
-                }
-              />
+      <div className="flex flex-col bg-nci-violet-lightest">
+        <div className="relative p-2">
+          <div className="flex flex-row absolute ml-2 gap-4">
+            <DropdownWithIcon
+              dropdownElements={[
+                { title: "Add to Cart" },
+                { title: "Download Manifest" },
+                { title: "Metadata" },
+                { title: "Sample Sheet" },
+              ]}
+              TargetButtonChildren={
+                <CountButton countName="fileCount" label="Files" />
+              }
+              LeftIcon={
+                <DownloadIcon size="1rem" aria-label="Files dropdown" />
+              }
+            />
 
-              <DropdownWithIcon
-                dropdownElements={[
-                  {
-                    title: "Cases",
-                    onClick: () =>
-                      coreDispatch(
-                        showModal({ modal: Modals.GlobalCaseSetModal }),
-                      ),
-                  },
-                  {
-                    title: "Genes",
-                    onClick: () =>
-                      coreDispatch(
-                        showModal({ modal: Modals.GlobalGeneSetModal }),
-                      ),
-                  },
-                  {
-                    title: "Mutations",
-                    onClick: () =>
-                      coreDispatch(
-                        showModal({ modal: Modals.GlobalMutationSetModal }),
-                      ),
-                  },
-                ]}
-                TargetButtonChildren="Custom Filters"
-                LeftIcon={
-                  <CohortFilterIcon
-                    size="1rem"
-                    aria-label="Custom cohort filters"
-                  />
-                }
-                menuLabelText="Filter your cohort by:"
-                menuLabelCustomClass="font-bold text-primary"
-              />
+            <DropdownWithIcon
+              dropdownElements={[
+                {
+                  title: "Cases",
+                  onClick: () =>
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalCaseSetModal }),
+                    ),
+                },
+                {
+                  title: "Genes",
+                  onClick: () =>
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalGeneSetModal }),
+                    ),
+                },
+                {
+                  title: "Mutations",
+                  onClick: () =>
+                    coreDispatch(
+                      showModal({ modal: Modals.GlobalMutationSetModal }),
+                    ),
+                },
+              ]}
+              TargetButtonChildren="Custom Filters"
+              LeftIcon={
+                <CohortFilterIcon
+                  size="1rem"
+                  aria-label="Custom cohort filters"
+                />
+              }
+              menuLabelText="Filter your cohort by:"
+              menuLabelCustomClass="font-bold text-primary"
+            />
 
-              {activeTab === "summary" && (
-                <>
-                  <DropdownWithIcon
-                    dropdownElements={[
-                      { title: "JSON (Coming Soon)" },
-                      { title: "TSV (Coming Soon)" },
-                    ]}
-                    TargetButtonChildren="Biospecimen"
-                  />
+            {activeTab === "summary" && (
+              <>
+                <DropdownWithIcon
+                  dropdownElements={[
+                    { title: "JSON (Coming Soon)" },
+                    { title: "TSV (Coming Soon)" },
+                  ]}
+                  TargetButtonChildren="Biospecimen"
+                />
 
-                  <DropdownWithIcon
-                    dropdownElements={[
-                      { title: "JSON (Coming Soon)" },
-                      { title: "TSV (Coming Soon)" },
-                    ]}
-                    TargetButtonChildren="Clinical"
-                  />
-                </>
-              )}
-            </div>
-            <Tabs
-              classNames={{
-                tab: SecondaryTabStyle,
-                tabsList: "px-2 mb-4 border-0",
-                root: "border-0",
-              }}
-              data-tour="cohort_summary"
-              defaultValue="summary"
-              keepMounted={false}
-              value={activeTab}
-              onTabChange={setActiveTab}
-            >
-              <Tabs.List position="right">
-                <Tabs.Tab
-                  data-tour="cohort_summary_charts"
-                  value="summary"
-                  icon={<SummaryChartIcon />}
-                >
-                  Summary View
-                </Tabs.Tab>
-
-                <Tabs.Tab
-                  data-tour="cohort_summary_table"
-                  value="table"
-                  icon={<TableIcon />}
-                >
-                  Table View
-                </Tabs.Tab>
-              </Tabs.List>
-              <Tabs.Panel value="summary">
-                <SummaryFacets fields={summaryFields} />
-              </Tabs.Panel>
-              <Tabs.Panel value="table">
-                <ContextualCasesView />
-              </Tabs.Panel>
-            </Tabs>
+                <DropdownWithIcon
+                  dropdownElements={[
+                    { title: "JSON (Coming Soon)" },
+                    { title: "TSV (Coming Soon)" },
+                  ]}
+                  TargetButtonChildren="Clinical"
+                />
+              </>
+            )}
           </div>
+          <Tabs
+            classNames={{
+              tab: SecondaryTabStyle,
+              tabsList: "px-2 mb-4 border-0",
+              root: "border-0",
+            }}
+            data-tour="cohort_summary"
+            defaultValue="summary"
+            keepMounted={false}
+            value={activeTab}
+            onTabChange={setActiveTab}
+          >
+            <Tabs.List position="right">
+              <Tabs.Tab
+                data-tour="cohort_summary_charts"
+                value="summary"
+                icon={<SummaryChartIcon />}
+              >
+                Summary View
+              </Tabs.Tab>
+
+              <Tabs.Tab
+                data-tour="cohort_summary_table"
+                value="table"
+                icon={<TableIcon />}
+              >
+                Table View
+              </Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panel value="summary">
+              <SummaryFacets fields={summaryFields} />
+            </Tabs.Panel>
+            <Tabs.Panel value="table">
+              <ContextualCasesView />
+            </Tabs.Panel>
+          </Tabs>
         </div>
-      </CollapsibleContainer>
-      <QueryExpressionSection
-        filters={filters}
-        currentCohortName={currentCohortName}
-        currentCohortId={currentCohortId}
-      />
-    </div>
+      </div>
+    </CollapsibleContainer>
   );
 };
 
