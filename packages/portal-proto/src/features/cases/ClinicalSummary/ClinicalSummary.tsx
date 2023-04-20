@@ -8,7 +8,7 @@ import {
   Exposures,
   FamilyHistories,
   FollowUps,
-} from "@gff/core/dist/features/cases/types";
+} from "@gff/core";
 import { Divider, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";

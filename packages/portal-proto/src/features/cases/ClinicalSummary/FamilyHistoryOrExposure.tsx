@@ -1,9 +1,6 @@
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import {
-  Exposures,
-  FamilyHistories,
-} from "@gff/core/dist/features/cases/types";
+import { Exposures, FamilyHistories } from "@gff/core";
 import { Tabs, Tooltip } from "@mantine/core";
 import { useState } from "react";
 import { humanify } from "src/utils";
