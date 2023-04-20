@@ -340,7 +340,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                             "consequence.transcript.gene.symbol",
                             "consequence.transcript.aa_change",
                             "ssm_id",
-                          ],
+                          ].join(","),
                           filters: geneSymbol
                             ? joinFilters(combinedFilters, {
                                 mode: "and",
