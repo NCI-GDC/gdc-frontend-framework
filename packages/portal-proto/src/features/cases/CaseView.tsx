@@ -532,17 +532,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
           </div>
         )}
 
-        <div
-          ref={targetRef}
-          id="biospecimen"
-          className={
-            biospecimenFilteredFiles?.length === 0 ? "mb-8" : undefined
-          }
-        >
+        <div ref={targetRef} id="biospecimen" className="mb-8">
           <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
         </div>
         {biospecimenFilteredFiles?.length > 0 && (
-          <div className="mt-8 mb-16">
+          <div className="mb-8">
             <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
               <h2 className="text-xl text-primary-content-darkest font-medium">
                 Biospecimen Supplement File
@@ -558,7 +552,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
             columnsList={DEFAULT_CASE_SUMMARY_SSMS_TABLE_ORDER}
             cohortFilters={projectFilter}
             caseFilter={caseFilter}
-            genomicFilters={undefined}
           />
         </div>
       </div>

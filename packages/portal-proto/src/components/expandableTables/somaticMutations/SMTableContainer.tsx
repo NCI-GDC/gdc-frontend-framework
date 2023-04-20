@@ -52,11 +52,17 @@ export interface SMTableContainerProps {
   ) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
+  /*
+   * filter about case id sent from case summary for SMT
+   */
   caseFilter?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
+  /*
+   * project id for case summary SMT
+   */
   projectId?: string;
   isDemoMode?: boolean;
   /*

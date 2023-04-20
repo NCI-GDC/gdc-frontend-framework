@@ -229,7 +229,7 @@ const generateFilter = ({
   cohortFilters,
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
-  // for case summary we send caseFilters
+  // for case summary SMT we send caseFilter and cohortFilters carry filter associated with the project
   const genomicPlusCohortFilters = caseFilter
     ? caseFilter
     : joinFilters(cohortFilters, genomicFilters);
