@@ -1,3 +1,6 @@
+import SelectionPanel from "@/features/set-operations/SelectionPanel";
+import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
   {
@@ -22,6 +25,8 @@ export const REGISTERED_APPS = [
     id: "CDave",
     description:
       "Use clinical variables to perform basic statistical analysis of your cohort.",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
   },
   {
     name: "Cohort Builder",
@@ -75,7 +80,9 @@ export const REGISTERED_APPS = [
     countsField: "repositoryCaseCount",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
-    selectAdditionalCohort: true,
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
+    selectionScreen: AdditionalCohortSelection,
   },
   // TODO uncomment to show gene expression card
   /*
@@ -100,24 +107,24 @@ export const REGISTERED_APPS = [
     hideCounts: true,
     countsField: "repositoryCaseCount",
     description:
-      "Display Venn diagram and find intersection or union, etc. of your cohorts.",
+      "Display a Venn diagram and compare/contrast your cohorts or sets of the same type.",
     id: "SetOperations",
-    selectAdditionalCohort: true,
+    selectionScreen: SelectionPanel,
   },
-  {
-    name: "OncoGrid",
-    icon: "icons/apps/Oncogrid.svg",
-    iconSize: { width: 80, height: 48 },
-    tags: ["variantAnalysis", "cnv", "ssm"],
-    hasDemo: true,
-    countsField: "ssmCaseCount",
-    description:
-      "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
-    id: "OncoGridApp",
-    optimizeRules: ["available data = ssm or cnv"],
-    noDataTooltip:
-      "Current cohort does not have SSM or CNV data available for visualization.",
-  },
+  // {
+  //   name: "OncoGrid",
+  //   icon: "icons/apps/Oncogrid.svg",
+  //   iconSize: { width: 80, height: 48 },
+  //   tags: ["variantAnalysis", "cnv", "ssm"],
+  //   hasDemo: true,
+  //   countsField: "ssmCaseCount",
+  //   description:
+  //     "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
+  //   id: "OncoGridApp",
+  //   optimizeRules: ["available data = ssm or cnv"],
+  //   noDataTooltip:
+  //     "Current cohort does not have SSM or CNV data available for visualization.",
+  // },
   {
     name: "Sequence Reads",
     icon: "icons/apps/SequenceReads.svg",

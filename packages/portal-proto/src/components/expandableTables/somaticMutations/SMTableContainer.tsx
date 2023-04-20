@@ -10,6 +10,7 @@ import {
   useCoreSelector,
   selectSetsByType,
   joinFilters,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -227,7 +228,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       >
         {showSaveModal && (
           <SaveSelectionAsSetModal
-            filters={setFilters}
+            filters={buildCohortGqlOperator(setFilters)}
             sort="occurrence.case.project.project_id"
             initialSetName={
               Object.keys(selectedMutations).length === 0

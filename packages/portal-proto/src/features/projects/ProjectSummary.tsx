@@ -31,6 +31,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import download from "src/utils/download";
+import PrimarySiteTable from "./PrimarySiteTable";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -567,6 +568,14 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                   tableData={formatDataForExpCategoryTable()}
                 />
               )}
+            </div>
+          )}
+          {projectData?.primary_site?.length > 1 && (
+            <div className="mb-16">
+              <PrimarySiteTable
+                projectId={projectData?.project_id}
+                primarySites={projectData?.primary_site}
+              />
             </div>
           )}
         </div>

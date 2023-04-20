@@ -16,6 +16,7 @@ interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
+  readonly ContextBar?: ReactNode;
 }
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -23,6 +24,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   indexPath = "/",
   Options,
   children,
+  ContextBar = undefined,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
 
@@ -41,10 +43,11 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
           <Banner {...banner} key={banner.id} />
         ))}
         <Header {...{ headerElements, indexPath, Options }} />
+        {ContextBar ? ContextBar : null}
       </header>
       <main
         data-tour="full_page_content"
-        className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
+        className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
         id="main"
       >
         {children}
