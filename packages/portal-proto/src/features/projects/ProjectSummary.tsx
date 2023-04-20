@@ -479,7 +479,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <Button
               color="primary"
               variant="outline"
-              className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary font-medium text-sm"
+              className="bg-base-max border-primary font-medium text-sm"
               onClick={() => setShowCreateCohort(true)}
             >
               Create New Cohort
