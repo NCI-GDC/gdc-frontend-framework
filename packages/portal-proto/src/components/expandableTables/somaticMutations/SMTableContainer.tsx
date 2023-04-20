@@ -341,13 +341,22 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                             "consequence.transcript.aa_change",
                             "ssm_id",
                           ],
-                          filters: buildCohortGqlOperator(
-                            joinFilters(cohortFilters, genomicFilters),
-                          ),
+                          filters: geneSymbol
+                            ? joinFilters(combinedFilters, {
+                                mode: "and",
+                                root: {
+                                  "genes.symbol": {
+                                    field: "genes.symbol",
+                                    operator: "includes",
+                                    operands: [geneSymbol],
+                                  },
+                                },
+                              })
+                            : combinedFilters,
                           size: smTotal,
-                          done: () => {
-                            setMutationsFrequencyDownloadActive(false);
-                          },
+                        },
+                        done: () => {
+                          setMutationsFrequencyDownloadActive(false);
                         },
                       });
                     }}

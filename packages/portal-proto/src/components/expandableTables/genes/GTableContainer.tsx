@@ -310,14 +310,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                             "biotype",
                             "gene_id",
                             "is_cancer_gene_census",
-                          ],
-                          size: gTotal,
+                          ].join(","),
                           filters: buildCohortGqlOperator(
                             joinFilters(cohortFilters, genomicFilters),
                           ),
-                          done: () => {
-                            setMutatedGenesFrequencyDownloadActive(false);
-                          },
+                          size: gTotal,
+                        },
+                        done: () => {
+                          setMutatedGenesFrequencyDownloadActive(false);
                         },
                       });
                     }}
