@@ -460,22 +460,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         isModal={projectData.isModal}
         leftElement={
           <div className="flex gap-4">
-            <DropdownWithIcon
-              dropdownElements={[
-                {
-                  title: "TSV (Coming soon)",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
-                },
-                {
-                  title: "JSON (Coming soon)",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
-                },
-              ]}
-              TargetButtonChildren={
-                <span className="font-medium text-sm">Biospecimen</span>
-              }
-              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
-            />
             <Button
               color="primary"
               variant="outline"
@@ -496,6 +480,22 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 onNameChange={onNameChange}
               />
             )}
+            <DropdownWithIcon
+              dropdownElements={[
+                {
+                  title: "TSV (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+                {
+                  title: "JSON (Coming soon)",
+                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                },
+              ]}
+              TargetButtonChildren={
+                <span className="font-medium text-sm">Biospecimen</span>
+              }
+              LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            />
             <DropdownWithIcon
               dropdownElements={[
                 {
