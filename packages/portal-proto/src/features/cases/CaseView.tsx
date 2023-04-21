@@ -179,6 +179,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   ? "bg-primary text-base-max"
                   : "text-primary bg-base-max"
               }`}
+              aria-label="cart icon button"
               onClick={() => {
                 isAllImagesFilesInCart
                   ? removeFromCart(
@@ -193,7 +194,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     );
               }}
             >
-              <FaShoppingCart size={12} />
+              <FaShoppingCart size={12} aria-label="cart icon" />
             </ActionIcon>
           </Tooltip>
         </div>
