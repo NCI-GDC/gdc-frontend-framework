@@ -19,11 +19,11 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
+import { DEFAULT_MUTATION_TABLE_ORDER } from "../shared/mutationTableConfig";
 
 interface GeneViewProps {
   data: {
@@ -254,7 +254,7 @@ const GeneView = ({
                   <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
                 <SMTableContainer
-                  columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
+                  columnsList={DEFAULT_MUTATION_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}
