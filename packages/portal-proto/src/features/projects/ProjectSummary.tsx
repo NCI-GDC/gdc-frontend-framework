@@ -142,9 +142,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       mode: "and",
       root: {
         "cases.project.project_id": {
-          operator: "=",
+          operator: "includes",
           field: "cases.project.project_id",
-          operand: projectData.project_id,
+          operands: [projectData.project_id],
         },
       },
     };
