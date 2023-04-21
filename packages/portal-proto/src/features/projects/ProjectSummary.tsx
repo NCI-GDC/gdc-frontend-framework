@@ -1,14 +1,16 @@
+import { useState } from "react";
 import {
   useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
   useFilesFacetsByNameFilter,
+  useCoreDispatch,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
+import { Button, Loader, LoadingOverlay, Tooltip } from "@mantine/core";
 import {
   calculatePercentageAsNumber,
   humanify,
@@ -28,6 +30,7 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
+import download from "src/utils/download";
 import PrimarySiteTable from "./PrimarySiteTable";
 
 export interface ContextualProjectViewProps {
@@ -126,6 +129,9 @@ export interface ProjectViewProps extends ProjectDefaults {
 export const ProjectView: React.FC<ProjectViewProps> = (
   projectData: ProjectViewProps,
 ) => {
+  const dispatch = useCoreDispatch();
+  const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
+
   const formatDataForSummary = () => {
     const {
       project_id,
@@ -472,11 +478,43 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             >
               <Button
                 variant="outline"
-                leftIcon={<DownloadIcon size="1.25em" />}
+                leftIcon={
+                  manifestDownloadActive ? (
+                    <Loader size={20} />
+                  ) : (
+                    <DownloadIcon size="1.25em" />
+                  )
+                }
                 className="text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max"
                 classNames={{ label: "font-medium text-sm" }}
+                onClick={() => {
+                  setManifestDownloadActive(true);
+                  download({
+                    endpoint: "files",
+                    method: "POST",
+                    options: {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    },
+                    dispatch,
+                    params: {
+                      filters: {
+                        op: "in",
+                        content: {
+                          field: "cases.project.project_id",
+                          value: [projectData.project_id],
+                        },
+                      },
+                      return_type: "manifest",
+                      size: 10000,
+                    },
+                    done: () => setManifestDownloadActive(false),
+                  });
+                }}
               >
-                Manifest
+                {manifestDownloadActive ? "Processing" : "Manifest"}
               </Button>
             </Tooltip>
           </div>
