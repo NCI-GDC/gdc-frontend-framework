@@ -25,17 +25,15 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       ? window.getComputedStyle(tableRowRef.current).height
       : "";
   return (
-    <div className="border-y-1 border-y-base-lighter">
-      <ScrollableTableWithFixedHeader
-        tableData={{
-          headers: columnListOrder,
-          tableRows: tableData,
-        }}
-        ref={tableRowRef}
-        // max row * height of table row + height of the table header
-        scrollAreaHeight={5 * +tableRowHeight.replace("px", "") + 56}
-      />
-    </div>
+    <ScrollableTableWithFixedHeader
+      tableData={{
+        headers: columnListOrder,
+        tableRows: tableData,
+      }}
+      ref={tableRowRef}
+      // max row * height of table row + height of the table header
+      scrollAreaHeight={5 * +tableRowHeight.replace("px", "") + 56}
+    />
   );
 };
 

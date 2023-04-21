@@ -1,8 +1,8 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
 import { createStyles, Table, ScrollArea } from "@mantine/core";
-import { ForwardedRef, forwardRef } from "react";
+import { ForwardedRef, forwardRef, useState } from "react";
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   header: {
     position: "sticky",
     top: 0,
@@ -19,6 +19,9 @@ const useStyles = createStyles(() => ({
       borderBottom: "4px solid #c5c5c5",
     },
   },
+  scrolled: {
+    boxShadow: theme.shadows.md,
+  },
 }));
 
 interface ScrollableTableWithFixedHeaderProps {
@@ -26,8 +29,8 @@ interface ScrollableTableWithFixedHeaderProps {
     readonly headers: string[];
     readonly tableRows: any[];
   };
-  readonly scrollAreaHeight: number;
-  readonly tableMinWidth?: number;
+  readonly scrollAreaHeight: number | string;
+  readonly tableMinWidth?: number | string;
 }
 
 export const ScrollableTableWithFixedHeader = forwardRef(
@@ -40,6 +43,7 @@ export const ScrollableTableWithFixedHeader = forwardRef(
     ref: ForwardedRef<HTMLTableRowElement>,
   ): JSX.Element => {
     const { classes, cx } = useStyles();
+    const [scrolled, setScrolled] = useState(false);
 
     return (
       <ScrollArea.Autosize
@@ -47,29 +51,40 @@ export const ScrollableTableWithFixedHeader = forwardRef(
         data-testid="scrolltable"
         type="auto"
         tabIndex={0}
+        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+        className="border border-base-lighter"
+        classNames={{
+          scrollbar: "-m-0.5",
+        }}
       >
-        <Table sx={{ minWidth: tableMinWidth }} tabIndex={0}>
-          <thead className={cx(classes.header)}>
-            <tr className="border-1 border-base-lighter border-t-0">
+        <Table
+          sx={{
+            minWidth: tableMinWidth,
+          }}
+          tabIndex={0}
+        >
+          <thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
+            <tr className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md h-full">
               {tableData.headers.map((text, index) => (
-                <th key={index}>{text}</th>
+                <th key={index} className="px-2 py-3">
+                  {text}
+                </th>
               ))}
             </tr>
           </thead>
-          <tbody className="font-content border-1 border-base-lighter">
+          <tbody className="font-content">
             {tableData.tableRows.map((row, index) => (
               <tr
                 key={index}
-                className={`border border-base-lighter ${
+                className={`border-y-1 border-y-base-lighter ${
                   index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                 }`}
                 ref={ref}
               >
                 {Object.values(row).map((item, index) => (
-                  <td
-                    key={index}
-                    className="text-sm px-2 py-2.5 border-y border-base-lighter"
-                  >
+                  <td key={index} className="text-sm px-2 py-2.5 border-0">
                     {typeof item === "undefined" ? "--" : item}
                   </td>
                 ))}
