@@ -13,6 +13,11 @@ import {
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 import { DemoText } from "../shared/tailwindComponents";
+import {
+  SelectSamples,
+  SelectSamplesCallback,
+  SelectSamplesCallBackArg,
+} from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
 
@@ -32,11 +37,14 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
-  const prevArg = useRef<any>();
-
+  const prevArg = useRef<any>({});
   const coreDispatch = useCoreDispatch();
-
-  const callback = function (arg: SelectSamplesCallBackArg): void {
+  // TODO:
+  // - the callback from useCallback() triggers rerenders, but not from useRef() - why?
+  // - can this callback generator be shared between different wrappers?
+  const callback = useRef<SelectSamplesCallback>(function (
+    arg: SelectSamplesCallBackArg,
+  ): void {
     const { samples, source } = arg;
     const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
     const filters: FilterSet = {
@@ -58,16 +66,16 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         name: source + ` (n=${samples.length})`,
       }),
     );
-  };
+  });
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = getLollipopTrack(props, filter0, callback);
+      const data = getLollipopTrack(props, filter0, callback.current);
       if (!data) return;
       if (isDemoMode) data.geneSymbol = "MYC";
       // compare the argument to runpp to avoid unnecessary render
-      if (isEqual(prevArg.current, data)) return;
+      if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
@@ -89,7 +97,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         });
       }
     },
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
@@ -144,23 +152,6 @@ interface mds3_isoform {
 
 interface PpApi {
   update(arg: any): null;
-}
-
-type SampleData = {
-  "case.case_id"?: string;
-};
-
-interface SelectSamplesCallBackArg {
-  samples: SampleData[];
-  source: string;
-}
-
-type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
-
-interface SelectSamples {
-  buttonText: string;
-  attributes: string[];
-  callback: SelectSamplesCallback;
 }
 
 function getLollipopTrack(
