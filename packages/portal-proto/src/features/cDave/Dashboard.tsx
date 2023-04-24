@@ -55,7 +55,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [activeFields, controlsExpanded]);
 
   return (
-    <Grid className="w-full p-4">
+    <Grid className="w-full m-0">
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <Card className="h-full">
           <h2 className="font-heading font-medium">Overall Survival</h2>
