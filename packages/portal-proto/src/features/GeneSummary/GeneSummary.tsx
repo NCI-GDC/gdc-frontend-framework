@@ -250,15 +250,13 @@ const GeneView = ({
               />
 
               <div className="mt-14">
-                <div className="flex items-center gap-2">
-                  <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
-                </div>
                 <SMTableContainer
                   columnsList={DEFAULT_MUTATION_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}
                   isModal={isModal}
+                  tableTitle="Most Frequent Somatic Mutations"
                 />
               </div>
             </div>

@@ -34,6 +34,7 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 
 export const SelectedRowContext =
   createContext<
@@ -60,6 +61,7 @@ export interface SMTableContainerProps {
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
+  tableTitle?: string;
   /*
    * project id for case summary SMT
    */
@@ -85,6 +87,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = [],
   isDemoMode = false,
   isModal = false,
+  tableTitle = undefined,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -230,11 +233,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             },
           },
         })
+      : caseFilter
+      ? caseFilter
       : combinedFilters;
 
   return (
     <>
-      {tableData.ssmsTotal > 0 ? (
+      {caseFilter && tableData.ssmsTotal === 0 ? null : (
         <SelectedRowContext.Provider
           value={[selectedMutations, setSelectedMutations]}
         >
@@ -289,6 +294,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />
           )}
+          {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
+
           <div className="flex justify-between items-center mb-2">
             <TableControls
               total={smTotal}
@@ -333,7 +340,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               handleColumnChange={handleColumnChange}
               showColumnMenu={showColumnMenu}
               setShowColumnMenu={setShowColumnMenu}
-              defaultColumns={DEFAULT_SMTABLE_ORDER}
+              defaultColumns={columnsList}
             />
           </div>
 
@@ -397,9 +404,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <div className="flex flex-row justify-between items-center text-sm">
                 <span>
                   Showing
-                  <span className="font-bold">{` ${(
-                    page * pageSize +
-                    1
+                  <span className="font-bold">{` ${(tableData.ssmsTotal === 0
+                    ? 0
+                    : page * pageSize + 1
                   ).toLocaleString("en-US")} `}</span>
                   -
                   <span className="font-bold">{`${((page + 1) * pageSize <
@@ -424,7 +431,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             </div>
           ) : null}
         </SelectedRowContext.Provider>
-      ) : null}
+      )}
     </>
   );
 };

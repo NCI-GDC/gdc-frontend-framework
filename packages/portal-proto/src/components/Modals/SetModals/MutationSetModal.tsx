@@ -65,7 +65,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
               <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
                 <a>
                   <button
-                    className="text-utility-link underline"
+                    className="text-utility-link underline font-heading"
                     onClick={() => dispatch(hideModal())}
                   >
                     Mutation Frequency app.
