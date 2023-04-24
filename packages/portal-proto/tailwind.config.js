@@ -781,6 +781,9 @@ module.exports = {
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#976F21", //lighter orangish
       },
+      maxHeight: {
+        "screen-90vh": "90vh",
+      },
       height: {
         "nci-logo": "54px",
         "nci-logo-mobile": "28px",
