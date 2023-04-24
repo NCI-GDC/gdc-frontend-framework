@@ -59,6 +59,7 @@ export const SaveOrCreateCohortModal = ({
       zIndex={400}
       onClose={onClose}
       withinPortal={false}
+      centered
     >
       <Box
         sx={() => ({
