@@ -16,6 +16,7 @@ import {
   fetchGdcEntities,
   showModal,
   Modals,
+  GDC_APP_API_AUTH,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -44,6 +45,7 @@ import FunctionButton from "@/components/FunctionButton";
 import { saveAs } from "file-saver";
 import useSWRMutation from "swr/mutation";
 import { convertDateToString } from "src/utils/date";
+import download from "../../../utils/download";
 
 export const SelectedRowContext =
   createContext<
@@ -106,11 +108,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     ssms: [],
   });
 
-  const dispatch = useCoreDispatch();
-
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
+  const dispatch = useCoreDispatch();
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -233,27 +234,78 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         })
       : combinedFilters;
 
-  const {
-    trigger: mutationsFrequencyDownloadTrigger,
-    isMutating: mutationsFrequencyDownloadIsMutating,
-  } = useSWRMutation(
-    {
-      size: smTotal,
-    },
-    ({ size }) =>
-      fetchGdcEntities(
-        `ssms?fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id&filters=%7B%22content%22%3A%5B%7B%22content%22%3A%7B%22field%22%3A%22genes.is_cancer_gene_census%22%2C%22value%22%3A%5B%22true%22%5D%7D%2C%22op%22%3A%22in%22%7D%5D%2C%22op%22%3A%22and%22%7D`,
-        { size },
-      ),
-    {
-      onSuccess: (data) => {
-        const blob = new Blob([JSON.stringify(data?.data?.hits, null, 2)], {
-          type: "text/json",
-        });
-        saveAs(blob, `mutations.${convertDateToString(new Date())}.json`);
+  // const fetchJSONDownload = async (request: any, chunkSize) => {
+  //   const res = await fetch(`${GDC_APP_API_AUTH}/ssms`, {
+  //     method: "POST",
+  //     headers: {
+  //         "Content-Type": "application/json",
+  //       "Content-Disposition": 'attachment; filename="filename.jpg"; filename*="filename.jpg"',
+  //     },
+  //     body: JSON.stringify({
+  //       ...request,
+  //       fields: request?.fields?.join(","),
+  //       size: chunkSize,
+  //     }),
+  //   });
+
+  const fetchJSONDownload = async () => {
+    await download({
+      endpoint: `ssms`,
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
       },
-    },
-  );
+      params: {
+        size: 10000,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        filters: buildCohortGqlOperator(setFilters),
+        fields:
+          "genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id",
+      },
+      dispatch: dispatch,
+    });
+
+    // if (res.status === 200) {
+    //   const data = await res.json();
+    //
+    //   const blob = new Blob([JSON.stringify(data.hits, null, 2)], {
+    //     type: "text/json",
+    //   });
+    //   saveAs(blob, `mutations.${convertDateToString(new Date())}.json`);
+    // }
+  };
+
+  // const {
+  //   trigger: mutationsFrequencyDownloadTrigger,
+  //   isMutating: mutationsFrequencyDownloadIsMutating,
+  // } = useSWRMutation(
+  //   {
+  //     size: smTotal,
+  //   },
+  //   ({ size }) =>
+  //     fetchGdcEntities(
+  //       `ssms`,
+  //       {
+  //         filters: buildCohortGqlOperator(setFilters),
+  //         fields: "genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id".split(","),
+  //         size },
+  //     ),
+  //   {
+  //     revalidate: false,
+  //     populateCache:  false,
+  //     onSuccess: (data) => {
+  //       const blob = new Blob([JSON.stringify(data?.data?.hits, null, 2)], {
+  //         type: "text/json",
+  //       });
+  //       saveAs(blob, `mutations.${convertDateToString(new Date())}.json`);
+  //     },
+  //   },
+  // );
 
   return (
     <>
@@ -341,14 +393,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <ButtonTooltip label="Export All Except #Cases">
                   <Button
                     variant="outline"
-                    leftIcon={
-                      mutationsFrequencyDownloadIsMutating ? (
-                        <Loader size={20} />
-                      ) : (
-                        <DownloadIcon size="1.25em" />
-                      )
-                    }
-                    onClick={() => mutationsFrequencyDownloadTrigger()}
+                    leftIcon={<DownloadIcon size="1.25em" />}
+                    onClick={() => {
+                      console.log("triggering mutationsFrequencyDownload");
+                      fetchJSONDownload();
+                    }}
                   >
                     JSON
                   </Button>
