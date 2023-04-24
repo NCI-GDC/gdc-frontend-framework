@@ -148,7 +148,7 @@ describe("test setting/getting currentCohortId", () => {
   test("should return the current cohort id when it's defined", () => {
     const currentCohortId = selectCurrentCohortId({
       ...state,
-      cohort: cohortState,
+      cohort: cohortState as any,
     });
     expect(currentCohortId).toEqual("asdf");
   });

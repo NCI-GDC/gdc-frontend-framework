@@ -386,7 +386,6 @@ export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
-    // Sort the Cohorts by modification date, The "All GDC" cohort is always first
     if (a.modified_datetime <= b.modified_datetime) return 1;
     else return -1;
   },
