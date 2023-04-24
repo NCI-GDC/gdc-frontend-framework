@@ -11,7 +11,7 @@ import {
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
-import { isEqual, cloneDeep } from "lodash";
+import { isEqual } from "lodash";
 import { DemoText } from "../shared/tailwindComponents";
 import {
   SelectSamples,
@@ -37,7 +37,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
-  const prevFilter0 = useRef<any>();
+  const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   // TODO:
   // - the callback from useCallback() triggers rerenders, but not from useRef() - why?
@@ -71,24 +71,26 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      if (
-        (filter0 || prevFilter0.current) &&
-        isEqual(prevFilter0.current, filter0)
-      )
-        return;
-      prevFilter0.current = filter0;
+      const data = { filter0, userDetails };
+      if (isEqual(prevData.current, data)) return;
+
+      prevData.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
 
       if (ppRef.current) {
-        ppRef.current.update({ filter0: prevFilter0.current });
+        ppRef.current.update({ filter0: prevData.current.filter0 });
       } else {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
-        const data = getMatrixTrack(props, filter0, callback.current);
+        const data = getMatrixTrack(
+          props,
+          prevData.current.filter0,
+          callback.current,
+        );
         if (!data) return;
 
         const arg = Object.assign(
@@ -107,7 +109,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0],
+    [filter0, userDetails],
   );
 
   const divRef = useRef();
