@@ -14,7 +14,9 @@ import {
 } from "./setsSlice";
 import {
   useGeneSetCountQuery,
+  useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useCaseSetCountQuery,
 } from "./setCountSlice";
 import {
@@ -36,7 +38,9 @@ export {
   selectAllSets,
   SetTypes,
   useGeneSetCountQuery,
+  useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useCaseSetCountQuery,
   useAppendToGeneSetMutation,
   useAppendToSsmSetMutation,
