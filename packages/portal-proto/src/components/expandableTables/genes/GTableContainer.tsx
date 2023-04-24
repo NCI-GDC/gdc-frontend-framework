@@ -194,7 +194,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       } as GqlOperation,
     },
     ({ fields, size, filters }) =>
-      fetchGdcEntities("genes", { fields, size, filters }),
+      fetchGdcEntities("genes", { fields, size, filters }, true),
     {
       onSuccess: (data) => {
         const blob = new Blob([JSON.stringify(data?.data?.hits, null, 2)], {
