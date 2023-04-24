@@ -254,10 +254,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     ({ endpoint, size }) => fetchGdcEntities(endpoint, { size }, true),
     {
       onSuccess: (data) => {
+        const now = new Date();
         const blob = new Blob([JSON.stringify(data?.data?.hits, null, 2)], {
           type: "text/json",
         });
-        saveAs(blob, `mutations.${convertDateToString(new Date())}.json`);
+        const fileName = `mutations.${convertDateToString(now)}.json`;
+        saveAs(blob, fileName);
       },
     },
   );

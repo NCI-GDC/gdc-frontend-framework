@@ -503,7 +503,7 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
   if (res.ok) {
     const resData: GdcApiResponse<T> = await res.json();
     const queue = Queue({
-      concurrency: Math.ceil((request?.size || 0) / 10) ?? 6,
+      concurrency: 6,
     });
     let { hits } = resData.data;
 
