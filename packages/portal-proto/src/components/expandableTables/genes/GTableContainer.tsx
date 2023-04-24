@@ -12,6 +12,10 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   useCoreDispatch,
+  fetchGdcEntities,
+  GqlOperation,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -31,8 +35,10 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import download from "src/utils/download";
 import { filtersToName } from "src/utils";
+import { saveAs } from "file-saver";
+import useSWRMutation from "swr/mutation";
+import { convertDateToString } from "src/utils/date";
 
 export const SelectedRowContext =
   createContext<
@@ -80,10 +86,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes: [],
   });
   const dispatch = useCoreDispatch();
-  const [
-    mutatedGenesFrequencyDownloadActive,
-    setMutatedGenesFrequencyDownloadActive,
-  ] = useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -167,6 +169,44 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     isDemoMode: isDemoMode,
     overwritingDemoFilter: cohortFilters,
   });
+
+  const {
+    trigger: mutatedGenesFrequencyDownloadTrigger,
+    isMutating: mutatedGenesFrequencyDownloadIsMutating,
+  } = useSWRMutation(
+    {
+      fields: [
+        "symbol",
+        "name",
+        "cytoband",
+        "biotype",
+        "is_cancer_gene_census",
+      ],
+      size: gTotal,
+      filters: {
+        op: "in",
+        content: {
+          field: "genes.is_cancer_gene_census",
+          value: ["true"],
+        },
+        ...genomicFilters,
+        ...cohortFilters,
+      } as GqlOperation,
+    },
+    ({ fields, size, filters }) =>
+      fetchGdcEntities("genes", { fields, size, filters }),
+    {
+      onSuccess: (data) => {
+        const blob = new Blob([JSON.stringify(data?.data?.hits, null, 2)], {
+          type: "text/json",
+        });
+        saveAs(blob, `genes.${convertDateToString(new Date())}.json`);
+      },
+      onError: (err) => {
+        dispatch(showModal({ modal: Modals.GeneralErrorModal, message: err }));
+      },
+    },
+  );
 
   useEffect(() => {
     setPage(0);
@@ -284,43 +324,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   <Button
                     variant="outline"
                     leftIcon={
-                      mutatedGenesFrequencyDownloadActive ? (
+                      mutatedGenesFrequencyDownloadIsMutating ? (
                         <Loader size={20} />
                       ) : (
                         <DownloadIcon size="1.25em" />
                       )
                     }
-                    onClick={() => {
-                      setMutatedGenesFrequencyDownloadActive(true);
-                      download({
-                        endpoint: "genes",
-                        method: "POST",
-                        options: {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                        },
-                        dispatch,
-                        params: {
-                          fields: [
-                            "symbol",
-                            "name",
-                            "cytoband",
-                            "biotype",
-                            "gene_id",
-                            "is_cancer_gene_census",
-                          ].join(","),
-                          filters: buildCohortGqlOperator(
-                            joinFilters(cohortFilters, genomicFilters),
-                          ),
-                          size: gTotal,
-                        },
-                        done: () => {
-                          setMutatedGenesFrequencyDownloadActive(false);
-                        },
-                      });
-                    }}
+                    onClick={() => mutatedGenesFrequencyDownloadTrigger()}
                   >
                     JSON
                   </Button>
