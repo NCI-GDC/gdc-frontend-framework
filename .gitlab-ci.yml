@@ -216,7 +216,7 @@ trigger_ui_tests_yellow:
     - job: deploy_qa/uat
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/yellow"'
       allow_failure: true
 
 trigger_ui_tests_uat:
@@ -228,7 +228,7 @@ trigger_ui_tests_uat:
     - job: deploy_qa/uat
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat2"'
       allow_failure: true
 
 trigger_ui_tests_scheduled:
