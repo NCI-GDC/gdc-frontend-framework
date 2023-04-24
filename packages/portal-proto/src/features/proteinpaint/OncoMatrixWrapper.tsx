@@ -169,12 +169,28 @@ function getMatrixTrack(
     ],
   };
 
+  /* // TODO: uncomment when multibutton once supported in pp-client >2.14.1
+  const buttons = [{
+    buttonText: "Create Cohort",
+    attributes: ["case.case_id"],
+    callback//: createCohortFromPP, // as SelectSamplesCallback,
+  }]
+
+  if (filter0) {
+    buttons.unshift({
+      buttonText: "Update Cohort",
+      attributes: ["case.case_id"],
+      callback//: createCohortFromPP, // as SelectSamplesCallback,
+    })
+  }
+  */
+
   const arg: MatrixArg = {
     host: props.basepath || (basepath as string),
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,
     allow2selectSamples: {
-      buttonText: "Create Cohort",
+      buttonText: "Update Cohort",
       attributes: ["case.case_id"],
       callback,
     },
