@@ -241,15 +241,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     {
       endpoint: `ssms?&fields=genomic_dna_change,mutation_subtype,consequence.transcript.consequence_type,consequence.transcript.annotation.vep_impact,consequence.transcript.annotation.sift_impact,consequence.transcript.annotation.polyphen_impact,consequence.transcript.is_canonical,consequence.transcript.gene.gene_id,consequence.transcript.gene.symbol,consequence.transcript.aa_change,ssm_id&%2Cmutation_subtype%2Cconsequence.transcript.consequence_type%2Cconsequence.transcript.annotation.vep_impact%2Cconsequence.transcript.annotation.sift_impact%2Cconsequence.transcript.annotation.polyphen_impact%2Cconsequence.transcript.is_canonical%2Cconsequence.transcript.gene.gene_id%2Cconsequence.transcript.gene.symbol%2Cconsequence.transcript.aa_change%2Cssm_id`,
       size: smTotal,
-      filters: {
-        content: [
-          {
-            content: { field: "genes.is_cancer_gene_census", value: ["true"] },
-            op: "in",
-          },
-        ],
-        op: "and",
-      },
+      // filters: {
+      //   content: [
+      //     {
+      //       content: { field: "genes.is_cancer_gene_census", value: ["true"] },
+      //       op: "in",
+      //     },
+      //   ],
+      //   op: "and",
+      // },
     },
     ({ endpoint, size }) => fetchGdcEntities(endpoint, { size }, true),
     {
