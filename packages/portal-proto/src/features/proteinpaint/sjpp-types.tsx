@@ -5,7 +5,8 @@ export type SampleData = {
 export interface SelectSamplesCallBackArg {
   samples: SampleData[];
   source: string;
-  button: SelectSamplesButton;
+  // the button argument will require pp-client > 2.14
+  // button: SelectSamplesButton;
 }
 
 export type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
