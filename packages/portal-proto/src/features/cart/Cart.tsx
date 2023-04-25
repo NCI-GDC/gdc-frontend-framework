@@ -159,7 +159,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="flex-1">
             <HeaderTitle>File counts by project</HeaderTitle>
-            <ProjectTable projectData={summaryData} />
+            <ProjectTable projectData={summaryData.byProject} />
           </div>
         </div>
         <div className="mt-6">

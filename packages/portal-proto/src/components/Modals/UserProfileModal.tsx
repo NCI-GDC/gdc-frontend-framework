@@ -76,7 +76,7 @@ export const UserProfileModal = ({
               headers: headings,
               tableRows: data,
             }}
-            scrollAreaHeight={500}
+            maxRowsBeforeScroll={10}
           />
         ) : (
           <div data-testid="warningText" className="mt-4">
