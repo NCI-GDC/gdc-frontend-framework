@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
-  useClinicalAnalysis,
   useClinicalFields,
+  useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
@@ -23,9 +23,10 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
 }: ClinicalDataAnalysisProps) => {
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
-  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
+  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
 
   const { data: fields } = useClinicalFields();
+
   const cDaveFields = Object.values(fields)
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
     .filter(
@@ -54,9 +55,10 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     data: cDaveResult,
     isFetching,
     isSuccess,
-  } = useClinicalAnalysis({
-    filters: cohortFilters,
+  } = useGetClinicalAnalysisQuery({
+    case_filters: cohortFilters,
     facets: cDaveFields.map((f) => f.full),
+    size: 0,
   });
 
   const updateFields = (field: string) => {
@@ -79,6 +81,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         loaderProps={{ size: "xl", color: "primary" }}
         visible={isFetching}
         data-testid="please_wait_spinner"
+        zIndex={0}
       />
     </div>
   ) : (
