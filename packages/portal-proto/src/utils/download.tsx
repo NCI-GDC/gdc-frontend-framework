@@ -102,6 +102,7 @@ const download = async ({
   Modal400 = Modals.GeneralErrorModal,
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
+  form = false,
 }: {
   endpoint: string;
   params: Record<string, any>;
@@ -115,6 +116,7 @@ const download = async ({
   Modal403?: Modals;
   Modal400?: Modals;
   customErrorMessage?: string;
+  form?: boolean;
 }): Promise<void> => {
   let canceled = false;
 
@@ -274,33 +276,48 @@ const download = async ({
     return value;
   };
 
-  if ((options?.method || "GET") === "POST") {
-    const body = JSON.stringify(
-      {
-        ...params,
-        ...(params.filters ? { filters: JSON.stringify(params.filters) } : {}),
-      },
-      replacer,
-    );
-    fetch(
-      `${GDC_APP_API_AUTH}/${endpoint}${queryParams ? `?${queryParams}` : ""}`,
-      {
-        ...options,
-        body,
-      },
-    ).then(handleDownloadResponse);
+  if (form) {
+    addFormAndSubmit();
+    setTimeout(() => {
+      if (done) {
+        done();
+      }
+    }, 1000);
   } else {
-    if (queryParams === undefined) {
-      queryParams = Object.keys(params)
-        .map((key) => key + "=" + params[key])
-        .join("&");
+    if ((options?.method || "GET") === "POST") {
+      const body = JSON.stringify(
+        {
+          ...params,
+          ...(params.filters
+            ? { filters: JSON.stringify(params.filters) }
+            : {}),
+        },
+        replacer,
+      );
+      fetch(
+        `${GDC_APP_API_AUTH}/${endpoint}${
+          queryParams ? `?${queryParams}` : ""
+        }`,
+        {
+          ...options,
+          body,
+        },
+      ).then(handleDownloadResponse);
+    } else {
+      if (queryParams === undefined) {
+        queryParams = Object.keys(params)
+          .map((key) => key + "=" + params[key])
+          .join("&");
+      }
+      fetch(
+        `${GDC_APP_API_AUTH}/${endpoint}${
+          queryParams ? `?${queryParams}` : ""
+        }`,
+        {
+          ...options,
+        },
+      ).then(handleDownloadResponse);
     }
-    fetch(
-      `${GDC_APP_API_AUTH}/${endpoint}${queryParams ? `?${queryParams}` : ""}`,
-      {
-        ...options,
-      },
-    ).then(handleDownloadResponse);
   }
 };
 

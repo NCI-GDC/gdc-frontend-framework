@@ -276,13 +276,8 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       tableData={tableData}
       columns={columns}
       selectableRow={false}
-      tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-        activePage * pageSize < data?.pagination?.total
-          ? activePage * pageSize
-          : data?.pagination?.total
-      } of ${data?.pagination?.total} files`}
       additionalControls={
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
         </div>

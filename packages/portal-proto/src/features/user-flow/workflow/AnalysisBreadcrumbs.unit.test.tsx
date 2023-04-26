@@ -7,7 +7,7 @@ describe("<AnalysisBreadcrumb />", () => {
     const { queryByText } = render(
       <SelectionScreenContext.Provider
         value={{
-          app: "OncoGridApp",
+          app: "MutationFrequencyApp",
           setActiveApp: jest.fn(),
           selectionScreenOpen: false,
           setSelectionScreenOpen: jest.fn(),
@@ -17,7 +17,7 @@ describe("<AnalysisBreadcrumb />", () => {
       </SelectionScreenContext.Provider>,
     );
 
-    expect(queryByText("OncoGrid")).toBeInTheDocument();
+    expect(queryByText("Mutation Frequency")).toBeInTheDocument();
     expect(queryByText("Results")).not.toBeInTheDocument();
   });
 
