@@ -55,80 +55,82 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   useEffect(() => {
     if (cohortMessage) {
-      const cmdAndParam = cohortMessage.split("|", 3);
-      if (cmdAndParam.length == 3) {
-        if (cmdAndParam[0] === "newCohort") {
-          showNotification({
-            message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "deleteCohort") {
-          showNotification({
-            message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "savedCohort") {
-          showNotification({
-            message: <SavedCohortNotification />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "discardChanges") {
-          showNotification({
-            message: <DiscardChangesCohortNotification />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "error") {
-          showNotification({
-            message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "newCasesCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "newProjectsCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
+      for (const message of cohortMessage) {
+        const cmdAndParam = message.split("|", 3);
+        if (cmdAndParam.length == 3) {
+          if (cmdAndParam[0] === "newCohort") {
+            showNotification({
+              message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "deleteCohort") {
+            showNotification({
+              message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCohort") {
+            showNotification({
+              message: <SavedCohortNotification />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "discardChanges") {
+            showNotification({
+              message: <DiscardChangesCohortNotification />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "error") {
+            showNotification({
+              message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "newCasesCohort") {
+            showNotification({
+              message: (
+                <NewCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "newProjectsCohort") {
+            showNotification({
+              message: (
+                <NewCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
         }
       }
 
