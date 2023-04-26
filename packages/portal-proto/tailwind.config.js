@@ -780,6 +780,10 @@ module.exports = {
         },
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#976F21", //lighter orangish
+        cartDarkerOrange: "#C7501A",
+        cartLighterOrange: "#C7501A33",
+        linkDarkerColor: "#1D6796",
+        emptyCartLighterColor: "#e0e9f0",
       },
       maxHeight: {
         "screen-90vh": "90vh",

@@ -480,7 +480,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       );
                     })}
                   </tr>
-                  {row.state.expanded > 0 && (
+                  {(row.state.expanded as number) > 0 && (
                     <tr {...row.getRowProps()} key={`row-${index}-2`}>
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>

@@ -19,22 +19,35 @@ import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { FilterSet } from "@gff/core";
 
-export const createTableColumn = (
-  accessor: string,
-  selectedGenes: SelectedReducer<Genes>,
-  setSelectedGenes: Dispatch<SelectReducerAction<Genes>>,
+interface GeneCreateTableColumnProps {
+  accessor: string;
+  selectedGenes: SelectedReducer<Genes>;
+  setSelectedGenes: Dispatch<SelectReducerAction<Genes>>;
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
     field: string,
-  ) => void,
-  handleGeneToggled: GeneToggledHandler,
-  toggledGenes: ReadonlyArray<string>,
-  setGeneID: Dispatch<SetStateAction<string>>,
-  isDemoMode: boolean,
-  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
-  genomicFilters: FilterSet,
-): TableColumnDefinition => {
+  ) => void;
+  handleGeneToggled: GeneToggledHandler;
+  toggledGenes: ReadonlyArray<string>;
+  setGeneID: Dispatch<SetStateAction<string>>;
+  isDemoMode: boolean;
+  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  genomicFilters: FilterSet;
+}
+
+export const geneCreateTableColumn = ({
+  accessor,
+  selectedGenes,
+  setSelectedGenes,
+  handleSurvivalPlotToggled,
+  handleGeneToggled,
+  toggledGenes,
+  setGeneID,
+  isDemoMode,
+  setEntityMetadata,
+  genomicFilters,
+}: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
       return {

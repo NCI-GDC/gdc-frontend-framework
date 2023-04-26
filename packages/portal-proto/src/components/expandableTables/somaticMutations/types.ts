@@ -87,6 +87,7 @@ export interface SomaticMutationsTableProps {
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   geneSymbol?: string;
+  projectId?: string;
   isDemoMode?: boolean;
   isModal?: boolean;
 }

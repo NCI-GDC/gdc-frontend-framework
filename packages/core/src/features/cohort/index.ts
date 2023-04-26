@@ -13,7 +13,6 @@ import {
 } from "./filters";
 
 import {
-  DEFAULT_COHORT_ID,
   Cohort,
   addNewCohort,
   addNewCohortWithFilterAndMessage,
@@ -75,7 +74,6 @@ import {
 import { defaultCohortNameGenerator } from "./utils";
 
 export {
-  DEFAULT_COHORT_ID,
   Cohort,
   EnumOperandValue,
   FilterSet,

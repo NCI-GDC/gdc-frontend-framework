@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { showNotification } from "@mantine/notifications";
+import React, { useEffect, useState, useMemo } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CountButton from "./CountButton";
 import CohortManager from "./CohortManager";
 import {
-  DeleteCohortNotification,
-  DiscardChangesCohortNotification,
-  ErrorCohortNotification,
-  NewCohortNotification,
-  SavedCohortNotification,
-  NewCohortNotificationWithSetAsCurrent,
-} from "@/features/cohortBuilder/CohortNotifications";
-import {
   useCoreDispatch,
   useCoreSelector,
   selectAvailableCohorts,
-  DEFAULT_COHORT_ID,
   selectCurrentCohortId,
   setActiveCohort,
-  selectCohortMessage,
-  selectCurrentCohortName,
-  clearCohortMessage,
-  setCohortList,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
   setActiveCohortList,
@@ -31,6 +17,9 @@ import {
   Cohort,
   Modals,
   showModal,
+  addNewCohort,
+  setCurrentCohortId,
+  removeCohort,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -42,52 +31,74 @@ import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
-interface Error {
-  data: {
-    message: string;
-  };
-  status: number;
-}
-
 const ContextBar: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const { data: cohortsListData, error: getCohortError } =
-    useGetCohortsByContextIdQuery();
+  const {
+    data: cohortsListData,
+    isSuccess,
+    isError,
+  } = useGetCohortsByContextIdQuery();
+
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
+  const outdatedCohorts = useMemo(
+    () => cohorts.filter((c) => c.saved && !updatedCohortIds.includes(c.id)),
+    [cohorts, updatedCohortIds],
+  );
 
   useEffect(() => {
     // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
-    // or call to fetch the cohort list errored out.
-    // In that case we need to check if the error is due to context id not being provided.
-    // If that's case then we get rid of all saved, unsaved cohort from the local cohortAdapter by unsending undefined payload
+    // or call to fetch the cohort list errored out. We need to create a default cohort for them.
+    if (isSuccess || isError) {
+      if (cohortsListData === undefined || cohortsListData.length === 0) {
+        if (cohorts.length === 0) {
+          coreDispatch(addNewCohort("New Unsaved Cohort"));
+        }
+      } else {
+        const updatedList: Cohort[] = cohortsListData.map((data) => ({
+          id: data.id,
+          name: data.name,
+          filters: buildGqlOperationToFilterSet(data.filters),
+          caseSet: {
+            caseSetId: buildGqlOperationToFilterSet(data.filters),
+            status: "fulfilled" as DataStatus,
+          },
+          modified_datetime: data.modified_datetime,
+          saved: true,
+          modified: false,
+          caseCount: data?.case_ids.length,
+        }));
+        // TODO determine if setActiveCohortList is really needed
 
-    if (cohortsListData) {
-      const updatedList: Cohort[] = cohortsListData.map((data) => ({
-        id: data.id,
-        name: data.name,
-        filters: buildGqlOperationToFilterSet(data.filters),
-        caseSet: {
-          caseSetId: buildGqlOperationToFilterSet(data.filters),
-          status: "fulfilled" as DataStatus,
-        },
-        modified_datetime: data.modified_datetime,
-        saved: true,
-        modified: false,
-        caseCount: data?.case_ids.length,
-      }));
-      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
-      // TODO determine if setActiveCohortList is really needed
-    } else if ((getCohortError as Error)?.status === 400) {
-      const noGdcContext =
-        ((getCohortError as Error)?.data.message as string) ===
-        "Bad Request: [400] - Context id not provided.";
-      if (noGdcContext) {
-        coreDispatch(setCohortList(undefined)); // setting to undefined will not require caseSet
+        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+      }
+
+      // A saved cohort that's not present in the API response has been deleted in another session
+      for (const cohort of outdatedCohorts) {
+        coreDispatch(removeCohort({ currentID: cohort.id }));
       }
     }
-  }, [getCohortError, coreDispatch, cohortsListData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    coreDispatch,
+    cohortsListData,
+    isSuccess,
+    isError,
+    cohorts.length,
+    JSON.stringify(outdatedCohorts),
+  ]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
+  const [currentIndex, setCurrentIndex] = useState(
+    cohorts.length > 0 ? cohorts[0].id : undefined,
+  );
+
+  useEffect(() => {
+    if (currentIndex === undefined && cohorts.length > 0) {
+      setCurrentIndex(cohorts[0].id);
+      coreDispatch(setCurrentCohortId(cohorts[0].id));
+    }
+  }, [cohorts, currentIndex, coreDispatch]);
 
   const setCohort = (id: string) => {
     coreDispatch(setActiveCohort(id));
@@ -96,97 +107,9 @@ const ContextBar: React.FC = () => {
     setCohort(idx);
   };
 
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
-  const currentCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
-  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
-
-  useEffect(() => {
-    if (cohortMessage) {
-      const cmdAndParam = cohortMessage.split("|", 3);
-      if (cmdAndParam.length == 3) {
-        if (cmdAndParam[0] === "newCohort") {
-          showNotification({
-            message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "deleteCohort") {
-          showNotification({
-            message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "savedCohort") {
-          showNotification({
-            message: <SavedCohortNotification />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "discardChanges") {
-          showNotification({
-            message: <DiscardChangesCohortNotification />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "error") {
-          showNotification({
-            message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "newCasesCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-        if (cmdAndParam[0] === "newProjectsCohort") {
-          showNotification({
-            message: (
-              <NewCohortNotificationWithSetAsCurrent
-                cohortName={cmdAndParam[1]}
-                cohortId={cmdAndParam[2]}
-              />
-            ),
-            classNames: {
-              description: "flex flex-col content-center text-center",
-            },
-            autoClose: 5000,
-          });
-        }
-      }
-
-      coreDispatch(clearCohortMessage());
-    }
-  }, [cohortMessage, coreDispatch, currentCohortName]);
 
   useEffect(() => {
     setCurrentIndex(currentCohortId);
