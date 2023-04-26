@@ -268,6 +268,36 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
+  const cancerDistributionDownloadData = useMemo(
+    () =>
+      data?.projects
+        .map((d) => {
+          return {
+            project: d.key,
+            disease_type: projectsById[d.key]?.disease_type || [],
+            primary_site: projectsById[d.key]?.primary_site || [],
+            ssm_affected_cases: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
+            ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
+            ...(isGene && {
+              cnv_gains:
+                (data.cnvGain[d.key] || 0) / (data.cnvTotal[d.key] ?? 1),
+            }),
+            ...(isGene && {
+              cnv_losses:
+                (data.cnvLoss[d.key] || 0) / (data.cnvTotal[d.key] ?? 1),
+            }),
+            ...(isGene && {
+              num_mutations:
+                (data.ssmFiltered[d.key] || 0) === 0
+                  ? 0
+                  : d.doc_count.toLocaleString(),
+            }),
+          };
+        })
+        .sort((a, b) => b.ssm_percent - a.ssm_percent),
+    [projectsById, data?.projects],
+  );
+
   const {
     handlePageChange,
     handlePageSizeChange,
@@ -302,7 +332,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           <FunctionButton
             onClick={() => {
               const now = new Date();
-              const fileName = `frequent-mutations.${convertDateToString(
+              const fileName = `cancer-distribution-table.${convertDateToString(
                 now,
               )}.tsv`;
               const headers = isGene
@@ -322,7 +352,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     "# SSM Affected Cases",
                   ];
               const body = isGene
-                ? formattedData
+                ? cancerDistributionDownloadData
                     .map(
                       ({
                         project,
@@ -345,7 +375,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                       },
                     )
                     .join("\n")
-                : formattedData
+                : cancerDistributionDownloadData
                     .map(
                       ({
                         project,
