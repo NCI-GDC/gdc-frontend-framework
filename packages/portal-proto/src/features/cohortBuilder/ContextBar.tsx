@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { showNotification } from "@mantine/notifications";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Tabs } from "@mantine/core";
@@ -31,6 +31,7 @@ import {
   showModal,
   addNewCohort,
   setCurrentCohortId,
+  removeCohort,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -44,14 +45,23 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 
 const ContextBar: React.FC = () => {
   const coreDispatch = useCoreDispatch();
-  const { data: cohortsListData, isFetching } = useGetCohortsByContextIdQuery();
+  const {
+    data: cohortsListData,
+    isSuccess,
+    isError,
+  } = useGetCohortsByContextIdQuery();
 
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
+  const outdatedCohorts = useMemo(
+    () => cohorts.filter((c) => c.saved && !updatedCohortIds.includes(c.id)),
+    [cohorts, updatedCohortIds],
+  );
 
   useEffect(() => {
     // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
     // or call to fetch the cohort list errored out. We need to create a default cohort for them.
-    if (!isFetching) {
+    if (isSuccess || isError) {
       if (cohortsListData === undefined || cohortsListData.length === 0) {
         if (cohorts.length === 0) {
           coreDispatch(addNewCohort("New Unsaved Cohort"));
@@ -74,8 +84,21 @@ const ContextBar: React.FC = () => {
 
         coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       }
+
+      // A saved cohort that's not present in the API response has been deleted in another session
+      for (const cohort of outdatedCohorts) {
+        coreDispatch(removeCohort({ currentID: cohort.id }));
+      }
     }
-  }, [coreDispatch, cohortsListData, isFetching, cohorts.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    coreDispatch,
+    cohortsListData,
+    isSuccess,
+    isError,
+    cohorts.length,
+    JSON.stringify(outdatedCohorts),
+  ]);
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(
