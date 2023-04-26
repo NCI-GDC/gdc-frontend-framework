@@ -10,6 +10,7 @@ import {
   cartSummaryReducer,
   useCartSummary,
   CartSummaryData,
+  CartAggregation,
 } from "./cartSummarySlice";
 export {
   selectCart,
@@ -17,6 +18,7 @@ export {
   removeFilesFromCart,
   useCartSummary,
   CartSummaryData,
+  CartAggregation,
   CartFile,
 };
 
