@@ -295,7 +295,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           };
         })
         .sort((a, b) => b.ssm_percent - a.ssm_percent),
-    [projectsById, data?.projects],
+    [
+      projectsById,
+      data?.projects,
+      data.cnvGain,
+      data.cnvLoss,
+      data.cnvTotal,
+      data.ssmFiltered,
+      data.ssmTotal,
+      isGene,
+    ],
   );
 
   const {
