@@ -101,7 +101,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <button
-                className="text-utility-link underline font-content"
+                className="text-utility-link underline font-content text-left"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
@@ -115,7 +115,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             access: <FileAccessBadge access={file.access} />,
             name: (
               <button
-                className="text-utility-link underline font-content"
+                className="text-utility-link underline font-content text-left"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
