@@ -71,24 +71,22 @@ const exportCohort = (
 };
 
 interface CohortGroupButtonProps {
-  $buttonDisabled?: boolean;
+  disabled: boolean;
   $isDiscard?: boolean;
 }
 
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
 ${(p: CohortGroupButtonProps) =>
-  p.$buttonDisabled
-    ? "text-primary"
-    : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest"}
+  p.disabled
+    ? "text-primary bg-base-light"
+    : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest bg-base-max"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 h-10
 w-10
 flex
 justify-center
 items-center
-bg-base-max
 transition-colors
-disabled:opacity-50
 `;
 
 /**
@@ -499,22 +497,18 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               position="bottom"
               withArrow
             >
-              <CohortGroupButton
-                data-testid="discardButton"
-                onClick={() => {
-                  if (!cohortModified) {
-                    return;
-                  }
-                  setShowDiscard(true);
-                }}
-                className={`mr-0.5 ${
-                  !cohortModified && "cursor-not-allowed bg-base-light"
-                }`}
-                $buttonDisabled={!cohortModified}
-                $isDiscard={true}
-              >
-                <DiscardIcon size="16" aria-label="Add cohort" />
-              </CohortGroupButton>
+              <span>
+                <CohortGroupButton
+                  data-testid="discardButton"
+                  onClick={() => {
+                    setShowDiscard(true);
+                  }}
+                  disabled={!cohortModified}
+                  $isDiscard={true}
+                >
+                  <DiscardIcon size="16" aria-label="Add cohort" />
+                </CohortGroupButton>
+              </span>
             </Tooltip>
 
             <div className="flex flex-col" data-testid="cohort-list-dropdown">
@@ -559,20 +553,19 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {!hide_controls ? (
         <>
           <Tooltip label="Save Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              onClick={() => {
-                !currentCohort?.saved
-                  ? setShowSaveCohort(true)
-                  : setShowUpdateCohort(true);
-              }}
-              $buttonDisabled={!cohortModified}
-              data-testid="saveButton"
-              className={`${
-                !cohortModified && "cursor-not-allowed bg-base-light"
-              }`}
-            >
-              <SaveIcon size="1.5em" aria-label="Save cohort" />
-            </CohortGroupButton>
+            <span>
+              <CohortGroupButton
+                onClick={() => {
+                  !currentCohort?.saved
+                    ? setShowSaveCohort(true)
+                    : setShowUpdateCohort(true);
+                }}
+                disabled={currentCohort?.saved && !cohortModified}
+                data-testid="saveButton"
+              >
+                <SaveIcon size="1.5em" aria-label="Save cohort" />
+              </CohortGroupButton>
+            </span>
           </Tooltip>
           <Tooltip label="Add New Cohort" position="bottom" withArrow>
             <CohortGroupButton
@@ -604,29 +597,25 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           </Tooltip>
 
           <Tooltip label="Export Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              data-testid="downloadButton"
-              className={`${
-                isErrorCaseIds && "cursor-not-allowed bg-base-light"
-              }`}
-              $buttonDisabled={isErrorCaseIds}
-              onClick={() => {
-                if (isErrorCaseIds) {
-                  return;
-                }
-                if (isFetchingCaseIds) {
-                  setExportCohortPending(true);
-                } else {
-                  exportCohort(caseIds, cohortName);
-                }
-              }}
-            >
-              {exportCohortPending ? (
-                <Loader />
-              ) : (
-                <DownloadIcon size="1.5em" aria-label="Download cohort" />
-              )}
-            </CohortGroupButton>
+            <span>
+              <CohortGroupButton
+                data-testid="downloadButton"
+                disabled={isErrorCaseIds}
+                onClick={() => {
+                  if (isFetchingCaseIds) {
+                    setExportCohortPending(true);
+                  } else {
+                    exportCohort(caseIds, cohortName);
+                  }
+                }}
+              >
+                {exportCohortPending ? (
+                  <Loader />
+                ) : (
+                  <DownloadIcon size="1.5em" aria-label="Download cohort" />
+                )}
+              </CohortGroupButton>
+            </span>
           </Tooltip>
         </>
       ) : (
