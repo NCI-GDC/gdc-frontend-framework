@@ -268,7 +268,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
-  const cancerDistributionDownloadData = useMemo(
+  const cancerDistributionTableDownloadData = useMemo(
     () =>
       data?.projects
         .map((d) => {
@@ -298,11 +298,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [
       projectsById,
       data?.projects,
-      data.cnvGain,
-      data.cnvLoss,
-      data.cnvTotal,
-      data.ssmFiltered,
-      data.ssmTotal,
+      data?.cnvGain,
+      data?.cnvLoss,
+      data?.cnvTotal,
+      data?.ssmFiltered,
+      data?.ssmTotal,
       isGene,
     ],
   );
@@ -361,7 +361,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     "# SSM Affected Cases",
                   ];
               const body = isGene
-                ? cancerDistributionDownloadData
+                ? cancerDistributionTableDownloadData
                     .map(
                       ({
                         project,
@@ -384,7 +384,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                       },
                     )
                     .join("\n")
-                : cancerDistributionDownloadData
+                : cancerDistributionTableDownloadData
                     .map(
                       ({
                         project,
