@@ -8,9 +8,16 @@ import {
   FilterSet,
   PROTEINPAINT_API,
   useUserDetails,
+  useCoreDispatch,
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
-import { isEqual, cloneDeep } from "lodash";
+import { isEqual } from "lodash";
 import { DemoText } from "../shared/tailwindComponents";
+import {
+  SelectSamples,
+  SelectSamplesCallback,
+  SelectSamplesCallBackArg,
+} from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
 
@@ -28,42 +35,81 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = isDemoMode
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
-
   const userDetails = useUserDetails();
-  // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
-  const prevArg = useRef<any>();
+  const prevData = useRef<any>();
+  const coreDispatch = useCoreDispatch();
+  // TODO:
+  // - the callback from useCallback() triggers rerenders, but not from useRef() - why?
+  // - can this callback generator be shared between different wrappers?
+  const callback = useRef<SelectSamplesCallback>(function (
+    arg: SelectSamplesCallBackArg,
+  ): void {
+    const { samples, source } = arg;
+    const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "occurrence.case.case_id": {
+          operator: "includes",
+          field: "occurrence.case.case_id",
+          operands: ids,
+        },
+      },
+    };
+    coreDispatch(
+      // TODO: option to edit a cohort using ImportCohortModal???
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        message: "newCasesCohort",
+        // TODO: improve cohort name constructor
+        name: source + ` (n=${samples.length})`,
+      }),
+    );
+  });
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = getMatrixTrack(props, filter0);
+      const data = { filter0, userDetails };
+      if (isEqual(prevData.current, data)) return;
 
-      if (!data) return;
-      if (isEqual(prevArg.current, data)) return;
-      prevArg.current = data;
+      prevData.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
 
-      const arg = Object.assign(
-        { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-        cloneDeep(data),
-      ) as MatrixArg;
-
       if (ppRef.current) {
-        ppRef.current.update(arg);
+        ppRef.current.update({ filter0: prevData.current.filter0 });
       } else {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
+
+        const data = getMatrixTrack(
+          props,
+          prevData.current.filter0,
+          callback.current,
+        );
+        if (!data) return;
+
+        const arg = Object.assign(
+          {
+            holder: rootElem,
+            noheader: true,
+            nobox: true,
+            hide_dsHandles: true,
+          },
+          data,
+        ) as MatrixArg;
+
         runproteinpaint(arg).then((pp) => {
           ppRef.current = pp;
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails, isDemoMode],
+    [filter0, userDetails],
   );
 
   const divRef = useRef();
@@ -92,9 +138,14 @@ interface MatrixArg {
   host: string;
   launchGdcMatrix: boolean;
   filter0: FilterSet;
+  allow2selectSamples?: SelectSamples;
 }
 
-function getMatrixTrack(props: PpProps, filter0: any) {
+function getMatrixTrack(
+  props: PpProps,
+  filter0: any,
+  callback?: SelectSamplesCallback,
+) {
   // host in gdc is just a relative url path,
   // using the same domain as the GDC portal where PP is embedded
   const defaultFilter = {
@@ -118,10 +169,31 @@ function getMatrixTrack(props: PpProps, filter0: any) {
     ],
   };
 
+  /* // TODO: uncomment when multibutton once supported in pp-client >2.14.1
+  const buttons = [{
+    buttonText: "Create Cohort",
+    attributes: ["case.case_id"],
+    callback//: createCohortFromPP, // as SelectSamplesCallback,
+  }]
+
+  if (filter0) {
+    buttons.unshift({
+      buttonText: "Update Cohort",
+      attributes: ["case.case_id"],
+      callback//: createCohortFromPP, // as SelectSamplesCallback,
+    })
+  }
+  */
+
   const arg: MatrixArg = {
     host: props.basepath || (basepath as string),
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,
+    allow2selectSamples: {
+      buttonText: "Update Cohort",
+      attributes: ["case.case_id"],
+      callback,
+    },
   };
 
   return arg;

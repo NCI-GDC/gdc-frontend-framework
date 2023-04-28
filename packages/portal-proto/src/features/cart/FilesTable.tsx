@@ -101,7 +101,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
               <button
-                className="text-utility-link underline font-content"
+                className="text-utility-link underline font-content text-left"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
@@ -115,7 +115,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             access: <FileAccessBadge access={file.access} />,
             name: (
               <button
-                className="text-utility-link underline font-content"
+                className="text-utility-link underline font-content text-left"
                 onClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
@@ -276,13 +276,8 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       tableData={tableData}
       columns={columns}
       selectableRow={false}
-      tableTitle={`Showing ${(activePage - 1) * pageSize + 1} - ${
-        activePage * pageSize < data?.pagination?.total
-          ? activePage * pageSize
-          : data?.pagination?.total
-      } of ${data?.pagination?.total} files`}
       additionalControls={
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
           <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
         </div>
