@@ -7,6 +7,7 @@ import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
+import { GqlOperation } from "../gdcapi/filters";
 
 export interface NumericFromTo {
   readonly from: number;
@@ -18,7 +19,7 @@ export interface RangeOperation {
   readonly ranges: ReadonlyArray<NumericFromTo>;
 }
 
-const buildContinuousAggregationRangeOnlyQuery = (
+export const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
   itemType: GQLDocType,
   indexType: GQLIndexType,
@@ -63,6 +64,7 @@ export interface FetchContinuousAggregationProps {
   readonly ranges: ReadonlyArray<NumericFromTo>;
   readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
+  readonly overrideFilters?: GqlOperation;
 }
 
 export const fetchFacetContinuousAggregation = createAsyncThunk<
@@ -77,6 +79,7 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
       ranges,
       docType = "cases" as GQLDocType,
       indexType = "explore" as GQLIndexType,
+      overrideFilters = undefined,
     },
     thunkAPI,
   ) => {
@@ -91,7 +94,7 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
       field,
     );
     const filtersGQL = {
-      filters: filters ? filters : {},
+      filters: overrideFilters ? overrideFilters : filters ? filters : {},
       filters2: { op: "range", content: [{ ranges: ranges }] },
     };
 
