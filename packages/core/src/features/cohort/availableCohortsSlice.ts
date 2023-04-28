@@ -572,6 +572,9 @@ const slice = createSlice({
       state.currentCohort = cohort.id ?? getCurrentCohort(state);
       state.message = [`newCohort|${cohort.name}|${cohort.id}`];
     },
+    setCohort: (state, action: PayloadAction<Cohort>) => {
+      cohortsAdapter.setOne(state, action.payload);
+    },
     addNewCohortWithFilterAndMessage: (
       state,
       action: PayloadAction<NewCohortParams>,
@@ -946,6 +949,7 @@ export const {
   addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
+  setCohort,
   setCurrentCohortId,
   updateCohortFilter,
   removeCohortFilter,

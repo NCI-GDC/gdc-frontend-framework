@@ -44,6 +44,8 @@ import {
   addNewCohortWithFilterAndMessage,
   showModal,
   CoreDispatch,
+  DataStatus,
+  setCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import CountButton from "./CountButton";
@@ -385,11 +387,25 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
             await updateCohort(updateBody)
               .unwrap()
-              .then(() =>
+              .then((response) => {
                 coreDispatch(
                   setCohortMessage([`savedCohort|${cohortName}|${cohortId}`]),
-                ),
-              )
+                );
+                const cohort = {
+                  id: response.id,
+                  name: response.name,
+                  filters: buildGqlOperationToFilterSet(response.filters),
+                  caseSet: {
+                    caseSetId: buildGqlOperationToFilterSet(response.filters),
+                    status: "fulfilled" as DataStatus,
+                  },
+                  modified_datetime: response.modified_datetime,
+                  saved: true,
+                  modified: false,
+                  caseCount: response?.case_ids.length,
+                };
+                coreDispatch(setCohort(cohort));
+              })
               .catch(() =>
                 coreDispatch(setCohortMessage(["error|saving|allId"])),
               );
