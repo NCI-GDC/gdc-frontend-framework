@@ -24,6 +24,7 @@ import {
   selectMultipleFacetsByDocTypeAndField,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortFiltersByNames,
+  GqlOperation,
 } from "@gff/core";
 import { useEffect } from "react";
 import isEqual from "lodash/isEqual";
@@ -225,6 +226,7 @@ export const useRangeFacet = (
   indexType: GQLIndexType,
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
+  overrideCohortFilters?: GqlOperation,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -235,10 +237,12 @@ export const useRangeFacet = (
   const prevFilters = usePrevious(cohortFilters);
   const prevRanges = usePrevious(ranges);
 
+  const rangeCohortFilters = overrideCohortFilters ?? cohortFilters;
+
   useEffect(() => {
     if (
       !facet ||
-      !isEqual(prevFilters, cohortFilters) ||
+      !isEqual(prevFilters, rangeCohortFilters) ||
       !isEqual(ranges, prevRanges)
     ) {
       coreDispatch(
@@ -254,7 +258,7 @@ export const useRangeFacet = (
     coreDispatch,
     facet,
     field,
-    cohortFilters,
+    rangeCohortFilters,
     prevFilters,
     ranges,
     prevRanges,

@@ -11,6 +11,7 @@ import {
   selectFacetDefinitionByName,
   Buckets,
   Stats,
+  GqlOperation,
 } from "@gff/core";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
@@ -23,6 +24,7 @@ interface CDaveCardProps {
   readonly data: Buckets | Stats;
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
+  readonly cohortFilters: GqlOperation;
 }
 
 const CDaveCard: React.FC<CDaveCardProps> = ({
@@ -30,6 +32,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   data,
   updateFields,
   initialDashboardRender,
+  cohortFilters,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const { scrollIntoView, targetRef } = useScrollIntoView();
@@ -133,6 +136,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           fieldName={fieldName}
           chartType={chartType}
           noData={noData}
+          cohortFilters={cohortFilters}
         />
       ) : (
         <CategoricalData
