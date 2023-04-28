@@ -70,3 +70,4 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Select "Delete" from the Cohort Bar
 * "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
 * "New Unsaved Cohort" should be the active cohort
+* Is text "Changes not saved" present on the page
