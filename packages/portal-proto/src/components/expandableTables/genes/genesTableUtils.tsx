@@ -87,7 +87,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip={"Click to add/remove genes from your cohort filters"}
                 className="flex justify-start"
               />
             ),
@@ -141,7 +141,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip={"Click to change the survival plot display"}
                 className="mr-3"
               />
             ),
