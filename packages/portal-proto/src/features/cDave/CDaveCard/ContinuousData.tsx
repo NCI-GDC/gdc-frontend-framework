@@ -70,9 +70,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
     : createBuckets(initialData.min, initialData.max);
 
-  console.log("ranges: ", ranges);
-  console.log("cohortFilters: ", cohortFilters);
-
   const { data, isFetching, isSuccess } = useRangeFacet(
     "cases",
     "repository",
