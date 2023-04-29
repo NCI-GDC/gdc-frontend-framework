@@ -92,14 +92,12 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
-              const isGeneSelected = toggledGenes.includes(
-                row.original?.geneID,
-              );
+              const isToggledGene = toggledGenes.includes(row.original?.geneID);
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={isGeneSelected}
+                      isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -125,7 +123,7 @@ export const geneCreateTableColumn = ({
                       tooltip={
                         isDemoMode
                           ? "Feature not available in demo mode"
-                          : isGeneSelected
+                          : isToggledGene
                           ? `Click to remove ${row.original?.symbol} from cohort filters`
                           : `Click to add ${row.original?.symbol} to cohort filters`
                       }

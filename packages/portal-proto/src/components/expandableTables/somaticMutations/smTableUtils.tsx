@@ -104,14 +104,14 @@ export const ssmsCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
-              const isSsmSelected = toggledSsms.includes(
+              const isToggledSsm = toggledSsms.includes(
                 row.original?.mutationID,
               );
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={isSsmSelected}
+                      isActive={isToggledSsm}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -137,7 +137,7 @@ export const ssmsCreateTableColumn = ({
                       tooltip={
                         isDemoMode
                           ? "Feature not available in demo mode"
-                          : isSsmSelected
+                          : isToggledSsm
                           ? `Click to remove ${row.original?.DNAChange} from cohort filters`
                           : `Click to add ${row.original?.DNAChange} to cohort filters`
                       }
