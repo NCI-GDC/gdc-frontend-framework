@@ -2,7 +2,7 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: master
+    ref: 0.2.0-rc
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
@@ -88,10 +88,11 @@ Prettier Checks:
     policy: pull
   <<: *default_rules
 
-Build core and compile portal:
+Build and test core and portal:
   stage: build
   before_script:
     - lerna -v || npm ci
+    - jest -v || npm ci
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
@@ -99,38 +100,13 @@ Build core and compile portal:
     - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
+    - cd ${CI_PROJECT_DIR}
+    - npm run test:all
   cache:
     - key: $CI_COMMIT_REF_SLUG
       paths:
         - node_modules/
         - .npm/
-      policy: pull
-    - key: "Built-$CI_COMMIT_REF_SLUG"
-      untracked: true
-      paths:
-        - node_modules/
-        - .npm/
-        - packages/
-        - dist/
-      policy: push
-  <<: *default_rules
-
-Run unit tests:
-  stage: unit
-  needs:
-    - Build core and compile portal
-  before_script:
-    - jest -v || npm ci
-  script:
-    - npm run test:all
-  retry: 2
-  cache:
-    - key: "Built-$CI_COMMIT_REF_SLUG"
-      paths:
-        - node_modules/
-        - .npm/
-        - packages/
-        - dist/
       policy: pull
   <<: *default_rules
 
