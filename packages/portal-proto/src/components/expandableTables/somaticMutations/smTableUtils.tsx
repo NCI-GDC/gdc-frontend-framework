@@ -98,7 +98,7 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip="Click to add/remove mutations from your cohort filters"
+                tooltip="Click to add/remove mutations to/from your cohort filters"
               />
             ),
             cell: ({ row }) => {
