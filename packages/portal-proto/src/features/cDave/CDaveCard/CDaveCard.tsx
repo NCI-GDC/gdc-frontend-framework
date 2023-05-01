@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, ActionIcon, Tooltip } from "@mantine/core";
+import { Card, ActionIcon, Text, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
@@ -45,6 +45,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     ? (data as Stats)?.stats?.count === 0
     : data !== undefined &&
       (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
+
+  console.log("noData: ", facet, noData);
 
   const fieldName = toDisplayName(field);
 
@@ -130,14 +132,20 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         </div>
       </div>
       {continuous ? (
-        <ContinuousData
-          initialData={(data as Stats)?.stats}
-          field={field}
-          fieldName={fieldName}
-          chartType={chartType}
-          noData={noData}
-          cohortFilters={cohortFilters}
-        />
+        noData ? (
+          <div className="h-full w-full flex">
+            <p className="m-auto">No data for this property</p>
+          </div>
+        ) : (
+          <ContinuousData
+            initialData={(data as Stats)?.stats}
+            field={field}
+            fieldName={fieldName}
+            chartType={chartType}
+            noData={noData}
+            cohortFilters={cohortFilters}
+          />
+        )
       ) : (
         <CategoricalData
           initialData={(data as Buckets)?.buckets}

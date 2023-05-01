@@ -60,6 +60,8 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
   const [yTotal, setYTotal] = useState(0);
 
+  console.log("initialData", initialData);
+
   const ranges = isInterval(customBinnedData)
     ? createBuckets(
         customBinnedData.min,

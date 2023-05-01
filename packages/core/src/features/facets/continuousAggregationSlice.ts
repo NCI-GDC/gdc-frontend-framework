@@ -30,6 +30,7 @@ export const buildContinuousAggregationRangeOnlyQuery = (
       ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(field)}`
       : convertFacetNameToGQL(field);
 
+  // TODO update filters to case_filters
   return `
   query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
