@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, ActionIcon, Text, Tooltip } from "@mantine/core";
+import { Card, ActionIcon, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
