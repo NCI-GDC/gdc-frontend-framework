@@ -56,7 +56,7 @@ export interface SMTableContainerProps {
    */
   caseFilter?: FilterSet;
   /*
-   * project id for case summary SMT
+   * project id for case summary SM Table
    */
   projectId?: string;
   /*
