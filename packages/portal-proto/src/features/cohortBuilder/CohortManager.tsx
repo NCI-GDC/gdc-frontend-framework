@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { LoadingOverlay, Select, Loader, Tooltip } from "@mantine/core";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import {
   MdAdd as AddIcon,
   MdDelete as DeleteIcon,
@@ -43,7 +43,6 @@ import {
   updateActiveCohortFilter,
   addNewCohortWithFilterAndMessage,
   showModal,
-  CoreDispatch,
   DataStatus,
   setCohort,
   updateCohortName,
@@ -98,7 +97,7 @@ transition-colors
  * @param  removeList
  */
 const removeQueryParamsFromRouter = (
-  router,
+  router: NextRouter,
   removeList: string[] = [],
 ): void => {
   if (removeList.length > 0) {
@@ -118,58 +117,6 @@ const removeQueryParamsFromRouter = (
      */
     { shallow: true },
   );
-};
-
-interface CreateCohortFromBodyplotProps {
-  dispatch: CoreDispatch;
-  onCreateCohort: (name: string) => boolean;
-}
-
-/**
- * Component for creating a cohort from the bodyplot section of the Home page.
- * Implemented as a separate component to isolate state management.
- * @param dispatch
- * @param onCreateCohort
- */
-const CreateCohortFromBodyplot: React.FC<CreateCohortFromBodyplotProps> = ({
-  dispatch,
-  onCreateCohort,
-}: CreateCohortFromBodyplotProps) => {
-  const router = useRouter();
-  const {
-    query: { operation, filters },
-  } = router;
-
-  const [cohortOperation, setCohortOperation] = useState({
-    operation: operation,
-    filters: filters,
-  });
-
-  return cohortOperation.operation == "createCohort" ? (
-    <SaveOrCreateCohortModal
-      entity="cohort"
-      action="create"
-      opened
-      onClose={() => {
-        removeQueryParamsFromRouter(router, ["operation", "filters"]);
-        setCohortOperation({ operation: undefined, filters: undefined });
-      }}
-      onActionClick={async (newName: string) => {
-        const cohortFilters = JSON.parse(
-          cohortOperation.filters as string,
-        ) as FilterSet;
-        dispatch(
-          addNewCohortWithFilterAndMessage({
-            filters: cohortFilters,
-            name: newName,
-            makeCurrent: true,
-            message: "newCohort",
-          }),
-        );
-      }}
-      onNameChange={onCreateCohort}
-    />
-  ) : null;
 };
 
 /**
@@ -290,6 +237,31 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const updateCohortFilters = (field: string, operation: Operation) => {
     coreDispatch(updateActiveCohortFilter({ field, operation }));
   };
+
+  const router = useRouter();
+  const {
+    query: { operation, filters: createCohortFilters, name: createCohortName },
+  } = router;
+
+  useEffect(() => {
+    if (operation == "createCohort") {
+      const cohortFilters = JSON.parse(
+        createCohortFilters as string,
+      ) as FilterSet;
+      coreDispatch(
+        addNewCohortWithFilterAndMessage({
+          filters: cohortFilters,
+          name: (createCohortName as string).replace(/-/g, " "),
+          makeCurrent: true,
+          message: "newCohort",
+        }),
+      );
+
+      removeQueryParamsFromRouter(router, ["operation", "filters", "name"]);
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
@@ -413,11 +385,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           }}
         />
       )}
-
-      <CreateCohortFromBodyplot
-        dispatch={coreDispatch}
-        onCreateCohort={onCreateCohort}
-      />
 
       {showSaveCohort && (
         <SaveOrCreateCohortModal

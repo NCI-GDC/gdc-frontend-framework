@@ -1,3 +1,5 @@
+import { FilterSet } from "@gff/core";
+
 export type SampleData = {
   "case.case_id"?: string;
 };
@@ -5,8 +7,6 @@ export type SampleData = {
 export interface SelectSamplesCallBackArg {
   samples: SampleData[];
   source: string;
-  // the button argument will require pp-client > 2.14
-  // button: SelectSamplesButton;
 }
 
 export type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
@@ -17,27 +17,10 @@ export interface SelectSamples {
   callback?: SelectSamplesCallback;
 }
 
-/*
-// these updated types will require pp-client > 2.14
-export interface SelectSamplesButton {
-  buttonText: string;
-  attributes: string[];
-  callback?: SelectSamplesCallback;
-}
-
-export interface SelectSamples {
-  buttons: SelectSamplesButton[];
-}*/
-
-/*
-// TODO: how to extract from ProteinPaintWrapper to here,
-// but not cause errors in using the coreDispatch() outside of a function component
-export function createCohortFromPP<SelectSamplesCallback> (
-  arg: SelectSamplesCallBackArg,
-): void {
-  const { samples, source } = arg; console.log(39)
+export function getFilters(arg: SelectSamplesCallBackArg): FilterSet {
+  const { samples } = arg;
   const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
-  const filters: FilterSet = {
+  return {
     mode: "and",
     root: {
       "occurrence.case.case_id": {
@@ -47,17 +30,4 @@ export function createCohortFromPP<SelectSamplesCallback> (
       },
     },
   };
-
-  const coreDispatch = useCoreDispatch();
-
-  coreDispatch(
-    // TODO: option to edit a cohort using ImportCohortModal???
-    addNewCohortWithFilterAndMessage({
-      filters: filters,
-      message: "newCasesCohort",
-      // TODO: improve cohort name constructor
-      name: source + ` (n=${samples.length})`,
-    }),
-  );
 }
-*/
