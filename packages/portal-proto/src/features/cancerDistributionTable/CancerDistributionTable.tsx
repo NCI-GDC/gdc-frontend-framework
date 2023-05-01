@@ -21,6 +21,16 @@ import { NumeratorDenominator } from "@/components/expandableTables/shared/Numer
 import { convertDateToString } from "src/utils/date";
 import saveAs from "file-saver";
 
+interface CancerDistributionTableDownloadData {
+  num_mutations?: number;
+  cnv_losses?: string | 0;
+  cnv_gains?: string | 0;
+  project: string;
+  disease_type: string[];
+  primary_site: string[];
+  ssm_affected_cases: string;
+}
+
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
   readonly symbol: string;
@@ -276,25 +286,34 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             project: d.key,
             disease_type: projectsById[d.key]?.disease_type || [],
             primary_site: projectsById[d.key]?.primary_site || [],
-            ssm_affected_cases: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
+            ssm_affected_cases: data.ssmFiltered[d.key]
+              ? `${data.ssmFiltered[d.key]} / ${data.ssmTotal[d.key]} (${(
+                  data.ssmFiltered[d.key] / data.ssmTotal[d.key]
+                ).toFixed(2)}%)`
+              : 0,
             ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
             ...(isGene && {
-              cnv_gains:
-                (data.cnvGain[d.key] || 0) / (data.cnvTotal[d.key] ?? 1),
+              cnv_gains: data.cnvGain[d.key]
+                ? `${data.cnvGain[d.key]} / ${data.cnvTotal[d.key]} (${(
+                    data.cnvGain[d.key] / data.cnvTotal[d.key]
+                  ).toFixed(2)}%)`
+                : 0,
             }),
             ...(isGene && {
-              cnv_losses:
-                (data.cnvLoss[d.key] || 0) / (data.cnvTotal[d.key] ?? 1),
+              cnv_losses: data.cnvLoss[d.key]
+                ? `${data.cnvLoss[d.key]} / ${data.cnvTotal[d.key]} (${(
+                    data.cnvLoss[d.key] / data.cnvTotal[d.key]
+                  ).toFixed(2)}%)`
+                : 0,
             }),
             ...(isGene && {
-              num_mutations:
-                (data.ssmFiltered[d.key] || 0) === 0
-                  ? 0
-                  : d.doc_count.toLocaleString(),
+              num_mutations: data.ssmFiltered[d.key] ?? 0,
             }),
           };
         })
-        .sort((a, b) => b.ssm_percent - a.ssm_percent),
+        .sort(
+          (a, b) => b.num_mutations - a.num_mutations,
+        ) as CancerDistributionTableDownloadData[],
     [
       projectsById,
       data?.projects,
