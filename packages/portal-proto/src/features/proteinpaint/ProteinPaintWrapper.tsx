@@ -8,22 +8,16 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
   useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
   buildCohortGqlOperator,
-  // TODO: uncomment when multibutton once supported in pp-client >2.14.1
-  // selectCurrentCohortId,
-  // selectCurrentCohortName,
-  // useUpdateCohortMutation,
-  // setCohortMessage
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
-//import { GenericCohortModal } from "../cohortBuilder/Modals/GenericCohortModal";
 import { isEqual, cloneDeep } from "lodash";
 import { DemoText } from "../shared/tailwindComponents";
-//import { LoadingOverlay } from "@mantine/core";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
+  getFilters,
 } from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
@@ -38,54 +32,26 @@ interface PpProps {
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
-  // TODO: uncomment when multibutton once supported in pp-client >2.14.1
-  //const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const isDemoMode = useIsDemoApp();
-  //const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
-  //const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
-  //const [updateCohort, { isLoading: isUpdateCohortLoading }] = useUpdateCohortMutation();
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
-  const filtersRef = useRef<FilterSet>(null);
-
-  // useCoreDispatch() hook has to be called within a function component
-  // so, cannot extract outside of this wrapper component???
   const coreDispatch = useCoreDispatch();
   const callback = useCallback<SelectSamplesCallback>(
-    function (arg: SelectSamplesCallBackArg): void {
-      const { samples, source } = arg;
-      const ids = samples
-        .map((d) => d["case.case_id"])
-        .filter((d) => d && true);
-      filtersRef.current = {
-        mode: "and",
-        root: {
-          "occurrence.case.case_id": {
-            operator: "includes",
-            field: "occurrence.case.case_id",
-            operands: ids,
-          },
-        },
-      };
-
-      // TODO: uncomment when multibutton once supported in pp-client >2.14.1
-      // if (button.buttonText === updateBtnText) {
-      //   setShowUpdateCohort(true)
-      // } else {
+    (arg: SelectSamplesCallBackArg) => {
+      const filters = getFilters(arg);
       coreDispatch(
         // TODO: option to edit a cohort using ImportCohortModal???
         addNewCohortWithFilterAndMessage({
-          filters: filtersRef.current,
+          filters,
           message: "newCasesCohort",
           // TODO: improve cohort name constructor
-          name: source + ` (n=${samples.length})`,
+          name: arg.source + ` (n=${arg.samples.length})`,
         }),
       );
-      //}
     },
     [coreDispatch],
   );
@@ -133,7 +99,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
-      {/*isUpdateCohortLoading && <LoadingOverlay visible />*/}
       {isDemoMode && (
         <DemoText>Demo showing MYC variants for all GDC.</DemoText>
       )}
@@ -143,46 +108,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {/* // TODO: uncomment when multibutton once supported in pp-client >2.14.1
-        showUpdateCohort && (
-        <GenericCohortModal
-          title="Save Cohort"
-          opened
-          onClose={() => setShowUpdateCohort(false)}
-          actionText="Save"
-          mainText={
-            <>
-              Are you sure you want to save <b>{cohortName}</b>? This will
-              overwrite your previously saved changes.
-            </>
-          }
-          subText={<>You cannot undo this action.</>}
-          onActionClick={async () => {
-            setShowUpdateCohort(false);
-            const filters = Object.keys(filtersRef.current.root).length > 0
-              ? buildCohortGqlOperator(filtersRef.current)
-              : {}; console.log(156, {filters, current: filtersRef.current})
-
-            const updateBody = {
-              id: cohortId,
-              name: cohortName,
-              type: "static",
-              filters
-            };
-
-            await updateCohort(updateBody)
-              .unwrap()
-              .then(() =>
-                coreDispatch(
-                  setCohortMessage(`savedCohort|${cohortName}|${cohortId}`),
-                ),
-              )
-              .catch(() =>
-                coreDispatch(setCohortMessage("error|saving|allId")),
-              );
-          }}
-        />
-      )*/}
     </div>
   );
 };
@@ -217,30 +142,14 @@ interface PpApi {
   update(arg: any): null;
 }
 
-//const updateBtnText = 'Update Cohort';
-
 function getLollipopTrack(
   props: PpProps,
   filter0: any,
   callback: SelectSamplesCallback,
 ) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  /*const buttons = [{
-    buttonText: "Create Cohort",
-    attributes: ["case.case_id"],
-    callback
-  }]
-
-  if (filter0) {
-    buttons.unshift({
-      buttonText: updateBtnText,
-      attributes: ["case.case_id"],
-      callback
-    })
-  }*/
-
   const arg: Mds3Arg = {
+    // host in gdc is just a relative url path,
+    // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
     genome: "hg38", // hardcoded for gdc
     tracks: [

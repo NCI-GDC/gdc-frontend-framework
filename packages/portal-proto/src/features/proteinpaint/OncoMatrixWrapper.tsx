@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, useCallback, FC } from "react";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -15,8 +15,9 @@ import { isEqual } from "lodash";
 import { DemoText } from "../shared/tailwindComponents";
 import {
   SelectSamples,
-  SelectSamplesCallback,
   SelectSamplesCallBackArg,
+  SelectSamplesCallback,
+  getFilters,
 } from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
@@ -39,34 +40,21 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
-  // TODO:
-  // - the callback from useCallback() triggers rerenders, but not from useRef() - why?
-  // - can this callback generator be shared between different wrappers?
-  const callback = useRef<SelectSamplesCallback>(function (
-    arg: SelectSamplesCallBackArg,
-  ): void {
-    const { samples, source } = arg;
-    const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
-    const filters: FilterSet = {
-      mode: "and",
-      root: {
-        "occurrence.case.case_id": {
-          operator: "includes",
-          field: "occurrence.case.case_id",
-          operands: ids,
-        },
-      },
-    };
-    coreDispatch(
-      // TODO: option to edit a cohort using ImportCohortModal???
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        message: "newCasesCohort",
-        // TODO: improve cohort name constructor
-        name: source + ` (n=${samples.length})`,
-      }),
-    );
-  });
+  const callback = useCallback<SelectSamplesCallback>(
+    (arg: SelectSamplesCallBackArg) => {
+      const filters = getFilters(arg);
+      coreDispatch(
+        // TODO: option to edit a cohort using ImportCohortModal???
+        addNewCohortWithFilterAndMessage({
+          filters,
+          message: "newCasesCohort",
+          // TODO: improve cohort name constructor
+          name: arg.source + ` (n=${arg.samples.length})`,
+        }),
+      );
+    },
+    [coreDispatch],
+  );
 
   useEffect(
     () => {
@@ -86,11 +74,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
-        const data = getMatrixTrack(
-          props,
-          prevData.current.filter0,
-          callback.current,
-        );
+        const data = getMatrixTrack(props, prevData.current.filter0, callback);
         if (!data) return;
 
         const arg = Object.assign(
@@ -146,46 +130,11 @@ function getMatrixTrack(
   filter0: any,
   callback?: SelectSamplesCallback,
 ) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
-  const defaultFilter = {
-    op: "and",
-    content: [
-      {
-        op: "in",
-        content: {
-          field: "cases.primary_site",
-          value: ["breast", "bronchus and lung"],
-        },
-      },
-      {
-        op: ">=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 10000 },
-      },
-      {
-        op: "<=",
-        content: { field: "cases.diagnoses.age_at_diagnosis", value: 20000 },
-      },
-    ],
-  };
-
-  /* // TODO: uncomment when multibutton once supported in pp-client >2.14.1
-  const buttons = [{
-    buttonText: "Create Cohort",
-    attributes: ["case.case_id"],
-    callback//: createCohortFromPP, // as SelectSamplesCallback,
-  }]
-
-  if (filter0) {
-    buttons.unshift({
-      buttonText: "Update Cohort",
-      attributes: ["case.case_id"],
-      callback//: createCohortFromPP, // as SelectSamplesCallback,
-    })
-  }
-  */
+  const defaultFilter = null;
 
   const arg: MatrixArg = {
+    // host in gdc is just a relative url path,
+    // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,

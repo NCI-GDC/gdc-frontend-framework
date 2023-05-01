@@ -113,6 +113,7 @@ export const Bodyplot = (): JSX.Element => {
         app: "",
         operation: "createCohort",
         filters: JSON.stringify(buildBodyplotFilter(e)),
+        name: data.key,
       },
     });
   }, []);
