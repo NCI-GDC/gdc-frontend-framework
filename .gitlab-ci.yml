@@ -23,7 +23,6 @@ include:
 stages:
   - .pre
   - test
-  - build
   - unit
   - release
   - build_ui_tests_image
@@ -65,7 +64,7 @@ Prettier Checks:
   <<: *default_rules
 
 Build and test core and portal:
-  stage: build
+  stage: test
   before_script:
     - npm install npm@7
     - npm ci --cache .npm
