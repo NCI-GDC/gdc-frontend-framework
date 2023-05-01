@@ -595,6 +595,7 @@ const slice = createSlice({
         const destCohort = {
           ...sourceCohort,
           id: action.payload.destId,
+          modified: false,
         };
         cohortsAdapter.addOne(state, destCohort);
       }

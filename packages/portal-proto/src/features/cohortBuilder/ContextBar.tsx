@@ -26,9 +26,10 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import { useSetupInitialCohorts } from "./hooks";
 
 const ContextBar: React.FC = () => {
-  useSetupInitialCohorts();
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
+  useSetupInitialCohorts();
 
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(

@@ -46,6 +46,7 @@ import {
   CoreDispatch,
   DataStatus,
   setCohort,
+  updateCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import CountButton from "./CountButton";
@@ -446,6 +447,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 // Therefore, copy the unsaved cohort to the new cohort id received from
                 // the BE.
                 coreDispatch(setCurrentCohortId(payload.id));
+                coreDispatch(updateCohortName(newName));
                 coreDispatch(
                   setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
                 );
