@@ -98,9 +98,7 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={
-                  "Click to add/remove mutations from your cohort filters"
-                }
+                tooltip="Click to add/remove mutations from your cohort filters"
               />
             ),
             cell: ({ row }) => {
@@ -160,7 +158,7 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={"Click to change the survival plot display"}
+                tooltip="Click to change the survival plot display"
               />
             ),
             cell: ({ row }) => {
