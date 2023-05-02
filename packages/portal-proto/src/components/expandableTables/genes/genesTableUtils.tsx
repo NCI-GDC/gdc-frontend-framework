@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Tooltip } from "@mantine/core";
+import { Badge, Tooltip } from "@mantine/core";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
@@ -34,6 +34,7 @@ interface GeneCreateTableColumnProps {
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
+  handleMutationCountClick: (geneId: string) => void;
 }
 
 export const geneCreateTableColumn = ({
@@ -47,6 +48,7 @@ export const geneCreateTableColumn = ({
   isDemoMode,
   setEntityMetadata,
   genomicFilters,
+  handleMutationCountClick,
 }: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -421,13 +423,38 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const count = row?.original["mutations"];
+              const disabled = row?.original["mutations"] === 0;
               return (
                 <>
                   {row.getCanExpand() && (
-                    <span>
-                      {row?.original["mutations"]?.toLocaleString("en-US") ??
-                        ""}
-                    </span>
+                    <>
+                      <Tooltip
+                        label={`Search the mutations table for ${row?.original?.symbol}`}
+                        withArrow
+                      >
+                        <button
+                          className="w-fit"
+                          disabled={disabled}
+                          onClick={() => {
+                            handleMutationCountClick(row?.original?.geneID);
+                          }}
+                        >
+                          <Badge
+                            variant="outline"
+                            radius="xs"
+                            className={`${
+                              disabled ? "bg-base-lighter" : "bg-base-max"
+                            } w-20`}
+                            color={disabled ? "base" : "primary"}
+                          >
+                            {count !== undefined
+                              ? count.toLocaleString()
+                              : undefined}
+                          </Badge>
+                        </button>
+                      </Tooltip>
+                    </>
                   )}
                 </>
               );

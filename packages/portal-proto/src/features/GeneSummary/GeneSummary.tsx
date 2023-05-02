@@ -227,7 +227,7 @@ const GeneView = ({
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
-              <div className="grid grid-cols-2 gap-8 mt-2 mb-16">
+              <div className="grid grid-cols-2 gap-8 mt-2 mb-8">
                 <SSMPlot
                   page="gene"
                   gene={gene_id}

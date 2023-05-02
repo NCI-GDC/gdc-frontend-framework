@@ -32,6 +32,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   searchTerm,
   isDemoMode = false,
   genomicFilters,
+  handleMutationCountClick,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -126,6 +127,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           isDemoMode,
           setEntityMetadata,
           genomicFilters,
+          handleMutationCountClick,
         });
       });
   }, [
@@ -138,6 +140,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     handleGeneToggled,
     isDemoMode,
     setEntityMetadata,
+    handleMutationCountClick,
     handleSurvivalPlotToggled,
   ]);
 

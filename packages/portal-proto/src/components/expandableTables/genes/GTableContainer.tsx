@@ -44,6 +44,7 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  handleMutationCountClick: (geneId: string) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
@@ -58,6 +59,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   cohortFilters,
   toggledGenes = [],
   isDemoMode = false,
+  handleMutationCountClick,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -295,6 +297,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             defaultColumns={DEFAULT_GTABLE_ORDER}
           />
         </div>
+
         <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
@@ -324,6 +327,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 searchTerm={searchTerm}
                 isDemoMode={isDemoMode}
                 genomicFilters={genomicFilters}
+                handleMutationCountClick={handleMutationCountClick}
               />
             </div>
           )}

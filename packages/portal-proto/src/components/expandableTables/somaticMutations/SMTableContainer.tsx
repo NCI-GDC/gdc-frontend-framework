@@ -27,7 +27,7 @@ import {
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 import { default as TableFilters } from "../shared/TableFiltersMantine";
 import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -71,6 +71,7 @@ export interface SMTableContainerProps {
    * boolean used to determine if the links need to be opened in a summary modal or a Link
    */
   isModal?: boolean;
+  searchTermGene?: string;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -88,10 +89,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
+  searchTermGene,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchTermGene ?? "");
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
@@ -120,6 +122,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
   };
+
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 300,
+    duration: 1000,
+  });
+
+  useEffect(() => {
+    // should happen only on mount
+    if (searchTerm) scrollIntoView();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -296,7 +309,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
-          <div className="flex justify-between items-center mb-2">
+          <div
+            className="flex justify-between items-center mb-2"
+            ref={targetRef}
+          >
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}

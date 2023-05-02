@@ -513,7 +513,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 $buttonDisabled={!cohortModified}
                 $isDiscard={true}
               >
-                <DiscardIcon size="16" aria-label="Add cohort" />
+                <DiscardIcon size="16" aria-label="discard cohort changes" />
               </CohortGroupButton>
             </Tooltip>
 
