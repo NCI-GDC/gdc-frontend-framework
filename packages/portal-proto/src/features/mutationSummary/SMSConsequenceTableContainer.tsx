@@ -1,7 +1,6 @@
 import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
-
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/mutationTableConfig";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
