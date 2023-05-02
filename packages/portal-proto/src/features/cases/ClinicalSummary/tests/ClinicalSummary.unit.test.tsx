@@ -9,7 +9,7 @@ import {
   mock_single_exposures,
   mock_single_family_histories,
 } from "./FamilyHistoryOrExposure.unit.test";
-import { Demographic } from "@gff/core/dist/features/cases/types";
+import { Demographic } from "@gff/core";
 
 const demographic = {
   race: "asian",

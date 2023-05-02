@@ -200,8 +200,8 @@ def is_text_present_on_the_page(expected_text: str):
 
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
-    is_text_present = APP.home_page.is_text_present(expected_text)
-    assert is_text_present == False, f"The text '{expected_text}' is present when it should not"
+    is_text_not_present = APP.home_page.is_text_not_present(expected_text)
+    assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):

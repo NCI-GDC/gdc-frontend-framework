@@ -54,6 +54,7 @@ const ProjectsCohortButton = (): JSX.Element => {
   return (
     <>
       <Button
+        data-testid="button-create-new-cohort-projects"
         variant="outline"
         color="primary"
         disabled={pickedProjects.length == 0}

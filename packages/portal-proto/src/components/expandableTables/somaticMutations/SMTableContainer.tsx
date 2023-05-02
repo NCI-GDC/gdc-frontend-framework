@@ -11,7 +11,7 @@ import {
   selectSetsByType,
   joinFilters,
   buildCohortGqlOperator,
-  useGetSomaticMutationTableSubrowQuery,
+  // useGetSomaticMutationTableSubrowQuery,
 } from "@gff/core";
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -34,8 +34,10 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
-import { Button, Loader } from "@mantine/core";
-import useSWRMutation from "swr/mutation";
+import { Button } from "@mantine/core";
+// Loader
+// import useSWRMutation from "swr/mutation";
+import { HeaderTitle } from "@/features/shared/tailwindComponents";
 
 export const SelectedRowContext =
   createContext<
@@ -54,10 +56,19 @@ export interface SMTableContainerProps {
   ) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
+  /*
+   * filter about case id sent from case summary for SMT
+   */
+  caseFilter?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
+  tableTitle?: string;
+  /*
+   * project id for case summary SMT
+   */
+  projectId?: string;
   isDemoMode?: boolean;
   /*
    * boolean used to determine if the links need to be opened in a summary modal or a Link
@@ -71,12 +82,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
   columnsList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
+  projectId = undefined,
   genomicFilters = { mode: "and", root: {} },
   cohortFilters = { mode: "and", root: {} },
+  caseFilter = undefined,
   handleSsmToggled = () => null,
   toggledSsms = [],
   isDemoMode = false,
   isModal = false,
+  tableTitle = undefined,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -177,6 +191,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
+    caseFilter: caseFilter,
   });
 
   useEffect(() => {
@@ -221,220 +236,229 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             },
           },
         })
+      : caseFilter
+      ? caseFilter
       : combinedFilters;
 
-  const {
-    trigger: mutationsFrequencyDownloadTrigger,
-    isMutating: mutationsFrequencyDownloadIsMutating,
-    data: mutationsFrequencyDownloadData,
-  } = useSWRMutation(
-    { ids: tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id) },
-    ({ ids }) =>
-      Promise.all(
-        ids.map((id) => {
-          const subs = [];
-          try {
-            const result = useGetSomaticMutationTableSubrowQuery({ id });
-            subs.push(result);
-          } catch (e) {
-            console.log("error", e);
-          }
-          return subs;
-        }),
-      ),
-    {
-      onSuccess: (data) => console.log(data),
-    },
-  );
+  // const {
+  //   trigger: mutationsFrequencyDownloadTrigger,
+  //   isMutating: mutationsFrequencyDownloadIsMutating,
+  //   data: mutationsFrequencyDownloadData,
+  // } = useSWRMutation(
+  //   { ids: tableData?.ssms.map(({ ssm_id: ssm_id }) => ssm_id) },
+  //   ({ ids }) =>
+  //     Promise.all(
+  //       ids.map((id) => {
+  //         const subs = [];
+  //         try {
+  //           const result = useGetSomaticMutationTableSubrowQuery({ id });
+  //           subs.push(result);
+  //         } catch (e) {
+  //           console.log("error", e);
+  //         }
+  //         return subs;
+  //       }),
+  //     ),
+  //   {
+  //     onSuccess: (data) => console.log(data),
+  //   },
+  // );
 
   return (
     <>
-      <SelectedRowContext.Provider
-        value={[selectedMutations, setSelectedMutations]}
-      >
-        {showSaveModal && (
-          <SaveSelectionAsSetModal
-            filters={buildCohortGqlOperator(setFilters)}
-            sort="occurrence.case.project.project_id"
-            initialSetName={
-              Object.keys(selectedMutations).length === 0
-                ? filtersToName(setFilters)
-                : "Custom Mutation Selection"
-            }
-            saveCount={
-              Object.keys(selectedMutations).length === 0
-                ? smTotal
-                : Object.keys(selectedMutations).length
-            }
-            setType={"ssms"}
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        )}
-        {showAddModal && (
-          <AddToSetModal
-            filters={setFilters}
-            addToCount={
-              Object.keys(selectedMutations).length === 0
-                ? smTotal
-                : Object.keys(selectedMutations).length
-            }
-            setType={"ssms"}
-            setTypeLabel="mutation"
-            countHook={useSsmSetCountQuery}
-            appendSetHook={useAppendToSsmSetMutation}
-            closeModal={() => setShowAddModal(false)}
-            field={"ssms.ssm_id"}
-          />
-        )}
-        {showRemoveModal && (
-          <RemoveFromSetModal
-            filters={setFilters}
-            removeFromCount={
-              Object.keys(selectedMutations).length === 0
-                ? smTotal
-                : Object.keys(selectedMutations).length
-            }
-            setType={"ssms"}
-            setTypeLabel="mutation"
-            countHook={useSsmSetCountQuery}
-            closeModal={() => setShowRemoveModal(false)}
-            removeFromSetHook={useRemoveFromSsmSetMutation}
-          />
-        )}
-        <div className="flex justify-between items-center mb-2">
-          <TableControls
-            total={smTotal}
-            numSelected={Object.keys(selectedMutations).length ?? 0}
-            label={`Somatic Mutation`}
-            options={[
-              { label: "Save/Edit Mutation Set", value: "placeholder" },
-              {
-                label: "Save as new mutation set",
-                value: "save",
-                onClick: () => setShowSaveModal(true),
-              },
-              {
-                label: "Add to existing mutation set",
-                value: "add",
-                disabled: Object.keys(sets).length === 0,
-                onClick: () => setShowAddModal(true),
-              },
-              {
-                label: "Remove from existing mutation set",
-                value: "remove",
-                disabled: Object.keys(sets).length === 0,
-                onClick: () => setShowRemoveModal(true),
-              },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <ButtonTooltip label="Export All Except #Cases">
-                  <Button>JSON</Button>
-                </ButtonTooltip>
-                <ButtonTooltip label="Export current view">
-                  <Button onClick={() => mutationsFrequencyDownloadTrigger()}>
-                    TSV
-                  </Button>
-                </ButtonTooltip>
-              </div>
-            }
-          />
-
-          <TableFilters
-            search={searchTerm}
-            handleSearch={handleSearch}
-            columnListOrder={columnListOrder}
-            handleColumnChange={handleColumnChange}
-            showColumnMenu={showColumnMenu}
-            setShowColumnMenu={setShowColumnMenu}
-            defaultColumns={DEFAULT_SMTABLE_ORDER}
-          />
-        </div>
-
-        <div ref={ref}>
-          {!visibleColumns.length ? (
-            <TablePlaceholder
-              cellWidth="w-48"
-              rowHeight={60}
-              numOfColumns={15}
-              numOfRows={pageSize}
-              content={<span>No columns selected</span>}
+      {caseFilter && tableData.ssmsTotal === 0 ? null : (
+        <SelectedRowContext.Provider
+          value={[selectedMutations, setSelectedMutations]}
+        >
+          {showSaveModal && (
+            <SaveSelectionAsSetModal
+              filters={buildCohortGqlOperator(setFilters)}
+              sort="occurrence.case.project.project_id"
+              initialSetName={
+                Object.keys(selectedMutations).length === 0
+                  ? filtersToName(setFilters)
+                  : "Custom Mutation Selection"
+              }
+              saveCount={
+                Object.keys(selectedMutations).length === 0
+                  ? smTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              createSetHook={useCreateSsmsSetFromFiltersMutation}
+              closeModal={() => setShowSaveModal(false)}
             />
-          ) : (
-            <div ref={ref}>
-              <SomaticMutationsTable
-                status={
-                  isFetching
-                    ? "pending"
-                    : isSuccess
-                    ? "fulfilled"
-                    : isError
-                    ? "rejected"
-                    : "uninitialized"
-                }
-                initialData={tableData}
-                selectedSurvivalPlot={selectedSurvivalPlot}
-                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-                width={width}
-                pageSize={pageSize}
-                page={page}
-                selectedMutations={selectedMutations}
-                setSelectedMutations={setSelectedMutations}
-                handleSMTotal={setSMTotal}
-                columnListOrder={columnListOrder}
-                visibleColumns={visibleColumns}
-                searchTerm={searchTerm}
-                handleSsmToggled={handleSsmToggled}
-                toggledSsms={toggledSsms}
-                isDemoMode={isDemoMode}
-                isModal={isModal}
-                geneSymbol={geneSymbol}
-              />
-            </div>
           )}
-        </div>
-        {visibleColumns.length ? (
-          <div className="flex font-heading items-center bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
-            <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <div className="grow-0">
-                <div className="flex flex-row items-center text-sm ml-0">
-                  <span className="my-auto mx-1">Show</span>
-                  <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                  <span className="my-auto mx-1">Entries</span>
+          {showAddModal && (
+            <AddToSetModal
+              filters={setFilters}
+              addToCount={
+                Object.keys(selectedMutations).length === 0
+                  ? smTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              countHook={useSsmSetCountQuery}
+              appendSetHook={useAppendToSsmSetMutation}
+              closeModal={() => setShowAddModal(false)}
+              field={"ssms.ssm_id"}
+            />
+          )}
+          {showRemoveModal && (
+            <RemoveFromSetModal
+              filters={setFilters}
+              removeFromCount={
+                Object.keys(selectedMutations).length === 0
+                  ? smTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              countHook={useSsmSetCountQuery}
+              closeModal={() => setShowRemoveModal(false)}
+              removeFromSetHook={useRemoveFromSsmSetMutation}
+            />
+          )}
+          {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
+
+          <div className="flex justify-between items-center mb-2">
+            <TableControls
+              total={smTotal}
+              numSelected={Object.keys(selectedMutations).length ?? 0}
+              label={`Somatic Mutation`}
+              options={[
+                { label: "Save/Edit Mutation Set", value: "placeholder" },
+                {
+                  label: "Save as new mutation set",
+                  value: "save",
+                  onClick: () => setShowSaveModal(true),
+                },
+                {
+                  label: "Add to existing mutation set",
+                  value: "add",
+                  disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowAddModal(true),
+                },
+                {
+                  label: "Remove from existing mutation set",
+                  value: "remove",
+                  disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowRemoveModal(true),
+                },
+              ]}
+              additionalControls={
+                <div className="flex gap-2">
+                  <ButtonTooltip label="Export All Except #Cases">
+                    <Button>JSON</Button>
+                  </ButtonTooltip>
+                  <ButtonTooltip label="Export current view">
+                    <Button>TSV</Button>
+                  </ButtonTooltip>
+                </div>
+              }
+            />
+
+            <TableFilters
+              search={searchTerm}
+              handleSearch={handleSearch}
+              columnListOrder={columnListOrder}
+              handleColumnChange={handleColumnChange}
+              showColumnMenu={showColumnMenu}
+              setShowColumnMenu={setShowColumnMenu}
+              defaultColumns={columnsList}
+            />
+          </div>
+
+          <div ref={ref}>
+            {!visibleColumns.length ? (
+              <TablePlaceholder
+                cellWidth="w-48"
+                rowHeight={60}
+                numOfColumns={15}
+                numOfRows={pageSize}
+                content={<span>No columns selected</span>}
+              />
+            ) : (
+              <div ref={ref}>
+                <SomaticMutationsTable
+                  status={
+                    isFetching
+                      ? "pending"
+                      : isSuccess
+                      ? "fulfilled"
+                      : isError
+                      ? "rejected"
+                      : "uninitialized"
+                  }
+                  initialData={tableData}
+                  selectedSurvivalPlot={selectedSurvivalPlot}
+                  handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                  width={width}
+                  pageSize={pageSize}
+                  page={page}
+                  selectedMutations={selectedMutations}
+                  setSelectedMutations={setSelectedMutations}
+                  handleSMTotal={setSMTotal}
+                  columnListOrder={columnListOrder}
+                  visibleColumns={visibleColumns}
+                  searchTerm={searchTerm}
+                  handleSsmToggled={handleSsmToggled}
+                  toggledSsms={toggledSsms}
+                  isDemoMode={isDemoMode}
+                  isModal={isModal}
+                  geneSymbol={geneSymbol}
+                  projectId={projectId}
+                />
+              </div>
+            )}
+          </div>
+          {visibleColumns.length ? (
+            <div className="flex font-heading items-center bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+              <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
+                <div className="grow-0">
+                  <div className="flex flex-row items-center text-sm ml-0">
+                    <span className="my-auto mx-1">Show</span>
+                    <PageSize
+                      pageSize={pageSize}
+                      handlePageSize={setPageSize}
+                    />
+                    <span className="my-auto mx-1">Entries</span>
+                  </div>
                 </div>
               </div>
+              <div className="flex flex-row justify-between items-center text-sm">
+                <span>
+                  Showing
+                  <span className="font-bold">{` ${(tableData.ssmsTotal === 0
+                    ? 0
+                    : page * pageSize + 1
+                  ).toLocaleString("en-US")} `}</span>
+                  -
+                  <span className="font-bold">{`${((page + 1) * pageSize <
+                  smTotal
+                    ? (page + 1) * pageSize
+                    : smTotal
+                  ).toLocaleString("en-US")} `}</span>
+                  of
+                  <span className="font-bold">{` ${smTotal.toLocaleString(
+                    "en-US",
+                  )} `}</span>
+                  somatic mutations
+                </span>
+              </div>
+              <div className="m-auto mr-0">
+                <PageStepper
+                  page={page}
+                  totalPages={Math.ceil(smTotal / pageSize)}
+                  handlePage={handleSetPage}
+                />
+              </div>
             </div>
-            <div className="flex flex-row justify-between items-center text-sm">
-              <span>
-                Showing
-                <span className="font-bold">{` ${(
-                  page * pageSize +
-                  1
-                ).toLocaleString("en-US")} `}</span>
-                -
-                <span className="font-bold">{`${((page + 1) * pageSize < smTotal
-                  ? (page + 1) * pageSize
-                  : smTotal
-                ).toLocaleString("en-US")} `}</span>
-                of
-                <span className="font-bold">{` ${smTotal.toLocaleString(
-                  "en-US",
-                )} `}</span>
-                somatic mutations
-              </span>
-            </div>
-            <div className="m-auto mr-0">
-              <PageStepper
-                page={page}
-                totalPages={Math.ceil(smTotal / pageSize)}
-                handlePage={handleSetPage}
-              />
-            </div>
-          </div>
-        ) : null}
-      </SelectedRowContext.Provider>
+          ) : null}
+        </SelectedRowContext.Provider>
+      )}
     </>
   );
 };

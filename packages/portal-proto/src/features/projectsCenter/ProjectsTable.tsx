@@ -332,8 +332,18 @@ const ProjectsTable: React.FC = () => {
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
-          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+          <FunctionButton
+            data-testid="button-json-projects-table"
+            onClick={handleDownloadJSON}
+          >
+            JSON
+          </FunctionButton>
+          <FunctionButton
+            data-testid="button-tsv-projects-table"
+            onClick={handleDownloadTSV}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       tableData={formattedTableData}

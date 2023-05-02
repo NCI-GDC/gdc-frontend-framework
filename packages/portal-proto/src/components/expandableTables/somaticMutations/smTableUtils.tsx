@@ -24,24 +24,41 @@ import { SSMSData } from "@gff/core";
 import { externalLinks } from "src/utils";
 import tw from "tailwind-styled-components";
 
-export const createTableColumn = (
-  accessor: string,
-  selectedMutations: SelectedReducer<SomaticMutations>,
-  setSelectedMutations: Dispatch<SelectReducerAction<SomaticMutations>>,
-  handleSurvivalPlotToggled: (
+interface SSMSCreateTableColumnProps {
+  accessor: string;
+  selectedMutations?: SelectedReducer<SomaticMutations>;
+  setSelectedMutations?: Dispatch<SelectReducerAction<SomaticMutations>>;
+  handleSurvivalPlotToggled?: (
     symbol: string,
     name: string,
     field: string,
-  ) => void,
-  setMutationID: Dispatch<SetStateAction<string>>,
-  handleSsmToggled: SsmToggledHandler,
-  toggledSsms: ReadonlyArray<string>,
-  geneSymbol: string = undefined,
-  isDemoMode: boolean,
-  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>,
-  isModal: boolean,
-  isConsequenceTable?: boolean,
-): TableColumnDefinition => {
+  ) => void;
+  setMutationID?: Dispatch<SetStateAction<string>>;
+  handleSsmToggled?: SsmToggledHandler;
+  toggledSsms?: ReadonlyArray<string>;
+  geneSymbol?: string;
+  projectId?: string;
+  isDemoMode?: boolean;
+  setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
+  isModal?: boolean;
+  isConsequenceTable?: boolean;
+}
+
+export const ssmsCreateTableColumn = ({
+  accessor,
+  selectedMutations,
+  setSelectedMutations,
+  setMutationID,
+  handleSsmToggled,
+  handleSurvivalPlotToggled,
+  toggledSsms,
+  geneSymbol = undefined,
+  projectId = undefined,
+  isDemoMode,
+  setEntityMetadata,
+  isModal,
+  isConsequenceTable,
+}: SSMSCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
       return {
@@ -71,7 +88,7 @@ export const createTableColumn = (
           },
         ],
       };
-    case "cohort": // adds/removes a gene to the current cohort.
+    case "cohort": // adds/removes an ssm to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -79,14 +96,20 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to add/remove mutations to/from your cohort filters"
+              />
             ),
             cell: ({ row }) => {
+              const isToggledSsm = toggledSsms.includes(
+                row.original?.mutationID,
+              );
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={toggledSsms.includes(row.original?.mutationID)}
+                      isActive={isToggledSsm}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -110,7 +133,11 @@ export const createTableColumn = (
                         })
                       }
                       tooltip={
-                        isDemoMode && "Feature not available in demo mode"
+                        isDemoMode
+                          ? "Feature not available in demo mode"
+                          : isToggledSsm
+                          ? `Click to remove ${row.original?.DNAChange} from cohort filters`
+                          : `Click to add ${row.original?.DNAChange} to cohort filters`
                       }
                       disabled={isDemoMode}
                     />
@@ -129,7 +156,10 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to change the survival plot display"
+              />
             ),
             cell: ({ row }) => {
               if (row.depth > 0) {
@@ -288,11 +318,15 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                   in ${geneSymbol ? geneSymbol : "Cohort"}`}
+                   in ${
+                     geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
+                   }`}
                 tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ?? "Cohort"
+                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
                 } /
-                # Cases tested for Simple Somatic Mutations in Cohort`}
+                # Cases tested for Simple Somatic Mutations in ${
+                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
+                }`}
               />
             ),
             cell: ({ row }) => {
@@ -327,7 +361,8 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
-                      shouldLink={isModal && geneSymbol === undefined}
+                      shouldOpenModal={isModal && geneSymbol === undefined}
+                      shouldLink={projectId !== undefined}
                       setEntityMetadata={setEntityMetadata}
                     />
                   )}

@@ -371,9 +371,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             <div className="flex items-center justify-center grow text-sm">
               <span>
                 Showing
-                <span className="font-bold">{` ${(
-                  page * pageSize +
-                  1
+                <span className="font-bold">{` ${(tableData.genes_total === 0
+                  ? 0
+                  : page * pageSize + 1
                 ).toLocaleString("en-US")} `}</span>
                 -
                 <span className="font-bold">
