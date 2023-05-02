@@ -1,4 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -62,9 +63,17 @@ import {
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
 import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
+import { sessionStorage } from "./storage-persist";
+
+// We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
+const cohortPersistConfig = {
+  key: "cohort",
+  version: 1,
+  storage: sessionStorage,
+};
 
 export const reducers = combineReducers({
-  cohort: cohortReducers,
+  cohort: persistReducer(cohortPersistConfig, cohortReducers),
   session: sessionReducer,
   facets: facetsReducer, // TODO: Pick which one to use in V2
   facetsGQL: fileCaseGenesMutationsFacetReducers,
