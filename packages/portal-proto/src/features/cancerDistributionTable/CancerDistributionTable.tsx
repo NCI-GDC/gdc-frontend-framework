@@ -23,8 +23,8 @@ import saveAs from "file-saver";
 
 interface CancerDistributionTableDownloadData {
   num_mutations?: number;
-  cnv_losses?: string | 0;
-  cnv_gains?: string | 0;
+  cnv_losses?: string;
+  cnv_gains?: string;
   project: string;
   disease_type: string[];
   primary_site: string[];
@@ -297,22 +297,25 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ? `${data.cnvGain[d.key]} / ${data.cnvTotal[d.key]} (${(
                     data.cnvGain[d.key] / data.cnvTotal[d.key]
                   ).toFixed(2)}%)`
-                : 0,
+                : `0 / 0 (0.00%)`,
             }),
             ...(isGene && {
               cnv_losses: data.cnvLoss[d.key]
                 ? `${data.cnvLoss[d.key]} / ${data.cnvTotal[d.key]} (${(
                     data.cnvLoss[d.key] / data.cnvTotal[d.key]
                   ).toFixed(2)}%)`
-                : 0,
+                : `0 / 0 (0.00%)`,
             }),
             ...(isGene && {
-              num_mutations: data.ssmFiltered[d.key] ?? 0,
+              num_mutations:
+                (data.ssmFiltered[d.key] || 0) === 0
+                  ? 0
+                  : d.doc_count.toLocaleString(),
             }),
           };
         })
         .sort(
-          (a, b) => b.num_mutations - a.num_mutations,
+          (a, b) => b.ssm_percent - a.ssm_percent,
         ) as CancerDistributionTableDownloadData[],
     [
       projectsById,
