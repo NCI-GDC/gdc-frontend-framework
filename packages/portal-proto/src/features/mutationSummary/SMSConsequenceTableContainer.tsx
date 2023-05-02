@@ -1,18 +1,21 @@
 import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "@/components/expandableTables/shared/PageStepperMantine";
-import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
-import TablePlaceholder from "@/components/expandableTables/shared/TablePlaceholder";
-import { Column } from "@/components/expandableTables/shared/types";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import DND from "@/components/expandableTables/shared/DND";
+
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/mutationTableConfig";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import FunctionButton from "@/components/FunctionButton";
+import {
+  ButtonTooltip,
+  Column,
+  DND,
+  PageSizeMantine,
+  PageStepperMantine,
+  TablePlaceholder,
+} from "@/components/expandableTables/shared";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -192,7 +195,10 @@ export const SMSConsequenceTableContainer: React.FC<
         <div className="flex mb-2 py-4 px-2 border border-base-lighter border-t-0">
           <div className="flex flex-nowrap items-center m-auto ml-0">
             <span className="mx-1 text-xs">Show</span>
-            <PageSize pageSize={size} handlePageSize={handleSetPageSize} />
+            <PageSizeMantine
+              pageSize={size}
+              handlePageSize={handleSetPageSize}
+            />
             <span className="my-auto mx-1 text-xs">Entries</span>
           </div>
           <div className={`flex flex-row justify-between items-center text-sm`}>
@@ -210,7 +216,7 @@ export const SMSConsequenceTableContainer: React.FC<
             </span>
           </div>
           <div className={`ml-auto mr-0`}>
-            <PageStepper
+            <PageStepperMantine
               page={page - 1}
               totalPages={pages}
               handlePage={handleSetPage}

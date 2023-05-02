@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { PageSizeProps } from "@/components/expandableTables/shared/types";
+import { PageSizeProps } from "@/components/expandableTables/shared/";
 
 const PageSize: React.FC<PageSizeProps> = ({
   pageSize,
@@ -46,7 +46,7 @@ const PageSize: React.FC<PageSizeProps> = ({
         {offsetMenu && (
           <div className={`text-center`}>
             <ul
-              className={`list-none w-12 text-activeColor border border-1 border-activeColor`}
+              className={`list-none w-12 text-activeColor border border-activeColor`}
             >
               {tablePageSizeOptions
                 .filter((page) => page !== pageSize)

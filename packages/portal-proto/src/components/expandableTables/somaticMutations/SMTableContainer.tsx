@@ -15,18 +15,11 @@ import {
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "../shared/PageStepperMantine";
-import { default as PageSize } from "../shared/PageSizeMantine";
-import { default as TableControls } from "../shared/TableControlsMantine";
-import TablePlaceholder from "../shared/TablePlaceholder";
 import {
   SomaticMutations,
   DEFAULT_SMTABLE_ORDER,
   SsmToggledHandler,
 } from "./types";
-import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
-import { default as TableFilters } from "../shared/TableFiltersMantine";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -35,6 +28,17 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import {
+  ButtonTooltip,
+  Column,
+  PageSizeMantine,
+  PageStepperMantine,
+  SelectReducerAction,
+  SelectedReducer,
+  TableControlsMantine,
+  TableFiltersMantine,
+  TablePlaceholder,
+} from "../shared";
 
 export const SelectedRowContext =
   createContext<
@@ -318,7 +322,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             className="flex justify-between items-center mb-2"
             ref={targetRef}
           >
-            <TableControls
+            <TableControlsMantine
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
               label={`Somatic Mutation`}
@@ -354,7 +358,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
             />
 
-            <TableFilters
+            <TableFiltersMantine
               searchTerm={searchTerm}
               ariaTextOverwrite={
                 searchTermsForGene?.geneSymbol &&
@@ -418,7 +422,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <div className="grow-0">
                   <div className="flex flex-row items-center text-sm ml-0">
                     <span className="my-auto mx-1">Show</span>
-                    <PageSize
+                    <PageSizeMantine
                       pageSize={pageSize}
                       handlePageSize={setPageSize}
                     />
@@ -447,7 +451,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 </span>
               </div>
               <div className="m-auto mr-0">
-                <PageStepper
+                <PageStepperMantine
                   page={page}
                   totalPages={Math.ceil(smTotal / pageSize)}
                   handlePage={handleSetPage}

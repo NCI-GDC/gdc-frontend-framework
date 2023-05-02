@@ -16,13 +16,6 @@ import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "../shared/PageStepperMantine";
-import { default as TableControls } from "../shared/TableControlsMantine";
-import TablePlaceholder from "../shared/TablePlaceholder";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { default as TableFilters } from "../shared/TableFiltersMantine";
-import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
@@ -30,6 +23,16 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import {
+  ButtonTooltip,
+  PageSizeMantine,
+  PageStepperMantine,
+  SelectReducerAction,
+  SelectedReducer,
+  TableControlsMantine,
+  TableFiltersMantine,
+  TablePlaceholder,
+} from "../shared";
 
 export const SelectedRowContext =
   createContext<
@@ -248,7 +251,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         )}
 
         <div className="flex justify-between items-center mb-2 mt-8">
-          <TableControls
+          <TableControlsMantine
             total={gTotal}
             numSelected={Object.keys(selectedGenes).length ?? 0}
             label={`Gene`}
@@ -287,8 +290,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             }
           />
 
-          <TableFilters
-            search={searchTerm}
+          <TableFiltersMantine
+            searchTerm={searchTerm}
             handleSearch={handleSearch}
             columnListOrder={columnListOrder}
             handleColumnChange={handleColumnChange}
@@ -337,7 +340,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             <div className={"grow-0"}>
               <div className="flex items-center text-sm ml-0">
                 <span className="my-auto mx-1">Show</span>
-                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+                <PageSizeMantine
+                  pageSize={pageSize}
+                  handlePageSize={setPageSize}
+                />
                 <span className="my-auto mx-1">Entries</span>
               </div>
             </div>
@@ -363,7 +369,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               </span>
             </div>
             <div className="grow-0 mr-0">
-              <PageStepper
+              <PageStepperMantine
                 page={page}
                 totalPages={Math.ceil(gTotal / pageSize)}
                 handlePage={handleSetPage}

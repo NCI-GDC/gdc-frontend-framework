@@ -1,23 +1,28 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Badge, Tooltip } from "@mantine/core";
+import { startCase } from "lodash";
+import { Tooltip } from "@mantine/core";
+import { Image } from "@/components/Image";
+import { CountButton } from "@/components/CountButton/CountButton";
+import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import CheckboxSpring from "../shared/CheckboxSpring";
-import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
-import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { AnnotationsIcon } from "../shared/sharedTableUtils";
-import { TableCell, TableHeader } from "../shared/sharedTableCells";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
-import { SelectReducerAction } from "../shared/types";
-import { Image } from "@/components/Image";
-import { startCase } from "lodash";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { FilterSet } from "@gff/core";
+import {
+  AnnotationsIcon,
+  CheckboxSpring,
+  RatioSpring,
+  SelectReducerAction,
+  SelectedReducer,
+  SwitchSpring,
+  TableCell,
+  TableColumnDefinition,
+  TableHeader,
+  ToggledCheck,
+} from "../shared";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -422,36 +427,17 @@ export const geneCreateTableColumn = ({
               return (
                 <>
                   {row.getCanExpand() && (
-                    <>
-                      <Tooltip
-                        label={`Search the mutations table for ${row?.original?.symbol}`}
-                        withArrow
-                      >
-                        <button
-                          className="w-fit"
-                          disabled={disabled}
-                          onClick={() => {
-                            handleMutationCountClick(
-                              row?.original?.geneID,
-                              row?.original?.symbol,
-                            );
-                          }}
-                        >
-                          <Badge
-                            variant="outline"
-                            radius="xs"
-                            className={`${
-                              disabled ? "bg-base-lighter" : "bg-base-max"
-                            } w-20`}
-                            color={disabled ? "base" : "primary"}
-                          >
-                            {count !== undefined
-                              ? count.toLocaleString()
-                              : undefined}
-                          </Badge>
-                        </button>
-                      </Tooltip>
-                    </>
+                    <CountButton
+                      tooltipLabel={`Search the mutations table for ${row?.original?.symbol}`}
+                      disabled={disabled}
+                      handleOnClick={() => {
+                        handleMutationCountClick(
+                          row?.original?.geneID,
+                          row?.original?.symbol,
+                        );
+                      }}
+                      count={count}
+                    />
                   )}
                 </>
               );

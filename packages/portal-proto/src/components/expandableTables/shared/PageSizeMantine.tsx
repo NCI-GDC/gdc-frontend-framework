@@ -1,6 +1,6 @@
 import React from "react";
 import { Select } from "@mantine/core";
-import { PageSizeProps } from "@/components/expandableTables/shared/types";
+import { PageSizeProps } from "@/components/expandableTables/shared/";
 
 const PageSizeMantine: React.FC<PageSizeProps> = ({
   pageSize,
