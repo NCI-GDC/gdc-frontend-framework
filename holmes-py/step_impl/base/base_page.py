@@ -3,6 +3,8 @@ from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
+    X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
+
     COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
@@ -80,10 +82,27 @@ class BasePage:
             return False
         return True
 
+
     def is_text_not_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
         try:
             self.wait_until_locator_is_hidden(locator)
+        except:
+            return False
+        return True
+
+    # Waits for a piece of text to appear in the temporary cohort modal
+    # That modal appears after an action has been performed on a cohort
+    # state (e.g create, save, delete, etc. )
+    def wait_for_text_in_temporary_message(self, text, action="remove modal"):
+        text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
+        try:
+            self.wait_until_locator_is_visible(text_locator)
+            if action.lower() == "remove modal":
+                # Remove the message after locating it.
+                # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
+                x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
+                self.click(x_button_locator)
         except:
             return False
         return True

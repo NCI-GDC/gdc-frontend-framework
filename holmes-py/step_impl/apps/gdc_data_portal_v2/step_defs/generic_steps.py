@@ -190,6 +190,7 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
+
 # TO-DO: replace home_page function call with base_page.
 # All generic_step functions and related locators should
 # be put into base_page.py
@@ -202,6 +203,11 @@ def is_text_present_on_the_page(expected_text: str):
 def is_text_present_on_the_page(expected_text: str):
     is_text_not_present = APP.home_page.is_text_not_present(expected_text)
     assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
+
+@step("Is modal with text <expected_text> present on the page")
+def is_modal_text_present_on_the_page(expected_text: str):
+    is_text_present = APP.home_page.wait_for_text_in_temporary_message(expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):

@@ -1,3 +1,5 @@
+import time
+
 from getgauge.python import step, before_spec
 
 from ..app import GDCDataPortalV2App
@@ -9,6 +11,9 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@step("Select <button_name> on the Repository page")
+def select_repository_page_button(button_name: str):
+    APP.repository_page.click_repository_page_button(button_name)
 
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
@@ -73,3 +78,15 @@ def verify_file_filter_applied(filter_name: str):
     assert (
         expected_filter_name == actual_filter_name
     ), f"Custom filter not found in facets.\nExpected: {expected_filter_name}\nActual: {actual_filter_name}"
+
+@step("Make the following selections on a filter card on the Repository page <table>")
+def filter_card_selections(table):
+    for k, v in enumerate(table):
+        APP.repository_page.make_selection_within_facet_group(v[0], v[1])
+        time.sleep(0.1)
+
+@step("Perform the following actions on a filter card on the Repository page <table>")
+def perform_filter_card_action(table):
+    for k, v in enumerate(table):
+        APP.repository_page.perform_action_within_filter_card(v[0], v[1])
+        time.sleep(0.1)
