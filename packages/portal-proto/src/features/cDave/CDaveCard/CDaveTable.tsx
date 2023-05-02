@@ -43,7 +43,17 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
               # Cases
             </th>
-            {survival && <th className="text-right pr-2">Survival</th>}
+            {survival && (
+              <th className="text-right pr-2">
+                <Tooltip
+                  label="Click to change the survival plot display"
+                  withArrow
+                  withinPortal={true}
+                >
+                  <span>Survival</span>
+                </Tooltip>
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>

@@ -113,10 +113,14 @@ const GeneView = ({
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
     const Strand = gene_strand && gene_strand === 1 ? <HiPlus /> : <HiMinus />;
-    const annotation = is_cancer_gene_census
-      ? // TODO: need to change this after figuring out what to do with clicking on it
-        "Cancer Gene Census"
-      : "--";
+    const annotation = is_cancer_gene_census ? (
+      <AnchorLink
+        href="https://cancer.sanger.ac.uk/census"
+        title="Cancer Gene Census"
+      />
+    ) : (
+      "--"
+    );
     const synonymsList = synonyms?.length && (
       <ul>
         {synonyms?.map((s) => (
