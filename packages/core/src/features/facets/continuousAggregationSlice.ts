@@ -95,7 +95,7 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
       field,
     );
     const filtersGQL = {
-      filters: overrideFilters ? overrideFilters : filters ? filters : {},
+      filters: overrideFilters ?? filters ?? {},
       filters2: { op: "range", content: [{ ranges: ranges }] },
     };
 

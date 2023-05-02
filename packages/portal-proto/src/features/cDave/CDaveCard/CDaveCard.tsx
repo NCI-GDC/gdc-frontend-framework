@@ -46,8 +46,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     : data !== undefined &&
       (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
 
-  console.log("noData: ", facet, noData);
-
   const fieldName = toDisplayName(field);
 
   useEffect(() => {
