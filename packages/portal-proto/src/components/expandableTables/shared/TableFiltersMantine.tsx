@@ -6,6 +6,7 @@ import { TextInput } from "@mantine/core";
 
 interface TableFiltersProps {
   search: string;
+  ariaTextOverwrite?: string;
   handleSearch: (term: string) => void;
   columnListOrder: Column[];
   handleColumnChange: (columnListOrder: any) => void;
@@ -16,6 +17,7 @@ interface TableFiltersProps {
 
 const TableFiltersMantine: React.FC<TableFiltersProps> = ({
   search,
+  ariaTextOverwrite,
   handleSearch,
   columnListOrder,
   handleColumnChange,
@@ -24,12 +26,13 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
   defaultColumns,
 }: TableFiltersProps) => {
   const inputRef = useRef(null);
-  const [ariaText, setAriaText] = useState("Table Search Input");
+  const [ariaText, setAriaText] = useState(
+    ariaTextOverwrite ?? "Table Search Input",
+  );
 
   useEffect(() => {
     if (search.length > 0) {
       inputRef?.current.focus();
-      setAriaText("You are now viewing the Mutations table filtered by TP53.");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -50,7 +53,11 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
           rightSection={
             search.length > 0 && (
               <CloseIcon
-                onClick={() => handleSearch("")}
+                onClick={() => {
+                  handleSearch("");
+                  if (ariaText !== "Table Search Input")
+                    setAriaText("Table Search Input");
+                }}
                 className="cursor-pointer"
                 aria-label="clear text"
               />
@@ -58,7 +65,11 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
           }
           ref={inputRef}
           value={search}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => {
+            handleSearch(e.target.value);
+            if (ariaText !== "Table Search Input")
+              setAriaText("Table Search Input");
+          }}
         />
         <DND
           showColumnMenu={showColumnMenu}

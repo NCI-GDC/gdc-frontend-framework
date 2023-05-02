@@ -44,7 +44,7 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
-  handleMutationCountClick: (geneId: string) => void;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;

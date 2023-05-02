@@ -34,7 +34,7 @@ interface GeneCreateTableColumnProps {
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
-  handleMutationCountClick: (geneId: string) => void;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
 export const geneCreateTableColumn = ({
@@ -437,7 +437,10 @@ export const geneCreateTableColumn = ({
                           className="w-fit"
                           disabled={disabled}
                           onClick={() => {
-                            handleMutationCountClick(row?.original?.geneID);
+                            handleMutationCountClick(
+                              row?.original?.geneID,
+                              row?.original?.symbol,
+                            );
                           }}
                         >
                           <Badge

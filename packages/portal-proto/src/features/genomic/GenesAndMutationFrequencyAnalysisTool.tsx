@@ -98,7 +98,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
-  const [searchTermForGeneId, setSearchTermForGeneId] = useState("");
+  const [searchTermForGeneId, setSearchTermForGeneId] = useState({
+    geneId: undefined,
+    geneSymbol: undefined,
+  });
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
@@ -225,7 +228,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (tabKey: string) => {
       setAppMode(tabKey as AppModeState);
       setComparativeSurvival(undefined);
-      searchTermForGeneId && setSearchTermForGeneId("");
+      searchTermForGeneId &&
+        setSearchTermForGeneId({ geneId: undefined, geneSymbol: undefined });
     },
     [searchTermForGeneId],
   );
@@ -328,8 +332,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   isDemoMode ? overwritingDemoFilter : cohortFilters
                 }
                 isDemoMode={isDemoMode}
-                handleMutationCountClick={(geneId: string) => {
-                  setSearchTermForGeneId(geneId);
+                handleMutationCountClick={(
+                  geneId: string,
+                  geneSymbol: string,
+                ) => {
+                  setSearchTermForGeneId({ geneId, geneSymbol });
                   setAppMode("ssms");
                 }}
               />
