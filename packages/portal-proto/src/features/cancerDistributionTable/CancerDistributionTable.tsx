@@ -21,7 +21,7 @@ import { NumeratorDenominator } from "@/components/expandableTables/shared/Numer
 import { convertDateToString } from "src/utils/date";
 import saveAs from "file-saver";
 
-interface CancerDistributionTableDownloadData {
+interface CancerDistributionTableTSVDownloadData {
   num_mutations?: number;
   cnv_losses?: string;
   cnv_gains?: string;
@@ -286,37 +286,53 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             project: d.key,
             disease_type: projectsById[d.key]?.disease_type || [],
             primary_site: projectsById[d.key]?.primary_site || [],
-            ssm_affected_cases: data.ssmFiltered[d.key]
-              ? `${data.ssmFiltered[d.key]} / ${data.ssmTotal[d.key]} (${(
-                  data.ssmFiltered[d.key] / data.ssmTotal[d.key]
-                ).toFixed(2)}%)`
-              : 0,
             ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
-            ...(isGene && {
-              cnv_gains: data.cnvGain[d.key]
-                ? `${data.cnvGain[d.key]} / ${data.cnvTotal[d.key]} (${(
-                    data.cnvGain[d.key] / data.cnvTotal[d.key]
-                  ).toFixed(2)}%)`
+            ssm_affected_cases:
+              data.ssmFiltered[d.key] === 0 || data.ssmTotal[d.key] === 0
+                ? `0 / 0 (0.00%)`
+                : data.ssmFiltered[d.key]
+                ? `${data.ssmFiltered[d.key]} / ${data.ssmTotal[d.key]} (${(
+                    data.ssmFiltered[d.key] / data.ssmTotal[d.key]
+                  ).toLocaleString(undefined, {
+                    style: "percent",
+                    minimumFractionDigits: 2,
+                  })})`
                 : `0 / 0 (0.00%)`,
+            ...(isGene && {
+              cnv_gains:
+                data.cnvGain[d.key] === 0 || data.cnvTotal[d.key] === 0
+                  ? `0 / 0 (0.00%)`
+                  : data.cnvGain[d.key]
+                  ? `${data.cnvGain[d.key]} / ${data.cnvTotal[d.key]} (${(
+                      data.cnvGain[d.key] / data.cnvTotal[d.key]
+                    ).toLocaleString(undefined, {
+                      style: "percent",
+                      minimumFractionDigits: 2,
+                    })})`
+                  : `0 / 0 (0.00%)`,
             }),
             ...(isGene && {
-              cnv_losses: data.cnvLoss[d.key]
-                ? `${data.cnvLoss[d.key]} / ${data.cnvTotal[d.key]} (${(
-                    data.cnvLoss[d.key] / data.cnvTotal[d.key]
-                  ).toFixed(2)}%)`
-                : `0 / 0 (0.00%)`,
+              cnv_losses:
+                data.cnvLoss[d.key] === 0 || data.cnvTotal[d.key] === 0
+                  ? `0 / 0 (0.00%)`
+                  : data.cnvLoss[d.key]
+                  ? `${data.cnvLoss[d.key]} / ${data.cnvTotal[d.key]} (${(
+                      data.cnvLoss[d.key] / data.cnvTotal[d.key]
+                    ).toLocaleString(undefined, {
+                      style: "percent",
+                      minimumFractionDigits: 2,
+                    })})`
+                  : `0 / 0 (0.00%)`,
             }),
             ...(isGene && {
               num_mutations:
-                (data.ssmFiltered[d.key] || 0) === 0
-                  ? 0
-                  : d.doc_count.toLocaleString(),
+                (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
             }),
           };
         })
         .sort(
           (a, b) => b.ssm_percent - a.ssm_percent,
-        ) as CancerDistributionTableDownloadData[],
+        ) as CancerDistributionTableTSVDownloadData[],
     [
       projectsById,
       data?.projects,
