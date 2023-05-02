@@ -5,7 +5,7 @@ import { Column } from "./types";
 import { TextInput } from "@mantine/core";
 
 interface TableFiltersProps {
-  search: string;
+  searchTerm: string;
   ariaTextOverwrite?: string;
   handleSearch: (term: string) => void;
   columnListOrder: Column[];
@@ -16,7 +16,7 @@ interface TableFiltersProps {
 }
 
 const TableFiltersMantine: React.FC<TableFiltersProps> = ({
-  search,
+  searchTerm,
   ariaTextOverwrite,
   handleSearch,
   columnListOrder,
@@ -31,55 +31,54 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
   );
 
   useEffect(() => {
-    if (search.length > 0) {
+    // only during mount
+    if (searchTerm?.length > 0) {
       inputRef?.current.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <>
-      <div className="flex items-center gap-2">
-        <TextInput
-          icon={<SearchIcon size={24} />}
-          placeholder="Search"
-          aria-label={ariaText}
-          classNames={{
-            input:
-              "focus:border-primary focus:border-2 focus:drop-shadow-xl border-base-lighter",
-            wrapper: "w-72",
-          }}
-          size="sm"
-          rightSection={
-            search.length > 0 && (
-              <CloseIcon
-                onClick={() => {
-                  handleSearch("");
-                  if (ariaText !== "Table Search Input")
-                    setAriaText("Table Search Input");
-                }}
-                className="cursor-pointer"
-                aria-label="clear text"
-              />
-            )
-          }
-          ref={inputRef}
-          value={search}
-          onChange={(e) => {
-            handleSearch(e.target.value);
-            if (ariaText !== "Table Search Input")
-              setAriaText("Table Search Input");
-          }}
-        />
-        <DND
-          showColumnMenu={showColumnMenu}
-          setShowColumnMenu={setShowColumnMenu}
-          handleColumnChange={handleColumnChange}
-          columnListOrder={columnListOrder}
-          defaultColumns={defaultColumns}
-        />
-      </div>
-    </>
+    <div className="flex items-center gap-2">
+      <TextInput
+        icon={<SearchIcon size={24} />}
+        placeholder="Search"
+        aria-label={ariaText}
+        classNames={{
+          input:
+            "focus:border-primary focus:border-2 focus:drop-shadow-xl border-base-lighter",
+          wrapper: "w-72",
+        }}
+        size="sm"
+        rightSection={
+          searchTerm?.length > 0 && (
+            <CloseIcon
+              onClick={() => {
+                handleSearch("");
+                if (ariaText !== "Table Search Input")
+                  setAriaText("Table Search Input");
+              }}
+              className="cursor-pointer"
+              aria-label="clear text"
+            />
+          )
+        }
+        ref={inputRef}
+        value={searchTerm}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+          if (ariaText !== "Table Search Input")
+            setAriaText("Table Search Input");
+        }}
+      />
+      <DND
+        showColumnMenu={showColumnMenu}
+        setShowColumnMenu={setShowColumnMenu}
+        handleColumnChange={handleColumnChange}
+        columnListOrder={columnListOrder}
+        defaultColumns={defaultColumns}
+      />
+    </div>
   );
 };
 

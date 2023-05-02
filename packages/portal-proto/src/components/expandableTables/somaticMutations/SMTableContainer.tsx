@@ -71,7 +71,10 @@ export interface SMTableContainerProps {
    * boolean used to determine if the links need to be opened in a summary modal or a Link
    */
   isModal?: boolean;
-  searchTermGene?: { geneId?: string; geneSymbol?: string };
+  /*
+   *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
+   */
+  searchTermsForGene?: { geneId?: string; geneSymbol?: string };
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -89,11 +92,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
-  searchTermGene,
+  searchTermsForGene,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [searchTerm, setSearchTerm] = useState(searchTermGene?.geneId ?? "");
+  const [searchTerm, setSearchTerm] = useState(
+    searchTermsForGene?.geneId ?? "",
+  );
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
@@ -350,10 +355,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
 
             <TableFilters
-              search={searchTerm}
+              searchTerm={searchTerm}
               ariaTextOverwrite={
-                searchTermGene?.geneSymbol &&
-                `You are now viewing the Mutations table filtered by ${searchTermGene.geneSymbol}.`
+                searchTermsForGene?.geneSymbol &&
+                `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
               }
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}

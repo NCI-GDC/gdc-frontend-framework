@@ -98,7 +98,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
-  const [searchTermForGeneId, setSearchTermForGeneId] = useState({
+  const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
     geneId: undefined,
     geneSymbol: undefined,
   });
@@ -228,10 +228,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (tabKey: string) => {
       setAppMode(tabKey as AppModeState);
       setComparativeSurvival(undefined);
-      searchTermForGeneId &&
-        setSearchTermForGeneId({ geneId: undefined, geneSymbol: undefined });
+      (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) &&
+        setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
     },
-    [searchTermForGeneId],
+    [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );
 
   // clear local filters when cohort changes or tabs change
@@ -336,7 +336,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   geneId: string,
                   geneSymbol: string,
                 ) => {
-                  setSearchTermForGeneId({ geneId, geneSymbol });
+                  setSearchTermsForGeneId({ geneId, geneSymbol });
                   setAppMode("ssms");
                 }}
               />
@@ -380,7 +380,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 toggledSsms={currentMutations}
                 isDemoMode={isDemoMode}
                 isModal={true}
-                searchTermGene={searchTermForGeneId}
+                searchTermsForGene={searchTermsForGeneId}
               />
             </div>
           </Tabs.Panel>
