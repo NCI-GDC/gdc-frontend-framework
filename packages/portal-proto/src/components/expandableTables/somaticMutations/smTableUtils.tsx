@@ -116,12 +116,14 @@ export const ssmsCreateTableColumn = ({
                             src={"/user-flow/icons/CohortSym_inactive.svg"}
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
                           />
                         ) : (
                           <Image
                             src={"/user-flow/icons/cohort-dna.svg"}
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
                           />
                         )
                       }
@@ -181,6 +183,7 @@ export const ssmsCreateTableColumn = ({
                 <>
                   {row.getCanExpand() && (
                     <ToggledCheck
+                      ariaText={`Toggle survival plot for ${row?.original.proteinChange} mutation`}
                       margin="ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}

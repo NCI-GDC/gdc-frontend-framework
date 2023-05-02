@@ -28,8 +28,8 @@ export const AnnotationsIcon = (): JSX.Element => {
       role="img"
       aria-labelledby="title  desc"
     >
-      <title id="title">Annotations Icon</title>
-      <desc id="desc">an icon for Annotations</desc>
+      <title className="title">Annotations Icon</title>
+      <desc className="desc">an icon for Annotations</desc>
       <g>
         <path
           fill={"activeColor"}

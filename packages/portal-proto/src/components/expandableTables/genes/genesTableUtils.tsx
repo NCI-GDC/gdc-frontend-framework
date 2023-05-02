@@ -106,12 +106,14 @@ export const geneCreateTableColumn = ({
                             src={"/user-flow/icons/CohortSym_inactive.svg"}
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
                           />
                         ) : (
                           <Image
                             src={"/user-flow/icons/cohort-dna.svg"}
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
                           />
                         )
                       }
@@ -174,30 +176,17 @@ export const geneCreateTableColumn = ({
               return (
                 <>
                   {row.getCanExpand() && (
-                    <Tooltip
-                      label={`${tooltip}`}
-                      disabled={!tooltip || tooltip.length == 0}
-                      withArrow
-                      arrowSize={6}
-                      transition="fade"
-                      transitionDuration={200}
-                      multiline
-                      classNames={{
-                        tooltip:
-                          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
-                      }}
-                    >
-                      <ToggledCheck
-                        margin="ml-0.5"
-                        isActive={row.original["survival"].checked}
-                        icon={<SurvivalIcon size={24} />}
-                        selected={row.original["survival"]}
-                        handleSwitch={handleSurvivalPlotToggled}
-                        survivalProps={{ plot: "gene.symbol" }}
-                        tooltip={tooltip}
-                        disabled={disabled}
-                      />
-                    </Tooltip>
+                    <ToggledCheck
+                      margin="ml-0.5"
+                      ariaText={`Toggle survival plot for ${row?.original.symbol} gene`}
+                      isActive={row.original["survival"].checked}
+                      icon={<SurvivalIcon size={24} />}
+                      selected={row.original["survival"]}
+                      handleSwitch={handleSurvivalPlotToggled}
+                      survivalProps={{ plot: "gene.symbol" }}
+                      tooltip={tooltip}
+                      disabled={disabled}
+                    />
                   )}
                 </>
               );
