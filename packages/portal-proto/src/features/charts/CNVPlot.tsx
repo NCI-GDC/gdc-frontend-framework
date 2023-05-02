@@ -152,12 +152,14 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           divId={chartDivId}
           jsonData={[
             ...sortedData.map(({ project: symbol, gain, loss, total }) => {
-              return {
-                symbol,
-                gain,
-                loss,
-                total,
-              };
+              return (
+                !(loss === 0 && gain === 0) && {
+                  symbol,
+                  gain,
+                  loss,
+                  total,
+                }
+              );
             }),
           ]}
         />
