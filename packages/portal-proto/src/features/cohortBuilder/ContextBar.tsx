@@ -319,7 +319,7 @@ const ContextBar: React.FC = () => {
                         ].join(","),
                         filename: `metadata.cohort.${new Date()
                           .toISOString()
-                          .slice(0, 10)}.tsv`,
+                          .slice(0, 10)}.json`,
                       },
                       done: () => setDownloadMetadataActive(false),
                     });
