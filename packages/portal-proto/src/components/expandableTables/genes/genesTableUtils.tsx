@@ -428,7 +428,11 @@ export const geneCreateTableColumn = ({
                 <>
                   {row.getCanExpand() && (
                     <CountButton
-                      tooltipLabel={`Search the mutations table for ${row?.original?.symbol}`}
+                      tooltipLabel={
+                        count === 0
+                          ? `No SSMs in ${row?.original?.symbol}`
+                          : `Search the mutations table for ${row?.original?.symbol}`
+                      }
                       disabled={disabled}
                       handleOnClick={() => {
                         handleMutationCountClick(

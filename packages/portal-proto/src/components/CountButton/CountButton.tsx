@@ -13,16 +13,23 @@ export const CountButton = ({
 }): JSX.Element => {
   return (
     <Tooltip label={tooltipLabel} withArrow>
-      <button className="w-fit" disabled={disabled} onClick={handleOnClick}>
-        <Badge
-          variant="outline"
-          radius="xs"
-          className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-20`}
-          color={disabled ? "base" : "primary"}
+      <span>
+        <button
+          className="w-fit"
+          disabled={disabled}
+          onClick={handleOnClick}
+          aria-label={tooltipLabel}
         >
-          {count !== undefined ? count.toLocaleString() : undefined}
-        </Badge>
-      </button>
+          <Badge
+            variant="outline"
+            radius="xs"
+            className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-20`}
+            color={disabled ? "base" : "primary"}
+          >
+            {count !== undefined ? count.toLocaleString() : undefined}
+          </Badge>
+        </button>
+      </span>
     </Tooltip>
   );
 };
