@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { ReactNode } from "react";
+import { JSONArray } from "@/features/types";
 
 const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
   ssr: false,
@@ -9,7 +10,7 @@ export interface ChartTitleBarProps {
   readonly title?: ReactNode;
   readonly filename: string;
   readonly divId: string;
-  readonly jsonData: Array<any>;
+  readonly jsonData: JSONArray;
 }
 
 const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
