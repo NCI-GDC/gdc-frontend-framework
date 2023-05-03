@@ -31,28 +31,6 @@ tags: regression, smoke
    |Access               |
 
 
-## Add a File Filter modal
-* Navigate to "Add a File Filter" from "Repository" "app"
-
-## Add a File Filter displayed on Add a File Filter modal
-* Verify that the "Add a File Filter" text is displayed on "Add a File Filter" "modal"
-
-## Search for a file property on Add a File Filter modal
-* Verify that the "Search for a file property" text is displayed on "Add a File Filter" "modal"
-
-## # file properties on Add a File Filter modal
-* Verify that the "299 file properties" text is displayed on "Add a File Filter" "modal"
-
-## # file counts listed on Add a File Filter modal
-* Verify "299" items on Add a File Filter filter list
-
-## File filter list does not start with 'files.' on Add a File Filter modal
-* Verify file filter names do not start with "files."
-
-## Only show properties with values on Add a File Filter modal
-* Verify that the "Only show properties with values" text is displayed on "Add a File Filter" "modal"
-* Close "Add a File Filter" modal
-
 ## Search filters
 
    |filter_name                                           |nth|

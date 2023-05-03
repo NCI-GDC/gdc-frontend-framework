@@ -34,11 +34,11 @@ tags: gdc-data-portal-v2, repository, regression
 * Expand or contract a filter on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Experimental Strategy  |plus-icon            |
+  |Workflow Type  |plus-icon            |
 * Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Experimental Strategy  |scRNA-Seq            |
+  |Workflow Type          |GATK4 MuTect2            |
 * Select "Add All" on the Repository page
 * Is modal with text "files to the cart" present on the page and "Keep Modal"
 * Select "Add All" on the Repository page
@@ -50,4 +50,4 @@ tags: gdc-data-portal-v2, repository, regression
 * Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Experimental Strategy  |scRNA-Seq            |
+  |Workflow Type          |GATK4 MuTect2            |
