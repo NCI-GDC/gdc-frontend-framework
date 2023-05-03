@@ -12,7 +12,7 @@ import {
   joinFilters,
   buildCohortGqlOperator,
 } from "@gff/core";
-import { useEffect, useState, useReducer, createContext } from "react";
+import { useEffect, useState, useReducer } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
 import {
@@ -40,14 +40,6 @@ import {
   TablePlaceholder,
 } from "../shared";
 
-export const SelectedRowContext =
-  createContext<
-    [
-      SelectedReducer<SomaticMutations>,
-      (action: SelectReducerAction<SomaticMutations>) => void,
-    ]
-  >(undefined);
-
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
   handleSurvivalPlotToggled?: (
@@ -57,20 +49,20 @@ export interface SMTableContainerProps {
   ) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
-  /*
-   * filter about case id sent from case summary for SMT
-   */
-  caseFilter?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   columnsList?: Array<Column>;
   geneSymbol?: string;
   tableTitle?: string;
+  isDemoMode?: boolean;
   /*
-   * project id for case summary SMT
+   * filter about case id sent from case summary for SMT
+   */
+  caseFilter?: FilterSet;
+  /*
+   * project id for case summary SM Table
    */
   projectId?: string;
-  isDemoMode?: boolean;
   /*
    * boolean used to determine if the links need to be opened in a summary modal or a Link
    */
@@ -106,23 +98,37 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
-  const [visibleColumns, setVisibleColumns] = useState(
-    columnsList.filter((col) => col.visible),
-  );
 
-  const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
+  const visibleColumns = columnListOrder.filter((col) => col.visible);
+
+  const [smTotal, setSMTotal] = useState(0);
+
+  const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [tableData, setTableData] = useState<GDCSsmsTable>({
     cases: 0,
     filteredCases: 0,
     ssmsTotal: 0,
-    pageSize: 10,
+    pageSize: pageSize,
     offset: 0,
     ssms: [],
   });
-
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+
+  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
+    pageSize: pageSize,
+    offset: pageSize * page,
+    searchTerm:
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+    geneSymbol: geneSymbol,
+    genomicFilters: genomicFilters,
+    cohortFilters: cohortFilters,
+    caseFilter: caseFilter,
+  });
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -143,9 +149,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setVisibleColumns(columnListOrder.filter((col) => col.visible));
-  }, [columnListOrder]);
+  const handleColumnChange = (columnUpdate) => {
+    setColumnListOrder(columnUpdate);
+  };
 
   useEffect(() => {
     if (
@@ -155,9 +161,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setPage(0);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
-  const handleColumnChange = (columnUpdate) => {
-    setColumnListOrder(columnUpdate);
-  };
+  useEffect(() => {
+    setPage(0);
+  }, [pageSize]);
+
+  useEffect(() => {
+    if (!isFetching && isSuccess) {
+      setTableData({
+        ...data,
+        pageSize: pageSize,
+        offset: pageSize * page,
+      });
+    }
+  }, [isFetching, isSuccess, data, pageSize, page]);
+
   const smReducer = (
     selected: SelectedReducer<SomaticMutations>,
     action: SelectReducerAction<SomaticMutations>,
@@ -200,36 +217,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     smReducer,
     {} as SelectedReducer<SomaticMutations>,
   );
-  const [smTotal, setSMTotal] = useState(0);
-
-  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
-    pageSize: pageSize,
-    offset: pageSize * page,
-    searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
-    geneSymbol: geneSymbol,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-    caseFilter: caseFilter,
-  });
-
-  useEffect(() => {
-    setPage(0);
-  }, [pageSize]);
-
-  useEffect(() => {
-    if (!isFetching && isSuccess) {
-      setTableData({
-        ...data,
-        pageSize: pageSize,
-        offset: pageSize * page,
-      });
-    }
-  }, [isFetching, isSuccess, data, pageSize, page]);
-
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   const combinedFilters = joinFilters(genomicFilters, cohortFilters);
   const setFilters =
@@ -261,10 +248,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   return (
     <>
-      {caseFilter && tableData.ssmsTotal === 0 ? null : (
-        <SelectedRowContext.Provider
-          value={[selectedMutations, setSelectedMutations]}
-        >
+      {caseFilter &&
+      debouncedSearchTerm.length === 0 &&
+      tableData.ssmsTotal === 0 ? null : (
+        <>
           {showSaveModal && (
             <SaveSelectionAsSetModal
               filters={buildCohortGqlOperator(setFilters)}
@@ -459,7 +446,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               </div>
             </div>
           ) : null}
-        </SelectedRowContext.Provider>
+        </>
       )}
     </>
   );
