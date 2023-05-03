@@ -22,7 +22,7 @@ const CountButton: React.FC<CountButtonProp> = ({
       <div className="flex flex-row flex-nowrap items-center font-heading">
         {cohortCounts.isSuccess ? (
           <>
-            <span className={`${bold ? "font-bold pr-1" : "pr-1"}`}>
+            <span className={`pr-1 ${bold && "font-bold"}`}>
               {cohortCounts.data[countName]?.toLocaleString()}
             </span>{" "}
             <span className={`${bold ? "font-medium pr-1" : "pr-1"}`}>

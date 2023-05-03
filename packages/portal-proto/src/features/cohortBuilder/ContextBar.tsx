@@ -107,6 +107,13 @@ const ContextBar: React.FC = () => {
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}
       isContextBar={true}
+      tooltipText={
+        isGroupCollapsed
+          ? "Access additional cases details and features"
+          : "Collapse additional cases details and features"
+      }
+      tooltipPosition="left"
+      TargetElement={<CountButton countName="casesMax" label="CASES" bold />}
     >
       <div className="flex flex-col bg-nci-violet-lightest">
         <div className="relative p-2">
