@@ -19,13 +19,14 @@ const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
   filename,
   jsonData,
 }: ChartTitleBarProps) => {
+  console.log("ChartTitleBar", jsonData);
   return (
     <div className="flex justify-between items-center">
       {title}
       <DownloadOptions
         chartDivId={divId}
         chartName={filename}
-        jsonData={jsonData && []}
+        jsonData={jsonData ?? []}
       />
     </div>
   );
