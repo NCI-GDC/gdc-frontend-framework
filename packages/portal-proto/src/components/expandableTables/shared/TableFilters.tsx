@@ -1,3 +1,4 @@
+// This component has not been used anywhere
 import React, { useState } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { animated, useSpring } from "@react-spring/web";

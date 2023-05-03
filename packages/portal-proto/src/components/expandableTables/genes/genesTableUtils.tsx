@@ -277,7 +277,7 @@ export const geneCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
@@ -422,8 +422,8 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
-              const count = row?.original["mutations"];
-              const disabled = row?.original["mutations"] === 0;
+              const count = row?.original["mutations"] ?? 0;
+              const disabled = count === 0;
               return (
                 <>
                   {row.getCanExpand() && (
