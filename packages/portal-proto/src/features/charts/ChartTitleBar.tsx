@@ -19,7 +19,6 @@ const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
   filename,
   jsonData,
 }: ChartTitleBarProps) => {
-  console.log("ChartTitleBar", jsonData);
   return (
     <div className="flex justify-between items-center">
       {title}
