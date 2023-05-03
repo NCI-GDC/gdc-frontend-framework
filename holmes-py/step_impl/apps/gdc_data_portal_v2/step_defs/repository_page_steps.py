@@ -83,10 +83,13 @@ def verify_file_filter_applied(filter_name: str):
 def filter_card_selections(table):
     for k, v in enumerate(table):
         APP.repository_page.make_selection_within_facet_group(v[0], v[1])
-        time.sleep(0.1)
 
 @step("Perform the following actions on a filter card on the Repository page <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
         APP.repository_page.perform_action_within_filter_card(v[0], v[1])
-        time.sleep(0.1)
+
+@step("Expand or contract a filter on the Repository page <table>")
+def click_show_more_or_show_less(table):
+    for k, v in enumerate(table):
+        APP.repository_page.click_show_more_less_within_filter_card(v[0], v[1])

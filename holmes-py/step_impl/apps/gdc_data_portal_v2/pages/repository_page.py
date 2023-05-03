@@ -16,7 +16,9 @@ class RepositoryPageLocators:
 
     FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
     FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
+    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
+    REPO_TABLE_SPINNER = '//div[@data-testid="repository-table"] >> svg[role="presentation"]'
 
 class RepositoryPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -110,8 +112,17 @@ class RepositoryPage(BasePage):
     def make_selection_within_facet_group(self, facet_group_name, selection):
         locator = RepositoryPageLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
         self.click(locator)
+        # Not every action causes the spinner to appear. So, we just wait for it to not be detached.
+        self.wait_until_locator_is_detached(RepositoryPageLocators.REPO_TABLE_SPINNER)
 
     # Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc.
     def perform_action_within_filter_card(self, facet_group_name, action):
         locator = RepositoryPageLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
+        self.click(locator)
+        # Not every action causes the spinner to appear. So, we just wait for it to not be detached.
+        self.wait_until_locator_is_detached(RepositoryPageLocators.REPO_TABLE_SPINNER)
+
+    # Clicks the show more or show less object
+    def click_show_more_less_within_filter_card(self, facet_group_name, label):
+        locator = RepositoryPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
         self.click(locator)
