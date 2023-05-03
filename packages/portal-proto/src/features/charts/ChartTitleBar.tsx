@@ -10,7 +10,7 @@ export interface ChartTitleBarProps {
   readonly title?: ReactNode;
   readonly filename: string;
   readonly divId: string;
-  readonly jsonData: JSONArray;
+  readonly jsonData?: JSONArray;
 }
 
 const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
@@ -25,7 +25,7 @@ const ChartTitleBar: React.FC<ChartTitleBarProps> = ({
       <DownloadOptions
         chartDivId={divId}
         chartName={filename}
-        jsonData={jsonData}
+        jsonData={jsonData && []}
       />
     </div>
   );

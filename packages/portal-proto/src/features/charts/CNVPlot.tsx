@@ -6,7 +6,6 @@ import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { processFilters } from "src/utils";
 import { CountSpan } from "../shared/tailwindComponents";
-import { JSONArray } from "@/features/types";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -157,12 +156,14 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           divId={chartDivId}
           jsonData={[
             ...exportedData.map(({ project: symbol, gain, loss, total }) => {
-              return {
-                symbol,
-                gain: gain ? (gain / total) * 100 : 0,
-                loss: loss ? (loss / total) * 100 : 0,
-                total,
-              };
+              return (
+                !(loss === 0 && gain === 0) && {
+                  symbol,
+                  gain: gain ? (gain / total) * 100 : 0,
+                  loss: loss ? (loss / total) * 100 : 0,
+                  total,
+                }
+              );
             }),
           ]}
         />
