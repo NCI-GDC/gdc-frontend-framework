@@ -88,7 +88,7 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
-    case "cohort": // adds/removes a gene to the current cohort.
+    case "cohort": // adds/removes an ssm to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -96,14 +96,20 @@ export const ssmsCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to add/remove mutations to/from your cohort filters"
+              />
             ),
             cell: ({ row }) => {
+              const isToggledSsm = toggledSsms.includes(
+                row.original?.mutationID,
+              );
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={toggledSsms.includes(row.original?.mutationID)}
+                      isActive={isToggledSsm}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -127,7 +133,11 @@ export const ssmsCreateTableColumn = ({
                         })
                       }
                       tooltip={
-                        isDemoMode && "Feature not available in demo mode"
+                        isDemoMode
+                          ? "Feature not available in demo mode"
+                          : isToggledSsm
+                          ? `Click to remove ${row.original?.DNAChange} from cohort filters`
+                          : `Click to add ${row.original?.DNAChange} to cohort filters`
                       }
                       disabled={isDemoMode}
                     />
@@ -146,7 +156,10 @@ export const ssmsCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to change the survival plot display"
+              />
             ),
             cell: ({ row }) => {
               if (row.depth > 0) {
