@@ -11,8 +11,8 @@ import {
   ButtonTooltip,
   Column,
   DND,
-  PageSizeMantine,
-  PageStepperMantine,
+  PageSize,
+  PageStepper,
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
 
@@ -194,10 +194,7 @@ export const SMSConsequenceTableContainer: React.FC<
         <div className="flex mb-2 py-4 px-2 border border-base-lighter border-t-0">
           <div className="flex flex-nowrap items-center m-auto ml-0">
             <span className="mx-1 text-xs">Show</span>
-            <PageSizeMantine
-              pageSize={size}
-              handlePageSize={handleSetPageSize}
-            />
+            <PageSize pageSize={size} handlePageSize={handleSetPageSize} />
             <span className="my-auto mx-1 text-xs">Entries</span>
           </div>
           <div className={`flex flex-row justify-between items-center text-sm`}>
@@ -215,7 +212,7 @@ export const SMSConsequenceTableContainer: React.FC<
             </span>
           </div>
           <div className={`ml-auto mr-0`}>
-            <PageStepperMantine
+            <PageStepper
               page={page - 1}
               totalPages={pages}
               handlePage={handleSetPage}

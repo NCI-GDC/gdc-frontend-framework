@@ -31,12 +31,12 @@ import { HeaderTitle } from "@/features/shared/tailwindComponents";
 import {
   ButtonTooltip,
   Column,
-  PageSizeMantine,
-  PageStepperMantine,
+  PageSize,
+  PageStepper,
   SelectReducerAction,
   SelectedReducer,
-  TableControlsMantine,
-  TableFiltersMantine,
+  TableControls,
+  TableFilters,
   TablePlaceholder,
 } from "../shared";
 
@@ -309,7 +309,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             className="flex justify-between items-center mb-2"
             ref={targetRef}
           >
-            <TableControlsMantine
+            <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
               label={`Somatic Mutation`}
@@ -345,7 +345,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
             />
 
-            <TableFiltersMantine
+            <TableFilters
               searchTerm={searchTerm}
               ariaTextOverwrite={
                 searchTermsForGene?.geneSymbol &&
@@ -409,7 +409,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <div className="grow-0">
                   <div className="flex flex-row items-center text-sm ml-0">
                     <span className="my-auto mx-1">Show</span>
-                    <PageSizeMantine
+                    <PageSize
                       pageSize={pageSize}
                       handlePageSize={setPageSize}
                     />
@@ -438,7 +438,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 </span>
               </div>
               <div className="m-auto mr-0">
-                <PageStepperMantine
+                <PageStepper
                   page={page}
                   totalPages={Math.ceil(smTotal / pageSize)}
                   handlePage={handleSetPage}

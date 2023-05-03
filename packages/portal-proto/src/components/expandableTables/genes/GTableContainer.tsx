@@ -25,12 +25,12 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import {
   ButtonTooltip,
-  PageSizeMantine,
-  PageStepperMantine,
+  PageSize,
+  PageStepper,
   SelectReducerAction,
   SelectedReducer,
-  TableControlsMantine,
-  TableFiltersMantine,
+  TableControls,
+  TableFilters,
   TablePlaceholder,
 } from "../shared";
 
@@ -245,7 +245,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       )}
 
       <div className="flex justify-between items-center mb-2 mt-8">
-        <TableControlsMantine
+        <TableControls
           total={gTotal}
           numSelected={Object.keys(selectedGenes).length ?? 0}
           label={`Gene`}
@@ -284,7 +284,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         />
 
-        <TableFiltersMantine
+        <TableFilters
           searchTerm={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
@@ -333,10 +333,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           <div className={"grow-0"}>
             <div className="flex items-center text-sm ml-0">
               <span className="my-auto mx-1">Show</span>
-              <PageSizeMantine
-                pageSize={pageSize}
-                handlePageSize={setPageSize}
-              />
+              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
               <span className="my-auto mx-1">Entries</span>
             </div>
           </div>
@@ -362,7 +359,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             </span>
           </div>
           <div className="grow-0 mr-0">
-            <PageStepperMantine
+            <PageStepper
               page={page}
               totalPages={Math.ceil(gTotal / pageSize)}
               handlePage={handleSetPage}

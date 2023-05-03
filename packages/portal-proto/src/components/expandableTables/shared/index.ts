@@ -6,16 +6,12 @@ import DND from "./DND";
 import ExpTable from "./ExpTable";
 import NumeratorDenominator from "./NumeratorDenominator";
 import PageSize from "./PageSize";
-import PageSizeMantine from "./PageSizeMantine";
 import PageStepper from "./PageStepper";
-import PageStepperMantine from "./PageStepperMantine";
 import RatioSpring from "./RatioSpring";
 import Subrow from "./Subrow";
 import SwitchSpring from "./SwitchSpring";
 import TableControls from "./TableControls";
-import TableControlsMantine from "./TableControlsMantine";
-import { TableFilters } from "./TableFilters";
-import TableFiltersMantine from "./TableFiltersMantine";
+import TableFilters from "./TableFilters";
 import TablePlaceholder from "./TablePlaceholder";
 import ToggleSpring from "./ToggleSpring";
 import ToggledCheck from "./ToggledCheck";
@@ -45,16 +41,12 @@ export {
   ExpTable,
   NumeratorDenominator,
   PageSize,
-  PageSizeMantine,
   PageStepper,
-  PageStepperMantine,
   RatioSpring,
   Subrow,
   SwitchSpring,
   TableControls,
-  TableControlsMantine,
   TableFilters,
-  TableFiltersMantine,
   TablePlaceholder,
   ToggleSpring,
   ToggledCheck,
