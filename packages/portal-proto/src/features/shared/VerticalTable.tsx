@@ -561,7 +561,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     //prevents unneeded api calls if user is typing something
     const delayDebounceFn = setTimeout(() => {
       handleChange({
-        newSearch: searchTerm,
+        newSearch: searchTerm.trim(),
       });
     }, 250);
 
