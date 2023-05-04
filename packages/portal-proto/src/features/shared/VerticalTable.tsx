@@ -619,6 +619,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   >
                     <Popover.Target>
                       <button
+                        data-testid="column-selector-box"
                         onClick={() => {
                           setShowColumnMenu(!showColumnMenu);
                         }}
@@ -629,7 +630,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       </button>
                     </Popover.Target>
                     <Popover.Dropdown>
-                      <div className={`w-fit`}>
+                      <div
+                        className={`w-fit`}
+                        data-testid="column-selector-popover-modal"
+                      >
                         {columns.length > 0 && showColumnMenu && (
                           <div className="mr-0 ml-2">
                             <DndProvider backend={HTML5Backend}>

@@ -87,16 +87,17 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip="Click to add/remove genes to/from your cohort filters"
                 className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
+              const isToggledGene = toggledGenes.includes(row.original?.geneID);
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={toggledGenes.includes(row.original?.geneID)}
+                      isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -120,7 +121,11 @@ export const geneCreateTableColumn = ({
                         })
                       }
                       tooltip={
-                        isDemoMode && "Feature not available in demo mode"
+                        isDemoMode
+                          ? "Feature not available in demo mode"
+                          : isToggledGene
+                          ? `Click to remove ${row.original?.symbol} from cohort filters`
+                          : `Click to add ${row.original?.symbol} to cohort filters`
                       }
                       disabled={isDemoMode}
                     />
@@ -141,7 +146,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip="Click to change the survival plot display"
                 className="mr-3"
               />
             ),

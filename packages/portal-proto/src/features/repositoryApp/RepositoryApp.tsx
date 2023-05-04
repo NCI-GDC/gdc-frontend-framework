@@ -114,10 +114,14 @@ export const RepositoryApp = (): JSX.Element => {
           <div className="w-1/4">
             <FileFacetPanel />
           </div>
-          <div className="w-full overflow-hidden h-full">
+          <div
+            className="w-full overflow-hidden h-full"
+            data-testid="repository-table"
+          >
             <div className="flex justify-end align-center">
               <div className="flex justify-end gap-2 mb-6">
                 <DownloadButton
+                  data-testid="button-manifest-files-table"
                   customStyle={`
                   flex
                   flex-row
@@ -162,13 +166,18 @@ export const RepositoryApp = (): JSX.Element => {
                     label={"No images available to be viewed"}
                     disabled={!viewImageDisabled}
                   >
-                    <FunctionButton component="a" $disabled={viewImageDisabled}>
+                    <FunctionButton
+                      component="a"
+                      $disabled={viewImageDisabled}
+                      data-testid="button-view-images-files-table"
+                    >
                       View Images
                     </FunctionButton>
                   </Tooltip>
                 </Link>
 
                 <FunctionButton
+                  data-testid="button-add-all-files-table"
                   leftIcon={<CartIcon />}
                   loading={allFilesLoading}
                   onClick={() => {
@@ -189,6 +198,7 @@ export const RepositoryApp = (): JSX.Element => {
                   Add All Files to Cart
                 </FunctionButton>
                 <FunctionButtonRemove
+                  data-testid="button-remove-all-files-table"
                   leftIcon={<VscTrash />}
                   loading={allFilesLoading}
                   onClick={() => {
