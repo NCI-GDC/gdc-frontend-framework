@@ -96,6 +96,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
+  let exportedData = sortedData;
+
   const datasets = [];
   if (lossChecked) {
     datasets.push({
@@ -122,11 +124,13 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   }
 
   if (!lossChecked && !gainChecked) {
+    // sort by gain value desc and then loss value desc
     const emptyData = orderBy(
       chartData.map((d) => ({ gain: 0, loss: 0, ...d })),
       ["gain", "loss"],
       ["desc", "desc"],
     ).slice(0, 20);
+    exportedData = emptyData;
     datasets.push({
       y: emptyData.map(() => null),
       x: emptyData.map((d) => d.project),
@@ -151,15 +155,13 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           filename={`cancer-distribution-bar-chart`}
           divId={chartDivId}
           jsonData={[
-            ...sortedData.map(({ project: symbol, gain, loss, total }) => {
-              return (
-                !(loss === 0 && gain === 0) && {
-                  symbol,
-                  gain,
-                  loss,
-                  total,
-                }
-              );
+            ...exportedData.map(({ project: symbol, gain, loss, total }) => {
+              return {
+                symbol,
+                gain: gain ? (gain / total) * 100 : 0,
+                loss: loss ? (loss / total) * 100 : 0,
+                total,
+              };
             }),
           ]}
         />
