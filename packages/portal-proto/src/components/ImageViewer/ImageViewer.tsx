@@ -3,9 +3,9 @@ import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
-import { toggleFullScreen } from "../utils";
+import { toggleFullScreen } from "../../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
-import { HorizontalTableProps } from "./HorizontalTable";
+import { HorizontalTableProps } from "../HorizontalTable";
 import { GDC_API } from "@gff/core";
 export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
@@ -68,21 +68,17 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    const reFetchNewImage = () => {
-      if (imageId && viewer && imageDetails) {
-        viewer.open({
-          height: Number(imageDetails.Height),
-          width: Number(imageDetails.Width),
-          tileSize: Number(imageDetails.TileSize),
-          tileOverlap: Number(imageDetails.Overlap),
-          getTileUrl: (level, x, y) => {
-            return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
-          },
-        });
-      }
-    };
-
-    reFetchNewImage();
+    if (imageId && viewer && imageDetails) {
+      viewer.open({
+        height: Number(imageDetails.Height),
+        width: Number(imageDetails.Width),
+        tileSize: Number(imageDetails.TileSize),
+        tileOverlap: Number(imageDetails.Overlap),
+        getTileUrl: (level, x, y) => {
+          return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
+        },
+      });
+    }
   }, [imageId, viewer, imageDetails]);
 
   return (
@@ -92,14 +88,14 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
       >
         Image is not available
       </div>
-      <div>
-        <LoadingOverlay visible={isFetching && !isError} />
-      </div>
+
+      <LoadingOverlay visible={isFetching && !isError} />
+
       <div
         ref={osdContainerRef}
         id="osd"
         className={
-          isFetching || isError ? "invisible" : "flex bg-black h-img-viewer"
+          isFetching || isError ? "invisible" : "flex bg-black h-screen/2"
         }
       >
         <SlideDetailButton

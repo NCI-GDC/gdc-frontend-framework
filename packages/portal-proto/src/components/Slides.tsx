@@ -16,7 +16,7 @@ export const Slides: React.FC<SlidesProps> = ({
 }: SlidesProps) => {
   return (
     <div
-      className="flex flex-col mb-4"
+      className="mb-4 w-full"
       onClick={() => setImageViewer(file_id)}
       onKeyDown={() => setImageViewer(file_id)}
       role="button"

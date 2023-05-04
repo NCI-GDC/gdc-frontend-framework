@@ -783,10 +783,12 @@ module.exports = {
         cartDarkerOrange: "#C7501A",
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
+
         emptyCartLighterColor: "#e0e9f0",
       },
       maxHeight: {
         "screen-90vh": "90vh",
+        "screen-50vh": "50vh",
       },
       height: {
         "nci-logo": "54px",
@@ -808,6 +810,7 @@ module.exports = {
       flexBasis: {
         coretools: "400px",
         tools: "188px",
+        12.5: "12.5%",
       },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
