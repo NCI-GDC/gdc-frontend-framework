@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, repository, regression
 ## Cannot add more than 10,000 files to the cart
 * Select "Add All" on the Repository page
 * Is modal with text "The cart is limited to 10,000" present on the page and "Remove Modal"
+* The cart should have "0" files
 * Expand or contract a filter on the Repository page
   |facet_name       |label                |
   |-----------------|---------------------|
@@ -23,6 +24,7 @@ tags: gdc-data-portal-v2, repository, regression
   |Data Type        |Allele-specific Copy Number Segment  |
 * Select "Add All" on the Repository page
 * Is modal with text "The cart is limited to 10,000" present on the page and "Remove Modal"
+* The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
 * Make the following selections on a filter card on the Repository page
@@ -38,16 +40,17 @@ tags: gdc-data-portal-v2, repository, regression
 * Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Workflow Type          |GATK4 MuTect2            |
+  |Workflow Type          |GATK4 MuTect2        |
 * Select "Add All" on the Repository page
 * Is modal with text "files to the cart" present on the page and "Keep Modal"
 * Select "Add All" on the Repository page
 * Is modal with text "Added 0 files to the cart" present on the page and "Remove Modal"
 * Select "Remove All" on the Repository page
 * Is modal with text "files from the cart." present on the page and "Keep Modal"
+* The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
 * Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Workflow Type          |GATK4 MuTect2            |
+  |Workflow Type          |GATK4 MuTect2        |
