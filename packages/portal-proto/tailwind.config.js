@@ -788,7 +788,7 @@ module.exports = {
       },
       maxHeight: {
         "screen-90vh": "90vh",
-        "screen-50vh": "50vh",
+        "screen-60vh": "60vh",
       },
       height: {
         "nci-logo": "54px",
