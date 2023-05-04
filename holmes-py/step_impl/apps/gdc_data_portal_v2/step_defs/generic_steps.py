@@ -247,6 +247,10 @@ def click_radio_buttons(table):
         APP.home_page.click_radio_button(v[0])
         time.sleep(0.1)
 
+@step("Undo Action")
+def click_undo_in_message():
+    APP.home_page.click_undo_in_message()
+
 # Selects values from tables by giving a row and column
 # Row and Column indexing begins at '1'
 @step("Select value from table by row and column <table>")

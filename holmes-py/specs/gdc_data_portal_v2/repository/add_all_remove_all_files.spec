@@ -3,6 +3,7 @@ Date Created   : 05/01/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Test Repository Add All Files and Remove All Files buttons
+Test-Case      : PEAR-461, PEAR-473
 
 tags: gdc-data-portal-v2, repository, regression
 

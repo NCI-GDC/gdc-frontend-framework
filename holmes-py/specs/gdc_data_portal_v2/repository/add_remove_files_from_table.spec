@@ -3,6 +3,7 @@ Date Created   : 05/03/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Repository Add and Remove Individual Files From the Table
+Test-Case      : PEAR-466, PEAR-471
 
 tags: gdc-data-portal-v2, repository, regression, smoke
 
@@ -74,4 +75,3 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 4 files from the cart." present on the page and "Keep Modal"
 * The cart should have "0" files
-* Pause "2" seconds

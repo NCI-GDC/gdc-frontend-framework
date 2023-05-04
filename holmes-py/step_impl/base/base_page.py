@@ -4,6 +4,7 @@ class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
+    UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
     CART_IDENT = '[data-testid="cartLink"]'
@@ -154,6 +155,10 @@ class BasePage:
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
+    def click_undo_in_message(self):
+        locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
         self.click(locator)
 
     # Selects values from tables by giving a row and column
