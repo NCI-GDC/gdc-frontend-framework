@@ -112,7 +112,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,

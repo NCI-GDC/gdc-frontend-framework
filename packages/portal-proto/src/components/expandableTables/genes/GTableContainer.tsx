@@ -149,7 +149,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     pageSize: pageSize,
     offset: page * pageSize,
     searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     genomicFilters: genomicFilters,
     isDemoMode: isDemoMode,
     overwritingDemoFilter: cohortFilters,

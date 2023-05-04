@@ -112,8 +112,8 @@ const FacetSelectionPanel = ({
       const s = Object.values(facets)
         .filter((y) => {
           return searchString
-            ? y.field.includes(searchString) ||
-                y.description.includes(searchString)
+            ? y.field.includes(searchString.trim()) ||
+                y.description.includes(searchString.trim())
             : true;
         })
         .reduce((res: Record<string, FacetDefinition>, value) => {
