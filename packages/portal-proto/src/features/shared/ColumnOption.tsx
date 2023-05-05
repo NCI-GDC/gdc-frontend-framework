@@ -4,7 +4,7 @@ import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import { startCase } from "lodash";
 import { MdDragIndicator } from "react-icons/md";
-import SwitchSpring from "../../components/expandableTables/shared/SwitchSpring";
+import { SwitchSpring } from "@/components/expandableTables/shared";
 const columnStyles = `cursor-move bg-base-lightest mb-2 p-1 border-1 block`;
 const columnStylesDisabled = `cursor-not-allowed bg-base-lightest mb-2 p-1 border-1`;
 

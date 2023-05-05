@@ -16,13 +16,6 @@ import { useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "../shared/PageStepperMantine";
-import { default as TableControls } from "../shared/TableControlsMantine";
-import TablePlaceholder from "../shared/TablePlaceholder";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { default as TableFilters } from "../shared/TableFiltersMantine";
-import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
@@ -30,6 +23,16 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import {
+  ButtonTooltip,
+  PageSize,
+  PageStepper,
+  SelectReducerAction,
+  SelectedReducer,
+  TableControls,
+  TableFilters,
+  TablePlaceholder,
+} from "../shared";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -39,6 +42,7 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
@@ -53,6 +57,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   cohortFilters,
   toggledGenes = [],
   isDemoMode = false,
+  handleMutationCountClick,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -280,7 +285,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         />
 
         <TableFilters
-          search={searchTerm}
+          searchTerm={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
           handleColumnChange={handleColumnChange}
@@ -318,6 +323,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               searchTerm={searchTerm}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
+              handleMutationCountClick={handleMutationCountClick}
             />
           </div>
         )}

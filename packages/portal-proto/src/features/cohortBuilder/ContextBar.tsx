@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
-import CountButton from "./CountButton";
+import CohortCountButton from "./CohortCountButton";
 import CohortManager from "./CohortManager";
 import {
   useCoreDispatch,
@@ -312,7 +312,7 @@ const ContextBar: React.FC = () => {
                 },
               ]}
               TargetButtonChildren={
-                <CountButton countName="fileCount" label="Files" />
+                <CohortCountButton countName="fileCount" label="Files" />
               }
               LeftIcon={
                 <DownloadIcon size="1rem" aria-label="Files dropdown" />

@@ -17,7 +17,7 @@ import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
-import { NumeratorDenominator } from "@/components/expandableTables/shared/NumeratorDenominator";
+import { NumeratorDenominator } from "@/components/expandableTables/shared";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
