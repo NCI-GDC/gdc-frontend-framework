@@ -79,6 +79,12 @@ export const MultipleImageViewer = ({
   });
 
   useEffect(() => {
+    return () => {
+      dispatch(setShouldResetEdgesState());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     if (!isFetching) {
       let inside: edgeDetails[];
       if (showMorePressed) {
@@ -165,7 +171,7 @@ export const MultipleImageViewer = ({
                     <div className="flex w-full">
                       <div className="flex-1">
                         <div className="flex justify-between items-center">
-                          <h2 className="ml-2 text-xl">Cases</h2>
+                          <h2 className="ml-2 text-xl font-bold">Cases</h2>
                           <ActionIcon
                             onClick={() => setShowSearch((c) => !c)}
                             className="mr-5"
@@ -227,14 +233,20 @@ export const MultipleImageViewer = ({
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 text-left items-center">
-                        <h2 className="text-xl">Slides</h2>
+                      <div
+                        className={`flex-1 text-left items-center ${
+                          Object.keys(data?.edges).length <= 10
+                            ? "-ml-2"
+                            : "ml-8"
+                        }`}
+                      >
+                        <h2 className="text-xl font-bold">Slides</h2>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex -ml-2 text-left">
-                    <h2 className="text-xl">Image</h2>
+                  <div className="flex text-left">
+                    <h2 className="text-xl font-bold">Image</h2>
                   </div>
                 </div>
 
@@ -321,7 +333,7 @@ export const MultipleImageViewer = ({
                                 {data.edges[edge].map((file, index) => (
                                   <List.Item
                                     key={`${file.file_id}${file.submitter_id}`}
-                                    className="mb-4"
+                                    className="mb-2"
                                   >
                                     <Slides
                                       file_id={file.file_id}

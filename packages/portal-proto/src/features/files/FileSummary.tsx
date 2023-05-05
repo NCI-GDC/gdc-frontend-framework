@@ -1,4 +1,3 @@
-import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useGetFilesQuery, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
