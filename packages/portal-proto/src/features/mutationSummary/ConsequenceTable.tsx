@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
 import { SomaticMutations } from "@/components/expandableTables/somaticMutations/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ExpTable } from "@/components/expandableTables/shared/ExpTable";
 import { ssmsCreateTableColumn } from "@/components/expandableTables/somaticMutations/smTableUtils";
-import { Column } from "@/components/expandableTables/shared/types";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
+import { Column, ExpTable } from "@/components/expandableTables/shared";
 
 export interface ConsequenceTableProps {
   ssmsId: string;

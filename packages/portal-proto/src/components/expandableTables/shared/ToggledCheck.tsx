@@ -12,6 +12,7 @@ interface ToggleProps {
   survivalProps?: {
     plot: string;
   };
+  ariaText: string;
 }
 
 const ToggledCheck: React.FC<ToggleProps> = ({
@@ -23,6 +24,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
   tooltip = undefined,
   margin,
   survivalProps,
+  ariaText,
 }: ToggleProps) => {
   const { plot } = survivalProps ?? { plot: "" };
 
@@ -34,15 +36,9 @@ const ToggledCheck: React.FC<ToggleProps> = ({
     <Tooltip
       label={`${tooltip}`}
       disabled={!tooltip || tooltip.length == 0}
-      withArrow
-      arrowSize={6}
       transition="fade"
       transitionDuration={200}
       multiline
-      classNames={{
-        tooltip:
-          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
-      }}
     >
       <Checkbox
         radius="xs"
@@ -50,6 +46,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         indeterminate
         icon={CheckboxIcon}
         aria-disabled={disabled}
+        aria-label={ariaText}
         onChange={() => {
           if (!disabled)
             // todo: if used for > 2 icons refactor to use switch(icon) statement
@@ -59,9 +56,11 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         }}
         classNames={{
           root: margin,
-          input: disabled
-            ? "bg-base-lighter hover:bg-primary-lighter"
-            : "hover:bg-primary checked:bg-primary-darkest",
+          input: `cursor-pointer ${
+            disabled
+              ? "bg-base-lighter hover:bg-primary-lighter"
+              : "hover:bg-primary checked:bg-primary-darkest"
+          }`,
         }}
       />
     </Tooltip>

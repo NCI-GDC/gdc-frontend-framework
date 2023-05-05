@@ -1,23 +1,28 @@
 import React, { Dispatch, SetStateAction } from "react";
+import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
+import { Image } from "@/components/Image";
+import { CountButton } from "@/components/CountButton/CountButton";
+import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import CheckboxSpring from "../shared/CheckboxSpring";
-import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
-import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { AnnotationsIcon } from "../shared/sharedTableUtils";
-import { TableCell, TableHeader } from "../shared/sharedTableCells";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
-import { SelectReducerAction } from "../shared/types";
-import { Image } from "@/components/Image";
-import { startCase } from "lodash";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { FilterSet } from "@gff/core";
+import {
+  AnnotationsIcon,
+  CheckboxSpring,
+  RatioSpring,
+  SelectReducerAction,
+  SelectedReducer,
+  SwitchSpring,
+  TableCell,
+  TableColumnDefinition,
+  TableHeader,
+  ToggledCheck,
+} from "../shared";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -34,6 +39,7 @@ interface GeneCreateTableColumnProps {
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
 export const geneCreateTableColumn = ({
@@ -47,6 +53,7 @@ export const geneCreateTableColumn = ({
   isDemoMode,
   setEntityMetadata,
   genomicFilters,
+  handleMutationCountClick,
 }: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -104,12 +111,14 @@ export const geneCreateTableColumn = ({
                             src={"/user-flow/icons/CohortSym_inactive.svg"}
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
                           />
                         ) : (
                           <Image
                             src={"/user-flow/icons/cohort-dna.svg"}
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
                           />
                         )
                       }
@@ -172,30 +181,17 @@ export const geneCreateTableColumn = ({
               return (
                 <>
                   {row.getCanExpand() && (
-                    <Tooltip
-                      label={`${tooltip}`}
-                      disabled={!tooltip || tooltip.length == 0}
-                      withArrow
-                      arrowSize={6}
-                      transition="fade"
-                      transitionDuration={200}
-                      multiline
-                      classNames={{
-                        tooltip:
-                          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
-                      }}
-                    >
-                      <ToggledCheck
-                        margin="ml-0.5"
-                        isActive={row.original["survival"].checked}
-                        icon={<SurvivalIcon size={24} />}
-                        selected={row.original["survival"]}
-                        handleSwitch={handleSurvivalPlotToggled}
-                        survivalProps={{ plot: "gene.symbol" }}
-                        tooltip={tooltip}
-                        disabled={disabled}
-                      />
-                    </Tooltip>
+                    <ToggledCheck
+                      margin="ml-0.5"
+                      ariaText={`Toggle survival plot for ${row?.original.symbol} gene`}
+                      isActive={row.original["survival"].checked}
+                      icon={<SurvivalIcon size={24} />}
+                      selected={row.original["survival"]}
+                      handleSwitch={handleSurvivalPlotToggled}
+                      survivalProps={{ plot: "gene.symbol" }}
+                      tooltip={tooltip}
+                      disabled={disabled}
+                    />
                   )}
                 </>
               );
@@ -281,7 +277,7 @@ export const geneCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
@@ -426,13 +422,26 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const count = row?.original["mutations"] ?? 0;
+              const disabled = count === 0;
               return (
                 <>
                   {row.getCanExpand() && (
-                    <span>
-                      {row?.original["mutations"]?.toLocaleString("en-US") ??
-                        ""}
-                    </span>
+                    <CountButton
+                      tooltipLabel={
+                        count === 0
+                          ? `No SSMs in ${row?.original?.symbol}`
+                          : `Search the mutations table for ${row?.original?.symbol}`
+                      }
+                      disabled={disabled}
+                      handleOnClick={() => {
+                        handleMutationCountClick(
+                          row?.original?.geneID,
+                          row?.original?.symbol,
+                        );
+                      }}
+                      count={count}
+                    />
                   )}
                 </>
               );

@@ -19,12 +19,12 @@ import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import { addToCart, removeFromCart } from "../../cart/updateCart";
 import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { ButtonTooltip } from "@/components/expandableTables/shared";
 
 const useStyles = createStyles((theme) => ({
   item: {

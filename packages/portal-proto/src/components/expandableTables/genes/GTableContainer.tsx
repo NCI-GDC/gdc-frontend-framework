@@ -16,13 +16,6 @@ import { createContext, useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "../shared/PageStepperMantine";
-import { default as TableControls } from "../shared/TableControlsMantine";
-import TablePlaceholder from "../shared/TablePlaceholder";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
-import { default as TableFilters } from "../shared/TableFiltersMantine";
-import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
@@ -30,6 +23,16 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import {
+  ButtonTooltip,
+  PageSize,
+  PageStepper,
+  SelectReducerAction,
+  SelectedReducer,
+  TableControls,
+  TableFilters,
+  TablePlaceholder,
+} from "../shared";
 
 export const SelectedRowContext =
   createContext<
@@ -44,6 +47,7 @@ export interface GTableContainerProps {
     field: string,
   ) => void;
   handleGeneToggled: GeneToggledHandler;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
@@ -58,6 +62,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   cohortFilters,
   toggledGenes = [],
   isDemoMode = false,
+  handleMutationCountClick,
 }: GTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -192,179 +197,177 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      <SelectedRowContext.Provider value={[selectedGenes, setSelectedGenes]}>
-        {showSaveModal && (
-          <SaveSelectionAsSetModal
-            filters={buildCohortGqlOperator(setFilters)}
-            initialSetName={
-              Object.keys(selectedGenes).length === 0
-                ? filtersToName(setFilters)
-                : "Custom Gene Selection"
-            }
-            sort="case.project.project_id"
-            saveCount={
-              Object.keys(selectedGenes).length === 0
-                ? gTotal
-                : Object.keys(selectedGenes).length
-            }
-            setType={"genes"}
-            setTypeLabel="gene"
-            createSetHook={useCreateGeneSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        )}
-        {showAddModal && (
-          <AddToSetModal
-            filters={setFilters}
-            addToCount={
-              Object.keys(selectedGenes).length === 0
-                ? gTotal
-                : Object.keys(selectedGenes).length
-            }
-            setType={"genes"}
-            setTypeLabel="gene"
-            countHook={useGeneSetCountQuery}
-            appendSetHook={useAppendToGeneSetMutation}
-            closeModal={() => setShowAddModal(false)}
-            field={"genes.gene_id"}
-          />
-        )}
-        {showRemoveModal && (
-          <RemoveFromSetModal
-            filters={setFilters}
-            removeFromCount={
-              Object.keys(selectedGenes).length === 0
-                ? gTotal
-                : Object.keys(selectedGenes).length
-            }
-            setType={"genes"}
-            setTypeLabel="gene"
-            countHook={useGeneSetCountQuery}
-            closeModal={() => setShowRemoveModal(false)}
-            removeFromSetHook={useRemoveFromGeneSetMutation}
-          />
-        )}
+      {showSaveModal && (
+        <SaveSelectionAsSetModal
+          filters={buildCohortGqlOperator(setFilters)}
+          initialSetName={
+            Object.keys(selectedGenes).length === 0
+              ? filtersToName(setFilters)
+              : "Custom Gene Selection"
+          }
+          sort="case.project.project_id"
+          saveCount={
+            Object.keys(selectedGenes).length === 0
+              ? gTotal
+              : Object.keys(selectedGenes).length
+          }
+          setType={"genes"}
+          setTypeLabel="gene"
+          createSetHook={useCreateGeneSetFromFiltersMutation}
+          closeModal={() => setShowSaveModal(false)}
+        />
+      )}
+      {showAddModal && (
+        <AddToSetModal
+          filters={setFilters}
+          addToCount={
+            Object.keys(selectedGenes).length === 0
+              ? gTotal
+              : Object.keys(selectedGenes).length
+          }
+          setType={"genes"}
+          setTypeLabel="gene"
+          countHook={useGeneSetCountQuery}
+          appendSetHook={useAppendToGeneSetMutation}
+          closeModal={() => setShowAddModal(false)}
+          field={"genes.gene_id"}
+        />
+      )}
+      {showRemoveModal && (
+        <RemoveFromSetModal
+          filters={setFilters}
+          removeFromCount={
+            Object.keys(selectedGenes).length === 0
+              ? gTotal
+              : Object.keys(selectedGenes).length
+          }
+          setType={"genes"}
+          setTypeLabel="gene"
+          countHook={useGeneSetCountQuery}
+          closeModal={() => setShowRemoveModal(false)}
+          removeFromSetHook={useRemoveFromGeneSetMutation}
+        />
+      )}
 
-        <div className="flex justify-between items-center mb-2 mt-8">
-          <TableControls
-            total={gTotal}
-            numSelected={Object.keys(selectedGenes).length ?? 0}
-            label={`Gene`}
-            options={[
-              { label: "Save/Edit Gene Set", value: "placeholder" },
-              {
-                label: "Save as new gene set",
-                value: "save",
-                onClick: () => setShowSaveModal(true),
-              },
-              {
-                label: "Add to existing gene set",
-                value: "add",
-                disabled: Object.keys(sets || {}).length === 0,
-                onClick: () => setShowAddModal(true),
-              },
-              {
-                label: "Remove from existing gene set",
-                value: "remove",
-                disabled: Object.keys(sets || {}).length === 0,
-                onClick: () => setShowRemoveModal(true),
-              },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                  <FunctionButton>JSON</FunctionButton>
-                </ButtonTooltip>
-                <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton>TSV</FunctionButton>
-                </ButtonTooltip>
-              </div>
-            }
-          />
+      <div className="flex justify-between items-center mb-2 mt-8">
+        <TableControls
+          total={gTotal}
+          numSelected={Object.keys(selectedGenes).length ?? 0}
+          label={`Gene`}
+          options={[
+            { label: "Save/Edit Gene Set", value: "placeholder" },
+            {
+              label: "Save as new gene set",
+              value: "save",
+              onClick: () => setShowSaveModal(true),
+            },
+            {
+              label: "Add to existing gene set",
+              value: "add",
+              disabled: Object.keys(sets || {}).length === 0,
+              onClick: () => setShowAddModal(true),
+            },
+            {
+              label: "Remove from existing gene set",
+              value: "remove",
+              disabled: Object.keys(sets || {}).length === 0,
+              onClick: () => setShowRemoveModal(true),
+            },
+          ]}
+          additionalControls={
+            <div className="flex gap-2">
+              <ButtonTooltip label="Export All Except #Cases and #Mutations">
+                <FunctionButton>JSON</FunctionButton>
+              </ButtonTooltip>
+              <ButtonTooltip label="Export current view" comingSoon={true}>
+                <FunctionButton>TSV</FunctionButton>
+              </ButtonTooltip>
+            </div>
+          }
+        />
 
-          <TableFilters
-            search={searchTerm}
-            handleSearch={handleSearch}
-            columnListOrder={columnListOrder}
-            handleColumnChange={handleColumnChange}
-            showColumnMenu={showColumnMenu}
-            setShowColumnMenu={setShowColumnMenu}
-            defaultColumns={DEFAULT_GTABLE_ORDER}
+        <TableFilters
+          search={searchTerm}
+          handleSearch={handleSearch}
+          columnListOrder={columnListOrder}
+          handleColumnChange={handleColumnChange}
+          showColumnMenu={showColumnMenu}
+          setShowColumnMenu={setShowColumnMenu}
+          defaultColumns={DEFAULT_GTABLE_ORDER}
+        />
+      </div>
+      <div ref={ref}>
+        {!visibleColumns.length ? (
+          <TablePlaceholder
+            cellWidth="w-24"
+            rowHeight={60}
+            numOfColumns={15}
+            numOfRows={pageSize}
+            content={<span>No columns selected</span>}
           />
-        </div>
-        <div ref={ref}>
-          {!visibleColumns.length ? (
-            <TablePlaceholder
-              cellWidth="w-24"
-              rowHeight={60}
-              numOfColumns={15}
-              numOfRows={pageSize}
-              content={<span>No columns selected</span>}
+        ) : (
+          <div ref={ref}>
+            <GenesTable
+              status={status}
+              initialData={tableData}
+              selectedSurvivalPlot={selectedSurvivalPlot}
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneToggled={handleGeneToggled}
+              width={width}
+              pageSize={pageSize}
+              page={page}
+              toggledGenes={toggledGenes}
+              selectedGenes={selectedGenes}
+              setSelectedGenes={setSelectedGenes}
+              handleGTotal={setGTotal}
+              columnListOrder={columnListOrder}
+              visibleColumns={visibleColumns}
+              searchTerm={searchTerm}
+              isDemoMode={isDemoMode}
+              genomicFilters={genomicFilters}
             />
-          ) : (
-            <div ref={ref}>
-              <GenesTable
-                status={status}
-                initialData={tableData}
-                selectedSurvivalPlot={selectedSurvivalPlot}
-                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-                handleGeneToggled={handleGeneToggled}
-                width={width}
-                pageSize={pageSize}
-                page={page}
-                toggledGenes={toggledGenes}
-                selectedGenes={selectedGenes}
-                setSelectedGenes={setSelectedGenes}
-                handleGTotal={setGTotal}
-                columnListOrder={columnListOrder}
-                visibleColumns={visibleColumns}
-                searchTerm={searchTerm}
-                isDemoMode={isDemoMode}
-                genomicFilters={genomicFilters}
-              />
-            </div>
-          )}
-        </div>
-        {visibleColumns.length ? (
-          <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
-            <div className={"grow-0"}>
-              <div className="flex items-center text-sm ml-0">
-                <span className="my-auto mx-1">Show</span>
-                <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                <span className="my-auto mx-1">Entries</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center grow text-sm">
-              <span>
-                Showing
-                <span className="font-bold">{` ${(tableData.genes_total === 0
-                  ? 0
-                  : page * pageSize + 1
-                ).toLocaleString("en-US")} `}</span>
-                -
-                <span className="font-bold">
-                  {`${((page + 1) * pageSize < gTotal
-                    ? (page + 1) * pageSize
-                    : gTotal
-                  ).toLocaleString("en-US")} `}
-                </span>
-                of
-                <span className="font-bold">{` ${gTotal.toLocaleString(
-                  "en-US",
-                )} `}</span>
-                genes
-              </span>
-            </div>
-            <div className="grow-0 mr-0">
-              <PageStepper
-                page={page}
-                totalPages={Math.ceil(gTotal / pageSize)}
-                handlePage={handleSetPage}
-              />
+          </div>
+        )}
+      </div>
+      {visibleColumns.length ? (
+        <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
+          <div className={"grow-0"}>
+            <div className="flex items-center text-sm ml-0">
+              <span className="my-auto mx-1">Show</span>
+              <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
+              <span className="my-auto mx-1">Entries</span>
             </div>
           </div>
-        ) : null}
-      </SelectedRowContext.Provider>
+          <div className="flex items-center justify-center grow text-sm">
+            <span>
+              Showing
+              <span className="font-bold">{` ${(tableData.genes_total === 0
+                ? 0
+                : page * pageSize + 1
+              ).toLocaleString("en-US")} `}</span>
+              -
+              <span className="font-bold">
+                {`${((page + 1) * pageSize < gTotal
+                  ? (page + 1) * pageSize
+                  : gTotal
+                ).toLocaleString("en-US")} `}
+              </span>
+              of
+              <span className="font-bold">{` ${gTotal.toLocaleString(
+                "en-US",
+              )} `}</span>
+              genes
+            </span>
+          </div>
+          <div className="grow-0 mr-0">
+            <PageStepper
+              page={page}
+              totalPages={Math.ceil(gTotal / pageSize)}
+              handlePage={handleSetPage}
+            />
+          </div>
+        </div>
+      ) : null}
     </>
   );
 };
