@@ -3,7 +3,11 @@ from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
+    X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
+    UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
+
     COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
+    CART_IDENT = '[data-testid="cartLink"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -17,6 +21,9 @@ class GenericLocators:
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
+
+    TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
+
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -72,6 +79,25 @@ class BasePage:
     def wait_until_locator_is_hidden(self, locator):
         self.driver.locator(locator).wait_for(state='hidden', timeout= 15000)
 
+    # Waits for a piece of text to appear in the temporary cohort modal
+    # That modal appears after an action has been performed on a cohort
+    # state (e.g create, save, delete, etc. )
+    def wait_for_text_in_temporary_message(self, text, action="remove modal"):
+        text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
+        try:
+            self.wait_until_locator_is_visible(text_locator)
+            if action.lower() == "remove modal":
+                # Remove the message after locating it.
+                # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
+                x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
+                self.click(x_button_locator)
+        except:
+            return False
+        return True
+
+    def wait_for_selector(self, locator):
+        self.driver.wait_for_selector(locator)
+
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
         try:
@@ -101,6 +127,19 @@ class BasePage:
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
+    # Returns if a filter card enum checkbox is checked
+    def is_facet_card_enum_checkbox_checked(self, checkbox_id):
+        locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
+        result = self.is_checked(locator)
+        return result
+
+    # Returns if cart count is correct
+    def is_cart_count_correct(self, correct_file_count):
+        locator = GenericLocators.CART_IDENT
+        cart_text = self.get_text(locator)
+        cart_count = cart_text.replace('Cart','')
+        return cart_count == correct_file_count
+
     def click_button_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
@@ -113,24 +152,25 @@ class BasePage:
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
-    def send_text_into_search_bar(self, text_to_send, aria_label):
-        locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
-        self.wait_until_locator_is_visible(locator)
-        self.send_keys(locator, text_to_send)
-
-    def wait_for_selector(self, locator):
-        self.driver.wait_for_selector(locator)
-
     # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
-    # Returns if a filter card enum checkbox is checked
-    def is_facet_card_enum_checkbox_checked(self, checkbox_id):
-        locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
-        result = self.is_checked(locator)
-        return result
+    def click_undo_in_message(self):
+        locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    # Selects values from tables by giving a row and column
+    # Row and Column indexing begins at '1'
+    def select_table_by_row_column(self,row,column):
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        self.click(table_locator_to_select)
+
+    def send_text_into_search_bar(self, text_to_send, aria_label):
+        locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
 
     def quick_search_and_click(self,text):
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
