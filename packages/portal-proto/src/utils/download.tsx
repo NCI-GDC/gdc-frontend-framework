@@ -84,7 +84,6 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
  * @param options options object provided to fetch, see here for possible values: https://developer.mozilla.org/en-US/docs/Web/API/fetch
  * @param queryParams body to be attached with POST request or url params with GET request
  * @param done callback function to be called after the download has been initiated
- * @param filename
  * @param Modal400 Modal for 400 error
  * @param Modal403 Modal for 403 error
  * @param customErrorMessage custom mesage to be passed for 400 errors
@@ -111,7 +110,6 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   done?: () => void;
-  filename?: string;
   altMessage?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
