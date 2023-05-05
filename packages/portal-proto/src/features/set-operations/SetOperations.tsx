@@ -9,7 +9,7 @@ import {
   MutationDefinition,
 } from "@reduxjs/toolkit/dist/query";
 import { pickBy, upperFirst } from "lodash";
-import { Checkbox, Badge, Tooltip, ActionIcon, Loader } from "@mantine/core";
+import { Checkbox, Tooltip, ActionIcon, Loader } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Row } from "react-table";
 import {
@@ -24,6 +24,7 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { convertDateToString } from "src/utils/date";
 import { SelectedEntities, SetOperationEntityType } from "./types";
 import download from "src/utils/download";
+import { CountButton } from "@/components/CountButton/CountButton";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
@@ -409,17 +410,17 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
   );
 };
 
-interface CountButtonProps {
+interface CountButtonWrapperForSetProps {
   readonly count: number | undefined;
   readonly filters: Record<string, any>;
   readonly entityType: SetOperationEntityType;
 }
 
-const CountButton: React.FC<CountButtonProps> = ({
+const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
   count,
   filters,
   entityType,
-}: CountButtonProps) => {
+}: CountButtonWrapperForSetProps) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const disabled = count === 0;
 
@@ -451,22 +452,13 @@ const CountButton: React.FC<CountButtonProps> = ({
             />
           )
         ))}
-      <Tooltip label={"Save as new set"} withArrow>
-        <button
-          className="w-fit"
-          disabled={disabled}
-          onClick={() => setShowSaveModal(true)}
-        >
-          <Badge
-            variant="outline"
-            radius="xs"
-            className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-20`}
-            color={disabled ? "base" : "primary"}
-          >
-            {count !== undefined ? count.toLocaleString() : undefined}
-          </Badge>
-        </button>
-      </Tooltip>
+
+      <CountButton
+        tooltipLabel="Save as new set"
+        disabled={disabled}
+        handleOnClick={() => setShowSaveModal(true)}
+        count={count}
+      />
     </>
   );
 };
@@ -632,7 +624,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         columnName: "# Items",
         visible: true,
         Cell: ({ value, row }: { value: number; row: Row }) => (
-          <CountButton
+          <CountButtonWrapperForSet
             count={value}
             filters={createSetFiltersByKey(
               (row.original as Record<string, any>).operationKey,
@@ -765,7 +757,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 <td className="p-2 font-bold">Union of selected sets:</td>
                 <td />
                 <td>
-                  <CountButton
+                  <CountButtonWrapperForSet
                     count={totalCount}
                     filters={unionFilter}
                     entityType={entityType}

@@ -1,28 +1,32 @@
 import React, { Dispatch, SetStateAction } from "react";
-import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
-import CheckboxSpring from "../shared/CheckboxSpring";
-import { Survival } from "../shared/types";
-import { TableColumnDefinition } from "../shared/types";
 import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { SSMSData } from "@gff/core";
 import { externalLinks } from "src/utils";
 import tw from "tailwind-styled-components";
+import {
+  CheckboxSpring,
+  RatioSpring,
+  SelectReducerAction,
+  SelectedReducer,
+  Survival,
+  SwitchSpring,
+  TableCell,
+  TableColumnDefinition,
+  TableHeader,
+  ToggledCheck,
+} from "../shared";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -116,12 +120,14 @@ export const ssmsCreateTableColumn = ({
                             src={"/user-flow/icons/CohortSym_inactive.svg"}
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
                           />
                         ) : (
                           <Image
                             src={"/user-flow/icons/cohort-dna.svg"}
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
                           />
                         )
                       }
@@ -181,6 +187,7 @@ export const ssmsCreateTableColumn = ({
                 <>
                   {row.getCanExpand() && (
                     <ToggledCheck
+                      ariaText={`Toggle survival plot for ${row?.original.proteinChange} mutation`}
                       margin="ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}

@@ -86,6 +86,7 @@ export interface GenesTableProps {
   searchTerm: string;
   isDemoMode?: boolean;
   genomicFilters: FilterSet;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
 export const DEFAULT_GTABLE_ORDER = [

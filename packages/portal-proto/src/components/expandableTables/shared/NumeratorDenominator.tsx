@@ -1,4 +1,4 @@
-export const NumeratorDenominator = ({
+const NumeratorDenominator = ({
   numerator,
   denominator,
 }: {
@@ -24,3 +24,5 @@ export const NumeratorDenominator = ({
     </span>
   </span>
 );
+
+export default NumeratorDenominator;
