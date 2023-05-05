@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { mapKeys } from "lodash";
-import { Statistics } from "@gff/core";
+import { Statistics, GqlOperation } from "@gff/core";
 import { useRangeFacet } from "../../facets/hooks";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
@@ -40,6 +40,8 @@ interface ContinuousDataProps {
   readonly fieldName: string;
   readonly chartType: ChartTypes;
   readonly noData: boolean;
+
+  readonly cohortFilters: GqlOperation;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -48,6 +50,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   fieldName,
   chartType,
   noData,
+  cohortFilters,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
@@ -72,6 +75,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     "repository",
     field,
     ranges,
+    cohortFilters,
   );
 
   const resultData = useMemo(

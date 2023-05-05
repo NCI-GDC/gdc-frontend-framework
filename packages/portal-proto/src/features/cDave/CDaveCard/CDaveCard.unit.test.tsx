@@ -22,6 +22,7 @@ describe("CDaveCard", () => {
         field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -45,6 +46,7 @@ describe("CDaveCard", () => {
         field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -69,6 +71,7 @@ describe("CDaveCard", () => {
         field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -95,6 +98,7 @@ describe("CDaveCard", () => {
         field={"demographic.gender"}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -119,6 +123,7 @@ describe("CDaveCard", () => {
         field={"diagnosis.days_to_treatment_start"}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -147,6 +152,7 @@ describe("CDaveCard", () => {
         field="diagnosis.days_to_treatment_start"
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
@@ -178,6 +184,7 @@ describe("CDaveCard", () => {
         field={""}
         updateFields={jest.fn()}
         initialDashboardRender
+        cohortFilters={undefined}
       />,
     );
 
