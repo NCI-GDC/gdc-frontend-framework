@@ -161,7 +161,7 @@ export const MultipleImageViewer = ({
             ) : (
               <div className="border-2 border-base-lighter">
                 <div className="flex border-b-2 border-b-base-lighter py-2 pl-2">
-                  <div className="w-[500px]">
+                  <div className="w-[31em]">
                     <div className="flex w-full">
                       <div className="flex-1">
                         <div className="flex justify-between items-center">
@@ -181,7 +181,7 @@ export const MultipleImageViewer = ({
                         {showSearch && (
                           <Input
                             placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                            className="w-1/8 m-2 mt-1"
+                            className="mt-1 w-11/12"
                             rightSectionWidth={50}
                             onChange={(e) => setSearchText(e.target.value)}
                             rightSection={
@@ -206,19 +206,12 @@ export const MultipleImageViewer = ({
                         )}
 
                         {searchValues.length > 0 && (
-                          <div className="mb-2 ml-2 flex flex-col items-center gap-1">
+                          <div className="mt-2 flex flex-col gap-2">
                             {searchValues.map((value) => (
                               <Tooltip
                                 key={value}
                                 label="Click to Remove"
-                                className="my-1"
-                                position="top-start"
-                                transition="skew-up"
-                                transitionDuration={300}
                                 withArrow
-                                classNames={{
-                                  tooltip: "h-7 w-1/8",
-                                }}
                               >
                                 <Badge
                                   className="w-3/5 cursor-pointer"
@@ -240,14 +233,14 @@ export const MultipleImageViewer = ({
                     </div>
                   </div>
 
-                  <div className="flex ml-2 text-left">
+                  <div className="flex -ml-2 text-left">
                     <h2 className="text-xl">Image</h2>
                   </div>
                 </div>
 
                 <div className="flex">
                   {Object.keys(data?.edges).length > 0 && activeImage && (
-                    <div className="flex-1/2 w-[500px]">
+                    <div className="flex-1/2 w-[31em]">
                       <Tabs
                         orientation="vertical"
                         variant="pills"
@@ -324,7 +317,7 @@ export const MultipleImageViewer = ({
                         {Object.keys(data?.edges).map((edge, index) => {
                           return (
                             <Tabs.Panel key={edge} value={index.toString()}>
-                              <List>
+                              <List classNames={{ itemWrapper: "w-full" }}>
                                 {data.edges[edge].map((file, index) => (
                                   <List.Item
                                     key={`${file.file_id}${file.submitter_id}`}

@@ -20,7 +20,6 @@ export const Slides: React.FC<SlidesProps> = ({
       onKeyDown={() => setImageViewer(file_id)}
       role="button"
       tabIndex={0}
-      className="w-60"
     >
       <Card
         shadow="sm"
