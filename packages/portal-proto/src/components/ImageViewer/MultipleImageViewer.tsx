@@ -175,11 +175,12 @@ export const MultipleImageViewer = ({
                           <ActionIcon
                             onClick={() => setShowSearch((c) => !c)}
                             className="mr-5"
+                            aria-label="click search icon to show search bar"
                           >
                             <MdOutlineSearch
                               size={30}
                               color="black"
-                              aria-label=""
+                              aria-label="search icon"
                             />
                           </ActionIcon>
                         </div>
@@ -291,7 +292,7 @@ export const MultipleImageViewer = ({
                                   value={index.toString()}
                                   className={`mx-2 my-1 ${
                                     activeTab.toString() === index.toString()
-                                      ? "bg-primary-dark [&>div]:text-primary-contrast"
+                                      ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
                                       : ""
                                   } truncate ...`}
                                 >
