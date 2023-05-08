@@ -67,7 +67,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       dispatch(
         addSet({
           setType,
-          setName: form.values.name,
+          setName: form.values.name.trim(),
           setId: response.data as string,
         }),
       );
@@ -117,7 +117,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           maxLength={100}
         />
         {form.errors?.name === undefined &&
-        Object.values(sets).includes(form.values.name) ? (
+        Object.values(sets).includes(form.values.name.trim()) ? (
           <WarningMessage message="A set with the same name already exists. This will overwrite it." />
         ) : (
           <p className="text-sm pt-1">Maximum 100 characters</p>
