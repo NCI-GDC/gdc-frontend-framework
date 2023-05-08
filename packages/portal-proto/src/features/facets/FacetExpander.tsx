@@ -11,7 +11,6 @@ p-1
 font-bold
 cursor-pointer
 text-xs
-font-content-noto
 `;
 
 interface FacetExpanderProps {

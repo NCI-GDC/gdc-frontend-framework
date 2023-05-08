@@ -14,16 +14,18 @@ const CreateContent = (
   return (
     <div className="flex flex-col px-3">
       {Object.entries(items).map(([x, values], index) => (
-        <div
-          className="flex flex-col p-2"
-          key={`${x}-${values.length}-${index}`}
-        >
+        <div className="flex flex-col" key={`${x}-${values.length}-${index}`}>
           {index > 0 ? <Divider /> : null}
-          <p className="text-[1rem] font-heading font-semibold mb-2">{x}</p>
-          <div className="columns-4 font-content text-sm">
+          <p className={"text-header text-[0.95em] font-heading font-semibold"}>
+            {x}
+          </p>
+          <div className="columns-4 font-content text-sm  p-4">
             {[...values].sort().map((y) => (
               <div className="flex flex-row items-center" key={y}>
-                <Circle size="0.65em" className="text-primary shrink-0" />
+                <Circle
+                  size="0.65em"
+                  className="text-primary shrink-0 "
+                ></Circle>
                 <p className="pl-2">{y}</p>
               </div>
             ))}
@@ -81,10 +83,12 @@ const CollapsibleRow = ({
   }
 
   if (value?.length === 1) {
-    return <div className="flex justify-start mr-6  w-48">{value[0]}</div>;
+    return (
+      <div className="flex flex-row justify-start mr-6  w-48">{value[0]}</div>
+    );
   } else {
     return (
-      <div className="flex nowrap justify-between items-center w-full">
+      <div className="flex flex-row nowrap justify-between items-center w-full">
         {collapsed ? (
           <div
             onClick={() => handleExpand(row)}
@@ -94,9 +98,9 @@ const CollapsibleRow = ({
             role="button"
             tabIndex={0}
             aria-label="Expand section"
-            className="flex items-center text-primary cursor-pointer gap-2"
+            className="flex flex-row items-center text-primary cursor-pointer w-full"
           >
-            <DownIcon size="1.25em" className="text-accent" />
+            <DownIcon size="1.25em" className="text-accent mr-1" />
             <span className="whitespace-nowrap">
               {value?.length.toLocaleString().padStart(6)} {label}
             </span>

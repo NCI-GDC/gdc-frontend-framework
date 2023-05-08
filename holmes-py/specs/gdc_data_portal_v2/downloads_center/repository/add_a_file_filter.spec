@@ -11,7 +11,7 @@ tags: gdc-data-portal-v2, repository, repository_filters
 tags: regression, smoke
 
 * On GDC Data Portal V2 app
-* Navigate to "Analysis" from "Header" "section"
+* Navigate to "Analysis Center" from "Home Page" "app"
 * Navigate to "Repository" from "Analysis" "app"
 
 ## Filters on Repository

@@ -17,32 +17,20 @@ const PageStepperMantine: React.FC<PageStepperProps> = ({
   };
 
   return (
-    <Pagination
-      color="accent"
-      boundaries={0}
-      total={totalPages}
-      page={page + 1}
-      siblings={2}
-      onChange={pageChanged}
-      size="sm"
-      radius="xs"
-      withEdges
-      classNames={{ item: "border-0" }}
-      getItemAriaLabel={(page) => {
-        switch (page) {
-          case "prev":
-            return "previous page button";
-          case "next":
-            return "next page button";
-          case "first":
-            return "first page button";
-          case "last":
-            return "last page button";
-          default:
-            return `${page} page button`;
-        }
-      }}
-    />
+    <div className={`flex flex-row w-max m-auto`}>
+      <Pagination
+        color="accent"
+        boundaries={0}
+        total={totalPages}
+        page={page + 1}
+        siblings={2}
+        onChange={pageChanged}
+        size="sm"
+        radius="xs"
+        withEdges
+        classNames={{ item: "border-0" }}
+      />
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, FC } from "react";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { runproteinpaint } from "@stjude/proteinpaint-client";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,

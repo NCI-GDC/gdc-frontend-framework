@@ -12,7 +12,9 @@ import {
   createDispatchHook,
   createStoreHook,
 } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import {
+  persistStore,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -161,19 +163,28 @@ export interface CreateGdcAppWithOwnStoreOptions<
   S = any,
 > {
   readonly App: ComponentType;
-  readonly id: string; // unique id for this app
-  readonly name: string; // name of the app
-  readonly version: string; // version of the app, should be unique
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
-  readonly store: Store<S, A>; // the redux-store for this app
+  readonly store: Store<S, A>;
   readonly context: any;
+  readonly persist?: boolean;
 }
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): React.ReactNode => {
-  const { App, id, name, version, requiredEntityTypes, store, context } =
-    options;
+  const {
+    App,
+    id,
+    name,
+    version,
+    requiredEntityTypes,
+    store,
+    context,
+    persist = false,
+  } = options;
 
   // need to create store and provider.
   // return a component representing this app
@@ -192,7 +203,13 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
     return (
       <Provider store={store} context={context}>
         <CookiesProvider>
-          <App />
+          {persist ? (
+            <PersistGate loading={null} persistor={persistStore(store)}>
+              <App />
+            </PersistGate>
+          ) : (
+            <App />
+          )}
         </CookiesProvider>
       </Provider>
     );

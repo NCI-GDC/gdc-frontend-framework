@@ -29,21 +29,23 @@ const CheckboxSpring: React.FC<CheckboxSpringProps> = ({
     width: 15,
   });
   return (
-    <animated.button
-      style={box}
-      className={`flex justify-start ${
-        isActive ? `bg-activeColor` : `bg-white`
-      }`}
-      onClick={() =>
-        handleCheck(
-          multi
-            ? { type: isActive ? "deselectAll" : "selectAll", rows: select }
-            : { type: isActive ? "deselect" : "select", rows: [select] },
-        )
-      }
-    >
-      ▢
-    </animated.button>
+    <div className={`flex flex-row h-max`}>
+      <animated.div className={`m-auto`}>
+        <animated.button
+          style={box}
+          className={`${isActive ? `bg-activeColor` : `bg-white`}`}
+          onClick={() =>
+            handleCheck(
+              multi
+                ? { type: isActive ? "deselectAll" : "selectAll", rows: select }
+                : { type: isActive ? "deselect" : "select", rows: [select] },
+            )
+          }
+        >
+          ▢
+        </animated.button>
+      </animated.div>
+    </div>
   );
 };
 

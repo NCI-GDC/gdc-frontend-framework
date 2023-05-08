@@ -244,55 +244,59 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           />
         )}
 
-        <div className="flex justify-between items-center mb-2 mt-8">
-          <TableControls
-            total={gTotal}
-            numSelected={Object.keys(selectedGenes).length ?? 0}
-            label={`Gene`}
-            options={[
-              { label: "Save/Edit Gene Set", value: "placeholder" },
-              {
-                label: "Save as new gene set",
-                value: "save",
-                onClick: () => setShowSaveModal(true),
-              },
-              {
-                label: "Add to existing gene set",
-                value: "add",
-                disabled: Object.keys(sets || {}).length === 0,
-                onClick: () => setShowAddModal(true),
-              },
-              {
-                label: "Remove from existing gene set",
-                value: "remove",
-                disabled: Object.keys(sets || {}).length === 0,
-                onClick: () => setShowRemoveModal(true),
-              },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <ButtonTooltip
-                  label="Export All Except #Cases and #Mutations"
-                  comingSoon={true}
-                >
-                  <FunctionButton>JSON</FunctionButton>
-                </ButtonTooltip>
-                <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton>TSV</FunctionButton>
-                </ButtonTooltip>
-              </div>
-            }
-          />
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
+          <div className="flex flex-row ml-2 mb-4">
+            <TableControls
+              total={gTotal}
+              numSelected={Object.keys(selectedGenes).length ?? 0}
+              label={`Gene`}
+              options={[
+                { label: "Save/Edit Gene Set", value: "placeholder" },
+                {
+                  label: "Save as new gene set",
+                  value: "save",
+                  onClick: () => setShowSaveModal(true),
+                },
+                {
+                  label: "Add to existing gene set",
+                  value: "add",
+                  disabled: Object.keys(sets || {}).length === 0,
+                  onClick: () => setShowAddModal(true),
+                },
+                {
+                  label: "Remove from existing gene set",
+                  value: "remove",
+                  disabled: Object.keys(sets || {}).length === 0,
+                  onClick: () => setShowRemoveModal(true),
+                },
+              ]}
+              additionalControls={
+                <div className="flex flex-row gap-2">
+                  <ButtonTooltip
+                    label="Export All Except #Cases and #Mutations"
+                    comingSoon={true}
+                  >
+                    <FunctionButton>JSON</FunctionButton>
+                  </ButtonTooltip>
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
+                    <FunctionButton>TSV</FunctionButton>
+                  </ButtonTooltip>
+                </div>
+              }
+            />
+          </div>
 
-          <TableFilters
-            search={searchTerm}
-            handleSearch={handleSearch}
-            columnListOrder={columnListOrder}
-            handleColumnChange={handleColumnChange}
-            showColumnMenu={showColumnMenu}
-            setShowColumnMenu={setShowColumnMenu}
-            defaultColumns={DEFAULT_GTABLE_ORDER}
-          />
+          <div className="flex flex-row flex-nowrap mr-2">
+            <TableFilters
+              search={searchTerm}
+              handleSearch={handleSearch}
+              columnListOrder={columnListOrder}
+              handleColumnChange={handleColumnChange}
+              showColumnMenu={showColumnMenu}
+              setShowColumnMenu={setShowColumnMenu}
+              defaultColumns={DEFAULT_GTABLE_ORDER}
+            />
+          </div>
         </div>
         <div ref={ref}>
           {!visibleColumns.length ? (
@@ -330,13 +334,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         {visibleColumns.length ? (
           <div className="flex flex-row w-100 ml-2 mt-0 font-heading items-center">
             <div className={"grow-0"}>
-              <div className="flex items-center text-sm ml-0">
-                <span className="my-auto mx-1">Show</span>
+              <div className="flex flex-row items-center text-sm ml-0">
+                <span className="my-auto mx-1 ">Show</span>
                 <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                <span className="my-auto mx-1">Entries</span>
+                <span className="my-auto mx-1 ">Entries</span>
               </div>
             </div>
-            <div className="flex items-center justify-center grow text-sm">
+            <div className="flex flex-row items-center justify-center grow text-sm">
               <span>
                 Showing
                 <span className="font-bold">{` ${(

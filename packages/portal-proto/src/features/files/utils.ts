@@ -139,9 +139,9 @@ export const parseSlideDetailsInfo: parseSlideDetailsInfoFunc = (
 };
 
 export const mapGdcFileToCartFile = (
-  files: GdcFile[] | caseFileType[] | undefined,
+  files: GdcFile[] | caseFileType[],
 ): CartFile[] =>
-  files?.map((file: GdcFile | caseFileType) =>
+  files.map((file: GdcFile | caseFileType) =>
     pick(file, [
       "access",
       "acl",

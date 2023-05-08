@@ -11,12 +11,13 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
 } from "@gff/core";
+import { FaBook, FaTable, FaRegChartBar as BarChartIcon } from "react-icons/fa";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { LoadingOverlay } from "@mantine/core";
+import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
@@ -199,35 +200,34 @@ const GeneView = ({
     <div>
       {data?.genes && (
         <>
-          <SummaryHeader
-            iconText="gn"
-            headerTitle={data.genes.symbol}
-            isModal={isModal}
-          />
-
-          <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
-            {contextSensitive && (
-              <div className="my-6">
-                <ContextSensitiveBanner />
-              </div>
-            )}
+          {!isModal && (
+            <SummaryHeader iconText="gn" headerTitle={data.genes.symbol} />
+          )}
+          <div className={`mx-auto ${isModal ? "mt-2" : "mt-20"} w-9/12 pt-4`}>
+            {contextSensitive && <ContextSensitiveBanner />}
             <div className="text-primary-content">
-              <div className="flex gap-8">
+              <div className="flex gap-6">
                 <div className="flex-1">
-                  <SummaryCard tableData={formatDataForSummary()} />
+                  <SummaryCard
+                    tableData={formatDataForSummary()}
+                    Icon={FaTable}
+                  />
                 </div>
                 <div className="flex-1">
                   <SummaryCard
                     tableData={formatDataForExternalReferences()}
+                    Icon={FaBook}
                     title="External References"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-8 mb-16">
-              <HeaderTitle>Cancer Distribution</HeaderTitle>
-
-              <div className="grid grid-cols-2 gap-8 mt-2 mb-16">
+            <div className="mt-4">
+              <div className="flex items-center gap-2">
+                <BarChartIcon size={20} className="text-accent" />
+                <HeaderTitle>Cancer Distribution</HeaderTitle>
+              </div>
+              <Grid>
                 <SSMPlot
                   page="gene"
                   gene={gene_id}
@@ -241,16 +241,16 @@ const GeneView = ({
                   genomicFilters={genomicFilters}
                   cohortFilters={cohortFilters}
                 />
-              </div>
+              </Grid>
               <GeneCancerDistributionTable
                 gene={gene_id}
                 symbol={data.genes.symbol}
                 genomicFilters={genomicFilters}
                 cohortFilters={cohortFilters}
               />
-
-              <div className="mt-14">
+              <div className="mt-4">
                 <div className="flex items-center gap-2">
+                  <BarChartIcon size={20} className="text-accent" />
                   <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
                 </div>
                 <SMTableContainer

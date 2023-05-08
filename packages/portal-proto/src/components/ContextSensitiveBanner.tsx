@@ -1,7 +1,7 @@
 import { FaExclamationCircle } from "react-icons/fa";
 
 export const ContextSensitiveBanner = (): JSX.Element => (
-  <div className="flex h-12 border border-warningColor">
+  <div className="flex h-12 border border-warningColor mb-6">
     <div className="flex h-full w-12 bg-warningColor justify-center items-center">
       <FaExclamationCircle color="white" className="h-6 w-6" />
     </div>

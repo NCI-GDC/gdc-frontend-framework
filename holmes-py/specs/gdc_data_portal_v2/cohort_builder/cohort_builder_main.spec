@@ -161,8 +161,3 @@ tags: cohort-selections
   |facet_name       |label                         |
   |-----------------|------------------------------|
   |Case Id          |add string value              |
-
-* Perform the following actions from "Custom Filters" tab on the Cohort Builder page
-  |facet_name       |action               |
-  |-----------------|---------------------|
-  |Case Id          |Remove the facet     |

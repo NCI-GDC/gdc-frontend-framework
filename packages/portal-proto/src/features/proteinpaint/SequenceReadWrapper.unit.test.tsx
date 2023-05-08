@@ -11,7 +11,7 @@ jest.mock("@gff/core", () => ({
   PROTEINPAINT_API: "host:port/basepath",
 }));
 
-jest.mock("@sjcrh/proteinpaint-client", () => ({
+jest.mock("@stjude/proteinpaint-client", () => ({
   __esModule: true,
   runproteinpaint: jest.fn(async (arg) => {
     runpparg = arg;

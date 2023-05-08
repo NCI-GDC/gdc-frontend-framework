@@ -8,6 +8,9 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import ReactModal from "react-modal";
+import { HorizontalTable } from "@/components/HorizontalTable";
+import { Table, Button, Menu } from "@mantine/core";
+import { FaDownload } from "react-icons/fa";
 import { get } from "lodash";
 import dynamic from "next/dynamic";
 import fileSize from "filesize";
@@ -35,11 +38,6 @@ import {
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";
-import { BasicTable } from "@/components/Tables/BasicTable";
-import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -61,7 +59,13 @@ export interface FileViewProps {
   readonly isModal?: boolean;
 }
 
-const DivWithMargin = tw.div`mt-14`;
+const FullWidthDiv = tw.div`
+bg-base-max w-full text-base-contrast-lighter mt-4
+`;
+
+const TitleHeader = tw.div`
+bg-base-max text-base-contrast-lighter
+`;
 
 const getAnnotationsLinkParams = (
   annotations: readonly string[],
@@ -73,6 +77,57 @@ const getAnnotationsLinkParams = (
     return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
   }
   return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+};
+
+//temp table component until global one is done
+interface TempTableProps {
+  readonly tableData: {
+    readonly headers: string[] | JSX.Element[];
+    readonly tableRows: any[];
+  };
+}
+
+export const TempTable = ({ tableData }: TempTableProps): JSX.Element => {
+  if (!(tableData?.headers?.length > 0 && tableData?.tableRows?.length > 0)) {
+    console.error("bad table data", tableData);
+    return <></>;
+  }
+  return (
+    <Table
+      striped
+      data-testid="tempTable"
+      className="drop-shadow-sm border-1 border-base-lighter"
+    >
+      <thead>
+        <tr>
+          {tableData.headers.map((text, index) => (
+            <th
+              key={index}
+              className="bg-base-max font-heading border-b-2 border-base-lighter"
+            >
+              {text}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.tableRows.map((row, index) => (
+          <tr
+            key={index}
+            className={`${
+              index % 2 ? "bg-base-lightest" : "bg-base-max "
+            } border-base-lighter`}
+          >
+            {Object.values(row).map((item, index) => (
+              <td key={index} className="text-sm p-1 pl-2.5">
+                {item || "--"}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
 };
 
 const GenericLink = ({
@@ -238,11 +293,6 @@ const AssociatedCB = ({
       search={{
         enabled: true,
       }}
-      additionalControls={
-        <div className="mt-3.5">
-          <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
-        </div>
-      }
       handleChange={handleChange}
     />
   );
@@ -336,7 +386,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ],
       tableRows: tableRows,
     };
-    return <BasicTable tableData={formattedTableData} />;
+    return <TempTable tableData={formattedTableData} />;
   };
 
   const downloadVersionJSON = () => {
@@ -351,331 +401,300 @@ export const FileView: React.FC<FileViewProps> = ({
     );
   };
 
-  const formatDataForFileProperties = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "file_name",
-        name: "Name",
-        modifier: (v) => <span className="break-all">{v}</span>,
-      },
-      {
-        field: "access",
-        name: "Access",
-      },
-      {
-        field: "id",
-        name: "UUID",
-      },
-      {
-        field: "data_format",
-        name: "Data Format",
-      },
-      {
-        field: "file_size",
-        name: "Size",
-        modifier: fileSize,
-      },
-      {
-        field: "md5sum",
-        name: "MD5 Checksum",
-      },
-      {
-        field: "project_id",
-        name: "Project",
-        modifier: (v) => <GenericLink path={`/projects/${v}`} text={v} />,
-      },
-    ]);
-
-  const formatDataForDataInformation = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "data_category",
-        name: "Data Category",
-      },
-      {
-        field: "data_type",
-        name: "Data Type",
-      },
-      {
-        field: "experimental_strategy",
-        name: "Experimental Strategy",
-      },
-      {
-        field: "platform",
-        name: "Platform",
-      },
-    ]);
-
-  const formatDataForAnalysis = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "analysis.workflow_type",
-        name: "Workflow Type",
-      },
-      {
-        field: "analysis.updated_datetime",
-        name: "Workflow Completion Date",
-        modifier: (v) => v.split("T")[0],
-      },
-      {
-        field: "analysis.input_files.length",
-        name: "Source Files",
-        modifier: (v) => {
-          if (v === 1) {
-            return (
-              <GenericLink
-                path={`/files/${get(file, "analysis.input_files")[0]}`}
-                text={"1"}
-              />
-            );
-          } else if (v > 1) {
-            return (
-              <GenericLink
-                path={`/repository`}
-                query={{
-                  filters: JSON.stringify({
-                    content: [
-                      {
-                        content: {
-                          field:
-                            "files.downstream_analyses.output_files.file_id",
-                          value: [file.id],
-                        },
-                        op: "in",
-                      },
-                    ],
-                    op: "and",
-                  }),
-                  searchTableTab: "files",
-                }}
-                text={`${v}`}
-              />
-            );
-          }
-          return "0";
-        },
-      },
-    ]);
-
-  const LeftSideElementForHeader = () => (
-    <div className="flex gap-4">
-      {!isFileInCart ? (
-        <AddToCartButton files={mapGdcFileToCartFile([file])} />
-      ) : (
-        <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
-      )}
-      {file.data_format === "BAM" &&
-        file.data_type === "Aligned Reads" &&
-        file?.index_files?.length > 0 && (
-          <BAMSlicingButton isActive={bamActive} file={file} />
-        )}
-
-      <DownloadFile
-        inactiveText="Download"
-        activeText="Processing"
-        file={file}
-        customStyle="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max font-medium text-sm"
-        setfileToDownload={setfileToDownload}
-      />
-    </div>
-  );
-
   return (
-    <>
-      <SummaryHeader
-        iconText="fl"
-        headerTitle={file.file_name}
-        isModal={isModal}
-        leftElement={<LeftSideElementForHeader />}
-        isFile={true}
-      />
-      <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
-        <div className="flex gap-8">
-          <div className="flex-1">
-            <SummaryCard
-              title="File Properties"
-              tableData={formatDataForFileProperties()}
-            />
-          </div>
-          <div className="flex-1">
-            <SummaryCard
-              tableData={formatDataForDataInformation()}
-              title="Data Information"
-            />
-          </div>
-        </div>
-
-        {get(file, "data_type") === "Slide Image" && (
-          <DivWithMargin>
-            <HeaderTitle>Slide Image Viewer</HeaderTitle>
-            <ImageViewer
-              imageId={file?.file_id}
-              tableData={parseSlideDetailsInfo(file)}
-            />
-          </DivWithMargin>
+    <div
+      className={`p-4 text-primary-content w-10/12 ${
+        isModal ? "mt-5" : "mt-20"
+      } m-auto`}
+    >
+      <div className="flex justify-end pb-5 gap-2">
+        {!isFileInCart ? (
+          <AddToCartButton files={mapGdcFileToCartFile([file])} />
+        ) : (
+          <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
         )}
-        <DivWithMargin>
-          {file?.associated_entities?.length > 0 ? (
-            <AssociatedCB
-              cases={file?.cases}
-              associated_entities={file?.associated_entities}
-            />
-          ) : (
-            <>
-              <div className="mt-3.5">
-                <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
-              </div>
-              <h3 className="p-2 mx-4 text-primary-content-darker">
-                No cases or biospecimen found.
-              </h3>
-            </>
+        {file.data_format === "BAM" &&
+          file.data_type === "Aligned Reads" &&
+          file?.index_files?.length > 0 && (
+            <BAMSlicingButton isActive={bamActive} file={file} />
           )}
-        </DivWithMargin>
 
-        {file?.analysis && (
-          <>
-            <div className="mt-8 flex gap-8">
-              <div className="flex-1">
-                <SummaryCard
-                  title="Analysis"
-                  tableData={formatDataForAnalysis()}
-                />
-              </div>
-              <div className="flex-1">
-                <SummaryCard
-                  title="Reference Genome"
-                  tableData={[
-                    { headerName: "Genome Build	", values: ["GRCh38.p0"] },
-                    { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
-                  ]}
-                />
-              </div>
-            </div>
+        <DownloadFile
+          inactiveText="Download"
+          activeText="Processing"
+          file={file}
+          setfileToDownload={setfileToDownload}
+        />
+      </div>
+      <div className="flex">
+        <TitleHeader className="flex-auto mr-4 ">
+          <HeaderTitle>File Properties</HeaderTitle>
+          <HorizontalTable
+            tableData={formatDataForHorizontalTable(file, [
+              {
+                field: "file_name",
+                name: "Name",
+              },
+              {
+                field: "access",
+                name: "Access",
+              },
+              {
+                field: "id",
+                name: "UUID",
+              },
+              {
+                field: "data_format",
+                name: "Data Format",
+              },
+              {
+                field: "file_size",
+                name: "Size",
+                modifier: fileSize,
+              },
+              {
+                field: "md5sum",
+                name: "MD5 Checksum",
+              },
+              {
+                field: "project_id",
+                name: "Project",
+                modifier: (v) => (
+                  <GenericLink path={`/projects/${v}`} text={v} />
+                ),
+              },
+            ])}
+          />
+        </TitleHeader>
+        <TitleHeader className="w-1/3  h-full">
+          <HeaderTitle>Data Information</HeaderTitle>
+          <HorizontalTable
+            tableData={formatDataForHorizontalTable(file, [
+              {
+                field: "data_category",
+                name: "Data Category",
+              },
+              {
+                field: "data_type",
+                name: "Data Type",
+              },
+              {
+                field: "experimental_strategy",
+                name: "Experimental Strategy",
+              },
+              {
+                field: "platform",
+                name: "Platform",
+              },
+            ])}
+          />
+        </TitleHeader>
+      </div>
 
-            {file?.analysis?.metadata && (
-              <DivWithMargin>
-                <HeaderTitle>Read Groups</HeaderTitle>
-                <BasicTable
-                  tableData={{
-                    headers: [
-                      "Read Group ID",
-                      "Is Paired End",
-                      "Read Length",
-                      "Library Name",
-                      "Sequencing Center",
-                      "Sequencing Date",
-                    ],
-                    tableRows: file?.analysis.metadata.read_groups.map(
-                      (read_group) => ({
-                        read_group_id: read_group.read_group_id ?? "--",
-                        is_paired_end: read_group.is_paired_end
-                          ? "true"
-                          : "false",
-                        read_length: read_group.read_length ?? "--",
-                        library_name: read_group.library_name ?? "--",
-                        sequencing_center: read_group.sequencing_center ?? "--",
-                        sequencing_date: read_group.sequencing_date ?? "--",
-                      }),
-                    ),
-                  }}
-                />
-              </DivWithMargin>
-            )}
-          </>
+      {get(file, "data_type") === "Slide Image" && (
+        <FullWidthDiv>
+          <HeaderTitle>Slide Image Viewer</HeaderTitle>
+          <ImageViewer
+            imageId={file?.file_id}
+            tableData={parseSlideDetailsInfo(file)}
+          />
+        </FullWidthDiv>
+      )}
+      <FullWidthDiv>
+        <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
+        {file?.associated_entities?.length > 0 ? (
+          <AssociatedCB
+            cases={file?.cases}
+            associated_entities={file?.associated_entities}
+          />
+        ) : (
+          <h3 className="p-2 mx-4 text-primary-content-darker">
+            No cases or biospecimen found.
+          </h3>
         )}
-        {file?.downstream_analyses?.some(
-          (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
-        ) && (
-          <DivWithMargin>
-            <HeaderTitle>Downstream Analyses Files</HeaderTitle>
-            <DownstreamAnalyses
-              downstream_analyses={file?.downstream_analyses}
-            />
-          </DivWithMargin>
-        )}
-
-        {fileHistory && (
-          <div className="mb-16">
-            <DivWithMargin>
-              <HeaderTitle>File Versions</HeaderTitle>
-              <div className="mb-2">
-                <DropdownWithIcon
-                  dropdownElements={[
-                    {
-                      title: "TSV",
-                      icon: (
-                        <DownloadIcon
-                          size={16}
-                          aria-label="download icon"
-                          onClick={handleDownloadTSV}
-                        />
-                      ),
+      </FullWidthDiv>
+      {file?.analysis && (
+        <>
+          <div className="bg-grey mt-4 flex gap-10">
+            <TitleHeader className="flex-1 ">
+              <HeaderTitle>Analysis</HeaderTitle>
+              <HorizontalTable
+                tableData={formatDataForHorizontalTable(file, [
+                  {
+                    field: "analysis.workflow_type",
+                    name: "Workflow Type",
+                  },
+                  {
+                    field: "analysis.updated_datetime",
+                    name: "Workflow Completion Date",
+                    modifier: (v) => v.split("T")[0],
+                  },
+                  {
+                    field: "analysis.input_files.length",
+                    name: "Source Files",
+                    modifier: (v) => {
+                      if (v === 1) {
+                        return (
+                          <GenericLink
+                            path={`/files/${
+                              get(file, "analysis.input_files")[0]
+                            }`}
+                            text={"1"}
+                          />
+                        );
+                      } else if (v > 1) {
+                        return (
+                          <GenericLink
+                            path={`/repository`}
+                            query={{
+                              filters: JSON.stringify({
+                                content: [
+                                  {
+                                    content: {
+                                      field:
+                                        "files.downstream_analyses.output_files.file_id",
+                                      value: [file.id],
+                                    },
+                                    op: "in",
+                                  },
+                                ],
+                                op: "and",
+                              }),
+                              searchTableTab: "files",
+                            }}
+                            text={`${v}`}
+                          />
+                        );
+                      }
+                      return "0";
                     },
-                    {
-                      title: "JSON",
-                      icon: (
-                        <DownloadIcon
-                          size={16}
-                          aria-label="download icon"
-                          onClick={downloadVersionJSON}
-                        />
-                      ),
-                    },
-                  ]}
-                  TargetButtonChildren="Download"
-                  LeftIcon={
-                    <DownloadIcon size="1rem" aria-label="download icon" />
-                  }
-                />
-              </div>
-              <BasicTable
+                  },
+                ])}
+              />
+            </TitleHeader>
+            <TitleHeader className="flex-1 ">
+              <HeaderTitle>Reference Genome</HeaderTitle>
+              <HorizontalTable
+                tableData={[
+                  { headerName: "Genome Build	", values: ["GRCh38.p0"] },
+                  { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
+                ]}
+              />
+            </TitleHeader>
+          </div>
+          {file?.analysis?.metadata && (
+            <FullWidthDiv>
+              <HeaderTitle>Read Groups</HeaderTitle>
+              <TempTable
                 tableData={{
                   headers: [
-                    "Version",
-                    "File UUID",
-                    "Release Date",
-                    "Release Number",
+                    "Read Group ID",
+                    "Is Paired End",
+                    "Read Length",
+                    "Library Name",
+                    "Sequencing Center",
+                    "Sequencing Date",
                   ],
-                  tableRows: sortedFileHistory.map(
-                    (obj, index, { length }) => ({
-                      version: obj.version,
-                      file_id: (
-                        <>
-                          {obj.uuid}
-                          {index + 1 === length && (
-                            <span className="inline-block ml-2 border rounded-full bg-primary-darker text-base-max font-bold text-xs py-0.5 px-1">
-                              Current Version
-                            </span>
-                          )}
-                        </>
-                      ),
-                      release_date: obj.release_date,
-                      data_release: obj.data_release,
+                  tableRows: file?.analysis.metadata.read_groups.map(
+                    (read_group) => ({
+                      read_group_id: read_group.read_group_id ?? "--",
+                      is_paired_end: read_group.is_paired_end
+                        ? "true"
+                        : "false",
+                      read_length: read_group.read_length ?? "--",
+                      library_name: read_group.library_name ?? "--",
+                      sequencing_center: read_group.sequencing_center ?? "--",
+                      sequencing_date: read_group.sequencing_date ?? "--",
                     }),
                   ),
                 }}
               />
-            </DivWithMargin>
+            </FullWidthDiv>
+          )}
+        </>
+      )}
+      {file?.downstream_analyses?.some(
+        (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
+      ) && (
+        <FullWidthDiv>
+          <HeaderTitle>Downstream Analyses Files</HeaderTitle>
+          <DownstreamAnalyses downstream_analyses={file?.downstream_analyses} />
+        </FullWidthDiv>
+      )}
+
+      {fileHistory && (
+        <FullWidthDiv>
+          <HeaderTitle className="float-left mt-3">File Versions</HeaderTitle>
+          <div className="float-right my-2 mr-3">
+            <Menu width="target">
+              <Menu.Target>
+                <Button
+                  className="px-1.5 min-h-7 w-28 rounded text-primary-content-lightest bg-primary hover:bg-primary-darker"
+                  leftIcon={<FaDownload />}
+                >
+                  Download
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={handleDownloadTSV}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  TSV
+                </Menu.Item>
+                <Menu.Item
+                  onClick={downloadVersionJSON}
+                  icon={<FaDownload className="mr-2" />}
+                >
+                  JSON
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
-        )}
-        {modal === Modals.NoAccessToProjectModal && (
-          <NoAccessToProjectModal openModal />
-        )}
-        {modal === Modals.BAMSlicingModal && (
-          <BAMSlicingModal openModal file={file} setActive={setBamActive} />
-        )}
-
-        {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
-
-        {modal === Modals.AgreementModal && (
-          <AgreementModal
-            openModal
-            file={fileToDownload}
-            dbGapList={fileToDownload.acl}
+          <TempTable
+            tableData={{
+              headers: [
+                "Version",
+                "File UUID",
+                "Release Date",
+                "Release Number",
+              ],
+              tableRows: sortedFileHistory.map((obj, index, { length }) => ({
+                version: obj.version,
+                file_id: (
+                  <>
+                    {obj.uuid}
+                    {index + 1 === length && (
+                      <span className="inline-block ml-2 border rounded-full bg-primary-darker text-white font-bold text-xs py-0.5 px-1">
+                        Current Version
+                      </span>
+                    )}
+                  </>
+                ),
+                release_date: obj.release_date,
+                data_release: obj.data_release,
+              })),
+            }}
           />
-        )}
-      </div>
-    </>
+        </FullWidthDiv>
+      )}
+      {modal === Modals.NoAccessToProjectModal && (
+        <NoAccessToProjectModal openModal />
+      )}
+      {modal === Modals.BAMSlicingModal && (
+        <BAMSlicingModal openModal file={file} setActive={setBamActive} />
+      )}
+
+      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
+
+      {modal === Modals.AgreementModal && (
+        <AgreementModal
+          openModal
+          file={fileToDownload}
+          dbGapList={fileToDownload.acl}
+        />
+      )}
+    </div>
   );
 };
 

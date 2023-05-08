@@ -12,10 +12,12 @@ import {
 import { createKeyboardAccessibleFunction } from "src/utils";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
-import { MatchResults } from "./utils";
 
 interface MatchTablesProps {
-  readonly matched: MatchResults[];
+  readonly matched: {
+    mappedTo: { field: string; value: string }[];
+    givenIdentifiers: { field: string; value: string }[];
+  }[];
   readonly unmatched: string[];
   readonly numberInput: number;
   readonly entityLabel: string;
@@ -76,26 +78,8 @@ const MatchTables: React.FC<MatchTablesProps> = ({
     uniqueGivenIdentifierFields,
   ]);
 
-  const unmatchedTableData = useMemo(
-    () => unmatched.map((id) => ({ id })),
-    [unmatched],
-  );
-
-  const {
-    displayedData: displayedMatchData,
-    handlePageChange: handleMatchedPageChange,
-    handlePageSizeChange: handleMatchedPageSizeChange,
-    ...matchPaginationProps
-  } = useStandardPagination(matched);
-  const {
-    displayedData: displayedUnmatchedData,
-    handlePageChange: handleUnmatchedPageChange,
-    handlePageSizeChange: handleUnmatchedPageSizeChange,
-    ...unmatchedPaginationProps
-  } = useStandardPagination(unmatchedTableData);
-
-  const formattedMatchData = useMemo(() => {
-    return displayedMatchData.map((d) => ({
+  const matchedTableData = useMemo(() => {
+    return matched.map((d) => ({
       ...Object.fromEntries(
         uniqueMappedToFields.map((id) => [
           `mapped_${id.replaceAll(".", "_")}`,
@@ -121,7 +105,25 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         ]),
       ),
     }));
-  }, [displayedMatchData, uniqueMappedToFields, uniqueGivenIdentifierFields]);
+  }, [matched, uniqueMappedToFields, uniqueGivenIdentifierFields]);
+
+  const unmatchedTableData = useMemo(
+    () => unmatched.map((id) => ({ id })),
+    [unmatched],
+  );
+
+  const {
+    displayedData: displayedMatchData,
+    handlePageChange: handleMatchedPageChange,
+    handlePageSizeChange: handleMatchedPageSizeChange,
+    ...matchPaginationProps
+  } = useStandardPagination(matchedTableData);
+  const {
+    displayedData: displayedUnmatchedData,
+    handlePageChange: handleUnmatchedPageChange,
+    handlePageSizeChange: handleUnmatchedPageSizeChange,
+    ...unmatchedPaginationProps
+  } = useStandardPagination(unmatchedTableData);
 
   const handleMatchedTableChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -203,7 +205,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
               </p>
               {matched.length > 0 && (
                 <VerticalTable
-                  tableData={formattedMatchData}
+                  tableData={displayedMatchData}
                   columns={matchedColumns}
                   selectableRow={false}
                   showControls={false}

@@ -19,6 +19,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
                   entityMetadata: {
                     entity_type: null,
                     entity_id: null,
+                    entity_name: null,
                   },
                   setEntityMetadata: jest.fn(),
                 }}

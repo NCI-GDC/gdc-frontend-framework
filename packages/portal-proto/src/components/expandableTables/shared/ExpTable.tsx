@@ -60,47 +60,42 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
   return (
-    <div>
+    <div className="relative">
       <LoadingOverlay visible={status === "pending"} />
-      <table className="w-full border border-base-lighter text-sm">
-        <thead className="shadow-md h-14">
-          {table
-            .getHeaderGroups()
-            .slice(1)
-            .map((headerGroup) => (
-              <tr key={headerGroup.id} className="">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className="py-3 px-2 border-b-4 border-base-lighter font-heading"
-                    >
-                      {header.isPlaceholder ? null : (
-                        <>
-                          {header.id === "select" &&
-                          header.id !== `1_ _${firstColumn}` ? (
-                            <CheckboxSpring
-                              isActive={selectAllActive}
-                              handleCheck={selectAll}
-                              select={table.getRowModel().rows ?? []}
-                              multi={true}
-                            />
-                          ) : null}
+      <table className="w-full">
+        <thead className="border-2 shadow-md">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <th key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder ? null : (
+                      <div>
+                        {header.id === "select" &&
+                        header.id !== `1_ _${firstColumn}` ? (
+                          <CheckboxSpring
+                            isActive={selectAllActive}
+                            handleCheck={selectAll}
+                            select={table.getRowModel().rows ?? []}
+                            multi={true}
+                          />
+                        ) : null}
+                        <div>
                           {header.id !== "select" &&
                             flexRender(
                               header.column.columnDef.header,
                               header.getContext(),
                             )}
-                        </>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
+                        </div>
+                      </div>
+                    )}
+                  </th>
+                );
+              })}
+            </tr>
+          ))}
         </thead>
-        <tbody>
+        <tbody className="relative">
           {table.getRowModel().rows.map((row, index) => {
             return (
               <AnimatedRow

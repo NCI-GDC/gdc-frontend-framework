@@ -12,9 +12,10 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-#human-body-root #svgContainer {
+#human-body-root .chart {
   position: absolute;
-  left: 260px;
+  left: 300px;
+  margin-top: 20px;
   color: #fff;
 }
 #human-body-root .chart g {
@@ -24,13 +25,14 @@
   position: absolute;
 }
 #human-body-root #title {
-  position: absolute;
   color: #111111;
+  font-size: 1.1em;
   font-weight: 700;
+  position: absolute;
   font-family: "Montserrat", "sans-serif";
-}
-#svgContainer > svg {
-  margin-top: 20px;
+  width: 275px;
+  left: 480px;
+  top: -5px;
 }
 #human-body-root #male {
   position: absolute;

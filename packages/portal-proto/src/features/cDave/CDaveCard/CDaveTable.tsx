@@ -25,24 +25,19 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedSurvivalPlots,
   continuous,
 }: CDaveTableProps) => {
-  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   return (
-    <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
-      <table className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto ">
-        <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
+    <div className="h-44 block overflow-auto w-full relative">
+      <table className="bg-base-min w-full text-left text-base-contrast-min mb-2 table-auto border-base-light border-1">
+        <thead className="bg-base-max font-semibold font-heading text-sm text-base-contrast-max border-base border-b-1  sticky top-0 z-10">
           <tr>
-            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1  ">
-              <span className="pl-2" id={rowSelectId}>
-                Select
-              </span>
+            <th>
+              <span className="pl-2">Select</span>
             </th>
-            <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
+            <th className="pl-2">
               {fieldName}{" "}
               {customBinnedData !== null && "(User Defined Bins Applied)"}
             </th>
-            <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
-              # Cases
-            </th>
+            <th className="text-right pr-2"># Cases</th>
             {survival && <th className="text-right pr-2">Survival</th>}
           </tr>
         </thead>
@@ -66,24 +61,19 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 <tr
                   className={`text-content text-sm font-content ${
                     idx % 2
-                      ? "bg-base-lightest text-base-contrast-lightest"
-                      : "bg-base-max text-base-contrast-max"
+                      ? "bg-base-lighter text-base-contrast-lighter"
+                      : "bg-base-lightest text-base-contrast-lightest"
                   }`}
                   key={`${fieldName}-${key}`}
                 >
                   <td className="pl-2 py-1">
-                    <Checkbox
-                      color="accent"
-                      size="xs"
-                      className="pt-1"
-                      aria-labelledby={rowSelectId}
-                    />
+                    <Checkbox color={"accent"} size="xs" className="pt-1" />
                   </td>
                   <td>
                     <div className="pl-2">{key}</div>
                   </td>
                   <td className="text-right">
-                    <div className="pr-4 whitespace-nowrap">
+                    <div className="pr-2 whitespace-nowrap">
                       {count.toLocaleString()} (
                       {yTotal === 0
                         ? "0.00%"

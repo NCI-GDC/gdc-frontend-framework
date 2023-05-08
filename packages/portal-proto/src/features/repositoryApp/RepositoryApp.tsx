@@ -1,6 +1,7 @@
 import {
   buildCohortGqlOperator,
   CART_LIMIT,
+  createGdcAppWithOwnStore,
   FilterSet,
   GdcFile,
   GqlOperation,
@@ -14,7 +15,7 @@ import {
   useGetFilesQuery,
 } from "@gff/core";
 import { useState } from "react";
-import { AppStore, useAppSelector } from "./appApi";
+import { AppContext, AppStore, id, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
 import {
@@ -33,10 +34,6 @@ import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/h
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
-import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
-
-const persistor = persistStore(AppStore);
 
 const useCohortCentricFiles = () => {
   const repositoryFilters = useAppSelector((state) =>
@@ -67,7 +64,7 @@ const useCohortCentricFiles = () => {
   };
 };
 
-export const RepositoryApp = (): JSX.Element => {
+const RepositoryApp = () => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const { allFilters, pagination, repositoryFilters, imagesCount } =
@@ -108,104 +105,114 @@ export const RepositoryApp = (): JSX.Element => {
   const viewImageDisabled =
     imagesCount.slidesCount <= 0 && imagesCount.casesWithImagesCount <= 0;
   return (
-    <>
-      <PersistGate persistor={persistor}>
-        <div className="flex mt-4 mx-3">
-          <div className="w-1/4">
-            <FileFacetPanel />
-          </div>
-          <div className="w-full overflow-hidden h-full">
-            <div className="flex justify-end align-center">
-              <div className="flex justify-end gap-2 mb-6">
-                <DownloadButton
-                  customStyle={`
-                  flex
-                  flex-row
-                  items-center
-                  bg-base-lightest
-                  text-base-contrast-max
-                  border
-                  border-solid
-                  border-primary-darker
-                  hover:bg-primary-darker
-                  font-heading
-                  hover:text-primary-contrast-darker
-                  disabled:opacity-60
-                  disabled:border-opacity-60
-                  disabled:text-opacity-60
-                  `}
-                  activeText="Processing"
-                  inactiveText="Manifest"
-                  toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
-                  endpoint="files"
-                  method="POST"
-                  options={{
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  }}
-                  extraParams={{
-                    return_type: "manifest",
-                  }}
-                  filters={buildCohortGqlOperator(allFilters)}
-                  setActive={setActive}
-                  active={active}
-                />
+    <div className="flex flex-row mt-4 mx-3">
+      <div className="w-1/4">
+        <FileFacetPanel />
+      </div>
+      <div className="w-full overflow-hidden h-full">
+        <div className="flex flex-row justify-end align-center m-2">
+          <div className="flex justify-end gap-2">
+            <DownloadButton
+              customStyle={`
+              flex
+              flex-row
+              items-center
+              bg-base-lightest
+              text-base-contrast-max
+              border
+              border-solid
+              border-primary-darker
+              hover:bg-primary-darker
+              font-heading
+              hover:text-primary-contrast-darker
+              disabled:opacity-60
+              disabled:border-opacity-60
+              disabled:text-opacity-60
+              `}
+              activeText="Processing"
+              inactiveText="Manifest"
+              toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+              endpoint="files"
+              method="POST"
+              options={{
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }}
+              extraParams={{
+                return_type: "manifest",
+              }}
+              filters={buildCohortGqlOperator(allFilters)}
+              setActive={setActive}
+              active={active}
+            />
 
-                <Link
-                  href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
-                    stringifyJSONParam(repositoryFilters),
-                  )}`}
-                >
-                  <Tooltip
-                    label={"No images available to be viewed"}
-                    disabled={!viewImageDisabled}
-                  >
-                    <FunctionButton component="a" $disabled={viewImageDisabled}>
-                      View Images
-                    </FunctionButton>
-                  </Tooltip>
-                </Link>
-
-                <FunctionButton
-                  leftIcon={<CartIcon />}
-                  loading={allFilesLoading}
-                  onClick={() => {
-                    // check number of files selected before making call
-                    if (
-                      pagination?.total &&
-                      pagination.total + currentCart.length > CART_LIMIT
-                    ) {
-                      showCartOverLimitNotification(currentCart.length);
-                    } else {
-                      getAllSelectedFiles(
-                        addToCart,
-                        buildCohortGqlOperator(allFilters),
-                      );
-                    }
-                  }}
-                >
-                  Add All Files to Cart
+            <Link
+              href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
+                stringifyJSONParam(repositoryFilters),
+              )}`}
+            >
+              <Tooltip
+                label={"No images available to be viewed"}
+                disabled={!viewImageDisabled}
+              >
+                <FunctionButton component="a" $disabled={viewImageDisabled}>
+                  View Images
                 </FunctionButton>
-                <FunctionButtonRemove
-                  leftIcon={<VscTrash />}
-                  loading={allFilesLoading}
-                  onClick={() => {
-                    getAllSelectedFiles(
-                      removeFromCart,
-                      buildCohortGqlOperatorWithCart(),
-                    );
-                  }}
-                >
-                  Remove All From Cart
-                </FunctionButtonRemove>
-              </div>
-            </div>
-            <FilesTables />
+              </Tooltip>
+            </Link>
+
+            <FunctionButton
+              leftIcon={<CartIcon />}
+              loading={allFilesLoading}
+              onClick={() => {
+                // check number of files selected before making call
+                if (
+                  pagination?.total &&
+                  pagination.total + currentCart.length > CART_LIMIT
+                ) {
+                  showCartOverLimitNotification(currentCart.length);
+                } else {
+                  getAllSelectedFiles(
+                    addToCart,
+                    buildCohortGqlOperator(allFilters),
+                  );
+                }
+              }}
+            >
+              Add All Files to Cart
+            </FunctionButton>
+            <FunctionButtonRemove
+              leftIcon={<VscTrash />}
+              loading={allFilesLoading}
+              onClick={() => {
+                getAllSelectedFiles(
+                  removeFromCart,
+                  buildCohortGqlOperatorWithCart(),
+                );
+              }}
+            >
+              Remove All From Cart
+            </FunctionButtonRemove>
           </div>
         </div>
-      </PersistGate>
-    </>
+        <FilesTables />
+      </div>
+    </div>
   );
 };
+
+// creates and registers the App with the Analysis Tool Framework
+export default createGdcAppWithOwnStore({
+  App: RepositoryApp,
+  id: id,
+  name: "Repository Tool",
+  version: "v1.0.0",
+  requiredEntityTypes: ["file"],
+  store: AppStore,
+  context: AppContext,
+  persist: true,
+});
+
+export const RepositoryAppId: string = id;

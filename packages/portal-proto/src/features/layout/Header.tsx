@@ -344,6 +344,20 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <AppLink
+                    href="https://portal.gdc.cancer.gov/legacy-archive"
+                    target="_blank"
+                  >
+                    <Image
+                      src="/user-flow/icons/gdc-app-legacy-archive.svg"
+                      width={30}
+                      height={30}
+                      alt="legacy archive"
+                    />
+                    Legacy Archive
+                  </AppLink>
+                </AppMenuItem>
+                <AppMenuItem>
+                  <AppLink
                     href="https://gdc.cancer.gov/about-data/publications"
                     target="_blank"
                   >
@@ -396,6 +410,7 @@ export const Header: React.FC<HeaderProps> = ({
             setEntityMetadata({
               entity_type: null,
               entity_id: null,
+              entity_name: null,
             })
           }
           entityMetadata={entityMetadata}

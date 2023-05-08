@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v7. The minimum node version is set to v16.
+This is a multi-workspace repo that requires npm v7. The minimum node version is set to v14 only from an LTS perspective.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 

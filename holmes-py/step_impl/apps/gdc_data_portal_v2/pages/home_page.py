@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
-from ....base.base_page import GenericLocators
+
 
 class HomePageLocators:
     """A class for Home page locators. All home page locators should come here"""
@@ -12,10 +12,12 @@ class HomePageLocators:
     NAV_BAR_COHORT_ICON = "img[alt='Cohort logo']"
     NAV_BAR_REPOSITORY_ICON = "img[alt='Downloads logo']"
 
+    NAV_DEFAULT_ANALYSIS_ICON = "img[alt='Analysis Center Card']"
+    NAV_DEFAULT_STUDIES_ICON = "img[alt='Studies Card']"
+    NAV_DEFAULT_COHORT_ICON = "img[alt='Cohort Card']"
+    NAV_DEFAULT_REPOSITORY_ICON = "img[alt='Downloads Card']"
+
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-home-page-{button_name}']"
-
-    LIVE_STAT_BY_CATEGORY_IDENT = lambda expected_statistic: f'div[class="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between"] >> text="{expected_statistic}"'
-
 
 class HomePage(BasePage):
     def __init__(self, driver: Page, url):
@@ -30,15 +32,3 @@ class HomePage(BasePage):
     def navigate_to_app(self, app_name:str):
         app_name = self.normalize_button_identifier(app_name)
         self.driver.locator(HomePageLocators.BUTTON_IDENT(app_name)).click()
-
-    def is_live_category_statistic_present(self, expected_statistic:str):
-        expected_statistic_locator = HomePageLocators.LIVE_STAT_BY_CATEGORY_IDENT(expected_statistic)
-        return self.is_visible(expected_statistic_locator)
-
-    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
-        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
-        try:
-            new_tab.locator(expected_text_locator).wait_for(state='visible')
-        except:
-            return False
-        return True

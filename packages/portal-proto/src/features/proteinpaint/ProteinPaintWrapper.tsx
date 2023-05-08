@@ -1,5 +1,6 @@
 import { useEffect, useRef, FC } from "react";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { runproteinpaint } from "@stjude/proteinpaint-client";
+import { v4 as uuidv4 } from "uuid";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -10,6 +11,8 @@ import {
   useUserDetails,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
+  DEFAULT_COHORT_ID,
+  setActiveCohort,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -55,9 +58,23 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         message: "newCasesCohort",
         // TODO: improve cohort name constructor
         name: source + ` (n=${samples.length})`,
+        group:
+          ids.length > 1
+            ? {
+                ids: [...ids],
+                field: "occurrence.case.case_id",
+                groupId: uuidv4(),
+              }
+            : undefined,
       }),
     );
   };
+
+  const isRendered = useRef<boolean>(false);
+  if (isDemoMode && !isRendered.current) {
+    isRendered.current = true;
+    coreDispatch(setActiveCohort(DEFAULT_COHORT_ID));
+  }
 
   useEffect(
     () => {
@@ -65,7 +82,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
       if (isDemoMode) data.geneSymbol = "MYC";
-      // compare the argument to runpp to avoid unnecessary render
       if (isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
@@ -88,7 +104,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         });
       }
     },
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
@@ -111,7 +127,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
-        //userDetails={userDetails}
       />
     </div>
   );

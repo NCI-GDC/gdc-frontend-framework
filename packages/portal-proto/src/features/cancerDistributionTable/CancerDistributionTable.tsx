@@ -17,7 +17,6 @@ import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
-import { NumeratorDenominator } from "@/components/expandableTables/shared/NumeratorDenominator";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -144,9 +143,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     / # Cases tested for Simple Somatic Mutations in the Project`}
               multiline
               withArrow
-              width={250}
             >
-              <span># SSM Affected Cases</span>
+              <span className="underline decoration-dashed">
+                # SSM Affected Cases
+              </span>
             </Tooltip>
           </div>
         ),
@@ -167,9 +167,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         `}
                     multiline
                     withArrow
-                    width={250}
                   >
-                    <span># CNV Gains</span>
+                    <span className="underline decoration-dashed">
+                      # CNV Gains
+                    </span>
                   </Tooltip>
                 </div>
               ),
@@ -185,9 +186,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         `}
                     multiline
                     withArrow
-                    width={250}
                   >
-                    <span># CNV Losses</span>
+                    <span className="underline decoration-dashed">
+                      # CNV Losses
+                    </span>
                   </Tooltip>
                 </div>
               ),
@@ -201,9 +203,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
-                    width={250}
                   >
-                    <span># Mutations</span>
+                    <span className="underline decoration-dashed">
+                      # Mutations
+                    </span>
                   </Tooltip>
                 </div>
               ),
@@ -227,31 +230,42 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ),
                 disease_type: projectsById[d.key]?.disease_type || [],
                 primary_site: projectsById[d.key]?.primary_site || [],
-
-                ssm_affected_cases: (
-                  <NumeratorDenominator
-                    numerator={data.ssmFiltered[d.key] || 0}
-                    denominator={data.ssmTotal[d.key] || 0}
-                  />
-                ),
+                ssm_affected_cases: `${(
+                  data.ssmFiltered[d.key] || 0
+                ).toLocaleString()} / ${data.ssmTotal[
+                  d.key
+                ].toLocaleString()} (${(
+                  (data.ssmFiltered[d.key] || 0) / data.ssmTotal[d.key]
+                ).toLocaleString(undefined, {
+                  style: "percent",
+                  minimumFractionDigits: 2,
+                })})`,
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
               };
               return {
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: (
-                        <NumeratorDenominator
-                          numerator={data.cnvGain[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
-                      cnv_losses: (
-                        <NumeratorDenominator
-                          numerator={data.cnvLoss[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
+                      cnv_gains: `${(
+                        data.cnvGain[d.key] || 0
+                      ).toLocaleString()} / ${(
+                        data.cnvTotal[d.key] || 0
+                      ).toLocaleString()} (${(
+                        data.cnvGain[d.key] / data.cnvTotal[d.key] || 0
+                      ).toLocaleString(undefined, {
+                        style: "percent",
+                        minimumFractionDigits: 2,
+                      })})`,
+                      cnv_losses: `${(
+                        data.cnvLoss[d.key] || 0
+                      ).toLocaleString()} / ${(
+                        data.cnvTotal[d.key] || 0
+                      ).toLocaleString()} (${(
+                        data.cnvLoss[d.key] / data.cnvTotal[d.key] || 0
+                      ).toLocaleString(undefined, {
+                        style: "percent",
+                        minimumFractionDigits: 2,
+                      })})`,
                       num_mutations:
                         (data.ssmFiltered[d.key] || 0) === 0
                           ? 0
@@ -295,7 +309,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       selectableRow={false}
       showControls={false}
       additionalControls={
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2">
           <FunctionButton>JSON</FunctionButton>
           <FunctionButton>TSV</FunctionButton>
         </div>

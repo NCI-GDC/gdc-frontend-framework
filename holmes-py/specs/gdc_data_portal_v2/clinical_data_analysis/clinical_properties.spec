@@ -11,8 +11,8 @@ tags: gdc-data-portal-v2, clinical-data-analysis
 tags: cdave, regression, smoke
 
 * On GDC Data Portal V2 app
-* Navigate to "Analysis" from "Header" "section"
-* Navigate to cDAVE app
+* Navigate to "Analysis Center" from "Home Page" "app"
+* Navigate to CDAVE page
 * Expand clinical property sections
 * Check clinical properties
 

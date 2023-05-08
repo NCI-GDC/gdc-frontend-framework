@@ -1,5 +1,5 @@
 import { useEffect, useRef, FC } from "react";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { runproteinpaint } from "@stjude/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -8,6 +8,8 @@ import {
   FilterSet,
   PROTEINPAINT_API,
   useUserDetails,
+  useCoreDispatch,
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -27,6 +29,33 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = isDemoMode
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
+
+  const coreDispatch = useCoreDispatch();
+  const isRendered = useRef<boolean>(false);
+  if (isDemoMode && !isRendered.current) {
+    isRendered.current = true;
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "cases.disease_type": {
+          operator: "includes",
+          field: "cases.disease_type",
+          operands: ["Gliomas"],
+        },
+      },
+    };
+
+    coreDispatch(
+      // TODO: option to edit a cohort using ImportCohortModal???
+      addNewCohortWithFilterAndMessage({
+        filters,
+        message: "demoOncoMatrixCasesCohort",
+        // TODO: improve cohort name constructor
+        name: `Cases with Gliomas`,
+        makeCurrent: true,
+      }),
+    );
+  }
 
   const userDetails = useUserDetails();
   // to track reusable instance for mds3 skewer track
@@ -77,7 +106,6 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         ref={divRef}
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
-        //userDetails={userDetails}
       />
     </div>
   );

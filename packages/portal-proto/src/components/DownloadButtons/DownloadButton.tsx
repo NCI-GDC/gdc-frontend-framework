@@ -1,5 +1,5 @@
 import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
-import { FiDownload } from "react-icons/fi";
+import { FaDownload } from "react-icons/fa";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction } from "react";
@@ -61,13 +61,13 @@ export const DownloadButton: React.FC<DownloadButtonProps & ButtonProps> = ({
   const Icon = active ? (
     <Loader size="sm" className="p-1" />
   ) : (
-    <FiDownload title="download" size={16} />
+    <FaDownload title="download" />
   );
 
   return (
     <Tooltip disabled={!toolTip} label={toolTip}>
       <Button
-        leftIcon={showIcon && inactiveText && <FiDownload />}
+        leftIcon={showIcon && inactiveText && <FaDownload />}
         disabled={disabled}
         className={
           customStyle ||

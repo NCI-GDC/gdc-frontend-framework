@@ -12,6 +12,7 @@ import {
   SetTypes,
   Operation,
   FilterSet,
+  FilterGroup,
   isIncludes,
 } from "@gff/core";
 import {
@@ -35,7 +36,11 @@ interface SavedSetsProps {
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
   readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
-  readonly updateFilters: (field: string, op: Operation) => void;
+  readonly updateFilters: (
+    field: string,
+    op: Operation,
+    groups?: FilterGroup[],
+  ) => void;
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;
 }

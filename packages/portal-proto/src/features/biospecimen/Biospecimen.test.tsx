@@ -79,7 +79,7 @@ describe("<Biospecimen />", () => {
     );
 
     expect(queryByLabelText("Case ID not found")).toBeNull();
-    expect(getAllByRole("button")).toBeDefined();
+    expect(getAllByRole("treeitem")).toBeDefined();
     expect(getByText("Primary Tumor")).toBeInTheDocument();
   });
 });

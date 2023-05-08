@@ -1,5 +1,6 @@
-export const RawSvg = (): string => `
+export const RawSvg = (title = ""): string => `
   <span id="human-body-svg-container">
+    <div id="title">${title}</div>
     <svg
    width="309px"
    height="516px"
