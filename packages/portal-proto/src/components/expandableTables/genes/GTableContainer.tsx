@@ -12,7 +12,7 @@ import {
   joinFilters,
   buildCohortGqlOperator,
 } from "@gff/core";
-import { createContext, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
 import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
