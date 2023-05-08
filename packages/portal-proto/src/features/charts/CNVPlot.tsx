@@ -152,7 +152,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
       <div>
         <ChartTitleBar
           title={title}
-          filename={`cancer-distribution-bar-chart`}
+          filename="cancer-distribution-bar-chart"
           divId={chartDivId}
           jsonData={[
             ...exportedData.map(({ project: symbol, gain, loss, total }) => {

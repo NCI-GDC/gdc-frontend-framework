@@ -34,11 +34,6 @@ import {
   TablePlaceholder,
 } from "../shared";
 
-export const SelectedRowContext =
-  createContext<
-    [SelectedReducer<Genes>, (action: SelectReducerAction<Genes>) => void]
-  >(undefined);
-
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
   handleSurvivalPlotToggled: (
@@ -287,7 +282,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         />
 
         <TableFilters
-          search={searchTerm}
+          searchTerm={searchTerm}
           handleSearch={handleSearch}
           columnListOrder={columnListOrder}
           handleColumnChange={handleColumnChange}
