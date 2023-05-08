@@ -40,18 +40,20 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
   });
   const history = useFileHistory(setCurrentFile);
 
-  const title = files?.[0]
-    ? files?.[0].file_name
-    : `${setCurrentFile} not found`;
   return (
     <div>
+      {!files?.[0] && (
+        <SummaryHeader
+          iconText="fl"
+          headerTitle={`${setCurrentFile} not found`}
+          isModal={isModal}
+        />
+      )}
       {files?.[0] && !isFetching ? (
         <>
-          {!isModal && <SummaryHeader iconText="fl" headerTitle={title} />}
-
           {files[0] ? (
             <FileView
-              file={files?.[0]}
+              file={files[0]}
               fileHistory={history?.data?.[0]}
               isModal={isModal}
             />

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1243" height="603.5" viewBox="0 0 1243 603.5" version="1.1" id="svg40635" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs40639">
+    <clipPath clipPathUnits="userSpaceOnUse" id="clipPath41499">
+        <rect x="0.5" y="0.5" width="1365" height="797" fill="none" id="rect41501"/>
+    </clipPath>
+  </defs>
+  <g id="g41497" clip-path="url(#clipPath41499)" transform="translate(-29,-156.5)">
+    <circle id="Ellipse_26" cx="103" cy="103" r="103" transform="translate(29,124)" fill="#f0f5f9" opacity="0.997"/>
+    <circle id="Ellipse_25" cx="184" cy="184" r="184" transform="translate(289,392)" fill="#e1f1ef" opacity="0.493"/>
+    <circle id="Ellipse_23" cx="306.5" cy="306.5" r="306.5" transform="translate(659)" fill="#f9f2e6" opacity="0.297"/>
+    <circle id="Ellipse_24" cx="227" cy="227" r="227" transform="translate(739,80)" fill="#f9f2e6" opacity="0.64"/>
+  </g>
+</svg>

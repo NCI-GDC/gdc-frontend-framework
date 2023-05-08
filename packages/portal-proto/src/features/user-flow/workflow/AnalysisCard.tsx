@@ -39,7 +39,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   return (
     <Card
       shadow="sm"
-      p="xs"
+      p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"
       }
@@ -79,7 +79,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             disabled={inactive}
             aria-label={`Navigate to ${entry.name} tool`}
           >
-            <MdPlayArrow size={16} color={"white"} />
+            <MdPlayArrow size={16} color="white" />
           </Button>
           {entry.hasDemo ? (
             <Button
@@ -97,7 +97,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               size="xs"
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
-              variant={"outline"}
+              variant="outline"
               className="text-xs text-secondary p-0 border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
             >
               Demo
@@ -127,7 +127,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         </Button>
         <div
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className={`transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-2.5 mb-2.5`}
+          className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
         >
           <div
             className={`${
@@ -141,7 +141,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex flex-row items-center text-secondary-darkest">
+          <div className="flex items-center text-secondary-darkest">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip

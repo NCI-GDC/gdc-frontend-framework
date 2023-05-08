@@ -4,8 +4,9 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { Grid } from "@mantine/core";
 import { processFilters } from "src/utils";
+import { CountSpan } from "../shared/tailwindComponents";
+
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
@@ -57,10 +58,21 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const caseData = data.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
-  const caseTotal = data.caseTotal.toLocaleString();
-  const mutationTotal = data.mutationTotal.toLocaleString();
-  const projectCount = caseData.length.toLocaleString();
-  const title = `${caseTotal} CASES AFFECTED BY ${mutationTotal} CNV EVENTS ACROSS ${projectCount} PROJECTS`;
+
+  const caseTotal = <CountSpan>{data.caseTotal.toLocaleString()}</CountSpan>;
+  const mutationTotal = (
+    <CountSpan>{data.mutationTotal.toLocaleString()}</CountSpan>
+  );
+  const projectCount = (
+    <CountSpan>{caseData.length.toLocaleString()}</CountSpan>
+  );
+
+  const title = (
+    <span>
+      {caseTotal} CASES AFFECTED BY {mutationTotal} CNV EVENTS ACROSS{" "}
+      {projectCount} PROJECTS
+    </span>
+  );
 
   let chartData;
   if (gainChecked && lossChecked) {
@@ -131,7 +143,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   };
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <Grid.Col span={6}>
+    <div className="border border-base-lighter p-4">
       <div>
         <ChartTitleBar
           title={title}
@@ -140,7 +152,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           jsonData={{}}
         />
       </div>
-      <div className="w-100 h-100">
+      <div>
         <BarChart
           divId={chartDivId}
           data={chartConfig}
@@ -171,7 +183,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           Loss
         </label>
       </div>
-    </Grid.Col>
+    </div>
   );
 };
 

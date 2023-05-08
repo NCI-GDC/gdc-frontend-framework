@@ -192,7 +192,6 @@ const ProjectsTable: React.FC = () => {
                     setEntityMetadata({
                       entity_type: "project",
                       entity_id: project_id,
-                      entity_name: project_id,
                     })
                   }
                 >

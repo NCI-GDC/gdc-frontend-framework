@@ -38,15 +38,15 @@ const AnimatedRow: React.FC<AnimatedRowProps> = ({
     <animated.tr
       style={unitSpring}
       key={row.id}
-      className={`border-2 ${
+      className={`border ${
         selected
-          ? `border-l-4 border-t-0 border-r-4 border-b-0 border-activeColor`
-          : ``
-      } ${index % 2 ? `bg-slate-50` : `bg-white`}`}
+          ? `border-x-4 border-y-0 border-activeColor`
+          : `border-base-lighter`
+      } ${index % 2 === 1 ? `bg-base-max` : `bg-base-lightest`}`}
     >
       {row.getVisibleCells().map((cell, cellIdx) => {
         return (
-          <animated.td key={cell.id}>
+          <animated.td key={cell.id} className="py-2 px-2">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
             {row.id.includes(".") && cellIdx === 0 && subrow}
           </animated.td>

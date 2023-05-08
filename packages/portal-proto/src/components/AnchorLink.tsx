@@ -15,14 +15,14 @@ export const AnchorLink = ({
   toolTipLabel?: string;
 }): JSX.Element => {
   return (
-    <Link href={href} passHref>
-      <Anchor className="flex gap-1 underline" size="sm" target="_blank">
-        <FiExternalLink className="mt-1" />
-        {title}
-        {iconText && (
-          <TypeIcon iconText={iconText} toolTipLabel={toolTipLabel} />
-        )}
-      </Anchor>
-    </Link>
+    <span className="flex gap-2 items-center">
+      <Link href={href} passHref>
+        <Anchor className="flex gap-1 underline" size="sm" target="_blank">
+          <FiExternalLink className="mt-1" />
+          {title}
+        </Anchor>
+      </Link>
+      {iconText && <TypeIcon iconText={iconText} toolTipLabel={toolTipLabel} />}
+    </span>
   );
 };

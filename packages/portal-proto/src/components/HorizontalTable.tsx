@@ -39,13 +39,15 @@ export interface HorizontalTableProps {
     >;
   }[];
   customContainerStyles?: string;
+  slideImageDetails?: boolean;
 }
 export const HorizontalTable = ({
   tableData,
   customContainerStyles,
+  slideImageDetails = false,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
-    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter";
+    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm";
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;
@@ -64,7 +66,9 @@ export const HorizontalTable = ({
               }
             >
               <th
-                className="w-4/12 text-sm align-top pl-1 pr-8 border-base-lighter border-1 whitespace-nowrap font-semibold font-content-noto"
+                className={`w-4/12 align-top px-2 ${
+                  !slideImageDetails && "py-2.5"
+                } border-base-lighter border-1 whitespace-nowrap font-semibold font-content-noto`}
                 key={`head-${obj.headerName}`}
               >
                 {obj.headerName}
@@ -74,7 +78,7 @@ export const HorizontalTable = ({
                   return (
                     <td
                       key={`${obj.headerName}-${index}`}
-                      className="text-sm border-l-2 border-base-lighter pl-4 border-1 font-content-noto font-normal"
+                      className="border-1 border-base-lighter px-2 font-content-noto font-normal"
                     >
                       {item}
                     </td>

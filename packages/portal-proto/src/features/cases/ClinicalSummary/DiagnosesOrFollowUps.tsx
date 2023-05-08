@@ -1,5 +1,5 @@
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { TempTable } from "@/features/files/FileView";
+import { BasicTable } from "@/components/Tables/BasicTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
 import type { Diagnoses, FollowUps } from "@gff/core/dist/features/cases/types";
 import { Tabs, Tooltip, Text } from "@mantine/core";
@@ -170,13 +170,13 @@ const TableElement = ({
       if (!data.treatments) {
         return <Text>No Treatments Found.</Text>;
       } else {
-        return <TempTable tableData={formatTreatmentData(data)} />;
+        return <BasicTable tableData={formatTreatmentData(data)} />;
       }
     } else {
       if (!data.molecular_tests) {
         return <Text>No Molecular Tests Found.</Text>;
       } else {
-        return <TempTable tableData={formatMolecularTestsData(data)} />;
+        return <BasicTable tableData={formatMolecularTestsData(data)} />;
       }
     }
   };
