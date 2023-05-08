@@ -142,6 +142,7 @@ const Components: ReactNode = () => {
       />
       <Divider label="Genes Table" classNames={divider_style} />
       <GTableContainer
+        handleMutationCountClick={() => null}
         selectedSurvivalPlot={undefined}
         handleSurvivalPlotToggled={undefined}
         handleGeneToggled={() => null}

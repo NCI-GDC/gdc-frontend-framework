@@ -195,7 +195,7 @@ export const SSMSSummary = ({
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <div className="grid grid-cols-2 mb-16 mt-2">
+              <div className="grid grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />
               </div>
 

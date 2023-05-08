@@ -210,7 +210,7 @@ export const Biospecimen = ({
                     setTreeStatusOverride={setTreeStatusOverride}
                     setTotalNodeCount={setTotalNodeCount}
                     setExpandedCount={setExpandedCount}
-                    query={searchText.toLocaleLowerCase()}
+                    query={searchText.toLocaleLowerCase().trim()}
                     search={search}
                   />
                 )}

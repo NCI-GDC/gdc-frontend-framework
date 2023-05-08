@@ -189,6 +189,7 @@ export const BaseExplorationPage: React.FC<BaseExplorationPageProps> = ({
             <AllAppViewer title="Somatic Mutations" setView={setCurrentApp}>
               <div className="flex flex-row">
                 <GTableContainer
+                  handleMutationCountClick={() => null}
                   selectedSurvivalPlot={undefined}
                   handleSurvivalPlotToggled={undefined}
                   handleGeneToggled={() => null}
