@@ -33,38 +33,23 @@ export const createHumanBody: TCreateHumanBody = ({
 
   if (!root) throw new Error("Must select an existing element!");
 
-  root.innerHTML = RawSvg();
+  root.innerHTML = RawSvg(title);
 
   width = width || 400;
   height = height || 520;
   labelSize = labelSize || "12px";
 
   const plotHeight = height - 20;
-  const barStartOffset = 150;
+  const barStartOffset = 140;
   const barWidth = width - barStartOffset;
   const maxCases = Math.max(
     ...data.map((d: BodyplotDataEntry) => d[caseCountKey]),
   );
   const numberOfVerticalAxis = Math.floor(maxCases / tickInterval) + 1;
 
-  // Bar chart container
-  const svgContainer = d3
-    .select(selector)
-    .append("div")
-    .attr("id", "svgContainer");
-
-  // Title
-  svgContainer
-    .append("div")
-    .attr("id", "title")
-    .attr(
-      "style",
-      `left: ${barStartOffset + halfPixel}px; font-size: ${labelSize}`,
-    )
-    .text(title);
-
   // The Bar Chart
-  const svg = svgContainer
+  const svg = d3
+    .select(selector)
     .append("svg")
     .attr("class", "chart")
     .attr("width", width)

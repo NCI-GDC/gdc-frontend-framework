@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { ProjectsCenterAppId } from "../projectsCenter/registerApp";
+import { ProjectsCenterAppId } from "../projectsCenter/ProjectsCenter";
 import { selectGdcAppById, useCoreSelector } from "@gff/core";
 import { DemoUtil } from "./DemoUtil";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";

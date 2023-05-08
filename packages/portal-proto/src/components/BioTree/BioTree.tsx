@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import {
-  AiOutlinePlusCircle as ExpandMoreIcon,
-  AiFillMinusCircle as ExpandLessIcon,
+  AiOutlinePlusSquare as ExpandMoreIcon,
+  AiOutlineMinusSquare as ExpandLessIcon,
 } from "react-icons/ai";
-import { BsArrowRight as ArrowRight } from "react-icons/bs";
+import { ImArrowRight as ArrowRight } from "react-icons/im";
+import { Badge } from "@mantine/core";
 import Highlight from "../Highlight";
 import { BioTreeProps, NodeProps, overrideMessage } from "./types";
 
@@ -15,18 +16,27 @@ const Node = ({
   selectedEntity,
   selectEntity,
   query,
+  search,
 }: NodeProps): JSX.Element => {
   return (
-    <li className="ml-6">
+    <li>
       {entity[`${type.s}_id`] && entity.submitter_id && (
         <div className="flex">
           <span
-            className={`w-full flex justify-between text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
+            className={`text-sm cursor-pointer hover:underline hover:font-bold ml-3 mt-1
+            ${
               selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
-                ? "bg-accent-vivid text-base-max font-bold"
-                : "bg-nci-violet-lightest"
+                ? "border-1 border-black rounded p-1"
+                : ""
             }
-         `}
+            ${
+              query &&
+              (search(query, { node: entity }) || [])
+                .map((e) => e.node)
+                .some((e) => e[`${type.s}_id`] === entity[`${type.s}_id`])
+                ? "bg-accent-vivid"
+                : ""
+            }`}
             onClick={() => {
               selectEntity(entity, type);
             }}
@@ -37,10 +47,10 @@ const Node = ({
             tabIndex={0}
           >
             <Highlight search={query} text={entity.submitter_id} />
-            {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
-              <ArrowRight color="white" size={16} />
-            )}
           </span>
+          {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
+            <ArrowRight className="ml-1 mt-2.5" />
+          )}
         </div>
       )}
       {entityTypes
@@ -154,60 +164,64 @@ export const BioTree = ({
   };
 
   return (
-    <ul className="my-2">
-      <li>
-        <span
-          onClick={onTreeClick}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onTreeClick();
-          }}
-          tabIndex={0}
-          role="button"
-          className="flex gap-1 ml-2"
-        >
-          {isExpanded.current ? (
-            <ExpandLessIcon
-              className="cursor-pointer text-accent-vivid self-center"
-              size={18}
-            />
-          ) : (
-            <ExpandMoreIcon
-              className="cursor-pointer text-accent-vivid self-center"
-              size={18}
-            />
-          )}
+    <ul className="ml-4 my-2 pl-4">
+      <div
+        className="flex"
+        onClick={onTreeClick}
+        onKeyDown={onTreeClick}
+        role="treeitem"
+        tabIndex={0}
+      >
+        {isExpanded.current ? (
+          <ExpandLessIcon
+            className="cursor-pointer text-nci-green-darkest"
+            size={18}
+          />
+        ) : (
+          <ExpandMoreIcon
+            className="cursor-pointer text-primary-content-darkest"
+            size={18}
+          />
+        )}
 
-          <span className="border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer">
-            <Highlight search={query} text={type.p} />
-          </span>
-        </span>
-      </li>
+        <Badge
+          variant="filled"
+          className={`cursor-pointer ${
+            query && type.p.includes(query) && "bg-accent-vivid"
+          }`}
+        >
+          <Highlight search={query} text={type.p} />
+        </Badge>
+      </div>
       {isExpanded.current &&
-        entities?.hits?.edges?.map((entity) => (
-          <Node
-            entity={entity.node}
-            entityTypes={entityTypes}
-            key={generateKey(entity.node)}
-            type={type}
-            selectedEntity={selectedEntity}
-            selectEntity={selectEntity}
-            query={query}
-          >
-            <BioTree
+        entities?.hits?.edges?.map((entity) => {
+          return (
+            <Node
+              entity={entity.node}
               entityTypes={entityTypes}
-              parentNode={entity.node.submitter_id}
+              key={generateKey(entity.node)}
+              type={type}
               selectedEntity={selectedEntity}
               selectEntity={selectEntity}
-              setTreeStatusOverride={setTreeStatusOverride}
-              treeStatusOverride={treeStatusOverride}
-              setExpandedCount={setExpandedCount}
-              setTotalNodeCount={setTotalNodeCount}
               search={search}
               query={query}
-              type={type}
-            />
-          </Node>
-        ))}
+            >
+              <BioTree
+                entityTypes={entityTypes}
+                parentNode={entity.node.submitter_id}
+                selectedEntity={selectedEntity}
+                selectEntity={selectEntity}
+                setTreeStatusOverride={setTreeStatusOverride}
+                treeStatusOverride={treeStatusOverride}
+                setExpandedCount={setExpandedCount}
+                setTotalNodeCount={setTotalNodeCount}
+                search={search}
+                query={query}
+                type={type}
+              />
+            </Node>
+          );
+        })}
     </ul>
   );
 };

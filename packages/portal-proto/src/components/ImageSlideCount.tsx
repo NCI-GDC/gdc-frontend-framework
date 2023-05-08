@@ -40,6 +40,7 @@ export const ImageSlideCount = ({
       rightIcon: "ml-0",
       leftIcon: "mr-1",
     }}
+    className="my-2"
     rightIcon={
       <SlideCountsIcon $count={slideCount}>
         {slideCount === 0 ? "--" : slideCount}

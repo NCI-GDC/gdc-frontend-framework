@@ -1,7 +1,6 @@
 import React from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import { Group, Menu, Button, Text } from "@mantine/core";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { Box, Group, Menu, Button, Text } from "@mantine/core";
 
 interface ControlOption {
   label: string;
@@ -29,18 +28,22 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
     ({ value }: ControlOption) => value === "placeholder",
   );
   return (
-    <div className="flex items-center mt-2 gap-2">
-      <Menu shadow="md" width="target">
+    <div className="flex flex-row items-center mt-3">
+      <Menu shadow="md">
         <Menu.Target>
           <Button
             variant="outline"
             color="primary"
             className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
-            rightIcon={<MdOutlineArrowDropDown size={20} />}
+            rightIcon={<MdOutlineArrowDropDown />}
             leftIcon={
               numSelected > 0 ? (
-                <CountsIcon $count={numSelected}>{numSelected}</CountsIcon>
-              ) : null
+                <Box className="bg-accent text-base-max w-7 h-7 rounded-md flex justify-center items-center">
+                  {numSelected}
+                </Box>
+              ) : (
+                <Box className="w-7 h-7" />
+              )
             }
           >
             {buttonLabel[0].label}
@@ -59,7 +62,12 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
             ({ value, label, onClick, disabled = false }: ControlOption) => {
               if (value !== "placeholder") {
                 return (
-                  <Menu.Item key={label} onClick={onClick} disabled={disabled}>
+                  <Menu.Item
+                    key={label}
+                    onClick={onClick}
+                    disabled={disabled}
+                    className="data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest"
+                  >
                     {label}
                   </Menu.Item>
                 );
@@ -68,7 +76,7 @@ const TableControlsMantine: React.FC<TableControlsProps> = ({
           )}
         </Menu.Dropdown>
       </Menu>
-      <Group>{additionalControls}</Group>
+      <Group className="mx-2">{additionalControls}</Group>
       <div>
         {
           <Text className="font-heading font-bold text-md">

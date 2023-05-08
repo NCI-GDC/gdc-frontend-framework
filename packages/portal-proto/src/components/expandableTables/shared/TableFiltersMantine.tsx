@@ -25,13 +25,13 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
 }: TableFiltersProps) => {
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-row-reverse items-center">
         <TextInput
           icon={<SearchIcon size={24} />}
           placeholder="Search"
           aria-label="Table Search Input"
           classNames={{
-            input: "focus:border-2 focus:drop-shadow-xl border-base-lighter",
+            input: "focus:border-2 focus:drop-shadow-xl",
             wrapper: "w-72",
           }}
           size="sm"
@@ -42,20 +42,20 @@ const TableFiltersMantine: React.FC<TableFiltersProps> = ({
                   handleSearch("");
                 }}
                 className="cursor-pointer"
-              />
+              ></CloseIcon>
             )
           }
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
         />
-        <DND
-          showColumnMenu={showColumnMenu}
-          setShowColumnMenu={setShowColumnMenu}
-          handleColumnChange={handleColumnChange}
-          columnListOrder={columnListOrder}
-          defaultColumns={defaultColumns}
-        />
       </div>
+      <DND
+        showColumnMenu={showColumnMenu}
+        setShowColumnMenu={setShowColumnMenu}
+        handleColumnChange={handleColumnChange}
+        columnListOrder={columnListOrder}
+        defaultColumns={defaultColumns}
+      />
     </>
   );
 };

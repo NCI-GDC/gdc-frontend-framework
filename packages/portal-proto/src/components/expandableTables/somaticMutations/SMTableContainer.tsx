@@ -14,6 +14,7 @@ import {
 import { useEffect, useState, useReducer, createContext } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
+import { Button } from "@mantine/core";
 import { default as PageStepper } from "../shared/PageStepperMantine";
 import { default as PageSize } from "../shared/PageSizeMantine";
 import { default as TableControls } from "../shared/TableControlsMantine";
@@ -32,7 +33,6 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
-import FunctionButton from "@/components/FunctionButton";
 
 export const SelectedRowContext =
   createContext<
@@ -276,58 +276,72 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             removeFromSetHook={useRemoveFromSsmSetMutation}
           />
         )}
-        <div className="flex justify-between items-center mb-2">
-          <TableControls
-            total={smTotal}
-            numSelected={Object.keys(selectedMutations).length ?? 0}
-            label={`Somatic Mutation`}
-            options={[
-              { label: "Save/Edit Mutation Set", value: "placeholder" },
-              {
-                label: "Save as new mutation set",
-                value: "save",
-                onClick: () => setShowSaveModal(true),
-              },
-              {
-                label: "Add to existing mutation set",
-                value: "add",
-                disabled: Object.keys(sets).length === 0,
-                onClick: () => setShowAddModal(true),
-              },
-              {
-                label: "Remove from existing mutation set",
-                value: "remove",
-                disabled: Object.keys(sets).length === 0,
-                onClick: () => setShowRemoveModal(true),
-              },
-            ]}
-            additionalControls={
-              <div className="flex gap-2">
-                <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton>JSON</FunctionButton>
-                </ButtonTooltip>
-                <ButtonTooltip label="Export current view">
-                  <FunctionButton>TSV</FunctionButton>
-                </ButtonTooltip>
-              </div>
-            }
-          />
-
-          <TableFilters
-            search={searchTerm}
-            handleSearch={handleSearch}
-            columnListOrder={columnListOrder}
-            handleColumnChange={handleColumnChange}
-            showColumnMenu={showColumnMenu}
-            setShowColumnMenu={setShowColumnMenu}
-            defaultColumns={DEFAULT_SMTABLE_ORDER}
-          />
+        <div className="flex flex-row justify-between items-center flex-nowrap w-100">
+          <div className="flex flex-row ml-2 mb-4">
+            <TableControls
+              total={smTotal}
+              numSelected={Object.keys(selectedMutations).length ?? 0}
+              label={`Somatic Mutation`}
+              options={[
+                { label: "Save/Edit Mutation Set", value: "placeholder" },
+                {
+                  label: "Save as new mutation set",
+                  value: "save",
+                  onClick: () => setShowSaveModal(true),
+                },
+                {
+                  label: "Add to existing mutation set",
+                  value: "add",
+                  disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowAddModal(true),
+                },
+                {
+                  label: "Remove from existing mutation set",
+                  value: "remove",
+                  disabled: Object.keys(sets).length === 0,
+                  onClick: () => setShowRemoveModal(true),
+                },
+              ]}
+              additionalControls={
+                <div className="flex gap-2">
+                  <ButtonTooltip label="Export All Except #Cases">
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      JSON
+                    </Button>
+                  </ButtonTooltip>
+                  <ButtonTooltip label="Export current view">
+                    <Button
+                      className={
+                        "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                      }
+                    >
+                      TSV
+                    </Button>
+                  </ButtonTooltip>
+                </div>
+              }
+            />
+          </div>
+          <div className="flex flex-row flex-nowrap mr-2">
+            <TableFilters
+              search={searchTerm}
+              handleSearch={handleSearch}
+              columnListOrder={columnListOrder}
+              handleColumnChange={handleColumnChange}
+              showColumnMenu={showColumnMenu}
+              setShowColumnMenu={setShowColumnMenu}
+              defaultColumns={DEFAULT_SMTABLE_ORDER}
+            />
+          </div>
         </div>
-
         <div ref={ref}>
           {!visibleColumns.length ? (
             <TablePlaceholder
-              cellWidth="w-48"
+              cellWidth={`w-48`}
               rowHeight={60}
               numOfColumns={15}
               numOfRows={pageSize}
@@ -367,36 +381,41 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
         </div>
         {visibleColumns.length ? (
-          <div className="flex font-heading items-center bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+          <div
+            className={`flex flex-row w-100 ml-2 mt-0 font-heading items-center`}
+          >
             <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
-              <div className="grow-0">
+              <div className={"grow-0"}>
                 <div className="flex flex-row items-center text-sm ml-0">
-                  <span className="my-auto mx-1">Show</span>
+                  <span className="my-auto mx-1 ">Show</span>
                   <PageSize pageSize={pageSize} handlePageSize={setPageSize} />
-                  <span className="my-auto mx-1">Entries</span>
+                  <span className="my-auto mx-1 ">Entries</span>
                 </div>
               </div>
             </div>
-            <div className="flex flex-row justify-between items-center text-sm">
+            <div
+              className={`flex flex-row justify-between items-center text-sm`}
+            >
               <span>
                 Showing
-                <span className="font-bold">{` ${(
+                <span className={`font-bold`}>{` ${(
                   page * pageSize +
                   1
                 ).toLocaleString("en-US")} `}</span>
                 -
-                <span className="font-bold">{`${((page + 1) * pageSize < smTotal
+                <span className={`font-bold`}>{`${((page + 1) * pageSize <
+                smTotal
                   ? (page + 1) * pageSize
                   : smTotal
                 ).toLocaleString("en-US")} `}</span>
                 of
-                <span className="font-bold">{` ${smTotal.toLocaleString(
+                <span className={`font-bold`}>{` ${smTotal.toLocaleString(
                   "en-US",
                 )} `}</span>
                 somatic mutations
               </span>
             </div>
-            <div className="m-auto mr-0">
+            <div className={`m-auto mr-0`}>
               <PageStepper
                 page={page}
                 totalPages={Math.ceil(smTotal / pageSize)}

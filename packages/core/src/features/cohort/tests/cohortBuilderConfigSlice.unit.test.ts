@@ -228,7 +228,6 @@ describe("cohortConfig reducer", () => {
       "cases.diagnoses.morphology",
       "cases.diagnoses.year_of_diagnosis",
       "cases.diagnoses.site_of_resection_or_biopsy",
-      "cases.diagnoses.sites_of_involvement",
       "cases.diagnoses.laterality",
       "cases.diagnoses.prior_malignancy",
       "cases.diagnoses.prior_treatment",

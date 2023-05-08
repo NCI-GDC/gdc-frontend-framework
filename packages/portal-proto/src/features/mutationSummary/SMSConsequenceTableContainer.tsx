@@ -1,6 +1,7 @@
 import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
+import { Button } from "@mantine/core";
 import { default as PageStepper } from "@/components/expandableTables/shared/PageStepperMantine";
 import { default as PageSize } from "@/components/expandableTables/shared/PageSizeMantine";
 import TablePlaceholder from "@/components/expandableTables/shared/TablePlaceholder";
@@ -11,8 +12,6 @@ import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/mutationTableConfig";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { HeaderTitle } from "../shared/tailwindComponents";
-import FunctionButton from "@/components/FunctionButton";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -141,21 +140,30 @@ export const SMSConsequenceTableContainer: React.FC<
 
   return (
     <>
-      <div className="mt-12">
-        <div className="mb-2">
-          <HeaderTitle>Consequences</HeaderTitle>
-        </div>
-
-        <div className="flex mb-2 justify-between">
+      <div className="flex flex-row justify-between items-center flex-nowrap w-100">
+        <div className="flex flex-row ml-2 mb-4">
           <div className="flex gap-2">
             <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
-              <FunctionButton>JSON</FunctionButton>
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                JSON
+              </Button>
             </ButtonTooltip>
             <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton>TSV</FunctionButton>
+              <Button
+                className={
+                  "bg-white text-activeColor border border-0.5 border-activeColor text-xs"
+                }
+              >
+                TSV
+              </Button>
             </ButtonTooltip>
           </div>
-
+        </div>
+        <div className="flex flex-row flex-nowrap mr-2">
           <DND
             columnListOrder={columnListOrder}
             handleColumnChange={handleColumnChange}
@@ -168,7 +176,7 @@ export const SMSConsequenceTableContainer: React.FC<
       <div ref={ref}>
         {!visibleColumns.length ? (
           <TablePlaceholder
-            cellWidth="w-48"
+            cellWidth={`w-48`}
             rowHeight={60}
             numOfColumns={15}
             numOfRows={size}
@@ -189,9 +197,9 @@ export const SMSConsequenceTableContainer: React.FC<
         )}
       </div>
       {visibleColumns.length ? (
-        <div className="flex mb-2 py-4 px-2 border border-base-lighter border-t-0">
-          <div className="flex flex-nowrap items-center m-auto ml-0">
-            <span className="mx-1 text-xs">Show</span>
+        <div className={`flex flex-row ml-2 m-auto w-9/12 mb-2`}>
+          <div className="flex flex-row flex-nowrap items-center m-auto ml-0">
+            <span className=" mx-1 text-xs">Show</span>
             <PageSize pageSize={size} handlePageSize={handleSetPageSize} />
             <span className="my-auto mx-1 text-xs">Entries</span>
           </div>

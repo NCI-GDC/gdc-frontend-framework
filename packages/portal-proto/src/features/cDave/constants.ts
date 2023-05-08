@@ -24,7 +24,7 @@ export const COLOR_MAP = {
   exposures: "nci-purple",
 };
 
-export const CAPITALIZED_TERMS = [
+export const CAPILIZED_TERMS = [
   "ajcc",
   "uicc",
   "cog",

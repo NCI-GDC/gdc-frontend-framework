@@ -88,11 +88,13 @@ export const Subrow: React.FC<SubrowProps> = ({
       )}
       {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
       {isSuccess && (
-        <ListSpring
-          subData={subData}
-          horizontalSpring={horizontalSpring}
-          subrowTitle={subrowTitle}
-        />
+        <div className={`relative`}>
+          <ListSpring
+            subData={subData}
+            horizontalSpring={horizontalSpring}
+            subrowTitle={subrowTitle}
+          />
+        </div>
       )}
     </div>
   );

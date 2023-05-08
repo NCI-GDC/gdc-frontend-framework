@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
+  useGetCasesQuery,
   useCoreSelector,
   useCoreDispatch,
   selectAvailableCohorts,
   addNewCohortWithFilterAndMessage,
   FilterSet,
   hideModal,
-  useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
@@ -24,32 +25,36 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 }: SubmitButtonProps) => {
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
-  const [name, setName] = useState(undefined);
-  const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
-  useEffect(() => {
-    if (response.isSuccess) {
-      const filters: FilterSet = {
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            operator: "includes",
-            field: "cases.case_id",
-            operands: [`set_id:${response.data}`],
-          },
+  const createCohortFromCases = (name: string) => {
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "cases.case_id": {
+          operator: "includes",
+          field: "cases.case_id",
+          operands: ids,
         },
-      };
-      coreDispatch(
-        addNewCohortWithFilterAndMessage({
-          filters: filters,
-          message: "newCasesCohort",
-          name,
-        }),
-      );
+      },
+    };
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        message: "newCasesCohort",
+        name,
+        group:
+          ids.length > 1
+            ? {
+                ids: [...ids],
+                field: "cases.case_id",
+                groupId: uuidv4(),
+              }
+            : undefined,
+      }),
+    );
 
-      coreDispatch(hideModal());
-    }
-  }, [response.isSuccess, name, coreDispatch, response.data]);
+    coreDispatch(hideModal());
+  };
 
   const onNameChange = (name: string) =>
     cohorts.every((cohort) => cohort.name !== name);
@@ -64,8 +69,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
           opened
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
-            setName(newName);
-            createSet({ values: ids });
+            createCohortFromCases(newName);
           }}
           onNameChange={onNameChange}
         />
@@ -107,8 +111,10 @@ const ImportCohortModal: React.FC = () => {
         }
         entityType="cases"
         entityLabel="case"
+        hooks={{
+          query: useGetCasesQuery,
+        }}
         SubmitButton={SubmitButton}
-        hooks={{}}
       />
     </UserInputModal>
   );

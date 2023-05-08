@@ -60,7 +60,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
     (item: TableSubrowDataWithRatio, index: number) => {
       return (
         <div className="flex flex-row items-center">
-          <Circle size="0.65em" className="text-primary shrink-0 mr-2" />
+          <Circle size="0.65em" className="text-primary shrink-0 "></Circle>
           <RatioSpring
             item={{
               numerator: item.numerator ?? 0,
@@ -68,6 +68,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
               project: item.project,
             }}
             index={index}
+            orientation={"horizontal"}
           />
         </div>
       );
@@ -80,12 +81,14 @@ const ListSpring: React.FC<ListSpringProps> = ({
     <>
       <animated.div
         ref={subRef}
-        className="flex flex-col bg-inherit absolute mt-2 ml-2 p-2"
+        className={`flex flex-wrap bg-inherit absolute mt-2 ml-2`}
         style={horizontalSpring}
       >
         <>
-          <span className="font-semibold text-[1rem] mb-2">{subrowTitle}</span>
-          <div className="columns-4 gap-4 font-content text-sm">
+          <h2 className={`flex flex-row w-screen font-bold text-sm p-2`}>
+            {subrowTitle}
+          </h2>
+          <div className="columns-4 font-content text-sm  p-4">
             {subDataSorted.map((item, i) => renderItems({ ...item }, i))}
           </div>
         </>

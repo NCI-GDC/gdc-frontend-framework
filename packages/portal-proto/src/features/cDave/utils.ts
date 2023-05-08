@@ -1,6 +1,6 @@
 import { omitBy, some, capitalize } from "lodash";
 import { NumericFromTo, Buckets, Stats } from "@gff/core";
-import { CAPITALIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
+import { CAPILIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
 import { CustomInterval, NamedFromTo } from "./types";
 
 export const filterUsefulFacets = (
@@ -52,9 +52,7 @@ export const toDisplayName = (field: string): string => {
 
   return fieldName
     .split("_")
-    .map((w) =>
-      CAPITALIZED_TERMS.includes(w) ? w.toUpperCase() : capitalize(w),
-    )
+    .map((w) => (CAPILIZED_TERMS.includes(w) ? w.toUpperCase() : capitalize(w)))
     .join(" ");
 };
 

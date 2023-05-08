@@ -4,6 +4,7 @@ import { Tabs } from "@mantine/core";
 import {
   useCoreDispatch,
   hideModal,
+  useGetGenesQuery,
   useCreateGeneSetFromValuesMutation,
   useGeneSetCountQuery,
 } from "@gff/core";
@@ -19,6 +20,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  useAddNewFilterGroups,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -49,9 +51,11 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
             </div>
           }
           hooks={{
+            query: useGetGenesQuery,
             createSet: useCreateGeneSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
+            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
           SubmitButton={UpdateCohortButton}
         />

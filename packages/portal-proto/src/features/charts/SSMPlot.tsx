@@ -1,9 +1,9 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { Grid } from "@mantine/core";
 import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { processFilters } from "src/utils";
-import { CountSpan } from "../shared/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
@@ -59,31 +59,18 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
-  const caseCount = (
-    <CountSpan>
-      {data.cases
-        .map((d) => d.ssmCount)
-        .reduce((a, b) => a + b, 0)
-        .toLocaleString()}
-    </CountSpan>
-  );
+  const caseCount = data.cases
+    .map((d) => d.ssmCount)
+    .reduce((a, b) => a + b, 0)
+    .toLocaleString();
 
-  const ssmCount = <CountSpan>{data.ssmCount.toLocaleString()}</CountSpan>;
-  const projectCount = (
-    <CountSpan>{data.cases.length.toLocaleString()}</CountSpan>
-  );
+  const ssmCount = data.ssmCount.toLocaleString();
+  const projectCount = data.cases.length.toLocaleString();
 
   const title =
-    page === "gene" ? (
-      <span>
-        {caseCount} CASES AFFECTED BY {ssmCount} MUTATIONS ACROSS {projectCount}{" "}
-        PROJECTS
-      </span>
-    ) : (
-      <span>
-        THIS MUTATION AFFECTS {caseCount} CASES ACROSS {projectCount} PROJECTS
-      </span>
-    );
+    page === "gene"
+      ? `${caseCount} CASES AFFECTED BY ${ssmCount} MUTATIONS ACROSS ${projectCount} PROJECTS`
+      : `THIS MUTATION AFFECTS ${caseCount} CASES ACROSS ${projectCount} PROJECTS`;
 
   const chartData = {
     datasets: [
@@ -105,7 +92,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <div className="border border-base-lighter p-4">
+    <Grid.Col span={6}>
       <div>
         <ChartTitleBar
           title={title}
@@ -114,7 +101,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           jsonData={{}}
         />
       </div>
-      <div className="">
+      <div className="w-100 h-100">
         <BarChart
           divId={chartDivId}
           data={chartData}
@@ -122,7 +109,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           height={height}
         />
       </div>
-    </div>
+    </Grid.Col>
   );
 };
 

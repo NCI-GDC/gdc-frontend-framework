@@ -25,7 +25,6 @@ export const SlideDetailButton = forwardRef<
         <HorizontalTable
           tableData={tableData}
           customContainerStyles="border-3 border-base"
-          slideImageDetails
         />
       )}
     </div>

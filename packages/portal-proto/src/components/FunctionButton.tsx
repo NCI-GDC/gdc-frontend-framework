@@ -18,7 +18,7 @@ text-primary
 border
 border-solid
 border-primary
-font-heading
 hover:bg-primary
-hover:text-base-max
+font-heading
+hover:text-white
 `;

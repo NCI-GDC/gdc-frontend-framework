@@ -4,6 +4,7 @@ import { Tabs } from "@mantine/core";
 import {
   useCoreDispatch,
   hideModal,
+  useGetSsmsQuery,
   useCreateSsmsSetFromValuesMutation,
   useSsmSetCountQuery,
 } from "@gff/core";
@@ -19,6 +20,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  useAddNewFilterGroups,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -47,9 +49,11 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
             </div>
           }
           hooks={{
+            query: useGetSsmsQuery,
             createSet: useCreateSsmsSetFromValuesMutation,
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
+            useAddNewFilterGroups: useAddNewFilterGroups,
           }}
           SubmitButton={UpdateCohortButton}
         />

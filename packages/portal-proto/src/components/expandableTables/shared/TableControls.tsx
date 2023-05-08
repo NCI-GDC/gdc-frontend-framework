@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { animated, useSpring } from "@react-spring/web";
-import { Button } from "@mantine/core";
 
 interface ControlOption {
   label: string;
@@ -46,9 +45,12 @@ export const TableControls: React.FC<TableControlsProps> = ({
   });
 
   return (
-    <div className="flex items-center">
-      <div>
-        <Button onClick={() => setIsMenuOpen((m) => !m)}>
+    <>
+      <div className={`w-80 h-10 mx-auto my-0 justify-between mt-3`}>
+        <button
+          className={`h-10 rounded border border-activeColor`}
+          onClick={() => setIsMenuOpen((m) => !m)}
+        >
           <div className={`flex flex-row w-80 justify-between`}>
             <animated.div
               className={`mx-auto border-1 py-1 px-2 rounded-md text-xs ${
@@ -74,7 +76,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
             {isMenuOpen && (
               <div className={`text-center`}>
                 <animated.div
-                  className={`flex flex-row mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 ${
+                  className={`flex flex-row mt-1 rounded-t-md border-1 border-b-0 border-black py-2 px-1 text-xs ${
                     numSelected === 0
                       ? `text-activeColor bg-white`
                       : `bg-activeColor text-white`
@@ -108,10 +110,10 @@ export const TableControls: React.FC<TableControlsProps> = ({
               </div>
             )}
           </animated.div>
-        </Button>
+        </button>
       </div>
-      <div>{additionalControls}</div>
-      <div>
+      <div className={`ml-3 mt-3.5 float-left`}>{additionalControls}</div>
+      <div className={`ml-2 text-sm relative`}>
         {total !== 0 && (
           <div className={`flex flex-row absolute w-60 mt-5 ml-5 font-bold`}>
             Total of {total.toLocaleString("en-US")} {label}
@@ -119,7 +121,7 @@ export const TableControls: React.FC<TableControlsProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -91,20 +91,4 @@ describe("<DropdownWithIcon />", () => {
 
     expect(mockOnClickCallBack1).toBeCalled();
   });
-
-  it("test menu item disabled", async () => {
-    const { getByTestId } = render(
-      <DropdownWithIcon
-        TargetButtonChildren="test"
-        dropdownElements={[
-          { title: "itemD", disabled: true },
-          { title: "itemE" },
-        ]}
-      />,
-    );
-
-    await userEvent.click(getByTestId("menu-elem"));
-    expect(getByTestId("itemD-0")).toBeDisabled();
-    expect(getByTestId("itemE-1")).not.toBeDisabled();
-  });
 });

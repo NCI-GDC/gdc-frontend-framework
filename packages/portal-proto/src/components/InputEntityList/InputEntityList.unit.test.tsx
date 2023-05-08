@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
 import InputEntityList from "./InputEntityList";
@@ -9,14 +9,6 @@ import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButto
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());
-jest.spyOn(core, "fetchGdcEntities").mockResolvedValue({
-  data: {
-    hits: [
-      { ssm_id: "7890-123", genomic_dna_change: "crg1:6" },
-      { ssm_id: "6013-009", genomic_dna_change: "crg7:0" },
-    ],
-  },
-} as any);
 
 describe("<InputEntityList />", () => {
   it("create set with matched ids", async () => {
@@ -46,9 +38,17 @@ describe("<InputEntityList />", () => {
             entityType="ssms"
             entityLabel="mutation"
             hooks={{
+              query: jest.fn().mockReturnValue({
+                data: [
+                  { ssm_id: "7890-123", genomic_dna_change: "crg1:6" },
+                  { ssm_id: "6013-009", genomic_dna_change: "crg7:0" },
+                ],
+                isSuccess: true,
+              }),
               updateFilters: jest.fn(),
               createSet: createSetHook,
               getExistingFilters: jest.fn(),
+              useAddNewFilterGroups: jest.fn().mockReturnValue(jest.fn()),
             }}
             SubmitButton={UpdateCohortButton}
           />
@@ -58,9 +58,7 @@ describe("<InputEntityList />", () => {
     );
 
     await userEvent.type(getByPlaceholderText("ex. TCGA"), "7890-123");
-    const saveButton = getByRole("button", { name: "Save Set" });
-    await waitFor(() => expect(saveButton).toBeEnabled());
-    await userEvent.click(saveButton);
+    await userEvent.click(getByRole("button", { name: "Save Set" }));
     await userEvent.type(getByPlaceholderText("New Set Name"), "my set");
     await userEvent.click(
       getByRole("button", { name: "Save button to add a set" }),

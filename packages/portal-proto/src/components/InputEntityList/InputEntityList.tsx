@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import {
+  UseMutation,
+  UseQuery,
+} from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   Textarea,
   FileInput,
@@ -7,7 +11,7 @@ import {
   ActionIcon,
   Loader,
 } from "@mantine/core";
-import { flatten, debounce, uniq } from "lodash";
+import { flatten } from "lodash";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdInfo as InfoIcon } from "react-icons/md";
 import {
@@ -16,13 +20,13 @@ import {
   hideModal,
   Operation,
   FilterSet,
-  fetchGdcEntities,
+  FilterGroup,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import { getMatchedIdentifiers, MatchResults } from "./utils";
+import { getMatchedIdentifiers } from "./utils";
 import MatchTables from "./MatchTables";
 import SaveSetButton from "./SaveSetButton";
 import fieldConfig from "./fieldConfig";
@@ -36,9 +40,15 @@ interface InputEntityListProps {
   readonly entityType: SetTypes;
   readonly entityLabel: string;
   readonly hooks: {
-    readonly updateFilters?: (field: string, op: Operation) => void;
+    readonly query: UseQuery<QueryDefinition<any, any, any, any, any>>;
+    readonly updateFilters?: (
+      field: string,
+      op: Operation,
+      groups?: FilterGroup[],
+    ) => void;
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters?: () => FilterSet;
+    readonly useAddNewFilterGroups?: () => (groups: FilterGroup[]) => void;
   };
   readonly SubmitButton: React.ElementType;
 }
@@ -56,18 +66,10 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
   const [tokens, setTokens] = useState<string[]>([]);
-  const [matched, setMatched] = useState<MatchResults[]>([]);
-  const [isUnintialized, setIsUnitialized] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
-
-  const setTokensDebounced = debounce(
-    (input) => setTokens(input.trim().split(/[\s,]+/)),
-    500,
-  );
 
   const {
     mappedToFields,
@@ -78,77 +80,52 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     facetField,
   } = fieldConfig[entityType];
 
-  useEffect(() => {
-    if (tokens.length > 0) {
-      setIsUnitialized(false);
-      setIsFetching(true);
+  const { data, isSuccess } = hooks.query({
+    filters: {
+      op: "in",
+      content: {
+        field: searchField,
+        value: tokens.map((t) => t.toLowerCase()),
+      },
+    },
+    fields: [...mappedToFields, ...matchAgainstIdentifiers],
+    size: MATCH_LIMIT,
+  });
 
-      const response = fetchGdcEntities(
-        entityType,
-        {
-          filters: {
-            op: "in",
-            content: {
-              field: searchField,
-              value: uniq(tokens.map((t) => t.toLowerCase())),
-            },
-          },
-          fields: [...mappedToFields, ...matchAgainstIdentifiers],
-          size: 10000,
-        },
-        true,
-      );
-
-      response.then((data) => {
-        setMatched(
-          getMatchedIdentifiers(
-            data.data.hits,
+  const matched = useMemo(
+    () =>
+      isSuccess
+        ? getMatchedIdentifiers(
+            data,
             mappedToFields,
             matchAgainstIdentifiers,
-            outputField,
             tokens,
-          ),
-        );
-
-        setIsFetching(false);
-      });
-    }
-  }, [
-    tokens,
-    mappedToFields,
-    matchAgainstIdentifiers,
-    outputField,
-    searchField,
-    entityType,
-  ]);
-
-  const unmatched = useMemo(() => {
-    const unmatchedTokens = new Set(tokens.map((t) => t.toUpperCase()));
-
-    const matchedIds = new Set(
-      flatten(
-        matched.map((m) =>
-          m.givenIdentifiers.map((i) => i.value.toUpperCase()),
-        ),
-      ),
-    );
-
-    for (const id of matchedIds) {
-      unmatchedTokens.delete(id);
-    }
-
-    return Array.from(unmatchedTokens);
-  }, [tokens, matched]);
-
-  const outputIds = useMemo(
-    () =>
-      matched
-        .map(
-          (match) => match.output.find((m) => m.field === outputField)?.value,
-        )
-        .filter((match) => match !== null),
-    [matched, outputField],
+            outputField,
+          )
+        : [],
+    [
+      data,
+      mappedToFields,
+      matchAgainstIdentifiers,
+      tokens,
+      outputField,
+      isSuccess,
+    ],
   );
+
+  const matchedIds = flatten(
+    matched.map((m) => m.givenIdentifiers.map((i) => i.value)),
+  ).map((id) => id.toLowerCase());
+  const unmatched = tokens
+    .filter((t) => !matchedIds.includes(t.toLowerCase()) && t.length !== 0)
+    .map((t) => t.toUpperCase());
+  const outputIds = matched
+    .map((match) => match.output.find((m) => m.field === outputField)?.value)
+    .filter((match) => match !== null);
+
+  useEffect(() => {
+    setTokens(input.trim().split(/[\s,]+/));
+  }, [input]);
 
   useEffect(() => {
     setUserEnteredInput(false);
@@ -198,10 +175,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           <Textarea
             ref={inputRef}
             value={input}
-            onChange={(event) => {
-              setInput(event.currentTarget.value);
-              setTokensDebounced(event.currentTarget.value);
-            }}
+            onChange={(event) => setInput(event.currentTarget.value)}
             minRows={5}
             id="identifier-input"
             placeholder={textInputPlaceholder}
@@ -210,8 +184,6 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
                 ? `Identifiers must not exceed ${MATCH_LIMIT.toLocaleString()} matched items.`
                 : undefined
             }
-            spellCheck={false}
-            autoComplete={"off"}
           />
           <FileInput
             value={file}
@@ -221,7 +193,6 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
                 setFile(file);
                 const contents = await file.text();
                 setInput(contents);
-                setTokens(contents.trim().split(/[\s,]+/));
                 setScreenReaderMessage("File successfully uploaded.");
                 setProcessingFile(false);
               }
@@ -246,12 +217,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             aria-details={screenReaderMessage}
           />
         </div>
-        {isUnintialized ? null : isFetching ? (
-          <div className="flex items-center pl-4 gap-1 text-sm">
-            <Loader size={12} />
-            <p>validating {entityLabel}s</p>
-          </div>
-        ) : (
+        {(matched.length > 0 || unmatched.length > 0) && (
           <MatchTables
             matched={matched}
             unmatched={unmatched}

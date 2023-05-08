@@ -20,7 +20,7 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
 
-jest.mock("@sjcrh/proteinpaint-client", () => ({
+jest.mock("@stjude/proteinpaint-client", () => ({
   __esModule: true,
   runproteinpaint: jest.fn(async (arg) => {
     runpparg = arg;

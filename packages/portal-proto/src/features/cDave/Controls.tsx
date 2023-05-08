@@ -82,7 +82,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-md text-primary-contrast cursor-pointer bg-primary font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
+        className="text-md text-primary-contrast-lighter cursor-pointer bg-primary-lighter font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
@@ -90,7 +90,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
       </span>
       <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
-          <ul className="bg-base-max text-md">
+          <ul className="bg-base-max">
             {visibleFields.map((field) => (
               <FieldControl
                 key={field.full}
@@ -101,13 +101,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               />
             ))}
           </ul>
-          <div className="text-sm">
-            <FacetExpander
-              remainingValues={filteredFields.length - 5}
-              isGroupExpanded={!fieldsCollapsed}
-              onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
-            />
-          </div>
+          <FacetExpander
+            remainingValues={filteredFields.length - 5}
+            isGroupExpanded={!fieldsCollapsed}
+            onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
+          />
         </div>
       </Collapse>
     </>
@@ -136,10 +134,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="px-2 pt-2">
+    <li key={field.full} className="px-2">
       {searchTerm ? (
         <>
-          <div className="flex justify-between items-center pb-1">
+          <div className="flex justify-between items-center">
             <label
               className="font-content font-medium text-md"
               htmlFor={`switch-${field.full}`}
@@ -148,7 +146,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             </label>
             <Switch
               styles={(theme) => ({
-                track: {
+                input: {
                   "&:hover": {
                     backgroundColor: theme.fn.darken(
                       tailwindConfig.theme.extend.colors[
@@ -157,14 +155,8 @@ const FieldControl: React.FC<FieldControlProps> = ({
                       0.05,
                     ),
                   },
-                },
-                input: {
-                  "&:checked + .mantine-Switch-track": {
-                    backgroundColor:
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                    borderColor:
+                  "&:checked": {
+                    color:
                       tailwindConfig.theme.extend.colors[
                         COLOR_MAP[field.field_type]
                       ]?.DEFAULT,
@@ -187,7 +179,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Highlight>
         </>
       ) : (
-        <div className="flex justify-between cursor-pointer items-center bg-none py-2">
+        <div className="flex justify-between cursor-pointer items-center bg-none">
           <Tooltip
             label={field?.description || "No description available"}
             withArrow
@@ -196,7 +188,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           >
             <Box>
               <label
-                className="pointer-events-none font-content font-medium"
+                className="pointer-events-none"
                 htmlFor={`switch-${field.full}`}
               >
                 {displayName}
@@ -205,7 +197,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Tooltip>
           <Switch
             styles={(theme) => ({
-              track: {
+              input: {
                 "&:hover": {
                   backgroundColor: theme.fn.darken(
                     tailwindConfig.theme.extend.colors[
@@ -214,14 +206,8 @@ const FieldControl: React.FC<FieldControlProps> = ({
                     0.05,
                   ),
                 },
-              },
-              input: {
-                "&:checked + .mantine-Switch-track": {
+                "&:checked": {
                   backgroundColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                  borderColor:
                     tailwindConfig.theme.extend.colors[
                       COLOR_MAP[field.field_type]
                     ]?.DEFAULT,
@@ -230,6 +216,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             })}
             classNames={{
               input: "bg-none rounded-lg",
+              body: "pb-4",
             }}
             checked={checked}
             onChange={(e) => {

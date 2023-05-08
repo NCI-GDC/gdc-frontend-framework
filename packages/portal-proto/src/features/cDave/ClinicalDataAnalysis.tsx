@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LoadingOverlay } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
@@ -7,7 +7,6 @@ import {
   useClinicalFields,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
@@ -20,7 +19,6 @@ export interface ClinicalDataAnalysisProps {
 const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   onLoaded,
 }: ClinicalDataAnalysisProps) => {
-  const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
 
@@ -34,20 +32,7 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     );
 
   const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      isDemoMode
-        ? {
-            mode: "and",
-            root: {
-              "cases.project.project_id": {
-                operator: "includes",
-                field: "cases.project.project_id",
-                operands: ["TCGA-LGG"],
-              },
-            },
-          }
-        : selectCurrentCohortFilters(state),
-    ),
+    buildCohortGqlOperator(selectCurrentCohortFilters(state)),
   );
   const {
     data: cDaveResult,
@@ -73,41 +58,27 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
   }, [isFetching, onLoaded]);
 
   return isFetching ? (
-    <div className="flex relative justify-center items-center h-screen/2">
-      <LoadingOverlay
-        loaderProps={{ size: "xl", color: "primary" }}
-        visible={isFetching}
-        data-testid="please_wait_spinner"
-      />
-    </div>
+    <Loader size={80} data-testid="please_wait_spinner" />
   ) : (
-    <>
-      {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing cases with low grade gliomas (TCGA-LGG project)."}
-        </span>
-      )}
-
-      <div className="flex">
-        <Controls
-          updateFields={updateFields}
-          cDaveFields={cDaveFields}
-          fieldsWithData={filterUsefulFacets(cDaveResult)}
+    <div className="flex">
+      <Controls
+        updateFields={updateFields}
+        cDaveFields={cDaveFields}
+        fieldsWithData={filterUsefulFacets(cDaveResult)}
+        activeFields={activeFields}
+        controlsExpanded={controlsExpanded}
+        setControlsExpanded={setControlsExpanded}
+      />
+      {isSuccess && Object.keys(cDaveResult).length > 0 && (
+        <Dashboard
           activeFields={activeFields}
+          cohortFilters={cohortFilters}
+          results={cDaveResult}
+          updateFields={updateFields}
           controlsExpanded={controlsExpanded}
-          setControlsExpanded={setControlsExpanded}
         />
-        {isSuccess && Object.keys(cDaveResult).length > 0 && (
-          <Dashboard
-            activeFields={activeFields}
-            cohortFilters={cohortFilters}
-            results={cDaveResult}
-            updateFields={updateFields}
-            controlsExpanded={controlsExpanded}
-          />
-        )}
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 

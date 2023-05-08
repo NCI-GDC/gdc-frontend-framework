@@ -19,14 +19,14 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
     );
 
     expect(
-      getByRole("row", { name: "Select male 1,000 (66.67%)" }),
+      getByRole("row", { name: "male 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
 
@@ -42,7 +42,7 @@ describe("CDaveCard", () => {
     const { getByText } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
@@ -66,14 +66,14 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
     );
 
     expect(
-      getByRole("row", { name: "Select missing 1,000 (66.67%)" }),
+      getByRole("row", { name: "missing 1,000 (66.67%)" }),
     ).toBeInTheDocument();
   });
 
@@ -92,7 +92,7 @@ describe("CDaveCard", () => {
     const { getAllByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
@@ -116,17 +116,17 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 100 } } as any}
-        field={"diagnosis.days_to_treatment_start"}
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,
     );
 
     expect(
-      getByRole("row", { name: "Select 7201 to <12255.8 10 (10.00%)" }),
+      getByRole("row", { name: "7201 to <12255.8 10 (10.00%)" }),
     ).toBeInTheDocument();
     expect(
-      getByRole("row", { name: "Select 12255.8 to <17310.6 90 (90.00%)" }),
+      getByRole("row", { name: "12255.8 to <17310.6 90 (90.00%)" }),
     ).toBeInTheDocument();
   });
 
@@ -144,7 +144,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 38 } } as any}
-        field="diagnosis.days_to_treatment_start"
+        field={""}
         updateFields={jest.fn()}
         initialDashboardRender
       />,

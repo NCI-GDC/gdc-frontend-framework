@@ -3,7 +3,7 @@ import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
 import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
-import { render, waitFor } from "test-utils";
+import { render } from "test-utils";
 
 jest.mock("src/hooks/useIsDemoApp");
 
@@ -25,32 +25,28 @@ beforeEach(() => {
 });
 
 describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
-  it("should show demo text if it is demo mode", async () => {
+  it("should show demo text if it is demo mode", () => {
     (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
       true as any,
     );
     const { getByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
 
-    await waitFor(() =>
-      expect(
-        getByText(
-          "Demo showing cases with low grade gliomas (TCGA-LGG project).",
-        ),
-      ).toBeDefined(),
-    );
+    expect(
+      getByText(
+        "Demo showing cases with low grade gliomas (TCGA-LGG project).",
+      ),
+    ).toBeDefined();
   });
 
-  it("should NOT show demo text if it is demo mode", async () => {
+  it("should NOT show demo text if it is demo mode", () => {
     (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
       false as any,
     );
     const { queryByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
-    await waitFor(() =>
-      expect(
-        queryByText(
-          "Demo showing cases with low grade gliomas (TCGA-LGG project).",
-        ),
-      ).toBeNull(),
-    );
+    expect(
+      queryByText(
+        "Demo showing cases with low grade gliomas (TCGA-LGG project).",
+      ),
+    ).toBeNull();
   });
 });

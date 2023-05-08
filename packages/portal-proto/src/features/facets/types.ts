@@ -1,4 +1,4 @@
-import { NumericFromTo, OperandValue, Operation } from "@gff/core";
+import { NumericFromTo, OperandValue, Operation, FilterGroup } from "@gff/core";
 import { ComponentType } from "react";
 
 export interface FacetResponse {
@@ -53,6 +53,9 @@ export interface RangeFacetHooks extends FacetDataHooks {
 export interface SetFacetHooks extends FacetDataHooks {
   useUpdateFacetFilters: UpdateFacetFilterHook;
   useGetFacetValues: (field: string) => OperandValue;
+  useFilterGroups: (field: string) => FilterGroup[];
+  useRemoveFilterGroup: () => (group: FilterGroup) => void;
+  useClearGroups: () => (field: string) => void;
 }
 
 export interface FacetRequiredHooks {

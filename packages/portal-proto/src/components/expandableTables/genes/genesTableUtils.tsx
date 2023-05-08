@@ -1,15 +1,13 @@
 import React, { Dispatch, SetStateAction } from "react";
+import ToggleSpring from "../shared/ToggleSpring";
 import { Tooltip } from "@mantine/core";
-import {
-  IoMdTrendingDown as SurvivalIcon,
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import CheckboxSpring from "../shared/CheckboxSpring";
 import SwitchSpring from "../shared/SwitchSpring";
 import RatioSpring from "../shared/RatioSpring";
 import { SelectedReducer, TableColumnDefinition } from "../shared/types";
 import { AnnotationsIcon } from "../shared/sharedTableUtils";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import { SelectReducerAction } from "../shared/types";
@@ -44,11 +42,15 @@ export const createTableColumn = (
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip={""}
+                className="ml-1 mr-2"
+              />
             ),
             cell: ({ row }) => {
               return (
-                <>
+                <div className="ml-1.5 mr-2">
                   {/* todo: make select/toggle columns fixed smaller width */}
                   {row.getCanExpand() && (
                     <CheckboxSpring
@@ -58,7 +60,7 @@ export const createTableColumn = (
                       multi={false}
                     />
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -84,6 +86,7 @@ export const createTableColumn = (
                   {row.getCanExpand() && (
                     <SwitchSpring
                       isActive={toggledGenes.includes(row.original?.geneID)}
+                      margin={`my-0.5 ml-0 mr-1`}
                       icon={
                         isDemoMode ? (
                           <Image
@@ -232,9 +235,13 @@ export const createTableColumn = (
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex justify-start">
+                <div className={`flex flex-row justify-start`}>
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation="horizontal"
+                    />
                   )}
                 </div>
               );
@@ -253,6 +260,7 @@ export const createTableColumn = (
               <TableHeader
                 title={`# SSM Affected Cases
                  Across the GDC`}
+                className="flex flex-row justify-start mx-4"
                 tooltip={`# Cases where Gene contains Simple Somatic Mutations / # Cases tested for Simple Somatic Mutations portal wide.
                 Expand to see breakdown by project`}
               />
@@ -262,11 +270,11 @@ export const createTableColumn = (
                 "SSMSAffectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-row flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <div className="flex items-center">
+                    <div className="text-center content-center">
                       <button
-                        aria-label="expand or collapse subrow"
+                        aria-controls={`expandedSubrow`}
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
@@ -276,16 +284,21 @@ export const createTableColumn = (
                           style: { cursor: "pointer" },
                         }}
                       >
-                        {!row.getIsExpanded() ? (
-                          <DownIcon size="1.25em" className="text-accent" />
-                        ) : (
-                          <UpIcon size="1.25em" className="text-accent" />
-                        )}
+                        <ToggleSpring
+                          isExpanded={row.getIsExpanded()}
+                          icon={
+                            <MdKeyboardArrowDown size="0.75em" color="white" />
+                          }
+                        />
                       </button>
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      orientation="horizontal"
+                    />
                   )}
                 </div>
               );
@@ -303,6 +316,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
+                className="flex flex-row justify-start mr-8"
                 tooltip={
                   "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -335,6 +349,7 @@ export const createTableColumn = (
             header: () => (
               <TableHeader
                 title={`# ${startCase(accessor)}`}
+                className="flex flex-row justify-start mr-2"
                 tooltip={
                   "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
                 }
@@ -378,7 +393,10 @@ export const createTableColumn = (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
                         return (
-                          <div key={`cytoband-${key}`} className="my-0.5">
+                          <div
+                            key={`cytoband-${key}`}
+                            className={`my-0.5 text-xs`}
+                          >
                             {cytoband}
                           </div>
                         );
@@ -409,14 +427,14 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <>
+                <div>
                   {row.getCanExpand() && (
-                    <span>
+                    <div className="text-center text-xs">
                       {row?.original["mutations"]?.toLocaleString("en-US") ??
                         ""}
-                    </span>
+                    </div>
                   )}
-                </>
+                </div>
               );
             },
           },
@@ -442,11 +460,12 @@ export const createTableColumn = (
                 : "";
               return (
                 <button
-                  className="text-utility-link underline"
+                  className="text-utility-link underline text-xs"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
                       entity_id: row.original?.geneID,
+                      entity_name: label,
                       contextSensitive: true,
                       // TODO: rename
                       contextFilters: genomicFilters,
@@ -476,11 +495,11 @@ export const createTableColumn = (
             ),
             cell: ({ row }) => {
               return (
-                <span>
+                <div className={`text-xs`}>
                   {row.original[`${accessor}`]
                     ? row.original[`${accessor}`]
                     : ""}
-                </span>
+                </div>
               );
             },
           },
