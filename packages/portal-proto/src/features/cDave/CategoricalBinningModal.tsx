@@ -450,7 +450,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
 
   const closeInput = () => {
     if (Object.keys(form.errors).length === 0) {
-      updateGroupName(groupName, form.values.group);
+      updateGroupName(groupName, form.values.group.trim());
       setEditField(undefined);
     }
   };
@@ -486,13 +486,13 @@ const GroupInput: React.FC<GroupInputProps> = ({
         <TextInput
           ref={ref}
           className={"w-1/2"}
-          onKeyPress={createKeyboardAccessibleFunction(closeInput)}
+          onKeyDown={createKeyboardAccessibleFunction(closeInput)}
           {...form.getInputProps("group")}
         />
       ) : (
         <div
           onClick={updateSelectedValues}
-          onKeyPress={createKeyboardAccessibleFunction(updateSelectedValues)}
+          onKeyDown={createKeyboardAccessibleFunction(updateSelectedValues)}
           tabIndex={0}
           role="button"
           className={`${

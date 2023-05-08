@@ -87,7 +87,7 @@ const DND: React.FC<DNDProps> = ({
                   <DragDrop
                     listOptions={columnListOrder}
                     handleColumnChange={handleColumnChange}
-                    columnSearchTerm={columnSearchTerm}
+                    columnSearchTerm={columnSearchTerm.trim()}
                   />
                 </DndProvider>
               </div>

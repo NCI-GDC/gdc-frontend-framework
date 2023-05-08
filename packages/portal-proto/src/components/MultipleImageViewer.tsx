@@ -115,7 +115,7 @@ export const MultipleImageViewer = ({
   const performSearch = () => {
     dispatch(setShouldResetEdgesState());
     setShowMorePressed(false);
-    setSearchValues([searchText.toUpperCase(), ...searchValues]);
+    setSearchValues([searchText.toUpperCase().trim(), ...searchValues]);
     setSearchText("");
     resetStates();
   };
