@@ -3,10 +3,10 @@ import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetails } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
-import { toggleFullScreen } from "../../utils";
 import { SlideDetailButton } from "./SlideDetailButton";
 import { HorizontalTableProps } from "../HorizontalTable";
 import { GDC_API } from "@gff/core";
+import { toggleFullScreen } from "src/utils";
 export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }

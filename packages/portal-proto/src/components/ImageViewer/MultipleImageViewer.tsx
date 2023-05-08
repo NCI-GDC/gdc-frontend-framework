@@ -13,7 +13,6 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import {
-  edgeDetails,
   selectCurrentCohortFilters,
   setShouldResetEdgesState,
   useCoreDispatch,
@@ -86,12 +85,9 @@ export const MultipleImageViewer = ({
 
   useEffect(() => {
     if (!isFetching) {
-      let inside: edgeDetails[];
-      if (showMorePressed) {
-        inside = data?.edges[Object.keys(data.edges)[activeTab]];
-      } else {
-        inside = data?.edges[Object.keys(data.edges)[0]];
-      }
+      const inside =
+        data?.edges[Object.keys(data.edges)[showMorePressed ? activeTab : 0]];
+
       const index = inside?.findIndex((elem) => elem.file_id === selectedId);
       setActiveImage(selectedId || inside?.[activeSlide].file_id);
       setImageDetails(
@@ -130,7 +126,7 @@ export const MultipleImageViewer = ({
     resetStates();
   };
 
-  const shouldShowMoreButton = Object.keys(data.edges).length < data.total;
+  const shouldShowMoreButton = Object.keys(data?.edges).length < data.total;
 
   return (
     <>
@@ -262,7 +258,8 @@ export const MultipleImageViewer = ({
                         classNames={{
                           root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
                           tab: "bg-white hover:bg-primary",
-                          tabsList: "bg-base-light overflow-y-auto",
+                          tabsList:
+                            "bg-base-light max-h-screen-60vh overflow-y-auto flex flex-nowrap",
                           tabLabel:
                             "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
                           panel: "max-h-screen-60vh overflow-y-auto mt-1",
@@ -283,55 +280,52 @@ export const MultipleImageViewer = ({
                           },
                         })}
                       >
-                        <Tabs.List className="flex-nowrap gap-0">
-                          <>
-                            {Object.keys(data?.edges).map((edge, index) => {
-                              return (
-                                <Tabs.Tab
-                                  key={edge}
-                                  value={index.toString()}
-                                  className={`mx-2 my-1 ${
-                                    activeTab.toString() === index.toString()
-                                      ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
-                                      : ""
-                                  } truncate ...`}
-                                >
-                                  {edge}
-                                </Tabs.Tab>
-                              );
-                            })}
-                            <div className="sticky bottom-0 text-center bg-base-lightest p-3">
-                              {shouldShowMoreButton && (
-                                <Button
-                                  onClick={() => {
-                                    setCasesOffSet((o) => o + 10);
-                                    setShowMorePressed(true);
-                                  }}
-                                  size="xs"
-                                  classNames={{
-                                    root: "bg-primary hover:bg-primary-dark",
-                                  }}
-                                  aria-label="show 10 more cases"
-                                >
-                                  Show More
-                                </Button>
-                              )}
+                        <Tabs.List>
+                          {Object.keys(data?.edges).map((edge, index) => {
+                            return (
+                              <Tabs.Tab
+                                key={edge}
+                                value={index.toString()}
+                                className={`mx-2 mt-1 ${
+                                  activeTab.toString() === index.toString()
+                                    ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
+                                    : ""
+                                } truncate ...`}
+                              >
+                                {edge}
+                              </Tabs.Tab>
+                            );
+                          })}
 
-                              <Text size="sm">
-                                Showing{" "}
-                                <strong>
-                                  {Object.keys(data?.edges).length}
-                                </strong>{" "}
-                                of <strong>{data?.total}</strong>
-                              </Text>
-                            </div>
-                          </>
+                          <div className="sticky bottom-0 text-center bg-base-lightest p-3">
+                            {shouldShowMoreButton && (
+                              <Button
+                                onClick={() => {
+                                  setCasesOffSet((o) => o + 10);
+                                  setShowMorePressed(true);
+                                }}
+                                size="xs"
+                                classNames={{
+                                  root: "bg-primary hover:bg-primary-dark",
+                                }}
+                                aria-label="show 10 more cases"
+                              >
+                                Show More
+                              </Button>
+                            )}
+
+                            <Text size="sm">
+                              Showing{" "}
+                              <strong>{Object.keys(data?.edges).length}</strong>{" "}
+                              of <strong>{data?.total}</strong>
+                            </Text>
+                          </div>
                         </Tabs.List>
                         {Object.keys(data?.edges).map((edge, index) => {
                           return (
                             <Tabs.Panel key={edge} value={index.toString()}>
                               <List classNames={{ itemWrapper: "w-full" }}>
-                                {data.edges[edge].map((file, index) => (
+                                {data?.edges[edge].map((file, index) => (
                                   <List.Item
                                     key={`${file.file_id}${file.submitter_id}`}
                                     className="mb-2"

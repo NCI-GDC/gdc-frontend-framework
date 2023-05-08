@@ -1,7 +1,7 @@
 import React, { useState, forwardRef } from "react";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 import { Button } from "@mantine/core";
-import useOutsideClickAlert from "../../hooks/useOutsideClickAlert";
+import useOutsideClickAlert from "@/hooks/useOutsideClickAlert";
 
 export const SlideDetailButton = forwardRef<
   HTMLDivElement,
