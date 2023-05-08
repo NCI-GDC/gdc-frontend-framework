@@ -291,36 +291,39 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ? [...projectsById[d.key]?.primary_site].sort()
               : [],
             ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
-            ssm_affected_cases:
-              data.ssmTotal[d.key] === undefined
-                ? `0 / 0 (0.00%)`
-                : `${data.ssmFiltered[d.key] || 0} / ${
-                    data.ssmTotal[d.key]
-                  } (${(
-                    data.ssmFiltered[d.key] || 0 / data.ssmTotal[d.key]
-                  ).toLocaleString(undefined, {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                  })})`,
+            ssm_affected_cases: `${data.ssmFiltered[d.key] || 0} / ${
+              data.ssmTotal[d.key] || 0
+            } (${
+              data.ssmTotal[d.key]
+                ? (
+                    (100 * (data.ssmFiltered[d.key] || 0)) /
+                    (data.ssmTotal[d.key] || 1)
+                  ).toFixed(2) ?? `0.00`
+                : `0.00`
+            }%)`,
             ...(isGene && {
-              cnv_gains: data.cnvGain
-                ? `${data.cnvGain[d.key]} / ${data.cnvTotal[d.key]} (${(
-                    data.cnvGain[d.key] / data.cnvTotal[d.key]
-                  ).toLocaleString(undefined, {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                  })})`
-                : `0 / 0 (0.00%)`,
+              cnv_gains: `${data.cnvGain[d.key] || 0} / ${
+                data.cnvTotal[d.key] || 0
+              } (${
+                data.cnvTotal
+                  ? (
+                      (100 * (data.cnvGain[d.key] || 0)) /
+                      (data.cnvTotal[d.key] || 1)
+                    ).toFixed(2) ?? `0.00`
+                  : `0.00`
+              }%)`,
             }),
             ...(isGene && {
-              cnv_losses: data.cnvLoss
-                ? `${data.cnvLoss[d.key]} / ${data.cnvTotal[d.key]} (${(
-                    data.cnvLoss[d.key] / data.cnvTotal[d.key]
-                  ).toLocaleString(undefined, {
-                    style: "percent",
-                    minimumFractionDigits: 2,
-                  })})`
-                : `0 / 0 (0.00%)`,
+              cnv_losses: `${data.cnvLoss[d.key] || 0} / ${
+                data.cnvTotal[d.key] || 0
+              } (${
+                data.cnvTotal
+                  ? (
+                      (100 * (data.cnvLoss[d.key] || 0)) /
+                      (data.cnvTotal[d.key] || 1)
+                    ).toFixed(2) ?? `0.00`
+                  : `0.00`
+              }%)`,
             }),
             ...(isGene && {
               num_mutations:
