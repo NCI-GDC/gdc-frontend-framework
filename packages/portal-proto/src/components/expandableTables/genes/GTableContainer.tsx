@@ -325,6 +325,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               searchTerm={searchTerm}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
+              handleMutationCountClick={handleMutationCountClick}
             />
           </div>
         )}
