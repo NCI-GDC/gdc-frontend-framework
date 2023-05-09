@@ -254,7 +254,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 tsv_format: "sample-sheet",
               }}
             />
-            <Menu.Divider />
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}

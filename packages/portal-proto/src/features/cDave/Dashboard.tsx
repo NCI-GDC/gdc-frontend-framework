@@ -83,6 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               data={results[field]}
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}
+              cohortFilters={cohortFilters}
             />
           </Grid.Col>
         );

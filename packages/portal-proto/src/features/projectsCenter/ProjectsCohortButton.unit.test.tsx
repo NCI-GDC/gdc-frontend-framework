@@ -87,6 +87,7 @@ describe("<ProjectCohortButton />", () => {
           },
         },
         message: "newProjectsCohort",
+        name: "",
       },
       type: "cohort/availableCohorts/addNewCohortWithFilterAndMessage",
     });

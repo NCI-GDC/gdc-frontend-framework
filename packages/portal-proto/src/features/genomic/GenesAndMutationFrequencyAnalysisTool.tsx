@@ -92,13 +92,16 @@ export const overwritingDemoFilterMutationFrequency: FilterSet = {
   },
 };
 
-// need to define isDemoMode Here
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
+  const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
+    geneId: undefined,
+    geneSymbol: undefined,
+  });
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
@@ -221,10 +224,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   /**
    * remove comparative survival plot when tabs or filters change.
    */
-  const handleTabChanged = useCallback((tabKey: string) => {
-    setAppMode(tabKey as AppModeState);
-    setComparativeSurvival(undefined);
-  }, []);
+  const handleTabChanged = useCallback(
+    (tabKey: string) => {
+      setAppMode(tabKey as AppModeState);
+      setComparativeSurvival(undefined);
+      (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) &&
+        setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
+    },
+    [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
+  );
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
@@ -324,6 +332,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   isDemoMode ? overwritingDemoFilter : cohortFilters
                 }
                 isDemoMode={isDemoMode}
+                handleMutationCountClick={(
+                  geneId: string,
+                  geneSymbol: string,
+                ) => {
+                  setSearchTermsForGeneId({ geneId, geneSymbol });
+                  setAppMode("ssms");
+                }}
               />
             </div>
           </Tabs.Panel>
@@ -349,22 +364,25 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                   }
                 />
               </div>
+              <SMTableContainer
+                selectedSurvivalPlot={comparativeSurvival}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                genomicFilters={genomicFilters}
+                cohortFilters={
+                  isDemoMode ? overwritingDemoFilter : cohortFilters
+                }
+                handleSsmToggled={partial(
+                  handleGeneAndSSmToggled,
+                  currentMutations,
+                  "ssms.ssm_id",
+                  "mutationID",
+                )}
+                toggledSsms={currentMutations}
+                isDemoMode={isDemoMode}
+                isModal={true}
+                searchTermsForGene={searchTermsForGeneId}
+              />
             </div>
-            <SMTableContainer
-              selectedSurvivalPlot={comparativeSurvival}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              genomicFilters={genomicFilters}
-              cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-              handleSsmToggled={partial(
-                handleGeneAndSSmToggled,
-                currentMutations,
-                "ssms.ssm_id",
-                "mutationID",
-              )}
-              toggledSsms={currentMutations}
-              isDemoMode={isDemoMode}
-              isModal={true}
-            />
           </Tabs.Panel>
         </Tabs>
       </div>

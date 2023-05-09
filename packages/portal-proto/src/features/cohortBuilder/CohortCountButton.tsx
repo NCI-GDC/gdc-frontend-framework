@@ -8,7 +8,7 @@ export interface CountButtonProp {
   readonly bold?: boolean;
 }
 
-const CountButton: React.FC<CountButtonProp> = ({
+const CohortCountButton: React.FC<CountButtonProp> = ({
   countName,
   label,
   className = "",
@@ -39,4 +39,4 @@ const CountButton: React.FC<CountButtonProp> = ({
   );
 };
 
-export default CountButton;
+export default CohortCountButton;
