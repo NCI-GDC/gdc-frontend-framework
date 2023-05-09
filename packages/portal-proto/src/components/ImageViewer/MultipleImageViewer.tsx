@@ -145,225 +145,222 @@ export const MultipleImageViewer = ({
               Back
             </Button>
           </div>
-          <div className="">
-            {data.total === 0 ? (
-              <div className="flex">
-                <Alert
-                  title="No Cases!"
-                  color="red"
-                  withCloseButton
-                  onClose={() => {
-                    setSearchText("");
-                    setSearchValues([]);
-                  }}
-                >
-                  No cases with slide images for this filter
-                </Alert>
-              </div>
-            ) : (
-              <div className="border-2 border-base-lighter">
-                <div className="flex border-b-2 border-b-base-lighter py-2 pl-2">
-                  <div className="w-[31em]">
-                    <div className="flex w-full">
-                      <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                          <h2 className="ml-2 text-xl font-bold">Cases</h2>
-                          <ActionIcon
-                            onClick={() => setShowSearch((c) => !c)}
-                            className="mr-5"
-                            aria-label="click search icon to show search bar"
-                          >
-                            <MdOutlineSearch
-                              size={30}
-                              color="black"
-                              aria-label="search icon"
-                            />
-                          </ActionIcon>
-                        </div>
 
-                        {showSearch && (
-                          <Input
-                            placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
-                            className="mt-1 w-11/12"
-                            rightSectionWidth={50}
-                            onChange={(e) => setSearchText(e.target.value)}
-                            rightSection={
-                              <Badge
-                                color="primary"
-                                variant="filled"
-                                className="cursor-pointer"
-                                onClick={performSearch}
-                              >
-                                Go!
-                              </Badge>
-                            }
-                            onKeyPress={(
-                              e: React.KeyboardEvent<HTMLInputElement>,
-                            ) => {
-                              if (e.key === "Enter") {
-                                performSearch();
-                              }
-                            }}
-                            value={searchText}
+          {data.total === 0 ? (
+            <div className="flex">
+              <Alert
+                title="No Cases!"
+                color="red"
+                withCloseButton
+                onClose={() => {
+                  setSearchText("");
+                  setSearchValues([]);
+                }}
+              >
+                No cases with slide images for this filter
+              </Alert>
+            </div>
+          ) : (
+            <div className="border-2 border-base-lighter">
+              <div className="flex border-b-2 border-b-base-lighter py-2 pl-2">
+                <div className="w-[31em]">
+                  <div className="flex w-full">
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <h2 className="ml-2 text-xl font-bold">Cases</h2>
+                        <ActionIcon
+                          onClick={() => setShowSearch((c) => !c)}
+                          className="mr-5"
+                          aria-label="click search icon to show search bar"
+                        >
+                          <MdOutlineSearch
+                            size={30}
+                            color="black"
+                            aria-label="search icon"
                           />
-                        )}
+                        </ActionIcon>
+                      </div>
 
-                        {searchValues.length > 0 && (
-                          <div className="mt-2 flex flex-col gap-2">
-                            {searchValues.map((value) => (
-                              <Tooltip
-                                key={value}
-                                label="Click to Remove"
-                                withArrow
+                      {showSearch && (
+                        <Input
+                          placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
+                          className="mt-1 w-11/12"
+                          rightSectionWidth={50}
+                          onChange={(e) => setSearchText(e.target.value)}
+                          rightSection={
+                            <Badge
+                              color="primary"
+                              variant="filled"
+                              className="cursor-pointer"
+                              onClick={performSearch}
+                            >
+                              Go!
+                            </Badge>
+                          }
+                          onKeyPress={(
+                            e: React.KeyboardEvent<HTMLInputElement>,
+                          ) => {
+                            if (e.key === "Enter") {
+                              performSearch();
+                            }
+                          }}
+                          value={searchText}
+                        />
+                      )}
+
+                      {searchValues.length > 0 && (
+                        <div className="mt-2 flex flex-col gap-2">
+                          {searchValues.map((value) => (
+                            <Tooltip
+                              key={value}
+                              label="Click to Remove"
+                              withArrow
+                            >
+                              <Badge
+                                className="w-3/5 cursor-pointer"
+                                size="lg"
+                                color="cyan"
+                                variant="filled"
+                                onClick={() => removeFilters(value)}
                               >
-                                <Badge
-                                  className="w-3/5 cursor-pointer"
-                                  size="lg"
-                                  color="cyan"
-                                  variant="filled"
-                                  onClick={() => removeFilters(value)}
-                                >
-                                  {value}
-                                </Badge>
-                              </Tooltip>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div
-                        className={`flex-1 text-left items-center ${
-                          Object.keys(data?.edges).length <= 10
-                            ? "-ml-2"
-                            : "ml-8"
-                        }`}
-                      >
-                        <h2 className="text-xl font-bold">Slides</h2>
-                      </div>
+                                {value}
+                              </Badge>
+                            </Tooltip>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-
-                  <div className="flex text-left">
-                    <h2 className="text-xl font-bold">Image</h2>
+                    <div
+                      className={`flex-1 text-left items-center ${
+                        Object.keys(data?.edges).length <= 10 ? "-ml-2" : "ml-8"
+                      }`}
+                    >
+                      <h2 className="text-xl font-bold">Slides</h2>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex">
-                  {Object.keys(data?.edges).length > 0 && activeImage && (
-                    <div className="flex-1/2 w-[31em]">
-                      <Tabs
-                        orientation="vertical"
-                        variant="pills"
-                        value={activeTab.toString()}
-                        onTabChange={onTabChange}
-                        classNames={{
-                          root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
-                          tab: "bg-white hover:bg-primary",
-                          tabsList:
-                            "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap pt-1",
-                          tabLabel:
-                            "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
-                          panel: "max-h-screen-60vh overflow-y-auto mt-1",
-                        }}
-                        styles={(theme) => ({
-                          tab: {
-                            backgroundColor: theme.white,
-                            color: theme.colors.gray[9],
-                            border: `1px solid ${theme.colors.gray[4]}`,
-                            fontSize: theme.fontSizes.sm,
-                            padding: `1em 1em`,
-                            borderRadius: theme.radius.md,
-                          },
-                          tabLabel: {
-                            borderColor: theme.colors.gray[7],
-                            color: theme.white,
-                            fontWeight: "bold",
-                          },
-                        })}
-                      >
-                        <Tabs.List>
-                          {Object.keys(data?.edges).map((edge, index) => {
-                            return (
-                              <Tabs.Tab
-                                key={edge}
-                                value={index.toString()}
-                                className={`mx-2 mt-1 ${
-                                  activeTab.toString() === index.toString()
-                                    ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
-                                    : ""
-                                } truncate ...`}
-                              >
-                                {edge}
-                              </Tabs.Tab>
-                            );
-                          })}
+                <div className="flex text-left">
+                  <h2 className="text-xl font-bold">Image</h2>
+                </div>
+              </div>
 
-                          <div className="sticky bottom-0 text-center bg-base-lightest p-3 mt-auto">
-                            {shouldShowMoreButton && (
-                              <Button
-                                onClick={() => {
-                                  setCasesOffSet((o) => o + 10);
-                                  setShowMorePressed(true);
-                                }}
-                                size="xs"
-                                classNames={{
-                                  root: "bg-primary hover:bg-primary-dark",
-                                }}
-                                aria-label="show 10 more cases"
-                              >
-                                Show More
-                              </Button>
-                            )}
-
-                            <Text size="sm">
-                              Showing{" "}
-                              <strong>{Object.keys(data?.edges).length}</strong>{" "}
-                              of <strong>{data?.total}</strong>
-                            </Text>
-                          </div>
-                        </Tabs.List>
+              <div className="flex">
+                {Object.keys(data?.edges).length > 0 && activeImage && (
+                  <div className="flex-1/2 w-[31em]">
+                    <Tabs
+                      orientation="vertical"
+                      variant="pills"
+                      value={activeTab.toString()}
+                      onTabChange={onTabChange}
+                      classNames={{
+                        root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
+                        tab: "bg-white hover:bg-primary",
+                        tabsList:
+                          "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap pt-1",
+                        tabLabel:
+                          "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
+                        panel: "max-h-screen-60vh overflow-y-auto mt-1",
+                      }}
+                      styles={(theme) => ({
+                        tab: {
+                          backgroundColor: theme.white,
+                          color: theme.colors.gray[9],
+                          border: `1px solid ${theme.colors.gray[4]}`,
+                          fontSize: theme.fontSizes.sm,
+                          padding: `1em 1em`,
+                          borderRadius: theme.radius.md,
+                        },
+                        tabLabel: {
+                          borderColor: theme.colors.gray[7],
+                          color: theme.white,
+                          fontWeight: "bold",
+                        },
+                      })}
+                    >
+                      <Tabs.List>
                         {Object.keys(data?.edges).map((edge, index) => {
                           return (
-                            <Tabs.Panel key={edge} value={index.toString()}>
-                              <List classNames={{ itemWrapper: "w-full" }}>
-                                {data?.edges[edge].map((file, index) => (
-                                  <List.Item
-                                    key={`${file.file_id}${file.submitter_id}`}
-                                    className="mb-2"
-                                  >
-                                    <Slides
-                                      file_id={file.file_id}
-                                      submitter_id={file.submitter_id}
-                                      setImageViewer={(file_id: string) => {
-                                        setActiveImage(file_id);
-                                        setActiveSlide(index);
-                                        setImageDetails(
-                                          formatImageDetailsInfo(file),
-                                        );
-                                      }}
-                                      isActive={activeImage === file.file_id}
-                                    />
-                                  </List.Item>
-                                ))}
-                              </List>
-                            </Tabs.Panel>
+                            <Tabs.Tab
+                              key={edge}
+                              value={index.toString()}
+                              className={`mx-2 mt-1 ${
+                                activeTab.toString() === index.toString()
+                                  ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
+                                  : ""
+                              } truncate ...`}
+                            >
+                              {edge}
+                            </Tabs.Tab>
                           );
                         })}
-                      </Tabs>
-                    </div>
-                  )}
 
-                  <div className="flex-1 ml-2">
-                    {!isFetching && activeImage && (
-                      <ImageViewer
-                        imageId={activeImage}
-                        tableData={imageDetails}
-                      />
-                    )}
+                        <div className="sticky bottom-0 text-center bg-base-lightest p-3 mt-auto">
+                          {shouldShowMoreButton && (
+                            <Button
+                              onClick={() => {
+                                setCasesOffSet((o) => o + 10);
+                                setShowMorePressed(true);
+                              }}
+                              size="xs"
+                              classNames={{
+                                root: "bg-primary hover:bg-primary-dark",
+                              }}
+                              aria-label="show 10 more cases"
+                            >
+                              Show More
+                            </Button>
+                          )}
+
+                          <Text size="sm">
+                            Showing{" "}
+                            <strong>{Object.keys(data?.edges).length}</strong>{" "}
+                            of <strong>{data?.total}</strong>
+                          </Text>
+                        </div>
+                      </Tabs.List>
+                      {Object.keys(data?.edges).map((edge, index) => {
+                        return (
+                          <Tabs.Panel key={edge} value={index.toString()}>
+                            <List classNames={{ itemWrapper: "w-full" }}>
+                              {data?.edges[edge].map((file, index) => (
+                                <List.Item
+                                  key={`${file.file_id}${file.submitter_id}`}
+                                  className="mb-2"
+                                >
+                                  <Slides
+                                    file_id={file.file_id}
+                                    submitter_id={file.submitter_id}
+                                    setImageViewer={(file_id: string) => {
+                                      setActiveImage(file_id);
+                                      setActiveSlide(index);
+                                      setImageDetails(
+                                        formatImageDetailsInfo(file),
+                                      );
+                                    }}
+                                    isActive={activeImage === file.file_id}
+                                  />
+                                </List.Item>
+                              ))}
+                            </List>
+                          </Tabs.Panel>
+                        );
+                      })}
+                    </Tabs>
                   </div>
+                )}
+
+                <div className="flex-1 ml-2">
+                  {!isFetching && activeImage && (
+                    <ImageViewer
+                      imageId={activeImage}
+                      tableData={imageDetails}
+                    />
+                  )}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </>
