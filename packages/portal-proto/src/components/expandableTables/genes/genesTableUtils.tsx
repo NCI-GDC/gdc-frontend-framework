@@ -323,15 +323,14 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original["CNVGain"] ?? {
+                numerator: 0,
+                denominator: 1,
+              };
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -355,15 +354,14 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original["CNVLoss"] ?? {
+                numerator: 0,
+                denominator: 1,
+              };
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
                 </div>
               );
@@ -578,20 +576,14 @@ export const getGene = (
       numerator: g.ssm_case,
       denominator: cases,
     },
-    CNVGain:
-      cnvCases > 0
-        ? `${g.case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
-            (100 * g.case_cnv_gain) /
-            cnvCases
-          ).toFixed(2)}%)`
-        : `--`,
-    CNVLoss:
-      cnvCases > 0
-        ? `${g.case_cnv_loss.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
-            (100 * g.case_cnv_loss) /
-            cnvCases
-          ).toFixed(2)}%)`
-        : `--`,
+    CNVGain: {
+      numerator: g.case_cnv_gain,
+      denominator: cnvCases,
+    },
+    CNVLoss: {
+      numerator: g.case_cnv_loss,
+      denominator: cnvCases,
+    },
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, It's needed for row.getCanExpand() to be true

@@ -9,10 +9,12 @@ const NumeratorDenominator = ({
     className="flex flex-wrap font-content"
     data-testid="numeratorDenominatorTest"
   >
-    <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
-    <span className="mx-0.5">&#47;</span>
-    <span className="mr-0.5">{denominator.toLocaleString()}</span>
-    <span>
+    <div className="whitespace-break-spaces">
+      <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
+      <span className="mx-0.5">&#47;</span>
+      <span className="mr-0.5">{denominator.toLocaleString()}</span>
+    </div>
+    <span className="mx-auto">
       (
       {numerator === 0 || denominator === 0
         ? "0.00%"
