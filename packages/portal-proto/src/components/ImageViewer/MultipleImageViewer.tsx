@@ -259,7 +259,7 @@ export const MultipleImageViewer = ({
                           root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
                           tab: "bg-white hover:bg-primary",
                           tabsList:
-                            "bg-base-light max-h-screen-60vh overflow-y-auto flex flex-nowrap",
+                            "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap pt-1",
                           tabLabel:
                             "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
                           panel: "max-h-screen-60vh overflow-y-auto mt-1",
@@ -297,7 +297,7 @@ export const MultipleImageViewer = ({
                             );
                           })}
 
-                          <div className="sticky bottom-0 text-center bg-base-lightest p-3">
+                          <div className="sticky bottom-0 text-center bg-base-lightest p-3 mt-auto">
                             {shouldShowMoreButton && (
                               <Button
                                 onClick={() => {
