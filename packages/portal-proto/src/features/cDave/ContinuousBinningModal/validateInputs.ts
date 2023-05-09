@@ -113,8 +113,8 @@ export const validateRangeInput = (
     } else {
       const otherBinNames = values
         .filter((_, otherIdx) => otherIdx !== idx)
-        .map((v) => v.name);
-      if (otherBinNames.includes(value.name)) {
+        .map((v) => v.name.trim());
+      if (otherBinNames.includes(value.name.trim())) {
         errors[`ranges.${idx}.name`] = "Bin names must be unique";
       } else {
         const overlappingBins = [];
