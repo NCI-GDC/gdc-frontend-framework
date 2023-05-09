@@ -144,7 +144,9 @@ const ContextBar: React.FC = () => {
           : "Collapse additional cases details and features"
       }
       tooltipPosition="left"
-      TargetElement={<CountButton countName="casesMax" label="CASES" bold />}
+      TargetElement={
+        <CohortCountButton countName="casesMax" label="CASES" bold />
+      }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
         <div className="relative p-2">

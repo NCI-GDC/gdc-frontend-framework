@@ -15,7 +15,7 @@ export interface CollapsibleContainerProps {
   readonly tooltipText?: string;
   readonly tooltipPosition?: FloatingPosition;
   /*
-   * Children for the Buttton when onlyIcon is false
+   * Children for the Button when onlyIcon is false
    */
   readonly TargetElement?: ReactNode;
 }
@@ -64,7 +64,13 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
                 }
               >
                 {!onlyIcon ? (
-                  <>{TargetElement !== undefined && TargetElement}</>
+                  <>
+                    {TargetElement !== undefined ? (
+                      TargetElement
+                    ) : (
+                      <span>{isCollapsed ? "Expand" : "Collapse"}</span>
+                    )}
+                  </>
                 ) : isCollapsed ? (
                   <ExpandMoreIcon size="1.75em" />
                 ) : (
