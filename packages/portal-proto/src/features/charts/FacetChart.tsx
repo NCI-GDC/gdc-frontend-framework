@@ -141,7 +141,6 @@ export const FacetChart: React.FC<FacetProps> = ({
           title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
-          jsonData={{}}
         />
       ) : null}
       {chart_data && isSuccess ? (

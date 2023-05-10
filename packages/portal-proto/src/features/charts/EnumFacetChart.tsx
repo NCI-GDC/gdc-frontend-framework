@@ -91,7 +91,6 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           title={fieldNameToTitle(field)}
           divId={chartDivId}
           filename={field}
-          jsonData={{}}
         />
       ) : null}
 
