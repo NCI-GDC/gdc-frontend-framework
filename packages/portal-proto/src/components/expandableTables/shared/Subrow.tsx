@@ -65,7 +65,16 @@ export const Subrow: React.FC<SubrowProps> = ({
     to: { height: 50 },
   });
 
-  const { data: subData, isFetching, isSuccess, isError } = query({ id });
+  const {
+    data: subData,
+    isFetching,
+    isSuccess,
+    isError,
+  } = query({ id }) ?? { data: [] };
+
+  useEffect(() => {
+    console.log("subdata inside subrow", subData);
+  }, [subData]);
 
   useEffect(() => {
     scrollIntoView();
@@ -87,7 +96,7 @@ export const Subrow: React.FC<SubrowProps> = ({
         </div>
       )}
       {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
-      {isSuccess && (
+      {isSuccess && subData?.length && (
         <ListSpring
           subData={subData}
           horizontalSpring={horizontalSpring}

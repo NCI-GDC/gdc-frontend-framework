@@ -284,7 +284,7 @@ export const ssmsCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
@@ -325,14 +325,12 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={`# Affected Cases
-                   in ${
-                     geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
-                   }`}
+                   in ${geneSymbol ?? projectId ?? "Cohort"}`}
                 tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
+                  geneSymbol ?? projectId ?? "Cohort"
                 } /
                 # Cases tested for Simple Somatic Mutations in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
+                  geneSymbol ?? projectId ?? "Cohort"
                 }`}
               />
             ),
@@ -735,7 +733,7 @@ export const getMutation = (
       denominator: filteredCases,
     },
     affectedCasesAcrossTheGDC: {
-      numerator: occurrence,
+      numerator: occurrence ?? 0,
       denominator: cases,
     },
     cohort: {
