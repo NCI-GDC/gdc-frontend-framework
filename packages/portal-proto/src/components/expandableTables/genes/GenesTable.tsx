@@ -9,7 +9,6 @@ import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ExpTable, Subrow } from "../shared";
 
@@ -38,7 +37,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [geneID, setGeneID] = useState(undefined);
+  const [geneID, setGeneID] = useState("" as string);
 
   const useGeneTableFormat = useCallback(
     (initialData: Record<string, any>) => {
@@ -148,6 +147,17 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setExpandedProxy({});
   }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
+  const geneSubrow = useMemo(() => {
+    return (
+      <Subrow
+        id={geneID}
+        width={width}
+        isGene={true}
+        subrowTitle={`# SSMS Affected Cases Across The GDC`}
+      />
+    );
+  }, [geneID]);
+
   return (
     <>
       <ExpTable
@@ -159,14 +169,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         selectAll={setSelectedGenes}
         allSelected={selectedGenes}
         firstColumn={columnListOrder[0].id}
-        subrow={
-          <Subrow
-            id={geneID}
-            width={width}
-            query={useGetGeneTableSubrowQuery}
-            subrowTitle={`# SSMS Affected Cases Across The GDC`}
-          />
-        }
+        subrow={geneSubrow}
       />
     </>
   );

@@ -63,9 +63,9 @@ const ListSpring: React.FC<ListSpringProps> = ({
           <Circle size="0.65em" className="text-primary shrink-0 mr-2" />
           <RatioSpring
             item={{
-              numerator: item.numerator ?? 0,
-              denominator: item.denominator ?? 0,
-              project: item.project,
+              numerator: item?.numerator ?? 0,
+              denominator: item?.denominator ?? 0,
+              project: item?.project,
             }}
             index={index}
           />

@@ -1,10 +1,7 @@
 import {
-  GraphQLApiResponse,
-  GraphqlApiSliceRequest,
-  TableSubrowData,
+  useGetGeneTableSubrowQuery,
+  useGetSomaticMutationTableSubrowQuery,
 } from "@gff/core";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { useSpring } from "@react-spring/web";
 import ListSpring from "./ListSpring";
 import { Loader } from "@mantine/core";
@@ -15,34 +12,15 @@ import { useEffect } from "react";
 export interface SubrowProps {
   id: string;
   width: number;
-  query: UseQuery<
-    QueryDefinition<
-      {
-        id: string;
-      },
-      (request: GraphqlApiSliceRequest) => Promise<
-        | {
-            error: unknown;
-            data?: undefined;
-          }
-        | {
-            data: GraphQLApiResponse<any>;
-            error?: undefined;
-          }
-      >,
-      never,
-      TableSubrowData[],
-      "graphql"
-    >
-  >;
   subrowTitle: string;
+  isGene: boolean;
 }
 
 export const Subrow: React.FC<SubrowProps> = ({
   id,
   width,
-  query,
   subrowTitle,
+  isGene,
 }: SubrowProps) => {
   const scrollOffset = 200;
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
@@ -65,16 +43,13 @@ export const Subrow: React.FC<SubrowProps> = ({
     to: { height: 50 },
   });
 
-  const {
-    data: subData,
-    isFetching,
-    isSuccess,
-    isError,
-  } = query({ id }) ?? { data: [] };
+  const { data, isFetching, isSuccess, isError } = (
+    isGene ? useGetGeneTableSubrowQuery : useGetSomaticMutationTableSubrowQuery
+  )({ id });
 
   useEffect(() => {
-    console.log("subdata inside subrow", subData);
-  }, [subData]);
+    console.log("subdata inside subrow", data);
+  }, [data]);
 
   useEffect(() => {
     scrollIntoView();
@@ -96,9 +71,9 @@ export const Subrow: React.FC<SubrowProps> = ({
         </div>
       )}
       {isError && <span>Error: Failed to fetch {subrowTitle}</span>}
-      {isSuccess && subData?.length && (
+      {isSuccess && data.length && (
         <ListSpring
-          subData={subData}
+          subData={data}
           horizontalSpring={horizontalSpring}
           subrowTitle={subrowTitle}
         />

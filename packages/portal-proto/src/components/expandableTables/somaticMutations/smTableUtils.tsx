@@ -221,11 +221,11 @@ export const ssmsCreateTableColumn = ({
               </div>
             ),
             cell: ({ row }) => {
-              const originalLabel = row.original["DNAChange"];
+              const originalLabel = row?.original["DNAChange"];
               const label = originalLabel
                 ? truncateAfterMarker(originalLabel, 8)
                 : originalLabel;
-              const ssmsId = row.original[`mutationID`];
+              const ssmsId = row?.original[`mutationID`];
               return (
                 <div className="font-content">
                   {label !== "" ? (
@@ -279,7 +279,7 @@ export const ssmsCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
-              const { numerator, denominator } = row?.original[
+              const { numerator, denominator } = row.original[
                 "affectedCasesAcrossTheGDC"
               ] ?? { numerator: 0, denominator: 1 };
               return (
@@ -287,6 +287,7 @@ export const ssmsCreateTableColumn = ({
                   {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
+                        className="font-content"
                         aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
@@ -296,7 +297,6 @@ export const ssmsCreateTableColumn = ({
                           },
                           style: { cursor: "pointer" },
                         }}
-                        className="font-content"
                       >
                         {!row.getIsExpanded() ? (
                           <DownIcon size="1.25em" className="text-accent" />

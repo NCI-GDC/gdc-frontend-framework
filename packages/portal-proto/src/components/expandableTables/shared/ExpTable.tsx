@@ -1,7 +1,7 @@
 // tanstack/react-table v8 functions trigger typescript linter
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import React from "react";
+import React, { useCallback } from "react";
 import {
   ExpandedState,
   useReactTable,
@@ -52,6 +52,22 @@ export const ExpTable: React.FC<ExpTableProps> = ({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const renderRows = useCallback(
+    (row: any, index: number) => {
+      return (
+        <AnimatedRow
+          key={index}
+          row={row}
+          index={index}
+          selected={row.original["select"] in allSelected}
+          subrow={subrow}
+        />
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [subrow, allSelected],
+  );
+
   const selectAllActive =
     table.getRowModel().rows.length === 0
       ? false
@@ -59,6 +75,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .getRowModel()
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
+
   return (
     <div className="relative">
       <LoadingOverlay visible={status === "pending"} />
@@ -101,17 +118,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
             ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row, index) => {
-            return (
-              <AnimatedRow
-                key={index}
-                row={row}
-                index={index}
-                selected={row.original["select"] in allSelected}
-                subrow={subrow}
-              />
-            );
-          })}
+          {table.getRowModel().rows.map((row, i) => renderRows({ ...row }, i))}
         </tbody>
       </table>
     </div>

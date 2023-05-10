@@ -21,9 +21,6 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
   columnListOrder,
   visibleColumns,
 }: ConsequenceTableProps) => {
-  // `exp` is non-mutable within the lexical scope of handleExpandedProxy
-  //  this effect hook is a workaround that updates expanded after expandedProxy updates
-
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(
     () => {
       return visibleColumns.map(({ id: accessor }: Column) => {

@@ -8,7 +8,7 @@ import React, {
 import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
-import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import { GDCSsmsTable } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { Column, ExpTable, Subrow } from "../shared";
 
@@ -38,7 +38,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [mutationID, setMutationID] = useState(undefined);
+  const [mutationID, setMutationID] = useState("" as string);
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData: GDCSsmsTable) => {
@@ -117,23 +117,34 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     });
   }, [
     visibleColumns,
+    selectedMutations,
+    setSelectedMutations,
+    handleSurvivalPlotToggled,
+    setMutationID,
+    handleSsmToggled,
+    toggledSsms,
     geneSymbol,
     projectId,
-    selectedMutations,
-    handleSsmToggled,
-    setSelectedMutations,
-    toggledSsms,
     isDemoMode,
-    isModal,
-    setMutationID,
-    handleSurvivalPlotToggled,
     setEntityMetadata,
+    isModal,
   ]);
 
   useEffect(() => {
     setExpanded({});
     setExpandedProxy({});
   }, [visibleColumns, selectedMutations, searchTerm, page, pageSize]);
+
+  const mutationSubrow = useMemo(() => {
+    return (
+      <Subrow
+        id={mutationID}
+        width={width}
+        isGene={false}
+        subrowTitle={`Affected Cases Across The GDC`}
+      />
+    );
+  }, [mutationID]);
 
   return (
     <>
@@ -146,14 +157,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         selectAll={setSelectedMutations}
         allSelected={selectedMutations}
         firstColumn={columnListOrder[0].id}
-        subrow={
-          <Subrow
-            id={mutationID}
-            width={width}
-            query={useGetSomaticMutationTableSubrowQuery}
-            subrowTitle={`Affected Cases Across The GDC`}
-          />
-        }
+        subrow={mutationSubrow}
       />
     </>
   );
