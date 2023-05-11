@@ -311,7 +311,22 @@ export interface GdcFile {
   readonly analysis?: {
     readonly workflow_type: string;
     readonly updated_datetime: string;
-    readonly input_files?: ReadonlyArray<string>;
+    readonly input_files?: ReadonlyArray<{
+      readonly file_name: string;
+      readonly data_category: DataCategory;
+      readonly data_type: DataType;
+      readonly data_format: DataFormat;
+      readonly state: string;
+      readonly file_size: number;
+      readonly file_id: string;
+      readonly access: AccessType;
+      readonly acl: ReadonlyArray<string>;
+      readonly project_id?: string;
+      readonly createdDatetime: string;
+      readonly updatedDatetime: string;
+      readonly submitterId: string;
+      readonly md5sum: string;
+    }>;
     readonly metadata?: {
       readonly read_groups: Array<{
         readonly read_group_id: string;
@@ -466,7 +481,24 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       ? {
           workflow_type: hit.analysis.workflow_type,
           updated_datetime: hit.analysis.updated_datetime,
-          input_files: hit.analysis.input_files?.map((file) => file.file_id),
+          input_files: hit.analysis.input_files?.map((file) => {
+            return {
+              file_name: file.file_name,
+              data_category: asDataCategory(file.data_category),
+              data_type: asDataType(file.data_type),
+              data_format: asDataFormat(file.data_format),
+              file_size: file.file_size,
+              file_id: file.file_id,
+              acl: hit.acl,
+              access: asAccessType(file.access),
+              project_id: hit.cases?.[0].project?.project_id,
+              state: file.state,
+              submitterId: file.submitter_id,
+              createdDatetime: file.created_datetime,
+              updatedDatetime: file.updated_datetime,
+              md5sum: file.md5sum,
+            };
+          }),
           metadata: hit.analysis.metadata
             ? {
                 read_groups: hit.analysis.metadata.read_groups.map(

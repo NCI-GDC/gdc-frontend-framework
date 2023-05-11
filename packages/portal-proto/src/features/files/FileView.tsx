@@ -417,44 +417,6 @@ export const FileView: React.FC<FileViewProps> = ({
         name: "Workflow Completion Date",
         modifier: (v) => v.split("T")[0],
       },
-      {
-        field: "analysis.input_files.length",
-        name: "Source Files",
-        modifier: (v) => {
-          if (v === 1) {
-            return (
-              <GenericLink
-                path={`/files/${get(file, "analysis.input_files")[0]}`}
-                text={"1"}
-              />
-            );
-          } else if (v > 1) {
-            return (
-              <GenericLink
-                path={`/repository`}
-                query={{
-                  filters: JSON.stringify({
-                    content: [
-                      {
-                        content: {
-                          field:
-                            "files.downstream_analyses.output_files.file_id",
-                          value: [file.id],
-                        },
-                        op: "in",
-                      },
-                    ],
-                    op: "and",
-                  }),
-                  searchTableTab: "files",
-                }}
-                text={`${v}`}
-              />
-            );
-          }
-          return "0";
-        },
-      },
     ]);
 
   const LeftSideElementForHeader = () => (
@@ -479,6 +441,90 @@ export const FileView: React.FC<FileViewProps> = ({
       />
     </div>
   );
+
+  const AnalysisInputFiles = ({
+    inputFiles,
+  }: {
+    inputFiles: GdcFile["analysis"]["input_files"];
+  }): JSX.Element => {
+    const data = useMemo(() => {
+      return inputFiles.map((ipFile) => ({
+        file_name: (
+          <GenericLink
+            path={`/files/${ipFile.file_id}`}
+            text={ipFile.file_name}
+          />
+        ),
+        data_category: ipFile.data_category,
+        data_type: ipFile.data_type,
+        data_format: ipFile.data_format,
+        file_size: ipFile.file_size,
+        action: (
+          <TableActionButtons
+            isOutputFileInCart={fileInCart(currentCart, ipFile.file_id)}
+            file={mapGdcFileToCartFile([ipFile])}
+            downloadFile={ipFile}
+            setFileToDownload={setfileToDownload}
+          />
+        ),
+      }));
+    }, [inputFiles]);
+
+    const {
+      handlePageChange,
+      handlePageSizeChange,
+      page,
+      pages,
+      size,
+      from,
+      total,
+      displayedData,
+    } = useStandardPagination(data);
+
+    const handleChange = (obj: HandleChangeInput) => {
+      switch (Object.keys(obj)?.[0]) {
+        case "newPageSize":
+          handlePageSizeChange(obj.newPageSize);
+          break;
+        case "newPageNumber":
+          handlePageChange(obj.newPageNumber);
+          break;
+      }
+    };
+
+    const columnListOrder = [
+      { id: "file_name", columnName: "File Name", visible: true },
+      { id: "data_category", columnName: "Data Category", visible: true },
+      { id: "data_type", columnName: "Data Type", visible: true },
+      { id: "data_format", columnName: "Data Format", visible: true },
+      { id: "file_size", columnName: "Size", visible: true },
+      { id: "action", columnName: "Action", visible: true },
+    ];
+
+    return (
+      <VerticalTable
+        tableData={displayedData}
+        columns={columnListOrder}
+        selectableRow={false}
+        showControls={false}
+        pagination={{
+          page,
+          pages,
+          size,
+          from,
+          total,
+          label: "associated cases/biospecimen",
+        }}
+        status={"fulfilled"}
+        additionalControls={
+          <div className="mt-3.5">
+            <HeaderTitle>Source Files</HeaderTitle>
+          </div>
+        }
+        handleChange={handleChange}
+      />
+    );
+  };
 
   return (
     <>
@@ -534,7 +580,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
         {file?.analysis && (
           <>
-            <div className="mt-8 flex gap-8">
+            <div className="mt-14 flex gap-8">
               <div className="flex-1">
                 <SummaryCard
                   title="Analysis"
@@ -551,6 +597,11 @@ export const FileView: React.FC<FileViewProps> = ({
                 />
               </div>
             </div>
+            {file?.analysis?.input_files?.length > 0 && (
+              <DivWithMargin>
+                <AnalysisInputFiles inputFiles={file.analysis.input_files} />
+              </DivWithMargin>
+            )}
 
             {file?.analysis?.metadata && (
               <DivWithMargin>
