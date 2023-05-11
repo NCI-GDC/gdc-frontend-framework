@@ -60,9 +60,9 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .rows.filter((row) => !row.id.includes(".")) // exclude subrow from select-all condition
           .every((row) => row.original["select"] in allSelected);
   return (
-    <div className="w-full relative overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <LoadingOverlay visible={status === "pending"} zIndex={0} />
-      <table className="border border-base-lighter text-sm">
+      <table className="w-full border border-base-lighter text-sm">
         <thead className="shadow-md h-14">
           {table
             .getHeaderGroups()
