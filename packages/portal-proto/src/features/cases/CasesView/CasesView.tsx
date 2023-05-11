@@ -140,10 +140,9 @@ export const ContextualCasesView: React.FC = () => {
                 query: { caseId: datum.case_uuid },
               }}
               passHref
+              legacyBehavior
             >
-              <a className={slideCount === 0 && "pointer-events-none"}>
-                <ImageSlideCount slideCount={slideCount} />
-              </a>
+              <ImageSlideCount slideCount={slideCount} />
             </Link>
           ),
           cart: (
