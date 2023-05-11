@@ -154,7 +154,7 @@ export const REGISTERED_APPS = [
       "Current cohort does not have SSM data available for visualization.",
   },
   {
-    name: "OncoMatrix (prototype)",
+    name: "OncoMatrix",
     icon: "matrix.png",
     iconSize: { width: 80, height: 48 },
     tags: ["variantAnalysis", "cnv", "ssm"],

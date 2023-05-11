@@ -16,7 +16,6 @@ export const Slides: React.FC<SlidesProps> = ({
 }: SlidesProps) => {
   return (
     <div
-      className="flex flex-col mb-4"
       onClick={() => setImageViewer(file_id)}
       onKeyDown={() => setImageViewer(file_id)}
       role="button"
@@ -34,10 +33,7 @@ export const Slides: React.FC<SlidesProps> = ({
           },
         })}
       >
-        <Badge
-          variant="filled"
-          className="w-full mb-1 text-xs text-primary-contrast"
-        >
+        <Badge variant="filled" className="mb-1 text-xs text-primary-contrast">
           {submitter_id}
         </Badge>
         {/* eslint-disable-next-line @next/next/no-img-element */}
