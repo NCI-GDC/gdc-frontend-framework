@@ -48,7 +48,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <Button
-                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast"
+                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-10"
                 onClick={toggle}
                 classNames={{ leftIcon: `${!onlyIcon && "mr-0"} ` }}
                 aria-expanded={!isCollapsed}
