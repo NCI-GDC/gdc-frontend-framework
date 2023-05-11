@@ -61,7 +61,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
           .every((row) => row.original["select"] in allSelected);
   return (
     <div className="relative overflow-x-auto">
-      <LoadingOverlay visible={status === "pending"} zIndex={0} />
+      <LoadingOverlay visible={status === "pending"} />
       <table className="w-full border border-base-lighter text-sm">
         <thead className="shadow-md h-14">
           {table
