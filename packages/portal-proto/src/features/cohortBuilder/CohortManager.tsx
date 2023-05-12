@@ -607,12 +607,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         <div />
       )}
 
-      <CohortCountButton
-        countName="casesMax"
-        label="CASES"
-        className="text-white ml-auto mr-6 text-lg"
-        bold
-      />
+      {cohorts.length > 0 && (
+        <CohortCountButton
+          countName="casesMax"
+          label="CASES"
+          className="text-white ml-auto mr-6 text-lg"
+          bold
+        />
+      )}
     </div>
   );
 };

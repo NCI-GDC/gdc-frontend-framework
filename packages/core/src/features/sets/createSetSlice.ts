@@ -151,11 +151,12 @@ export const createSetSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: transformGeneSetResponse,
     }),
     createSsmsSetFromFilters: builder.mutation({
-      query: ({ filters, size, score }) => ({
+      query: ({ filters, size, score, set_id }) => ({
         graphQLQuery: createSsmsSetMutation,
         graphQLFilters: {
           input: {
             filters,
+            set_id,
             size,
             score,
           },
