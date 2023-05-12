@@ -86,3 +86,9 @@ These are file states that should never appear in a manifest file
   |registered     |
   |validated      |
   |error          |
+  |uploading      |
+  |uploaded       |
+  |validating     |
+  |processing     |
+  |processed      |
+  |deleted        |
