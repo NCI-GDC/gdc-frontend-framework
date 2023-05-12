@@ -138,8 +138,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     handleGeneToggled,
     isDemoMode,
     setEntityMetadata,
-    handleMutationCountClick,
     handleSurvivalPlotToggled,
+    handleMutationCountClick,
   ]);
 
   useEffect(() => {

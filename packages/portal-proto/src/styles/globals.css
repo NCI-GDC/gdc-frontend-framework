@@ -36,6 +36,28 @@ body {
   transform-style: preserve-3d;
 }
 
+.mantine-Tabs-tabsList::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 8px;
+}
+
+.mantine-Tabs-tabsList::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #5c5c5c;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.mantine-Tabs-panel::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+.mantine-Tabs-panel::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #5c5c5c;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
 .flip-card-flipped {
   transform: rotateY(180deg);
 }
