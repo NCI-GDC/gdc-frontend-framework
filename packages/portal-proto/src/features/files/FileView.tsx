@@ -461,7 +461,7 @@ export const FileView: React.FC<FileViewProps> = ({
         data_category: ipFile.data_category,
         data_type: ipFile.data_type,
         data_format: ipFile.data_format,
-        file_size: ipFile.file_size,
+        file_size: fileSize(ipFile.file_size),
         action: (
           <TableActionButtons
             isOutputFileInCart={fileInCart(currentCart, ipFile.file_id)}
@@ -472,28 +472,6 @@ export const FileView: React.FC<FileViewProps> = ({
         ),
       }));
     }, [inputFiles]);
-
-    const {
-      handlePageChange,
-      handlePageSizeChange,
-      page,
-      pages,
-      size,
-      from,
-      total,
-      displayedData,
-    } = useStandardPagination(data);
-
-    const handleChange = (obj: HandleChangeInput) => {
-      switch (Object.keys(obj)?.[0]) {
-        case "newPageSize":
-          handlePageSizeChange(obj.newPageSize);
-          break;
-        case "newPageNumber":
-          handlePageChange(obj.newPageNumber);
-          break;
-      }
-    };
 
     const columnListOrder = [
       { id: "file_name", columnName: "File Name", visible: true },
@@ -506,25 +484,15 @@ export const FileView: React.FC<FileViewProps> = ({
 
     return (
       <VerticalTable
-        tableData={displayedData}
+        tableData={data}
         columns={columnListOrder}
         selectableRow={false}
         showControls={false}
-        pagination={{
-          page,
-          pages,
-          size,
-          from,
-          total,
-          label: "associated cases/biospecimen",
-        }}
-        status={"fulfilled"}
         additionalControls={
           <div className="mt-3.5">
             <HeaderTitle>Source Files</HeaderTitle>
           </div>
         }
-        handleChange={handleChange}
       />
     );
   };
