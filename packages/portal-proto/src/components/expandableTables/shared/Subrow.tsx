@@ -48,10 +48,6 @@ export const Subrow: React.FC<SubrowProps> = ({
   )({ id });
 
   useEffect(() => {
-    console.log("subdata inside subrow", data);
-  }, [data]);
-
-  useEffect(() => {
     scrollIntoView();
   }, [isSuccess, scrollIntoView]);
 

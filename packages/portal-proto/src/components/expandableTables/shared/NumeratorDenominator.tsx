@@ -5,16 +5,16 @@ const NumeratorDenominator = ({
   numerator: number;
   denominator: number;
 }): JSX.Element => (
-  <span
-    className="flex flex-wrap font-content"
+  <div
+    className="flex flex-wrap font-content p-0.5"
     data-testid="numeratorDenominatorTest"
   >
-    <div className="whitespace-break-spaces">
+    <div className="whitespace-break-spaces mx-auto">
       <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
       <span className="mx-0.5">&#47;</span>
       <span className="mr-0.5">{denominator.toLocaleString()}</span>
     </div>
-    <span className="mx-auto">
+    <div className="flex mx-auto">
       (
       {numerator === 0 || denominator === 0
         ? "0.00%"
@@ -23,8 +23,8 @@ const NumeratorDenominator = ({
             minimumFractionDigits: 2,
           })}
       )
-    </span>
-  </span>
+    </div>
+  </div>
 );
 
 export default NumeratorDenominator;
