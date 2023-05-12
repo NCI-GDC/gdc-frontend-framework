@@ -51,9 +51,12 @@ hover:bg-base-darkest
 hover:text-base-contrast-darkest
 `;
 
-const ImageViewer = dynamic(() => import("../../components/ImageViewer"), {
-  ssr: false,
-});
+const ImageViewer = dynamic(
+  () => import("../../components/ImageViewer/ImageViewer"),
+  {
+    ssr: false,
+  },
+);
 
 export interface FileViewProps {
   readonly file?: GdcFile;

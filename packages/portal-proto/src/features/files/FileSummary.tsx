@@ -1,7 +1,7 @@
-import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { useGetFilesQuery, useFileHistory } from "@gff/core";
 import { FileView } from "./FileView";
+import { LoadingOverlay } from "@mantine/core";
 
 export interface ContextualFileViewProps {
   readonly setCurrentFile: string;
@@ -42,26 +42,25 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
 
   return (
     <div>
-      {!files?.[0] && (
-        <SummaryHeader
-          iconText="fl"
-          headerTitle={`${setCurrentFile} not found`}
-          isModal={isModal}
-        />
-      )}
-      {files?.[0] && !isFetching ? (
+      {!isFetching ? (
         <>
-          {files[0] ? (
+          {!files?.[0] ? (
+            <SummaryHeader
+              iconText="fl"
+              headerTitle={`${setCurrentFile} not found`}
+              isModal={isModal}
+            />
+          ) : (
             <FileView
               file={files[0]}
               fileHistory={history?.data?.[0]}
               isModal={isModal}
             />
-          ) : (
-            <SummaryErrorHeader label="File Not Found" />
           )}
         </>
-      ) : null}
+      ) : (
+        <LoadingOverlay visible />
+      )}
     </div>
   );
 };
