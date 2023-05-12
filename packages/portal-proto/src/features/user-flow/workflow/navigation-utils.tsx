@@ -83,6 +83,7 @@ export const headerElements = [
         alt="Cohort logo"
         width={24}
         height={24}
+        unoptimized
       />
       Cohort Builder
     </NavLink>

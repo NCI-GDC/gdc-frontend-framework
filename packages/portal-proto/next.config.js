@@ -36,11 +36,6 @@ module.exports = withTM({
   publicRuntimeConfig: {
     basePath,
   },
-  images: {
-    dangerouslyAllowSVG: true,
-    contentDispositionType: "attachment",
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-  },
   env: {
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
