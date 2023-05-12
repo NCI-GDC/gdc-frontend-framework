@@ -156,7 +156,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         subrowTitle={`# SSMS Affected Cases Across The GDC`}
       />
     );
-  }, [geneID]);
+  }, [geneID, width]);
 
   return (
     <>

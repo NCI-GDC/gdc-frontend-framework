@@ -144,7 +144,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         subrowTitle={`Affected Cases Across The GDC`}
       />
     );
-  }, [mutationID]);
+  }, [mutationID, width]);
 
   return (
     <>
