@@ -148,56 +148,68 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <div className="border border-base-lighter p-4">
-      <div>
-        <ChartTitleBar
-          title={title}
-          filename="cancer-distribution-bar-chart"
-          divId={chartDivId}
-          jsonData={[
-            ...exportedData.map(({ project: symbol, gain, loss, total }) => {
-              return {
-                symbol,
-                gain: gain ? (gain / total) * 100 : 0,
-                loss: loss ? (loss / total) * 100 : 0,
-                total,
-              };
-            }),
-          ]}
-        />
-      </div>
-      <div>
-        <BarChart
-          divId={chartDivId}
-          data={chartConfig}
-          onClickHandler={onClickHandler}
-          height={height}
-          stacked
-        />
-      </div>
-      <div className="text-center">
-        <input
-          type="checkbox"
-          checked={gainChecked}
-          onChange={() => setGainChecked(!gainChecked)}
-          className="form-checkbox text-gdc-red"
-          id="cancer-dist-gain"
-        />
-        <label htmlFor="cancer-dist-gain" className="pl-1 pr-2 align-middle">
-          Gain
-        </label>
-        <input
-          type="checkbox"
-          checked={lossChecked}
-          onChange={() => setLossChecked(!lossChecked)}
-          className="form-checkbox text-gdc-blue"
-          id="cancer-dist-loss"
-        />
-        <label htmlFor="cancer-dist-loss" className="pl-1 pr-2 align-middle">
-          Loss
-        </label>
-      </div>
-    </div>
+    <>
+      {data?.caseTotal && (
+        <div className="border border-base-lighter p-4">
+          <div>
+            <ChartTitleBar
+              title={title}
+              filename="cancer-distribution-bar-chart"
+              divId={chartDivId}
+              jsonData={[
+                ...exportedData.map(
+                  ({ project: symbol, gain, loss, total }) => {
+                    return {
+                      symbol,
+                      gain: gain ? (gain / total) * 100 : 0,
+                      loss: loss ? (loss / total) * 100 : 0,
+                      total,
+                    };
+                  },
+                ),
+              ]}
+            />
+          </div>
+          <div>
+            <BarChart
+              divId={chartDivId}
+              data={chartConfig}
+              onClickHandler={onClickHandler}
+              height={height}
+              stacked
+            />
+          </div>
+          <div className="text-center">
+            <input
+              type="checkbox"
+              checked={gainChecked}
+              onChange={() => setGainChecked(!gainChecked)}
+              className="form-checkbox text-gdc-red"
+              id="cancer-dist-gain"
+            />
+            <label
+              htmlFor="cancer-dist-gain"
+              className="pl-1 pr-2 align-middle"
+            >
+              Gain
+            </label>
+            <input
+              type="checkbox"
+              checked={lossChecked}
+              onChange={() => setLossChecked(!lossChecked)}
+              className="form-checkbox text-gdc-blue"
+              id="cancer-dist-loss"
+            />
+            <label
+              htmlFor="cancer-dist-loss"
+              className="pl-1 pr-2 align-middle"
+            >
+              Loss
+            </label>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
