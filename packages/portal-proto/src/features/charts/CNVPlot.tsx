@@ -149,7 +149,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
     <>
-      {data?.caseTotal && (
+      {data?.caseTotal ? (
         <div className="border border-base-lighter p-4">
           <div>
             <ChartTitleBar
@@ -208,6 +208,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
             </label>
           </div>
         </div>
+      ) : (
+        <div className="w-full m-auto font-semibold">{title}</div>
       )}
     </>
   );
