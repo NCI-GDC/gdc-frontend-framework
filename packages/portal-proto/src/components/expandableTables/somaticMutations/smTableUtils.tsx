@@ -13,7 +13,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
 import { entityMetadataType } from "src/utils/contexts";
 import { SSMSData } from "@gff/core";
-import { externalLinks } from "src/utils";
+import { externalLinks, humanify } from "src/utils";
 import tw from "tailwind-styled-components";
 import {
   CheckboxSpring,
@@ -742,7 +742,9 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      label: aa_change ? symbol + " " + aa_change : symbol,
+      label: `${symbol} ${aa_change ? aa_change : ""} ${humanify({
+        term: consequence_type.replace("_variant", "").replace("_", " "),
+      })}`,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,

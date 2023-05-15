@@ -31,6 +31,7 @@ import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "../shared/tailwindComponents";
+import { humanify } from "src/utils";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -254,7 +255,18 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
       setComparativeSurvival({
         symbol: topGeneSSMS[0][appMode].symbol,
-        name: topGeneSSMS[0][appMode].name,
+        name:
+          appMode === "genes"
+            ? topGeneSSMS[0][appMode].name
+            : `${topGeneSSMS[0][appMode].name} ${
+                topGeneSSMS[0][appMode].aa_change
+                  ? topGeneSSMS[0][appMode].aa_change
+                  : ""
+              } ${humanify({
+                term: topGeneSSMS[0][appMode].consequence_type
+                  .replace("_variant", "")
+                  .replace("_", " "),
+              })}`,
         field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
       });
     }
