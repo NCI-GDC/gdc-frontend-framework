@@ -185,6 +185,11 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
+#
+@step("Wait for <data_testid> to be present on the page")
+def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
+    is_data_testid_visible = APP.home_page.wait_for_data_testid_to_be_visible(data_testid)
+    assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
 # TO-DO: replace home_page function call with base_page.
 # All generic_step functions and related locators should
@@ -232,6 +237,10 @@ def is_checkbox_not_checked(table):
         is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
+
+@step("Select <data_testid> a data-testid")
+def click_data_testid(data_testid: str):
+    APP.home_page.click_data_testid(data_testid)
 
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):

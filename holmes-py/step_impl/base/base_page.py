@@ -98,6 +98,15 @@ class BasePage:
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
 
+    def wait_for_data_testid_to_be_visible(self,locator):
+        normalized_locator = self.normalize_button_identifier(locator)
+        locator = GenericLocators.DATA_TEST_ID_IDENT(normalized_locator)
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
+
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
         try:
@@ -139,6 +148,10 @@ class BasePage:
         cart_text = self.get_text(locator)
         cart_count = cart_text.replace('Cart','')
         return cart_count == correct_file_count
+
+    def click_data_testid(self, data_testid):
+        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
+        self.click(locator)
 
     def click_button_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
