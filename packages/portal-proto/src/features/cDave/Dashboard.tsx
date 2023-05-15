@@ -57,7 +57,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <Grid className="w-full m-0">
       <Grid.Col span={controlsExpanded ? 6 : 4}>
-        <Card className="h-full">
+        <div className="h-full shadow-md rounded-lg p-2">
           <h2 className="font-heading font-medium">Overall Survival</h2>
           {isError ? (
             <Alert>{"Something's gone wrong"}</Alert>
@@ -70,7 +70,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               plotType={SurvivalPlotTypes.overall}
             />
           )}
-        </Card>
+        </div>
       </Grid.Col>
       {activeFields.map((field, index) => {
         const isLastRow = index >= activeFields.length - colCountInLastRow;

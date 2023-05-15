@@ -145,10 +145,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
   );
 
-  const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useGetSurvivalPlotQuery({
-      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
-    });
+  const {
+    data: survivalPlotData,
+    isSuccess: survivalPlotReady,
+    isFetching: survivalPlotFetching,
+  } = useGetSurvivalPlotQuery({
+    filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
+  });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {
@@ -299,7 +302,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
                   <LoadingOverlay
-                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                    visible={
+                      survivalPlotFetching ||
+                      (!survivalPlotReady && !topGeneSSMSSuccess)
+                    }
                   />
                   <SurvivalPlot
                     plotType={SurvivalPlotTypes.mutation}
@@ -344,9 +350,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">
             <div className="flex flex-col w-100 mx-6 mb-8">
-              <div className="bg-base-max">
+              <div className="bg-base-max relative">
                 <LoadingOverlay
-                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                  visible={
+                    survivalPlotFetching ||
+                    (!survivalPlotReady && !topGeneSSMSSuccess)
+                  }
                 />
                 <SurvivalPlot
                   plotType={SurvivalPlotTypes.mutation}
