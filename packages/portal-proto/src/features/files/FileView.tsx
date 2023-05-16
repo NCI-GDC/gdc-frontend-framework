@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
   GdcFile,
+  GdcCartFile,
   HistoryDefaults,
   useCoreSelector,
   selectCart,
@@ -448,7 +449,7 @@ export const FileView: React.FC<FileViewProps> = ({
   const AnalysisInputFiles = ({
     inputFiles,
   }: {
-    inputFiles: GdcFile["analysis"]["input_files"];
+    inputFiles: GdcCartFile[];
   }): JSX.Element => {
     const data = useMemo(() => {
       return inputFiles.map((ipFile) => ({

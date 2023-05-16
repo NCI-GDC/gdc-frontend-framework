@@ -215,6 +215,24 @@ const asExperimentalStrategy = (
   throw new Error(`${x} is not a valid experimental strategy`);
 };
 
+// TODO use CartFile instead and combine anything that submits to cart
+export interface GdcCartFile {
+  readonly file_name: string;
+  readonly data_category: DataCategory;
+  readonly data_type: DataType;
+  readonly data_format: DataFormat;
+  readonly state: string;
+  readonly file_size: number;
+  readonly file_id: string;
+  readonly access: AccessType;
+  readonly acl: ReadonlyArray<string>;
+  readonly project_id?: string;
+  readonly createdDatetime: string;
+  readonly updatedDatetime: string;
+  readonly submitterId: string;
+  readonly md5sum: string;
+}
+
 export interface GdcFile {
   readonly id?: string;
   readonly submitterId: string;
@@ -311,22 +329,7 @@ export interface GdcFile {
   readonly analysis?: {
     readonly workflow_type: string;
     readonly updated_datetime: string;
-    readonly input_files?: ReadonlyArray<{
-      readonly file_name: string;
-      readonly data_category: DataCategory;
-      readonly data_type: DataType;
-      readonly data_format: DataFormat;
-      readonly state: string;
-      readonly file_size: number;
-      readonly file_id: string;
-      readonly access: AccessType;
-      readonly acl: ReadonlyArray<string>;
-      readonly project_id?: string;
-      readonly createdDatetime: string;
-      readonly updatedDatetime: string;
-      readonly submitterId: string;
-      readonly md5sum: string;
-    }>;
+    readonly input_files?: GdcCartFile[];
     readonly metadata?: {
       readonly read_groups: Array<{
         readonly read_group_id: string;
@@ -340,22 +343,7 @@ export interface GdcFile {
   };
   readonly downstream_analyses?: ReadonlyArray<{
     readonly workflow_type: string;
-    readonly output_files?: ReadonlyArray<{
-      readonly file_name: string;
-      readonly data_category: DataCategory;
-      readonly data_type: DataType;
-      readonly data_format: DataFormat;
-      readonly state: string;
-      readonly file_size: number;
-      readonly file_id: string;
-      readonly access: AccessType;
-      readonly acl: ReadonlyArray<string>;
-      readonly project_id?: string;
-      readonly createdDatetime: string;
-      readonly updatedDatetime: string;
-      readonly submitterId: string;
-      readonly md5sum: string;
-    }>;
+    readonly output_files?: GdcCartFile[];
   }>;
   readonly index_files?: ReadonlyArray<{
     readonly submitterId: string;
