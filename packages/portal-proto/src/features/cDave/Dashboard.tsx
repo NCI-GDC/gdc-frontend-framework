@@ -7,7 +7,7 @@ import {
   useFacetDictionary,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-import { Card, Grid, Alert, Loader } from "@mantine/core";
+import { Grid, Alert, Loader } from "@mantine/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 
