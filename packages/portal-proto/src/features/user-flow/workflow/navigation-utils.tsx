@@ -2,6 +2,7 @@ import { Image } from "@/components/Image";
 import { Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
+import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
 
 const NavLink = tw(NextLink)`
 flex
@@ -78,13 +79,7 @@ export const headerElements = [
       data-testid="button-header-cohort"
       aria-label="cohort builder button"
     >
-      <Image
-        src={"/user-flow/icons/apps/CohortBuilder.svg"}
-        alt="Cohort logo"
-        width={24}
-        height={24}
-        unoptimized
-      />
+      <CohortBuilderIcon alt="Cohort logo" viewBox="0 0 100 100" />
       Cohort Builder
     </NavLink>
   </Tooltip>,
