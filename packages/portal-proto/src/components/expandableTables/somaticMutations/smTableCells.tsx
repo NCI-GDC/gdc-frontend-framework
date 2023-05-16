@@ -1,9 +1,10 @@
+import { Dispatch, SetStateAction } from "react";
 import { Tooltip } from "@mantine/core";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
+import { entityMetadataType } from "src/utils/contexts";
 import { Impact } from "./types";
 import { humanify } from "src/utils";
 import { truncate } from "lodash";
-import { Dispatch, SetStateAction } from "react";
-import { entityMetadataType } from "src/utils/contexts";
 import Link from "next/link";
 
 export const ProteinChange = ({
@@ -23,19 +24,18 @@ export const ProteinChange = ({
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className="flex flex-row w-max justify-start font-content">
+    <div className="flex font-content">
       {shouldOpenModal ? (
-        <button
-          className="text-utility-link underline mx-0.5 font-content"
-          onClick={() =>
+        <PopupIconButton
+          customStyle="text-utility-link underline mx-0.5 font-content"
+          handleClick={() =>
             setEntityMetadata({
               entity_type: "genes",
               entity_id: proteinChange.geneId,
             })
           }
-        >
-          {symbol}
-        </button>
+          label={symbol}
+        />
       ) : shouldLink ? (
         <Link href={`/genes/${proteinChange.geneId}`}>
           <a className="underline text-utility-link">{symbol}</a>
@@ -44,7 +44,7 @@ export const ProteinChange = ({
         <span className="mx-0.5">{symbol}</span>
       )}
       <Tooltip label={aaChange}>
-        <span className="mx-0.5">
+        <span className="mx-0.5 self-center">
           {truncate(aaChange == "" ? "--" : aaChange, {
             length: 12,
           })}
@@ -73,8 +73,9 @@ export const Consequences = ({
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
-  const twIconStyles = `w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center`;
-  const blankIconStyles = `w-7 h-6 font-bold flex justify-center items-center`;
+  const twIconStyles =
+    "w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center";
+  const blankIconStyles = "w-7 h-6 font-bold flex justify-center items-center";
 
   return (
     <>
