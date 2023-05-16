@@ -51,13 +51,13 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  if (data.cases.length <= 5) {
-    return null;
-  }
-
   const caseData = data?.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
+
+  if (caseData.length < 5) {
+    return null;
+  }
 
   const caseTotal = <CountSpan>{data?.caseTotal.toLocaleString()}</CountSpan>;
   const mutationTotal = (
