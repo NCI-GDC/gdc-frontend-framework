@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { Button } from "@mantine/core";
 import { Image } from "@/components/Image";
 
 export const PopupIconButton = ({
@@ -12,24 +11,16 @@ export const PopupIconButton = ({
   customStyle?: string;
 }) => {
   return (
-    <Button
-      className={customStyle}
-      classNames={{
-        label: "font-normal",
-        root: "hover:bg-inherit px-0",
-      }}
-      onClick={handleClick}
-      variant="subtle"
-      leftIcon={
+    <button className={customStyle} onClick={handleClick}>
+      <span className="flex gap-2">
         <Image
           src="/user-flow/icons/OpenModal.svg"
           width={10}
-          height={14}
+          height={18}
           alt="pop up icon"
         />
-      }
-    >
-      {label}
-    </Button>
+        <span className="text-left">{label}</span>
+      </span>
+    </button>
   );
 };

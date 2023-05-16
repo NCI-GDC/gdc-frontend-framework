@@ -99,7 +99,7 @@ const ProjectsTable: React.FC = () => {
       columnName: "Project",
       visible: true,
       Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-28">{value}</div>;
+        return <div className="text-left">{value}</div>;
       },
     },
     {
