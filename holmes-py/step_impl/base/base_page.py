@@ -55,6 +55,7 @@ class BasePage:
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
+    # Takes BDD spec file input and converts it to the ID formatting in the data portal
     def normalize_button_identifier(self, button_name: str) -> str:
         return button_name.lower().replace(" ", "-")
 
@@ -98,6 +99,7 @@ class BasePage:
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
 
+    # Normalizes a data-testid and waits for it to be visible
     def wait_for_data_testid_to_be_visible(self,locator):
         normalized_locator = self.normalize_button_identifier(locator)
         locator = GenericLocators.DATA_TEST_ID_IDENT(normalized_locator)
@@ -157,10 +159,12 @@ class BasePage:
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
+    # Clicks a button based on its displayed text
     def click_button_with_displayed_text_name(self, button_text_name):
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
+    # Clicks a button based on its displayed text with a CSS tag of 'a'
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
@@ -170,6 +174,7 @@ class BasePage:
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
+    # Clicks 'undo' in a modal message
     def click_undo_in_message(self):
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
         self.click(locator)
@@ -180,11 +185,14 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
         self.click(table_locator_to_select)
 
+    # Sends text into search bar based on its aria_label
     def send_text_into_search_bar(self, text_to_send, aria_label):
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
+    # Sends text into the quick search bar in the upper-right corner of the data portal.
+    # Then clicks the result in the search result area. Best used with a UUID.
     def quick_search_and_click(self,text):
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
         text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)

@@ -13,11 +13,38 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 * Select "View Images" on the Repository page
 * Wait for "Image Viewer" to be present on the page
 
-## Search for a case
+## Validate Slide Image Viewer Displays Correct Number of Cases
+* Verify the slide image viewer is showing "10" cases
+* Select "Show More" on the Image Viewer page
+* Verify the slide image viewer is showing "20" cases
+
+## Search for a Slide and Validate its contents
 * Select "Search Icon" on the Image Viewer page
 * Search for "TCGA-E2-A14N*" on the Image Viewer page
 * Select "Go" on the Image Viewer page
-* Select "TCGA-E2-A14N-01A-03-TSC" a data-testid
+* Select "Details" on the Image Viewer page
+* Verify the slide image viewer is showing "1 of 1" cases
+* Verify details fields and values
+  |field_name                     |value                                  |
+  |-------------------------------|---------------------------------------|
+  |File_id                        |0dcc8304-dfd1-4e79-b23f-30f1143c897c   |
+  |Submitter_id                   |TCGA-E2-A14N-01Z-00-DX1                |
+  |Slide_id                       |d82a9fea-364e-4ec8-bfdb-855aab788d53   |
+  |Percent_tumor_nuclei	          |--                                     |
+  |Percent_monocyte_infiltration  |--                                     |
+  |Percent_normal_cells	          |--                                     |
+  |Percent_stromal_cells	        |--                                     |
+  |Percent_eosinophil_infiltration|--                                     |
+  |Percent_lymphocyte_infiltration|--                                     |
+  |Percent_neutrophil_infiltration|--                                     |
+  |Section_location	              |Not Reported                           |
+  |Percent_granulocyte_infiltration|--                                    |
+  |Percent_necrosis	              |--                                     |
+  |Percent_inflam_infiltration	  |--                                     |
+  |Number_proliferating_cells	    |--                                     |
+  |Percent_tumor_cells	          |--                                     |
+* Verify the slide image is visible
+* Select "TCGA-E2-A14N-01A-03-TSC" on screen
 * Select "Details" on the Image Viewer page
 * Verify details fields and values
   |field_name                     |value                                  |
@@ -39,4 +66,14 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
   |Number_proliferating_cells	    |--                                     |
   |Percent_tumor_cells	          |100                                    |
 * Verify the slide image is visible
+
+## Remove Search
+* Remove search filter "TCGA-E2-A14N*" on the Image Viewer page
+* Verify the slide image viewer is showing "10" cases
+* Select "Details" on the Image Viewer page
+* Verify the slide image is visible
+
+## Go Back to the Repository Page
+* Select "Back" on the Image Viewer page
+* Wait for "Filters Facets" to be present on the page
 * Pause "2" seconds

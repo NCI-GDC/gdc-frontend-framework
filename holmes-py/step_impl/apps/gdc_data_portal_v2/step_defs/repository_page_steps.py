@@ -77,7 +77,12 @@ def verify_slide_image_is_visible():
     is_slide_image_visible = APP.repository_page.is_slide_image_visible()
     assert is_slide_image_visible, f"The slide image is NOT visible"
 
-# On a slide image, details pop-up, checks if given field and value are present
+@step("Verify the slide image viewer is showing <number_of_cases> cases")
+def verify_slide_image_viewer_case_count(number_of_cases):
+    showing_cases_slide_image_text = APP.repository_page.get_image_viewer_showing_cases_text()
+    assert f"Showing {number_of_cases}" in showing_cases_slide_image_text, f"The slide image viewer page is not showing expected number of cases - {number_of_cases}"
+
+# On a slide image, details pop-up, verifies that given fields and values are present
 @step("Verify details fields and values <table>")
 def verify_details_fields_and_values(table):
     for k, v in enumerate(table):
@@ -98,6 +103,11 @@ def search_for_filter_and_searchbox_content(filter_name: str):
 def search_image_viewer(image_viewer_search: str):
     APP.repository_page.search_image_viewer(image_viewer_search)
 
+@step("Remove search filter <search_filter> on the Image Viewer page")
+def remove_slide_image_viewer_search_filter(search_filter: str):
+    APP.repository_page.remove_slide_image_viewer_search_filter(search_filter)
+
+# Trio of actions for the filter cards and filters on the repository page
 @step("Make the following selections on a filter card on the Repository page <table>")
 def filter_card_selections(table):
     for k, v in enumerate(table):

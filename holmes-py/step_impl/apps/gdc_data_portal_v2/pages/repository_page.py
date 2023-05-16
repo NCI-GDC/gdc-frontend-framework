@@ -23,6 +23,8 @@ class RepositoryPageLocators:
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
     IMAGE_VIEWER_VIEWPORT_NAVIGATOR = "div[class='openseadragon-canvas'] >> nth=1"
+    IMAGE_VIEWER_SHOWING_NUMBER_OF_CASES = "[data-testid='showing-image-viewer']"
+    IMAGE_VIEWER_SEARCH_FILTER = lambda search_filter: f'text="{search_filter}"'
 
     IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="details-image-viewer"] >> text={field_name}'
     IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="details-image-viewer"] >> text={field_name}{value} >> td'
@@ -60,6 +62,7 @@ class RepositoryPage(BasePage):
             filter_names.append(nth_inner_element)
         return filter_names
 
+    # Clicks file filter button and file filter options
     def click_button(self, button_name: str):
         self.click(
             RepositoryPageLocators.FILTER_BUTTON_IDENT(
@@ -67,6 +70,7 @@ class RepositoryPage(BasePage):
             )
         )
 
+    # Clicks specified button on the repository page
     def click_repository_page_button(self, button_name: str):
         self.click(
             RepositoryPageLocators.REPO_BUTTON_IDENT(
@@ -74,6 +78,7 @@ class RepositoryPage(BasePage):
             )
         )
 
+    # Clicks specified data_testid on the slide image viewer page
     def click_image_viewer_page_data_testid(self, data_testid: str):
         self.click(
             RepositoryPageLocators.IMAGE_VIEWER_IDENT(
@@ -107,6 +112,11 @@ class RepositoryPage(BasePage):
             f"{locator}//button//div[1]"
         ).all_text_contents()
         return filter_names
+
+    # Returns the text of how many cases are being shown on the slide image viewer page
+    def get_image_viewer_showing_cases_text(self):
+        locator = RepositoryPageLocators.IMAGE_VIEWER_SHOWING_NUMBER_OF_CASES
+        return self.get_text(locator)
 
     # Gets search box entry in the filter modal
     def get_search_box_entry(self):
@@ -148,6 +158,12 @@ class RepositoryPage(BasePage):
 
     def close_add_a_file_filter_modal(self):
         self.driver.locator(RepositoryPageLocators.MODAL_CLOSE).click()
+
+    # Removes search filter on the slide image viewer page
+    # search_filter - The text of the filter to be removed
+    def remove_slide_image_viewer_search_filter(self, search_filter:str):
+        search_filter_locator = RepositoryPageLocators.IMAGE_VIEWER_SEARCH_FILTER(search_filter)
+        self.click(search_filter_locator)
 
     # Clicks a checkbox within a facet group
     def make_selection_within_facet_group(self, facet_group_name, selection):

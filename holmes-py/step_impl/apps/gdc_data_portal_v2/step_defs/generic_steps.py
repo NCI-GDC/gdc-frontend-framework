@@ -185,7 +185,7 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
-#
+# Waits for specified data-testid to be present on the page
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     is_data_testid_visible = APP.home_page.wait_for_data_testid_to_be_visible(data_testid)
@@ -194,26 +194,32 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
 # TO-DO: replace home_page function call with base_page.
 # All generic_step functions and related locators should
 # be put into base_page.py
+
+# Verifies if expected text is on the page
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     is_text_present = APP.home_page.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
+# Verifies if text is no longer on the page as expected
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
     is_text_not_present = APP.home_page.is_text_not_present(expected_text)
     assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
 
+# Waits for modal with specified text and optionally removes modal
 @step("Is modal with text <expected_text> present on the page and <action>")
 def is_modal_text_present_on_the_page(expected_text: str, action: str):
     is_text_present = APP.home_page.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
+# Checks the cohort bar case count
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
     is_case_count_present = APP.home_page.is_cohort_bar_case_count_present(case_count)
     assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
 
+# Checks the cart file count in the upper-right corner of the data portal
 @step("The cart should have <correct_file_count> files")
 def is_cart_count_correct(correct_file_count: str):
     is_cart_count_correct = APP.home_page.is_cart_count_correct(correct_file_count)
@@ -238,14 +244,17 @@ def is_checkbox_not_checked(table):
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
-@step("Select <data_testid> a data-testid")
+# Clicks specified data-testid
+@step("Select <data_testid> on screen")
 def click_data_testid(data_testid: str):
     APP.home_page.click_data_testid(data_testid)
 
+# Clicks specified data-testid button
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):
     APP.home_page.click_button_data_testid(data_testid)
 
+# Selects a button based on displayed text
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
     APP.home_page.click_button_with_displayed_text_name(button_text_name)
@@ -256,6 +265,7 @@ def click_radio_buttons(table):
         APP.home_page.click_radio_button(v[0])
         time.sleep(0.1)
 
+ # Clicks 'undo' in a modal message
 @step("Undo Action")
 def click_undo_in_message():
     APP.home_page.click_undo_in_message()
@@ -267,11 +277,13 @@ def select_table_value_by_row_column(table):
     for k, v in enumerate(table):
         APP.home_page.select_table_by_row_column(v[0],v[1])
 
+# Sends text into search bar based on its aria_label
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     APP.home_page.send_text_into_search_bar(text, aria_label)
 
-# Best used with a UUID
+# Sends text into the quick search bar in the upper-right corner of the data portal.
+# Then clicks the result in the search result area. Best used with a UUID.
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):
     APP.home_page.quick_search_and_click(text)
