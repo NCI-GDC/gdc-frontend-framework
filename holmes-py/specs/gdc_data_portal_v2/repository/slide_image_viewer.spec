@@ -44,7 +44,7 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
   |Number_proliferating_cells	      |--                                     |
   |Percent_tumor_cells	            |--                                     |
 * Verify the slide image is visible
-* Select "TCGA-E2-A14N-01A-03-TSC" on screen
+* Select "TCGA-E2-A14N-01A-03-TSC" on page
 * Select "Details" on the Image Viewer page
 * Verify details fields and values
   |field_name                       |value                                  |

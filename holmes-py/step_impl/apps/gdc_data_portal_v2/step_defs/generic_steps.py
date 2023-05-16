@@ -245,7 +245,7 @@ def is_checkbox_not_checked(table):
         time.sleep(0.1)
 
 # Clicks specified data-testid
-@step("Select <data_testid> on screen")
+@step("Select <data_testid> on page")
 def click_data_testid(data_testid: str):
     APP.home_page.click_data_testid(data_testid)
 
