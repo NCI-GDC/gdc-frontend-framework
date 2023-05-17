@@ -138,6 +138,7 @@ export const MultipleImageViewer = ({
             <HeaderTitle>Slide Image Viewer</HeaderTitle>
 
             <Button
+              data-testid="back-image-viewer"
               onClick={() => router.back()}
               size="xs"
               classNames={{ root: "bg-primary hover:bg-primary-dark" }}
@@ -176,6 +177,7 @@ export const MultipleImageViewer = ({
                           <MdOutlineSearch
                             size={30}
                             color="black"
+                            data-testid="search-icon-image-viewer"
                             aria-label="search icon"
                           />
                         </ActionIcon>
@@ -183,12 +185,14 @@ export const MultipleImageViewer = ({
 
                       {showSearch && (
                         <Input
+                          data-testid="search-bar-image-viewer"
                           placeholder="eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
                           className="mt-1 w-11/12"
                           rightSectionWidth={50}
                           onChange={(e) => setSearchText(e.target.value)}
                           rightSection={
                             <Badge
+                              data-testid="go-image-viewer"
                               color="primary"
                               variant="filled"
                               className="cursor-pointer"
@@ -249,6 +253,7 @@ export const MultipleImageViewer = ({
                 {Object.keys(data?.edges).length > 0 && activeImage && (
                   <div className="flex-1/2 w-[31em]">
                     <Tabs
+                      data-testid="cases-slides-image-viewer"
                       orientation="vertical"
                       variant="pills"
                       value={activeTab.toString()}
@@ -282,6 +287,7 @@ export const MultipleImageViewer = ({
                         {Object.keys(data?.edges).map((edge, index) => {
                           return (
                             <Tabs.Tab
+                              data-testid={edge}
                               key={edge}
                               value={index.toString()}
                               className={`mx-2 mt-1 ${
@@ -298,6 +304,7 @@ export const MultipleImageViewer = ({
                         <div className="sticky bottom-0 text-center bg-base-lightest p-3 mt-auto">
                           {shouldShowMoreButton && (
                             <Button
+                              data-testid="show-more-image-viewer"
                               onClick={() => {
                                 setCasesOffSet((o) => o + 10);
                                 setShowMorePressed(true);
@@ -312,7 +319,7 @@ export const MultipleImageViewer = ({
                             </Button>
                           )}
 
-                          <Text size="sm">
+                          <Text data-testid="showing-image-viewer" size="sm">
                             Showing{" "}
                             <strong>{Object.keys(data?.edges).length}</strong>{" "}
                             of <strong>{data?.total}</strong>
@@ -350,7 +357,7 @@ export const MultipleImageViewer = ({
                   </div>
                 )}
 
-                <div className="flex-1 ml-2">
+                <div data-testid="image-viewer" className="flex-1 ml-2">
                   {!isFetching && activeImage && (
                     <ImageViewer
                       imageId={activeImage}

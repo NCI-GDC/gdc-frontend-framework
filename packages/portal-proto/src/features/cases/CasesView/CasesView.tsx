@@ -135,7 +135,12 @@ export const ContextualCasesView: React.FC = () => {
           selected: datum.case_uuid,
           slides: (
             <Link
-              href={`/image-viewer/MultipleImageViewerPage?caseId=${datum.case_uuid}`}
+              href={{
+                pathname: "/image-viewer/MultipleImageViewerPage",
+                query: { caseId: datum.case_uuid },
+              }}
+              passHref
+              legacyBehavior
             >
               <ImageSlideCount slideCount={slideCount} />
             </Link>
