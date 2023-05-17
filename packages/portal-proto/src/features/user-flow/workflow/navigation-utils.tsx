@@ -1,4 +1,3 @@
-import { Image } from "@/components/Image";
 import { Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
