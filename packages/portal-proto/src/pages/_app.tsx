@@ -180,7 +180,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   arrowSize: 10,
                   classNames: {
                     tooltip:
-                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
                   },
                 },
