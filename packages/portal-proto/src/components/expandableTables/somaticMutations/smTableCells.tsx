@@ -27,7 +27,7 @@ export const ProteinChange = ({
     <div className="flex font-content">
       {shouldOpenModal ? (
         <PopupIconButton
-          customStyle="text-utility-link underline mx-0.5 font-content"
+          customStyle="text-utility-link underline mx-0.5 font-content self-center"
           handleClick={() =>
             setEntityMetadata({
               entity_type: "genes",

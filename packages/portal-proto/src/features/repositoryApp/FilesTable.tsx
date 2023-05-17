@@ -157,6 +157,9 @@ const FilesTables: React.FC = () => {
             });
           }}
           label={file.cases?.length.toLocaleString() || 0}
+          customAriaLabel={`Open ${
+            file.cases?.length === 1 ? "case" : "file"
+          } information in modal`}
           customStyle={`font-content ${
             file.cases?.length > 0
               ? "text-utility-link underline"
