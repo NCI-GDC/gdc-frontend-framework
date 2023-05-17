@@ -82,9 +82,9 @@ def verify_slide_image_viewer_case_count(number_of_cases):
     showing_cases_slide_image_text = APP.repository_page.get_image_viewer_showing_cases_text()
     assert f"Showing {number_of_cases}" in showing_cases_slide_image_text, f"The slide image viewer page is not showing expected number of cases - {number_of_cases}"
 
-# On a slide image, details pop-up, verifies that given fields and values are present
 @step("Verify details fields and values <table>")
 def verify_details_fields_and_values(table):
+    """On a slide image, details pop-up, verifies that given fields and values are present"""
     for k, v in enumerate(table):
          field_present = APP.repository_page.is_detail_field_present(v[0])
          assert field_present, f"Expected field '{v[0]}' is NOT present in details section"
@@ -107,9 +107,9 @@ def search_image_viewer(image_viewer_search: str):
 def remove_slide_image_viewer_search_filter(search_filter: str):
     APP.repository_page.remove_slide_image_viewer_search_filter(search_filter)
 
-# Trio of actions for the filter cards and filters on the repository page
 @step("Make the following selections on a filter card on the Repository page <table>")
 def filter_card_selections(table):
+    """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
         APP.repository_page.make_selection_within_facet_group(v[0], v[1])
 

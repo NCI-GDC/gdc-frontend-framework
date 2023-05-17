@@ -40,8 +40,8 @@ class RepositoryPage(BasePage):
     def visit(self):
         self.driver.goto(self.URL)
 
-    # Gets the text content of the title
     def get_title(self, title_name):
+        """Gets the text content of the title"""
         return self.driver.locator(
             RepositoryPageLocators.TITLE(title_name.lower())
         ).text_content()
@@ -62,24 +62,24 @@ class RepositoryPage(BasePage):
             filter_names.append(nth_inner_element)
         return filter_names
 
-    # Clicks file filter button and file filter options
     def click_button(self, button_name: str):
+        """Clicks file filter button and file filter options"""
         self.click(
             RepositoryPageLocators.FILTER_BUTTON_IDENT(
                 self.normalize_button_identifier(button_name)
             )
         )
 
-    # Clicks specified button on the repository page
     def click_repository_page_button(self, button_name: str):
+        """Clicks specified button on the repository page"""
         self.click(
             RepositoryPageLocators.REPO_BUTTON_IDENT(
                 self.normalize_button_identifier(button_name)
             )
         )
 
-    # Clicks specified data_testid on the slide image viewer page
     def click_image_viewer_page_data_testid(self, data_testid: str):
+        """Clicks specified data_testid on the slide image viewer page"""
         self.click(
             RepositoryPageLocators.IMAGE_VIEWER_IDENT(
                 self.normalize_button_identifier(data_testid)
@@ -113,42 +113,42 @@ class RepositoryPage(BasePage):
         ).all_text_contents()
         return filter_names
 
-    # Returns the text of how many cases are being shown on the slide image viewer page
     def get_image_viewer_showing_cases_text(self):
+        """Returns the text of how many cases are being shown on the slide image viewer page"""
         locator = RepositoryPageLocators.IMAGE_VIEWER_SHOWING_NUMBER_OF_CASES
         return self.get_text(locator)
 
-    # Gets search box entry in the filter modal
     def get_search_box_entry(self):
+        """Gets search box entry in the filter modal"""
         return self.get_input_value(RepositoryPageLocators.FILE_FILTER_SEARCH_BOX)
 
     def get_custom_filter_facet_as_applied(self, filter_name: str):
         return self.normalize_applied_filter_name(filter_name)
 
-    # On a slide image, details pop-up, checks if given field is present
     def is_detail_field_present(self, field_name):
+        """On a slide image, details pop-up, checks if given field is present"""
         field_locator = RepositoryPageLocators.IMAGE_VIEWER_DETAILS_FIELD(field_name)
         return self.is_visible(field_locator)
 
-    # On a slide image, details pop-up, checks if given value for field is present
     def is_detail_value_present(self, field_name, value):
+        """On a slide image, details pop-up, checks if given value for field is present"""
         value_locator = RepositoryPageLocators.IMAGE_VIEWER_DETAILS_VALUE(field_name,value)
         return self.is_visible(value_locator)
 
-    # Returns if slide image and upper-viewport navigator is visible
     def is_slide_image_visible(self):
+        """Returns if slide image and upper-viewport navigator is visible"""
         main_image_locator = RepositoryPageLocators.IMAGE_VIEWER_MAIN_IMAGE
         is_main_image_visible = self.is_visible(main_image_locator)
         viewport_nav_locator = RepositoryPageLocators.IMAGE_VIEWER_VIEWPORT_NAVIGATOR
         is_viewport_nav_visible = self.is_visible(viewport_nav_locator)
         return (is_main_image_visible and is_viewport_nav_visible)
 
-    # Search bar on the filter modal
     def search_file_filters(self, filter_name: str):
+        """Search bar on the filter modal"""
         self.send_keys(RepositoryPageLocators.FILE_FILTER_SEARCH_BOX, filter_name)
 
-    # Search bar on the slide image viewer page
     def search_image_viewer(self, image_viewer_search: str):
+        """Search bar on the slide image viewer page"""
         self.send_keys(RepositoryPageLocators.IMAGE_VIEWER_SEARCH_BOX, image_viewer_search)
 
     def select_nth_file_filters_result(self, nth: int):
@@ -159,27 +159,30 @@ class RepositoryPage(BasePage):
     def close_add_a_file_filter_modal(self):
         self.driver.locator(RepositoryPageLocators.MODAL_CLOSE).click()
 
-    # Removes search filter on the slide image viewer page
-    # search_filter - The text of the filter to be removed
     def remove_slide_image_viewer_search_filter(self, search_filter:str):
+        """Removes search filter on the slide image viewer page
+
+        Keyword arguments:
+        search_filter - The text of the filter to be removed
+        """
         search_filter_locator = RepositoryPageLocators.IMAGE_VIEWER_SEARCH_FILTER(search_filter)
         self.click(search_filter_locator)
 
-    # Clicks a checkbox within a facet group
     def make_selection_within_facet_group(self, facet_group_name, selection):
+        """Clicks a checkbox within a facet group"""
         locator = RepositoryPageLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
         self.click(locator)
         # Not every action causes the spinner to appear. So, we just wait for it to not be detached.
         self.wait_until_locator_is_detached(RepositoryPageLocators.REPO_TABLE_SPINNER)
 
-    # Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc.
     def perform_action_within_filter_card(self, facet_group_name, action):
+        """Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc."""
         locator = RepositoryPageLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
         self.click(locator)
         # Not every action causes the spinner to appear. So, we just wait for it to not be detached.
         self.wait_until_locator_is_detached(RepositoryPageLocators.REPO_TABLE_SPINNER)
 
-    # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):
+        """Clicks the show more or show less object"""
         locator = RepositoryPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
         self.click(locator)

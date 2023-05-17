@@ -126,9 +126,9 @@ def read_from_file(file_type):
     with open(data_store.spec[file_type],'r+') as f:
         data_store.spec[f"{file_type} contents"] = f.read()
 
-# Used for tar.gz files. Typically seen with file or multiple file downloads
 @step("Read file content from compressed <file_type>")
 def read_file_content_from_compressed_file(file_type):
+    """Used for tar.gz files. Typically seen with file or multiple file downloads"""
     tar = tarfile.open(data_store.spec[file_type],'r:gz')
     all_files_content = ""
     # Skips reading the metadata file
@@ -138,9 +138,9 @@ def read_file_content_from_compressed_file(file_type):
             all_files_content += str(single_file_content)
     data_store.spec[f"{file_type} contents"] = all_files_content
 
-# Used for tar.gz files. Typically seen with file or multiple file downloads
 @step("Read metadata from compressed <file_type>")
 def read_metadata_from_compressed_file(file_type):
+    """Used for tar.gz files. Typically seen with file or multiple file downloads"""
     tar = tarfile.open(data_store.spec[file_type],'r:gz')
     tar_list = tar.getmembers()
     # The first 'member' is always the metadata file
@@ -148,15 +148,15 @@ def read_metadata_from_compressed_file(file_type):
     metadata_content = tar_list_metadata.read()
     data_store.spec[f"{file_type} contents"] = str(metadata_content)
 
-# Checks if specified information is inside collected content from read-in files
 @step("Verify that <file_type> has expected information <table>")
 def verify_file_content(file_type, table):
+    """Checks if specified information is inside collected content from read-in files"""
     for k, v in enumerate(table):
         assert v[0] in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is NOT found in the file"
 
-# Checks if specified information is NOT inside collected content from read-in files
 @step("Verify that <file_type> does not contain specified information <table>")
 def verify_content_is_not_in_file(file_type, table):
+    """Checks if specified information is NOT inside collected content from read-in files"""
     for k, v in enumerate(table):
         assert v[0] not in data_store.spec[f"{file_type} contents"], f"'{v[0]}' is found in the file when it's unexpected"
 
@@ -185,9 +185,9 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
-# Waits for specified data-testid to be present on the page
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
+    """Waits for specified data-testid to be present on the page"""
     is_data_testid_visible = APP.home_page.wait_for_data_testid_to_be_visible(data_testid)
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
@@ -195,33 +195,33 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
 # All generic_step functions and related locators should
 # be put into base_page.py
 
-# Verifies if expected text is on the page
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
+    """Verifies if expected text is on the page"""
     is_text_present = APP.home_page.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
-# Verifies if text is no longer on the page as expected
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
+    """Verifies if text is no longer on the page as expected"""
     is_text_not_present = APP.home_page.is_text_not_present(expected_text)
     assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
 
-# Waits for modal with specified text and optionally removes modal
 @step("Is modal with text <expected_text> present on the page and <action>")
 def is_modal_text_present_on_the_page(expected_text: str, action: str):
+    """Waits for modal with specified text and optionally removes modal"""
     is_text_present = APP.home_page.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
-# Checks the cohort bar case count
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
+    """Checks the cohort bar case count"""
     is_case_count_present = APP.home_page.is_cohort_bar_case_count_present(case_count)
     assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
 
-# Checks the cart file count in the upper-right corner of the data portal
 @step("The cart should have <correct_file_count> files")
 def is_cart_count_correct(correct_file_count: str):
+    """Checks the cart file count in the upper-right corner of the data portal"""
     is_cart_count_correct = APP.home_page.is_cart_count_correct(correct_file_count)
     assert is_cart_count_correct, f"The cart count is NOT displaying '{correct_file_count}'"
 
@@ -244,19 +244,19 @@ def is_checkbox_not_checked(table):
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
-# Clicks specified data-testid
 @step("Select <data_testid> on page")
 def click_data_testid(data_testid: str):
+    """Clicks specified data-testid"""
     APP.home_page.click_data_testid(data_testid)
 
-# Clicks specified data-testid button
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):
+    """Clicks specified data-testid button"""
     APP.home_page.click_button_data_testid(data_testid)
 
-# Selects a button based on displayed text
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
+    """Selects a button based on displayed text"""
     APP.home_page.click_button_with_displayed_text_name(button_text_name)
 
 @step("Select the following radio buttons <table>")
@@ -265,25 +265,29 @@ def click_radio_buttons(table):
         APP.home_page.click_radio_button(v[0])
         time.sleep(0.1)
 
- # Clicks 'undo' in a modal message
 @step("Undo Action")
 def click_undo_in_message():
+    """Clicks 'undo' in a modal message"""
     APP.home_page.click_undo_in_message()
 
-# Selects values from tables by giving a row and column
-# Row and Column indexing begins at '1'
 @step("Select value from table by row and column <table>")
 def select_table_value_by_row_column(table):
+    """
+    Selects values from tables by giving a row and column
+    Row and Column indexing begins at '1'
+    """
     for k, v in enumerate(table):
         APP.home_page.select_table_by_row_column(v[0],v[1])
 
-# Sends text into search bar based on its aria_label
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
+    """Sends text into search bar based on its aria_label"""
     APP.home_page.send_text_into_search_bar(text, aria_label)
 
-# Sends text into the quick search bar in the upper-right corner of the data portal.
-# Then clicks the result in the search result area. Best used with a UUID.
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):
+    """
+    Sends text into the quick search bar in the upper-right corner of the data portal.
+    Then clicks the result in the search result area. Best used with a UUID.
+    """
     APP.home_page.quick_search_and_click(text)
