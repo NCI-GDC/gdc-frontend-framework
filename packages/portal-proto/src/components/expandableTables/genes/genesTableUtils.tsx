@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
-import { Image } from "@/components/Image";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
