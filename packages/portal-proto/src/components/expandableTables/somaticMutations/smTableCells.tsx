@@ -24,32 +24,38 @@ export const ProteinChange = ({
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
     <div className="flex flex-row w-max justify-start font-content">
-      {shouldOpenModal ? (
-        <button
-          className="text-utility-link underline mx-0.5 font-content"
-          onClick={() =>
-            setEntityMetadata({
-              entity_type: "genes",
-              entity_id: proteinChange.geneId,
-            })
-          }
-        >
-          {symbol}
-        </button>
-      ) : shouldLink ? (
-        <Link href={`/genes/${proteinChange.geneId}`}>
-          <a className="underline text-utility-link">{symbol}</a>
-        </Link>
+      {!symbol && !aaChange ? (
+        "--"
       ) : (
-        <span className="mx-0.5">{symbol}</span>
+        <>
+          {shouldOpenModal ? (
+            <button
+              className="text-utility-link underline mx-0.5 font-content"
+              onClick={() =>
+                setEntityMetadata({
+                  entity_type: "genes",
+                  entity_id: proteinChange.geneId,
+                })
+              }
+            >
+              {symbol}
+            </button>
+          ) : shouldLink ? (
+            <Link href={`/genes/${proteinChange.geneId}`}>
+              <a className="underline text-utility-link">{symbol}</a>
+            </Link>
+          ) : (
+            <span className="mx-0.5">{symbol}</span>
+          )}
+          <Tooltip label={aaChange}>
+            <span className={`${aaChange !== "" && "mx-0.5"}`}>
+              {truncate(aaChange == "" ? "--" : aaChange, {
+                length: 12,
+              })}
+            </span>
+          </Tooltip>
+        </>
       )}
-      <Tooltip label={aaChange}>
-        <span className="mx-0.5">
-          {truncate(aaChange == "" ? "--" : aaChange, {
-            length: 12,
-          })}
-        </span>
-      </Tooltip>
     </div>
   );
 };
@@ -58,17 +64,15 @@ export const Consequences = ({
   consequences,
 }: {
   consequences: string;
-}): JSX.Element => {
-  return (
-    <>
-      <span className="mx-0.5 font-content text">
-        {humanify({
+}): JSX.Element => (
+  <span className="font-content text-left">
+    {!consequences
+      ? "--"
+      : humanify({
           term: consequences?.replace("_variant", "").replace("_", " "),
-        }) ?? ``}
-      </span>
-    </>
-  );
-};
+        })}
+  </span>
+);
 
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
@@ -78,79 +82,94 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
 
   return (
     <>
-      <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact.length}>
-        <div className="text-xs">
-          {vepImpact === "HIGH" ? (
-            <div className={`${twIconStyles} bg-impact-vep-high`}>HI</div>
-          ) : vepImpact === "MODERATE" ? (
-            <div className={`${twIconStyles} bg-impact-vep-moderate`}>MO</div>
-          ) : vepImpact === "LOW" ? (
-            <div className={`${twIconStyles} bg-impact-vep-low`}>LO</div>
-          ) : vepImpact === "MODIFIER" ? (
-            <div className={`${twIconStyles} bg-impact-vep-modifier`}>MR</div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>--</div>
-          )}
-        </div>
-      </Tooltip>
-      <Tooltip
-        label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact.length || siftScore === null}
-      >
-        <div className="text-xs mx-0.5 align-middle">
-          {siftImpact === "deleterious" ? (
-            <div className={`${twIconStyles} bg-impact-sift-deleterious`}>
-              DH
+      {Object.values(impact).every((el) => el === undefined) ? (
+        <span>--</span>
+      ) : (
+        <>
+          <Tooltip
+            label={`VEP Impact: ${vepImpact}`}
+            disabled={vepImpact?.length === 0}
+          >
+            <div className="text-xs">
+              {vepImpact === "HIGH" ? (
+                <div className={`${twIconStyles} bg-impact-vep-high`}>HI</div>
+              ) : vepImpact === "MODERATE" ? (
+                <div className={`${twIconStyles} bg-impact-vep-moderate`}>
+                  MO
+                </div>
+              ) : vepImpact === "LOW" ? (
+                <div className={`${twIconStyles} bg-impact-vep-low`}>LO</div>
+              ) : vepImpact === "MODIFIER" ? (
+                <div className={`${twIconStyles} bg-impact-vep-modifier`}>
+                  MR
+                </div>
+              ) : (
+                <div className={`${blankIconStyles} bg-inherit`}>--</div>
+              )}
             </div>
-          ) : siftImpact === "deleterious_low_confidence" ? (
-            <div
-              className={`${twIconStyles} bg-impact-sift-deleterious_low_confidence`}
-            >
-              DL
+          </Tooltip>
+          <Tooltip
+            label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
+            disabled={siftImpact?.length === 0 || siftScore === null}
+          >
+            <div className="text-xs mx-0.5 align-middle">
+              {siftImpact === "deleterious" ? (
+                <div className={`${twIconStyles} bg-impact-sift-deleterious`}>
+                  DH
+                </div>
+              ) : siftImpact === "deleterious_low_confidence" ? (
+                <div
+                  className={`${twIconStyles} bg-impact-sift-deleterious_low_confidence`}
+                >
+                  DL
+                </div>
+              ) : siftImpact === "tolerated" ? (
+                <div className={`${twIconStyles} bg-impact-sift-tolerated`}>
+                  TO
+                </div>
+              ) : siftImpact === "tolerated_low_confidence" ? (
+                <div
+                  className={`${twIconStyles} bg-impact-sift-tolerated_low_confidence`}
+                >
+                  TL
+                </div>
+              ) : (
+                <div className={`${blankIconStyles} bg-inherit`}>--</div>
+              )}
             </div>
-          ) : siftImpact === "tolerated" ? (
-            <div className={`${twIconStyles} bg-impact-sift-tolerated`}>TO</div>
-          ) : siftImpact === "tolerated_low_confidence" ? (
-            <div
-              className={`${twIconStyles} bg-impact-sift-tolerated_low_confidence`}
-            >
-              TL
+          </Tooltip>
+          <Tooltip
+            label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
+            disabled={polyphenImpact?.length === 0 || polyphenScore === null}
+          >
+            <div className="text-xs">
+              {polyphenImpact === "benign" ? (
+                <div className={`${twIconStyles} bg-impact-polyphen-benign`}>
+                  BE
+                </div>
+              ) : polyphenImpact === "probably_damaging" ? (
+                <div
+                  className={`${twIconStyles} bg-impact-polyphen-probably_damaging`}
+                >
+                  PR
+                </div>
+              ) : polyphenImpact === "possibly_damaging" ? (
+                <div
+                  className={`${twIconStyles} bg-impact-polyphen-possibly_damaging`}
+                >
+                  PO
+                </div>
+              ) : polyphenImpact === "unknown" ? (
+                <div className={`${twIconStyles} bg-impact-polyphen-unknown]`}>
+                  UN
+                </div>
+              ) : (
+                <div className={`${blankIconStyles} bg-inherit`}>--</div>
+              )}
             </div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>--</div>
-          )}
-        </div>
-      </Tooltip>
-      <Tooltip
-        label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact.length || polyphenScore === null}
-      >
-        <div className="text-xs">
-          {polyphenImpact === "benign" ? (
-            <div className={`${twIconStyles} bg-impact-polyphen-benign`}>
-              BE
-            </div>
-          ) : polyphenImpact === "probably_damaging" ? (
-            <div
-              className={`${twIconStyles} bg-impact-polyphen-probably_damaging`}
-            >
-              PR
-            </div>
-          ) : polyphenImpact === "possibly_damaging" ? (
-            <div
-              className={`${twIconStyles} bg-impact-polyphen-possibly_damaging`}
-            >
-              PO
-            </div>
-          ) : polyphenImpact === "unknown" ? (
-            <div className={`${twIconStyles} bg-impact-polyphen-unknown]`}>
-              UN
-            </div>
-          ) : (
-            <div className={`${blankIconStyles} bg-inherit`}>--</div>
-          )}
-        </div>
-      </Tooltip>
+          </Tooltip>
+        </>
+      )}
     </>
   );
 };

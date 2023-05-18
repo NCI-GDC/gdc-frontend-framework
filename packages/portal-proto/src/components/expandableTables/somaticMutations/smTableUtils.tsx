@@ -71,9 +71,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -359,9 +357,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <div>
@@ -511,9 +507,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="Gene Strand" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="Gene Strand" className="w-18" />,
             cell: ({ row }) => {
               return (
                 <div className="font-content text-lg font-bold">
@@ -531,9 +525,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="AA Change" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="AA Change" className="w-18" />,
             cell: ({ row }) => {
               const label = row.original["aa_change"];
               return (
@@ -556,9 +548,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="Transcript" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="Transcript" className="w-18" />,
             cell: ({ row }) => {
               const transcript_id = row.original?.transcript_id;
               const isC = row.original["is_canonical"] as boolean;
@@ -585,16 +575,9 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => (
-              <TableCell
-                row={row}
-                accessor={accessor}
-                anchor={false}
-                tooltip={""}
-              />
+              <TableCell row={row} accessor={accessor} anchor={false} />
             ),
           },
         ],
@@ -606,9 +589,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               const geneSymbol = row.original["gene_id"];
               return (
@@ -632,16 +613,9 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => (
-              <TableCell
-                row={row}
-                accessor={accessor}
-                anchor={false}
-                tooltip={""}
-              />
+              <TableCell row={row} accessor={accessor} anchor={false} />
             ),
           },
         ],
@@ -704,20 +678,22 @@ export const getMutation = (
     occurrence,
   } = sm;
 
-  const {
-    transcript: {
-      consequence_type,
-      gene: { gene_id, symbol },
-      aa_change,
-      annotation: {
-        polyphen_impact,
-        polyphen_score,
-        sift_impact,
-        sift_score,
-        vep_impact,
-      },
-    },
-  } = consequence[0];
+  const [
+    {
+      transcript: {
+        consequence_type = undefined,
+        gene: { gene_id = undefined, symbol = undefined } = {},
+        aa_change = undefined,
+        annotation: {
+          polyphen_impact = undefined,
+          polyphen_score = undefined,
+          sift_impact = undefined,
+          sift_score = undefined,
+          vep_impact = undefined,
+        } = {},
+      } = {},
+    } = {},
+  ] = consequence;
 
   return {
     select: ssm_id,
@@ -743,7 +719,7 @@ export const getMutation = (
     },
     survival: {
       label: `${symbol} ${aa_change ? aa_change : ""} ${humanify({
-        term: consequence_type.replace("_variant", "").replace("_", " "),
+        term: consequence_type?.replace("_variant", "").replace("_", " "),
       })}`,
       name: genomic_dna_change,
       symbol: ssm_id,
