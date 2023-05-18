@@ -6,15 +6,15 @@ const NumeratorDenominator = ({
   denominator: number;
 }): JSX.Element => (
   <div
-    className="flex flex-wrap justify-center font-content"
+    className="flex flex-wrap font-content ml-0"
     data-testid="numeratorDenominatorTest"
   >
-    <div className="table mr-0.5">
+    <div>
       <span>{denominator === 0 ? 0 : numerator.toLocaleString()}</span>
       <span className="mx-1">&#47;</span>
-      <span className="mr-0.5">{denominator.toLocaleString()}</span>
+      <span className="mr-1">{denominator.toLocaleString()}</span>
     </div>
-    <div className="table ml-0">
+    <div>
       (
       <span>
         {numerator === 0 || denominator === 0

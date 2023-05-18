@@ -35,10 +35,12 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
           <div className={`flex-initial`}>
             {project && <span className="font-bold mx-0.5">{project}:</span>}
           </div>
-          <NumeratorDenominator
-            numerator={numerator}
-            denominator={denominator}
-          />
+          <div className="ml-0">
+            <NumeratorDenominator
+              numerator={numerator}
+              denominator={denominator}
+            />
+          </div>
         </div>
       </li>
     </animated.ul>
