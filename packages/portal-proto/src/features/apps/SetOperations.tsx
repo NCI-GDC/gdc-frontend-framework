@@ -143,7 +143,10 @@ const SetOperationsApp: FC = () => {
       },
       { skip: !isDemoMode },
     );
-  const [createSet, response] = useCreateSsmsSetFromFiltersMutation();
+  const [createSet1, response1] = useCreateSsmsSetFromFiltersMutation();
+  const [createSet2, response2] = useCreateSsmsSetFromFiltersMutation();
+  const [createSet3, response3] = useCreateSsmsSetFromFiltersMutation();
+
   const needsToCreateSets =
     demoCountsSuccess &&
     Object.values(demoCounts || {}).some((count) => count === 0);
@@ -154,12 +157,12 @@ const SetOperationsApp: FC = () => {
       setSelectedEntityType("mutations");
 
       if (needsToCreateSets) {
-        createSet({ filters: DEMO_SETS[0].filters, set_id: DEMO_SETS[0].id });
-        createSet({ filters: DEMO_SETS[1].filters, set_id: DEMO_SETS[1].id });
-        createSet({ filters: DEMO_SETS[2].filters, set_id: DEMO_SETS[2].id });
+        createSet1({ filters: DEMO_SETS[0].filters, set_id: DEMO_SETS[0].id });
+        createSet2({ filters: DEMO_SETS[1].filters, set_id: DEMO_SETS[1].id });
+        createSet3({ filters: DEMO_SETS[2].filters, set_id: DEMO_SETS[2].id });
       }
     }
-  }, [isDemoMode, needsToCreateSets, createSet]);
+  }, [isDemoMode, needsToCreateSets, createSet1, createSet2, createSet3]);
 
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
@@ -175,7 +178,11 @@ const SetOperationsApp: FC = () => {
       setSelectedEntityType={setSelectedEntityType}
     />
   ) : selectedEntities.length === 0 ||
-    (isDemoMode && needsToCreateSets && !response.isSuccess) ? (
+    (isDemoMode &&
+      needsToCreateSets &&
+      !response1.isSuccess &&
+      !response2.isSuccess &&
+      !response3.isSuccess) ? (
     <Loader size={64} className="m-4" />
   ) : selectedEntities.length === 2 ? (
     <SetOperationsTwo
