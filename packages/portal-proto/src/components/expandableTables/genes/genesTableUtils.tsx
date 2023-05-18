@@ -113,12 +113,14 @@ export const geneCreateTableColumn = ({
                             width={16}
                             height={16}
                             aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
                           <CohortActiveIcon
                             width={16}
                             height={16}
                             aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }

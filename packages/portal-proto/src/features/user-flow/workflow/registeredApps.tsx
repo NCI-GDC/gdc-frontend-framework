@@ -42,7 +42,15 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    icon: <CohortBuilderIcon role="img" aria-label="Cohort Builder icon" />,
+    icon: (
+      <CohortBuilderIcon
+        role="img"
+        aria-label="Cohort Builder icon"
+        width={64}
+        height={64}
+        viewBox="0 0 60 60"
+      />
+    ),
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",

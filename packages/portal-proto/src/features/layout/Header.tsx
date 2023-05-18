@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
-            <a className="block w-full h-full">
+            <a className="block w-full h-full mt-2">
               <NIHLogo
                 layout="fill"
                 objectFit="contain"
