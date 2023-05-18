@@ -23,6 +23,8 @@ import {
   TableHeader,
   ToggledCheck,
 } from "../shared";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -107,15 +109,13 @@ export const geneCreateTableColumn = ({
                       isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
                             aria-label="inactive cohort icon"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
                             aria-label="active cohort icon"
