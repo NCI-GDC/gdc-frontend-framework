@@ -135,7 +135,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   const prevFilters = usePrevious(filters);
 
-  const f = useMemo(
+  const memoizedFilters = useMemo(
     () =>
       buildGeneHaveAndHaveNotFilters(
         filters,
@@ -150,7 +150,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     isSuccess: survivalPlotReady,
     isFetching: survivalPlotFetching,
   } = useGetSurvivalPlotQuery({
-    filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
+    filters:
+      comparativeSurvival !== undefined
+        ? memoizedFilters
+        : filters
+        ? [filters]
+        : [],
   });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
