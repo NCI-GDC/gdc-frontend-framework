@@ -37,7 +37,6 @@ export const coreStore = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        warnAfter: 128,
       },
     })
       .concat(
