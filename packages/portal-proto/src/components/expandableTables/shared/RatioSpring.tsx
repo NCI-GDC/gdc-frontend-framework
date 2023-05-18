@@ -31,8 +31,10 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
         key={`${project && `${project}-`}subrow-item-${index}`}
         className="list-none"
       >
-        <div className="flex">
-          {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
+        <div className={`${project?.length < 12 ? "flex" : "flex flex-col"}`}>
+          <div className={`flex-initial`}>
+            {project && <span className="font-bold mx-0.5">{project}:</span>}
+          </div>
           <NumeratorDenominator
             numerator={numerator}
             denominator={denominator}
