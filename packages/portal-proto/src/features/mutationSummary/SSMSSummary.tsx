@@ -68,7 +68,7 @@ export const SSMSSummary = ({
       functional_impact: (
         <>
           {transcript_id ? (
-            <div className="flex flex-col py-2 gap-0.5">
+            <div className="flex flex-col gap-0.5 py-2">
               <AnchorLink
                 href={externalLinks.transcript(transcript_id)}
                 title={transcript_id}
@@ -195,7 +195,7 @@ export const SSMSSummary = ({
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <div className="grid grid-cols-2 mb-8">
+              <div className="mb-8 grid grid-cols-2">
                 <SSMPlot page="ssms" ssms={ssm_id} />
               </div>
 

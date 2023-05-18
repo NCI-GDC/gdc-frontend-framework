@@ -117,6 +117,7 @@ const download = async ({
   form?: boolean;
 }): Promise<void> => {
   let canceled = false;
+  const controller = new AbortController();
 
   // place notification in timeout to avoid flicker on fast calls
   const showNotificationTimeout = setTimeout(
@@ -128,6 +129,7 @@ const download = async ({
               cleanNotifications();
               canceled = true;
               if (done) {
+                controller.abort();
                 done();
               }
             }}
@@ -274,6 +276,7 @@ const download = async ({
     return value;
   };
 
+  const signal = controller.signal;
   if (form) {
     addFormAndSubmit();
     setTimeout(() => {
@@ -299,6 +302,7 @@ const download = async ({
         {
           ...options,
           body,
+          signal,
         },
       ).then(handleDownloadResponse);
     } else {
@@ -313,6 +317,7 @@ const download = async ({
         }`,
         {
           ...options,
+          signal,
         },
       ).then(handleDownloadResponse);
     }
