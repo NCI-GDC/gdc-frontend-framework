@@ -84,7 +84,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
       >
         <>
           <span className="font-semibold text-[1rem] mb-2">{subrowTitle}</span>
-          <div className="columns-4 gap-4 font-content text-[13.5px]">
+          <div className="columns-4 gap-1 font-content text-[13.5px]">
             {subDataSorted.map((item, i) => renderItems({ ...item }, i))}
           </div>
         </>
