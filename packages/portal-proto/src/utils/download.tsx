@@ -1,10 +1,10 @@
-import { isPlainObject, includes, reduce } from "lodash";
-import urlJoin from "url-join";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { includes, isPlainObject, reduce } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
+import urlJoin from "url-join";
 
 const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -295,31 +295,42 @@ const download = async ({
         },
         replacer,
       );
-      fetch(
-        `${GDC_APP_API_AUTH}/${endpoint}${
-          queryParams ? `?${queryParams}` : ""
-        }`,
-        {
-          ...options,
-          body,
-          signal,
-        },
-      ).then(handleDownloadResponse);
+
+      // adding a bit delay (2s) before the call is made so that users can cancel the download with ease
+      setTimeout(() => {
+        if (!canceled) {
+          fetch(
+            `${GDC_APP_API_AUTH}/${endpoint}${
+              queryParams ? `?${queryParams}` : ""
+            }`,
+            {
+              ...options,
+              body,
+              signal,
+            },
+          ).then(handleDownloadResponse);
+        }
+      }, 2000);
     } else {
       if (queryParams === undefined) {
         queryParams = Object.keys(params)
           .map((key) => key + "=" + params[key])
           .join("&");
       }
-      fetch(
-        `${GDC_APP_API_AUTH}/${endpoint}${
-          queryParams ? `?${queryParams}` : ""
-        }`,
-        {
-          ...options,
-          signal,
-        },
-      ).then(handleDownloadResponse);
+      // adding a bit delay (2s) before the call is made so that users can cancel the download with ease
+      setTimeout(() => {
+        if (!canceled) {
+          fetch(
+            `${GDC_APP_API_AUTH}/${endpoint}${
+              queryParams ? `?${queryParams}` : ""
+            }`,
+            {
+              ...options,
+              signal,
+            },
+          ).then(handleDownloadResponse);
+        }
+      }, 2000);
     }
   }
 };
