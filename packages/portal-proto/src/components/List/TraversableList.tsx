@@ -51,7 +51,7 @@ export const TraversableList = <T extends unknown>({
 }: Props<T>): JSX.Element => {
   const [focusedItem, setFocusedItem] = useState<undefined | number>(undefined);
 
-  const itemRefs = Array.from({ length: data.length }, () =>
+  const itemRefs = Array.from({ length: data?.length }, () =>
     React.createRef<HTMLLIElement>(),
   );
   const getPreviousItem = (items: Array<T>, reference: number) =>
@@ -114,9 +114,9 @@ export const TraversableList = <T extends unknown>({
 
   return (
     <>
-      {data.length > 0 ? (
+      {data?.length > 0 ? (
         <ul
-          className="absolute md:left-0 sm:left-0 lg:left-auto right-0 top-10 bg-base-lightest w-[512px] border-r-10 border-1 border-base"
+          className="bg-base-lightest border-r-10 border-1 border-base absolute right-0 top-10 w-[512px] sm:left-0 md:left-0 lg:left-auto"
           tabIndex={0}
           data-testid="list"
         >
@@ -152,7 +152,7 @@ export const TraversableList = <T extends unknown>({
           })}
         </ul>
       ) : (
-        <div className="w-80 absolute md:left-0 sm:left-0 lg:left-auto right-0 bg-base-lightest top-10 p-2 border-r-10 border-1 border-base">
+        <div className="bg-base-lightest border-r-10 border-1 border-base absolute right-0 top-10 w-80 p-2 sm:left-0 md:left-0 lg:left-auto">
           No results found
         </div>
       )}

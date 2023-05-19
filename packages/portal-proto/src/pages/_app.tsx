@@ -1,43 +1,39 @@
-import "../styles/globals.css";
-import "../styles/survivalplot.css";
-import "../styles/oncogrid.css";
-import "@nci-gdc/sapien/dist/bodyplot.css";
-import { useState } from "react";
-import { Provider } from "react-redux";
-import type { AppProps } from "next/app";
-import Script from "next/script";
-import { CoreProvider } from "@gff/core";
-import { useLocalStorage } from "@mantine/hooks";
-import {
-  MantineProvider,
-  createEmotionCache,
-  EmotionCache,
-} from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
-import store from "../app/store";
-import tailwindConfig from "../../tailwind.config";
-
+import "@/features/genomic/registerApp";
+import "@/features/oncoGrid/registerApp";
 // import gdc apps here.
 // their default exports will trigger registration.
 import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
-import "@/features/genomic/registerApp";
-import "@/features/oncoGrid/registerApp";
-
-// import the React tab styles once
-import "react-tabs/style/react-tabs.css";
-
+import { datadogRum } from "@datadog/browser-rum";
+import { CoreProvider } from "@gff/core";
+import {
+  createEmotionCache,
+  EmotionCache,
+  MantineProvider,
+} from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
+import { NotificationsProvider } from "@mantine/notifications";
+import "@nci-gdc/sapien/dist/bodyplot.css";
+import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
+import Script from "next/script";
+import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { datadogRum } from "@datadog/browser-rum";
+import { Provider } from "react-redux";
+// import the React tab styles once
+import "react-tabs/style/react-tabs.css";
 import {
   entityMetadataType,
   SummaryModalContext,
   URLContext,
 } from "src/utils/contexts";
+import tailwindConfig from "../../tailwind.config";
+import store from "../app/store";
+import "../styles/globals.css";
+import "../styles/oncogrid.css";
+import "../styles/survivalplot.css";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -241,10 +237,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 >
                   <Component {...pageProps} />
 
-                  <Script
-                    src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-                    strategy="afterInteractive"
-                  />
+                  <Script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
+                  <Script strategy="beforeInteractive">
+                    {`_satellite.pageBottom()`}
+                  </Script>
                 </SummaryModalContext.Provider>
               </NotificationsProvider>
             </URLContext.Provider>
