@@ -6,7 +6,7 @@ class GenericLocators:
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
 
-    COHORT_BAR_CASE_COUNT = lambda case_count: f'div[data-tour="cohort_management_bar"] span:has-text("{case_count}")'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
@@ -56,6 +56,7 @@ class BasePage:
         return self.driver.locator(locator).fill(text)
 
     def normalize_button_identifier(self, button_name: str) -> str:
+        """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return button_name.lower().replace(" ", "-")
 
     def normalize_applied_filter_name(self, filter_name: str) -> List[str]:
@@ -67,22 +68,24 @@ class BasePage:
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
 
-    # wait for element to have non-empty bounding box and no visibility:hidden
     def wait_until_locator_is_visible(self, locator):
+        """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
 
-    # wait for element to not be present in DOM
     def wait_until_locator_is_detached(self, locator):
+        """wait for element to not be present in DOM"""
         self.driver.locator(locator).wait_for(state='detached', timeout= 60000)
 
-    # wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden
     def wait_until_locator_is_hidden(self, locator):
+        """wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden"""
         self.driver.locator(locator).wait_for(state='hidden', timeout= 15000)
 
-    # Waits for a piece of text to appear in the temporary cohort modal
-    # That modal appears after an action has been performed on a cohort
-    # state (e.g create, save, delete, etc. )
     def wait_for_text_in_temporary_message(self, text, action="remove modal"):
+        """
+        Waits for a piece of text to appear in the temporary cohort modal.
+        That modal appears after an action has been performed on a cohort
+        state (e.g create, save, delete, etc).
+        """
         text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
         try:
             self.wait_until_locator_is_visible(text_locator)
@@ -97,6 +100,16 @@ class BasePage:
 
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
+
+    def wait_for_data_testid_to_be_visible(self,locator):
+        """Normalizes a data-testid and waits for it to be visible"""
+        normalized_locator = self.normalize_button_identifier(locator)
+        locator = GenericLocators.DATA_TEST_ID_IDENT(normalized_locator)
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
@@ -127,52 +140,66 @@ class BasePage:
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
-    # Returns if a filter card enum checkbox is checked
     def is_facet_card_enum_checkbox_checked(self, checkbox_id):
+        """Returns if a filter card enum checkbox is checked"""
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
         result = self.is_checked(locator)
         return result
 
-    # Returns if cart count is correct
     def is_cart_count_correct(self, correct_file_count):
+        """Returns if cart count is correct"""
         locator = GenericLocators.CART_IDENT
         cart_text = self.get_text(locator)
         cart_count = cart_text.replace('Cart','')
         return cart_count == correct_file_count
+
+    def click_data_testid(self, data_testid):
+        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
+        self.click(locator)
 
     def click_button_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
     def click_button_with_displayed_text_name(self, button_text_name):
+        """Clicks a button based on its displayed text"""
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):
+        """Clicks a button based on its displayed text with a CSS tag of 'a'"""
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
-    # Clicks a radio button in a filter card
     def click_radio_button(self, radio_name):
+        """Clicks a radio button in a filter card"""
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
     def click_undo_in_message(self):
+        """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
         self.click(locator)
 
-    # Selects values from tables by giving a row and column
-    # Row and Column indexing begins at '1'
     def select_table_by_row_column(self,row,column):
+        """
+        Selects values from tables by giving a row and column
+        Row and Column indexing begins at '1'
+        """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
         self.click(table_locator_to_select)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
+        """Sends text into search bar based on its aria_label"""
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
     def quick_search_and_click(self,text):
+        """
+        Sends text into the quick search bar in the upper-right corner of the data portal.
+        Then clicks the result in the search result area. Best used with a UUID.
+        """
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
         text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
         self.click(text_locator)

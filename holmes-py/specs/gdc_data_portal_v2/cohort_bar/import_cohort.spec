@@ -20,7 +20,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Set as current cohort
 * The cohort bar case count should be "70"
 * Select "Clear All"
-* The cohort bar case count should be "86,513"
+* The cohort bar case count should be "86,962"
 
 ## Import Cohort from Data Portal V1 file
 * Select "Upload" from the Cohort Bar
