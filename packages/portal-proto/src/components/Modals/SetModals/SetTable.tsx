@@ -10,13 +10,8 @@ import {
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 
-const CountCell = ({ countHook, setId }) => {
-  const { data, isSuccess } = countHook({ setId });
-  return isSuccess ? data.toLocaleString() : "";
-};
-
 interface SelectCellProps {
-  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly count: number;
   readonly set: string[];
   readonly multiselect: boolean;
   readonly selectedSets: string[][];
@@ -25,7 +20,7 @@ interface SelectCellProps {
 }
 
 const SelectCell: React.FC<SelectCellProps> = ({
-  countHook,
+  count,
   set,
   multiselect,
   selectedSets,
@@ -33,9 +28,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   shouldDisable,
 }: SelectCellProps) => {
   const [setId] = set;
-  const { data, isSuccess } = countHook({ setId });
-  const disabledMessage =
-    isSuccess && shouldDisable ? shouldDisable(data) : undefined;
+  const disabledMessage = shouldDisable(count);
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
 
   return (
@@ -72,7 +65,9 @@ const SelectCell: React.FC<SelectCellProps> = ({
 interface SetTableProps {
   readonly selectedSets: string[][];
   readonly setSelectedSets: (sets: string[][]) => void;
-  readonly countHook: UseQuery<any>;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly multiselect?: boolean;
@@ -91,6 +86,9 @@ const SetTable: React.FC<SetTableProps> = ({
   shouldDisable,
 }: SetTableProps) => {
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
+  const { data: counts, isSuccess } = countHook({
+    setIds: Object.keys(sets),
+  });
 
   const tableData = useMemo(() => {
     return Object.entries(sets)
@@ -98,7 +96,7 @@ const SetTable: React.FC<SetTableProps> = ({
       .map((set) => ({
         select: (
           <SelectCell
-            countHook={countHook}
+            count={counts?.[set[0]] || 0}
             set={set}
             multiselect={multiselect}
             shouldDisable={shouldDisable}
@@ -107,16 +105,17 @@ const SetTable: React.FC<SetTableProps> = ({
           />
         ),
         name: <label id={`set-table-${set[0]}`}>{set[1]}</label>,
-        count: <CountCell countHook={countHook} setId={set[0]} />,
+        count: isSuccess ? (counts?.[set[0]] || 0).toLocaleString() : "...",
       }));
   }, [
     sets,
     selectedSets,
-    countHook,
     multiselect,
     setSelectedSets,
     shouldDisable,
     sortByName,
+    counts,
+    isSuccess,
   ]);
 
   const columns = useMemo(() => {
