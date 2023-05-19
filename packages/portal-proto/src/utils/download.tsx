@@ -126,10 +126,10 @@ const download = async ({
         message: (
           <DownloadNotification
             onClick={() => {
+              controller.abort();
               cleanNotifications();
               canceled = true;
               if (done) {
-                controller.abort();
                 done();
               }
             }}
@@ -295,42 +295,31 @@ const download = async ({
         },
         replacer,
       );
-
-      // adding a bit delay (2s) before the call is made so that users can cancel the download with ease
-      setTimeout(() => {
-        if (!canceled) {
-          fetch(
-            `${GDC_APP_API_AUTH}/${endpoint}${
-              queryParams ? `?${queryParams}` : ""
-            }`,
-            {
-              ...options,
-              body,
-              signal,
-            },
-          ).then(handleDownloadResponse);
-        }
-      }, 2000);
+      fetch(
+        `${GDC_APP_API_AUTH}/${endpoint}${
+          queryParams ? `?${queryParams}` : ""
+        }`,
+        {
+          ...options,
+          body,
+          signal,
+        },
+      ).then(handleDownloadResponse);
     } else {
       if (queryParams === undefined) {
         queryParams = Object.keys(params)
           .map((key) => key + "=" + params[key])
           .join("&");
       }
-      // adding a bit delay (2s) before the call is made so that users can cancel the download with ease
-      setTimeout(() => {
-        if (!canceled) {
-          fetch(
-            `${GDC_APP_API_AUTH}/${endpoint}${
-              queryParams ? `?${queryParams}` : ""
-            }`,
-            {
-              ...options,
-              signal,
-            },
-          ).then(handleDownloadResponse);
-        }
-      }, 2000);
+      fetch(
+        `${GDC_APP_API_AUTH}/${endpoint}${
+          queryParams ? `?${queryParams}` : ""
+        }`,
+        {
+          ...options,
+          signal,
+        },
+      ).then(handleDownloadResponse);
     }
   }
 };
