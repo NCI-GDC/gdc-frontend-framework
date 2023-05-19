@@ -17,7 +17,6 @@ import { externalLinks, humanify } from "src/utils";
 import tw from "tailwind-styled-components";
 import {
   CheckboxSpring,
-  RatioSpring,
   SelectReducerAction,
   SelectedReducer,
   Survival,
@@ -287,7 +286,7 @@ export const ssmsCreateTableColumn = ({
                   {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
-                        className="font-content"
+                        className="mr-1 font-content"
                         aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
@@ -307,7 +306,35 @@ export const ssmsCreateTableColumn = ({
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <div
+                      className="flex flex-wrap font-content ml-0"
+                      data-testid="numeratorDenominatorTest"
+                    >
+                      <div>
+                        <span>
+                          {denominator === 0 ? 0 : numerator.toLocaleString()}
+                        </span>
+                        <span className="mx-1">&#47;</span>
+                        <span className="mr-1">
+                          {denominator.toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        (
+                        <span>
+                          {numerator === 0 || denominator === 0
+                            ? "0.00%"
+                            : (numerator / denominator).toLocaleString(
+                                undefined,
+                                {
+                                  style: "percent",
+                                  minimumFractionDigits: 2,
+                                },
+                              )}
+                        </span>
+                        )
+                      </div>
+                    </div>
                   )}
                 </div>
               );
@@ -342,7 +369,35 @@ export const ssmsCreateTableColumn = ({
               return (
                 <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <div
+                      className="flex flex-wrap font-content ml-0"
+                      data-testid="numeratorDenominatorTest"
+                    >
+                      <div>
+                        <span>
+                          {denominator === 0 ? 0 : numerator.toLocaleString()}
+                        </span>
+                        <span className="mx-1">&#47;</span>
+                        <span className="mr-1">
+                          {denominator.toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        (
+                        <span>
+                          {numerator === 0 || denominator === 0
+                            ? "0.00%"
+                            : (numerator / denominator).toLocaleString(
+                                undefined,
+                                {
+                                  style: "percent",
+                                  minimumFractionDigits: 2,
+                                },
+                              )}
+                        </span>
+                        )
+                      </div>
+                    </div>
                   )}
                 </div>
               );

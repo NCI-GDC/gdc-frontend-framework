@@ -38,7 +38,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [mutationID, setMutationID] = useState("" as string);
+  const [mutationID, setMutationID] = useState("");
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData: GDCSsmsTable) => {
@@ -141,7 +141,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         id={mutationID}
         width={width}
         isGene={false}
-        subrowTitle={`Affected Cases Across The GDC`}
+        subrowTitle="Affected Cases Across The GDC"
       />
     );
   }, [mutationID, width]);

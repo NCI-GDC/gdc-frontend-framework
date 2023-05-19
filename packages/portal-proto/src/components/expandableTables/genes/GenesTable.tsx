@@ -37,7 +37,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
-  const [geneID, setGeneID] = useState("" as string);
+  const [geneID, setGeneID] = useState("");
 
   const useGeneTableFormat = useCallback(
     (initialData: Record<string, any>) => {
@@ -153,7 +153,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
         id={geneID}
         width={width}
         isGene={true}
-        subrowTitle={`# SSMS Affected Cases Across The GDC`}
+        subrowTitle="# SSMS Affected Cases Across The GDC"
       />
     );
   }, [geneID, width]);

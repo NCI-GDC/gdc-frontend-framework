@@ -1,9 +1,11 @@
 import React from "react";
 import { animated, useSpring, config } from "@react-spring/web";
-import { flexRender } from "@tanstack/react-table";
+import { flexRender, Row } from "@tanstack/react-table";
+import { Genes } from "../genes/types";
+import { SomaticMutations } from "../somaticMutations/types";
 
 interface AnimatedRowProps {
-  row: any;
+  row: Row<Genes | SomaticMutations>;
   index: number;
   selected: boolean;
   subrow: React.FC;
