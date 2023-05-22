@@ -61,7 +61,9 @@ Prettier Checks:
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - npm run format:check
+    - changed_files=$(git diff --name-only $CI_COMMIT_REF_NAME $CI_COMMIT_BEFORE_SHA)
+    - echo "$changed_files"
+    - npm run format:check $changed_files
   <<: *default_rules
 
 Build and test core and portal:
