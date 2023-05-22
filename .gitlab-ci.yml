@@ -58,13 +58,10 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
-    - apk update && apk add --no-cache git
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - changed_files=$(git diff-tree --name-only --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA})  # Get changed files in PR
-    - echo "$changed_files"
-    - npm run format:check $changed_files
+    - npm run format:check
   <<: *default_rules
 
 Build and test core and portal:
