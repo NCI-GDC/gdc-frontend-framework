@@ -4,6 +4,5 @@
   "trailingComma": "all",
   "semi": true,
   "singleQuote": false,
-  "jsxSingleQuote": false,
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss"]
+  "jsxSingleQuote": false
 }
