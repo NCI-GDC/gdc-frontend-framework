@@ -11,7 +11,7 @@ import {
 
 const accessTypes = ["open", "controlled"] as const;
 
-export type AccessType = typeof accessTypes[number];
+export type AccessType = (typeof accessTypes)[number];
 
 const isAccessType = (x: unknown): x is AccessType => {
   return accessTypes.some((t) => t === x);
@@ -48,7 +48,7 @@ const fileTypes = [
   "submitted_genotyping_array",
 ] as const;
 
-export type FileType = typeof fileTypes[number];
+export type FileType = (typeof fileTypes)[number];
 
 const isFileType = (x: unknown): x is FileType => {
   return fileTypes.some((t) => t === x);
@@ -76,7 +76,7 @@ const dataCategories: ReadonlyArray<string> = [
   "Combined Nucleotide Variation",
 ] as const;
 
-export type DataCategory = typeof dataCategories[number];
+export type DataCategory = (typeof dataCategories)[number];
 
 const isDataCategory = (x: unknown): x is DataCategory => {
   return dataCategories.some((t) => t === x);
@@ -117,7 +117,7 @@ const dataFormats = [
   "CEL",
 ] as const;
 
-export type DataFormat = typeof dataFormats[number];
+export type DataFormat = (typeof dataFormats)[number];
 
 const isDataFormat = (x: unknown): x is DataFormat => {
   return dataFormats.some((t) => t === x);
@@ -165,7 +165,7 @@ const dataTypes = [
   "Somatic Mutation Index",
 ] as const;
 
-export type DataType = typeof dataTypes[number];
+export type DataType = (typeof dataTypes)[number];
 
 const isDataType = (x: unknown): x is DataType => {
   return dataTypes.some((t) => t === x);
@@ -195,7 +195,7 @@ const experimentalStrategies = [
   "Reverse Phase Protein Array",
 ] as const;
 
-export type ExperimentalStrategy = typeof experimentalStrategies[number];
+export type ExperimentalStrategy = (typeof experimentalStrategies)[number];
 
 const isExperimentalStrategy = (x: unknown): x is ExperimentalStrategy => {
   return experimentalStrategies.some((t) => t === x);
