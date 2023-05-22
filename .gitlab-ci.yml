@@ -62,9 +62,11 @@ Prettier Checks:
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - changed_files=$(git diff --name-only $CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME~$CI_MERGE_REQUEST_DIFF_ID)  # Get changed files in PR
+    - changed_files=$(git diff-tree --name-only --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA})  # Get changed files in PR
     - echo "$changed_files"
     - npm run format:check $changed_files
+  only:
+    - merge_requests
   <<: *default_rules
 
 Build and test core and portal:
