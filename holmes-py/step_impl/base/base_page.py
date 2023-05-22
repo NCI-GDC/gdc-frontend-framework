@@ -24,6 +24,9 @@ class GenericLocators:
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
 
+    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
+    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -179,6 +182,21 @@ class BasePage:
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def make_selection_within_facet_group(self, facet_group_name, selection):
+        """Clicks a checkbox within a facet group"""
+        locator = GenericLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
+        self.click(locator)
+
+    def perform_action_within_filter_card(self, facet_group_name, action):
+        """Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc."""
+        locator = GenericLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
+        self.click(locator)
+
+    def click_show_more_less_within_filter_card(self, facet_group_name, label):
+        """Clicks the show more or show less object"""
+        locator = GenericLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
         self.click(locator)
 
     def select_table_by_row_column(self,row,column):

@@ -270,6 +270,26 @@ def click_undo_in_message():
     """Clicks 'undo' in a modal message"""
     APP.home_page.click_undo_in_message()
 
+# These 3 functions are for filter cards (like on projects or repository page).
+# The filter cards depend on a specific data-testid "filters-facets" that
+# is common across a couple of filter sets in the data portal.
+@step("Make the following selections on a filter card <table>")
+def filter_card_selections(table):
+    """Trio of actions for the filter cards and filters on the repository page"""
+    for k, v in enumerate(table):
+        APP.repository_page.make_selection_within_facet_group(v[0], v[1])
+
+@step("Perform the following actions on a filter card <table>")
+def perform_filter_card_action(table):
+    for k, v in enumerate(table):
+        APP.repository_page.perform_action_within_filter_card(v[0], v[1])
+
+@step("Expand or contract a filter <table>")
+def click_show_more_or_show_less(table):
+    for k, v in enumerate(table):
+        APP.repository_page.click_show_more_less_within_filter_card(v[0], v[1])
+
+
 @step("Select value from table by row and column <table>")
 def select_table_value_by_row_column(table):
     """
