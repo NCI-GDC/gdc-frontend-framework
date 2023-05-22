@@ -15,8 +15,8 @@ import { useLocalStorage } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
 import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import Script from "next/script";
 import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
@@ -236,14 +236,14 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   }}
                 >
                   <Component {...pageProps} />
-
-                  <Script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
-                  <Script strategy="beforeInteractive">
-                    {`_satellite.pageBottom()`}
-                  </Script>
                 </SummaryModalContext.Provider>
               </NotificationsProvider>
             </URLContext.Provider>
+            <Head>
+              <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
+            </Head>
+
+            <script>{`_satellite.pageBottom()`}</script>
           </div>
         </MantineProvider>
       </Provider>
