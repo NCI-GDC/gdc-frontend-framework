@@ -1,18 +1,18 @@
-import { AnchorLink } from "@/components/AnchorLink";
-import { CollapsibleList } from "@/components/CollapsibleList";
-import { HorizontalTableProps } from "@/components/HorizontalTable";
-import { SummaryCard } from "@/components/Summary/SummaryCard";
+import React from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
 import { pick } from "lodash";
-import React from "react";
-import { externalLinks, humanify } from "src/utils";
-import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import SSMPlot from "../charts/SSMPlot";
+import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { externalLinks, humanify } from "src/utils";
+import { CollapsibleList } from "@/components/CollapsibleList";
+import { AnchorLink } from "@/components/AnchorLink";
+import SSMPlot from "../charts/SSMPlot";
+import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
+import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
+import { HeaderTitle } from "../shared/tailwindComponents";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -68,7 +68,7 @@ export const SSMSSummary = ({
       functional_impact: (
         <>
           {transcript_id ? (
-            <div className="flex flex-col gap-0.5 py-2">
+            <div className="flex flex-col py-2 gap-0.5">
               <AnchorLink
                 href={externalLinks.transcript(transcript_id)}
                 title={transcript_id}
@@ -195,9 +195,10 @@ export const SSMSSummary = ({
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <div className="mb-8 grid grid-cols-2">
+              <div className="grid grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />
               </div>
+
               <SSMSCancerDistributionTable
                 ssms={ssm_id}
                 symbol={summaryData.dna_change}
