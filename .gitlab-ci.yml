@@ -62,7 +62,7 @@ Prettier Checks:
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - changed_files=$(git diff --name-only $CI_COMMIT_BRANCH $CI_COMMIT_BRANCH^)
+    - changed_files=$(git diff --name-only $CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME~$CI_MERGE_REQUEST_DIFF_ID)  # Get changed files in PR
     - echo "$changed_files"
     - npm run format:check $changed_files
   <<: *default_rules
