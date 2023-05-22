@@ -112,7 +112,7 @@ export const FieldTypes = [
   "long",
   "text",
 ] as const;
-export type FieldType = (typeof FieldTypes)[number];
+export type FieldType = typeof FieldTypes[number];
 
 export interface FieldDetails {
   readonly description: string;
