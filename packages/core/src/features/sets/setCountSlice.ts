@@ -103,8 +103,11 @@ export const setCountSlice = graphqlAPISlice
           { type: "geneSets", id: arg.setId },
         ],
       }),
-      geneSetCounts: builder.query({
-        async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+      geneSetCounts: builder.query<
+        Record<string, number>,
+        { setIds: string[] }
+      >({
+        queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
           const counts: Record<string, number> = {};
           for (const setId of _arg.setIds) {
             const result = await fetchWithBQ({
@@ -130,6 +133,8 @@ export const setCountSlice = graphqlAPISlice
 
           return { data: counts };
         },
+        providesTags: (_result, _error, arg) =>
+          arg.setIds.map((id) => ({ type: "geneSets", id })),
       }),
       ssmSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
@@ -165,34 +170,39 @@ export const setCountSlice = graphqlAPISlice
           { type: "ssmsSets", id: arg.setId },
         ],
       }),
-      ssmSetCounts: builder.query({
-        async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
-          const counts: Record<string, number> = {};
-          for (const setId of _arg.setIds) {
-            const result = await fetchWithBQ({
-              graphQLQuery: ssmsSetCountQuery,
-              graphQLFilters: {
-                filters: {
-                  op: "=",
-                  content: {
-                    field: "ssms.ssm_id",
-                    value: `set_id:${setId}`,
+      ssmSetCounts: builder.query<Record<string, number>, { setIds: string[] }>(
+        {
+          queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
+            const counts: Record<string, number> = {};
+            for (const setId of _arg.setIds) {
+              const result = await fetchWithBQ({
+                graphQLQuery: ssmsSetCountQuery,
+                graphQLFilters: {
+                  filters: {
+                    op: "=",
+                    content: {
+                      field: "ssms.ssm_id",
+                      value: `set_id:${setId}`,
+                    },
                   },
                 },
-              },
-            });
-            if (result.error) {
-              return { error: result.error };
-            } else {
-              counts[setId as string] = transformSsmsSetCountResponse(
-                result.data as GraphQLApiResponse<any>,
-              );
+              });
+              if (result.error) {
+                return { error: result.error };
+              } else {
+                counts[setId as string] = transformSsmsSetCountResponse(
+                  result.data as GraphQLApiResponse<any>,
+                );
+              }
             }
-          }
 
-          return { data: counts };
+            return { data: counts };
+          },
+
+          providesTags: (_result, _error, arg) =>
+            arg.setIds.map((id) => ({ type: "ssmsSets", id })),
         },
-      }),
+      ),
       caseSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
           graphQLQuery: `query caseSetCounts(
