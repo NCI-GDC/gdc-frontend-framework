@@ -5,5 +5,16 @@
   "semi": true,
   "singleQuote": false,
   "jsxSingleQuote": false,
+  "importOrder": [
+    "^@gff/core$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/features/(.*)$",
+    "^@/components/(.*)$",
+    "^src/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true,
   "plugins": ["prettier-plugin-tailwindcss"]
 }
