@@ -185,6 +185,18 @@ def verify_file_has_expected_field_names(file_type, field_name):
         pass
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
+@step("Verify presence of filter card <table>")
+def make_cohort_builder_selections(table):
+    for k, v in enumerate(table):
+        is_filter_visible = APP.home_page.is_filter_card_present(v[0])
+        assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
+
+@step("Verify the page is showing <number_of_items_text>")
+def verify_showing_item_text(number_of_items_text):
+    """Verifies the 'Showing' text at the bottom of tables has the correct text"""
+    showing_items_text = APP.home_page.get_showing_count_text()
+    assert f"{showing_items_text}" in showing_items_text, f"The page is NOT showing expected number of items - {number_of_items_text}"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
@@ -233,14 +245,14 @@ def is_data_testid_not_present_on_the_page(data_testid: str):
 @step("Is checkbox checked <table>")
 def is_checkbox_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_enabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_enabeled = APP.home_page.is_filter_card_enum_checkbox_checked(v[0])
         assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
         time.sleep(0.1)
 
 @step("Is checkbox not checked <table>")
 def is_checkbox_not_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_disabeled = APP.home_page.is_filter_card_enum_checkbox_checked(v[0])
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
@@ -277,7 +289,7 @@ def click_undo_in_message():
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
-        APP.repository_page.make_selection_within_facet_group(v[0], v[1])
+        APP.repository_page.make_selection_within_filter_group(v[0], v[1])
 
 @step("Perform the following actions on a filter card <table>")
 def perform_filter_card_action(table):

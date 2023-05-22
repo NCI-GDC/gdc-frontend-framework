@@ -24,9 +24,12 @@ class GenericLocators:
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
 
-    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
-    FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
-    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
+    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
+    FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
+    FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
+
+    SHOWING_NUMBER_OF_ITEMS = "[data-testid='showing-count']"
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -70,6 +73,11 @@ class BasePage:
             filter_name = filter_name[2:]
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
+
+    def get_showing_count_text(self):
+        """Returns the text of how many items are being shown on the page"""
+        locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
 
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
@@ -156,6 +164,12 @@ class BasePage:
         cart_count = cart_text.replace('Cart','')
         return cart_count == correct_file_count
 
+    # Checks to see if specified filter card is present
+    def is_filter_card_present(self, filter_group_name):
+        locator = GenericLocators.FILTER_GROUP_IDENT(filter_group_name)
+        result = self.is_visible(locator)
+        return result
+
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
         self.click(locator)
@@ -184,19 +198,19 @@ class BasePage:
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
         self.click(locator)
 
-    def make_selection_within_facet_group(self, facet_group_name, selection):
-        """Clicks a checkbox within a facet group"""
-        locator = GenericLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
+    def make_selection_within_filter_group(self, filter_group_name, selection):
+        """Clicks a checkbox within a filter group"""
+        locator = GenericLocators.FILTER_GROUP_SELECTION_IDENT(filter_group_name, selection)
         self.click(locator)
 
-    def perform_action_within_filter_card(self, facet_group_name, action):
-        """Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc."""
-        locator = GenericLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
+    def perform_action_within_filter_card(self, filter_group_name, action):
+        """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
+        locator = GenericLocators.FILTER_GROUP_ACTION_IDENT(filter_group_name, action)
         self.click(locator)
 
-    def click_show_more_less_within_filter_card(self, facet_group_name, label):
+    def click_show_more_less_within_filter_card(self, filter_group_name, label):
         """Clicks the show more or show less object"""
-        locator = GenericLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
+        locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(filter_group_name, label)
         self.click(locator)
 
     def select_table_by_row_column(self,row,column):
