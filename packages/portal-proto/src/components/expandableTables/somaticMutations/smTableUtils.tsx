@@ -1,25 +1,27 @@
-import React, { Dispatch, SetStateAction } from "react";
-import {
-  IoMdTrendingDown as SurvivalIcon,
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
-import { ProteinChange, Impacts, Consequences } from "./smTableCells";
-import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
-import { Image } from "@/components/Image";
+import { SSMSData } from "@gff/core";
+
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
-import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
-import { entityMetadataType } from "src/utils/contexts";
-import { SSMSData } from "@gff/core";
-import { externalLinks, humanify } from "src/utils";
+import React, { Dispatch, SetStateAction } from "react";
+import {
+  IoIosArrowDropdownCircle as DownIcon,
+  IoMdTrendingDown as SurvivalIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
 import tw from "tailwind-styled-components";
+
+import { AnchorLink } from "@/components/AnchorLink";
+import { Image } from "@/components/Image";
+
+import { externalLinks, humanify } from "src/utils";
+import { entityMetadataType } from "src/utils/contexts";
+
 import {
   CheckboxSpring,
   RatioSpring,
-  SelectReducerAction,
   SelectedReducer,
+  SelectReducerAction,
   Survival,
   SwitchSpring,
   TableCell,
@@ -27,6 +29,8 @@ import {
   TableHeader,
   ToggledCheck,
 } from "../shared";
+import { Consequences, Impacts, ProteinChange } from "./smTableCells";
+import { Impact, SomaticMutations, SsmToggledHandler } from "./types";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -237,7 +241,7 @@ export const ssmsCreateTableColumn = ({
                         <span>{label}</span>
                       ) : isModal && !geneSymbol ? (
                         <button
-                          className="text-utility-link underline font-content"
+                          className="text-utility-link font-content underline"
                           onClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
@@ -249,12 +253,12 @@ export const ssmsCreateTableColumn = ({
                         </button>
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link">{label}</a>
+                          <a className="text-utility-link underline">{label}</a>
                         </Link>
                       )}
                     </Tooltip>
                   ) : (
-                    <div className="text-lg ml-3">{"--"}</div>
+                    <div className="ml-3 text-lg">{"--"}</div>
                   )}
                 </div>
               );
@@ -342,7 +346,7 @@ export const ssmsCreateTableColumn = ({
                 "affectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex justify-between flex-nowrap items-center">
+                <div className="flex flex-nowrap items-center justify-between">
                   {row.getCanExpand() && (
                     <RatioSpring index={0} item={{ numerator, denominator }} />
                   )}
@@ -486,7 +490,7 @@ export const ssmsCreateTableColumn = ({
                   }}
                   position={geneSymbol && isModal ? "left-start" : "top"}
                 >
-                  <div className="font-heading text-left whitespace-pre-line">
+                  <div className="font-heading whitespace-pre-line text-left">
                     Impact
                   </div>
                 </Tooltip>
