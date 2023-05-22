@@ -58,11 +58,10 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
+    - apk update && apk add --no-cache git
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - apt-get update -qy && apt-get upgrade -qy    # This line used for updating OS repositories
-    - apt-get install -y git
     - changed_files=$(git diff --name-only $CI_COMMIT_REF_NAME $CI_COMMIT_BEFORE_SHA)
     - echo "$changed_files"
     - npm run format:check $changed_files
