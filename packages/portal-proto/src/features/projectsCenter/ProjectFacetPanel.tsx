@@ -50,8 +50,8 @@ export const ProjectFacetPanel = (): JSX.Element => {
         </Text>
       </Group>
       <div
-        data-testid="filters-facets"
         className="flex flex-col gap-y-4 h-screen overflow-y-scroll px-4"
+        data-testid="filters-facets"
       >
         {FilterFacets.project.map((x) => {
           const facetName = x.title || fieldNameToTitle(x.full);
