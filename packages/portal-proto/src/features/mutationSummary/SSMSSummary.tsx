@@ -1,18 +1,23 @@
-import React from "react";
-import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
+
 import { pick } from "lodash";
-import { HorizontalTableProps } from "@/components/HorizontalTable";
-import { formatDataForHorizontalTable } from "../files/utils";
-import { externalLinks, humanify } from "src/utils";
-import { CollapsibleList } from "@/components/CollapsibleList";
-import { AnchorLink } from "@/components/AnchorLink";
-import SSMPlot from "../charts/SSMPlot";
-import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
+import React from "react";
+
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
+
+import { AnchorLink } from "@/components/AnchorLink";
+import { CollapsibleList } from "@/components/CollapsibleList";
+import { HorizontalTableProps } from "@/components/HorizontalTable";
+import { SummaryCard } from "@/components/Summary/SummaryCard";
+import { SummaryHeader } from "@/components/Summary/SummaryHeader";
+
+import { externalLinks, humanify } from "src/utils";
+
+import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
+import SSMPlot from "../charts/SSMPlot";
+import { formatDataForHorizontalTable } from "../files/utils";
 import { HeaderTitle } from "../shared/tailwindComponents";
+import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
 
 export const SSMSSummary = ({
   ssm_id,
