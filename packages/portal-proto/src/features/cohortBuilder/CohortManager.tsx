@@ -48,7 +48,6 @@ import {
   updateCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
-import CohortCountButton from "./CohortCountButton";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
@@ -606,13 +605,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       ) : (
         <div />
       )}
-
-      <CohortCountButton
-        countName="casesMax"
-        label="CASES"
-        className="text-white ml-auto mr-6 text-lg"
-        bold
-      />
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { Tooltip } from "@mantine/core";
-import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { entityMetadataType } from "src/utils/contexts";
-import { Impact } from "./types";
-import { humanify } from "src/utils";
 import { truncate } from "lodash";
 import Link from "next/link";
+import { humanify } from "src/utils";
+import { entityMetadataType } from "src/utils/contexts";
+import { Impact } from "./types";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 
 export const ProteinChange = ({
   proteinChange,
@@ -24,24 +24,37 @@ export const ProteinChange = ({
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
-    <div className="flex font-content">
-      {shouldOpenModal ? (
-        <PopupIconButton
-          customStyle="text-utility-link underline mx-0.5 font-content self-center"
-          handleClick={() =>
-            setEntityMetadata({
-              entity_type: "genes",
-              entity_id: proteinChange.geneId,
-            })
-          }
-          label={symbol}
-        />
-      ) : shouldLink ? (
-        <Link href={`/genes/${proteinChange.geneId}`}>
-          <a className="underline text-utility-link">{symbol}</a>
-        </Link>
+    <div className="font-content flex w-max flex-row justify-start">
+      {!symbol && !aaChange ? (
+        "--"
       ) : (
-        <span className="mx-0.5">{symbol}</span>
+        <>
+          {shouldOpenModal ? (
+            <PopupIconButton
+              customStyle="text-utility-link underline mx-0.5 font-content self-center"
+              handleClick={() =>
+                setEntityMetadata({
+                  entity_type: "genes",
+                  entity_id: proteinChange.geneId,
+                })
+              }
+              label={symbol}
+            />
+          ) : shouldLink ? (
+            <Link href={`/genes/${proteinChange.geneId}`}>
+              <a className="text-utility-link underline">{symbol}</a>
+            </Link>
+          ) : (
+            <span className="mx-0.5">{symbol}</span>
+          )}
+          <Tooltip label={aaChange}>
+            <span className={`${aaChange !== "" && "mx-0.5"}`}>
+              {truncate(aaChange == "" ? "--" : aaChange, {
+                length: 12,
+              })}
+            </span>
+          </Tooltip>
+        </>
       )}
       <Tooltip label={aaChange}>
         <span className="mx-0.5 self-center">
@@ -58,17 +71,15 @@ export const Consequences = ({
   consequences,
 }: {
   consequences: string;
-}): JSX.Element => {
-  return (
-    <>
-      <span className="mx-0.5 font-content text">
-        {humanify({
+}): JSX.Element => (
+  <span className="font-content text-left">
+    {!consequences
+      ? "--"
+      : humanify({
           term: consequences?.replace("_variant", "").replace("_", " "),
-        }) ?? ``}
-      </span>
-    </>
-  );
-};
+        })}
+  </span>
+);
 
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
@@ -79,7 +90,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
 
   return (
     <>
-      <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact.length}>
+      <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact}>
         <div className="text-xs">
           {vepImpact === "HIGH" ? (
             <div className={`${twIconStyles} bg-impact-vep-high`}>HI</div>
@@ -96,9 +107,9 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
       </Tooltip>
       <Tooltip
         label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact.length || siftScore === null}
+        disabled={!siftImpact || !siftScore}
       >
-        <div className="text-xs mx-0.5 align-middle">
+        <div className="mx-0.5 align-middle text-xs">
           {siftImpact === "deleterious" ? (
             <div className={`${twIconStyles} bg-impact-sift-deleterious`}>
               DH
@@ -124,7 +135,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
       </Tooltip>
       <Tooltip
         label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact.length || polyphenScore === null}
+        disabled={!polyphenImpact || !polyphenScore}
       >
         <div className="text-xs">
           {polyphenImpact === "benign" ? (
