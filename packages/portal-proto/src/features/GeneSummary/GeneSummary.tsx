@@ -181,7 +181,11 @@ const GeneView = ({
               {Array.isArray(externalLinksObj[link]) ? (
                 <CollapsibleList
                   data={externalLinksObj[link]?.map((item) => (
-                    <AnchorLink href={externalLinks[link](item)} title={item} />
+                    <AnchorLink
+                      href={externalLinks[link](item)}
+                      title={item}
+                      key={item}
+                    />
                   ))}
                 />
               ) : (
