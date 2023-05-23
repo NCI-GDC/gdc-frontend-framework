@@ -1,30 +1,28 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import partial from "lodash/partial";
-import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay, Tabs } from "@mantine/core";
 import {
+  buildCohortGqlOperator,
   FilterSet,
   GqlOperation,
-  selectCurrentCohortFilters,
   joinFilters,
+  removeCohortFilter,
+  selectCurrentCohortFilters,
+  updateActiveCohortFilter,
+  useCoreDispatch,
   useCoreSelector,
   useGetSurvivalPlotQuery,
-  buildCohortGqlOperator,
-  useTopGene,
-  useCoreDispatch,
-  removeCohortFilter,
-  updateActiveCohortFilter,
   usePrevious,
+  useTopGene,
 } from "@gff/core";
-import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { useSelectFilterContent } from "./hooks";
 import {
-  selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
+  selectGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
@@ -32,6 +30,7 @@ import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "../shared/tailwindComponents";
 import { humanify } from "src/utils";
+import { GenesPanel } from "@/features/genomic/GenesPanel";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -97,7 +96,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
-  const [comparativeSurvival, setComparativeSurvival] = useState(undefined);
+  const [comparativeSurvival, setComparativeSurvival] =
+    useState<Record<string, string>>(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
     geneId: undefined,
@@ -150,12 +150,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     useGetSurvivalPlotQuery({
       filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
     });
-
-  // pass to Survival Plot when survivalPlotData data is undefined/not ready
-  const emptySurvivalPlot = {
-    overallStats: { pValue: undefined },
-    survivalData: [],
-  };
 
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
     genomicFilters,
@@ -292,67 +286,30 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             root: "bg-base-max border-0 w-full overflow-x-clip",
           }}
           onTabChange={handleTabChanged}
-          keepMounted={false}
+          keepMounted={true}
         >
           <Tabs.List>
             <Tabs.Tab value="genes">Genes</Tabs.Tab>
             <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="genes" pt="xs">
-            <div className="flex flex-col w-100 mx-6">
-              <Grid className="mx-2 bg-base-max">
-                <Grid.Col span={6}>
-                  <GeneFrequencyChart
-                    marginBottom={95}
-                    genomicFilters={genomicFilters}
-                    isDemoMode={isDemoMode}
-                    overwritingDemoFilter={overwritingDemoFilter}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6} className="relative">
-                  <LoadingOverlay
-                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
-                  />
-                  <SurvivalPlot
-                    plotType={SurvivalPlotTypes.mutation}
-                    data={
-                      survivalPlotReady &&
-                      survivalPlotData.survivalData.length > 1
-                        ? survivalPlotData
-                        : emptySurvivalPlot
-                    }
-                    names={
-                      survivalPlotReady && comparativeSurvival
-                        ? [comparativeSurvival.symbol]
-                        : []
-                    }
-                  />
-                </Grid.Col>
-              </Grid>
-              <GTableContainer
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-                handleGeneToggled={partial(
-                  handleGeneAndSSmToggled,
-                  currentGenes,
-                  "genes.gene_id",
-                  "geneID",
-                )}
-                toggledGenes={currentGenes}
-                genomicFilters={genomicFilters}
-                cohortFilters={
-                  isDemoMode ? overwritingDemoFilter : cohortFilters
-                }
-                isDemoMode={isDemoMode}
-                handleMutationCountClick={(
-                  geneId: string,
-                  geneSymbol: string,
-                ) => {
-                  setSearchTermsForGeneId({ geneId, geneSymbol });
-                  setAppMode("ssms");
-                }}
-              />
-            </div>
+            <GenesPanel
+              survivalPlotReady={survivalPlotReady}
+              topGeneSSMSSuccess={topGeneSSMSSuccess}
+              survivalPlotData={survivalPlotData}
+              comparativeSurvival={comparativeSurvival}
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneAndSSmToggled={handleGeneAndSSmToggled}
+              strings={currentGenes}
+              cohortFilters={cohortFilters}
+              handleMutationCountClick={(
+                geneId: string,
+                geneSymbol: string,
+              ) => {
+                setSearchTermsForGeneId({ geneId, geneSymbol });
+                setAppMode("ssms");
+              }}
+            />
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">
             <div className="flex flex-col w-100 mx-6 mb-8">
