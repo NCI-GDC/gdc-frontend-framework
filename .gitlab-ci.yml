@@ -62,7 +62,7 @@ Prettier Checks:
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - git diff --name-only origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - git diff --name-only $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - npm run format:check
   variables:
     GIT_DEPTH: 0
