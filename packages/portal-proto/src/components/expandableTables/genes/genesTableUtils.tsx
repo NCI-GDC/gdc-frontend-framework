@@ -1,28 +1,33 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { startCase } from "lodash";
+import { FilterSet } from "@gff/core";
+
 import { Tooltip } from "@mantine/core";
-import { Image } from "@/components/Image";
-import { CountButton } from "@/components/CountButton/CountButton";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
+import { startCase } from "lodash";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import React, { Dispatch, SetStateAction } from "react";
 import {
-  IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
+  IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
+
+import { CountButton } from "@/components/CountButton/CountButton";
+
 import { entityMetadataType } from "src/utils/contexts";
-import { FilterSet } from "@gff/core";
+
 import {
   AnnotationsIcon,
   CheckboxSpring,
   RatioSpring,
-  SelectReducerAction,
   SelectedReducer,
+  SelectReducerAction,
   SwitchSpring,
   TableCell,
   TableColumnDefinition,
   TableHeader,
   ToggledCheck,
 } from "../shared";
+import { Gene, Genes, GeneToggledHandler, SingleGene } from "./types";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -63,9 +68,7 @@ export const geneCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -107,18 +110,18 @@ export const geneCreateTableColumn = ({
                       isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
                             aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
                             aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }
@@ -206,15 +209,13 @@ export const geneCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <div>
                   {row.getCanExpand() && (
                     <Tooltip label={"Cancer Gene Census"}>
-                      <div className={`block m-auto w-max`}>
+                      <div className={`m-auto block w-max`}>
                         {row.original["annotations"] && <AnnotationsIcon />}
                       </div>
                     </Tooltip>
@@ -236,7 +237,7 @@ export const geneCreateTableColumn = ({
               <TableHeader
                 title={`# SSM Affected Cases
                in Cohort`}
-                className="flex flex-row justify-start mr-2 "
+                className="mr-2 flex flex-row justify-start "
                 tooltip={`Breakdown of Affected Cases in Cohort:
                 # Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
               />
@@ -326,12 +327,7 @@ export const geneCreateTableColumn = ({
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                 </div>
               );
@@ -358,12 +354,7 @@ export const geneCreateTableColumn = ({
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                 </div>
               );
@@ -381,7 +372,6 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
                 className="mx-4 whitespace-nowrap"
               />
             ),
@@ -459,8 +449,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title="Symbol"
-                tooltip=""
-                className="flex flex-row justify-start w-14 mr-2"
+                className="mr-2 flex w-14 flex-row justify-start"
               />
             ),
             cell: ({ row }) => {
@@ -469,7 +458,7 @@ export const geneCreateTableColumn = ({
                 : "";
               return (
                 <button
-                  className="text-utility-link underline font-content"
+                  className="text-utility-link font-content underline"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
@@ -497,8 +486,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title="Name"
-                tooltip=""
-                className="flex flex-row justify-start lg:w-100 md:w-32 sm:w-16"
+                className="lg:w-100 flex flex-row justify-start sm:w-16 md:w-32"
               />
             ),
             cell: ({ row }) => {
@@ -521,11 +509,7 @@ export const geneCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="w-fit"
-              />
+              <TableHeader title={startCase(accessor)} className="w-fit" />
             ),
             cell: ({ row }) => {
               return (
@@ -534,7 +518,6 @@ export const geneCreateTableColumn = ({
                     row={row}
                     accessor={accessor}
                     anchor={["symbol"].includes(accessor)}
-                    tooltip={""}
                   />
                 </div>
               );

@@ -1,6 +1,6 @@
 import { ActionIcon, Grid, Text } from "@mantine/core";
-import { Image } from "@/components/Image";
 import { MdPlayArrow } from "react-icons/md";
+
 import { AppRegistrationEntry } from "./utils";
 
 export interface CoreToolCardProps {
@@ -13,15 +13,9 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
   onClick,
 }: CoreToolCardProps) => {
   return (
-    <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">
+    <Grid className="border-secondary-darkest m-0 h-full rounded-md border p-0">
       <Grid.Col span={2} className="self-center">
-        <Image
-          className="m-auto"
-          src={`/user-flow/${entry.icon}`}
-          height="64"
-          width="64"
-          alt={`${entry.name} icon`}
-        />
+        {entry.icon}
       </Grid.Col>
       <Grid.Col span={8} className="text-base-content-darkest">
         <Text size="sm" className="font-heading font-bold">
@@ -34,10 +28,10 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
       <Grid.Col
         span={2}
         style={{ minHeight: "6rem" }}
-        className="flex flex-row justify-end p-0 m-0"
+        className="m-0 flex flex-row justify-end p-0"
       >
         <ActionIcon
-          className="justify-self-end bg-secondary w-12 h-[6em] p-0 hover:bg-secondary-darker rounded-none rounded-r"
+          className="bg-secondary hover:bg-secondary-darker h-[6em] w-12 justify-self-end rounded-none rounded-r p-0"
           variant="filled"
           onClick={() => onClick(entry)}
           aria-label={`Navigate to ${entry.name}`}

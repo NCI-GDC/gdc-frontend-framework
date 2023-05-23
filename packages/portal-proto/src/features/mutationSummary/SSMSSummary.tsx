@@ -65,7 +65,7 @@ export const SSMSSummary = ({
           sift_score,
           polyphen_impact,
           polyphen_score,
-        },
+        } = {},
       },
     } = summaryData;
 
@@ -121,9 +121,7 @@ export const SSMSSummary = ({
     const {
       cosmic_id,
       civic,
-      transcript: {
-        annotation: { dbsnp },
-      },
+      transcript: { annotation: { dbsnp } = {} },
     } = summaryData;
 
     const arr = [];

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
@@ -8,9 +9,9 @@ import { CoreState } from "../../../reducers";
 import { CoreDispatch } from "../../../store";
 import {
   fetchGdcSsms,
-  SSMSDefaults,
   GdcApiRequest,
   GdcApiResponse,
+  SSMSDefaults,
 } from "../../gdcapi/gdcapi";
 
 export interface SsmsState {
@@ -72,20 +73,21 @@ const slice = createSlice({
           cosmic_id: hit.cosmic_id,
           allele_in_the_reference_assembly: hit.reference_allele,
           civic: hit?.clinical_annotations?.civic.variant_id,
-          transcript: hit.consequence
-            .filter((con) => con.transcript.is_canonical)
-            .map((item) => ({
-              is_canonical: item.transcript.is_canonical,
-              transcript_id: item.transcript.transcript_id,
-              annotation: {
-                polyphen_impact: item.transcript.annotation.polyphen_impact,
-                polyphen_score: item.transcript.annotation.polyphen_score,
-                sift_impact: item.transcript.annotation.sift_impact,
-                sift_score: item.transcript.annotation.sift_score,
-                vep_impact: item.transcript.annotation.vep_impact,
-                dbsnp: item.transcript.annotation.dbsnp_rs,
-              },
-            }))[0],
+          transcript:
+            hit?.consequence
+              .filter((con) => con.transcript.is_canonical)
+              .map((item) => ({
+                is_canonical: item.transcript.is_canonical,
+                transcript_id: item.transcript.transcript_id,
+                annotation: {
+                  polyphen_impact: item.transcript.annotation.polyphen_impact,
+                  polyphen_score: item.transcript.annotation.polyphen_score,
+                  sift_impact: item.transcript.annotation.sift_impact,
+                  sift_score: item.transcript.annotation.sift_score,
+                  vep_impact: item.transcript.annotation.vep_impact,
+                  dbsnp: item.transcript.annotation.dbsnp_rs,
+                },
+              }))[0] || {},
         }))[0];
 
         state.status = "fulfilled";

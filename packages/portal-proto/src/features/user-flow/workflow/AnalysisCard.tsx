@@ -1,15 +1,16 @@
-import React from "react";
-import { Image } from "@/components/Image";
+import { selectCohortCounts, useCoreSelector } from "@gff/core";
+
 import { Divider } from "@mantine/core";
+import { Button, Card, Loader, Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
+import React from "react";
 import {
-  MdPlayArrow,
   MdArrowDropDown,
   MdArrowDropUp,
   MdInfo,
+  MdPlayArrow,
 } from "react-icons/md";
-import { Button, Card, Loader, Tooltip } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
-import { useCoreSelector, selectCohortCounts } from "@gff/core";
+
 import { AppRegistrationEntry } from "./utils";
 
 export interface AnalysisCardProps {
@@ -48,24 +49,8 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     >
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
       {inactive && <div className="h-1" />}
-      <div className="flex justify-between mb-1">
-        {entry.iconSize ? (
-          <Image
-            className="m-auto"
-            src={`/user-flow/${entry.icon}`}
-            height={entry.iconSize.height}
-            width={entry.iconSize.width}
-            alt={`${entry.name} icon`}
-          />
-        ) : (
-          <Image
-            className="m-auto"
-            src={`/user-flow/${entry.icon}`}
-            height="48"
-            width="48"
-            alt={`${entry.name} icon`}
-          />
-        )}
+      <div className="mb-1 flex justify-between">
+        {entry.icon}
         <div className="flex flex-col">
           <Button
             className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${
@@ -98,7 +83,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               radius="sm"
               aria-label={`Navigate to ${entry.name} Demo`}
               variant="outline"
-              className="text-xs text-secondary p-0 border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
+              className="text-secondary border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px] p-0 text-xs"
             >
               Demo
             </Button>
@@ -127,7 +112,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         </Button>
         <div
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
+          className="bg-primary-lightest -mx-1.5 mb-1 overflow-hidden transition-[height] duration-300"
         >
           <div
             className={`${
@@ -135,13 +120,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             } transition-opacity`}
             ref={descRef}
           >
-            <p className="p-2 font-content">{entry.description}</p>
+            <p className="font-content p-2">{entry.description}</p>
           </div>
         </div>
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex items-center text-secondary-darkest">
+          <div className="text-secondary-darkest flex items-center">
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip
@@ -151,7 +136,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 multiline
               >
                 <div>
-                  <MdInfo className="inline-block ml-1" />
+                  <MdInfo className="ml-1 inline-block" />
                 </div>
               </Tooltip>
             )}

@@ -7,13 +7,13 @@ export const TableHeader = ({
   className,
 }: {
   title: string;
-  tooltip: string;
+  tooltip?: string;
   className?: string;
 }): JSX.Element => {
   return (
     <div className={className}>
       <Tooltip
-        disabled={!tooltip?.length}
+        disabled={!tooltip}
         label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
         width={200}
         multiline
@@ -22,7 +22,7 @@ export const TableHeader = ({
         transitionDuration={200}
         position="bottom-start"
       >
-        <div className="font-heading text-left text-sm whitespace-pre-line">
+        <div className="font-heading whitespace-pre-line text-left text-sm">
           {title}
         </div>
       </Tooltip>
@@ -39,17 +39,17 @@ export const TableCell = ({
   row: any;
   accessor: string;
   anchor: boolean;
-  tooltip: string;
+  tooltip?: string;
 }): JSX.Element => {
   return (
     <animated.div
-      className={`flex justify-start font-content ${
+      className={`font-content flex justify-start ${
         anchor
-          ? `text-activeColor underline hover:cursor-pointer font-bold`
+          ? `text-activeColor font-bold underline hover:cursor-pointer`
           : ``
       }`}
     >
-      <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
+      <Tooltip label={tooltip} disabled={!tooltip}>
         <span>
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
         </span>

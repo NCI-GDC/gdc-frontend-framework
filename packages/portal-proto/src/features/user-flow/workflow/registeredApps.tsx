@@ -1,5 +1,17 @@
-import SelectionPanel from "@/features/set-operations/SelectionPanel";
+import ClinicalDataIcon from "public/user-flow/icons/apps/ClinicalData.svg";
+import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
+import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.svg";
+import MutationFrequencyIcon from "public/user-flow/icons/apps/MutationsFrequency.svg";
+import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
+import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
+import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
+import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
+import RepositoryIcon from "public/user-flow/icons/database.svg";
+
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+import SelectionPanel from "@/features/set-operations/SelectionPanel";
+
+import { Image } from "@/components/Image";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -18,7 +30,9 @@ export const COHORTS = [
 export const REGISTERED_APPS = [
   {
     name: "Clinical Data Analysis",
-    icon: "icons/apps/ClinicalData.svg",
+    icon: (
+      <ClinicalDataIcon role="img" aria-label="Clinical Data Analysis icon" />
+    ),
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     countsField: "repositoryCaseCount",
@@ -30,7 +44,15 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    icon: "icons/apps/CohortBuilder.svg",
+    icon: (
+      <CohortBuilderIcon
+        role="img"
+        aria-label="Cohort Builder icon"
+        width={64}
+        height={64}
+        viewBox="0 0 60 60"
+      />
+    ),
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
@@ -40,7 +62,9 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Mutation Frequency",
-    icon: "icons/apps/MutationsFrequency.svg",
+    icon: (
+      <MutationFrequencyIcon role="img" aria-label="Mutation Frequency icon" />
+    ),
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
@@ -53,7 +77,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Repository",
-    icon: "icons/database.svg",
+    icon: <RepositoryIcon role="img" aria-label="Repository icon" />,
     tags: ["files"],
     hasDemo: false,
     countsField: "repositoryCaseCount",
@@ -63,7 +87,15 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Projects",
-    icon: "icons/crowd-of-users.svg",
+    icon: (
+      <ProjectsIcon
+        width={64}
+        height={64}
+        viewBox="0 -20 128 128"
+        role="img"
+        aria-label="Projects icon"
+      />
+    ),
     tags: [],
     hasDemo: false,
     id: "Projects",
@@ -73,7 +105,9 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: "icons/apps/CohortComparison.svg",
+    icon: (
+      <CohortComparisonIcon role="img" aria-label="Cohort Comparison icon" />
+    ),
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
@@ -101,7 +135,7 @@ export const REGISTERED_APPS = [
   */
   {
     name: "Set Operations",
-    icon: "icons/apps/SetOperations.svg",
+    icon: <SetOperationsIcon role="img" aria-label="Set Operations icon" />,
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
@@ -127,7 +161,7 @@ export const REGISTERED_APPS = [
   // },
   {
     name: "Sequence Reads",
-    icon: "icons/apps/SequenceReads.svg",
+    icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -140,8 +174,15 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    icon: "icons/apps/ProteinPaint.svg",
-    iconSize: { width: 80, height: 48 },
+    icon: (
+      <ProteinPaintIcon
+        height={48}
+        width={80}
+        viewbox="-12 0 80 48"
+        role="img"
+        aria-label="ProteinPaint icon"
+      />
+    ),
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description:
@@ -155,8 +196,16 @@ export const REGISTERED_APPS = [
   },
   {
     name: "OncoMatrix",
-    icon: "matrix.png",
-    iconSize: { width: 80, height: 48 },
+    icon: (
+      <Image
+        className="m-auto"
+        src={"/user-flow/matrix.png"}
+        height={48}
+        width={80}
+        alt={"OncoMatrix icon"}
+      />
+    ),
+
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:

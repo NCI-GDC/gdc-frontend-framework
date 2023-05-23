@@ -1,47 +1,51 @@
 import {
-  useCoreSelector,
-  selectCart,
-  useCoreDispatch,
-  useTotalCounts,
-  useFacetDictionary,
-  GDC_AUTH,
-  showModal,
-  Modals,
-  selectUserDetailsInfo,
   fetchToken,
+  GDC_AUTH,
+  Modals,
+  selectCart,
   selectCurrentModal,
+  selectUserDetailsInfo,
+  showModal,
+  useCoreDispatch,
+  useCoreSelector,
+  useFacetDictionary,
+  useTotalCounts,
 } from "@gff/core";
-import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
+
+import { Badge, Button, LoadingOverlay, Menu } from "@mantine/core";
+import { cleanNotifications, showNotification } from "@mantine/notifications";
+import saveAs from "file-saver";
+import Link from "next/link";
+import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import { ReactNode, useContext, useEffect } from "react";
-import tw from "tailwind-styled-components";
-import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
-import {
-  MdShoppingCart as CartIcon,
-  MdOutlineApps as AppsIcon,
-  MdLogout as LogoutIcon,
-  MdArrowDropDown as ArrowDropDownIcon,
-} from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
-import saveAs from "file-saver";
-import { cleanNotifications, showNotification } from "@mantine/notifications";
-import urlJoin from "url-join";
-import { LoginButton } from "@/components/LoginButton";
-import Link from "next/link";
+import {
+  MdOutlineApps as AppsIcon,
+  MdArrowDropDown as ArrowDropDownIcon,
+  MdShoppingCart as CartIcon,
+  MdLogout as LogoutIcon,
+} from "react-icons/md";
+import tw from "tailwind-styled-components";
 import { theme } from "tailwind.config";
+import urlJoin from "url-join";
+
+import { Image } from "@/components/Image";
+import { LoginButton } from "@/components/LoginButton";
+import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import { NoAccessModal } from "@/components/Modals/NoAccessModal";
+import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
+import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
+import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import {
   DropdownMenu,
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
-import { UserProfileModal } from "@/components/Modals/UserProfileModal";
-import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
-import { NoAccessModal } from "@/components/Modals/NoAccessModal";
-import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
-import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
-import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
+
 import { SummaryModalContext } from "src/utils/contexts";
 
 const AppMenuItem = tw(Menu.Item)`
@@ -89,30 +93,30 @@ export const Header: React.FC<HeaderProps> = ({
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
+    <div className="border-gdc-grey-lightest flex flex-col border-b px-6 py-3">
       <a
         href="#main"
-        className="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
+        className="absolute left-[-1000px] z-10 -mt-4 focus:left-0"
       >
         Skip Navigation
       </a>
       <div className="flex flex-row justify-between">
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
-        <div className="flex-none w-64 h-nci-logo mr-2 relative">
+        <div className="h-nci-logo relative mr-2 w-64 flex-none">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
-            <a className="block w-full h-full">
-              <Image
-                src="/NIH_GDC_DataPortal-logo.svg"
+            <a className="mt-2 block h-full w-full">
+              <NIHLogo
                 layout="fill"
                 objectFit="contain"
                 data-testid="NIH_LOGO"
-                alt="NIH GDC Data Portal logo"
+                aria-label="NIH GDC Data Portal logo"
+                role="img"
               />
             </a>
           </Link>
         </div>
 
-        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="text-primary-darkest font-heading flex items-center justify-end gap-4 text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
             className="flex items-center gap-1"
@@ -122,18 +126,18 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <button className="flex items-center gap-1 font-heading">
+          <button className="font-heading flex items-center gap-1">
             <OptionsIcon size="22px" className="rotate-90" />
             Manage Sets
           </button>
           <Link href="/cart" passHref>
             <Button unstyled data-testid="cartLink">
-              <div className="flex items-center gap-1 font-heading">
+              <div className="font-heading flex items-center gap-1">
                 <CartIcon size="22px" className="text-primary-darkest" />
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-accent"
+                  className="bg-accent ml-1 px-1"
                   radius="xs"
                 >
                   {currentCart?.length || 0}
@@ -147,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Button
                   rightIcon={<ArrowDropDownIcon size="2em" />}
                   variant="subtle"
-                  className="text-primary-darkest font-header text-sm font-medium font-heading"
+                  className="text-primary-darkest font-header font-heading text-sm font-medium"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
                 >
@@ -263,7 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </Menu.Target>
             <Menu.Dropdown>
-              <div className="grid grid-cols-2 py-4 gap-2">
+              <div className="grid grid-cols-2 gap-2 py-4">
                 <AppMenuItem>
                   <Link href={indexPath} passHref>
                     <AppLink>
