@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-import partial from "lodash/partial";
-import { LoadingOverlay, Tabs } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import {
   buildCohortGqlOperator,
   FilterSet,
@@ -16,25 +14,19 @@ import {
   usePrevious,
   useTopGene,
 } from "@gff/core";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import { useSelectFilterContent } from "./hooks";
 import {
   clearGeneAndSSMFilters,
   selectGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
-import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "../shared/tailwindComponents";
 import { humanify } from "src/utils";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
-
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
-  ssr: false,
-});
+import { SSMSPanel } from "@/features/genomic/SSMSPanel";
 
 const buildGeneHaveAndHaveNotFilters = (
   currentFilters: GqlOperation,
@@ -115,12 +107,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     () => overwritingDemoFilterMutationFrequency,
     [],
   );
-
-  /**
-   * Get genes in cohort
-   */
-  const currentGenes = useSelectFilterContent("genes.gene_id");
-  const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
   const filters = useMemo(
     () =>
@@ -286,7 +272,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             root: "bg-base-max border-0 w-full overflow-x-clip",
           }}
           onTabChange={handleTabChanged}
-          keepMounted={true}
+          keepMounted={false}
         >
           <Tabs.List>
             <Tabs.Tab value="genes">Genes</Tabs.Tab>
@@ -294,14 +280,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </Tabs.List>
           <Tabs.Panel value="genes" pt="xs">
             <GenesPanel
-              survivalPlotReady={survivalPlotReady}
               topGeneSSMSSuccess={topGeneSSMSSuccess}
-              survivalPlotData={survivalPlotData}
               comparativeSurvival={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneAndSSmToggled={handleGeneAndSSmToggled}
-              strings={currentGenes}
-              cohortFilters={cohortFilters}
               handleMutationCountClick={(
                 geneId: string,
                 geneSymbol: string,
@@ -312,46 +294,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
             />
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">
-            <div className="flex flex-col w-100 mx-6 mb-8">
-              <div className="bg-base-max">
-                <LoadingOverlay
-                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
-                />
-                <SurvivalPlot
-                  plotType={SurvivalPlotTypes.mutation}
-                  data={
-                    survivalPlotReady &&
-                    comparativeSurvival &&
-                    survivalPlotData.survivalData.length > 1
-                      ? survivalPlotData
-                      : emptySurvivalPlot
-                  }
-                  names={
-                    survivalPlotReady && comparativeSurvival
-                      ? [comparativeSurvival.name]
-                      : []
-                  }
-                />
-              </div>
-              <SMTableContainer
-                selectedSurvivalPlot={comparativeSurvival}
-                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-                genomicFilters={genomicFilters}
-                cohortFilters={
-                  isDemoMode ? overwritingDemoFilter : cohortFilters
-                }
-                handleSsmToggled={partial(
-                  handleGeneAndSSmToggled,
-                  currentMutations,
-                  "ssms.ssm_id",
-                  "mutationID",
-                )}
-                toggledSsms={currentMutations}
-                isDemoMode={isDemoMode}
-                isModal={true}
-                searchTermsForGene={searchTermsForGeneId}
-              />
-            </div>
+            <SSMSPanel
+              topGeneSSMSSuccess={topGeneSSMSSuccess}
+              comparativeSurvival={comparativeSurvival}
+              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+              handleGeneAndSSmToggled={handleGeneAndSSmToggled}
+              searchTermsForGene={searchTermsForGeneId}
+            />
           </Tabs.Panel>
         </Tabs>
       </div>
