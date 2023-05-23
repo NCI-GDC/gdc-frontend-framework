@@ -7,13 +7,13 @@ export const TableHeader = ({
   className,
 }: {
   title: string;
-  tooltip: string;
+  tooltip?: string;
   className?: string;
 }): JSX.Element => {
   return (
     <div className={className}>
       <Tooltip
-        disabled={!tooltip?.length}
+        disabled={!tooltip}
         label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
         width={200}
         multiline
@@ -39,7 +39,7 @@ export const TableCell = ({
   row: any;
   accessor: string;
   anchor: boolean;
-  tooltip: string;
+  tooltip?: string;
 }): JSX.Element => {
   return (
     <animated.div
@@ -49,7 +49,7 @@ export const TableCell = ({
           : ``
       }`}
     >
-      <Tooltip label={`${tooltip}`} disabled={!tooltip?.length}>
+      <Tooltip label={tooltip} disabled={!tooltip}>
         <span>
           {row.original[`${accessor}`] ? row.original[`${accessor}`] : ""}
         </span>
