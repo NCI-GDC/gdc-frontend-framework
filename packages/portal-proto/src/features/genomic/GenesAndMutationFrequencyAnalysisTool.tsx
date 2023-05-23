@@ -3,14 +3,12 @@ import { Tabs } from "@mantine/core";
 import {
   buildCohortGqlOperator,
   FilterSet,
-  GqlOperation,
   joinFilters,
   removeCohortFilter,
   selectCurrentCohortFilters,
   updateActiveCohortFilter,
   useCoreDispatch,
   useCoreSelector,
-  useGetSurvivalPlotQuery,
   usePrevious,
   useTopGene,
 } from "@gff/core";
@@ -27,48 +25,6 @@ import { DemoText } from "../shared/tailwindComponents";
 import { humanify } from "src/utils";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";
-
-const buildGeneHaveAndHaveNotFilters = (
-  currentFilters: GqlOperation,
-  symbol: string,
-  field: string,
-): ReadonlyArray<GqlOperation> => {
-  /**
-   * given the contents, add two filters, one with the gene and one without
-   */
-
-  if (symbol === undefined) return [];
-
-  return [
-    {
-      op: "and",
-      content: [
-        {
-          //TODO: refactor cohortFilters to be Union | Intersection
-          op: "excludeifany",
-          content: {
-            field: field,
-            value: symbol,
-          },
-        },
-        ...(currentFilters ? (currentFilters.content as any) : []),
-      ],
-    },
-    {
-      op: "and",
-      content: [
-        {
-          op: "=",
-          content: {
-            field: field,
-            value: symbol,
-          },
-        },
-        ...(currentFilters ? (currentFilters.content as any) : []),
-      ],
-    },
-  ];
-};
 
 // Persist which tab is active
 type AppModeState = "genes" | "ssms";
@@ -121,21 +77,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   );
 
   const prevFilters = usePrevious(filters);
-
-  const f = useMemo(
-    () =>
-      buildGeneHaveAndHaveNotFilters(
-        filters,
-        comparativeSurvival?.symbol,
-        comparativeSurvival?.field,
-      ),
-    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
-  );
-
-  const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useGetSurvivalPlotQuery({
-      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
-    });
 
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
     genomicFilters,
