@@ -57,16 +57,17 @@ Linting:
 
 Prettier Checks:
   stage: test
+  only:
+    - merge_requests
   before_script:
     - apk update && apk add --no-cache git
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - CHANGED_FILES=$(git diff --name-only ${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
-    - echo $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
-    - echo $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
-    - echo "Changed files are $CHANGED_FILES"
+    - git diff --name-only origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - npm run format:check
+  variables:
+    GIT_DEPTH: 0
   <<: *default_rules
 
 Build and test core and portal:
