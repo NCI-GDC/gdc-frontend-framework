@@ -56,13 +56,6 @@ export const ProteinChange = ({
           </Tooltip>
         </>
       )}
-      <Tooltip label={aaChange}>
-        <span className="mx-0.5 self-center">
-          {truncate(aaChange == "" ? "--" : aaChange, {
-            length: 12,
-          })}
-        </span>
-      </Tooltip>
     </div>
   );
 };
