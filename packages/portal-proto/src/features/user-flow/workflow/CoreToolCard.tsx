@@ -1,5 +1,4 @@
 import { ActionIcon, Grid, Text } from "@mantine/core";
-import { Image } from "@/components/Image";
 import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./utils";
 
@@ -15,13 +14,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
   return (
     <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">
       <Grid.Col span={2} className="self-center">
-        <Image
-          className="m-auto"
-          src={`/user-flow/${entry.icon}`}
-          height="64"
-          width="64"
-          alt={`${entry.name} icon`}
-        />
+        {entry.icon}
       </Grid.Col>
       <Grid.Col span={8} className="text-base-content-darkest">
         <Text size="sm" className="font-heading font-bold">
