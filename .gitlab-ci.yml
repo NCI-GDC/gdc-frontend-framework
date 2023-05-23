@@ -63,8 +63,7 @@ Prettier Checks:
     - npm ci --cache .npm
   script:
     - git fetch --all
-    - git checkout $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME	 # Checkout the commit of the pull request
-    - git diff-tree --no-commit-id --name-only -r $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - git diff --name-only -r $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - npm run format:check
   <<: *default_rules
 
