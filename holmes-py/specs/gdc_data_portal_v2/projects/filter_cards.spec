@@ -1,9 +1,9 @@
-# Project Page - Temp
+# Project Page - Filter Card Check
 Date Created   : 05/22/2023
 Version			   : 1.0
 Owner		       : GDC QA
-Description		 : Test Projects Temp
-Test-Case      : Temp
+Description		 : Filter Card Check
+Test-Case      : PEAR-1286
 
 tags: gdc-data-portal-v2, regression, projects
 
@@ -31,6 +31,21 @@ tags: gdc-data-portal-v2, regression, projects
   |filter_name      |selection            |
   |-----------------|---------------------|
   |Program          |FM                   |
+  |Primary Site     |adrenal gland        |
+  |Disease Type     |basal cell neoplasms |
+  |Data Category    |biospecimen          |
+  |Experimental Strategy  |Targeted Sequencing|
+* Verify the page is showing "Showing 1 - 1 of 1 projects"
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Primary Site     |clear selection      |
+  |Disease Type     |clear selection      |
+  |Data Category    |clear selection      |
+  |Experimental Strategy |clear selection |
+* Make the following selections on a filter card
+  |filter_name      |selection            |
+  |-----------------|---------------------|
   |Program          |HCMI                 |
 * Verify the page is showing "Showing 1 - 2 of 2 projects"
 * Perform the following actions on a filter card
@@ -38,4 +53,4 @@ tags: gdc-data-portal-v2, regression, projects
   |-----------------|---------------------|
   |Program          |clear selection      |
 * Verify the page is showing "1 - 20"
-* Pause "2" seconds
+* Pause "1" seconds
