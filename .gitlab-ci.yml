@@ -58,9 +58,13 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
+    - apk update && apk add --no-cache git
     - npm install npm@7
     - npm ci --cache .npm
   script:
+    - git fetch origin ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+    - FILES=$(git diff --name-only ${CI_COMMIT_SHA} origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})
+    - echo "Changed files are $FILES"
     - npm run format:check
   <<: *default_rules
 
