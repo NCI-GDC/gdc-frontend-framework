@@ -1,39 +1,44 @@
-import "@/features/genomic/registerApp";
-import "@/features/oncoGrid/registerApp";
+import "../styles/globals.css";
+import "../styles/survivalplot.css";
+import "../styles/oncogrid.css";
+import "@nci-gdc/sapien/dist/bodyplot.css";
+import { useState } from "react";
+import { Provider } from "react-redux";
+import type { AppProps } from "next/app";
+import Script from "next/script";
+import { CoreProvider } from "@gff/core";
+import { useLocalStorage } from "@mantine/hooks";
+import {
+  MantineProvider,
+  createEmotionCache,
+  EmotionCache,
+} from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
+import store from "../app/store";
+import tailwindConfig from "../../tailwind.config";
+
 // import gdc apps here.
 // their default exports will trigger registration.
 import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
-import { datadogRum } from "@datadog/browser-rum";
-import { CoreProvider } from "@gff/core";
-import {
-  createEmotionCache,
-  EmotionCache,
-  MantineProvider,
-} from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
-import { NotificationsProvider } from "@mantine/notifications";
-import "@nci-gdc/sapien/dist/bodyplot.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import "@/features/genomic/registerApp";
+import "@/features/oncoGrid/registerApp";
+
+// import the React tab styles once
+import "react-tabs/style/react-tabs.css";
+
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-import { Provider } from "react-redux";
-// import the React tab styles once
-import "react-tabs/style/react-tabs.css";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { datadogRum } from "@datadog/browser-rum";
 import {
   entityMetadataType,
   SummaryModalContext,
   URLContext,
 } from "src/utils/contexts";
-import tailwindConfig from "../../tailwind.config";
-import store from "../app/store";
-import "../styles/globals.css";
-import "../styles/oncogrid.css";
-import "../styles/survivalplot.css";
+import Head from "next/head";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -176,7 +181,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   arrowSize: 10,
                   classNames: {
                     tooltip:
-                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+                      "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
                   },
                 },
