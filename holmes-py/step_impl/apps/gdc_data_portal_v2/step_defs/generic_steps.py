@@ -245,14 +245,14 @@ def is_data_testid_not_present_on_the_page(data_testid: str):
 @step("Is checkbox checked <table>")
 def is_checkbox_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_enabeled = APP.home_page.is_filter_card_enum_checkbox_checked(v[0])
+        is_checkbox_enabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
         time.sleep(0.1)
 
 @step("Is checkbox not checked <table>")
 def is_checkbox_not_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_disabeled = APP.home_page.is_filter_card_enum_checkbox_checked(v[0])
+        is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
