@@ -143,13 +143,22 @@ const SetOperationsApp: FC = () => {
       },
       { skip: !isDemoMode },
     );
-  const [createSet1, response1] = useCreateSsmsSetFromFiltersMutation();
-  const [createSet2, response2] = useCreateSsmsSetFromFiltersMutation();
-  const [createSet3, response3] = useCreateSsmsSetFromFiltersMutation();
+  const [createDemoSet1, demoSetResponse1] =
+    useCreateSsmsSetFromFiltersMutation();
+  const [createDemoSet2, demoSetResponse2] =
+    useCreateSsmsSetFromFiltersMutation();
+  const [createDemoSet3, demoSetResponse3] =
+    useCreateSsmsSetFromFiltersMutation();
 
   const needsToCreateSets =
     demoCountsSuccess &&
     Object.values(demoCounts || {}).some((count) => count === 0);
+
+  const creatingDemoSets =
+    needsToCreateSets &&
+    (!demoSetResponse1.isSuccess ||
+      !demoSetResponse2.isSuccess ||
+      !demoSetResponse3.isSuccess);
 
   useEffect(() => {
     if (isDemoMode) {
@@ -157,12 +166,27 @@ const SetOperationsApp: FC = () => {
       setSelectedEntityType("mutations");
 
       if (needsToCreateSets) {
-        createSet1({ filters: DEMO_SETS[0].filters, set_id: DEMO_SETS[0].id });
-        createSet2({ filters: DEMO_SETS[1].filters, set_id: DEMO_SETS[1].id });
-        createSet3({ filters: DEMO_SETS[2].filters, set_id: DEMO_SETS[2].id });
+        createDemoSet1({
+          filters: DEMO_SETS[0].filters,
+          set_id: DEMO_SETS[0].id,
+        });
+        createDemoSet2({
+          filters: DEMO_SETS[1].filters,
+          set_id: DEMO_SETS[1].id,
+        });
+        createDemoSet3({
+          filters: DEMO_SETS[2].filters,
+          set_id: DEMO_SETS[2].id,
+        });
       }
     }
-  }, [isDemoMode, needsToCreateSets, createSet1, createSet2, createSet3]);
+  }, [
+    isDemoMode,
+    needsToCreateSets,
+    createDemoSet1,
+    createDemoSet2,
+    createDemoSet3,
+  ]);
 
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
@@ -178,11 +202,7 @@ const SetOperationsApp: FC = () => {
       setSelectedEntityType={setSelectedEntityType}
     />
   ) : selectedEntities.length === 0 ||
-    (isDemoMode &&
-      needsToCreateSets &&
-      !response1.isSuccess &&
-      !response2.isSuccess &&
-      !response3.isSuccess) ? (
+    (isDemoMode && (!demoCountsSuccess || creatingDemoSets)) ? (
     <Loader size={64} className="m-4" />
   ) : selectedEntities.length === 2 ? (
     <SetOperationsTwo

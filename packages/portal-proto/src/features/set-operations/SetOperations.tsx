@@ -566,7 +566,9 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   const [selectedSets, setSelectedSets] = useState(
     Object.fromEntries(data.map((set) => [set.key, false])),
   );
-  const { data: summaryCounts } = countHook({ setIds: sets.map((s) => s.id) });
+  const { data: summaryCounts, isFetching } = countHook({
+    setIds: sets.map((s) => s.id),
+  });
 
   const chartData = data.map((set) => ({
     key: set.key,
@@ -655,7 +657,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         ),
         entityType: upperFirst(entityType),
         name: set.name,
-        count: summaryCounts?.[set.id],
+        count: isFetching ? "..." : summaryCounts?.[set.id],
       })),
     [entityType, sets, summaryCounts],
   );
