@@ -62,10 +62,10 @@ Prettier Checks:
     - npm install npm@7
     - npm ci --cache .npm
   script:
-    - git diff --name-only $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - git fetch --all
+    - git checkout $CI_COMMIT_SHA # Checkout the commit of the pull request
+    - git diff --name-only $CI_COMMIT_SHA $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     - npm run format:check
-  variables:
-    GIT_DEPTH: 0
   <<: *default_rules
 
 Build and test core and portal:
