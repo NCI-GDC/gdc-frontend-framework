@@ -139,13 +139,13 @@ const buildOnePlotLegend = (data, name) => {
     ? name && [
         {
           key: name,
-          value: `${data[0].donors.length.toLocaleString()} Cases with Survival Data`,
+          value: `Not enough survival data for ${name}`,
         },
       ]
     : [
         {
           key: `${name || ""}-not-enough-data`,
-          value: "Not enough survival data",
+          value: `Not enough survival data for ${name}`,
         },
       ];
 };
@@ -201,7 +201,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
                 value: (
                   <div>
                     <span className="font-content">
-                      Not enough data to compare
+                      {`Not enough survival data for ${name}`}
                     </span>
                   </div>
                 ),
@@ -242,7 +242,7 @@ const buildManyLegend = (
               },
               value: (
                 <div className="font-content">
-                  <span>Not enough data to compare</span>
+                  <span>{`Not enough survival data for ${names[i]}`}</span>
                 </div>
               ),
             }
