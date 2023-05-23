@@ -57,8 +57,6 @@ Linting:
 
 Prettier Checks:
   stage: test
-  only:
-    - merge_requests
   before_script:
     - apk update && apk add --no-cache git
     - npm install npm@7
