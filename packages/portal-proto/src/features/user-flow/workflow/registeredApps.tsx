@@ -1,4 +1,3 @@
-import { Image } from "@/components/Image";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
 import ClinicalDataIcon from "public/user-flow/icons/apps/ClinicalData.svg";
