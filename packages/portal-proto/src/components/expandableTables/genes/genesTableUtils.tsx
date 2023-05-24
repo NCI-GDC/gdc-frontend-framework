@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
-import { Image } from "@/components/Image";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
@@ -23,6 +22,8 @@ import {
   TableHeader,
   ToggledCheck,
 } from "../shared";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -105,18 +106,18 @@ export const geneCreateTableColumn = ({
                       isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
                             aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
                             aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }

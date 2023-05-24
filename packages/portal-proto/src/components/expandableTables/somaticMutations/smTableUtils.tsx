@@ -6,7 +6,6 @@ import {
 } from "react-icons/io";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
-import { Image } from "@/components/Image";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
@@ -27,6 +26,8 @@ import {
   TableHeader,
   ToggledCheck,
 } from "../shared";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -114,18 +115,18 @@ export const ssmsCreateTableColumn = ({
                       isActive={isToggledSsm}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
                             aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
                             aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }
