@@ -166,6 +166,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             </OverflowTooltippedLabel>
             <>
               <button
+                data-testid="clear-all-cohort-filters"
                 className={`text-sm font-montserrat pl-2 ${
                   noFilters
                     ? "cursor-not-allowed text-secondary-contrast-darkest"
