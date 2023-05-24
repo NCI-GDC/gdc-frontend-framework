@@ -426,9 +426,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row w-100 items-center justify-center flex-wrap">
+      <div className="flex w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg">{title}</div>
-        <div className="flex flex-row items-center ml-auto gap-1">
+        <div className="flex items-center ml-auto gap-1">
           <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
@@ -506,9 +506,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </div>
           </Tooltip>
         </div>
-        <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print font-content`}
-        >
+        <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
       </div>
