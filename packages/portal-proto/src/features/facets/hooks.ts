@@ -270,6 +270,7 @@ export const useRangeFacet = (
     prevRanges,
     docType,
     indexType,
+    prevRangeFilters,
   ]);
 
   return {
