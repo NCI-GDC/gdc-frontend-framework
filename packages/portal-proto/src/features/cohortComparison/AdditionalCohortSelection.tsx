@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { Tooltip } from "@mantine/core";
 import {
   useCoreSelector,
-  selectCurrentCohortName,
+  selectCurrentCohort,
   selectAvailableCohorts,
+  Cohort,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -17,7 +18,7 @@ interface AdditionalCohortSelectionProps {
   readonly app: string;
   readonly setActiveApp?: (id: string, demoMode?: boolean) => void;
   readonly setOpen: (open: boolean) => void;
-  readonly setComparisonCohort: (cohort) => void;
+  readonly setComparisonCohort: (cohort: Cohort) => void;
 }
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
@@ -26,20 +27,17 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   setOpen,
   setComparisonCohort,
 }: AdditionalCohortSelectionProps) => {
-  const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
+  const primaryCohort = useCoreSelector((state) => selectCurrentCohort(state));
   const availableCohorts = useCoreSelector((state) =>
     selectAvailableCohorts(state),
   );
 
   const cohorts = useMemo(
-    () =>
-      availableCohorts.filter((cohort) => cohort.name !== primaryCohortName),
-    [primaryCohortName, availableCohorts],
+    () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort.id),
+    [primaryCohort, availableCohorts],
   );
 
-  const [selectedCohort, setSelectedCohort] = useState(null);
+  const [selectedCohort, setSelectedCohort] = useState<Cohort>(null);
 
   const closeCohortSelection = () => {
     setOpen(false);
@@ -66,7 +64,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         ),
         name: (
           <label
-            htmlFor={cohort.name}
+            htmlFor={cohort.id}
             className={!cohort?.caseCount ? "text-base-lighter" : undefined}
           >
             {cohort.name}
@@ -80,7 +78,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           </span>
         ),
       })),
-    [cohorts, selectedCohort],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(cohorts), selectedCohort?.id],
   );
 
   const {
@@ -123,7 +122,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     <div className="bg-base-max">
       <div className="p-4">
         <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
-          Select a cohort to compare with {primaryCohortName}
+          Select a cohort to compare with {primaryCohort.name}
         </h2>
         <p className="font-content pb-2 w-3/4">
           Display the survival analysis of your cohorts and compare
@@ -171,7 +170,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           disabled={selectedCohort === null}
           onClick={() => {
             setOpen(false);
-            setComparisonCohort(selectedCohort.name);
+            setComparisonCohort(selectedCohort);
           }}
         >
           Run
