@@ -59,13 +59,13 @@ Prettier Checks:
   stage: test
   before_script:
     - apk update && apk add --no-cache git
-    - git diff
     - npm install npm@7
     - npm ci --cache .npm
-    - git diff
   script:
     - git fetch --all
-    - git diff --name-only -r $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - git checkout $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - git diff --name-only -r $CI_COMMIT_BRANCH
+    - git checkout $CI_COMMIT_BRANCH
     - npm run format:check
   <<: *default_rules
 
