@@ -10,6 +10,7 @@ import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.s
 import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
+import OncoMatrixIcon from "public/user-flow/icons/apps/Oncogrid.svg";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -195,15 +196,13 @@ export const REGISTERED_APPS = [
   {
     name: "OncoMatrix",
     icon: (
-      <Image
+      <OncoMatrixIcon
         className="m-auto"
-        src={"/user-flow/matrix.png"}
         height={48}
         width={80}
-        alt={"OncoMatrix icon"}
+        aria-label="OncoMatrix icon"
       />
     ),
-
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
