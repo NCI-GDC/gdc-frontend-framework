@@ -20,6 +20,7 @@ const config: InitialOptionsTsJest = {
     "^@/features/(.*)$": "<rootDir>/src/features/$1",
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+    "\\.svg$": "<rootDir>/__mocks__/svg.ts",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
