@@ -203,7 +203,9 @@ const SetOperationsApp: FC = () => {
     />
   ) : selectedEntities.length === 0 ||
     (isDemoMode && (!demoCountsSuccess || creatingDemoSets)) ? (
-    <Loader size={64} className="m-4" />
+    <div className="flex flex-row items-center justify-center w-100 h-96">
+      <Loader size={100} />
+    </div>
   ) : selectedEntities.length === 2 ? (
     <SetOperationsTwo
       sets={selectedEntities}
