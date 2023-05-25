@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
@@ -20,14 +20,11 @@ describe("<AdditionalCohortSelection />", () => {
       .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
 
     const { getByLabelText } = render(
-      <core.CoreProvider>
-        <AdditionalCohortSelection
-          app={""}
-          setOpen={jest.fn()}
-          setComparisonCohort={jest.fn()}
-        />
-        ,
-      </core.CoreProvider>,
+      <AdditionalCohortSelection
+        app={""}
+        setOpen={jest.fn()}
+        setComparisonCohort={jest.fn()}
+      />,
     );
 
     // We are including the correct cohort with the name "Lung"
@@ -42,14 +39,11 @@ describe("<AdditionalCohortSelection />", () => {
       .mockImplementation(() => ({ id: "2", name: "Brain" } as any));
 
     const { getAllByLabelText } = render(
-      <core.CoreProvider>
-        <AdditionalCohortSelection
-          app={""}
-          setOpen={jest.fn()}
-          setComparisonCohort={jest.fn()}
-        />
-        ,
-      </core.CoreProvider>,
+      <AdditionalCohortSelection
+        app={""}
+        setOpen={jest.fn()}
+        setComparisonCohort={jest.fn()}
+      />,
     );
 
     await userEvent.click(getAllByLabelText("Lung")[0]);
@@ -63,14 +57,11 @@ describe("<AdditionalCohortSelection />", () => {
       .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
 
     const { getByLabelText } = render(
-      <core.CoreProvider>
-        <AdditionalCohortSelection
-          app={""}
-          setOpen={jest.fn()}
-          setComparisonCohort={jest.fn()}
-        />
-        ,
-      </core.CoreProvider>,
+      <AdditionalCohortSelection
+        app={""}
+        setOpen={jest.fn()}
+        setComparisonCohort={jest.fn()}
+      />,
     );
 
     expect(getByLabelText("Brain")).toBeDisabled();
