@@ -28,6 +28,7 @@ import FunctionButton from "@/components/FunctionButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
@@ -119,40 +120,33 @@ const FilesTables: React.FC = () => {
     formattedTableData = files.map((file: GdcFile) => ({
       cart: <SingleItemAddToCartButton file={file} iconOnly />,
       file_id: (
-        <button
-          className="text-utility-link underline font-content text-left"
-          onClick={() =>
+        <PopupIconButton
+          handleClick={() =>
             setEntityMetadata({
               entity_type: "file",
               entity_id: file.file_id,
             })
           }
-        >
-          {file.file_id}
-        </button>
+          label={file.file_id}
+          customStyle="text-utility-link underline font-content text-left"
+        />
       ),
       access: <FileAccessBadge access={file.access} />,
       file_name: (
-        <button
-          className="text-utility-link underline font-content text-left"
-          onClick={() =>
+        <PopupIconButton
+          handleClick={() =>
             setEntityMetadata({
               entity_type: "file",
               entity_id: file.file_id,
             })
           }
-        >
-          {file.file_name}
-        </button>
+          label={file.file_name}
+          customStyle="text-utility-link underline font-content text-left"
+        />
       ),
       cases: (
-        <button
-          className={`font-content ${
-            file.cases?.length > 0
-              ? "text-utility-link underline"
-              : "cursor-default"
-          }`}
-          onClick={() => {
+        <PopupIconButton
+          handleClick={() => {
             if (file.cases?.length === 0) return;
             setEntityMetadata({
               entity_type: file.cases?.length === 1 ? "case" : "file",
@@ -162,23 +156,28 @@ const FilesTables: React.FC = () => {
                   : file.file_id,
             });
           }}
-        >
-          {file.cases?.length.toLocaleString() || 0}
-        </button>
+          label={file.cases?.length.toLocaleString() || 0}
+          customAriaLabel={`Open ${
+            file.cases?.length === 1 ? "case" : "file"
+          } information in modal`}
+          customStyle={`font-content ${
+            file.cases?.length > 0
+              ? "text-utility-link underline"
+              : "cursor-default"
+          }`}
+        />
       ),
-
       project_id: (
-        <button
-          className="text-utility-link underline font-content"
-          onClick={() =>
+        <PopupIconButton
+          handleClick={() =>
             setEntityMetadata({
               entity_type: "project",
               entity_id: file.project_id,
             })
           }
-        >
-          {file.project_id}
-        </button>
+          label={file.project_id}
+          customStyle="text-utility-link underline font-content"
+        />
       ),
       data_category: file.data_category,
       data_type: file.data_type,

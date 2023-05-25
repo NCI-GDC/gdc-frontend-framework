@@ -1,3 +1,4 @@
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   useCoreSelector,
   selectCart,
@@ -8,8 +9,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { Button, createStyles, Divider, Menu } from "@mantine/core";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { VerticalTable, HandleChangeInput } from "../../shared/VerticalTable";
+import { SummaryModalContext } from "src/utils/contexts";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
@@ -21,10 +21,14 @@ import { addToCart, removeFromCart } from "../../cart/updateCart";
 import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { SummaryModalContext } from "src/utils/contexts";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
+import {
+  HandleChangeInput,
+  VerticalTable,
+} from "@/features/shared/VerticalTable";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -204,33 +208,29 @@ export const ContextualCasesView: React.FC = () => {
           ),
           case_id: (
             <OverflowTooltippedLabel label={datum.case_id}>
-              <button
-                className="text-utility-link underline font-content"
-                onClick={() =>
+              <PopupIconButton
+                handleClick={() =>
                   setEntityMetadata({
                     entity_type: "case",
                     entity_id: datum.case_uuid,
                   })
                 }
-              >
-                {datum.case_id}
-              </button>
+                label={datum.case_id}
+              />
             </OverflowTooltippedLabel>
           ),
           case_uuid: datum.case_uuid,
           project_id: (
             <OverflowTooltippedLabel label={datum.project_id}>
-              <button
-                className="text-utility-link underline font-content"
-                onClick={() =>
+              <PopupIconButton
+                handleClick={() =>
                   setEntityMetadata({
                     entity_type: "project",
                     entity_id: datum.project_id,
                   })
                 }
-              >
-                {datum.project_id}
-              </button>
+                label={datum.project_id}
+              />
             </OverflowTooltippedLabel>
           ),
           program: datum.program,
