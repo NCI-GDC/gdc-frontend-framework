@@ -22,7 +22,6 @@ import {
   removeFromCart,
   showCartOverLimitNotification,
 } from "@/features/cart/updateCart";
-import Link from "next/link";
 import { FileFacetPanel } from "./FileFacetPanel";
 import { mapGdcFileToCartFile } from "../files/utils";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
@@ -35,6 +34,7 @@ import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { useRouter } from "next/router";
 
 const persistor = persistStore(AppStore);
 
@@ -70,6 +70,7 @@ const useCohortCentricFiles = () => {
 export const RepositoryApp = (): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
+  const router = useRouter();
   const { allFilters, pagination, repositoryFilters, imagesCount } =
     useCohortCentricFiles();
   const [
@@ -156,25 +157,26 @@ export const RepositoryApp = (): JSX.Element => {
                   setActive={setActive}
                   active={active}
                 />
-
-                <Link
-                  href={`/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
-                    stringifyJSONParam(repositoryFilters),
-                  )}`}
+                <Tooltip
+                  label={"No images available to be viewed"}
+                  disabled={!viewImageDisabled}
                 >
-                  <Tooltip
-                    label={"No images available to be viewed"}
-                    disabled={!viewImageDisabled}
-                  >
+                  <span>
                     <FunctionButton
-                      component="a"
-                      $disabled={viewImageDisabled}
+                      onClick={() =>
+                        router.push(
+                          `/image-viewer/MultipleImageViewerPage?isCohortCentric=true&additionalFilters=${encodeURIComponent(
+                            stringifyJSONParam(repositoryFilters),
+                          )}`,
+                        )
+                      }
+                      disabled={viewImageDisabled}
                       data-testid="button-view-images-files-table"
                     >
                       View Images
                     </FunctionButton>
-                  </Tooltip>
-                </Link>
+                  </span>
+                </Tooltip>
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
