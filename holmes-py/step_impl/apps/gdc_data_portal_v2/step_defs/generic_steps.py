@@ -78,6 +78,7 @@ def close_modal(modal_name: str):
 @step("Download <file> from <source>")
 def download_file_at_file_table(file:str, source:str):
     sources = {
+        "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
