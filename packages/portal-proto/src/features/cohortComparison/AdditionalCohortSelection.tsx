@@ -74,7 +74,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <span
             className={!cohort?.caseCount ? "text-base-lighter" : undefined}
           >
-            {cohort?.caseCount.toLocaleString()}
+            {cohort?.caseCount?.toLocaleString()}
           </span>
         ),
       })),
