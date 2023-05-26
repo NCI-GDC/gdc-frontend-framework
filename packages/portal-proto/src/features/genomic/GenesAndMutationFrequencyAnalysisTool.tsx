@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import dynamic from "next/dynamic";
-import partial from "lodash/partial";
-import { Grid, Tabs, LoadingOverlay } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  GqlOperation,
   selectCurrentCohortFilters,
   joinFilters,
   useCoreSelector,
-  useGetSurvivalPlotQuery,
   buildCohortGqlOperator,
   useTopGene,
   useCoreDispatch,
@@ -16,68 +12,19 @@ import {
   updateActiveCohortFilter,
   usePrevious,
 } from "@gff/core";
-import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import { useSelectFilterContent } from "./hooks";
 import {
   selectGeneAndSSMFilters,
   clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
-import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "../shared/tailwindComponents";
 import { humanify } from "src/utils";
-
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
-  ssr: false,
-});
-
-const buildGeneHaveAndHaveNotFilters = (
-  currentFilters: GqlOperation,
-  symbol: string,
-  field: string,
-): ReadonlyArray<GqlOperation> => {
-  /**
-   * given the contents, add two filters, one with the gene and one without
-   */
-
-  if (symbol === undefined) return [];
-
-  return [
-    {
-      op: "and",
-      content: [
-        {
-          //TODO: refactor cohortFilters to be Union | Intersection
-          op: "excludeifany",
-          content: {
-            field: field,
-            value: symbol,
-          },
-        },
-        ...(currentFilters ? (currentFilters.content as any) : []),
-      ],
-    },
-    {
-      op: "and",
-      content: [
-        {
-          op: "=",
-          content: {
-            field: field,
-            value: symbol,
-          },
-        },
-        ...(currentFilters ? (currentFilters.content as any) : []),
-      ],
-    },
-  ];
-};
+import { GenesPanel } from "@/features/genomic/GenesPanel";
+import { SSMSPanel } from "@/features/genomic/SSMSPanel";
 
 // Persist which tab is active
 type AppModeState = "genes" | "ssms";

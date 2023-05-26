@@ -1,24 +1,14 @@
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  joinFilters,
-  selectCurrentCohortFilters,
-  useCoreSelector,
-  useGetSurvivalPlotQuery,
-} from "@gff/core";
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import partial from "lodash/partial";
-import React, { useMemo } from "react";
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { useAppSelector } from "@/features/genomic/appApi";
-import { selectGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
-import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
+import React from "react";
 import { emptySurvivalPlot } from "@/features/genomic/types";
-import { useSelectFilterContent } from "@/features/genomic/hooks";
-import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
+import {
+  useSelectFilterContent,
+  useGeneAndSSMPanelData,
+} from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
@@ -49,46 +39,17 @@ export const GenesPanel = ({
   handleGeneAndSSmToggled,
   handleMutationCountClick,
 }: GenesPanelProps): JSX.Element => {
-  const isDemoMode = useIsDemoApp();
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-  const genomicFilters: FilterSet = useAppSelector((state) =>
-    selectGeneAndSSMFilters(state),
-  );
-  const overwritingDemoFilter = useMemo(
-    () => overwritingDemoFilterMutationFrequency,
-    [],
-  );
+  const {
+    isDemoMode,
+    cohortFilters,
+    genomicFilters,
+    overwritingDemoFilter,
+    survivalPlotData,
+    survivalPlotFetching,
+    survivalPlotReady,
+  } = useGeneAndSSMPanelData(comparativeSurvival);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
-
-  const filters = useMemo(
-    () =>
-      buildCohortGqlOperator(
-        joinFilters(
-          isDemoMode ? overwritingDemoFilter : cohortFilters,
-          genomicFilters,
-        ),
-      ),
-
-    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
-  );
-
-  const f = useMemo(
-    () =>
-      buildGeneHaveAndHaveNotFilters(
-        filters,
-        comparativeSurvival?.symbol,
-        comparativeSurvival?.field,
-      ),
-    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
-  );
-
-  const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useGetSurvivalPlotQuery({
-      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
-    });
 
   return (
     <div className="flex flex-col w-100 mx-6">
@@ -102,7 +63,13 @@ export const GenesPanel = ({
           />
         </Grid.Col>
         <Grid.Col span={6} className="relative">
-          <LoadingOverlay visible={!survivalPlotReady && !topGeneSSMSSuccess} />
+          <LoadingOverlay
+            zIndex={10}
+            visible={
+              survivalPlotFetching ||
+              (!survivalPlotReady && !topGeneSSMSSuccess)
+            }
+          />
           <SurvivalPlot
             plotType={SurvivalPlotTypes.mutation}
             data={
