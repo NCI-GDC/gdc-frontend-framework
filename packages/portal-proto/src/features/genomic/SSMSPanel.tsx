@@ -30,13 +30,13 @@ interface SSMSPanelProps {
   searchTermsForGene: { geneId?: string; geneSymbol?: string };
 }
 
-export function SSMSPanel({
+export const SSMSPanel = ({
   topGeneSSMSSuccess,
   comparativeSurvival,
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   searchTermsForGene,
-}: SSMSPanelProps) {
+}: SSMSPanelProps): JSX.Element => {
   const {
     isDemoMode,
     cohortFilters,
@@ -95,4 +95,4 @@ export function SSMSPanel({
       />
     </div>
   );
-}
+};
