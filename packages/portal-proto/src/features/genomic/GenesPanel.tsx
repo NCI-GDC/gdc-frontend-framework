@@ -64,7 +64,6 @@ export const GenesPanel = ({
         </Grid.Col>
         <Grid.Col span={6} className="relative">
           <LoadingOverlay
-            zIndex={10}
             visible={
               survivalPlotFetching ||
               (!survivalPlotReady && !topGeneSSMSSuccess)

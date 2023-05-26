@@ -99,7 +99,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
         <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
       ) : null}
       <div className="w-100 h-100">
-        <LoadingOverlay zIndex={10} visible={!isSuccess} />
+        <LoadingOverlay visible={!isSuccess} />
         <BarChart
           data={processChartData(data)}
           marginBottom={marginBottom}

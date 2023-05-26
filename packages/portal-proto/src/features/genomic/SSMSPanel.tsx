@@ -56,7 +56,6 @@ export const SSMSPanel = ({
     <div className="flex flex-col w-100 mx-6 mb-8">
       <div className="bg-base-max">
         <LoadingOverlay
-          zIndex={10}
           visible={
             survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
           }

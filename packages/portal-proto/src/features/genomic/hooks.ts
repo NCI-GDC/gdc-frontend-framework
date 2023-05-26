@@ -291,6 +291,9 @@ export interface GeneAndSSMPanelData {
   survivalPlotReady: boolean;
 }
 
+/*
+ * This hook returns the filters, and survival plot data, and it's loading status for the gene and ssm panel.
+ */
 export const useGeneAndSSMPanelData = (
   comparativeSurvival: Record<string, string>,
 ): GeneAndSSMPanelData => {
