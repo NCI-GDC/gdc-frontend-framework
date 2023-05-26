@@ -6,6 +6,7 @@ import {
 } from "react-icons/io";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
@@ -234,17 +235,15 @@ export const ssmsCreateTableColumn = ({
                       {isConsequenceTable ? (
                         <span>{label}</span>
                       ) : isModal && !geneSymbol ? (
-                        <button
-                          className="text-utility-link underline font-content"
-                          onClick={() =>
+                        <PopupIconButton
+                          handleClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
                               entity_id: ssmsId,
                             })
                           }
-                        >
-                          {label}
-                        </button>
+                          label={label}
+                        />
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
                           <a className="underline text-utility-link">{label}</a>
@@ -414,7 +413,7 @@ export const ssmsCreateTableColumn = ({
             header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
@@ -423,7 +422,7 @@ export const ssmsCreateTableColumn = ({
                       setEntityMetadata={setEntityMetadata}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },

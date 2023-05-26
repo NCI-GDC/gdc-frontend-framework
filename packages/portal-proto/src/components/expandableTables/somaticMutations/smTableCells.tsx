@@ -1,10 +1,11 @@
+import { Dispatch, SetStateAction } from "react";
 import { Tooltip } from "@mantine/core";
 import { truncate } from "lodash";
 import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
 import { humanify } from "src/utils";
 import { entityMetadataType } from "src/utils/contexts";
 import { Impact } from "./types";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 
 export const ProteinChange = ({
   proteinChange,
@@ -29,17 +30,16 @@ export const ProteinChange = ({
       ) : (
         <>
           {shouldOpenModal ? (
-            <button
-              className="text-utility-link font-content mx-0.5 underline"
-              onClick={() =>
+            <PopupIconButton
+              customStyle="text-utility-link underline mx-0.5 font-content self-center"
+              handleClick={() =>
                 setEntityMetadata({
                   entity_type: "genes",
                   entity_id: proteinChange.geneId,
                 })
               }
-            >
-              {symbol}
-            </button>
+              label={symbol}
+            />
           ) : shouldLink ? (
             <Link href={`/genes/${proteinChange.geneId}`}>
               <a className="text-utility-link underline">{symbol}</a>
@@ -77,8 +77,9 @@ export const Consequences = ({
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
-  const twIconStyles = `w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center`;
-  const blankIconStyles = `w-7 h-6 font-bold flex justify-center items-center`;
+  const twIconStyles =
+    "w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center";
+  const blankIconStyles = "w-7 h-6 font-bold flex justify-center items-center";
 
   return (
     <>

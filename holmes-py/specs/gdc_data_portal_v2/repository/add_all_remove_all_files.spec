@@ -15,11 +15,11 @@ tags: gdc-data-portal-v2, repository, regression
 * Select "Add All" on the Repository page
 * Is modal with text "The cart is limited to 10,000" present on the page and "Remove Modal"
 * The cart should have "0" files
-* Expand or contract a filter on the Repository page
+* Expand or contract a filter
   |facet_name       |label                |
   |-----------------|---------------------|
   |Data Type        |plus-icon            |
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
   |Data Type        |Allele-specific Copy Number Segment  |
@@ -28,17 +28,17 @@ tags: gdc-data-portal-v2, repository, regression
 * The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
   |Data Type        |Allele-specific Copy Number Segment  |
 
 ## Add All Files and Remove All Files buttons
-* Expand or contract a filter on the Repository page
+* Expand or contract a filter
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type  |plus-icon            |
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |GATK4 MuTect2        |
@@ -51,7 +51,7 @@ tags: gdc-data-portal-v2, repository, regression
 * The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |GATK4 MuTect2        |
