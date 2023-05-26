@@ -106,19 +106,3 @@ def search_image_viewer(image_viewer_search: str):
 @step("Remove search filter <search_filter> on the Image Viewer page")
 def remove_slide_image_viewer_search_filter(search_filter: str):
     APP.repository_page.remove_slide_image_viewer_search_filter(search_filter)
-
-@step("Make the following selections on a filter card on the Repository page <table>")
-def filter_card_selections(table):
-    """Trio of actions for the filter cards and filters on the repository page"""
-    for k, v in enumerate(table):
-        APP.repository_page.make_selection_within_facet_group(v[0], v[1])
-
-@step("Perform the following actions on a filter card on the Repository page <table>")
-def perform_filter_card_action(table):
-    for k, v in enumerate(table):
-        APP.repository_page.perform_action_within_filter_card(v[0], v[1])
-
-@step("Expand or contract a filter on the Repository page <table>")
-def click_show_more_or_show_less(table):
-    for k, v in enumerate(table):
-        APP.repository_page.click_show_more_less_within_filter_card(v[0], v[1])

@@ -1,10 +1,10 @@
-import { isPlainObject, includes, reduce } from "lodash";
-import urlJoin from "url-join";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { includes, isPlainObject, reduce } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
+import urlJoin from "url-join";
 
 const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -117,6 +117,7 @@ const download = async ({
   form?: boolean;
 }): Promise<void> => {
   let canceled = false;
+  const controller = new AbortController();
 
   // place notification in timeout to avoid flicker on fast calls
   const showNotificationTimeout = setTimeout(
@@ -125,6 +126,7 @@ const download = async ({
         message: (
           <DownloadNotification
             onClick={() => {
+              controller.abort();
               cleanNotifications();
               canceled = true;
               if (done) {
@@ -274,6 +276,7 @@ const download = async ({
     return value;
   };
 
+  const signal = controller.signal;
   if (form) {
     addFormAndSubmit();
     setTimeout(() => {
@@ -299,6 +302,7 @@ const download = async ({
         {
           ...options,
           body,
+          signal,
         },
       ).then(handleDownloadResponse);
     } else {
@@ -313,6 +317,7 @@ const download = async ({
         }`,
         {
           ...options,
+          signal,
         },
       ).then(handleDownloadResponse);
     }

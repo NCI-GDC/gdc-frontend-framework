@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
 import { CountButton } from "@/components/CountButton/CountButton";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
@@ -453,9 +454,8 @@ export const geneCreateTableColumn = ({
                 ? row.original[`${accessor}`]
                 : "";
               return (
-                <button
-                  className="text-utility-link underline font-content"
-                  onClick={() =>
+                <PopupIconButton
+                  handleClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
                       entity_id: row.original?.geneID,
@@ -464,9 +464,8 @@ export const geneCreateTableColumn = ({
                       contextFilters: genomicFilters,
                     })
                   }
-                >
-                  {label}
-                </button>
+                  label={label}
+                />
               );
             },
           },

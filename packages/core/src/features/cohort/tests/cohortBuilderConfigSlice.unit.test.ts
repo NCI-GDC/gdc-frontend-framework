@@ -246,6 +246,7 @@ describe("cohortConfig reducer", () => {
       "cases.diagnoses.iss_stage",
       "cases.diagnoses.masaoka_stage",
       "cases.diagnoses.tumor_grade",
+      "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
       "cases.diagnoses.eln_risk_classification",
       "cases.diagnoses.international_prognostic_index",
       "cases.diagnoses.wilms_tumor_histologic_subtype",
