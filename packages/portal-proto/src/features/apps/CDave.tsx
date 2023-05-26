@@ -1,12 +1,8 @@
 import { FC } from "react";
 import ClinicalDataAnalysis from "../cDave/ClinicalDataAnalysis";
 
-export interface CDaveAppProps {
-  onLoaded?: () => void;
-}
-
-const CDaveApp: FC<CDaveAppProps> = ({ onLoaded }: CDaveAppProps) => {
-  return <ClinicalDataAnalysis onLoaded={onLoaded} />;
+const CDaveApp: FC = () => {
+  return <ClinicalDataAnalysis />;
 };
 
 export default CDaveApp;
