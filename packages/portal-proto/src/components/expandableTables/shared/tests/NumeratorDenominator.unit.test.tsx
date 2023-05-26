@@ -7,7 +7,7 @@ describe("<NumeratorDenominator />", () => {
       <NumeratorDenominator numerator={283} denominator={490} />,
     );
     expect(getByTestId("numeratorDenominatorTest")).toHaveTextContent(
-      "283/490(57.76%)",
+      "283 / 490 (57.76%)",
     );
   });
 
@@ -17,7 +17,7 @@ describe("<NumeratorDenominator />", () => {
     );
 
     expect(getByTestId("numeratorDenominatorTest")).toHaveTextContent(
-      "0/490(0.00%)",
+      "0 / 490 (0.00%)",
     );
   });
 
@@ -27,7 +27,7 @@ describe("<NumeratorDenominator />", () => {
     );
 
     expect(getByTestId("numeratorDenominatorTest")).toHaveTextContent(
-      "0/0(0.00%)",
+      "0 / 0 (0.00%)",
     );
   });
 });
