@@ -214,7 +214,11 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <div className="text-left">
                 <TableHeader
-                  title={startCase(accessor)}
+                  title={
+                    isConsequenceTable
+                      ? "Coding DNA Change"
+                      : startCase(accessor)
+                  }
                   tooltip={
                     isConsequenceTable
                       ? null

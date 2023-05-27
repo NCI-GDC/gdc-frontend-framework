@@ -3,7 +3,7 @@ import { Column } from "@/components/expandableTables/shared/";
 export const DEFAULT_CONSEQUENCE_TABLE_ORDER: Column[] = [
   { id: "gene", columnName: "Gene", visible: true },
   { id: "aa_change", columnName: "AA Change", visible: true },
-  { id: "DNAChange", columnName: "DNA Change", visible: true },
+  { id: "DNAChange", columnName: "Coding DNA Change", visible: true },
   {
     id: "consequences",
     columnName: "Consequences",
