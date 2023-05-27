@@ -393,7 +393,11 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip="Consequences for canonical transcript"
+                tooltip={
+                  isConsequenceTable
+                    ? "SO Term: consequence type"
+                    : "Consequences for canonical transcript"
+                }
               />
             ),
             cell: ({ row }) => {
