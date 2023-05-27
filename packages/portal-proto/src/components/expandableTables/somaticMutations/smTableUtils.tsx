@@ -215,8 +215,12 @@ export const ssmsCreateTableColumn = ({
               <div className="text-left">
                 <TableHeader
                   title={startCase(accessor)}
-                  tooltip={`Genomic DNA Change, shown as
-                   {chromosome}:g{start}{ref}>{tumor}`}
+                  tooltip={
+                    isConsequenceTable
+                      ? null
+                      : `Genomic DNA Change, shown as
+                   {chromosome}:g{start}{ref}>{tumor}`
+                  }
                 />
               </div>
             ),
