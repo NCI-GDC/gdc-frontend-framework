@@ -29,6 +29,7 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
       return visibleColumns.map(({ id: accessor }: Column) => {
         return ssmsCreateTableColumn({
           accessor,
+          isConsequenceTable: true,
         });
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps
