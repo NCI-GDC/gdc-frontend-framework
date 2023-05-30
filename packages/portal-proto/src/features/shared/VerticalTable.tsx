@@ -553,7 +553,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p className="text-heading text-sm">Showing {outputString ?? "--"}</p>
+      <p data-testid="showing-count" className="text-heading text-sm">
+        Showing {outputString ?? "--"}
+      </p>
     );
   };
 
@@ -686,6 +688,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           <ShowingCount />
 
           <Pagination
+            data-testid="pagination"
             color="accent"
             className="ml-auto"
             page={pageOn}

@@ -31,6 +31,7 @@ import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "../shared/tailwindComponents";
+import { humanify } from "src/utils";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
@@ -135,7 +136,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   const prevFilters = usePrevious(filters);
 
-  const f = useMemo(
+  const memoizedFilters = useMemo(
     () =>
       buildGeneHaveAndHaveNotFilters(
         filters,
@@ -145,10 +146,18 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
   );
 
-  const { data: survivalPlotData, isSuccess: survivalPlotReady } =
-    useGetSurvivalPlotQuery({
-      filters: comparativeSurvival !== undefined ? f : filters ? [filters] : [],
-    });
+  const {
+    data: survivalPlotData,
+    isSuccess: survivalPlotReady,
+    isFetching: survivalPlotFetching,
+  } = useGetSurvivalPlotQuery({
+    filters:
+      comparativeSurvival !== undefined
+        ? memoizedFilters
+        : filters
+        ? [filters]
+        : [],
+  });
 
   // pass to Survival Plot when survivalPlotData data is undefined/not ready
   const emptySurvivalPlot = {
@@ -254,7 +263,18 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
       setComparativeSurvival({
         symbol: topGeneSSMS[0][appMode].symbol,
-        name: topGeneSSMS[0][appMode].name,
+        name:
+          appMode === "genes"
+            ? topGeneSSMS[0][appMode].name
+            : `${topGeneSSMS[0][appMode].name} ${
+                topGeneSSMS[0][appMode].aa_change
+                  ? topGeneSSMS[0][appMode].aa_change
+                  : ""
+              } ${humanify({
+                term: topGeneSSMS[0][appMode].consequence_type
+                  .replace("_variant", "")
+                  .replace("_", " "),
+              })}`,
         field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
       });
     }
@@ -277,7 +297,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           classNames={{
             tab: SecondaryTabStyle,
             tabsList: "px-2 mt-2 border-0",
-            root: "bg-base-max border-0 w-full",
+            root: "bg-base-max border-0 w-full overflow-x-clip",
           }}
           onTabChange={handleTabChanged}
           keepMounted={false}
@@ -299,7 +319,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 </Grid.Col>
                 <Grid.Col span={6} className="relative">
                   <LoadingOverlay
-                    visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                    visible={
+                      survivalPlotFetching ||
+                      (!survivalPlotReady && !topGeneSSMSSuccess)
+                    }
                   />
                   <SurvivalPlot
                     plotType={SurvivalPlotTypes.mutation}
@@ -344,9 +367,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">
             <div className="flex flex-col w-100 mx-6 mb-8">
-              <div className="bg-base-max">
+              <div className="bg-base-max relative">
                 <LoadingOverlay
-                  visible={!survivalPlotReady && !topGeneSSMSSuccess}
+                  visible={
+                    survivalPlotFetching ||
+                    (!survivalPlotReady && !topGeneSSMSSuccess)
+                  }
                 />
                 <SurvivalPlot
                   plotType={SurvivalPlotTypes.mutation}

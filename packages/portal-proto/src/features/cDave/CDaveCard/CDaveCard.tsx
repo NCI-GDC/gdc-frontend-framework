@@ -60,6 +60,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     <Card
       shadow="sm"
       radius="md"
+      p="xs"
       ref={(ref) => (targetRef.current = ref)}
       className="border-1 border-base-lightest"
     >

@@ -89,14 +89,22 @@ export const useSurvival: survival = (
             { censored, project_id, submitter_id, survivalEstimate, time = 0 },
           ) => {
             setTooltip(
-              <div className="font-montserrat text-xs text-primary-content-darkest shadow-md">
-                {`Case ID: ${project_id} / ${submitter_id}`}
+              <div className="font-montserrat text-xs bg-base-darkest text-base-contrast-darkest shadow-md p-1">
+                <span className="font-bold">Case ID:&#160;</span>
+                {`${project_id} / ${submitter_id}`}
                 <br />
-                {`Survival Rate: ${Math.round(survivalEstimate * 100)}%`}
+                <span className="font-bold">Survival Rate:&#160;</span>
+                {`${Math.round(survivalEstimate * 100)}%`}
                 <br />
+
+                <span className="font-bold">
+                  {censored
+                    ? "Interval of last follow-up: "
+                    : "Time of Death: "}
+                </span>
                 {censored
-                  ? `Interval of last follow-up: ${time.toLocaleString()} years`
-                  : `Time of Death: ${time.toLocaleString()} years`}
+                  ? `${time.toLocaleString()} years`
+                  : `${time.toLocaleString()} years`}
               </div>,
             );
           },
@@ -514,8 +522,13 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div ref={mouseRef} className="relative">
         <Box
-          className="bg-base-lightest min-w-[150px]"
-          sx={{ left: x + 20, top: y - 20, position: "absolute" }}
+          className="w-36"
+          sx={{
+            top: y + 20,
+            left: x < 150 ? x - 20 : x - 100,
+            position: "absolute",
+            zIndex: 200,
+          }}
         >
           {survivalPlotLineTooltipContent}
         </Box>

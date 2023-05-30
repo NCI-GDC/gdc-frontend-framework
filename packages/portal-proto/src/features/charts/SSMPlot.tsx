@@ -50,7 +50,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  if (data.cases.length <= 5) {
+  if (data.cases.length < 5) {
     return null;
   }
 

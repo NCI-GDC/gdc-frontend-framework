@@ -1,9 +1,10 @@
-import { PropsWithChildren } from "react";
-import { Button, Collapse } from "@mantine/core";
+import { PropsWithChildren, ReactNode } from "react";
+import { Button, Collapse, Tooltip } from "@mantine/core";
 import {
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
+import { FloatingPosition } from "@mantine/core/lib/Floating";
 
 export interface CollapsibleContainerProps {
   readonly isCollapsed: boolean;
@@ -11,6 +12,12 @@ export interface CollapsibleContainerProps {
   readonly Top: React.FC<unknown>;
   readonly onlyIcon?: boolean;
   readonly isContextBar?: boolean;
+  readonly tooltipText?: string;
+  readonly tooltipPosition?: FloatingPosition;
+  /*
+   * Children for the Button when onlyIcon is false
+   */
+  readonly TargetElement?: ReactNode;
 }
 
 export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
@@ -23,6 +30,9 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     children,
     onlyIcon = true,
     isContextBar = false,
+    tooltipText = undefined,
+    tooltipPosition = "top",
+    TargetElement,
   } = props;
   return (
     <div
@@ -35,34 +45,41 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
           <Top />
         </div>
         <div className="flex flex-row items-center bg-primary pr-4 pb-2">
-          <Button
-            className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast"
-            onClick={toggle}
-            classNames={{ leftIcon: `${!onlyIcon && "mr-0"} ` }}
-            aria-expanded={!isCollapsed}
-            aria-label="expand/collapse container"
-            leftIcon={
-              !onlyIcon ? (
-                isCollapsed ? (
+          <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
+            <span>
+              <Button
+                data-testid="expandcollapseButton"
+                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-10"
+                onClick={toggle}
+                classNames={{ leftIcon: `${!onlyIcon && "mr-0"} ` }}
+                aria-expanded={!isCollapsed}
+                aria-label="expand or collapse container"
+                leftIcon={
+                  !onlyIcon ? (
+                    isCollapsed ? (
+                      <ExpandMoreIcon size="1.75em" />
+                    ) : (
+                      <ExpandLessIcon size="1.75em" />
+                    )
+                  ) : null
+                }
+              >
+                {!onlyIcon ? (
+                  <>
+                    {TargetElement !== undefined ? (
+                      TargetElement
+                    ) : (
+                      <span>{isCollapsed ? "Expand" : "Collapse"}</span>
+                    )}
+                  </>
+                ) : isCollapsed ? (
                   <ExpandMoreIcon size="1.75em" />
                 ) : (
                   <ExpandLessIcon size="1.75em" />
-                )
-              ) : null
-            }
-          >
-            {!onlyIcon ? (
-              isCollapsed ? (
-                "Expand"
-              ) : (
-                "Collapse"
-              )
-            ) : isCollapsed ? (
-              <ExpandMoreIcon size="1.75em" />
-            ) : (
-              <ExpandLessIcon size="1.75em" />
-            )}
-          </Button>
+                )}
+              </Button>
+            </span>
+          </Tooltip>
         </div>
       </div>
       <Collapse
@@ -70,7 +87,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         transitionDuration={200}
         transitionTimingFunction="linear"
       >
-        {!isCollapsed ? children : null}
+        {children}
       </Collapse>
     </div>
   );
