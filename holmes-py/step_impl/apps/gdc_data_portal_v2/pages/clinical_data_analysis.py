@@ -1,9 +1,5 @@
 from playwright.sync_api import Page
 
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePageLocators
-
-
 class ClinicalDataAnalysisLocators:
     CLINICAL_DATA_ANALYSIS_PLAY_BUTTON = (
         "button[aria-label='Navigate to Clinical Data Analysis tool']"

@@ -1,5 +1,6 @@
 import os
 
+from step_impl.base.base_page import BasePage
 from ..gdc_data_portal_v2.pages.header_section import HeaderSection
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
 from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import (
@@ -28,6 +29,7 @@ class GDCDataPortalV2App:
         self.driver.goto(self.url)
 
     def init_pages(self):
+        self.base_page = BasePage(self.driver)
         self.header_section = HeaderSection(self.driver, self.url)
         self.warning_modal = WarningModal(self.driver, self.url)
         self.home_page = HomePage(self.driver, self.url)
