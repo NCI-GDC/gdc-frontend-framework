@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback, createContext } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { useRouter } from "next/router";
-import { useScrollIntoView } from "@mantine/hooks";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
   REGISTERED_APPS,
@@ -120,7 +119,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
@@ -129,22 +127,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     setCohortSelectionOpen(
       !isDemoMode && appInfo?.selectionScreen !== undefined,
     );
-
-    if (app) {
-      scrollIntoView();
-    }
-  }, [app, isDemoMode, appInfo, scrollIntoView]);
+  }, [app, isDemoMode, appInfo]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
 
-  const handleAppLoaded = useCallback(() => {
-    scrollIntoView();
-  }, [scrollIntoView]);
-
   return (
-    <div ref={(ref) => (targetRef.current = ref)}>
+    <div>
       {app && (
         <SelectionScreenContext.Provider
           value={{
@@ -160,7 +150,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
             }
           />
-          <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
+          <ActiveAnalysisToolNoSSR appId={app} />
         </SelectionScreenContext.Provider>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
