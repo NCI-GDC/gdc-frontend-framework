@@ -278,10 +278,20 @@ def click_radio_buttons(table):
         APP.home_page.click_radio_button(v[0])
         time.sleep(0.1)
 
+@step("Select create or save in cohort modal")
+def click_create_or_save_in_cohort_modal():
+    """Clicks 'Create' or 'Save' in cohort modal"""
+    APP.home_page.click_create_or_save_button_in_cohort_modal()
+
 @step("Undo Action")
 def click_undo_in_message():
     """Clicks 'undo' in a modal message"""
     APP.home_page.click_undo_in_message()
+
+@step("Set this as your current cohort")
+def click_undo_in_message():
+    """Clicks 'Set this as your current cohort' in a modal message"""
+    APP.home_page.click_set_as_current_cohort_in_message()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that
@@ -324,3 +334,7 @@ def quick_search_and_click(text: str):
     Then clicks the result in the search result area. Best used with a UUID.
     """
     APP.home_page.quick_search_and_click(text)
+
+@step("Name the cohort <cohort_name>")
+def name_cohort_and_click_button(cohort_name: str):
+    APP.home_page.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
