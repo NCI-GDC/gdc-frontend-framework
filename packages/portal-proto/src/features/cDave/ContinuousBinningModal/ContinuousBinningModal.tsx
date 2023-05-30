@@ -400,11 +400,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           rangeForm.values.ranges[idx].from === "" ||
                           rangeForm.values.ranges[idx].to === ""
                         }
-                        $disabled={
-                          rangeForm.values.ranges[idx].name === "" ||
-                          rangeForm.values.ranges[idx].from === "" ||
-                          rangeForm.values.ranges[idx].to === ""
-                        }
                       >
                         Add
                       </FunctionButton>
