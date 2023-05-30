@@ -2,12 +2,12 @@ import tw from "tailwind-styled-components";
 import { Button } from "@mantine/core";
 
 interface FunctionButtonProps {
-  $disabled: boolean;
+  disabled: boolean;
 }
 
 export default tw(Button)<FunctionButtonProps>`
  ${(p) =>
-   p.$disabled
+   p.disabled
      ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
      : null}
 flex
