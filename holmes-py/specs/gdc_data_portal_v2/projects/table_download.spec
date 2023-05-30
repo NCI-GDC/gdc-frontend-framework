@@ -3,7 +3,7 @@ Date Created   : 05/25/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : JSON, TSV Downloads on the project page
-Test-Case      :
+Test-Case      : PEAR-1290
 
 tags: gdc-data-portal-v2, regression, projects, download
 
@@ -53,6 +53,10 @@ tags: gdc-data-portal-v2, regression, projects, download
 ## Download and Read JSON file
 * Download "JSON Projects Table" from "Projects"
 * Read from "JSON Projects Table from Projects"
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Program          |clear selection      |
 
 ## Validate JSON file contents
   |field_name                                           |
@@ -70,5 +74,3 @@ tags: gdc-data-portal-v2, regression, projects, download
   |program                                              |
   |program.name                                         |
 * Verify that the "JSON Projects Table from Projects" has <field_name> for each object
-
-* Pause "1" seconds

@@ -3,7 +3,7 @@ Date Created   : 05/30/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Create, Save, Delete Cohort on the Project Page
-Test-Case      :
+Test-Case      : PEAR-1291
 
 tags: gdc-data-portal-v2, regression, projects, cohort
 
@@ -41,4 +41,3 @@ tags: gdc-data-portal-v2, regression, projects, cohort
   |filter_name      |action               |
   |-----------------|---------------------|
   |Program          |clear selection      |
-* Pause "1" seconds
