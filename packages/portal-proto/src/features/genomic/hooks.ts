@@ -21,7 +21,11 @@ import {
   useCoreDispatch,
   useCoreSelector,
   usePrevious,
+  type Survival,
   selectMultipleFacetsByDocTypeAndField,
+  selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  useGetSurvivalPlotQuery,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -34,6 +38,9 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
+import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -271,5 +278,79 @@ export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
 
   return (field: string, operation: Operation) => {
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
+  };
+};
+
+export interface GeneAndSSMPanelData {
+  isDemoMode: boolean;
+  genomicFilters: FilterSet;
+  cohortFilters: FilterSet;
+  overwritingDemoFilter: FilterSet;
+  survivalPlotData: Survival;
+  survivalPlotFetching: boolean;
+  survivalPlotReady: boolean;
+}
+
+/*
+ * This hook returns the filters, and survival plot data, and it's loading status for the gene and ssm panel.
+ */
+export const useGeneAndSSMPanelData = (
+  comparativeSurvival: Record<string, string>,
+): GeneAndSSMPanelData => {
+  const isDemoMode = useIsDemoApp();
+  const cohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+  const genomicFilters: FilterSet = useAppSelector((state) =>
+    selectGeneAndSSMFilters(state),
+  );
+  const overwritingDemoFilter = useMemo(
+    () => overwritingDemoFilterMutationFrequency,
+    [],
+  );
+
+  const filters = useMemo(
+    () =>
+      buildCohortGqlOperator(
+        joinFilters(
+          isDemoMode ? overwritingDemoFilter : cohortFilters,
+          genomicFilters,
+        ),
+      ),
+
+    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
+  );
+
+  const memoizedFilters = useMemo(
+    () =>
+      buildGeneHaveAndHaveNotFilters(
+        filters,
+        comparativeSurvival?.symbol,
+        comparativeSurvival?.field,
+      ),
+    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
+  );
+
+  const {
+    data: survivalPlotData,
+    isFetching: survivalPlotFetching,
+    isSuccess: survivalPlotReady,
+  } = useGetSurvivalPlotQuery({
+    filters:
+      comparativeSurvival !== undefined
+        ? memoizedFilters
+        : filters
+        ? [filters]
+        : [],
+  });
+
+  return {
+    isDemoMode,
+    cohortFilters,
+    genomicFilters,
+    overwritingDemoFilter,
+    survivalPlotData,
+    survivalPlotFetching,
+    survivalPlotReady,
   };
 };
