@@ -31,8 +31,14 @@ interface AddToSetModalProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly field: string;
+  readonly sort?: string;
   readonly closeModal: () => void;
-  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly singleCountHook: UseQuery<
+    QueryDefinition<any, any, any, number, string>
+  >;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
   readonly appendSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;
@@ -44,19 +50,21 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
   setType,
   setTypeLabel,
   field,
+  sort,
   closeModal,
+  singleCountHook,
   countHook,
   appendSetHook,
 }: AddToSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
-  const { data: setCount, isSuccess: isSuccessCount } = countHook(
+  const { data: setCount, isSuccess: isSuccessCount } = singleCountHook(
     {
       setId: selectedSets?.[0]?.[0],
     },
     { skip: selectedSets.length === 0 },
   );
-  const { data: countInBoth, isSuccess: isCountBothSuccess } = countHook(
+  const { data: countInBoth, isSuccess: isCountBothSuccess } = singleCountHook(
     {
       setId: selectedSets?.[0]?.[0],
       additionalFilters: buildCohortGqlOperator(filters),
@@ -141,7 +149,9 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       <ModalButtonContainer>
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
-          disabled={selectedSets.length === 0 || nothingToAdd}
+          disabled={
+            selectedSets.length === 0 || nothingToAdd || !isSuccessCount
+          }
           onClick={() => {
             appendToSet({
               setId: selectedSets[0][0],
@@ -169,6 +179,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
                 op: "and",
               },
               size: SET_COUNT_LIMIT - setCount,
+              score: sort,
             });
           }}
         >

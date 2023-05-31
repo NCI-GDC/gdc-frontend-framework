@@ -55,6 +55,7 @@ import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
 import ImportCohortModal from "./Modals/ImportCohortModal";
+import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -229,7 +230,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     ...cohorts
       .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
       .map((x) => {
-        return { value: x.id, label: x.name };
+        return {
+          value: x.id,
+          label: x.name,
+          modified: x.modified,
+        };
       }),
   ];
 
@@ -505,22 +510,26 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 onChange={(x) => {
                   onSelectionChanged(x);
                 }}
+                itemComponent={CustomCohortSelectItem}
                 classNames={{
                   root: "border-secondary-darkest w-80 p-0 pt-5",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
-                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter",
+                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
                 }}
                 aria-label="Select cohort"
                 data-testid="switchButton"
                 rightSection={
-                  <DownArrowIcon size={20} className="text-primary" />
+                  <div className="flex gap-1 items-center">
+                    {cohortModified && <UnsavedIcon />}
+                    <DownArrowIcon size={20} className="text-primary" />
+                  </div>
                 }
-                rightSectionWidth={30}
+                rightSectionWidth={cohortModified ? 45 : 30}
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />
               <div
-                className={`ml-auto text-heading text-sm font-semibold pt-0.75 text-primary-contrast ${
+                className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
                   cohortModified ? "visible" : "invisible"
                 }`}
               >

@@ -5,7 +5,7 @@ export const modifySetSlice = graphqlAPISlice
   .injectEndpoints({
     endpoints: (builder) => ({
       appendToGeneSet: builder.mutation({
-        query: ({ setId, filters, size }) => ({
+        query: ({ setId, filters, size, score }) => ({
           graphQLQuery: `
         mutation mutationsAppendExploreGeneSetMutation(
           $input: AppendSetInput
@@ -27,6 +27,7 @@ export const modifySetSlice = graphqlAPISlice
               set_id: `set_id:${setId}`,
               filters,
               size,
+              score,
             },
           },
         }),
@@ -37,7 +38,7 @@ export const modifySetSlice = graphqlAPISlice
         ],
       }),
       appendToSsmSet: builder.mutation({
-        query: ({ setId, filters, size }) => ({
+        query: ({ setId, filters, size, score }) => ({
           graphQLQuery: `mutation mutationsAppendExploreSsmSetMutation(
           $input: AppendSetInput
         ) {
@@ -58,6 +59,7 @@ export const modifySetSlice = graphqlAPISlice
               set_id: `set_id:${setId}`,
               filters,
               size,
+              score,
             },
           },
         }),
