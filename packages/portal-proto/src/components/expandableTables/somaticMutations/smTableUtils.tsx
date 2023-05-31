@@ -221,7 +221,7 @@ export const ssmsCreateTableColumn = ({
                   }
                   tooltip={
                     isConsequenceTable
-                      ? null
+                      ? undefined
                       : `Genomic DNA Change, shown as
                    {chromosome}:g{start}{ref}>{tumor}`
                   }
