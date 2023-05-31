@@ -13,7 +13,7 @@ const withTM = require("next-transpile-modules")([
  */
 const basePath = "/v2";
 
-// Fallback if Docker is not run: This retrieves the git info from the git directory by checking what the head is set to then getting that branches hash
+// Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
   try {
     return require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
@@ -67,8 +67,21 @@ module.exports = withTM({
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API: process.env.PROTEINPAINT_API,
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
-    // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git files
+    // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git
     NEXT_PUBLIC_APP_HASH:
       process.env.NEXT_PUBLIC_BUILD_SHORT_SHA || buildHash(),
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)?", // Matches all pages
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+        ],
+      },
+    ];
   },
 });
