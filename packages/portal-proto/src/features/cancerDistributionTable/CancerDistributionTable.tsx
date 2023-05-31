@@ -130,7 +130,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   );
   const columnListOrder = useMemo(() => {
     const columns = [
-      { id: "project", columnName: "Project", visible: true },
+      {
+        id: "project",
+        columnName: "Project",
+        visible: true,
+        disableSortBy: true,
+      },
       {
         id: "disease_type",
         columnName: "Disease Type",
@@ -138,6 +143,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "primary_site",
@@ -146,6 +152,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Primary Site"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "ssm_affected_cases",
@@ -162,9 +169,24 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             </Tooltip>
           </div>
         ),
+        sortingFn: (rowA, rowB) => {
+          if (rowA.ssm_percent < rowB.ssm_percent) {
+            return 1;
+          }
+          if (rowA.ssm_percent > rowB.ssm_percent) {
+            return -1;
+          }
+          return 0;
+        },
         visible: true,
       },
     ];
+    const calculatePercent = (numerator, denominator) => {
+      if (numerator && denominator) {
+        return numerator / denominator;
+      }
+      return 0;
+    };
     return [
       ...columns,
       ...(isGene
@@ -186,6 +208,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               visible: true,
+              disableSortBy: true,
             },
             {
               id: "cnv_losses",
@@ -203,6 +226,33 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (
+                  calculatePercent(
+                    rowA.cnv_losses.props.numerator,
+                    rowA.cnv_losses.props.denominator,
+                  ) <
+                  calculatePercent(
+                    rowB.cnv_losses.props.numerator,
+                    rowB.cnv_losses.props.denominator,
+                  )
+                ) {
+                  return 1;
+                }
+                if (
+                  calculatePercent(
+                    rowA.cnv_losses.props.numerator,
+                    rowA.cnv_losses.props.denominator,
+                  ) >
+                  calculatePercent(
+                    rowB.cnv_losses.props.numerator,
+                    rowB.cnv_losses.props.denominator,
+                  )
+                ) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
             },
             {
@@ -349,13 +399,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const {
     handlePageChange,
     handlePageSizeChange,
+    handleSortByChange,
     page,
     pages,
     size,
     from,
     total,
     displayedData,
-  } = useStandardPagination(formattedData);
+  } = useStandardPagination(formattedData, columnListOrder);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -365,6 +416,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
         break;
+      case "sortBy":
+        handleSortByChange(obj.sortBy);
+        break;
     }
   };
 
@@ -372,6 +426,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     <VerticalTable
       tableData={displayedData}
       columns={columnListOrder}
+      columnSorting={"manual"}
       selectableRow={false}
       showControls={false}
       additionalControls={
@@ -466,6 +521,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           : "uninitialized"
       }
       handleChange={handleChange}
+      initialSort={[
+        {
+          id: "ssm_affected_cases",
+          desc: false,
+        },
+      ]}
     />
   );
 };
