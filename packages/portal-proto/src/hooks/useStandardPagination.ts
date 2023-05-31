@@ -70,37 +70,37 @@ const useStandardPagination = (
       activeSort.forEach((obj) => {
         // check if special instructions
         if (columnSortingFns[obj.id]) {
-          console.log("custom sort", obj.id);
           // sort by sortingFn
           tempData.sort(columnSortingFns[obj.id]);
           if (obj.desc) {
             tempData.reverse();
           }
-          // check if object
-        } else if (typeof tempData[0][obj.id] === "object") {
-          // check if array
-          if (Array.isArray(tempData[0][obj.id])) {
-            //if array sort by length
-            //TODO add this
-          } else {
-            // object needs sortingFn
-            console.error(
-              `cannot sort by ${obj.id} no sortingFn given`,
-              tempData[0],
-            );
-          }
         } else {
-          //TODO fix error when sorting numbers
-          tempData.sort((a, b) => {
-            // sort strings and numbers
-            if (a[obj.id] < b[obj.id]) {
-              return obj.desc ? -1 : 1;
-            }
-            if (a[obj.id] > b[obj.id]) {
-              return obj.desc ? 1 : -1;
-            }
-            return 0;
-          });
+          switch (typeof tempData[0][obj.id]) {
+            case "number":
+            case "string":
+              tempData.sort((a, b) => {
+                // sort strings and numbers
+                if (a[obj.id] < b[obj.id]) {
+                  return obj.desc ? -1 : 1;
+                }
+                if (a[obj.id] > b[obj.id]) {
+                  return obj.desc ? 1 : -1;
+                }
+                return 0;
+              });
+              break;
+            case "object":
+              // check if array
+              if (Array.isArray(tempData[0][obj.id])) {
+                //if array sort by length
+                //TODO add this
+                break;
+              }
+            // fallsthrough non array object needs sortingFn
+            default:
+              console.error(`cannot sort by ${obj.id} no sortingFn given`);
+          }
         }
       });
     }
