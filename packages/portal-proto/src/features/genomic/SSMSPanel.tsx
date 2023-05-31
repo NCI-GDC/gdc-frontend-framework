@@ -48,7 +48,7 @@ export const SSMSPanel = ({
   } = useGeneAndSSMPanelData(comparativeSurvival);
 
   /**
-   * Get genes in cohort
+   * Get the mutations in cohort
    */
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
