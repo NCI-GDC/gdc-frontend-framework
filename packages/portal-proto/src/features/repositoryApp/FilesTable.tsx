@@ -35,6 +35,7 @@ import {
 } from "@/features/repositoryApp/hooks";
 import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
+import { useViewportSize } from "@mantine/hooks";
 
 const FilesTables: React.FC = () => {
   //This if for hanadling pagination changes
@@ -48,6 +49,7 @@ const FilesTables: React.FC = () => {
   const [sortBy, setSortBy] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
+  const { width } = useViewportSize();
 
   const coreDispatch = useCoreDispatch();
   const {
@@ -361,69 +363,81 @@ const FilesTables: React.FC = () => {
     totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
+  const Stats = () => (
+    <div className="flex gap-1 text-xl items-center">
+      <div>
+        Total of{" "}
+        <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+        {tempPagination?.total > 1 || tempPagination?.total === 0
+          ? "Files"
+          : "File"}
+      </div>
+      <div>
+        <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+        <strong className="mr-1">{totalCaseCount}</strong>
+        {fileSizeSliceData?.data?.total_case_count > 1 ||
+        fileSizeSliceData?.data?.total_case_count === 0
+          ? "Cases"
+          : "Case"}
+      </div>
+      <div>
+        <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+        {totalFileSize}
+      </div>
+    </div>
+  );
+
   return (
-    <VerticalTable
-      additionalControls={
-        <div className="flex gap-2 items-center">
-          <div className="flex gap-2">
-            <FunctionButton
-              onClick={handleDownloadJSON}
-              data-testid="button-json-files-table"
-            >
-              JSON
-            </FunctionButton>
-            <FunctionButton
-              onClick={handleDownloadTSV}
-              data-testid="button-tsv-files-table"
-            >
-              TSV
-            </FunctionButton>
-          </div>
-          <div className="flex gap-1 text-xl">
-            <div>
-              Total of{" "}
-              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 || tempPagination?.total === 0
-                ? "Files"
-                : "File"}
-            </div>
-            <div>
-              <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
-              <strong className="mr-1">{totalCaseCount}</strong>
-              {fileSizeSliceData?.data?.total_case_count > 1 ||
-              fileSizeSliceData?.data?.total_case_count === 0
-                ? "Cases"
-                : "Case"}
-            </div>
-            <div>
-              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              {totalFileSize}
-            </div>
-          </div>
+    <>
+      {width <= 1370 && (
+        <div className="flex justify-end">
+          <Stats />
         </div>
-      }
-      tableData={formattedTableData}
-      columns={columns}
-      columnSorting={"manual"}
-      selectableRow={false}
-      pagination={{
-        ...tempPagination,
-        label: "files",
-      }}
-      status={
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
-      handleChange={handleChange}
-      search={{
-        enabled: true,
-      }}
-    />
+      )}
+
+      <VerticalTable
+        additionalControls={
+          <div className="flex gap-2 items-center justify-between mr-2">
+            <div className="flex gap-2">
+              <FunctionButton
+                onClick={handleDownloadJSON}
+                data-testid="button-json-files-table"
+              >
+                JSON
+              </FunctionButton>
+              <FunctionButton
+                onClick={handleDownloadTSV}
+                data-testid="button-tsv-files-table"
+              >
+                TSV
+              </FunctionButton>
+            </div>
+            {width > 1370 && <Stats />}
+          </div>
+        }
+        tableData={formattedTableData}
+        columns={columns}
+        columnSorting={"manual"}
+        selectableRow={false}
+        pagination={{
+          ...tempPagination,
+          label: "files",
+        }}
+        status={
+          isFetching
+            ? "pending"
+            : isSuccess
+            ? "fulfilled"
+            : isError
+            ? "rejected"
+            : "uninitialized"
+        }
+        handleChange={handleChange}
+        search={{
+          enabled: true,
+        }}
+      />
+    </>
   );
 };
 
