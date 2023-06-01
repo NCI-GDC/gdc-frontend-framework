@@ -336,5 +336,5 @@ def quick_search_and_click(text: str):
     APP.home_page.quick_search_and_click(text)
 
 @step("Name the cohort <cohort_name>")
-def name_cohort_and_click_button(cohort_name: str):
+def name_cohort(cohort_name: str):
     APP.home_page.send_text_into_search_bar(cohort_name, "Input field for new cohort name")

@@ -18,7 +18,16 @@ def click_button_on_cohort_bar(button_name: str):
     time.sleep(0.5)
 
 @step("<button_name> <message_text> and <action> in the Cohort Bar section")
-def name_cohort_and_click_button(button_name: str, message_text: str, action: str):
+def click_named_button_wait_for_message_text(button_name: str, message_text: str, action: str):
+    """
+    name_cohort_and_click_button clicks a button by its displayed name in a cohort modal,
+    waits for text to appear in a temporary message, and either clicks the 'x' to
+    remove the temp message or let is persist
+
+    :param button_name: The name of the button to be clicked
+    :param message_text: The text in the temporary message that we are waiting for
+    :param action: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
+    """
     APP.home_page.click_button_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_temporary_message(message_text, action)
     assert is_cohort_message_present, f"The text '{message_text}' is NOT present"
@@ -27,7 +36,7 @@ def name_cohort_and_click_button(button_name: str, message_text: str, action: st
     time.sleep(1)
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
-def name_cohort_and_click_button(cohort_name: str):
+def name_cohort(cohort_name: str):
     APP.home_page.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
 
 @step("<button_name> should be disabled in the Cohort Bar")
