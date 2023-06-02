@@ -71,6 +71,14 @@ interface CellProps {
   row: Row;
 }
 
+interface CellPropsMath {
+  value: {
+    numerator: number;
+    denominator: number;
+    percent: number;
+  };
+}
+
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
 > = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
@@ -128,6 +136,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       project,
     ]),
   );
+  const calculatePercent = (numerator, denominator) => {
+    if (numerator && denominator) {
+      return numerator / denominator;
+    }
+    return 0;
+  };
   const columnListOrder = useMemo(() => {
     const columns = [
       {
@@ -181,12 +195,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         visible: true,
       },
     ];
-    const calculatePercent = (numerator, denominator) => {
-      if (numerator && denominator) {
-        return numerator / denominator;
-      }
-      return 0;
-    };
     return [
       ...columns,
       ...(isGene
@@ -227,33 +235,23 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               sortingFn: (rowA, rowB) => {
-                if (
-                  calculatePercent(
-                    rowA.cnv_losses.props.numerator,
-                    rowA.cnv_losses.props.denominator,
-                  ) <
-                  calculatePercent(
-                    rowB.cnv_losses.props.numerator,
-                    rowB.cnv_losses.props.denominator,
-                  )
-                ) {
+                if (rowA.cnv_losses.percent < rowB.cnv_losses.percent) {
                   return 1;
                 }
-                if (
-                  calculatePercent(
-                    rowA.cnv_losses.props.numerator,
-                    rowA.cnv_losses.props.denominator,
-                  ) >
-                  calculatePercent(
-                    rowB.cnv_losses.props.numerator,
-                    rowB.cnv_losses.props.denominator,
-                  )
-                ) {
+                if (rowA.cnv_losses.percent > rowB.cnv_losses.percent) {
                   return -1;
                 }
                 return 0;
               },
               visible: true,
+              Cell: ({ value }: CellPropsMath) => {
+                return (
+                  <NumeratorDenominator
+                    numerator={value.numerator}
+                    denominator={value.denominator}
+                  />
+                );
+              },
             },
             {
               id: "num_mutations",
@@ -270,6 +268,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               visible: true,
+              Cell: ({ value }: CellProps) => {
+                return <>{value.toLocaleString()}</>;
+              },
             },
           ]
         : []),
@@ -308,16 +309,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                           denominator={data.cnvTotal[d.key] || 0}
                         />
                       ),
-                      cnv_losses: (
-                        <NumeratorDenominator
-                          numerator={data.cnvLoss[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
+                      cnv_losses: {
+                        numerator: data.cnvLoss[d.key] || 0,
+                        denominator: data.cnvTotal[d.key] || 0,
+                        percent: calculatePercent(
+                          data.cnvLoss[d.key] || 0,
+                          data.cnvTotal[d.key] || 0,
+                        ),
+                      },
                       num_mutations:
-                        (data.ssmFiltered[d.key] || 0) === 0
-                          ? 0
-                          : d.doc_count.toLocaleString(),
+                        (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
                     }
                   : {}),
               };
