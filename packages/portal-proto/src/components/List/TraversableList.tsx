@@ -118,7 +118,7 @@ export const TraversableList = <T extends unknown>({
         <ul
           className="bg-base-lightest border-r-10 border-1 border-base absolute right-0 top-10 w-[512px] sm:left-0 md:left-0 lg:left-auto"
           tabIndex={0}
-          data-testid="list"
+          data-testid="quick-search-list"
         >
           {data?.map((item, idx) => {
             return (

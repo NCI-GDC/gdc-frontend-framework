@@ -80,12 +80,14 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               defaultValue={"counts"}
             >
               <Radio
+                data-testid="number-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="counts"
                 label="# of Cases"
                 color="nci-blue"
               />
               <Radio
+                data-testid="percent-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="percent"
                 label="% of Cases"
@@ -101,6 +103,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   position={"left"}
                 >
                   <ActionIcon
+                    data-testid="histogram-download"
                     variant="outline"
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
