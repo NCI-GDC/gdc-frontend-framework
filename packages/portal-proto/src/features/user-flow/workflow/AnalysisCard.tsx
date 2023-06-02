@@ -37,7 +37,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
 
   return (
     <Card
-      data-testid={`${entry.name}`}
+      data-testid={`tool-${entry.name}`}
       shadow="sm"
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
@@ -52,7 +52,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.icon}
         <div className="flex flex-col">
           <Button
-            data-testid="tool-play-button"
+            data-testid={`${entry.name}`}
             className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${
               inactive ? "opacity-50" : ""
             }`}
@@ -68,7 +68,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           </Button>
           {entry.hasDemo ? (
             <Button
-              data-testid="tool-demo-play-button"
+              data-testid={`${entry.name} Demo`}
               onClick={() =>
                 onClick(
                   {
