@@ -10,7 +10,7 @@ import { SortingRule } from "react-table";
  */
 const useStandardPagination = (
   fullData: Record<string, any>[],
-  columnListOrder: Columns[],
+  columnListOrder?: Columns[],
 ): PaginationOptions & {
   displayedData: Record<string, any>[];
   /**
@@ -46,6 +46,9 @@ const useStandardPagination = (
   };
 
   useEffect(() => {
+    if (!columnListOrder) {
+      return;
+    }
     // looks through columnListOrder for columns that have sortingFn and add them to an easily retrievable object
     setcolumnSortingFns(
       columnListOrder.reduce((output, column) => {
