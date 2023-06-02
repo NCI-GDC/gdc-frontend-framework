@@ -40,9 +40,11 @@ def navigate_to_page_in_page(target, source, target_type):
             "app": APP.home_page.navigate_to_app
         },
         "Repository": {
-            "app": APP.repository_page.click_button,
+            "app": APP.repository_page.click_button
         },
-        "Analysis": {"app": APP.analysis_center_page.navigate_to_tool},
+        "Analysis": {
+            "app": APP.analysis_center_page.navigate_to_app
+        },
         "Cohort Builder": {
             "app": APP.cohort_builder_page.click_button
         }

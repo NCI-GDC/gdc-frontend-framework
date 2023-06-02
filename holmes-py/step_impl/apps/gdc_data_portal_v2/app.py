@@ -2,12 +2,8 @@ import os
 
 from ..gdc_data_portal_v2.pages.header_section import HeaderSection
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import (
-    AnalysisCenterPage,
-)
-from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
-    ClinicalDataAnalysisPage,
-)
+from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import AnalysisCenterPage
+from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import ClinicalDataAnalysisPage
 from step_impl.apps.gdc_data_portal_v2.pages.warning_modal import WarningModal
 from ..gdc_data_portal_v2.pages.repository_page import RepositoryPage
 from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage

@@ -23,3 +23,7 @@ def expand_clinical_property_sections():
 def check_clinical_properties_in_pannel(table):
     is_property_table_valid = APP.clinical_data_analysis.validate_property_table(table)
     assert is_property_table_valid == True, is_property_table_valid
+
+@step("test click")
+def test():
+    APP.clinical_data_analysis.test_click()

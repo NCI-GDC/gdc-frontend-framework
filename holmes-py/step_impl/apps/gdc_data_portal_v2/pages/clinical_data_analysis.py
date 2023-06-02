@@ -1,7 +1,6 @@
 from playwright.sync_api import Page
 
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePageLocators
+from ....base.base_page import BasePage
 
 
 class ClinicalDataAnalysisLocators:
@@ -15,10 +14,11 @@ class ClinicalDataAnalysisLocators:
         lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
     )
     PROPERTY_ROW = lambda property: f"label:text('{property}')"
+    test_locator = 'label[for="switch-demographic.vital_status"] >> nth=1'
 
 
-class ClinicalDataAnalysisPage:
-    def __init__(self, driver: Page, url):
+class ClinicalDataAnalysisPage(BasePage):
+    def __init__(self, driver: Page, url: str) -> None:
         self.URL = "{}/analysis_page?app=CDave".format(url)
         self.driver = driver  # driver is PW page
 
@@ -74,3 +74,7 @@ class ClinicalDataAnalysisPage:
                 return f"The table '{group}' is missing the property '{property}'"
         # If we find all values in the table, it passes the test
         return True
+
+    def test_click(self):
+        locator = ClinicalDataAnalysisLocators.test_locator
+        self.driver.click(locator)
