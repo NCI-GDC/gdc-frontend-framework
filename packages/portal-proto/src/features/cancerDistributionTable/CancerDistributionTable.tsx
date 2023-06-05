@@ -215,8 +215,24 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (rowA.cnv_gains.percent < rowB.cnv_gains.percent) {
+                  return 1;
+                }
+                if (rowA.cnv_gains.percent > rowB.cnv_gains.percent) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
-              disableSortBy: true,
+              Cell: ({ value }: CellPropsMath) => {
+                return (
+                  <NumeratorDenominator
+                    numerator={value.numerator}
+                    denominator={value.denominator}
+                  />
+                );
+              },
             },
             {
               id: "cnv_losses",
@@ -303,12 +319,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: (
-                        <NumeratorDenominator
-                          numerator={data.cnvGain[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
+                      cnv_gains: {
+                        numerator: data.cnvGain[d.key] || 0,
+                        denominator: data.cnvTotal[d.key] || 0,
+                        percent: calculatePercent(
+                          data.cnvGain[d.key] || 0,
+                          data.cnvTotal[d.key] || 0,
+                        ),
+                      },
                       cnv_losses: {
                         numerator: data.cnvLoss[d.key] || 0,
                         denominator: data.cnvTotal[d.key] || 0,
