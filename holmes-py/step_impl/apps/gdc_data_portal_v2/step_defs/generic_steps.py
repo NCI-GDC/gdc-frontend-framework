@@ -277,7 +277,7 @@ def click_radio_buttons(table):
 @step("Select create or save in cohort modal")
 def click_create_or_save_in_cohort_modal():
     """Clicks 'Create' or 'Save' in cohort modal"""
-    APP.home_page.click_create_or_save_button_in_cohort_modal()
+    APP.shared.click_create_or_save_button_in_cohort_modal()
 
 @step("Undo Action")
 def click_undo_in_message():
@@ -287,7 +287,7 @@ def click_undo_in_message():
 @step("Set this as your current cohort")
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
-    APP.home_page.click_set_as_current_cohort_in_message()
+    APP.shared.click_set_as_current_cohort_in_message()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that
@@ -296,17 +296,17 @@ def click_undo_in_message():
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
-        APP.repository_page.make_selection_within_filter_group(v[0], v[1])
+        APP.shared.make_selection_within_filter_group(v[0], v[1])
 
 @step("Perform the following actions on a filter card <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
-        APP.repository_page.perform_action_within_filter_card(v[0], v[1])
+        APP.shared.perform_action_within_filter_card(v[0], v[1])
 
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
-        APP.repository_page.click_show_more_less_within_filter_card(v[0], v[1])
+        APP.shared.click_show_more_less_within_filter_card(v[0], v[1])
 
 
 @step("Select value from table by row and column <table>")
