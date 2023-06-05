@@ -1,5 +1,5 @@
 # Clinical Properties
-Date Created    : 10/14/2022
+Date Created   : 10/14/2022
 Version			: 1.1
 Owner		    : GDC QA
 Description		: Test clinical data properties section

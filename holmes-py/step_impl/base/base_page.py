@@ -29,6 +29,7 @@ class GenericLocators:
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="count-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
@@ -80,6 +81,11 @@ class BasePage:
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
+
+    def get_filter_selection_count(self,filter_group_name,selection):
+        """Returns the count of how many items are associated with that filter in the current cohort"""
+        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
         return self.get_text(locator)
 
     def wait_until_locator_is_visible(self, locator):
