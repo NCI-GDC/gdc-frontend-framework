@@ -60,6 +60,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
+  const hideYTicks = continuous && barChartData.every((d) => d.yCount === 0);
 
   return (
     <>
@@ -124,6 +125,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               width={900}
               height={500}
               hideXTicks={hideXTicks}
+              hideYTicks={hideYTicks}
               xLabel={
                 hideXTicks
                   ? "Mouse over the histogram to see x-axis labels"

@@ -4,6 +4,7 @@ import {
   usePrevious,
   useGetSssmTableDataQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
   useCreateSsmsSetFromFiltersMutation,
@@ -282,10 +283,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              singleCountHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               appendSetHook={useAppendToSsmSetMutation}
               closeModal={() => setShowAddModal(false)}
               field={"ssms.ssm_id"}
+              sort="occurrence.case.project.project_id"
             />
           )}
           {showRemoveModal && (
@@ -298,7 +301,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               closeModal={() => setShowRemoveModal(false)}
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />

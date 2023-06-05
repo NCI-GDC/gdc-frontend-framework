@@ -7,6 +7,7 @@ import {
   useCoreSelector,
   selectSetsByType,
   useGeneSetCountQuery,
+  useGeneSetCountsQuery,
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
@@ -222,10 +223,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
           setType={"genes"}
           setTypeLabel="gene"
-          countHook={useGeneSetCountQuery}
+          singleCountHook={useGeneSetCountQuery}
+          countHook={useGeneSetCountsQuery}
           appendSetHook={useAppendToGeneSetMutation}
           closeModal={() => setShowAddModal(false)}
           field={"genes.gene_id"}
+          sort="case.project.project_id"
         />
       )}
       {showRemoveModal && (
@@ -238,7 +241,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
           setType={"genes"}
           setTypeLabel="gene"
-          countHook={useGeneSetCountQuery}
+          countHook={useGeneSetCountsQuery}
           closeModal={() => setShowRemoveModal(false)}
           removeFromSetHook={useRemoveFromGeneSetMutation}
         />

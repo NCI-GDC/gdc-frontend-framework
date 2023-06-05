@@ -5,9 +5,12 @@ class GenericLocators:
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
+    SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
+
+    CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -196,6 +199,16 @@ class BasePage:
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def click_set_as_current_cohort_in_message(self):
+        """Clicks 'Set this as your current cohort' in a modal message"""
+        locator = GenericLocators.SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def click_create_or_save_button_in_cohort_modal(self):
+        """Clicks 'Create' or 'Save' in cohort modal"""
+        locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
         self.click(locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):

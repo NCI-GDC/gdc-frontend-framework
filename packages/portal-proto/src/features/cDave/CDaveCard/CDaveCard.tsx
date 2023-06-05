@@ -130,21 +130,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {continuous ? (
-        noData ? (
-          <div className="h-[32.1rem] w-full flex flex-col justify-start">
-            <p className="mx-auto my-2">No data for this property</p>
-          </div>
-        ) : (
-          <ContinuousData
-            initialData={(data as Stats)?.stats}
-            field={field}
-            fieldName={fieldName}
-            chartType={chartType}
-            noData={noData}
-            cohortFilters={cohortFilters}
-          />
-        )
+      {noData ? (
+        <div className="h-[32.1rem] w-full flex flex-col justify-start">
+          <p className="mx-auto my-2">No data for this property</p>
+        </div>
+      ) : continuous ? (
+        <ContinuousData
+          initialData={(data as Stats)?.stats}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+          noData={noData}
+          cohortFilters={cohortFilters}
+        />
       ) : (
         <CategoricalData
           initialData={(data as Buckets)?.buckets}

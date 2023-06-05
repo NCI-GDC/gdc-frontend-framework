@@ -15,6 +15,7 @@ from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage
 from ..gdc_data_portal_v2.pages.file_summary_page import FileSummaryPage
 from ..gdc_data_portal_v2.pages.case_summary_page import CaseSummaryPage
 from ..gdc_data_portal_v2.pages.cohort_bar import CohortBar
+from ..gdc_data_portal_v2.pages.projects_page import ProjectsPage
 
 
 class GDCDataPortalV2App:
@@ -42,3 +43,4 @@ class GDCDataPortalV2App:
         self.file_summary_page = FileSummaryPage(self.driver, self.url)
         self.case_summary_page = CaseSummaryPage(self.driver, self.url)
         self.cohort_bar = CohortBar(self.driver, self.url)
+        self.projects_page = ProjectsPage(self.driver, self.url)
