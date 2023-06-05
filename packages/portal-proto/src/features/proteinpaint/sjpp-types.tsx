@@ -23,9 +23,9 @@ export function getFilters(arg: SelectSamplesCallBackArg): FilterSet {
   return {
     mode: "and",
     root: {
-      "occurrence.case.case_id": {
+      "cases.case_id": {
         operator: "includes",
-        field: "occurrence.case.case_id",
+        field: "cases.case_id",
         operands: ids,
       },
     },
