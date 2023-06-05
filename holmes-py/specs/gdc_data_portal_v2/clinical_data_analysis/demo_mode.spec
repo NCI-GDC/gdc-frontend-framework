@@ -13,4 +13,4 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 
 ## Test clinical data properties section
 * Expand clinical property sections
-* Check clinical properties
+* Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page

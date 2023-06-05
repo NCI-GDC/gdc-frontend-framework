@@ -1,7 +1,7 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    TEXT_IDENT = lambda text: f'text="{text}"'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
@@ -126,7 +126,7 @@ class BasePage:
         return True
 
     def is_text_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_visible(locator)
         except:
@@ -134,7 +134,7 @@ class BasePage:
         return True
 
     def is_text_not_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_hidden(locator)
         except:
