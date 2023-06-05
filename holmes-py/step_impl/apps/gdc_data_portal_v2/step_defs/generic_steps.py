@@ -188,95 +188,95 @@ def verify_file_has_expected_field_names(file_type, field_name):
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
-        is_filter_visible = APP.base_page.is_filter_card_present(v[0])
+        is_filter_visible = APP.shared.is_filter_card_present(v[0])
         assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
 
 @step("Verify the page is showing <number_of_items_text>")
 def verify_showing_item_text(number_of_items_text):
     """Verifies the 'Showing' text at the bottom of tables has the correct text"""
-    showing_items_text = APP.base_page.get_showing_count_text()
+    showing_items_text = APP.shared.get_showing_count_text()
     assert f"{showing_items_text}" in showing_items_text, f"The page is NOT showing expected number of items - {number_of_items_text}"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
-    is_data_testid_visible = APP.base_page.wait_for_data_testid_to_be_visible(data_testid)
+    is_data_testid_visible = APP.shared.wait_for_data_testid_to_be_visible(data_testid)
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if expected text is on the page"""
-    is_text_present = APP.base_page.is_text_present(expected_text)
+    is_text_present = APP.shared.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if text is no longer on the page as expected"""
-    is_text_not_present = APP.base_page.is_text_not_present(expected_text)
+    is_text_not_present = APP.shared.is_text_not_present(expected_text)
     assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
 
 @step("Is modal with text <expected_text> present on the page and <action>")
 def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
-    is_text_present = APP.base_page.wait_for_text_in_temporary_message(expected_text,action)
+    is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
     """Checks the cohort bar case count"""
-    is_case_count_present = APP.base_page.is_cohort_bar_case_count_present(case_count)
+    is_case_count_present = APP.shared.is_cohort_bar_case_count_present(case_count)
     assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
 
 @step("The cart should have <correct_file_count> files")
 def is_cart_count_correct(correct_file_count: str):
     """Checks the cart file count in the upper-right corner of the data portal"""
-    is_cart_count_correct = APP.base_page.is_cart_count_correct(correct_file_count)
+    is_cart_count_correct = APP.shared.is_cart_count_correct(correct_file_count)
     assert is_cart_count_correct, f"The cart count is NOT displaying '{correct_file_count}'"
 
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
-    is_data_testid_present = APP.base_page.is_data_testid_present(data_testid)
+    is_data_testid_present = APP.shared.is_data_testid_present(data_testid)
     assert is_data_testid_present == False, f"The data-testid '{data_testid}' IS present"
 
 @step("Is checkbox checked <table>")
 def is_checkbox_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_enabeled = APP.base_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_enabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
         time.sleep(0.1)
 
 @step("Is checkbox not checked <table>")
 def is_checkbox_not_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_disabeled = APP.base_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_disabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
 @step("Select <data_testid> on page")
 def click_data_testid(data_testid: str):
     """Clicks specified data-testid"""
-    APP.base_page.click_data_testid(data_testid)
+    APP.shared.click_data_testid(data_testid)
 
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):
     """Clicks specified data-testid button"""
-    APP.base_page.click_button_data_testid(data_testid)
+    APP.shared.click_button_data_testid(data_testid)
 
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
-    APP.base_page.click_button_with_displayed_text_name(button_text_name)
+    APP.shared.click_button_with_displayed_text_name(button_text_name)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
-        APP.base_page.click_radio_button(v[0])
+        APP.shared.click_radio_button(v[0])
         time.sleep(0.1)
 
 @step("Undo Action")
 def click_undo_in_message():
     """Clicks 'undo' in a modal message"""
-    APP.base_page.click_undo_in_message()
+    APP.shared.click_undo_in_message()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that
@@ -305,12 +305,12 @@ def select_table_value_by_row_column(table):
     Row and Column indexing begins at '1'
     """
     for k, v in enumerate(table):
-        APP.base_page.select_table_by_row_column(v[0],v[1])
+        APP.shared.select_table_by_row_column(v[0],v[1])
 
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
-    APP.base_page.send_text_into_search_bar(text, aria_label)
+    APP.shared.send_text_into_search_bar(text, aria_label)
 
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):
@@ -318,4 +318,4 @@ def quick_search_and_click(text: str):
     Sends text into the quick search bar in the upper-right corner of the data portal.
     Then clicks the result in the search result area. Best used with a UUID.
     """
-    APP.base_page.quick_search_and_click(text)
+    APP.shared.quick_search_and_click(text)
