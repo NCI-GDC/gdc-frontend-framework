@@ -58,7 +58,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     <Grid className="w-full m-0">
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <div
-          data-testid="survival-plot"
+          data-testid="overall-survival-plot"
           className="h-full shadow-md rounded-lg p-2"
         >
           <h2 className="font-heading font-medium">Overall Survival</h2>
