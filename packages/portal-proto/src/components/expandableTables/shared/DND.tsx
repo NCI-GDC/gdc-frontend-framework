@@ -34,6 +34,7 @@ const DND: React.FC<DNDProps> = ({
           setShowColumnMenu(!showColumnMenu);
           setColumnSearchTerm("");
         }}
+        aria-label="show table menu"
       >
         <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
           {!showColumnMenu ? <BsList /> : <BsX size={17} />}
@@ -55,6 +56,7 @@ const DND: React.FC<DNDProps> = ({
                   type="search"
                   value={columnSearchTerm}
                   onChange={(e) => setColumnSearchTerm(e.target.value)}
+                  aria-label="search table columns"
                 />
                 {columnSearchTerm.length > 0 && (
                   <button onClick={() => setColumnSearchTerm("")}>

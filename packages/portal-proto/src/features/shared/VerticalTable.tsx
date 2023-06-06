@@ -616,6 +616,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 <div className="relative" ref={ref}>
                   <button
                     data-testid="column-selector-box"
+                    aria-label="show table menu"
                     onClick={() => {
                       setShowColumnMenu(!showColumnMenu);
                     }}
