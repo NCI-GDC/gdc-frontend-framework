@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Navigate to "Clinical Data Analysis Demo" from "Analysis" "app"
 
 ## Test clinical data properties section
+* Wait for "Overall Survival Plot" to be present on the page
 * Expand clinical property sections
 * Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page
 * Is text "Not enough survival data" not present on the page
@@ -30,9 +31,9 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |demographic.ethnicity                            |
   |demographic.year_of_birth                        |
   |diagnoses.age_at_diagnosis                       |
-  |diagnoses.ajcc_clinical_stage             |
+  |diagnoses.ajcc_clinical_stage                    |
   |diagnoses.treatments.days_to_treatment_start     |
-  |exposures.alcohol_history                 |
+  |exposures.alcohol_history                        |
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|
@@ -42,7 +43,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |Year Of Birth            |
   |AJCC Clinical Stage      |
   |Days To Treatment Start  |
-  |Primary Diagnosis        |
+  |Alcohol History          |
 * Validate these analysis cards are not present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|
