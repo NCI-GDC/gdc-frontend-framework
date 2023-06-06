@@ -73,7 +73,13 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   }, []);
 
   const counts = data.caseCounts;
-  const loading = isFetching || isUninitialized;
+  const loading =
+    isFetching ||
+    isUninitialized ||
+    primarySetResponse.isUninitialized ||
+    primarySetResponse.isLoading ||
+    comparisonSetResponse.isUninitialized ||
+    comparisonSetResponse.isLoading;
   const caseSetIds =
     primarySetResponse.isSuccess && comparisonSetResponse.isSuccess
       ? [primarySetResponse.data, comparisonSetResponse.data]
