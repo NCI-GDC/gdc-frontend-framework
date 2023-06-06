@@ -143,8 +143,6 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
-  console.log(headerHeight);
-
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header
@@ -157,11 +155,10 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <div
-        className={`${
-          isContextBarSticky
-            ? `sticky top-[${Math.round(headerHeight)}px] z-[200]`
-            : ""
-        }`}
+        className={`${isContextBarSticky ? `sticky z-[200]` : ""}`}
+        style={{
+          top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`,
+        }}
       >
         {ContextBar ? ContextBar : null}
       </div>
