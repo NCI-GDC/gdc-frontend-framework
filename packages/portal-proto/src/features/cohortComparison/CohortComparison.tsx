@@ -57,6 +57,8 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     cohorts: cohorts,
   });
 
+  const counts = data?.caseCounts || [];
+
   const [createPrimaryCaseSet, primarySetResponse] =
     useCreateCaseSetFromFiltersMutation();
   const [createComparisonCaseSet, comparisonSetResponse] =
@@ -72,7 +74,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const counts = data.caseCounts;
   const loading =
     isFetching ||
     isUninitialized ||
