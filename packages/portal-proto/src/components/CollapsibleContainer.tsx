@@ -82,7 +82,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
               </Button>
             </span>
           </Tooltip>
-          {ExtraControl && <div>{ExtraControl}</div>}
+          {ExtraControl && <>{ExtraControl}</>}
         </div>
       </div>
       <Collapse

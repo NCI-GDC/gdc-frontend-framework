@@ -10,7 +10,7 @@ const StickyControl = ({
 }: {
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
-}) => (
+}): JSX.Element => (
   <Tooltip
     label={
       isSticky ? "Unpin Cohort Bar" : "Pin Cohort Bar to top of Analysis Center"
