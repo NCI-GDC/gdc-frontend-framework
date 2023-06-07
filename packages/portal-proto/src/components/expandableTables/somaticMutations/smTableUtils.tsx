@@ -214,9 +214,17 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <div className="text-left">
                 <TableHeader
-                  title={startCase(accessor)}
-                  tooltip={`Genomic DNA Change, shown as
-                   {chromosome}:g{start}{ref}>{tumor}`}
+                  title={
+                    isConsequenceTable
+                      ? "Coding DNA Change"
+                      : startCase(accessor)
+                  }
+                  tooltip={
+                    isConsequenceTable
+                      ? undefined
+                      : `Genomic DNA Change, shown as
+                   {chromosome}:g{start}{ref}>{tumor}`
+                  }
                 />
               </div>
             ),
@@ -391,7 +399,11 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip="Consequences for canonical transcript"
+                tooltip={
+                  isConsequenceTable
+                    ? "SO Term: consequence type"
+                    : "Consequences for canonical transcript"
+                }
               />
             ),
             cell: ({ row }) => {
