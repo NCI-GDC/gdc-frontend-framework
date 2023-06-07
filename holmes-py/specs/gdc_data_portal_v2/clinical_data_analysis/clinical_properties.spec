@@ -1,18 +1,17 @@
 # Clinical Properties
-Date Created    : 10/14/2022
-Version			: 1.0
+Date Created   : 10/14/2022
+Version			: 1.1
 Owner		    : GDC QA
 Description		: Test clinical data properties section
 
-tags: gdc-data-portal-v2, clinical-data-analysis
+tags: gdc-data-portal-v2, clinical-data-analysis, regression
 
-## Test clinical data properties section
-
-tags: cdave, regression, smoke
-
+## Navigate to Clinical Data Analysis
 * On GDC Data Portal V2 app
 * Navigate to "Analysis" from "Header" "section"
-* Navigate to cDAVE app
+* Navigate to "Clinical Data Analysis" from "Analysis" "app"
+
+## Test clinical data properties section
 * Expand clinical property sections
 * Check clinical properties
 

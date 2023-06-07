@@ -214,9 +214,17 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <div className="text-left">
                 <TableHeader
-                  title={startCase(accessor)}
-                  tooltip={`Genomic DNA Change, shown as
-                   {chromosome}:g{start}{ref}>{tumor}`}
+                  title={
+                    isConsequenceTable
+                      ? "Coding DNA Change"
+                      : startCase(accessor)
+                  }
+                  tooltip={
+                    isConsequenceTable
+                      ? undefined
+                      : `Genomic DNA Change, shown as
+                   {chromosome}:g{start}{ref}>{tumor}`
+                  }
                 />
               </div>
             ),
@@ -252,7 +260,7 @@ export const ssmsCreateTableColumn = ({
                       )}
                     </Tooltip>
                   ) : (
-                    <div className="text-lg ml-3">{"--"}</div>
+                    <div className="text-lg ml-3">--</div>
                   )}
                 </div>
               );
@@ -313,7 +321,17 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
-    case "affectedCasesInCohort":
+    case "affectedCasesInCohort": {
+      let tooltip = `# Cases where Mutation is observed in ${
+        projectId ?? "Cohort"
+      }
+        / Cases tested for Simple Somatic Mutations in ${projectId ?? "Cohort"}
+      `;
+
+      if (geneSymbol) {
+        tooltip = `# Cases where Mutation is observed in ${geneSymbol}
+        / # Cases with variants in ${geneSymbol}`;
+      }
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -326,12 +344,7 @@ export const ssmsCreateTableColumn = ({
                    in ${
                      geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
                    }`}
-                tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
-                } /
-                # Cases tested for Simple Somatic Mutations in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
-                }`}
+                tooltip={tooltip}
               />
             ),
             cell: ({ row }) => {
@@ -350,6 +363,7 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
+    }
     case "proteinChange":
       return {
         header: " ",
@@ -385,7 +399,11 @@ export const ssmsCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip="Consequences for canonical transcript"
+                tooltip={
+                  isConsequenceTable
+                    ? "SO Term: consequence type"
+                    : "Consequences for canonical transcript"
+                }
               />
             ),
             cell: ({ row }) => {

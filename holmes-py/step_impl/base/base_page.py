@@ -1,7 +1,7 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    TEXT_IDENT = lambda text: f'text="{text}"'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
@@ -29,6 +29,7 @@ class GenericLocators:
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="count-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
@@ -82,6 +83,11 @@ class BasePage:
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
         return self.get_text(locator)
 
+    def get_filter_selection_count(self,filter_group_name,selection):
+        """Returns the count of how many items are associated with that filter in the current cohort"""
+        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
+        return self.get_text(locator)
+
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
@@ -126,7 +132,7 @@ class BasePage:
         return True
 
     def is_text_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_visible(locator)
         except:
@@ -134,7 +140,7 @@ class BasePage:
         return True
 
     def is_text_not_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_hidden(locator)
         except:
