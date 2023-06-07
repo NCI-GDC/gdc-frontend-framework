@@ -575,7 +575,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const ref = useClickOutside(() => setShowColumnMenu(false));
 
   return (
-    <div>
+    <div className="grow overflow-hidden">
       <div
         className={`flex ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -613,7 +613,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 />
               )}
               {showControls && (
-                <div className="relative" ref={ref}>
+                <div ref={ref}>
                   <button
                     data-testid="column-selector-box"
                     aria-label="show table menu"
@@ -649,7 +649,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           </div>
         )}
       </div>
-      <div className="grow overflow-hidden">
+      <>
         <div className="overflow-y-auto w-full relative">
           <LoadingOverlay visible={showLoading} zIndex={0} />
           <Table columns={headings} data={table} />
@@ -709,7 +709,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             />
           </div>
         )}
-      </div>
+      </>
     </div>
   );
 };
