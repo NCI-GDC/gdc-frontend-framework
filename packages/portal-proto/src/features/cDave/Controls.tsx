@@ -305,7 +305,7 @@ const Controls: React.FC<ControlPanelProps> = ({
         data-testid="cdave-control-panel"
       >
         <Input
-          data-testid="cdave-search-bar"
+          data-testid="textbox-cdave-search-bar"
           placeholder="Search"
           className="p-2"
           value={searchTerm}

@@ -441,7 +441,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
                 <DownloadButton
-                  data-testid="download-survival-plot"
+                  data-testid="button-download-survival-plot"
                   aria-label="Download button with an icon"
                 >
                   <DownloadIcon size="1.25em" />
@@ -470,7 +470,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           <Tooltip label="Reset Survival Plot Zoom">
             <DownloadButton
               onClick={() => setXDomain(undefined)}
-              data-testid="reset-survival-plot"
+              data-testid="button-reset-survival-plot"
               aria-label="reset button with an icon"
             >
               <ResetIcon size="1.15rem"></ResetIcon>

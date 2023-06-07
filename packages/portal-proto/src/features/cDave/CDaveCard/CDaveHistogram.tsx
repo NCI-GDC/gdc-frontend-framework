@@ -103,7 +103,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   position={"left"}
                 >
                   <ActionIcon
-                    data-testid="histogram-download"
+                    data-testid="button-histogram-download"
                     variant="outline"
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"

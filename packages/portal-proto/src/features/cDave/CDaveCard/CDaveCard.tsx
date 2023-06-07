@@ -75,7 +75,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             arrowSize={7}
           >
             <ActionIcon
-              data-testid="historgram-plot"
+              data-testid="button-historgram-plot"
               variant="outline"
               className={
                 chartType === "histogram" && !noData
@@ -97,7 +97,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
           <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
             <ActionIcon
-              data-testid="survival-plot"
+              data-testid="button-survival-plot"
               variant="outline"
               className={
                 chartType === "survival"
@@ -124,7 +124,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             arrowSize={7}
           >
             <ActionIcon
-              data-testid="remove-card"
+              data-testid="button-remove-card"
               onClick={() => updateFields(field)}
               className="border-primary text-primary-content"
               aria-label={`Remove ${fieldName} card`}
