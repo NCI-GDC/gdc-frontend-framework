@@ -252,7 +252,7 @@ export const ssmsCreateTableColumn = ({
                       )}
                     </Tooltip>
                   ) : (
-                    <div className="text-lg ml-3">{"--"}</div>
+                    <div className="text-lg ml-3">--</div>
                   )}
                 </div>
               );
@@ -313,7 +313,17 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
-    case "affectedCasesInCohort":
+    case "affectedCasesInCohort": {
+      let tooltip = `# Cases where Mutation is observed in ${
+        projectId ?? "Cohort"
+      }
+        / Cases tested for Simple Somatic Mutations in ${projectId ?? "Cohort"}
+      `;
+
+      if (geneSymbol) {
+        tooltip = `# Cases where Mutation is observed in ${geneSymbol}
+        / # Cases with variants in ${geneSymbol}`;
+      }
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -326,12 +336,7 @@ export const ssmsCreateTableColumn = ({
                    in ${
                      geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
                    }`}
-                tooltip={`# Cases where Mutation is observed in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
-                } /
-                # Cases tested for Simple Somatic Mutations in ${
-                  geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"
-                }`}
+                tooltip={tooltip}
               />
             ),
             cell: ({ row }) => {
@@ -350,6 +355,7 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
+    }
     case "proteinChange":
       return {
         header: " ",
