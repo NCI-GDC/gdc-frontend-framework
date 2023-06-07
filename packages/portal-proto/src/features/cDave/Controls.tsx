@@ -319,7 +319,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           }
         />
         <p
-          data-testid="fields-with-values"
+          data-testid="text-fields-with-values"
           className="p-2 font-heading font-medium"
         >
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields

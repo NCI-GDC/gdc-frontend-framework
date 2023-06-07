@@ -493,7 +493,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             legend?.map((x, idx) => {
               return (
                 <div
-                  data-testid="cases-with-survival-data"
+                  data-testid="text-cases-with-survival-data"
                   key={`${x.key}-${idx}`}
                   className="px-2"
                 >

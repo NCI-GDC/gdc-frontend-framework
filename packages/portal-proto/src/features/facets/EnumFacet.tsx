@@ -316,7 +316,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                             <span className="font-content">{value}</span>
                           </OverflowTooltippedLabel>
                           <div
-                            data-testid={`count-${value}`}
+                            data-testid={`text-${value}`}
                             className="flex-none text-right w-14 font-content"
                           >
                             {count.toLocaleString()}
