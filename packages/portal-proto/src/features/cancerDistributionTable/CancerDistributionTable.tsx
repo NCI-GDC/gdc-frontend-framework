@@ -171,7 +171,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       {
         id: "ssm_affected_cases",
         columnName: (
-          <div>
+          <div className="whitespace-normal">
             <Tooltip
               label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
@@ -179,7 +179,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               withArrow
               width={250}
             >
-              <span># SSM Affected Cases</span>
+              <span className="whitespace-nowrap"># SSM Affected Cases</span>
             </Tooltip>
           </div>
         ),
@@ -202,7 +202,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             {
               id: "cnv_gains",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
         / # Cases tested for Copy Number Variation in the Project
@@ -211,7 +211,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Gains</span>
+                    <span className="whitespace-nowrap"># CNV Gains</span>
                   </Tooltip>
                 </div>
               ),
@@ -237,7 +237,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             {
               id: "cnv_losses",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
         / # Cases tested for Copy Number Variation in Project
@@ -246,7 +246,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Losses</span>
+                    <span className="whitespace-nowrap"># CNV Losses</span>
                   </Tooltip>
                 </div>
               ),
@@ -272,14 +272,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             {
               id: "num_mutations",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
                     width={250}
                   >
-                    <span># Mutations</span>
+                    <span className="whitespace-nowrap"># Mutations</span>
                   </Tooltip>
                 </div>
               ),
