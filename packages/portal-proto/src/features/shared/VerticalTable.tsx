@@ -587,6 +587,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               <div className="flex mb-2 gap-2">
                 <TextInput
                   icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
                   classNames={{
