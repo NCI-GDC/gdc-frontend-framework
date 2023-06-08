@@ -48,7 +48,8 @@ import {
   updateCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
@@ -152,13 +153,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     cohorts
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
-
-  // util function to check for duplicate names while creating the cohort
-  // passed to SavingCohortModal as a prop
-  const onCreateCohort = useCallback(
-    (name: string) => cohorts.every((cohort) => cohort.name !== name),
-    [cohorts],
-  );
 
   // Cohort specific actions
   const newCohort = useCallback(
@@ -391,9 +385,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showSaveCohort && (
-        <SaveOrCreateCohortModal
+        <SaveCohortModal
           initialName={cohortName}
-          entity="cohort"
           opened
           onClose={() => setShowSaveCohort(false)}
           onActionClick={async (newName: string) => {
@@ -439,15 +432,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={async (newName: string) => {
             newCohort(newName);
           }}
-          onNameChange={onCreateCohort}
         />
       )}
 
@@ -560,7 +549,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               </CohortGroupButton>
             </span>
           </Tooltip>
-          <Tooltip label="Add New Cohort" position="bottom" withArrow>
+          <Tooltip
+            label="Create New Unsaved Cohort"
+            position="bottom"
+            withArrow
+          >
             <CohortGroupButton
               onClick={() => setShowCreateCohort(true)}
               data-testid="addButton"

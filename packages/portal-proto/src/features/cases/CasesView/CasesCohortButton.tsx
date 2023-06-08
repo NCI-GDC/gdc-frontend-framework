@@ -6,14 +6,13 @@ import {
   FilterSet,
   resetSelectedCases,
   addNewCohortWithFilterAndMessage,
-  selectAvailableCohorts,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 
@@ -24,11 +23,7 @@ export const CasesCohortButton = (): JSX.Element => {
   const [name, setName] = useState(undefined);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
-
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
 
   useEffect(() => {
     if (response.isSuccess) {
@@ -108,10 +103,7 @@ export const CasesCohortButton = (): JSX.Element => {
         />
       )}
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             setName(newName);
@@ -119,7 +111,6 @@ export const CasesCohortButton = (): JSX.Element => {
               createSet({ values: pickedCases });
             }
           }}
-          onNameChange={onNameChange}
         />
       )}
     </>
