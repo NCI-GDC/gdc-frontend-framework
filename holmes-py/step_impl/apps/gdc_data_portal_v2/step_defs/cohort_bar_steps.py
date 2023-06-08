@@ -28,7 +28,7 @@ def click_named_button_wait_for_message_text(button_name: str, message_text: str
     :param message_text: The text in the temporary message that we are waiting for
     :param action: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
     """
-    APP.home_page.click_button_with_displayed_text_name(button_name)
+    APP.shared.click_button_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_temporary_message(message_text, action)
     assert is_cohort_message_present, f"The text '{message_text}' is NOT present"
     # Need to let the page load after our actions here.
@@ -37,7 +37,7 @@ def click_named_button_wait_for_message_text(button_name: str, message_text: str
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
-    APP.home_page.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
 
 @step("<button_name> should be disabled in the Cohort Bar")
 def button_should_be_disabled_on_cohort_bar(button_name: str):
