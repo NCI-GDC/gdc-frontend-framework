@@ -212,11 +212,11 @@ const CustomFacetGroup = (): JSX.Element => {
               No custom filters added
             </Text>
             <Button
+              data-testid="button-cohort-builder-add-a-custom-filter"
               variant="outline"
               onClick={() => setOpened(true)}
               aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
-              data-testid="button-cohort-builder-add-a-custom-filter"
             >
               Add a Custom Filter
             </Button>
@@ -229,6 +229,7 @@ const CustomFacetGroup = (): JSX.Element => {
           facets={customFacetDefinitions}
         >
           <Button
+            data-testid="button-cohort-builder-add-a-custom-filter"
             variant="outline"
             className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
             onClick={() => setOpened(true)}

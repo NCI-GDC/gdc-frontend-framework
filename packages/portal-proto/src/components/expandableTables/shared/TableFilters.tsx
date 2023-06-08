@@ -42,6 +42,7 @@ const TableFilters: React.FC<TableFiltersProps> = ({
     <div className="flex items-center gap-2">
       <TextInput
         icon={<SearchIcon size={24} />}
+        data-testid="textbox-table-search-bar"
         placeholder="Search"
         aria-label={ariaText}
         classNames={{
