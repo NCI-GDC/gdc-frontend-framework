@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import partial from "lodash/partial";
 import { LoadingOverlay } from "@mantine/core";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { SMTableContainer } from "@/features/SomaticMutations/SMTableContainer";
 import { emptySurvivalPlot } from "@/features/genomic/types";
 import {
   useGeneAndSSMPanelData,

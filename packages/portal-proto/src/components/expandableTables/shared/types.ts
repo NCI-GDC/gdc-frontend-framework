@@ -1,6 +1,6 @@
 import { SpringValue } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
-import { SomaticMutations } from "../somaticMutations/types";
+import { SomaticMutations } from "../../../features/SomaticMutations/types";
 import { Genes } from "../genes/types";
 
 export interface Column {

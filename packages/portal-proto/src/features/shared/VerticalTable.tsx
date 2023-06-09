@@ -279,7 +279,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
   const [showColumnMenu, setShowColumnMenu] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(search.defaultSearchTerm ?? "");
+  const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {

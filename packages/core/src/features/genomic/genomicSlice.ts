@@ -6,7 +6,6 @@ import { genomicFilterReducer } from "./genomicFilters";
 import { topGeneReducer } from "./topGenesSSMSSlice";
 import { geneSymbolReducer } from "./geneSymbolSlice";
 import { ssmsConsequenceTableReducer } from "./ssmsConsequenceTableSlice";
-import { selectedMutationIdsReducer } from "./selectedMutationIdsSlice";
 
 export const genomicReducers = combineReducers({
   genesTable: genesTableReducer,
@@ -16,5 +15,4 @@ export const genomicReducers = combineReducers({
   filters: genomicFilterReducer,
   topGeneSSMS: topGeneReducer,
   geneSymbols: geneSymbolReducer,
-  selectedMutationIds: selectedMutationIdsReducer,
 });

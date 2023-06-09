@@ -40,4 +40,4 @@ const selectedMutationIdsSelectors =
 export const selectSelectedMutationIds = (
   state: CoreState,
 ): ReadonlyArray<string> =>
-  selectedMutationIdsSelectors.selectIds(state)?.map((x) => x as string);
+  selectedMutationIdsSelectors.selectIds(state).map((x) => x as string);

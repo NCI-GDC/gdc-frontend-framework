@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import { SomaticMutations } from "@/components/expandableTables/somaticMutations/types";
+import { SomaticMutations } from "@/features/SomaticMutations/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ssmsCreateTableColumn } from "@/components/expandableTables/somaticMutations/smTableUtils";
+import { ssmsCreateTableColumn } from "@/features/SomaticMutations/smTableUtils";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import { Column, ExpTable } from "@/components/expandableTables/shared";
 

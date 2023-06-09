@@ -26,7 +26,7 @@ import {
   TableColumnDefinition,
   TableHeader,
   ToggledCheck,
-} from "../shared";
+} from "@/components/expandableTables/shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 

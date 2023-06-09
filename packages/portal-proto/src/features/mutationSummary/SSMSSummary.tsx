@@ -10,7 +10,7 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
 import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "./mutationTableConfig";
+import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "../SomaticMutations/mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
 

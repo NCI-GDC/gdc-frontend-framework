@@ -21,25 +21,25 @@ interface SelectMutationIdButtonProps {
 export const SelectMutationIdButton = ({
   mutationId,
 }: SelectMutationIdButtonProps): JSX.Element => {
-  // const pickedMutationIds = useCoreSelector((state) =>
-  //   selectSelectedMutationIds(state),
-  // );
+  const pickedMutationIds = useCoreSelector((state) =>
+    selectSelectedMutationIds(state),
+  );
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(
-    // pickedMutationIds?.includes(mutationId),
-    false,
+    pickedMutationIds.includes(mutationId),
   );
 
-  // useEffect(() => {
-  //   setChecked(pickedMutationIds?.includes(mutationId));
-  // }, [mutationId, pickedMutationIds]);
+  useEffect(() => {
+    setChecked(pickedMutationIds?.includes(mutationId));
+  }, [mutationId, pickedMutationIds]);
 
   return (
     <Checkbox
       size="xs"
-      checked={false}
+      checked={checked}
       className="ml-1"
       onChange={(event) => {
+        console.log("clicked");
         setChecked(event.currentTarget.checked);
         if (event.currentTarget.checked)
           dispatch(addMutationId({ mutationId: mutationId }));
@@ -49,21 +49,19 @@ export const SelectMutationIdButton = ({
   );
 };
 
-export const SelectMutationIdsButton = ({
+export const SelectAllMutationIdsButton = ({
   mutationIds,
 }: SelectAllMutationIdsButtonProps): JSX.Element => {
-  // const pickedMutationIds = useCoreSelector((state) =>
-  //   selectSelectedMutationIds(state),
-  // );
+  const pickedMutationIds = useCoreSelector((state) =>
+    selectSelectedMutationIds(state),
+  );
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
 
-  // useEffect(() => {
-  //   pickedMutationIds?.length > 0 &&
-  //     setChecked(
-  //       pickedMutationIds?.every((id) => pickedMutationIds?.includes(id)),
-  //     );
-  // }, [mutationIds, pickedMutationIds]);
+  useEffect(() => {
+    pickedMutationIds.length > 0 &&
+      setChecked(mutationIds.every((id) => pickedMutationIds.includes(id)));
+  }, [mutationIds, pickedMutationIds]);
 
   return (
     <Checkbox

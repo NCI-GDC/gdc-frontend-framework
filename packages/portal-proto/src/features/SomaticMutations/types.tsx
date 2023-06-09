@@ -1,27 +1,34 @@
 import { GDCSsmsTable } from "@gff/core";
-import { Survival } from "../shared/types";
-import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
+import { Survival } from "../../components/expandableTables/shared/types";
+import {
+  Column,
+  SelectedReducer,
+  SelectReducerAction,
+} from "../../components/expandableTables/shared/types";
 import { Columns } from "@/features/shared/VerticalTable";
 import { Row, TableInstance } from "react-table";
-import {
-  SelectMutationIdsButton,
-  SelectMutationIdButton,
-} from "./SelectAllMutationsButton";
+
 import { Dispatch, SetStateAction } from "react";
 import { entityMetadataType } from "src/utils/contexts";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
-import { RatioSpring, SwitchSpring, ToggledCheck } from "../shared";
 import {
-  IoMdTrendingDown as SurvivalIcon,
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
+  RatioSpring,
+  SwitchSpring,
+  ToggledCheck,
+} from "../../components/expandableTables/shared";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { Consequences, Impacts, ProteinChange } from "./smTableCells";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
+import { AnchorLink } from "@/components/AnchorLink";
+import { externalLinks } from "src/utils";
+import {
+  SelectMutationIdButton,
+  SelectAllMutationIdsButton,
+} from "./SelectAllMutationsButton";
+import { Consequences, Impacts, ProteinChange } from "./smTableCells";
 
 interface CellProps {
   value: string[];
@@ -33,15 +40,13 @@ interface SelectColumnProps {
 }
 
 interface BuildSMTableProps {
-  accessor?: string;
+  customColumnList: Columns[];
   selectedMutations?: SelectedReducer<SomaticMutations>;
-  setSelectedMutations?: Dispatch<SelectReducerAction<SomaticMutations>>;
   handleSurvivalPlotToggled?: (
     symbol: string,
     name: string,
     field: string,
   ) => void;
-  setMutationID?: Dispatch<SetStateAction<string>>;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   geneSymbol?: string;
@@ -52,11 +57,10 @@ interface BuildSMTableProps {
   isConsequenceTable?: boolean;
 }
 
+type ModifiedType = Omit<Columns, "visible"> & { visible?: boolean };
+
 export const buildSMTableColumn = ({
-  accessor,
-  selectedMutations,
-  setSelectedMutations,
-  setMutationID,
+  customColumnList,
   handleSsmToggled,
   handleSurvivalPlotToggled,
   toggledSsms,
@@ -67,13 +71,13 @@ export const buildSMTableColumn = ({
   isModal,
   isConsequenceTable,
 }: BuildSMTableProps): Columns[] => {
-  const columnListOrder: Columns[] = [
+  const columnListOrder: ModifiedType[] = [
     {
       id: "selected",
-      visible: true,
       columnName: ({ data }: TableInstance) => {
+        console.log({ data });
         const mutationIds = data.map((x) => x.selected);
-        return <SelectMutationIdsButton mutationIds={mutationIds} />;
+        return <SelectAllMutationIdsButton mutationIds={mutationIds} />;
       },
       Cell: ({ value }: SelectColumnProps) => {
         return <SelectMutationIdButton mutationId={value} />;
@@ -83,9 +87,8 @@ export const buildSMTableColumn = ({
     {
       id: "cohort",
       columnName: "Cohort",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
-        console.log({ toggledSsms });
+      Cell: ({ row }: CellProps) => {
+        // console.log({ toggledSsms });
         const isToggledSsm = toggledSsms.includes(row.original?.["mutationID"]);
         return (
           <SwitchSpring
@@ -109,10 +112,10 @@ export const buildSMTableColumn = ({
             }
             selected={row.original["cohort"]}
             handleSwitch={() => {
-              console.log({
-                mutationID: row.original?.["mutationID"],
-                symbol: row.original?.["DNAChange"],
-              });
+              // console.log({
+              //   mutationID: row.original?.["mutationID"],
+              //   symbol: row.original?.["DNAChange"],
+              // });
               handleSsmToggled({
                 mutationID: row.original?.["mutationID"],
                 symbol: row.original?.["DNAChange"],
@@ -134,8 +137,7 @@ export const buildSMTableColumn = ({
     {
       id: "survival",
       columnName: "Survival",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
+      Cell: ({ row }: CellProps) => {
         const { numerator } = row?.original["affectedCasesInCohort"] ?? {
           numerator: 0,
         };
@@ -166,7 +168,6 @@ export const buildSMTableColumn = ({
     {
       id: "mutationID",
       columnName: "Mutation ID",
-      visible: false,
       Cell: ({ value }: CellProps) => {
         return <div className="text-left w-24">{value} </div>;
       },
@@ -175,8 +176,7 @@ export const buildSMTableColumn = ({
     {
       id: "DNAChange",
       columnName: "DNA Change",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
+      Cell: ({ row }: CellProps) => {
         const originalLabel = row.original["DNAChange"];
         const label = originalLabel
           ? truncateAfterMarker(originalLabel, 8)
@@ -215,8 +215,7 @@ export const buildSMTableColumn = ({
     {
       id: "proteinChange",
       columnName: "Protein Change",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
+      Cell: ({ row }: CellProps) => {
         return (
           <ProteinChange
             proteinChange={row.original["proteinChange"]}
@@ -231,7 +230,6 @@ export const buildSMTableColumn = ({
     {
       id: "type",
       columnName: "Type",
-      visible: true,
       Cell: ({ value }: CellProps) => {
         return <div className="text-left w-24">{value} </div>;
       },
@@ -239,8 +237,7 @@ export const buildSMTableColumn = ({
     {
       id: "consequences",
       columnName: "Consequences",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
+      Cell: ({ row }: CellProps) => {
         return <Consequences consequences={row.original["consequences"]} />;
       },
       disableSortBy: true,
@@ -248,8 +245,7 @@ export const buildSMTableColumn = ({
     {
       id: "affectedCasesInCohort",
       columnName: "# Affected Cases in Cohort",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
+      Cell: ({ row }: CellProps) => {
         const { numerator, denominator } = row?.original[
           "affectedCasesInCohort"
         ] ?? { numerator: 0, denominator: 1 };
@@ -260,9 +256,8 @@ export const buildSMTableColumn = ({
     {
       id: "affectedCasesAcrossTheGDC",
       columnName: "# Affected Cases Across the GDC",
-      visible: true,
       Cell: ({ value, row }: CellProps) => {
-        console.log(value);
+        // console.log({ value, row });
         return <CollapsibleRow value={value} row={row} label="COMPONENT" />;
       },
       disableSortBy: true,
@@ -270,42 +265,103 @@ export const buildSMTableColumn = ({
     {
       id: "impact",
       columnName: "Impact",
-      visible: true,
       Cell: ({ row }: CellProps) => {
         return <Impacts impact={row.original["impact"]} />;
       },
       disableSortBy: true,
     },
+    // consequence table
+    {
+      id: "gene_strand",
+      columnName: "Gene Strand",
+      Cell: ({ row }) => {
+        return (
+          <div className="font-content text-lg font-bold">
+            {`${row.original["gene_strand"] > 0 ? "+" : "-"}`}
+          </div>
+        );
+      },
+      disableSortBy: true,
+    },
+    // consequence table
+    {
+      id: "aa_change",
+      columnName: "AA Change",
+      Cell: ({ row }) => {
+        const label = row.original["aa_change"];
+        return (
+          <>
+            {label !== null ? (
+              <span>{label}</span>
+            ) : (
+              <span className="text-center text-lg">--</span>
+            )}
+          </>
+        );
+      },
+      disableSortBy: true,
+    },
+    // consequence table
+    {
+      id: "transcript_id",
+      columnName: "Transcript",
+      Cell: ({ row }) => {
+        const transcript_id = row.original?.transcript_id;
+        const isC = row.original["is_canonical"] as boolean;
+        return (
+          <div>
+            {transcript_id ? (
+              <AnchorLink
+                href={externalLinks.transcript(transcript_id)}
+                title={transcript_id}
+                toolTipLabel={isC ? "Canonical" : undefined}
+                iconText={isC ? "C" : undefined}
+              />
+            ) : null}
+          </div>
+        );
+      },
+      disableSortBy: true,
+    },
+    // consequence table
+    {
+      id: "gene",
+      columnName: "Gene",
+      Cell: ({ row }) => {
+        const transcript_id = row.original?.transcript_id;
+        const isC = row.original["is_canonical"] as boolean;
+        return (
+          <div>
+            {transcript_id ? (
+              <AnchorLink
+                href={externalLinks.transcript(transcript_id)}
+                title={transcript_id}
+                toolTipLabel={isC ? "Canonical" : undefined}
+                iconText={isC ? "C" : undefined}
+              />
+            ) : null}
+          </div>
+        );
+      },
+      disableSortBy: true,
+    },
   ];
 
-  return columnListOrder;
-};
+  const filteredData = columnListOrder.map((obj) => {
+    const match = customColumnList.find((matchObj) => matchObj.id === obj.id);
 
-export const DEFAULT_SMTABLE_ORDER: Column[] = [
-  { id: "select", columnName: "Select", visible: true },
-  { id: "cohort", columnName: "Cohort", visible: true },
-  { id: "survival", columnName: "Survival", visible: true },
-  { id: "mutationID", columnName: "Mutation ID", visible: false },
-  { id: "DNAChange", columnName: "DNA Change", visible: true },
-  { id: "proteinChange", columnName: "Protein Change", visible: true },
-  { id: "type", columnName: "Type", visible: true },
-  {
-    id: "consequences",
-    columnName: "Consequences",
-    visible: true,
-  },
-  {
-    id: "affectedCasesInCohort",
-    columnName: "# Affected Cases in Cohort",
-    visible: true,
-  },
-  {
-    id: "affectedCasesAcrossTheGDC",
-    columnName: "# Affected Cases Across the GDC",
-    visible: true,
-  },
-  { id: "impact", columnName: "Impact", visible: true },
-] as Column[];
+    if (match) {
+      if (match.visible) {
+        obj.visible = true;
+      } else {
+        obj.visible = false;
+      }
+      return obj;
+    }
+  });
+
+  return filteredData.filter((elem) => elem !== undefined) as Columns[];
+};
 
 export interface Impact {
   polyphenImpact: string;

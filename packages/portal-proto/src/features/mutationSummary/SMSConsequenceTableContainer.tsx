@@ -2,7 +2,7 @@ import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
-import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/mutationSummary/mutationTableConfig";
+import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "@/features/SomaticMutations/mutationTableConfig";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";

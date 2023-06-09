@@ -282,7 +282,6 @@ export const geneCreateTableColumn = ({
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
-                            console.log("clicked gene");
                             setGeneID(row.original[`geneID`]);
                             row.toggleExpanded();
                           },

@@ -56,8 +56,6 @@ const ListSpring: React.FC<ListSpringProps> = ({
       });
   }, [subData]);
 
-  console.log({ subDataSorted });
-
   const renderItems = (item: TableSubrowDataWithRatio, index: number) => {
     return (
       <div className="flex flex-row items-center">

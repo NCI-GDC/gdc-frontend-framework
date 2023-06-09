@@ -10,7 +10,11 @@ import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
 import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
-import { Column, ExpTable, Subrow } from "../shared";
+import {
+  Column,
+  ExpTable,
+  Subrow,
+} from "../../components/expandableTables/shared";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,
