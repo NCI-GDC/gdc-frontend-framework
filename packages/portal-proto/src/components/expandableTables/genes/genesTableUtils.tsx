@@ -282,6 +282,7 @@ export const geneCreateTableColumn = ({
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
                         {...{
                           onClick: () => {
+                            console.log("clicked gene");
                             setGeneID(row.original[`geneID`]);
                             row.toggleExpanded();
                           },
@@ -454,18 +455,22 @@ export const geneCreateTableColumn = ({
                 ? row.original[`${accessor}`]
                 : "";
               return (
-                <PopupIconButton
-                  handleClick={() =>
-                    setEntityMetadata({
-                      entity_type: "genes",
-                      entity_id: row.original?.geneID,
-                      contextSensitive: true,
-                      // TODO: rename
-                      contextFilters: genomicFilters,
-                    })
-                  }
-                  label={label}
-                />
+                <>
+                  {row.getCanExpand() && (
+                    <PopupIconButton
+                      handleClick={() =>
+                        setEntityMetadata({
+                          entity_type: "genes",
+                          entity_id: row.original?.geneID,
+                          contextSensitive: true,
+                          // TODO: rename
+                          contextFilters: genomicFilters,
+                        })
+                      }
+                      label={label}
+                    />
+                  )}
+                </>
               );
             },
           },

@@ -235,34 +235,40 @@ export const ssmsCreateTableColumn = ({
                 : originalLabel;
               const ssmsId = row.original[`mutationID`];
               return (
-                <div className="font-content">
-                  {label !== "" ? (
-                    <Tooltip
-                      label={originalLabel}
-                      disabled={!originalLabel?.length}
-                    >
-                      {isConsequenceTable ? (
-                        <span>{label}</span>
-                      ) : isModal && !geneSymbol ? (
-                        <PopupIconButton
-                          handleClick={() =>
-                            setEntityMetadata({
-                              entity_type: "ssms",
-                              entity_id: ssmsId,
-                            })
-                          }
-                          label={label}
-                        />
+                <>
+                  {row.getCanExpand() && (
+                    <div className="font-content">
+                      {label !== "" ? (
+                        <Tooltip
+                          label={originalLabel}
+                          disabled={!originalLabel?.length}
+                        >
+                          {isConsequenceTable ? (
+                            <span>{label}</span>
+                          ) : isModal && !geneSymbol ? (
+                            <PopupIconButton
+                              handleClick={() =>
+                                setEntityMetadata({
+                                  entity_type: "ssms",
+                                  entity_id: ssmsId,
+                                })
+                              }
+                              label={label}
+                            />
+                          ) : (
+                            <Link href={`/ssms/${ssmsId}`}>
+                              <a className="underline text-utility-link">
+                                {label}
+                              </a>
+                            </Link>
+                          )}
+                        </Tooltip>
                       ) : (
-                        <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link">{label}</a>
-                        </Link>
+                        <div className="text-lg ml-3">--</div>
                       )}
-                    </Tooltip>
-                  ) : (
-                    <div className="text-lg ml-3">--</div>
+                    </div>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -290,19 +296,17 @@ export const ssmsCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
                         aria-expanded={row.getCanExpand() ? "true" : "false"}
-                        {...{
-                          onClick: () => {
-                            setMutationID(row.original[`mutationID`]);
-                            row.toggleExpanded();
-                          },
-                          style: { cursor: "pointer" },
+                        onClick={() => {
+                          console.log("clicked mutation");
+                          setMutationID(row.original[`mutationID`]);
+                          row.toggleExpanded();
                         }}
-                        className="font-content"
+                        className="font-content cursor-pointer"
                       >
                         {!row.getIsExpanded() ? (
                           <DownIcon size="1.25em" className="text-accent" />
@@ -756,9 +760,9 @@ export const getMutation = (
   };
 };
 
-export const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
+const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
 
-export const truncateAfterMarker = (
+const truncateAfterMarker = (
   term: string,
   length: number,
   markers: string[] = DNA_CHANGE_MARKERS,

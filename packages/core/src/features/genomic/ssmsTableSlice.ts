@@ -362,6 +362,7 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (response: GraphQLApiResponse<ssmtableResponse>) => {
         const data = response.data.viewer.explore;
+        console.log("adjlkadjl: ", response);
         const ssmsTotal = data.ssms.hits.total;
         const cases = data.cases.hits.total;
         const filteredCases = data.filteredCases.hits.total;

@@ -1,5 +1,5 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/reducers";
 
 export interface CasesCart {
   readonly caseId: string;

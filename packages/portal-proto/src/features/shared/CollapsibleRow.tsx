@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -40,7 +40,7 @@ const CollapsibleRow = ({
   row,
 }: {
   value: string[];
-  label: string;
+  label: string; // need to change this
   row: Row;
 }): JSX.Element => {
   const [collapsed, setCollapsed] = useState(true);
@@ -98,7 +98,7 @@ const CollapsibleRow = ({
           >
             <DownIcon size="1.25em" className="text-accent" />
             <span className="whitespace-nowrap">
-              {value?.length.toLocaleString().padStart(6)} {label}
+              {value?.length?.toLocaleString().padStart(6)} {label}
             </span>
           </div>
         ) : (

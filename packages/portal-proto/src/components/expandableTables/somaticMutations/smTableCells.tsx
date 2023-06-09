@@ -82,7 +82,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const blankIconStyles = "w-7 h-6 font-bold flex justify-center items-center";
 
   return (
-    <>
+    <div className="flex">
       <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact}>
         <div className="text-xs">
           {vepImpact === "HIGH" ? (
@@ -156,6 +156,6 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
           )}
         </div>
       </Tooltip>
-    </>
+    </div>
   );
 };

@@ -22,13 +22,13 @@ import {
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
-import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
+import { genomicReducers } from "./features/genomic/genomicSlice";
 import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 
@@ -53,6 +53,7 @@ import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 import { cancerDistributionReducer } from "./features/cancerDistribution";
+import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
@@ -62,7 +63,6 @@ import {
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
-import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 import { sessionStorage } from "./storage-persist";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
@@ -100,6 +100,9 @@ export const reducers = combineReducers({
   userInfo: userDetailsReducer,
   modals: modalReducer,
   quickSearch: quickSearchReducer,
+  versionInfo: versionInfoReducer,
+  sets: setsReducer,
+  selectedCases: selectedCasesReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,
   [projectsApiSliceReducerPath]: projectsApiReducer,
@@ -108,9 +111,6 @@ export const reducers = combineReducers({
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
-  versionInfo: versionInfoReducer,
-  sets: setsReducer,
-  selectedCases: selectedCasesReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

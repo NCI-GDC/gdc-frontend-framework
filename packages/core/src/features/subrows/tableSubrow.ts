@@ -200,4 +200,6 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
 export const {
   useGetGeneTableSubrowQuery,
   useGetSomaticMutationTableSubrowQuery,
+  useLazyGetGeneTableSubrowQuery,
+  useLazyGetSomaticMutationTableSubrowQuery,
 } = tableSubrowApiSlice;

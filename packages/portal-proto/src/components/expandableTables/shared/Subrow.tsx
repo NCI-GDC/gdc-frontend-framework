@@ -65,11 +65,14 @@ export const Subrow: React.FC<SubrowProps> = ({
     to: { height: 50 },
   });
 
+  console.log(id);
   const { data: subData, isFetching, isSuccess, isError } = query({ id });
+
+  console.log({ subData });
 
   useEffect(() => {
     scrollIntoView();
-  }, [isSuccess, scrollIntoView]);
+  }, [scrollIntoView]);
 
   return (
     <div ref={targetRef}>
