@@ -51,6 +51,7 @@ import {
   removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
+  selectCohortCaseCountsByIds,
 } from "./availableCohortsSlice";
 
 import {
@@ -136,6 +137,7 @@ export {
   removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
+  selectCohortCaseCountsByIds,
   CountsData,
   defaultCohortNameGenerator,
 };

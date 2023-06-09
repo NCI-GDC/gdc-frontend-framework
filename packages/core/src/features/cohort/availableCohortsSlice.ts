@@ -1046,6 +1046,16 @@ export const selectCohortFilterSetById = (
   return cohort?.filters;
 };
 
+export const selectCohortCaseCountsByIds = (
+  state: CoreState,
+  ids: string[],
+): Record<string, number> => {
+  return ids.reduce((acc: Record<string, number>, id) => {
+    const cohort = cohortSelectors.selectById(state, id);
+    return { ...acc, [id]: cohort?.caseCount ?? 0 };
+  }, {});
+};
+
 interface SplitFilterSet {
   withPrefix: FilterSet;
   withoutPrefix: FilterSet;
@@ -1279,7 +1289,7 @@ export const updateActiveCohortFilter =
   };
 
 /**
- * a thunk to optional create a caseSet when switching cohorts.
+ * a thunk to optionally create a caseSet when switching cohorts.
  * Note the assumption if the caseset member has ids then the caseset has previously been created.
  * @param cohortId
  */
