@@ -19,7 +19,7 @@ import {
 } from "../../components/expandableTables/shared";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Tooltip } from "@mantine/core";
+import { Tooltip, Text } from "@mantine/core";
 import Link from "next/link";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { AnchorLink } from "@/components/AnchorLink";
@@ -29,6 +29,7 @@ import {
   SelectAllMutationIdsButton,
 } from "./SelectAllMutationsButton";
 import { Consequences, Impacts, ProteinChange } from "./smTableCells";
+import { ImpactHeaderWithTooltip } from "./ImpactHeaderWithTooltip";
 
 interface CellProps {
   value: string[];
@@ -59,6 +60,25 @@ interface BuildSMTableProps {
 
 type ModifiedType = Omit<Columns, "visible"> & { visible?: boolean };
 
+const HeaderTooltip = ({ title, tooltip }) => {
+  return (
+    <Tooltip
+      label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
+      width={200}
+      multiline
+      withArrow
+      transition="fade"
+      transitionDuration={200}
+      position="bottom-start"
+    >
+      <div className="font-heading text-left text-sm whitespace-pre-line">
+        {title}
+      </div>
+    </Tooltip>
+  );
+};
+
+// probably should move to someplace else
 export const buildSMTableColumn = ({
   customColumnList,
   handleSsmToggled,
@@ -86,7 +106,12 @@ export const buildSMTableColumn = ({
     },
     {
       id: "cohort",
-      columnName: "Cohort",
+      columnName: (
+        <HeaderTooltip
+          title="Cohort"
+          tooltip="Click to add/remove mutations to/from your cohort filters"
+        />
+      ),
       Cell: ({ row }: CellProps) => {
         // console.log({ toggledSsms });
         const isToggledSsm = toggledSsms.includes(row.original?.["mutationID"]);
@@ -136,7 +161,12 @@ export const buildSMTableColumn = ({
     },
     {
       id: "survival",
-      columnName: "Survival",
+      columnName: (
+        <HeaderTooltip
+          title="Survival"
+          tooltip="Click to change the survival plot display"
+        />
+      ),
       Cell: ({ row }: CellProps) => {
         const { numerator } = row?.original["affectedCasesInCohort"] ?? {
           numerator: 0,
@@ -175,7 +205,17 @@ export const buildSMTableColumn = ({
     },
     {
       id: "DNAChange",
-      columnName: "DNA Change",
+      columnName: (
+        <HeaderTooltip
+          title={isConsequenceTable ? "Coding DNA Change" : "DNA Change"}
+          tooltip={
+            isConsequenceTable
+              ? undefined
+              : `Genomic DNA Change, shown as
+         {chromosome}:g{start}{ref}>{tumor}`
+          }
+        />
+      ),
       Cell: ({ row }: CellProps) => {
         const originalLabel = row.original["DNAChange"];
         const label = originalLabel
@@ -236,7 +276,16 @@ export const buildSMTableColumn = ({
     },
     {
       id: "consequences",
-      columnName: "Consequences",
+      columnName: (
+        <HeaderTooltip
+          title="Consequences"
+          tooltip={
+            isConsequenceTable
+              ? "SO Term: consequence type"
+              : "Consequences for canonical transcript"
+          }
+        />
+      ),
       Cell: ({ row }: CellProps) => {
         return <Consequences consequences={row.original["consequences"]} />;
       },
@@ -244,7 +293,23 @@ export const buildSMTableColumn = ({
     },
     {
       id: "affectedCasesInCohort",
-      columnName: "# Affected Cases in Cohort",
+      columnName: (
+        <HeaderTooltip
+          title={`# Affected Cases
+        in ${geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"}`}
+          tooltip={`# Cases where Mutation is observed in ${
+            geneSymbol ?? projectId ?? "Cohort"
+          }
+            / ${
+              geneSymbol
+                ? `# Cases with variants in ${geneSymbol}`
+                : `Cases tested for Simple Somatic Mutations in ${
+                    projectId ?? "Cohort"
+                  }`
+            }
+          `}
+        />
+      ),
       Cell: ({ row }: CellProps) => {
         const { numerator, denominator } = row?.original[
           "affectedCasesInCohort"
@@ -255,7 +320,15 @@ export const buildSMTableColumn = ({
     },
     {
       id: "affectedCasesAcrossTheGDC",
-      columnName: "# Affected Cases Across the GDC",
+      columnName: (
+        <HeaderTooltip
+          title={`# Affected Cases
+      Across the GDC`}
+          tooltip={`# Cases where Mutation is observed /
+       # Cases tested for Simple Somatic Mutations portal wide
+       Expand to see breakdown by project`}
+        />
+      ),
       Cell: ({ value, row }: CellProps) => {
         // console.log({ value, row });
         return <CollapsibleRow value={value} row={row} label="COMPONENT" />;
@@ -264,7 +337,9 @@ export const buildSMTableColumn = ({
     },
     {
       id: "impact",
-      columnName: "Impact",
+      columnName: (
+        <ImpactHeaderWithTooltip geneSymbol={geneSymbol} isModal={isModal} />
+      ),
       Cell: ({ row }: CellProps) => {
         return <Impacts impact={row.original["impact"]} />;
       },

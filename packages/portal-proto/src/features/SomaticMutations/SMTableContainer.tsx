@@ -126,7 +126,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   // const prevGenomicFilters = usePrevious(genomicFilters);
   // const prevCohortFilters = usePrevious(cohortFilters);
-  // const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
+
+  // useEffect(() => {
+  //   if (
+  //     !isEqual(prevGenomicFilters, genomicFilters) ||
+  //     !isEqual(prevCohortFilters, cohortFilters)
+  //   )
+  //     setPage(0);
+  // }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   // this is needed
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
