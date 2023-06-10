@@ -14,9 +14,7 @@ import {
   buildCohortGqlOperator,
   selectSelectedMutationIds,
 } from "@gff/core";
-import { useEffect, useState, useReducer, useMemo, useContext } from "react";
-import { SomaticMutationsTable } from "./SomaticMutationsTable";
-import { useMeasure } from "react-use";
+import { useEffect, useState, useMemo, useContext } from "react";
 import {
   SomaticMutations,
   SsmToggledHandler,
@@ -24,7 +22,6 @@ import {
 } from "./types";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
 import { Text } from "@mantine/core";
-
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -96,7 +93,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 }: SMTableContainerProps) => {
   /* States for table */
   const [pageSize, setPageSize] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(
     searchTermsForGene?.geneId ?? "",
   );
@@ -112,7 +109,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SSMTable call */
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
-    offset: pageSize * page,
+    offset: pageSize * (page - 1),
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     geneSymbol: geneSymbol,
@@ -124,16 +121,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
-  // const prevGenomicFilters = usePrevious(genomicFilters);
-  // const prevCohortFilters = usePrevious(cohortFilters);
+  const prevGenomicFilters = usePrevious(genomicFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
 
-  // useEffect(() => {
-  //   if (
-  //     !isEqual(prevGenomicFilters, genomicFilters) ||
-  //     !isEqual(prevCohortFilters, cohortFilters)
-  //   )
-  //     setPage(0);
-  // }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
+  useEffect(() => {
+    if (
+      !isEqual(prevGenomicFilters, genomicFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters)
+    )
+      setPage(1);
+  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
   // this is needed
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
@@ -147,6 +144,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log({ toggledSsms });
   const columnListOrder = useMemo(
     () =>
       buildSMTableColumn({
@@ -245,7 +243,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           count: pageSize,
           from: (page - 1) * pageSize,
           page: page,
-          pages: Math.floor(data?.ssmsTotal / pageSize),
+          pages: Math.ceil(data?.ssmsTotal / pageSize),
           size: pageSize,
           total: data?.ssmsTotal,
           sort: "None",
@@ -300,133 +298,136 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       : combinedFilters;
 
   return (
-    // <>
-    //   {
-    //     // caseFilter &&
-    //     // debouncedSearchTerm.length === 0 &&
-    //     // tableData.ssmsTotal === 0 ? null
-    //     caseFilter ? null : (
-
     <>
-      {showSaveModal && (
-        <SaveSelectionAsSetModal
-          filters={buildCohortGqlOperator(setFilters)}
-          sort="occurrence.case.project.project_id"
-          initialSetName={
-            Object.keys(selectedMutations).length === 0
-              ? filtersToName(setFilters)
-              : "Custom Mutation Selection"
-          }
-          saveCount={
-            Object.keys(selectedMutations).length === 0
-              ? data?.ssmsTotal
-              : Object.keys(selectedMutations).length
-          }
-          setType={"ssms"}
-          setTypeLabel="mutation"
-          createSetHook={useCreateSsmsSetFromFiltersMutation}
-          closeModal={() => setShowSaveModal(false)}
-        />
-      )}
-      {showAddModal && (
-        <AddToSetModal
-          filters={setFilters}
-          addToCount={
-            Object.keys(selectedMutations).length === 0
-              ? data?.ssmsTotal
-              : Object.keys(selectedMutations).length
-          }
-          setType={"ssms"}
-          setTypeLabel="mutation"
-          singleCountHook={useSsmSetCountQuery}
-          countHook={useSsmSetCountsQuery}
-          appendSetHook={useAppendToSsmSetMutation}
-          closeModal={() => setShowAddModal(false)}
-          field={"ssms.ssm_id"}
-          sort="occurrence.case.project.project_id"
-        />
-      )}
-      {showRemoveModal && (
-        <RemoveFromSetModal
-          filters={setFilters}
-          removeFromCount={
-            Object.keys(selectedMutations).length === 0
-              ? data?.ssmsTotal
-              : Object.keys(selectedMutations).length
-          }
-          setType={"ssms"}
-          setTypeLabel="mutation"
-          countHook={useSsmSetCountsQuery}
-          closeModal={() => setShowRemoveModal(false)}
-          removeFromSetHook={useRemoveFromSsmSetMutation}
-        />
-      )}
+      {caseFilter &&
+      debouncedSearchTerm.length === 0 &&
+      data?.ssmsTotal === 0 ? null : (
+        <>
+          {" "}
+          {showSaveModal && (
+            <SaveSelectionAsSetModal
+              filters={buildCohortGqlOperator(setFilters)}
+              sort="occurrence.case.project.project_id"
+              initialSetName={
+                Object.keys(selectedMutations).length === 0
+                  ? filtersToName(setFilters)
+                  : "Custom Mutation Selection"
+              }
+              saveCount={
+                Object.keys(selectedMutations).length === 0
+                  ? data?.ssmsTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              createSetHook={useCreateSsmsSetFromFiltersMutation}
+              closeModal={() => setShowSaveModal(false)}
+            />
+          )}
+          {showAddModal && (
+            <AddToSetModal
+              filters={setFilters}
+              addToCount={
+                Object.keys(selectedMutations).length === 0
+                  ? data?.ssmsTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              singleCountHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
+              appendSetHook={useAppendToSsmSetMutation}
+              closeModal={() => setShowAddModal(false)}
+              field={"ssms.ssm_id"}
+              sort="occurrence.case.project.project_id"
+            />
+          )}
+          {showRemoveModal && (
+            <RemoveFromSetModal
+              filters={setFilters}
+              removeFromCount={
+                Object.keys(selectedMutations).length === 0
+                  ? data?.ssmsTotal
+                  : Object.keys(selectedMutations).length
+              }
+              setType={"ssms"}
+              setTypeLabel="mutation"
+              countHook={useSsmSetCountsQuery}
+              closeModal={() => setShowRemoveModal(false)}
+              removeFromSetHook={useRemoveFromSsmSetMutation}
+            />
+          )}
+          <div ref={targetRef}>
+            {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
+            <VerticalTable
+              additionalControls={
+                <div className="flex gap-2 items-center">
+                  <DropdownWithIcon
+                    dropdownElements={[
+                      {
+                        title: "Save as new mutation set",
+                        onClick: () => setShowSaveModal(true),
+                      },
+                      {
+                        title: "Add to existing mutation set",
+                        disabled: Object.keys(sets).length === 0,
+                        onClick: () => setShowAddModal(true),
+                      },
+                      {
+                        title: "Remove from existing mutation set",
+                        disabled: Object.keys(sets).length === 0,
+                        onClick: () => setShowRemoveModal(true),
+                      },
+                    ]}
+                    TargetButtonChildren="Save/Edit Mutation Set"
+                    disableTargetWidth={true}
+                    LeftIcon={
+                      [].length ? (
+                        <CountsIcon $count={[].length}>{[].length}</CountsIcon>
+                      ) : null
+                    }
+                    menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+                    customPosition="bottom-start"
+                  />
+                  <ButtonTooltip label="Export All Except #Cases">
+                    <FunctionButton>JSON</FunctionButton>
+                  </ButtonTooltip>
+                  <ButtonTooltip label="Export current view">
+                    <FunctionButton>TSV</FunctionButton>
+                  </ButtonTooltip>
 
-      <div ref={targetRef}>
-        {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
-        <VerticalTable
-          additionalControls={
-            <div className="flex gap-2 items-center">
-              <DropdownWithIcon
-                dropdownElements={[
-                  {
-                    title: "Save as new mutation set",
-                    onClick: () => setShowSaveModal(true),
-                  },
-                  {
-                    title: "Add to existing mutation set",
-                    disabled: Object.keys(sets).length === 0,
-                    onClick: () => setShowAddModal(true),
-                  },
-                  {
-                    title: "Remove from existing mutation set",
-                    disabled: Object.keys(sets).length === 0,
-                    onClick: () => setShowRemoveModal(true),
-                  },
-                ]}
-                TargetButtonChildren="Save/Edit Mutation Set"
-                disableTargetWidth={true}
-                LeftIcon={
-                  [].length ? (
-                    <CountsIcon $count={[].length}>{[].length}</CountsIcon>
-                  ) : null
-                }
-                menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
-                customPosition="bottom-start"
-              />
-              <ButtonTooltip label="Export All Except #Cases">
-                <FunctionButton>JSON</FunctionButton>
-              </ButtonTooltip>
-              <ButtonTooltip label="Export current view">
-                <FunctionButton>TSV</FunctionButton>
-              </ButtonTooltip>
-
-              <Text className="font-heading font-bold text-md">
-                TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
-                {data?.ssmsTotal == 1
-                  ? "Somatic Mutation".toUpperCase()
-                  : `${"Somatic Mutation".toUpperCase()}S`}
-              </Text>
-            </div>
-          }
-          tableData={formattedTableData}
-          columns={columns}
-          columnSorting={"none"}
-          selectableRow={false}
-          showControls={true}
-          // pagination is a bit for last pages
-          pagination={{
-            ...tempPagination,
-            label: "cohorts",
-          }}
-          search={{
-            enabled: true,
-            defaultSearchTerm: debouncedSearchTerm,
-          }}
-          status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
-          handleChange={handleChange}
-        />
-      </div>
+                  <Text className="font-heading font-bold text-md">
+                    TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
+                    {data?.ssmsTotal == 1
+                      ? "Somatic Mutation".toUpperCase()
+                      : `${"Somatic Mutation".toUpperCase()}S`}
+                  </Text>
+                </div>
+              }
+              tableData={formattedTableData}
+              columns={columns}
+              columnSorting={"none"}
+              selectableRow={false}
+              showControls={true}
+              // pagination is a bit wrong for last pages
+              pagination={{
+                ...tempPagination,
+                label: "cohorts",
+              }}
+              search={{
+                enabled: true,
+                defaultSearchTerm: debouncedSearchTerm,
+              }}
+              status={statusBooleansToDataStatus(
+                isFetching,
+                isSuccess,
+                isError,
+              )}
+              handleChange={handleChange}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 };

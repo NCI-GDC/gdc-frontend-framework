@@ -308,7 +308,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       ...columns,
     ]);
   };
-
+  console.log({ columns, headings });
   // save sorting state
   const [colSort, setColSort] = useState(initialSort);
   const useTableConditionalProps = [];
@@ -646,7 +646,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                               <DragDrop
                                 listOptions={columns} // here....
                                 handleColumnChange={handleColumnChange}
-                                columnSearchTerm={""}
+                                columnSearchTerm=""
                               />
                             </DndProvider>
                           </div>

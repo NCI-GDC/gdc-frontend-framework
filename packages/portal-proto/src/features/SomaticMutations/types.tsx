@@ -113,7 +113,7 @@ export const buildSMTableColumn = ({
         />
       ),
       Cell: ({ row }: CellProps) => {
-        // console.log({ toggledSsms });
+        console.log({ toggledSsmsIn: toggledSsms });
         const isToggledSsm = toggledSsms.includes(row.original?.["mutationID"]);
         return (
           <SwitchSpring
