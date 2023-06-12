@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
 import RatioSpring from "./RatioSpring";

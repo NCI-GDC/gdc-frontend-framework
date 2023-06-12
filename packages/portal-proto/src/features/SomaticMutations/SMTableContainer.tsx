@@ -15,11 +15,7 @@ import {
   selectSelectedMutationIds,
 } from "@gff/core";
 import { useEffect, useState, useMemo, useContext } from "react";
-import {
-  SomaticMutations,
-  SsmToggledHandler,
-  buildSMTableColumn,
-} from "./types";
+import { SomaticMutations, SsmToggledHandler, getMutation } from "./utils";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
 import { Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
@@ -30,16 +26,23 @@ import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
 import {
-  Columns,
   HandleChangeInput,
   VerticalTable,
 } from "@/features/shared/VerticalTable";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { getMutation } from "./smTableUtils";
 import { SummaryModalContext } from "src/utils/contexts";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "../../components/expandableTables/shared";
-import { DEFAULT_SMTABLE_ORDER } from "@/features/SomaticMutations/mutationTableConfig";
+import {
+  SMTableAffectedCasesCohort,
+  SMTableCohort,
+  SMTableDNAChange,
+  SMTableProteinChange,
+  SMTableSurvival,
+  SMTableConsequences,
+  SMTableImpacts,
+} from "./TableRowComponents";
+import { buildSMTableColumnNew } from "./SMTableColumns";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -52,7 +55,6 @@ export interface SMTableContainerProps {
   cohortFilters?: FilterSet;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
-  customColumnList?: Array<Columns>;
   geneSymbol?: string;
   tableTitle?: string;
   isDemoMode?: boolean;
@@ -72,13 +74,13 @@ export interface SMTableContainerProps {
    *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
    */
   searchTermsForGene?: { geneId?: string; geneSymbol?: string };
+  isMutationFreqApp?: boolean;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot = {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
-  customColumnList = DEFAULT_SMTABLE_ORDER,
   geneSymbol = undefined,
   projectId = undefined,
   genomicFilters = { mode: "and", root: {} },
@@ -90,6 +92,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   isModal = false,
   tableTitle = undefined,
   searchTermsForGene,
+  isMutationFreqApp = false,
 }: SMTableContainerProps) => {
   /* States for table */
   const [pageSize, setPageSize] = useState(10);
@@ -132,9 +135,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setPage(1);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
-  // this is needed
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 200,
+    // offset: 200,
     duration: 1000,
   });
 
@@ -144,34 +146,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log({ toggledSsms });
   const columnListOrder = useMemo(
     () =>
-      buildSMTableColumn({
-        customColumnList,
-        handleSurvivalPlotToggled,
-        handleSsmToggled,
-        toggledSsms,
+      buildSMTableColumnNew({
         geneSymbol,
         projectId,
-        isDemoMode,
-        setEntityMetadata,
         isModal,
+        isMutationFreqApp,
       }),
-    [
-      customColumnList,
-      handleSurvivalPlotToggled,
-      handleSsmToggled,
-      toggledSsms,
-      geneSymbol,
-      projectId,
-      isDemoMode,
-      setEntityMetadata,
-      isModal,
-    ],
+    [geneSymbol, projectId, isModal, isMutationFreqApp],
   );
-
-  console.log({ columnListOrder });
 
   const [columns, setColumns] = useState(columnListOrder);
 
@@ -189,7 +173,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         setPage(1);
         break;
       case "newHeadings":
-        console.log({ head: obj.newHeadings });
         setColumns(obj.newHeadings);
         break;
     }
@@ -207,7 +190,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
   });
-  console.log(transformResponse);
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (isSuccess) {
@@ -227,16 +209,56 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             impact,
           }: SomaticMutations) => ({
             selected: select,
-            cohort: cohort,
-            survival: survival,
+            ...(isMutationFreqApp && {
+              cohort: (
+                <SMTableCohort
+                  toggledSsms={toggledSsms}
+                  mutationID={mutationID}
+                  isDemoMode={isDemoMode}
+                  cohort={cohort}
+                  handleSsmToggled={handleSsmToggled}
+                  DNAChange={DNAChange}
+                />
+              ),
+            }),
+            ...(isMutationFreqApp && {
+              survival: (
+                <SMTableSurvival
+                  affectedCasesInCohort={affectedCasesInCohort}
+                  survival={survival}
+                  proteinChange={proteinChange}
+                  handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                />
+              ),
+            }),
             mutationID: mutationID,
             type: type,
-            DNAChange: DNAChange,
-            proteinChange: proteinChange,
-            consequences: consequences,
-            affectedCasesInCohort: affectedCasesInCohort,
+            DNAChange: (
+              <SMTableDNAChange
+                DNAChange={DNAChange}
+                mutationID={mutationID}
+                isModal={isModal}
+                geneSymbol={geneSymbol}
+                setEntityMetadata={setEntityMetadata}
+              />
+            ),
+            proteinChange: (
+              <SMTableProteinChange
+                proteinChange={proteinChange}
+                shouldOpenModal={isModal && geneSymbol === undefined}
+                shouldLink={projectId !== undefined}
+                setEntityMetadata={setEntityMetadata}
+              />
+            ),
+            consequences: <SMTableConsequences consequences={consequences} />,
+            affectedCasesInCohort: (
+              <SMTableAffectedCasesCohort
+                affectedCasesInCohort={affectedCasesInCohort}
+              />
+            ),
+            // need to change this
             affectedCasesAcrossTheGDC: affectedCasesAcrossTheGDC,
-            impact,
+            impact: <SMTableImpacts impact={impact} />,
           }),
         ),
         {
@@ -262,7 +284,22 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           total: undefined,
         },
       ];
-  }, [transformResponse]);
+  }, [
+    transformResponse,
+    page,
+    pageSize,
+    data?.ssmsTotal,
+    toggledSsms,
+    geneSymbol,
+    handleSsmToggled,
+    isDemoMode,
+    isModal,
+    isSuccess,
+    projectId,
+    setEntityMetadata,
+    isMutationFreqApp,
+    handleSurvivalPlotToggled,
+  ]);
 
   // for selected mutation use new selector
   const selectedMutations = useCoreSelector((state) =>
@@ -303,13 +340,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       debouncedSearchTerm.length === 0 &&
       data?.ssmsTotal === 0 ? null : (
         <>
-          {" "}
           {showSaveModal && (
             <SaveSelectionAsSetModal
               filters={buildCohortGqlOperator(setFilters)}
               sort="occurrence.case.project.project_id"
               initialSetName={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? filtersToName(setFilters)
                   : "Custom Mutation Selection"
               }
@@ -328,9 +364,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <AddToSetModal
               filters={setFilters}
               addToCount={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? data?.ssmsTotal
-                  : Object.keys(selectedMutations).length
+                  : selectedMutations.length
               }
               setType={"ssms"}
               setTypeLabel="mutation"
@@ -346,9 +382,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <RemoveFromSetModal
               filters={setFilters}
               removeFromCount={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? data?.ssmsTotal
-                  : Object.keys(selectedMutations).length
+                  : selectedMutations.length
               }
               setType={"ssms"}
               setTypeLabel="mutation"
@@ -382,8 +418,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     TargetButtonChildren="Save/Edit Mutation Set"
                     disableTargetWidth={true}
                     LeftIcon={
-                      [].length ? (
-                        <CountsIcon $count={[].length}>{[].length}</CountsIcon>
+                      selectedMutations.length ? (
+                        <CountsIcon $count={selectedMutations.length}>
+                          {selectedMutations.length}
+                        </CountsIcon>
                       ) : null
                     }
                     menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
@@ -405,11 +443,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 </div>
               }
               tableData={formattedTableData}
-              columns={columns}
-              columnSorting={"none"}
+              columns={columns} // show columns is bit messed up
+              columnSorting="none"
               selectableRow={false}
               showControls={true}
-              // pagination is a bit wrong for last pages
               pagination={{
                 ...tempPagination,
                 label: "cohorts",

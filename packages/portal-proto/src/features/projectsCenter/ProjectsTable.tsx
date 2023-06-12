@@ -33,8 +33,9 @@ import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
 
+// make it generic
 interface CellProps {
-  value: string[];
+  value: any;
   row: Row;
 }
 
@@ -98,9 +99,19 @@ const ProjectsTable: React.FC = () => {
       id: "project_id",
       columnName: "Project",
       visible: true,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-left">{value}</div>;
-      },
+      Cell: ({ value }: CellProps) => (
+        <OverflowTooltippedLabel label={value}>
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "project",
+                entity_id: value,
+              })
+            }
+            label={value}
+          />
+        </OverflowTooltippedLabel>
+      ),
     },
     {
       id: "disease_type",
@@ -123,7 +134,6 @@ const ProjectsTable: React.FC = () => {
       columnName: "Primary Site",
       visible: true,
       Cell: ({ value, row }: CellProps) => {
-        console.log({ value, row });
         return (
           <CollapsibleRow
             value={value}
@@ -139,9 +149,11 @@ const ProjectsTable: React.FC = () => {
       id: "program",
       columnName: "Program",
       visible: true,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-24">{value} </div>;
-      },
+      Cell: ({ value }: CellProps) => (
+        <OverflowTooltippedLabel label={value} className="font-content">
+          {value}
+        </OverflowTooltippedLabel>
+      ),
     },
     {
       id: "cases",
@@ -178,7 +190,6 @@ const ProjectsTable: React.FC = () => {
       program: "program.name",
     };
     const tempSortBy = sortByObj.map((sortObj) => {
-      ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
       // map sort ids to api ids
       return {
         field: COLUMN_ID_TO_FIELD[sortObj.id],
@@ -200,29 +211,10 @@ const ProjectsTable: React.FC = () => {
             summary,
           }: ProjectDefaults) => ({
             selected: project_id,
-            project_id: (
-              <OverflowTooltippedLabel label={project_id}>
-                <PopupIconButton
-                  handleClick={() =>
-                    setEntityMetadata({
-                      entity_type: "project",
-                      entity_id: project_id,
-                    })
-                  }
-                  label={project_id}
-                />
-              </OverflowTooltippedLabel>
-            ),
+            project_id: project_id,
             disease_type: disease_type,
             primary_site: primary_site,
-            program: (
-              <OverflowTooltippedLabel
-                label={program?.name}
-                className="font-content"
-              >
-                {program?.name}
-              </OverflowTooltippedLabel>
-            ),
+            program: program?.name,
             cases: summary?.case_count.toLocaleString().padStart(9),
             experimental_strategies: extractToArray(
               summary?.experimental_strategies,
@@ -246,7 +238,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data, setEntityMetadata]);
+  }, [isSuccess, data]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {

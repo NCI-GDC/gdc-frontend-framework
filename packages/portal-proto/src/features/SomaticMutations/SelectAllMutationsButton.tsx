@@ -39,7 +39,6 @@ export const SelectMutationIdButton = ({
       checked={checked}
       className="ml-1"
       onChange={(event) => {
-        console.log("clicked");
         setChecked(event.currentTarget.checked);
         if (event.currentTarget.checked)
           dispatch(addMutationId({ mutationId: mutationId }));

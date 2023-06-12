@@ -1,11 +1,9 @@
 export interface ConsequenceTableData {
   gene: string;
-  gene_id: string;
   aa_change: string;
   DNAChange: string;
   consequences: string;
   transcript_id: string;
-  is_canonical: boolean;
   gene_strand: number;
   impact: {
     polyphenImpact: string;
@@ -14,5 +12,4 @@ export interface ConsequenceTableData {
     siftScore: string | number;
     vepImpact: string;
   };
-  subRows: string;
 }

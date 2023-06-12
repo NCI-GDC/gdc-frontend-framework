@@ -47,7 +47,6 @@ import {
 import { BasicTable } from "@/components/Tables/BasicTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import SMTableContainer from "@/features/SomaticMutations/SMTableContainer";
-import { DEFAULT_SMTABLEORDER_CASE_GENE_SUMMARY } from "../SomaticMutations/mutationTableConfig";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -549,7 +548,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
         <div className="mb-16">
           <SMTableContainer
             projectId={data.project.project_id}
-            customColumnList={DEFAULT_SMTABLEORDER_CASE_GENE_SUMMARY}
             cohortFilters={projectFilter}
             caseFilter={caseFilter}
             tableTitle="Most Frequent Somatic Mutations"

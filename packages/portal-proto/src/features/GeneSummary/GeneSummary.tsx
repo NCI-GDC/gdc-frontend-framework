@@ -24,7 +24,6 @@ import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 import { CollapsibleList } from "@/components/CollapsibleList";
-import { DEFAULT_SMTABLEORDER_CASE_GENE_SUMMARY } from "../SomaticMutations/mutationTableConfig";
 
 interface GeneViewProps {
   data: {
@@ -270,7 +269,6 @@ const GeneView = ({
 
               <div className="mt-14">
                 <SMTableContainer
-                  customColumnList={DEFAULT_SMTABLEORDER_CASE_GENE_SUMMARY}
                   geneSymbol={data.genes.symbol}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}

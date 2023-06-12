@@ -104,7 +104,7 @@ export const ImpactHeaderWithTooltip = ({
       multiline
       classNames={{
         tooltip:
-          "bg-base-darkest text-base-contrast-darkest font-heading text-left",
+          "bg-base-min text-base-contrast-min font-heading text-left p-2",
       }}
       position={geneSymbol && isModal ? "left-start" : "top"}
     >

@@ -91,6 +91,7 @@ export const SSMSPanel = ({
         isDemoMode={isDemoMode}
         isModal={true}
         searchTermsForGene={searchTermsForGene}
+        isMutationFreqApp={true}
       />
     </div>
   );

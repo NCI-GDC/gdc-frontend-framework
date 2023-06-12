@@ -10,7 +10,6 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
 import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import { DEFAULT_CONSEQUENCE_TABLE_ORDER } from "../SomaticMutations/mutationTableConfig";
 import SMSConsequenceTableContainer from "@/features/mutationSummary/SMSConsequenceTableContainer";
 import { HeaderTitle } from "../shared/tailwindComponents";
 
@@ -185,11 +184,9 @@ export const SSMSSummary = ({
                 />
               </div>
             </div>
-
-            <SMSConsequenceTableContainer
-              columnsList={DEFAULT_CONSEQUENCE_TABLE_ORDER}
-              ssmsId={ssm_id}
-            />
+            <div className="my-8">
+              <SMSConsequenceTableContainer ssmsId={ssm_id} />
+            </div>
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>

@@ -308,7 +308,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       ...columns,
     ]);
   };
-  console.log({ columns, headings });
+
   // save sorting state
   const [colSort, setColSort] = useState(initialSort);
   const useTableConditionalProps = [];
@@ -586,76 +586,74 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       >
         {additionalControls && <div className="flex">{additionalControls}</div>}
         {(search?.enabled || showControls) && (
-          <div className="flex items-center">
+          <div className="flex items-center mb-2 gap-2">
             {search?.enabled && (
-              <div className="flex mb-2 gap-2">
-                <TextInput
-                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
-                  placeholder={search.placeholder ?? "Search"}
-                  aria-label="Table Search Input"
-                  classNames={{
-                    input:
-                      "border-base-lighter focus:border-2 focus:drop-shadow-xl",
-                    wrapper: "w-72",
-                  }}
-                  size="sm"
-                  rightSection={
-                    searchTerm.length > 0 && (
-                      <MdClose
-                        onClick={() => {
-                          setSearchTerm("");
-                        }}
-                        className="cursor-pointer"
-                      />
-                    )
-                  }
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                />
-                {showControls && (
-                  <Popover
-                    opened={showColumnMenu}
-                    onClose={() => setShowColumnMenu(false)}
-                    position="bottom"
-                    transition="scale"
-                    withArrow
-                    zIndex={1}
+              <TextInput
+                icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                placeholder={search.placeholder ?? "Search"}
+                aria-label="Table Search Input"
+                classNames={{
+                  input:
+                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                  wrapper: "w-72",
+                }}
+                size="sm"
+                rightSection={
+                  searchTerm.length > 0 && (
+                    <MdClose
+                      onClick={() => {
+                        setSearchTerm("");
+                      }}
+                      className="cursor-pointer"
+                    />
+                  )
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
+              />
+            )}
+            {showControls && (
+              <Popover
+                opened={showColumnMenu}
+                onClose={() => setShowColumnMenu(false)}
+                position="bottom"
+                transition="scale"
+                withArrow
+                zIndex={1}
+              >
+                <Popover.Target>
+                  <button
+                    data-testid="column-selector-box"
+                    onClick={() => {
+                      setShowColumnMenu(!showColumnMenu);
+                    }}
                   >
-                    <Popover.Target>
-                      <button
-                        data-testid="column-selector-box"
-                        onClick={() => {
-                          setShowColumnMenu(!showColumnMenu);
-                        }}
-                      >
-                        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-                          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-                        </Box>
-                      </button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <div
-                        className={`w-fit`}
-                        data-testid="column-selector-popover-modal"
-                      >
-                        {columns.length > 0 && showColumnMenu && (
-                          <div className="mr-0 ml-2">
-                            <DndProvider backend={HTML5Backend}>
-                              <DragDrop
-                                listOptions={columns} // here....
-                                handleColumnChange={handleColumnChange}
-                                columnSearchTerm=""
-                              />
-                            </DndProvider>
-                          </div>
-                        )}
+                    <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                      {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                    </Box>
+                  </button>
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <div
+                    className={`w-fit`}
+                    data-testid="column-selector-popover-modal"
+                  >
+                    {columns.length > 0 && showColumnMenu && (
+                      <div className="mr-0 ml-2">
+                        <DndProvider backend={HTML5Backend}>
+                          <DragDrop
+                            listOptions={columns} // here....
+                            handleColumnChange={handleColumnChange}
+                            columnSearchTerm=""
+                          />
+                        </DndProvider>
                       </div>
-                    </Popover.Dropdown>
-                  </Popover>
-                )}
-              </div>
+                    )}
+                  </div>
+                </Popover.Dropdown>
+              </Popover>
             )}
           </div>
         )}
