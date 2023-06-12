@@ -10,6 +10,10 @@ tags: gdc-data-portal-v2, regression, footer, navigation
 ## Navigate to Home Page
 * On GDC Data Portal V2 app
 
+## Check Footer Text
+* Is text "at the National Institutes of Health" present on the page
+* Is text "NIH... Turning Discovery Into Health" present on the page
+
 ## Validate Navigation Links - different tab
 * These links on the "Footer" should take the user to correct page in a new tab
   |button_text                                |text_on_expected_page                                          |
