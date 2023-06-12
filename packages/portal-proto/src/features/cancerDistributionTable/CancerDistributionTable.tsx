@@ -136,7 +136,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         columnName: "Disease Type",
         visible: true,
         Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow value={value} row={row} label={"Disease Types"} />
+          <CollapsibleRow
+            value={value}
+            row={row}
+            label="Disease Types"
+            expandedRowTitle="Disease Types"
+          />
         ),
       },
       {
@@ -144,7 +149,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         columnName: "Primary Site",
         visible: true,
         Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow value={value} row={row} label={"Primary Site"} />
+          <CollapsibleRow
+            value={value}
+            row={row}
+            label="Primary Site"
+            expandedRowTitle="Primary Site"
+          />
         ),
       },
       {

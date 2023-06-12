@@ -1,4 +1,7 @@
-import { GDCSsmsTable } from "@gff/core";
+import {
+  GDCSsmsTable,
+  useLazyGetSomaticMutationTableSubrowQuery,
+} from "@gff/core";
 import { Survival } from "../../components/expandableTables/shared/types";
 import {
   Column,
@@ -13,6 +16,7 @@ import { entityMetadataType } from "src/utils/contexts";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 import {
+  NumeratorDenominator,
   RatioSpring,
   SwitchSpring,
   ToggledCheck,
@@ -330,8 +334,21 @@ export const buildSMTableColumn = ({
         />
       ),
       Cell: ({ value, row }: CellProps) => {
-        // console.log({ value, row });
-        return <CollapsibleRow value={value} row={row} label="COMPONENT" />;
+        console.log({ value, row });
+        return (
+          <CollapsibleRow
+            value={["sss", "asss"]}
+            row={row}
+            label={
+              <NumeratorDenominator
+                numerator={value["numerator"]}
+                denominator={value["denominator"]}
+              />
+            }
+            hideValueLength={true}
+            expandedRowTitle="# SSMS Affected Cases Across The GDC"
+          />
+        );
       },
       disableSortBy: true,
     },

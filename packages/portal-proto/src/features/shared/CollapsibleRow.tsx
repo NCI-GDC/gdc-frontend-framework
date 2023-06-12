@@ -38,17 +38,20 @@ const CollapsibleRow = ({
   value,
   label,
   row,
+  hideValueLength = false,
+  expandedRowTitle,
 }: {
   value: string[];
-  label: string; // need to change this
+  label: ReactNode;
   row: Row;
+  hideValueLength?: boolean;
+  expandedRowTitle?: string;
 }): JSX.Element => {
   const [collapsed, setCollapsed] = useState(true);
-
-  const handleExpand = (row: Row) => {
+  const handleExpand = async (row: Row) => {
     const update = {
       ...(row.state.values as Record<string, string[]>),
-      [label]: value,
+      [expandedRowTitle]: value,
     };
     setCollapsed(false);
     row.setState((old) => ({
@@ -62,7 +65,7 @@ const CollapsibleRow = ({
 
   const handleCollapse = (row: Row): void => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { [label]: _, ...update } = row.state.values as Record<
+    const { [expandedRowTitle]: _, ...update } = row.state.values as Record<
       string,
       string[]
     >; // remove value from state
@@ -98,7 +101,8 @@ const CollapsibleRow = ({
           >
             <DownIcon size="1.25em" className="text-accent" />
             <span className="whitespace-nowrap">
-              {value?.length?.toLocaleString().padStart(6)} {label}
+              {!hideValueLength && value?.length?.toLocaleString().padStart(6)}{" "}
+              {label}
             </span>
           </div>
         ) : (
@@ -115,7 +119,8 @@ const CollapsibleRow = ({
             <UpIcon size="1.25em" className="text-accent mr-1" />
             <span className="whitespace-nowrap text-bold">
               <b>
-                {value.length.toLocaleString().padStart(6)} {label}
+                {!hideValueLength && value.length.toLocaleString().padStart(6)}{" "}
+                {label}
               </b>
             </span>
           </div>

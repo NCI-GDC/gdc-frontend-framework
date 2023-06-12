@@ -26,7 +26,14 @@ const columnListOrderStart: Columns[] = [
     visible: true,
     disableSortBy: true,
     Cell: ({ value, row }: CellProps) => {
-      return <CollapsibleRow value={value} row={row} label="Disease Types" />;
+      return (
+        <CollapsibleRow
+          value={value}
+          row={row}
+          label="Disease Types"
+          expandedRowTitle="Disease Types"
+        />
+      );
     },
   },
   {
