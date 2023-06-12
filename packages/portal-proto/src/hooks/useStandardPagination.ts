@@ -30,7 +30,7 @@ const useStandardPagination = (
   const [activePage, setActivePage] = useState(1);
   const [activeSort, setActiveSort] = useState<SortingRule<any>[]>([]);
   const [displayedData, setDisplayedData] = useState([]);
-  const [columnSortingFns, setcolumnSortingFns] = useState({});
+  const [columnSortingFns, setColumnSortingFns] = useState({});
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -50,7 +50,7 @@ const useStandardPagination = (
       return;
     }
     // looks through columnListOrder for columns that have sortingFn and add them to an easily retrievable object
-    setcolumnSortingFns(
+    setColumnSortingFns(
       columnListOrder.reduce((output, column) => {
         if (column.sortingFn) {
           output[column.id] = column.sortingFn;
