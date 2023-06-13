@@ -25,6 +25,7 @@ import { convertDateToString } from "src/utils/date";
 import { SelectedEntities, SetOperationEntityType } from "./types";
 import download from "src/utils/download";
 import { CountButton } from "@/components/CountButton/CountButton";
+
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
@@ -659,7 +660,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         name: set.name,
         count: isFetching ? "..." : summaryCounts?.[set.id],
       })),
-    [entityType, sets, summaryCounts],
+    [entityType, sets, summaryCounts, isFetching],
   );
 
   const tableData = useMemo(
