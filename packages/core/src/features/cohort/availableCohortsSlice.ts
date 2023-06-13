@@ -973,6 +973,23 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
 export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
   cohortSelectors.selectAll(state);
 
+/**
+ * Selector that returns all the available cohorts as a map of id to cohort
+ * Usage: const cohorts = useCoreSelector((state) => selectAvailableCohortsAsMap(state));
+ * @param state - CoreState object
+ * @returns Record<string, Cohort> - Map of cohort id to cohort
+ */
+// TODO: Add tests for this selector
+export const selectAvailableCohortsAsMap = (
+  state: CoreState,
+): Record<string, Cohort> => {
+  const cohorts = cohortSelectors.selectAll(state);
+  return cohorts.reduce((map, cohort) => {
+    map[cohort.id] = cohort;
+    return map;
+  }, {} as Record<string, Cohort>);
+};
+
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort?.availableCohorts?.currentCohort;
 
@@ -1046,7 +1063,14 @@ export const selectCohortFilterSetById = (
   return cohort?.filters;
 };
 
+/**
+ * A selector that returns a map of cohort id to case counts
+ * @param state - CoreState
+ * @param ids - Array of cohort ids
+ * @returns Record<string, number> - Map of cohort id to case count
+ */
 export const selectCohortCaseCountsByIds = (
+  // TODO: Add test
   state: CoreState,
   ids: string[],
 ): Record<string, number> => {
