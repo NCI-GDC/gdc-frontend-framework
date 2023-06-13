@@ -4,7 +4,7 @@ from ....base.base_page import BasePage
 from step_impl.apps.gdc_data_portal_v2.pages.header_section import HeaderSectionLocators
 
 class AnalysisCenterLocators:
-    APP_PLAY_OR_DEMO_BUTTON = lambda app_name: f'[data-testid="{app_name}"]'
+    BUTTON_APP_PLAY_OR_DEMO = lambda app_name: f'[data-testid="button-{app_name}"]'
 
     FEATURED_TOOL_PROJECTS = 'button[aria-label="Navigate to Projects"]'
     FEATURED_TOOL_COHORT_BUILDER = 'button[aria-label="Navigate to Cohort Builder"]'
@@ -21,7 +21,7 @@ class AnalysisCenterPage(BasePage):
         self.driver.goto(self.URL)
 
     def navigate_to_app(self, app_name: str):
-        locator = AnalysisCenterLocators.APP_PLAY_OR_DEMO_BUTTON(app_name)
+        locator = AnalysisCenterLocators.BUTTON_APP_PLAY_OR_DEMO(app_name)
         self.click(locator)
 
     def featured_tools_navigation_check(self):
