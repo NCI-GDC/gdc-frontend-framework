@@ -31,6 +31,7 @@ const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
 });
 
 const ENTITY_TYPE_TO_FIELD = {
+  cohort: "cases.case_id",
   genes: "genes.gene_id",
   mutations: "ssms.ssm_id",
 };

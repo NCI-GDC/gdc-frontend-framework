@@ -1149,6 +1149,22 @@ export const selectCurrentCohortGqlFilters = (
 };
 
 /**
+ * Get the GQL Filters for a cohort by id
+ * @param state
+ * @param cohortId - id of cohort to get filters for
+ */
+export const selectCohortGqlFiltersById = (
+  state: CoreState,
+  cohortId: string,
+): GqlOperation | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
+  if (cohort === undefined)
+    return buildCohortGqlOperator({ mode: "and", root: {} });
+
+  return buildCohortGqlOperator(cohort?.caseSet.filters ?? cohort.filters);
+};
+
+/**
  * Returns either a filterSet or a filter containing a caseSetId that was created
  * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
  * Used to create a cohort that work with both explore and repository indexes
@@ -1234,6 +1250,11 @@ export const selectCurrentCohortCaseSet = (
     };
   return { ...cohort.caseSet };
 };
+
+export const selectCohortById = (
+  state: CoreState,
+  cohortId: string,
+): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));

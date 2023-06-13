@@ -1,15 +1,14 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import { AppState } from "./appApi";
-import { type Cohort, type FilterSet } from "@gff/core";
+import { type Cohort, type GqlOperation } from "@gff/core";
 import { isEqual } from "lodash";
 
 type CohortSetCommand = "use" | "create" | "update" | "delete";
 
 interface CohortCaseSets {
   readonly cohort: Cohort; // cohort this case set belongs to
-  readonly caseSets: ReadonlyArray<string>; // case sets in this cohort
   readonly caseSetId: string; // case set id associated with this cohort
-  readonly createdFilters: FilterSet; // filters that created this cohort
+  readonly createdFilters: GqlOperation; // filters that created this cohort
 }
 
 const cohortCaseSetsAdapter = createEntityAdapter<CohortCaseSets>({

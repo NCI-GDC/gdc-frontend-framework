@@ -19,6 +19,7 @@ import {
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useCaseSetCountsQuery,
 } from "./setCountSlice";
 import {
   useAppendToGeneSetMutation,
@@ -44,6 +45,7 @@ export {
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useCaseSetCountsQuery,
   useAppendToGeneSetMutation,
   useAppendToSsmSetMutation,
   useRemoveFromGeneSetMutation,
