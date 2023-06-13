@@ -1,7 +1,7 @@
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { GTableContainer } from "@/features/GenesTable/GTableContainer";
 import partial from "lodash/partial";
 import React from "react";
 import { emptySurvivalPlot } from "@/features/genomic/types";
@@ -84,21 +84,23 @@ export const GenesPanel = ({
           />
         </Grid.Col>
       </Grid>
-      <GTableContainer
-        selectedSurvivalPlot={comparativeSurvival}
-        handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-        handleGeneToggled={partial(
-          handleGeneAndSSmToggled,
-          currentGenes,
-          "genes.gene_id",
-          "geneID",
-        )}
-        toggledGenes={currentGenes}
-        genomicFilters={genomicFilters}
-        cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-        isDemoMode={isDemoMode}
-        handleMutationCountClick={handleMutationCountClick}
-      />
+      <div className="mt-8">
+        <GTableContainer
+          selectedSurvivalPlot={comparativeSurvival}
+          handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+          handleGeneToggled={partial(
+            handleGeneAndSSmToggled,
+            currentGenes,
+            "genes.gene_id",
+            "geneID",
+          )}
+          toggledGenes={currentGenes}
+          genomicFilters={genomicFilters}
+          cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+          isDemoMode={isDemoMode}
+          handleMutationCountClick={handleMutationCountClick}
+        />
+      </div>
     </div>
   );
 };

@@ -193,6 +193,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     }
   }, [appMode, comparativeSurvival, topGeneSSMS, topGeneSSMSSuccess]);
 
+  const handleMutationCountClick = useCallback(
+    (geneId: string, geneSymbol: string) => {
+      setSearchTermsForGeneId({ geneId, geneSymbol });
+      setAppMode("ssms");
+    },
+    [],
+  );
+
   return (
     <>
       <>
@@ -225,13 +233,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               comparativeSurvival={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneAndSSmToggled={handleGeneAndSSmToggled}
-              handleMutationCountClick={(
-                geneId: string,
-                geneSymbol: string,
-              ) => {
-                setSearchTermsForGeneId({ geneId, geneSymbol });
-                setAppMode("ssms");
-              }}
+              handleMutationCountClick={handleMutationCountClick}
             />
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">

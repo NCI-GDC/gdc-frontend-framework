@@ -20,7 +20,7 @@ interface SelectColumnProps {
   value: string;
 }
 
-export const buildSMTableColumnNew = ({
+export const buildSMTableColumn = ({
   geneSymbol = undefined,
   projectId = undefined,
   isModal,

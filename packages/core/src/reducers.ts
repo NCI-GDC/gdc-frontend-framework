@@ -65,6 +65,7 @@ import {
 import { setsReducer } from "./features/sets";
 import { sessionStorage } from "./storage-persist";
 import { selectedMutationIdsReducer } from "./features/genomic/selectedMutationIdsSlice";
+import { selectedGeneIdsReducer } from "./features/genomic/selectedGeneIdsSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -105,6 +106,7 @@ export const reducers = combineReducers({
   sets: setsReducer,
   selectedCases: selectedCasesReducer,
   selectedMutationIds: selectedMutationIdsReducer,
+  selectedGeneIds: selectedGeneIdsReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,
   [projectsApiSliceReducerPath]: projectsApiReducer,

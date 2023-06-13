@@ -1,6 +1,10 @@
 import { FilterSet } from "@gff/core";
 import { Row } from "@tanstack/react-table";
-import { SelectReducerAction, Survival, Column } from "../shared/types";
+import {
+  SelectReducerAction,
+  Survival,
+  Column,
+} from "../../components/expandableTables/shared/types";
 
 export interface SingleGene {
   biotype: string;
@@ -32,8 +36,6 @@ export interface Gene {
   cytoband: string[];
   annotations: boolean;
   mutations: string;
-  subRows: string;
-  genesTotal: number;
   SSMSAffectedCasesInCohort: {
     numerator: number;
     denominator: number;
@@ -89,27 +91,53 @@ export interface GenesTableProps {
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
-export const DEFAULT_GTABLE_ORDER = [
-  { id: "select", columnName: "Select", visible: true },
-  { id: "cohort", columnName: "Cohort", visible: true },
-  { id: "survival", columnName: "Survival", visible: true },
-  { id: "geneID", columnName: "Gene ID", visible: false },
-  { id: "symbol", columnName: "Symbol", visible: true },
-  { id: "name", columnName: "Name", visible: true },
-  { id: "cytoband", columnName: "Cytoband", visible: false },
-  { id: "type", columnName: "Type", visible: false, justify: "left" },
-  {
-    id: "SSMSAffectedCasesInCohort",
-    columnName: "# SSM Affected Cases In Cohort",
-    visible: true,
-  },
-  {
-    id: "SSMSAffectedCasesAcrossTheGDC",
-    columnName: "# SSM Affected Cases Across The GDC",
-    visible: true,
-  },
-  { id: "CNVGain", columnName: "# CNV Gain", visible: true },
-  { id: "CNVLoss", columnName: "# CNV Loss", visible: true },
-  { id: "mutations", columnName: "# Mutations", visible: true },
-  { id: "annotations", columnName: "Annotations", visible: true },
-] as Column[];
+export const getGene = (
+  g: SingleGene,
+  selectedSurvivalPlot: Record<string, string>,
+  mutationCounts: Record<string, string>,
+  filteredCases: number,
+  cases: number,
+  cnvCases: number,
+): Gene => {
+  return {
+    select: g.gene_id,
+    geneID: g.gene_id,
+    survival: {
+      label: g.symbol,
+      name: g.name,
+      symbol: g.symbol,
+      checked: g.symbol == selectedSurvivalPlot?.symbol,
+    },
+    cohort: {
+      checked: true,
+    },
+    symbol: g.symbol,
+    name: g.name,
+    type: g.biotype,
+    cytoband: g.cytoband,
+    SSMSAffectedCasesInCohort: {
+      numerator: g.numCases,
+      denominator: filteredCases,
+    },
+    SSMSAffectedCasesAcrossTheGDC: {
+      numerator: g.ssm_case,
+      denominator: cases,
+    },
+    CNVGain:
+      cnvCases > 0
+        ? `${g.case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
+            (100 * g.case_cnv_gain) /
+            cnvCases
+          ).toFixed(2)}%)`
+        : `--`,
+    CNVLoss:
+      cnvCases > 0
+        ? `${g.case_cnv_loss.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
+            (100 * g.case_cnv_loss) /
+            cnvCases
+          ).toFixed(2)}%)`
+        : `--`,
+    mutations: mutationCounts[g.gene_id],
+    annotations: g.is_cancer_gene_census,
+  };
+};

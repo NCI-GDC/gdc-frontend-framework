@@ -42,7 +42,7 @@ import {
   SMTableConsequences,
   SMTableImpacts,
 } from "./TableRowComponents";
-import { buildSMTableColumnNew } from "./SMTableColumns";
+import { buildSMTableColumn } from "./SMTableColumns";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -135,8 +135,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setPage(1);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
+  // need to fix the offset
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    // offset: 200,
+    offset: 100,
     duration: 1000,
   });
 
@@ -148,7 +149,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const columnListOrder = useMemo(
     () =>
-      buildSMTableColumnNew({
+      buildSMTableColumn({
         geneSymbol,
         projectId,
         isModal,
@@ -447,10 +448,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               columnSorting="none"
               selectableRow={false}
               showControls={true}
-              pagination={{
-                ...tempPagination,
-                label: "cohorts",
-              }}
+              pagination={tempPagination}
               search={{
                 enabled: true,
                 defaultSearchTerm: debouncedSearchTerm,

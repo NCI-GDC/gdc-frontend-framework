@@ -54,7 +54,7 @@ export const SSMSPanel = ({
 
   return (
     <div className="flex flex-col w-100 mx-6 mb-8">
-      <div className="bg-base-max">
+      <div className="bg-base-max relative">
         <LoadingOverlay
           visible={
             survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
@@ -76,23 +76,25 @@ export const SSMSPanel = ({
           }
         />
       </div>
-      <SMTableContainer
-        selectedSurvivalPlot={comparativeSurvival}
-        handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-        genomicFilters={genomicFilters}
-        cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-        handleSsmToggled={partial(
-          handleGeneAndSSmToggled,
-          currentMutations,
-          "ssms.ssm_id",
-          "mutationID",
-        )}
-        toggledSsms={currentMutations}
-        isDemoMode={isDemoMode}
-        isModal={true}
-        searchTermsForGene={searchTermsForGene}
-        isMutationFreqApp={true}
-      />
+      <div className="mt-8">
+        <SMTableContainer
+          selectedSurvivalPlot={comparativeSurvival}
+          handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+          genomicFilters={genomicFilters}
+          cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+          handleSsmToggled={partial(
+            handleGeneAndSSmToggled,
+            currentMutations,
+            "ssms.ssm_id",
+            "mutationID",
+          )}
+          toggledSsms={currentMutations}
+          isDemoMode={isDemoMode}
+          isModal={true}
+          searchTermsForGene={searchTermsForGene}
+          isMutationFreqApp={true}
+        />
+      </div>
     </div>
   );
 };

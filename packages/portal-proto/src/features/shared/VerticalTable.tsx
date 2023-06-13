@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC, Fragment } from "react";
+import React, { useState, useEffect, FC, Fragment, useRef } from "react";
 import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -576,6 +576,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [searchTerm]);
 
   const theme = useMantineTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (search?.defaultSearchTerm) {
+      inputRef?.current?.focus();
+    }
+  }, [search?.defaultSearchTerm]);
 
   return (
     <div className="grow overflow-hidden">
@@ -594,7 +601,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 aria-label="Table Search Input"
                 classNames={{
                   input:
-                    "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                    "border-base-lighter focus:border-2 focus:drop-shadow-xl focus:border-primary",
                   wrapper: "w-72",
                 }}
                 size="sm"
@@ -612,6 +619,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
                 }}
+                ref={inputRef}
               />
             )}
             {showControls && (

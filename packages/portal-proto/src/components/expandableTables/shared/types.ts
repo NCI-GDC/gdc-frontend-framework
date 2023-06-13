@@ -1,7 +1,7 @@
 import { SpringValue } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
 import { SomaticMutations } from "../../../features/SomaticMutations/utils";
-import { Genes } from "../genes/types";
+import { Genes } from "../../../features/GenesTable/util";
 
 export interface Column {
   visible: boolean;

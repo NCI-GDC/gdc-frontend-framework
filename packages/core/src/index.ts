@@ -61,6 +61,7 @@ export * from "./features/api/cohortApiTypes";
 export * from "./features/sets";
 export * from "./features/cases/selectedCasesSlice";
 export * from "./features/genomic/selectedMutationIdsSlice";
+export * from "./features/genomic/selectedGeneIdsSlice";
 export * from "./features/bodyplot";
 export * from "./features/setOperations";
 export { CoreState } from "./reducers";
