@@ -45,7 +45,7 @@ export const SSMSPanel = ({
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival);
+  } = useGeneAndSSMPanelData(comparativeSurvival, false);
 
   /**
    * Get the mutations in cohort

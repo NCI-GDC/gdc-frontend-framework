@@ -296,6 +296,7 @@ export interface GeneAndSSMPanelData {
  */
 export const useGeneAndSSMPanelData = (
   comparativeSurvival: Record<string, string>,
+  isGene: boolean,
 ): GeneAndSSMPanelData => {
   const isDemoMode = useIsDemoApp();
   const cohortFilters = useCoreSelector((state) =>
@@ -327,6 +328,7 @@ export const useGeneAndSSMPanelData = (
         filters,
         comparativeSurvival?.symbol,
         comparativeSurvival?.field,
+        isGene,
       ),
     [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
   );
