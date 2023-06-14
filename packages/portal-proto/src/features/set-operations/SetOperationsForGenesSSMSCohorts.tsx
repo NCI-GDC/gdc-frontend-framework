@@ -35,7 +35,6 @@ const useCreateCaseSetFromCohorts = (
   const needsCreation = useAppSelector((state) => selectCommand(state, cohort));
 
   if (selectedEntityType !== "cohort") return true;
-  if (!cohort) return false;
   if (needsCreation === "create") {
     createSet({
       filters: filters,
@@ -60,6 +59,17 @@ const useCreateCaseSetFromCohorts = (
   }
   return true;
 };
+
+// const useCreateNeededCaseSetsForCohorts = (selectedEntities: SelectedEntities) => {
+//   const [requiresCaseSet, setRequiresCaseSet] = useState(Object.keys(selectedEntities).reduce((acc, key) => {
+//     return {...acc, [key]: true};
+//   }, {}));
+//
+//   useEffect(() => {
+//
+//   }
+//
+// }
 
 const SetOperationsForGenesSSMSCohorts = () => {
   const [selectedEntities, setSelectedEntities] = useState<SelectedEntities>(
