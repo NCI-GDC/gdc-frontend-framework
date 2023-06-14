@@ -3,7 +3,12 @@ import { AppState } from "./appApi";
 import { type Cohort, type GqlOperation } from "@gff/core";
 import { isEqual } from "lodash";
 
-type CohortSetCommand = "use" | "create" | "update" | "delete";
+export type CohortSetCommand =
+  | "use"
+  | "create"
+  | "update"
+  | "delete"
+  | "unused";
 
 interface CohortCaseSets {
   readonly cohort: Cohort; // cohort this case set belongs to
@@ -33,7 +38,7 @@ const selectCohortCaseSet = (
   id: string,
 ): CohortCaseSets | undefined => state.cohortCaseSets.entities?.[id];
 
-export const selectCommand = (
+export const classifyIfCohortNeedsCaseSet = (
   state: AppState,
   cohort: Cohort,
 ): CohortSetCommand => {
@@ -41,4 +46,13 @@ export const selectCommand = (
   if (cohortCaseSet === undefined) return "create";
   if (isEqual(cohort.filters, cohortCaseSet.createdFilters)) return "use";
   return "update";
+};
+
+export const classifyIfManyCohortsNeedForCaseSet = (
+  state: AppState,
+  cohorts: Record<string, Cohort>,
+): Record<string, CohortSetCommand> => {
+  return Object.values(cohorts).reduce((acc, cohort) => {
+    return { ...acc, [cohort.id]: classifyIfCohortNeedsCaseSet(state, cohort) };
+  }, {});
 };

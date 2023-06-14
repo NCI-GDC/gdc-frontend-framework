@@ -1256,6 +1256,17 @@ export const selectCohortById = (
   cohortId: string,
 ): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
+export const selectManyCohortsById = (
+  state: CoreState,
+  cohortIds: string[],
+): Cohort[] => {
+  return cohortIds.reduce((result: Cohort[], id) => {
+    const cohort = selectCohortById(state, id);
+    if (cohort !== undefined) result.push(cohort);
+    return result;
+  }, [] as Cohort[]);
+};
+
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };

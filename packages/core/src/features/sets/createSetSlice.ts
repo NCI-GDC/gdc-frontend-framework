@@ -184,7 +184,7 @@ export const createSetSlice = graphqlAPISlice
             },
           },
         }),
-        transformResponse: transformSsmsSetResponse,
+        transformResponse: transformCaseSetResponse,
         invalidatesTags: (_result, _error, arg) => [
           { type: "caseSets", id: arg?.set_id },
         ],
