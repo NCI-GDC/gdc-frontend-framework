@@ -32,9 +32,9 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |FOIA                                       |provides individuals with a right to access to records         |
   |HHS Vulnerability Disclosure               |If you make a good faith effort to comply with this policy     |
   |U.S. Department of Health and Human Services|Receive the latest updates from the Secretary, Blogs,         |
-  |National Institutes of Health              |NIH is the nation’s medical research agency, supporting        |
+  |National Institutes of Health              |National Institutes of Health, 9000 Rockville Pike, Bethesda,  |
   |National Cancer Institute                  |Research to improve the lives of people with cancer            |
-  |USA.gov                                    |The new USA.gov helps you locate and understand government     |
+  |USA.gov                                    |Ask USA.gov a question at                                      |
 
 ## Validate Navigation Links - same tab
 * These links should take the user to correct page in the same tab
