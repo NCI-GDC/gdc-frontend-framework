@@ -175,6 +175,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
+        console.log({ response });
         const { cases } = response?.data?.explore;
         const {
           numerators: {

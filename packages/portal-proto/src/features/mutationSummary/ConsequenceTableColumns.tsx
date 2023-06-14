@@ -34,21 +34,23 @@ export const ConsequenceColumnListOrder: Columns[] = [
 
   {
     id: "consequences",
-    columnName: (
+    HeaderTooltip: (
       <HeaderTooltip
         title="Consequences"
         tooltip="Consequences for canonical transcript"
       />
     ),
+    columnName: "Consequences",
     Cell: ({ value }: CellProps) => <>{value}</>,
     disableSortBy: true,
     visible: true,
   },
   {
     id: "impact",
-    columnName: (
+    HeaderTooltip: (
       <ImpactHeaderWithTooltip geneSymbol={undefined} isModal={undefined} />
     ),
+    columnName: "Impact",
     Cell: ({ value }: CellProps) => <>{value}</>,
     disableSortBy: true,
     visible: true,

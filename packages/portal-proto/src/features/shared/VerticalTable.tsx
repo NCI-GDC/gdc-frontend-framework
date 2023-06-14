@@ -54,6 +54,10 @@ export interface Columns {
    */
   columnName: JSX.Element | string | ((value: any) => JSX.Element);
   /**
+   * HTML that user will see at top of column
+   */
+  HeaderTooltip?: JSX.Element;
+  /**
    * Flag to show / hide column
    */
   visible: boolean;
@@ -214,7 +218,7 @@ interface TableProps {
 
 const mapColumn = (obj: Columns): Column => {
   const colObj: Column = {
-    Header: obj.columnName,
+    Header: obj.HeaderTooltip ?? obj.columnName,
     accessor: obj.id,
     disableSortBy: obj.disableSortBy || false,
     highlighted: obj.highlighted || false,

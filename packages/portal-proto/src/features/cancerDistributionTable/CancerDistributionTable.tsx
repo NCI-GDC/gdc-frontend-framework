@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
 import {
@@ -30,6 +29,7 @@ interface CancerDistributionTableTSVDownloadData {
   ssm_affected_cases: string;
 }
 import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import { HeaderTooltip } from "../SomaticMutations/utils";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -136,12 +136,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         columnName: "Disease Type",
         visible: true,
         Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow
-            value={value}
-            row={row}
-            label="Disease Types"
-            expandedRowTitle="Disease Types"
-          />
+          <CollapsibleRow value={value} row={row} label="Disease Types" />
         ),
       },
       {
@@ -149,29 +144,19 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         columnName: "Primary Site",
         visible: true,
         Cell: ({ value, row }: CellProps) => (
-          <CollapsibleRow
-            value={value}
-            row={row}
-            label="Primary Site"
-            expandedRowTitle="Primary Site"
-          />
+          <CollapsibleRow value={value} row={row} label="Primary Site" />
         ),
       },
       {
         id: "ssm_affected_cases",
-        columnName: (
-          <div>
-            <Tooltip
-              label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
+        HeaderTooltip: (
+          <HeaderTooltip
+            tooltip={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
-              multiline
-              withArrow
-              width={250}
-            >
-              <span># SSM Affected Cases</span>
-            </Tooltip>
-          </div>
+            title="# SSM Affected Cases"
+          />
         ),
+        columnName: "# SSM Affected Cases",
         visible: true,
       },
     ];
@@ -181,54 +166,39 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         ? [
             {
               id: "cnv_gains",
-              columnName: (
-                <div>
-                  <Tooltip
-                    label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
+              HeaderTooltip: (
+                <HeaderTooltip
+                  tooltip={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
         / # Cases tested for Copy Number Variation in the Project
         `}
-                    multiline
-                    withArrow
-                    width={250}
-                  >
-                    <span># CNV Gains</span>
-                  </Tooltip>
-                </div>
+                  title="# CNV Gains"
+                />
               ),
+              columnName: "# CNV Gains",
               visible: true,
             },
             {
               id: "cnv_losses",
-              columnName: (
-                <div>
-                  <Tooltip
-                    label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
+              HeaderTooltip: (
+                <HeaderTooltip
+                  tooltip={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
         / # Cases tested for Copy Number Variation in Project
         `}
-                    multiline
-                    withArrow
-                    width={250}
-                  >
-                    <span># CNV Losses</span>
-                  </Tooltip>
-                </div>
+                  title="# CNV Losses"
+                />
               ),
+              columnName: "# CNV Losses",
               visible: true,
             },
             {
               id: "num_mutations",
-              columnName: (
-                <div>
-                  <Tooltip
-                    label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
-                    multiline
-                    withArrow
-                    width={250}
-                  >
-                    <span># Mutations</span>
-                  </Tooltip>
-                </div>
+              HeaderTooltip: (
+                <HeaderTooltip
+                  tooltip={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
+                  title="# Mutations"
+                />
               ),
+              columnName: "# Mutations",
               visible: true,
             },
           ]

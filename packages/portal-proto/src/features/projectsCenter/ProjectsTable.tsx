@@ -118,14 +118,7 @@ const ProjectsTable: React.FC = () => {
       columnName: "Disease Type",
       visible: true,
       Cell: ({ value, row }: CellProps) => {
-        return (
-          <CollapsibleRow
-            value={value}
-            row={row}
-            label="Disease Types"
-            expandedRowTitle="Disease Types"
-          />
-        );
+        return <CollapsibleRow value={value} row={row} label="Disease Types" />;
       },
       disableSortBy: true,
     },
@@ -134,14 +127,7 @@ const ProjectsTable: React.FC = () => {
       columnName: "Primary Site",
       visible: true,
       Cell: ({ value, row }: CellProps) => {
-        return (
-          <CollapsibleRow
-            value={value}
-            row={row}
-            label="Primary Sites"
-            expandedRowTitle="Primary Sites"
-          />
-        );
+        return <CollapsibleRow value={value} row={row} label="Primary Sites" />;
       },
       disableSortBy: true,
     },

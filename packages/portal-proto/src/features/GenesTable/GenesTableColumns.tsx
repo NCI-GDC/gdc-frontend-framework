@@ -6,8 +6,8 @@ import {
 } from "./SelectAllGenesButton";
 import { ReactNode } from "react";
 import { HeaderTooltip } from "../SomaticMutations/utils";
-import CollapsibleRow from "../shared/CollapsibleRow";
 import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import SMTableRowExpandableRow from "../SomaticMutations/TableRowComponents/SMTableRowExpandableRow";
 
 // not correct for all the cells
 interface CellProps {
@@ -35,12 +35,13 @@ export const buildGenesTableColumn = (): Columns[] => {
     },
     {
       id: "cohort",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title="Cohort"
           tooltip="Click to add/remove genes to/from your cohort filters"
         />
       ),
+      columnName: "Cohort",
       Cell: ({ value }: CellProps) => {
         return <>{value} </>;
       },
@@ -49,12 +50,13 @@ export const buildGenesTableColumn = (): Columns[] => {
     },
     {
       id: "survival",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title="Survival"
           tooltip="Click to change the survival plot display"
         />
       ),
+      columnName: "Survival",
       Cell: ({ value }: CellProps) => <>{value}</>,
       visible: true,
     },
@@ -97,7 +99,7 @@ export const buildGenesTableColumn = (): Columns[] => {
     },
     {
       id: "SSMSAffectedCasesInCohort",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title={`# SSM Affected Cases
             in Cohort`}
@@ -105,13 +107,15 @@ export const buildGenesTableColumn = (): Columns[] => {
                 # Cases where Gene is mutated / # Cases tested for Simple Somatic Mutations`}
         />
       ),
+
+      columnName: "# SSM Affected Cases in Cohort",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
     },
     {
       id: "SSMSAffectedCasesAcrossTheGDC",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title={`# SSM Affected Cases
           Across the GDC`}
@@ -119,9 +123,10 @@ export const buildGenesTableColumn = (): Columns[] => {
          Expand to see breakdown by project`}
         />
       ),
+      columnName: "# SSM Affected Cases Across the GDC",
       Cell: ({ value, row }: CellProps) => {
         return (
-          <CollapsibleRow
+          <SMTableRowExpandableRow
             value={["sss", "asss"]}
             row={row}
             label={
@@ -130,7 +135,6 @@ export const buildGenesTableColumn = (): Columns[] => {
                 denominator={value["denominator"]}
               />
             }
-            hideValueLength={true}
             expandedRowTitle="# SSMS Affected Cases Across The GDC"
           />
         );
@@ -140,40 +144,39 @@ export const buildGenesTableColumn = (): Columns[] => {
     },
     {
       id: "CNVGain",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
-          title={`# CNV Gain`}
-          tooltip={
-            "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
-          }
+          title="# CNV Gain"
+          tooltip="# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
         />
       ),
+      columnName: "# CNV Gain",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
     },
     {
       id: "CNVLoss",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
-          title={`# CNV Loss`}
-          tooltip={
-            "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
-          }
+          title="# CNV Loss"
+          tooltip="# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
         />
       ),
+      columnName: "# CNV Loss",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
     },
     {
       id: "mutations",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title="# Mutations"
           tooltip="# Unique Simple Somatic Mutations in the Gene in Cohort"
         />
       ),
+      columnName: "# Mutations",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
@@ -183,7 +186,7 @@ export const buildGenesTableColumn = (): Columns[] => {
       id: "annotations",
       columnName: "Annotations",
       Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-24">{value} </div>;
+        return <>{value} </>;
       },
       disableSortBy: true,
       visible: true,

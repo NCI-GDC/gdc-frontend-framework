@@ -1,7 +1,6 @@
 import { Columns } from "@/features/shared/VerticalTable";
 import { Row, TableInstance } from "react-table";
 import { NumeratorDenominator } from "../../components/expandableTables/shared";
-import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import {
   SelectMutationIdButton,
   SelectAllMutationIdsButton,
@@ -9,6 +8,7 @@ import {
 import { ImpactHeaderWithTooltip } from "./TableRowComponents/ImpactHeaderWithTooltip";
 import { HeaderTooltip } from "./utils";
 import { ReactNode } from "react";
+import SMTableRowExpandableRow from "./TableRowComponents/SMTableRowExpandableRow";
 
 // not correct for all the cells
 interface CellProps {
@@ -46,7 +46,8 @@ export const buildSMTableColumn = ({
     },
     {
       id: "cohort",
-      columnName: (
+      columnName: "Cohort",
+      HeaderTooltip: (
         <HeaderTooltip
           title="Cohort"
           tooltip="Click to add/remove mutations to/from your cohort filters"
@@ -60,7 +61,8 @@ export const buildSMTableColumn = ({
     },
     {
       id: "survival",
-      columnName: (
+      columnName: "Survival",
+      HeaderTooltip: (
         <HeaderTooltip
           title="Survival"
           tooltip="Click to change the survival plot display"
@@ -73,14 +75,15 @@ export const buildSMTableColumn = ({
       id: "mutationID",
       columnName: "Mutation ID",
       Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-24">{value} </div>;
+        return <>{value} </>;
       },
       disableSortBy: true,
       visible: false,
     },
     {
       id: "DNAChange",
-      columnName: (
+      columnName: "DNA Change",
+      HeaderTooltip: (
         <HeaderTooltip
           title="DNA Change"
           tooltip={`Genomic DNA Change, shown as
@@ -108,19 +111,20 @@ export const buildSMTableColumn = ({
     },
     {
       id: "consequences",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title="Consequences"
           tooltip="Consequences for canonical transcript"
         />
       ),
+      columnName: "Consequences",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
     },
     {
       id: "affectedCasesInCohort",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title={`# Affected Cases
               in ${geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"}`}
@@ -137,13 +141,15 @@ export const buildSMTableColumn = ({
                 `}
         />
       ),
+      columnName: `# Affected Cases
+      in ${geneSymbol ? geneSymbol : projectId ? projectId : "Cohort"}`,
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,
     },
     {
       id: "affectedCasesAcrossTheGDC",
-      columnName: (
+      HeaderTooltip: (
         <HeaderTooltip
           title={`# Affected Cases
             Across the GDC`}
@@ -152,10 +158,13 @@ export const buildSMTableColumn = ({
              Expand to see breakdown by project`}
         />
       ),
+      columnName: `# Affected Cases
+      Across the GDC`,
       Cell: ({ value, row }: CellProps) => {
+        // console.log{{row, value}}
         return (
-          <CollapsibleRow
-            value={["sss", "asss"]}
+          <SMTableRowExpandableRow
+            mutationId={row.original["mutationID"]}
             row={row}
             label={
               <NumeratorDenominator
@@ -163,7 +172,6 @@ export const buildSMTableColumn = ({
                 denominator={value["denominator"]}
               />
             }
-            hideValueLength={true}
             expandedRowTitle="# SSMS Affected Cases Across The GDC"
           />
         );
@@ -173,9 +181,10 @@ export const buildSMTableColumn = ({
     },
     {
       id: "impact",
-      columnName: (
+      HeaderTooltip: (
         <ImpactHeaderWithTooltip geneSymbol={geneSymbol} isModal={isModal} />
       ),
+      columnName: "Impact",
       Cell: ({ value }: CellProps) => <>{value}</>,
       disableSortBy: true,
       visible: true,

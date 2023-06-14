@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -38,20 +38,17 @@ const CollapsibleRow = ({
   value,
   label,
   row,
-  hideValueLength = false,
-  expandedRowTitle,
 }: {
   value: string[];
-  label: ReactNode;
+  label: string;
   row: Row;
-  hideValueLength?: boolean;
-  expandedRowTitle?: string;
 }): JSX.Element => {
   const [collapsed, setCollapsed] = useState(true);
-  const handleExpand = async (row: Row) => {
+
+  const handleExpand = (row: Row) => {
     const update = {
       ...(row.state.values as Record<string, string[]>),
-      [expandedRowTitle]: value,
+      [label]: value,
     };
     setCollapsed(false);
     row.setState((old) => ({
@@ -65,7 +62,7 @@ const CollapsibleRow = ({
 
   const handleCollapse = (row: Row): void => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { [expandedRowTitle]: _, ...update } = row.state.values as Record<
+    const { [label]: _, ...update } = row.state.values as Record<
       string,
       string[]
     >; // remove value from state
@@ -101,8 +98,7 @@ const CollapsibleRow = ({
           >
             <DownIcon size="1.25em" className="text-accent" />
             <span className="whitespace-nowrap">
-              {!hideValueLength && value?.length?.toLocaleString().padStart(6)}{" "}
-              {label}
+              {value?.length.toLocaleString().padStart(6)} {label}
             </span>
           </div>
         ) : (
@@ -119,8 +115,7 @@ const CollapsibleRow = ({
             <UpIcon size="1.25em" className="text-accent mr-1" />
             <span className="whitespace-nowrap text-bold">
               <b>
-                {!hideValueLength && value.length.toLocaleString().padStart(6)}{" "}
-                {label}
+                {value.length.toLocaleString().padStart(6)} {label}
               </b>
             </span>
           </div>

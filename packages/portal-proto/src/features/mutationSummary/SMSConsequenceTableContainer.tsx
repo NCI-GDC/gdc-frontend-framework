@@ -73,7 +73,7 @@ export const SMSConsequenceTableContainer: React.FC<
       return filtered?.map(
         ({
           transcript: {
-            gene: { symbol, gene_strand },
+            gene: { gene_id, symbol, gene_strand },
             aa_change,
             consequence_type,
             is_canonical,
@@ -89,7 +89,7 @@ export const SMSConsequenceTableContainer: React.FC<
           },
         }) => ({
           gene: (
-            <Link href={`/genes/${symbol}`}>
+            <Link href={`/genes/${gene_id}`}>
               <a className="text-utility-link font-content underline">
                 {symbol}
               </a>
