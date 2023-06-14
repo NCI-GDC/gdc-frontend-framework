@@ -32,7 +32,10 @@ import {
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "../../components/expandableTables/shared";
+import {
+  ButtonTooltip,
+  NumeratorDenominator,
+} from "../../components/expandableTables/shared";
 import {
   SMTableAffectedCasesCohort,
   SMTableCohort,
@@ -43,6 +46,7 @@ import {
   SMTableImpacts,
 } from "./TableRowComponents";
 import { buildSMTableColumn } from "./SMTableColumns";
+import SMTableRowExpandableRow from "./TableRowComponents/SMTableRowExpandableRow";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -259,6 +263,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             ),
             // need to change this
             affectedCasesAcrossTheGDC: affectedCasesAcrossTheGDC,
+            //  (
+            //   <SMTableRowExpandableRow
+            //     mutationId={mutationID}
+            //     // row={row}
+            //     label={
+            //       <NumeratorDenominator
+            //         numerator={affectedCasesAcrossTheGDC.numerator}
+            //         denominator={affectedCasesAcrossTheGDC.denominator}
+            //       />
+            //     }
+            //     expandedRowTitle="# SSMS Affected Cases Across The GDC"
+            //   />
+            // ),
             impact: <SMTableImpacts impact={impact} />,
           }),
         ),

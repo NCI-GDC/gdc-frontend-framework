@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -65,63 +65,29 @@ const SMTableRowExpandableRow = ({
   mutationId,
 }: {
   label: ReactNode;
-  row: Row;
+  row?: Row;
   expandedRowTitle?: string;
   mutationId: string;
 }): JSX.Element => {
   const [collapsed, setCollapsed] = useState(true);
-  const [trigger, result] = useLazyGetSomaticMutationTableSubrowQuery();
+  const [trigger, { data }] = useLazyGetSomaticMutationTableSubrowQuery();
+  console.log(data);
 
-  console.log({ result });
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     const update = {
-  //       ...(row.state.values as Record<string, string[]>),
-  //       [expandedRowTitle]: ["data"],
-  //     };
-  //     setCollapsed(false);
-  //     console.log({ update });
-  //     console.log({ row });
-  //     row.setState((old) => ({
-  //       // add the expanded cell data to the row's state
-  //       ...old,
-  //       expanded: old.expanded + 1,
-  //       values: update,
-  //       content: CreateContent(update), // content to add to the expanded row
-  //     }));
-  //   }
-  // }, [expandedRowTitle, row, isSuccess, isFetching, data]);
-
-  const handleExpand = async () => {
-    await trigger({ id: mutationId });
-    // .unwrap()
-    // .then((res) => {
-    //   const subDataSorted = res
-    //     .map((x): TableSubrowDataWithRatio => {
-    //       return { ...x, ratio: itemRatio(x) };
-    //     })
-    //     .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
-    //       if (itemRatio(a) > itemRatio(b)) return -1;
-    //       if (itemRatio(a) < itemRatio(b)) return 1;
-    //       return 0;
-    //     });
-
-    //   const renderValuesss = subDataSorted.map((item, i) => (
-    //     <RatioSpring
-    //       item={{
-    //         numerator: item.numerator ?? 0,
-    //         denominator: item.denominator ?? 0,
-    //         project: item.project,
-    //       }}
-    //       index={i}
-    //       key={i}
-    //     />
-    //   ));
-
-    //   return renderValuesss;
-    // });
-    // console.log({ val });
-    // setRenderVal(val);
+  const handleExpand = () => {
+    const update = {
+      ...(row.state.values as Record<string, string[]>),
+      [expandedRowTitle]: ["data"],
+    };
+    setCollapsed(false);
+    console.log({ update });
+    console.log({ row });
+    row.setState((old) => ({
+      // add the expanded cell data to the row's state
+      ...old,
+      expanded: old.expanded + 1,
+      values: update,
+      content: CreateContent(update), // content to add to the expanded row
+    }));
   };
 
   const handleCollapse = () => {

@@ -161,7 +161,6 @@ export const buildSMTableColumn = ({
       columnName: `# Affected Cases
       Across the GDC`,
       Cell: ({ value, row }: CellProps) => {
-        // console.log{{row, value}}
         return (
           <SMTableRowExpandableRow
             mutationId={row.original["mutationID"]}
@@ -175,6 +174,7 @@ export const buildSMTableColumn = ({
             expandedRowTitle="# SSMS Affected Cases Across The GDC"
           />
         );
+        // return <>{value}</>;
       },
       disableSortBy: true,
       visible: true,
