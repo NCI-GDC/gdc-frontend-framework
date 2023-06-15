@@ -23,7 +23,7 @@ interface CohortCardProps {
     };
   };
   readonly survivalPlotSelectable: boolean;
-  readonly caseIds: string[][];
+  readonly caseSetIds: string[];
   readonly casesFetching: boolean;
 }
 
@@ -34,7 +34,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
   counts,
   cohorts,
   survivalPlotSelectable,
-  caseIds,
+  caseSetIds,
   casesFetching,
 }: CohortCardProps) => {
   return (
@@ -62,8 +62,8 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
-      {!casesFetching && caseIds.length !== 0 ? (
-        <CohortVennDiagram caseIds={caseIds} cohorts={cohorts} />
+      {!casesFetching && caseSetIds.length !== 0 ? (
+        <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
       ) : (
         <VennDiagram
           chartData={[
