@@ -133,6 +133,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    setPage(0);
   };
 
   const handleSetPage = (pageIndex: number) => {
