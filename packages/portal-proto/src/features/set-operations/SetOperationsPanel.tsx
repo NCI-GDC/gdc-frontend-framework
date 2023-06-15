@@ -23,9 +23,9 @@ const ENTITY_TYPE_TO_QUERY_HOOK = {
 };
 
 const ENTITY_TYPE_TO_COUNT_HOOK = {
+  cohort: useCaseSetCountsQuery,
   genes: useGeneSetCountsQuery,
   mutations: useSsmSetCountsQuery,
-  cohort: useCaseSetCountsQuery,
 };
 
 interface SetOperationsPanelProps {

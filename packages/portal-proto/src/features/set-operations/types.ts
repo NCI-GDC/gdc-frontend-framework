@@ -4,3 +4,10 @@ export type SelectedEntity = {
   id: string;
 };
 export type SelectedEntities = SelectedEntity[];
+
+export interface SetOperationsForGenesSSMSCasesProps {
+  selectedEntities: SelectedEntities;
+  setSelectedEntities: (SelectedEntities) => void;
+  selectedEntityType: SetOperationEntityType;
+  setSelectedEntityType: (SetOperationEntityType) => void;
+}

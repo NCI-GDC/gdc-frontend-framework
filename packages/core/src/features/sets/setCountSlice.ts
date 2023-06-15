@@ -271,7 +271,7 @@ export const setCountSlice = graphqlAPISlice
             if (result.error) {
               return { error: result.error };
             } else {
-              counts[setId as string] = transformSsmsSetCountResponse(
+              counts[setId as string] = transformCaseSetCountResponse(
                 result.data as GraphQLApiResponse<any>,
               );
             }
@@ -279,7 +279,7 @@ export const setCountSlice = graphqlAPISlice
           return { data: counts };
         },
         providesTags: (_result, _error, arg) =>
-          arg.setIds.map((id) => ({ type: "ssmsSets", id })),
+          arg.setIds.map((id) => ({ type: "caseSets", id })),
       }),
     }),
   });
