@@ -1,11 +1,17 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import { CohortFacetDoc, DAYS_IN_YEAR, FilterSet } from "@gff/core";
-import BarChart from "../charts/BarChart";
-import PValue from "./PValue";
 import saveAs from "file-saver";
+import {
+  CohortFacetDoc,
+  DAYS_IN_YEAR,
+  FilterSet,
+  joinFilters,
+} from "@gff/core";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
+import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
+import CohortCreationButton from "@/components/CohortCreationButton";
+import PValue from "./PValue";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -171,11 +177,41 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                 key={`${field}_${value}`}
               >
                 <td className="pl-2">{value}</td>
-                <td>{cohort1Value?.toLocaleString() || "--"}</td>
+                <td>
+                  <CohortCreationButton
+                    numCases={cohort1Value}
+                    label={cohort1Value?.toLocaleString() || "--"}
+                    caseFilters={joinFilters(cohorts.primary_cohort.filter, {
+                      mode: "and",
+                      root: {
+                        [field]: {
+                          field,
+                          operands: [value],
+                          operator: "includes",
+                        },
+                      },
+                    })}
+                  />
+                </td>
                 <td>
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
                 </td>
-                <td>{cohort2Value?.toLocaleString() || "--"}</td>
+                <td>
+                  <CohortCreationButton
+                    numCases={cohort2Value}
+                    label={cohort2Value?.toLocaleString() || "--"}
+                    caseFilters={joinFilters(cohorts.comparison_cohort.filter, {
+                      mode: "and",
+                      root: {
+                        [field]: {
+                          field,
+                          operands: [value],
+                          operator: "includes",
+                        },
+                      },
+                    })}
+                  />
+                </td>
                 <td>
                   {(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)} %
                 </td>
