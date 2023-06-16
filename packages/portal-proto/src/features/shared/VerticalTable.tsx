@@ -77,6 +77,10 @@ export interface Columns {
   columns?: Columns[];
   width?: number;
   highlighted?: boolean;
+  /**
+   * TODO implement, Custom sorting function for column data, currently used to define type for useStandardPagination function
+   */
+  sortingFn?: (rowA: any, rowB: any, columnId: string) => number;
 }
 
 interface VerticalTableProps {
@@ -587,6 +591,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               <div className="flex mb-2 gap-2">
                 <TextInput
                   icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
                   classNames={{

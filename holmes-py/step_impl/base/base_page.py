@@ -1,13 +1,16 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    TEXT_IDENT = lambda text: f'text="{text}"'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
+    SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
+
+    CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -26,6 +29,7 @@ class GenericLocators:
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
@@ -79,6 +83,11 @@ class BasePage:
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
         return self.get_text(locator)
 
+    def get_filter_selection_count(self,filter_group_name,selection):
+        """Returns the count of how many items are associated with that filter in the current cohort"""
+        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
+        return self.get_text(locator)
+
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
@@ -123,7 +132,7 @@ class BasePage:
         return True
 
     def is_text_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_visible(locator)
         except:
@@ -131,7 +140,7 @@ class BasePage:
         return True
 
     def is_text_not_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_hidden(locator)
         except:
@@ -196,6 +205,16 @@ class BasePage:
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def click_set_as_current_cohort_in_message(self):
+        """Clicks 'Set this as your current cohort' in a modal message"""
+        locator = GenericLocators.SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def click_create_or_save_button_in_cohort_modal(self):
+        """Clicks 'Create' or 'Save' in cohort modal"""
+        locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
         self.click(locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):

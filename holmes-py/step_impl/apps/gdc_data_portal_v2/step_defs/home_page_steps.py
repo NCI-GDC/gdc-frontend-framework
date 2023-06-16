@@ -12,7 +12,7 @@ def start_app():
 @step("Selecting these buttons should take the user to correct page in the same tab <table>")
 def click_nav_button_same_tab(table):
     for k, v in enumerate(table):
-        APP.home_page.click_button_ident_a_with_displayed_text_name(v[0])
+        APP.shared.click_button_ident_a_with_displayed_text_name(v[0])
         APP.header_section.wait_for_page_to_load(v[1])
         APP.home_page.visit()
 
