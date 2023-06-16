@@ -12,15 +12,25 @@ import { extractEntityPath, findMatchingToken } from "./utils";
 export const QuickSearch = (): JSX.Element => {
   const [performSearch, setPerformSearch] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [searchTextForApi, setSearchTextForApi] = useState("");
   const [focusedListElemIdx, setFocusedListElemIdx] = useState(undefined);
+  const [matchedSearchList, setMatchedSearchList] = useState(undefined);
   const quickSearchRef = useRef(null);
   const ref = useClickOutside(() => setPerformSearch(false));
   const router = useRouter();
 
   const {
-    data: { searchList },
+    data: { searchList, query },
     isFetching,
-  } = useQuickSearch(searchText);
+  } = useQuickSearch(searchTextForApi);
+
+  // Checks search results returned against current search to make sure it matches
+  useEffect(() => {
+    if (query === searchTextForApi) {
+      setMatchedSearchList(searchList);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchList]);
 
   useEffect(() => {
     if (performSearch) {
@@ -71,14 +81,15 @@ export const QuickSearch = (): JSX.Element => {
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
-      searchText.length > 0 ? setSearchText("") : setPerformSearch(false);
+      searchText.length > 0 ? setSearchTextForApi("") : setPerformSearch(false);
+      setMatchedSearchList(undefined);
     } else if (e.shiftKey && e.key === "Tab") {
       setPerformSearch(false);
     }
   };
 
   const onInputBlur = () => {
-    (searchText.length === 0 || searchList.length === 0) &&
+    (searchText.length === 0 || matchedSearchList.length === 0) &&
       setPerformSearch(false);
   };
 
@@ -91,7 +102,7 @@ export const QuickSearch = (): JSX.Element => {
 
   const onSelectItem = (index: number) => {
     setPerformSearch(false);
-    const entityPath = extractEntityPath(searchList[index]);
+    const entityPath = extractEntityPath(matchedSearchList[index]);
     // Note: for annotations we need to open v1 portal in a new tab
     if (entityPath.includes("annotations")) {
       window.open(entityPath, "_ blank");
@@ -102,8 +113,19 @@ export const QuickSearch = (): JSX.Element => {
 
   const onCancel = () => {
     setSearchText("");
+    setSearchTextForApi("");
     quickSearchRef.current.focus();
   };
+
+  useEffect(() => {
+    //prevents unneeded api calls if user is typing something
+    const delayDebounceFn = setTimeout(() => {
+      setSearchTextForApi(searchText.trim());
+    }, 250);
+
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchText]);
 
   return (
     <>
@@ -126,6 +148,7 @@ export const QuickSearch = (): JSX.Element => {
               <CloseIcon
                 onClick={() => {
                   setSearchText("");
+                  setSearchTextForApi("");
                   quickSearchRef.current.focus();
                 }}
                 className="cursor-pointer"
@@ -136,18 +159,20 @@ export const QuickSearch = (): JSX.Element => {
           onChange={(e) => setSearchText(e.target.value)}
         />
 
-        {!isFetching && searchText.length > 0 && (
-          <TraversableList
-            data={searchList}
-            onListBlur={onInputFocus}
-            onCancel={onCancel}
-            onSelectItem={onSelectItem}
-            onFocusList={(idx: number) => setFocusedListElemIdx(idx)}
-            onListTab={() => setPerformSearch(false)}
-            renderItem={(item, idx) => renderItem(item, idx)}
-            keyExtractor={({ id }) => id}
-          />
-        )}
+        {!isFetching &&
+          searchTextForApi.length > 0 &&
+          typeof matchedSearchList === "object" && ( // checks to make sure its not undefined
+            <TraversableList
+              data={matchedSearchList}
+              onListBlur={onInputFocus}
+              onCancel={onCancel}
+              onSelectItem={onSelectItem}
+              onFocusList={(idx: number) => setFocusedListElemIdx(idx)}
+              onListTab={() => setPerformSearch(false)}
+              renderItem={(item, idx) => renderItem(item, idx)}
+              keyExtractor={({ id }) => id}
+            />
+          )}
       </div>
     </>
   );
