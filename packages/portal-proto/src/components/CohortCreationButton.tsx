@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tooltip } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
+import tw from "tailwind-styled-components";
 import {
   FilterSet,
   useCoreSelector,
@@ -9,6 +10,38 @@ import {
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+
+const CohortCreationStyledButton = tw.button`
+  flex
+  items-center
+  w-full
+  gap-2
+  rounded
+  border-primary
+  border-solid
+  border-1
+  text-primary
+  bg-base-max
+  hover:text-base-max
+  hover:bg-primary
+  disabled:opacity-50
+  disabled:bg-base-lightest
+  disabled:text-primary
+  disabled:border-base-light
+  disabled:text-base-light
+`;
+
+const IconWrapper = tw.span`
+  ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
+  border-r-1
+  border-solid
+  ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
+  h-full
+  min-h-[24px]
+  flex
+  items-center
+  p-1
+`;
 
 interface CohortCreationButtonProps {
   readonly caseFilters: FilterSet;
@@ -61,16 +94,15 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         withArrow
       >
         <span>
-          <button
+          <CohortCreationStyledButton
             disabled={disabled}
             onClick={() => setShowCreateCohort(true)}
-            className="flex items-center w-full gap-2 rounded border-primary border-solid border-1 text-primary bg-base-max hover:text-base-max hover:bg-primary disabled:opacity-50"
           >
-            <span className="bg-accent border-r-1 border-solid border-primary h-full min-h-[24px] flex items-center p-1">
+            <IconWrapper $disabled={disabled}>
               <PlusIcon color="white" size={12} />
-            </span>
+            </IconWrapper>
             <span className="pr-2 font-bold">{label}</span>
-          </button>
+          </CohortCreationStyledButton>
         </span>
       </Tooltip>
       {showCreateCohort && (
