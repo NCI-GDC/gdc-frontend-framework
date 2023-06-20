@@ -124,7 +124,6 @@ export const QuickSearch = (): JSX.Element => {
     }, 250);
 
     return () => clearTimeout(delayDebounceFn);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText]);
 
   return (
