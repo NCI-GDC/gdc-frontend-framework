@@ -4,8 +4,8 @@ import {
   SelectedEntities,
   SetOperationEntityType,
 } from "@/features/set-operations/types";
-import SetOperationsForGenesSSMS from "@/features/set-operations/SetOperationsForGenesSSMS";
 import SetOperationsForCohorts from "@/features/set-operations/SetOperationsForCohorts";
+import SetOperationsPanel from "@/features/set-operations/SetOperationsPanel";
 
 const SetOperationsForGenesSSMSCohorts = (): JSX.Element => {
   const [selectedEntities, setSelectedEntities] = useState<SelectedEntities>(
@@ -16,13 +16,15 @@ const SetOperationsForGenesSSMSCohorts = (): JSX.Element => {
   >(undefined);
 
   return selectedEntityType !== "cohort" ? (
-    <SetOperationsForGenesSSMS
+    <SetOperationsPanel
       selectedEntities={selectedEntities}
-      setSelectedEntities={setSelectedEntities}
       selectedEntityType={selectedEntityType}
+      setSelectedEntities={setSelectedEntities}
       setSelectedEntityType={setSelectedEntityType}
+      isLoading={false}
     />
   ) : (
+    // handle cohorts as a separate case as they require case set to be available
     <SetOperationsForCohorts
       selectedEntities={selectedEntities}
       setSelectedEntities={setSelectedEntities}

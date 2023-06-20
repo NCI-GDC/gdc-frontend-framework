@@ -5,9 +5,13 @@ export type SelectedEntity = {
 };
 export type SelectedEntities = SelectedEntity[];
 
-export interface SetOperationsForGenesSSMSCasesProps {
+export interface SetOperationsInputProps {
   selectedEntities: SelectedEntities;
-  setSelectedEntities: (SelectedEntities) => void;
   selectedEntityType: SetOperationEntityType;
+}
+
+export interface SetOperationsForGenesSSMSCasesProps
+  extends SetOperationsInputProps {
+  setSelectedEntities: (SelectedEntities) => void;
   setSelectedEntityType: (SetOperationEntityType) => void;
 }
