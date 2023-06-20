@@ -26,7 +26,7 @@ import { SummaryModalContext } from "src/utils/contexts";
 import Link from "next/link";
 
 const initialVisibleColumns: Columns[] = [
-  { id: "remove", columnName: "Remove", visible: true },
+  { id: "remove", columnName: "Remove", visible: true, arrangeable: false },
   { id: "uuid", columnName: "File UUID", visible: false },
   { id: "access", columnName: "Access", visible: true },
   { id: "name", columnName: "File Name", visible: true },

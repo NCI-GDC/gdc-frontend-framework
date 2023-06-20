@@ -1,6 +1,6 @@
 import { MantineProvider } from "@mantine/core";
 import { render } from "@testing-library/react";
-import { SaveOrCreateCohortModal } from "../SaveOrCreateCohortModal";
+import { SaveOrCreateEntityModal } from "../SaveOrCreateEntityModal";
 import tailwindConfig from "tailwind.config";
 import userEvent from "@testing-library/user-event";
 import * as mantine_form from "@mantine/form";
@@ -13,7 +13,7 @@ beforeAll(() => {
   jest.clearAllMocks();
 });
 
-describe("<SaveOrCreateCohortModal />", () => {
+describe("<SaveOrCreateEntityModal />", () => {
   it("default action should be Save", () => {
     const { getByText } = render(
       <MantineProvider
@@ -24,7 +24,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           initialName="testName"
           opened={true}
@@ -48,7 +48,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           action="test"
           initialName="testName"
@@ -81,7 +81,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           action="test"
           initialName="lorem"
@@ -110,7 +110,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           action="test"
           initialName=""
@@ -140,7 +140,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           action="test"
           initialName=""
@@ -169,7 +169,7 @@ describe("<SaveOrCreateCohortModal />", () => {
           },
         }}
       >
-        <SaveOrCreateCohortModal
+        <SaveOrCreateEntityModal
           entity="cohort"
           action="test"
           initialName=""
