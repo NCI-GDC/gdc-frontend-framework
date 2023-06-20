@@ -160,7 +160,7 @@ export const QuickSearch = (): JSX.Element => {
 
         {!isFetching &&
           searchTextForApi.length > 0 &&
-          typeof matchedSearchList === "object" && ( // checks to make sure its not undefined
+          matchedSearchList !== undefined && (
             <TraversableList
               data={matchedSearchList}
               onListBlur={onInputFocus}
