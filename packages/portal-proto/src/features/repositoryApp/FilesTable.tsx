@@ -35,7 +35,6 @@ import {
 } from "@/features/repositoryApp/hooks";
 import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
-import { useViewportSize } from "@mantine/hooks";
 
 const FilesTables: React.FC = () => {
   //This if for hanadling pagination changes
@@ -49,7 +48,6 @@ const FilesTables: React.FC = () => {
   const [sortBy, setSortBy] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
-  const { width } = useViewportSize();
 
   const coreDispatch = useCoreDispatch();
   const {
@@ -389,12 +387,9 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      {width <= 1370 && (
-        <div className="flex justify-end">
-          <Stats />
-        </div>
-      )}
-
+      <div className="flex justify-end Custom-Repo-Width:hidden">
+        <Stats />
+      </div>
       <VerticalTable
         additionalControls={
           <div className="flex gap-2 items-center justify-between mr-2">
@@ -412,7 +407,9 @@ const FilesTables: React.FC = () => {
                 TSV
               </FunctionButton>
             </div>
-            {width > 1370 && <Stats />}
+            <div className="hidden Custom-Repo-Width:block">
+              <Stats />
+            </div>
           </div>
         }
         tableData={formattedTableData}
