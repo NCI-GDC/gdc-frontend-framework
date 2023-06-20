@@ -6,18 +6,12 @@ import {
   selectManyCohortsById,
   useSetOperationsCasesTotalQuery,
   useCaseSetCountsQuery,
+  getCohortFilterForAPI,
 } from "@gff/core";
-import { showNotification } from "@mantine/notifications";
 import {
   SetOperationsForGenesSSMSCasesProps,
   SetOperationsInputProps,
 } from "@/features/set-operations/types";
-import { useAppDispatch, useAppSelector } from "./appApi";
-import {
-  registerCohortCaseSet,
-  classifyIfManyCohortsNeedForCaseSet,
-  selectCaseSetsFromCohort,
-} from "./cohortCaseSetsSlice";
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import { Loader } from "@mantine/core";
 import {
@@ -37,116 +31,68 @@ const SetOperationsForCohortsTwoOrThree = ({
   selectedEntities,
   selectedEntityType,
 }: SetOperationsInputProps) => {
-  // const [cohortSetEntities, setCohortSetEntities] = useState<SelectedEntities>([]);
   const [createSet0, createSet0Response] =
     useCreateCaseSetFromFiltersMutation();
   const [createSet1, createSet1Response] =
     useCreateCaseSetFromFiltersMutation();
   const [createSet2, createSet2Response] =
     useCreateCaseSetFromFiltersMutation();
-  const dispatch = useAppDispatch();
-  // get the list of selected cohorts
+
   const cohorts = useCoreSelector((state) =>
     selectManyCohortsById(
       state,
       selectedEntities.map((x) => x.id),
     ),
   );
-  const mappedCohorts = useMemo(() => {
-    console.log("mapping cohorts", cohorts);
-    return cohorts.reduce((acc, cohort) => {
-      acc[cohort.id] = cohort;
-      return acc;
-    }, {});
+
+  const cohortSelectedEntities = useMemo(() => {
+    return cohorts.map((cohort) => ({
+      id: `setops-app-${cohort.id}`,
+      name: cohort.name,
+    }));
   }, [cohorts]);
 
-  const needCaseSets = useAppSelector((state) =>
-    classifyIfManyCohortsNeedForCaseSet(state, mappedCohorts),
-  );
-
-  const cohortSelectedEntities = useAppSelector((state) =>
-    selectCaseSetsFromCohort(state, cohorts),
-  );
-
-  const numNeededToCreateOrUpdate = Object.values(needCaseSets).filter(
-    (cmd) => cmd === "create" || cmd === "update",
-  ).length;
-
-  const responses = useMemo(
-    () => [createSet0Response, createSet1Response, createSet2Response],
-    [createSet0Response, createSet1Response, createSet2Response],
-  );
-
-  const creatingCohortSets =
-    cohortSelectedEntities.length != selectedEntities.length &&
-    numNeededToCreateOrUpdate > 0 &&
-    responses.some((response) => response.isLoading);
-
-  console.log("cohorts", cohorts);
-  console.log("needCaseSets", needCaseSets);
-  console.log("responses", responses);
   useEffect(() => {
-    const creators = [createSet0, createSet1, createSet2];
-
-    // check if we need to create a case set for any of the selected cohorts
-    Object.keys(needCaseSets).forEach((key, index) => {
-      const cohort = mappedCohorts[key];
-      const filters = buildCohortGqlOperator(cohort.filters) ?? {};
-      if (needCaseSets[key] === "create" && responses[index].isUninitialized) {
-        console.log("creating case set for cohort", cohort);
-        creators[index]({
-          filters: filters,
-          size: cohort.caseCount,
-          sort: "case.project.project_id",
-          set_id: cohort.id,
-        }).then((result) => {
-          console.log("result", result);
-          if ("data" in result) {
-            dispatch(
-              registerCohortCaseSet({
-                cohort: cohort,
-                createdFilters: cohort.filters,
-                caseSetId: result.data as string,
-              }),
-            );
-          } else if (result.error) {
-            showNotification({
-              message: `Problem saving set from cohort: ${cohort.name}`,
-              color: "red",
-            });
-            return false;
-          }
-        });
-      }
+    createSet0({
+      filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
+      set_id: `setops-app-${cohorts[0].id}`,
     });
-  }, [
-    cohorts,
-    createSet0,
-    createSet1,
-    createSet2,
-    dispatch,
-    mappedCohorts,
-    needCaseSets,
-    responses,
-    selectedEntities,
-  ]);
+    createSet1({
+      filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
+      set_id: `setops-app-${cohorts[1].id}`,
+    });
+    if (cohorts.length == 3)
+      createSet2({
+        filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
+        set_id: `setops-app-${cohorts[2].id}`,
+      });
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loading =
+    createSet0Response.isUninitialized ||
+    createSet0Response.isLoading ||
+    createSet1Response.isUninitialized ||
+    createSet1Response.isLoading ||
+    (cohorts.length == 3 &&
+      (createSet2Response.isUninitialized || createSet2Response.isLoading));
 
   return (
     <>
-      {selectedEntities.length === 0 || creatingCohortSets ? (
+      {selectedEntities.length === 0 || loading ? (
         <div className="flex flex-row items-center justify-center w-100 h-96">
           <Loader size={100} />
         </div>
       ) : selectedEntities.length === 2 ? (
         <SetOperationsTwo
-          sets={selectedEntities}
+          sets={cohortSelectedEntities}
           entityType={selectedEntityType}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />
       ) : (
         <SetOperationsThree
-          sets={selectedEntities}
+          sets={cohortSelectedEntities}
           entityType={selectedEntityType}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}

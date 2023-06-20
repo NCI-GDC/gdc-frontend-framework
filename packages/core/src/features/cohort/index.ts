@@ -56,6 +56,7 @@ import {
   selectCohortCaseCountsByIds,
   selectAvailableCohortsAsMap,
   selectManyCohortsById,
+  getCohortFilterForAPI,
 } from "./availableCohortsSlice";
 
 import {
@@ -148,4 +149,5 @@ export {
   selectManyCohortsById,
   CountsData,
   defaultCohortNameGenerator,
+  getCohortFilterForAPI,
 };

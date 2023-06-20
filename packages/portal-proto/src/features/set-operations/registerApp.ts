@@ -1,15 +1,14 @@
-import { createGdcAppWithOwnStore } from "@gff/core";
-import { AppContext, AppStore, id } from "@/features/set-operations/appApi";
+import { createGdcApp, createAppID } from "@gff/core";
 import SetOperationsApp from "@/features/set-operations/SetOperationsApp";
 
-export default createGdcAppWithOwnStore({
+export default createGdcApp({
   App: SetOperationsApp,
-  id: id,
   name: "Set Operations",
   version: "v1.0.0",
   requiredEntityTypes: [],
-  store: AppStore,
-  context: AppContext,
 });
 
-export const SetOperationsAppId: string = id;
+export const SetOperationsAppId: string = createAppID(
+  "Set Operations",
+  "v1.0.0",
+);

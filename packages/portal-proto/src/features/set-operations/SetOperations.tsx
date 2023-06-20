@@ -289,8 +289,6 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
     { label: "( S2 ) - ( S1 )", key: "S2_minus_S1", value: s2MinusS1Data },
   ];
 
-  console.log("sets", sets, "data", data);
-
   return (
     <SetOperations
       sets={sets}
@@ -573,13 +571,6 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   const { data: summaryCounts, isFetching } = countHook({
     setIds: sets.map((s) => s.id),
   });
-
-  console.log(
-    "SetOperations:summaryCounts",
-    sets.map((s) => s.id),
-    summaryCounts,
-    isFetching,
-  );
 
   const chartData = data.map((set) => ({
     key: set.key,

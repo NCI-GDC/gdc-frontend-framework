@@ -1159,6 +1159,7 @@ export const selectCohortGqlFiltersById = (
 ): GqlOperation | undefined => {
   const cohort = cohortSelectors.selectById(state, cohortId);
   if (cohort === undefined)
+    // TODO: maybe better to return undefined?
     return buildCohortGqlOperator({ mode: "and", root: {} });
 
   return buildCohortGqlOperator(cohort?.caseSet.filters ?? cohort.filters);
@@ -1403,3 +1404,7 @@ export const setActiveCohortList =
       );
     }
   };
+
+export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
+  return cohort?.caseSet.filters ?? cohort.filters;
+};
