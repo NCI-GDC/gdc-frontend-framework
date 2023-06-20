@@ -216,8 +216,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           keepMounted={false}
         >
           <Tabs.List>
-            <Tabs.Tab value="genes">Genes</Tabs.Tab>
-            <Tabs.Tab value="ssms">Mutations</Tabs.Tab>
+            <Tabs.Tab data-testid="button-genes-tab" value="genes">
+              Genes
+            </Tabs.Tab>
+            <Tabs.Tab data-testid="button-mutations-tab" value="ssms">
+              Mutations
+            </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="genes" pt="xs">
             <GenesPanel

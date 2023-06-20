@@ -28,7 +28,12 @@ const DND: React.FC<DNDProps> = ({
 
   useClickOutside;
   return (
-    <div className="flex relative" aria-label="column change button" ref={ref}>
+    <div
+      data-testid="column-selector-box"
+      className="flex relative"
+      aria-label="column change button"
+      ref={ref}
+    >
       <button
         onClick={() => {
           setShowColumnMenu(!showColumnMenu);
