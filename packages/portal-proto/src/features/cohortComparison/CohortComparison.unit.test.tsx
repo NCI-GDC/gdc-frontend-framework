@@ -11,7 +11,7 @@ jest.mock("@gff/core", () => {
   return {
     ...original,
     useCohortFacets: jest.fn().mockReturnValue({
-      data: { aggregations: [], caseCounts: [], caseIds: [] },
+      data: { aggregations: [], caseCounts: [] },
       isFetching: false,
       isUnitialized: false,
     }),
@@ -23,6 +23,9 @@ jest.mock("@gff/core", () => {
         overallStats: { pValue: 0.5 },
       },
     }),
+    useCreateCaseSetFromFiltersMutation: jest
+      .fn()
+      .mockReturnValue([jest.fn(), { isLoading: false, isUnitialized: false }]),
   };
 });
 
