@@ -58,6 +58,7 @@ const SetOperationsForCohortsTwoOrThree = ({
       filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
     });
     if (cohorts.length == 3)
+      // if there are 3 cohorts, create the third one
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
       });
@@ -98,14 +99,14 @@ const SetOperationsForCohortsTwoOrThree = ({
       ) : selectedEntities.length === 2 ? (
         <SetOperationsTwo
           sets={selectedSets}
-          entityType={"cohort"}
+          entityType="cohort"
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />
       ) : (
         <SetOperationsThree
           sets={selectedSets}
-          entityType={"cohort"}
+          entityType="cohort"
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />

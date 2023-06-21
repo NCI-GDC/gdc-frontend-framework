@@ -438,19 +438,19 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
             createSetHook={useCreateSsmsSetFromFiltersMutation}
             closeModal={() => setShowSaveModal(false)}
           />
+        ) : entityType === "genes" ? (
+          <SaveSelectionAsSetModal
+            filters={filters}
+            initialSetName={"Custom Gene Selection"}
+            sort="case.project.project_id"
+            saveCount={count}
+            setType="genes"
+            setTypeLabel="gene"
+            createSetHook={useCreateGeneSetFromFiltersMutation}
+            closeModal={() => setShowSaveModal(false)}
+          />
         ) : (
-          entityType === "genes" && (
-            <SaveSelectionAsSetModal
-              filters={filters}
-              initialSetName={"Custom Gene Selection"}
-              sort="case.project.project_id"
-              saveCount={count}
-              setType={"genes"}
-              setTypeLabel="gene"
-              createSetHook={useCreateGeneSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )
+          entityType === "cohort" && <div>cohort</div>
         ))}
 
       <CountButton
