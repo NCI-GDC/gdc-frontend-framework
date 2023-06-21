@@ -17,6 +17,12 @@ interface CountButtonWrapperForSetProps {
   readonly entityType?: SetOperationEntityType;
 }
 
+/**
+ * CountButtonWrapperForSet: handles the count button to create sets for mutations, or genes.
+ * @param count
+ * @param filters
+ * @param entityType
+ */
 const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
   count,
   filters,
@@ -74,27 +80,39 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
   );
 };
 
+/**
+ * CountButtonWrapperForCohort: handles the count button to create case sets for cohorts.
+ * @param count
+ * @param filters
+ */
 const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
   count,
   filters,
 }: CountButtonWrapperForSetProps) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const disabled = count === 0;
-
   const [createSet] = useCreateCaseSetFromFiltersMutation();
-
   const coreDispatch = useCoreDispatch();
 
   const createCohort = (name: string) => {
     createSet({
+      // TODO: possibly add error handling
       filters: filters,
     })
       .unwrap()
-      .then((_setId) => {
-        console.log("createSet returned: ", _setId);
+      .then((setId) => {
         coreDispatch(
           addNewCohortWithFilterAndMessage({
-            filters: undefined,
+            filters: {
+              mode: "and",
+              root: {
+                "cases.case_id": {
+                  field: "cases.case_id",
+                  operands: [`set_id:${setId}`],
+                  operator: "includes",
+                },
+              },
+            },
             name,
             message: "newCasesCohort",
           }),
