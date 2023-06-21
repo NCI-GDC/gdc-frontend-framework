@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
@@ -89,10 +89,17 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
   count,
   filters,
 }: CountButtonWrapperForSetProps) => {
+  const [loading, setLoading] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const disabled = count === 0;
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const coreDispatch = useCoreDispatch();
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    }
+  }, [response.isLoading]);
 
   const createCohort = (name: string) => {
     createSet({
@@ -130,7 +137,6 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
           }}
         />
       )}
-
       <CountButton
         tooltipLabel={
           disabled
@@ -144,6 +150,7 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
         disabled={disabled}
         handleOnClick={() => setShowSaveModal(true)}
         count={count}
+        loading={loading}
       />
     </>
   );
