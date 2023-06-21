@@ -15,7 +15,8 @@ const SetOperationsForGenesSSMSCohorts = (): JSX.Element => {
     SetOperationEntityType | undefined
   >(undefined);
 
-  return selectedEntityType !== "cohort" ? (
+  return selectedEntityType !== "cohort" ? ( // not a cohort, so presumably an existing gene or mutation set
+    // use the set operations panel as usual
     <SetOperationsPanel
       selectedEntities={selectedEntities}
       selectedEntityType={selectedEntityType}
@@ -24,7 +25,7 @@ const SetOperationsForGenesSSMSCohorts = (): JSX.Element => {
       isLoading={false}
     />
   ) : (
-    // handle cohorts as a separate case as they require case set to be available
+    // handle cohorts  as they require case set to be available
     <SetOperationsForCohorts
       selectedEntities={selectedEntities}
       setSelectedEntities={setSelectedEntities}

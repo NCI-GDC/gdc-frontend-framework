@@ -9,8 +9,8 @@ import {
   selectAllCohorts,
 } from "@gff/core";
 import {
+  SelectedEntities,
   SetOperationsForGenesSSMSCasesProps,
-  SetOperationsInputProps,
 } from "@/features/set-operations/types";
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import { Loader } from "@mantine/core";
@@ -22,15 +22,19 @@ import SelectionPanel from "@/features/set-operations/SelectionPanel";
 
 /**
  * This component handles the case when the user has selected cohorts for set operations.
- * It will determine if the cohorts need to be converted to case sets, and create them if needed.
+ * It will create case set for each of the selected cohorts
  * @param selectedEntities
  * @param selectedEntityType
- * @constructor
  */
+
+interface SetOperationsForCohortsTwoOrThree {
+  selectedEntities: SelectedEntities;
+}
+
 const SetOperationsForCohortsTwoOrThree = ({
   selectedEntities,
-  selectedEntityType,
-}: SetOperationsInputProps) => {
+}: SetOperationsForCohortsTwoOrThree) => {
+  // set up three calls to create case set from filters for cohorts 0, 1, and 2
   const [createSet0, createSet0Response] =
     useCreateCaseSetFromFiltersMutation();
   const [createSet1, createSet1Response] =
@@ -94,14 +98,14 @@ const SetOperationsForCohortsTwoOrThree = ({
       ) : selectedEntities.length === 2 ? (
         <SetOperationsTwo
           sets={selectedSets}
-          entityType={selectedEntityType}
+          entityType={"cohort"}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />
       ) : (
         <SetOperationsThree
           sets={selectedSets}
-          entityType={selectedEntityType}
+          entityType={"cohort"}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />
@@ -110,6 +114,15 @@ const SetOperationsForCohortsTwoOrThree = ({
   );
 };
 
+/**
+ * This component handles the case when the user has selected cohorts for set operations.
+ * It will render the selection panel if the user has not selected cohorts yet.
+ * Otherwise, it will render the set operations for the selected cohorts
+ * @param selectedEntities: the selected cohorts
+ * @param setSelectedEntities: the function to set the selected cohorts
+ * @param selectedEntityType: the selected entity type
+ * @param setSelectedEntityType: the function to set the selected entity type
+ */
 const SetOperationsForCohorts = ({
   selectedEntities,
   setSelectedEntities,
@@ -134,7 +147,6 @@ const SetOperationsForCohorts = ({
       ) : (
         <SetOperationsForCohortsTwoOrThree
           selectedEntities={selectedEntities}
-          selectedEntityType={selectedEntityType}
         />
       )}
     </>
