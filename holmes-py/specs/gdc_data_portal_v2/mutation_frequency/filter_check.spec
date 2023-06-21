@@ -37,9 +37,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Polyphen Impact        |
   |Consequence Type       |
   |Type                   |
-* Switch to "Genes" tab in the Mutation Frequency app
 
 ## Validate Gene Filters
+* Switch to "Genes" tab in the Mutation Frequency app
 * Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|

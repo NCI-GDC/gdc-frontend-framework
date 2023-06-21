@@ -1,6 +1,8 @@
 import json
 import tarfile
 import time
+import re
+
 from datetime import datetime as dt
 
 from getgauge.python import step, before_spec, after_spec, data_store
@@ -199,6 +201,17 @@ def verify_showing_item_text(number_of_items_text):
     """Verifies the 'Showing' text at the bottom of tables has the correct text"""
     showing_items_text = APP.shared.get_showing_count_text()
     assert f"{showing_items_text}" in showing_items_text, f"The page is NOT showing expected number of items - {number_of_items_text}"
+
+@step("Verify the table header text is correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table header has the correct text"""
+    for k, v in enumerate(table):
+        table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
+        # Remove new lines from input
+        table_header_text_by_column = table_header_text_by_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_column = re.sub(' +', ' ', table_header_text_by_column)
+        assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):

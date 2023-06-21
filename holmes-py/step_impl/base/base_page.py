@@ -28,6 +28,7 @@ class GenericLocators:
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
+    TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
@@ -89,6 +90,14 @@ class BasePage:
         """Returns the count of how many items are associated with that filter in the current cohort"""
         locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
         return self.get_text(locator)
+
+    def get_table_header_text_by_column(self,column):
+        """
+        Gets text of table header by column.
+        Column indexing begins at '1'
+        """
+        table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
+        return self.get_text(table_header_text_locator)
 
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
