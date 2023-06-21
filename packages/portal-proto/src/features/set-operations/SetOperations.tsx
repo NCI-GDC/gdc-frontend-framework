@@ -10,9 +10,12 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
+  addNewCohortWithFilterAndMessage,
   GqlOperation,
+  useCoreDispatch,
 } from "@gff/core";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SelectedEntities, SetOperationEntityType } from "./types";
@@ -424,6 +427,18 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const disabled = count === 0;
 
+  const coreDispatch = useCoreDispatch();
+
+  const createCohort = (name: string) => {
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
   return (
     <>
       {showSaveModal &&
@@ -431,9 +446,9 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
           <SaveSelectionAsSetModal
             filters={filters}
             sort="occurrence.case.project.project_id"
-            initialSetName={"Custom Mutation Selection"}
+            initialSetName="Custom Mutation Selection"
             saveCount={count}
-            setType={"ssms"}
+            setType="ssms"
             setTypeLabel="mutation"
             createSetHook={useCreateSsmsSetFromFiltersMutation}
             closeModal={() => setShowSaveModal(false)}
@@ -450,11 +465,28 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
             closeModal={() => setShowSaveModal(false)}
           />
         ) : (
-          entityType === "cohort" && <div>cohort</div>
+          entityType === "cohort" && (
+            <CreateCohortModal
+              onClose={() => setShowSaveModal(false)}
+              onActionClick={(newName: string) => {
+                createCohort(newName);
+              }}
+            />
+          )
         ))}
 
       <CountButton
-        tooltipLabel="Save as new set"
+        tooltipLabel={
+          entityType !== "cohort"
+            ? "Save as new set"
+            : disabled
+            ? "No cases available"
+            : `Create a new unsaved cohort of ${
+                count > 1
+                  ? "these " + count.toLocaleString() + " cases"
+                  : "this case"
+              }`
+        }
         disabled={disabled}
         handleOnClick={() => setShowSaveModal(true)}
         count={count}
