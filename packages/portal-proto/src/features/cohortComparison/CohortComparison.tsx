@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pickBy } from "lodash";
 import { LoadingOverlay } from "@mantine/core";
-import { FilterSet, useCohortFacets } from "@gff/core";
+import {
+  FilterSet,
+  buildCohortGqlOperator,
+  useCohortFacets,
+  useCreateCaseSetFromFiltersMutation,
+} from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
@@ -51,7 +56,35 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     facetFields: fieldsToQuery,
     cohorts: cohorts,
   });
+
   const counts = data?.caseCounts || [];
+
+  const [createPrimaryCaseSet, primarySetResponse] =
+    useCreateCaseSetFromFiltersMutation();
+  const [createComparisonCaseSet, comparisonSetResponse] =
+    useCreateCaseSetFromFiltersMutation();
+
+  useEffect(() => {
+    createPrimaryCaseSet({
+      filters: buildCohortGqlOperator(cohorts.primary_cohort.filter) ?? {},
+    });
+    createComparisonCaseSet({
+      filters: buildCohortGqlOperator(cohorts.comparison_cohort.filter) ?? {},
+    });
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loading =
+    isFetching ||
+    isUninitialized ||
+    primarySetResponse.isUninitialized ||
+    primarySetResponse.isLoading ||
+    comparisonSetResponse.isUninitialized ||
+    comparisonSetResponse.isLoading;
+  const caseSetIds =
+    primarySetResponse.isSuccess && comparisonSetResponse.isSuccess
+      ? [primarySetResponse.data, comparisonSetResponse.data]
+      : [];
 
   return (
     <>
@@ -63,7 +96,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
       )}
       <div className="flex gap-4 pt-2">
         <div className="p-1 flex basis-7/12 flex-col gap-4">
-          {isFetching || isUninitialized ? (
+          {loading ? (
             <div className="min-w-[600px] min-h-[400px] relative">
               <LoadingOverlay visible={isFetching} />
             </div>
@@ -72,7 +105,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
               <SurvivalCard
                 cohorts={cohorts}
                 counts={counts}
-                caseIds={data?.caseIds}
+                caseSetIds={caseSetIds}
                 setSurvivalPlotSelectable={setSurvivalPlotSelectable}
               />
             )
@@ -110,7 +143,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             cohorts={cohorts}
             options={fields}
             survivalPlotSelectable={survivalPlotSelectable}
-            caseIds={data?.caseIds}
+            caseSetIds={caseSetIds}
             casesFetching={isFetching}
           />
         </div>

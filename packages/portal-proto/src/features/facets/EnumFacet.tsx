@@ -315,7 +315,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <OverflowTooltippedLabel label={value}>
                             <span className="font-content">{value}</span>
                           </OverflowTooltippedLabel>
-                          <div className="flex-none text-right w-14 font-content">
+                          <div
+                            data-testid={`text-${value}`}
+                            className="flex-none text-right w-14 font-content"
+                          >
                             {count.toLocaleString()}
                           </div>
                           {showPercent ? (

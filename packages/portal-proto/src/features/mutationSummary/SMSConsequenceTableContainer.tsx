@@ -179,11 +179,8 @@ export const SMSConsequenceTableContainer: React.FC<
         ) : (
           <div ref={ref}>
             <ConsequenceTable
-              ssmsId={ssmsId}
               status={status}
               tableData={displayedData as ConsequenceTableData[]}
-              pageSize={size}
-              page={page}
               columnListOrder={columnListOrder}
               visibleColumns={visibleColumns}
             />
@@ -197,21 +194,21 @@ export const SMSConsequenceTableContainer: React.FC<
             <PageSize pageSize={size} handlePageSize={handleSetPageSize} />
             <span className="my-auto mx-1 text-xs">Entries</span>
           </div>
-          <div className={`flex flex-row justify-between items-center text-sm`}>
+          <div className="flex justify-between items-center text-sm">
             <span>
               Showing
-              <span className={`font-bold px-1`}>
+              <span className="font-bold px-1">
                 {from.toLocaleString("en-US")}
               </span>
               -
-              <span className={`font-bold  px-1`}>
+              <span className="font-bold px-1">
                 {Math.min(page * size, total).toLocaleString("en-US")}
               </span>
               of
-              <span className={`font-bold  px-1`}>{total}</span>
+              <span className="font-bold px-1">{total}</span>
             </span>
           </div>
-          <div className={`ml-auto mr-0`}>
+          <div className="ml-auto mr-0">
             <PageStepper
               page={page - 1}
               totalPages={pages}

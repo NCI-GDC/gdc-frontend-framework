@@ -102,6 +102,7 @@ export const SearchInput: React.FC = () => {
       <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm border-1">
         <MdSearch size="1.5em" />
         <input
+          data-testid="textbox-search-bar"
           type="search"
           placeholder="Search"
           value={searchTerm}

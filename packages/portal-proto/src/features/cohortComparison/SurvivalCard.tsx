@@ -31,19 +31,19 @@ interface SurvivalCardProps {
     };
   };
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
-  readonly caseIds: string[][];
+  readonly caseSetIds: string[];
 }
 
 const SurvivalCard: React.FC<SurvivalCardProps> = ({
   counts,
   cohorts,
   setSurvivalPlotSelectable,
-  caseIds,
+  caseSetIds,
 }: SurvivalCardProps) => {
   const filters = makeIntersectionFilters(
     buildCohortGqlOperator(cohorts?.primary_cohort.filter),
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
-    caseIds,
+    caseSetIds,
   );
   const { data, isUninitialized, isFetching, isError } =
     useGetSurvivalPlotQuery({
