@@ -27,7 +27,8 @@ export const QuickSearch = (): JSX.Element => {
     if (searchTextForApi && quickSearchData.query === searchTextForApi) {
       setMatchedSearchList(quickSearchData.searchList);
     }
-  }, [searchTextForApi, quickSearchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTextForApi, JSON.stringify(quickSearchData)]);
 
   useEffect(() => {
     if (performSearch) {
