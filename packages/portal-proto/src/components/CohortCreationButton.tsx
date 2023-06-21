@@ -73,7 +73,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const disabled = numCases === undefined || numCases === 0;
 
   return (
-    <div className="p-1">
+    <div className="p-1 mr-4">
       <Tooltip
         label={
           disabled ? (
@@ -101,7 +101,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
             <IconWrapper $disabled={disabled}>
               <PlusIcon color="white" size={12} />
             </IconWrapper>
-            <span className="pr-2 font-bold">{label}</span>
+            <span className="pr-2">{label}</span>
           </CohortCreationStyledButton>
         </span>
       </Tooltip>

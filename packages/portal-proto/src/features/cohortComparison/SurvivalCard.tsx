@@ -129,7 +129,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     });
 
     createComparisonSurvivalCaseSet({
-      filters: makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+      filters: makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
     });
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
