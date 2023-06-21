@@ -131,7 +131,7 @@ export const MultipleImageViewer = ({
   return (
     <>
       {isFetching ? (
-        <LoadingOverlay visible={isFetching} />
+        <LoadingOverlay data-testid="loading-spinner" visible={isFetching} />
       ) : (
         <div className="mx-6 relative mb-16 mt-4">
           <div className="flex justify-between items-center mb-4">

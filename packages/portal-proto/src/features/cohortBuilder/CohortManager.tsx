@@ -269,7 +269,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {(isAddCohortLoading ||
         isCohortIdFetching ||
         isDeleteCohortLoading ||
-        isUpdateCohortLoading) && <LoadingOverlay visible />}
+        isUpdateCohortLoading) && (
+        <LoadingOverlay data-testid="loading-spinner" visible />
+      )}
       {/*  Modals Start   */}
 
       {showDelete && (

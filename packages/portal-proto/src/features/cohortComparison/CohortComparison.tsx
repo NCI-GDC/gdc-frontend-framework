@@ -98,7 +98,10 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
         <div className="p-1 flex basis-7/12 flex-col gap-4">
           {loading ? (
             <div className="min-w-[600px] min-h-[400px] relative">
-              <LoadingOverlay visible={isFetching} />
+              <LoadingOverlay
+                vdata-testid="loading-spinner"
+                visible={isFetching}
+              />
             </div>
           ) : (
             selectedCards.survival && (
@@ -118,7 +121,10 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                 className="min-w-[600px] min-h-[400px] relative"
                 key={selectedCard}
               >
-                <LoadingOverlay visible={isFetching} />
+                <LoadingOverlay
+                  data-testid="loading-spinner"
+                  visible={isFetching}
+                />
               </div>
             ) : (
               <FacetCard
