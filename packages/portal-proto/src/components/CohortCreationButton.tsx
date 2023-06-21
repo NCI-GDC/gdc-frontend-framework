@@ -4,12 +4,10 @@ import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import {
   FilterSet,
-  useCoreSelector,
-  selectAvailableCohorts,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "./Modals/CreateCohortModal";
 
 const CohortCreationStyledButton = tw.button`
   flex
@@ -56,9 +54,6 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
 }: CohortCreationButtonProps) => {
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const coreDispatch = useCoreDispatch();
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
 
   const createCohort = (name: string) => {
     coreDispatch(
@@ -106,15 +101,11 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         </span>
       </Tooltip>
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             createCohort(newName);
           }}
-          onNameChange={onNameChange}
         />
       )}
     </div>
