@@ -3,10 +3,10 @@ import {
   useCoreSelector,
   useCreateCaseSetFromFiltersMutation,
   buildCohortGqlOperator,
-  selectManyCohortsById,
   useSetOperationsCasesTotalQuery,
   useCaseSetCountsQuery,
   getCohortFilterForAPI,
+  selectAllCohorts,
 } from "@gff/core";
 import {
   SetOperationsForGenesSSMSCasesProps,
@@ -38,44 +38,52 @@ const SetOperationsForCohortsTwoOrThree = ({
   const [createSet2, createSet2Response] =
     useCreateCaseSetFromFiltersMutation();
 
-  const cohorts = useCoreSelector((state) =>
-    selectManyCohortsById(
-      state,
-      selectedEntities.map((x) => x.id),
-    ),
-  );
+  // get all cohorts, and filter down to the ones that are selected
+  const allCohorts = useCoreSelector((state) => selectAllCohorts(state));
 
-  const cohortSelectedEntities = useMemo(() => {
-    return cohorts.map((cohort) => ({
-      id: `setops-app-${cohort.id}`,
-      name: cohort.name,
-    }));
-  }, [cohorts]);
+  const cohorts = useMemo(() => {
+    return selectedEntities.map((se) => allCohorts[se.id]);
+  }, [selectedEntities, allCohorts]);
 
+  // if the cohorts are not already case sets, create them
   useEffect(() => {
     createSet0({
       filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
-      set_id: `setops-app-${cohorts[0].id}`,
     });
     createSet1({
       filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
-      set_id: `setops-app-${cohorts[1].id}`,
     });
     if (cohorts.length == 3)
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
-        set_id: `setops-app-${cohorts[2].id}`,
       });
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  //
   const loading =
     createSet0Response.isUninitialized ||
     createSet0Response.isLoading ||
     createSet1Response.isUninitialized ||
     createSet1Response.isLoading ||
-    (cohorts.length == 3 &&
+    (cohorts.length == 3 && // if there are 3 cohorts, check the third one
       (createSet2Response.isUninitialized || createSet2Response.isLoading));
+
+  // create the sets that will be used for the set operations
+  const selectedSets = useMemo(() => {
+    return [
+      { name: cohorts[0].name, id: createSet0Response.data },
+      { name: cohorts[1].name, id: createSet1Response.data },
+      ...(cohorts.length == 3
+        ? [{ name: cohorts[2].name, id: createSet2Response.data }]
+        : []),
+    ];
+  }, [
+    cohorts,
+    createSet0Response.data,
+    createSet1Response.data,
+    createSet2Response.data,
+  ]);
 
   return (
     <>
@@ -85,14 +93,14 @@ const SetOperationsForCohortsTwoOrThree = ({
         </div>
       ) : selectedEntities.length === 2 ? (
         <SetOperationsTwo
-          sets={cohortSelectedEntities}
+          sets={selectedSets}
           entityType={selectedEntityType}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
         />
       ) : (
         <SetOperationsThree
-          sets={cohortSelectedEntities}
+          sets={selectedSets}
           entityType={selectedEntityType}
           queryHook={useSetOperationsCasesTotalQuery}
           countHook={useCaseSetCountsQuery}
@@ -107,7 +115,7 @@ const SetOperationsForCohorts = ({
   setSelectedEntities,
   selectedEntityType,
   setSelectedEntityType,
-}: SetOperationsForGenesSSMSCasesProps) => {
+}: SetOperationsForGenesSSMSCasesProps): JSX.Element => {
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
 

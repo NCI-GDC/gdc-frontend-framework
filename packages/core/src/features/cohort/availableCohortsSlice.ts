@@ -973,23 +973,6 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
 export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
   cohortSelectors.selectAll(state);
 
-/**
- * Selector that returns all the available cohorts as a map of id to cohort
- * Usage: const cohorts = useCoreSelector((state) => selectAvailableCohortsAsMap(state));
- * @param state - CoreState object
- * @returns Record<string, Cohort> - Map of cohort id to cohort
- */
-// TODO: Add tests for this selector
-export const selectAvailableCohortsAsMap = (
-  state: CoreState,
-): Record<string, Cohort> => {
-  const cohorts = cohortSelectors.selectAll(state);
-  return cohorts.reduce((map, cohort) => {
-    map[cohort.id] = cohort;
-    return map;
-  }, {} as Record<string, Cohort>);
-};
-
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort?.availableCohorts?.currentCohort;
 
@@ -1063,23 +1046,6 @@ export const selectCohortFilterSetById = (
   return cohort?.filters;
 };
 
-/**
- * A selector that returns a map of cohort id to case counts
- * @param state - CoreState
- * @param ids - Array of cohort ids
- * @returns Record<string, number> - Map of cohort id to case count
- */
-export const selectCohortCaseCountsByIds = (
-  // TODO: Add test
-  state: CoreState,
-  ids: string[],
-): Record<string, number> => {
-  return ids.reduce((acc: Record<string, number>, id) => {
-    const cohort = cohortSelectors.selectById(state, id);
-    return { ...acc, [id]: cohort?.caseCount ?? 0 };
-  }, {});
-};
-
 interface SplitFilterSet {
   withPrefix: FilterSet;
   withoutPrefix: FilterSet;
@@ -1146,23 +1112,6 @@ export const selectCurrentCohortGqlFilters = (
     getCurrentCohortFromCoreState(state),
   );
   return buildCohortGqlOperator(cohort?.filters);
-};
-
-/**
- * Get the GQL Filters for a cohort by id
- * @param state
- * @param cohortId - id of cohort to get filters for
- */
-export const selectCohortGqlFiltersById = (
-  state: CoreState,
-  cohortId: string,
-): GqlOperation | undefined => {
-  const cohort = cohortSelectors.selectById(state, cohortId);
-  if (cohort === undefined)
-    // TODO: maybe better to return undefined?
-    return buildCohortGqlOperator({ mode: "and", root: {} });
-
-  return buildCohortGqlOperator(cohort?.caseSet.filters ?? cohort.filters);
 };
 
 /**
@@ -1257,16 +1206,8 @@ export const selectCohortById = (
   cohortId: string,
 ): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
-export const selectManyCohortsById = (
-  state: CoreState,
-  cohortIds: string[],
-): Cohort[] => {
-  return cohortIds.reduce((result: Cohort[], id) => {
-    const cohort = selectCohortById(state, id);
-    if (cohort !== undefined) result.push(cohort);
-    return result;
-  }, [] as Cohort[]);
-};
+export const selectAllCohorts = (state: CoreState) =>
+  cohortSelectors.selectEntities(state);
 
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));

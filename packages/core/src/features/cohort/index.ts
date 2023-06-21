@@ -32,7 +32,6 @@ import {
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
   selectCurrentCohortFilterOrCaseSet,
-  selectCohortGqlFiltersById,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
@@ -53,10 +52,8 @@ import {
   removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
-  selectCohortCaseCountsByIds,
-  selectAvailableCohortsAsMap,
-  selectManyCohortsById,
   getCohortFilterForAPI,
+  selectAllCohorts,
 } from "./availableCohortsSlice";
 
 import {
@@ -126,7 +123,6 @@ export {
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
   selectCohortMessage,
-  selectCohortGqlFiltersById,
   clearCohortMessage,
   selectCurrentCohort,
   setCohortList,
@@ -144,10 +140,8 @@ export {
   removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
-  selectCohortCaseCountsByIds,
-  selectAvailableCohortsAsMap,
-  selectManyCohortsById,
   CountsData,
   defaultCohortNameGenerator,
   getCohortFilterForAPI,
+  selectAllCohorts,
 };
