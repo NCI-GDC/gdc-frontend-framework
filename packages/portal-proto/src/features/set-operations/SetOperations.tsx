@@ -10,17 +10,13 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
-  addNewCohortWithFilterAndMessage,
   GqlOperation,
-  useCoreDispatch,
 } from "@gff/core";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SelectedEntities, SetOperationEntityType } from "./types";
-import { CountButton } from "@/components/CountButton/CountButton";
 import DownloadButton from "./DownloadButton";
+import CountButtonWrapperForSetsAndCases from "@/features/set-operations/CountButtonWrapperForSetsAndCases";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
@@ -413,88 +409,6 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
   );
 };
 
-interface CountButtonWrapperForSetProps {
-  readonly count: number | undefined;
-  readonly filters: Record<string, any>;
-  readonly entityType: SetOperationEntityType;
-}
-
-const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
-  count,
-  filters,
-  entityType,
-}: CountButtonWrapperForSetProps) => {
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const disabled = count === 0;
-
-  const coreDispatch = useCoreDispatch();
-
-  const createCohort = (name: string) => {
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
-
-  return (
-    <>
-      {showSaveModal &&
-        (entityType === "mutations" ? (
-          <SaveSelectionAsSetModal
-            filters={filters}
-            sort="occurrence.case.project.project_id"
-            initialSetName="Custom Mutation Selection"
-            saveCount={count}
-            setType="ssms"
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        ) : entityType === "genes" ? (
-          <SaveSelectionAsSetModal
-            filters={filters}
-            initialSetName={"Custom Gene Selection"}
-            sort="case.project.project_id"
-            saveCount={count}
-            setType="genes"
-            setTypeLabel="gene"
-            createSetHook={useCreateGeneSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        ) : (
-          entityType === "cohort" && (
-            <CreateCohortModal
-              onClose={() => setShowSaveModal(false)}
-              onActionClick={(newName: string) => {
-                createCohort(newName);
-              }}
-            />
-          )
-        ))}
-
-      <CountButton
-        tooltipLabel={
-          entityType !== "cohort"
-            ? "Save as new set"
-            : disabled
-            ? "No cases available"
-            : `Create a new unsaved cohort of ${
-                count > 1
-                  ? "these " + count.toLocaleString() + " cases"
-                  : "this case"
-              }`
-        }
-        disabled={disabled}
-        handleOnClick={() => setShowSaveModal(true)}
-        count={count}
-      />
-    </>
-  );
-};
-
 interface SetOperationsProps {
   readonly sets: SelectedEntities;
   readonly entityType: "cohort" | "genes" | "mutations";
@@ -580,7 +494,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         columnName: "# Items",
         visible: true,
         Cell: ({ value, row }: { value: number; row: Row }) => (
-          <CountButtonWrapperForSet
+          <CountButtonWrapperForSetsAndCases
             count={value}
             filters={createSetFiltersByKey(
               (row.original as Record<string, any>).operationKey,
@@ -613,7 +527,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         name: set.name,
         count: isFetching ? "..." : summaryCounts?.[set.id],
       })),
-    [entityType, sets, summaryCounts],
+    [entityType, isFetching, sets, summaryCounts],
   );
 
   const tableData = useMemo(
@@ -709,7 +623,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 <td className="p-2 font-bold">Union of selected sets:</td>
                 <td />
                 <td>
-                  <CountButtonWrapperForSet
+                  <CountButtonWrapperForSetsAndCases
                     count={totalCount}
                     filters={unionFilter}
                     entityType={entityType}
