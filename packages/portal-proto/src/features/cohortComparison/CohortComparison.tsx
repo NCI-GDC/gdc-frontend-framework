@@ -4,7 +4,7 @@ import { LoadingOverlay } from "@mantine/core";
 import {
   FilterSet,
   buildCohortGqlOperator,
-  useCohortFacets,
+  useCohortFacetsQuery,
   useCreateCaseSetFromFiltersMutation,
 } from "@gff/core";
 import CohortCard from "./CohortCard";
@@ -52,17 +52,25 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const fieldsToQuery = Object.values(fields).filter((v) => v !== "Survival");
 
-  const { data, isFetching, isUninitialized } = useCohortFacets({
-    facetFields: fieldsToQuery,
-    cohorts: cohorts,
-  });
-
-  const counts = data?.caseCounts || [];
-
   const [createPrimaryCaseSet, primarySetResponse] =
     useCreateCaseSetFromFiltersMutation();
   const [createComparisonCaseSet, comparisonSetResponse] =
     useCreateCaseSetFromFiltersMutation();
+
+  const { data, isFetching, isUninitialized } = useCohortFacetsQuery(
+    {
+      facetFields: fieldsToQuery,
+      primaryCohortSetId: primarySetResponse.data,
+      comparisonCohortSetId: comparisonSetResponse.data,
+    },
+    {
+      skip:
+        primarySetResponse.data === undefined ||
+        comparisonSetResponse.data === undefined,
+    },
+  );
+
+  const counts = data?.caseCounts || [];
 
   useEffect(() => {
     createPrimaryCaseSet({
