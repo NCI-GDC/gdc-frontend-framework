@@ -49,7 +49,6 @@ export const FacetCard: React.FC<FacetCardProps> = ({
 
   const createFilters = (field: string, bucket: string): FilterSet => {
     if (field == "diagnoses.age_at_diagnosis") {
-      console.log(bucket);
       if (Number(bucket) === 80 * DAYS_IN_YEAR) {
         return {
           mode: "and",
