@@ -2,8 +2,8 @@
 Date Created   : 06/20/2023
 Version			   : 1.0
 Owner		       : GDC QA
-Description		 :
-Test-Case      :
+Description		 : Filtering on the Mutation Frequency App
+Test-Case      : PEAR-898
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 
@@ -12,13 +12,62 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 
-## Test Step
+## Validate Filters Presence
+* Verify presence of filter card
+  |filter_name            |
+  |-----------------------|
+  |Custom Gene Filters    |
+  |Custom Mutation Filters|
+  |Biotype                |
+  |VEP Impact             |
+  |SIFT Impact            |
+  |Polyphen Impact        |
+  |Consequence Type       |
+  |Type                   |
+* Switch to "Mutations" tab in the Mutation Frequency app
+* Is text "somatic mutations" present on the page
+* Verify presence of filter card
+  |filter_name            |
+  |-----------------------|
+  |Custom Gene Filters    |
+  |Custom Mutation Filters|
+  |Biotype                |
+  |VEP Impact             |
+  |SIFT Impact            |
+  |Polyphen Impact        |
+  |Consequence Type       |
+  |Type                   |
+* Switch to "Genes" tab in the Mutation Frequency app
+
+## Validate Gene Filters
 * Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
-  |Biotype          |protein_coding                       |
-* Select value from table by row and column
-  |row|column|
-  |------|---|
-  |1     |1  |
-* Pause "4" seconds
+  |Biotype          |lncRNA                               |
+  |VEP Impact       |low                                  |
+* Wait for loading spinner
+* Verify the page is showing "1 - 2 of 2 genes"
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Biotype          |clear selection      |
+  |VEP Impact       |clear selection      |
+
+## Validate Mutation Filters
+* Switch to "Mutations" tab in the Mutation Frequency app
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |SIFT Impact      |tolerated_low_confidence             |
+  |Polyphen Impact  |probably_damaging                    |
+  |Consequence Type |start_lost                           |
+* Wait for loading spinner
+* Verify the page is showing "1 - 1 of 1 somatic mutations"
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |SIFT Impact      |clear selection      |
+  |Polyphen Impact  |clear selection      |
+  |Consequence Type |clear selection      |
+
+* Pause "2" seconds

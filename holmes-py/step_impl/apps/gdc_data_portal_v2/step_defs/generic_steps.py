@@ -206,6 +206,12 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     is_data_testid_visible = APP.shared.wait_for_data_testid_to_be_visible(data_testid)
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
+@step("Wait for loading spinner")
+def wait_for_loading_spinner_to_appear_then_disappear():
+    """Waits for specified data-testid to be present on the page"""
+    APP.shared.wait_for_loading_spinner_to_be_visible()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if expected text is on the page"""

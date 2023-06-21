@@ -7,6 +7,8 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
+    LOADING_SPINNER = '[data-testid="loading-spinner"] >> nth=0'
+
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
 
@@ -27,13 +29,13 @@ class GenericLocators:
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
 
-    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
+    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
     FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
-    SHOWING_NUMBER_OF_ITEMS = "[data-testid='showing-count']"
+    SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -121,6 +123,14 @@ class BasePage:
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
 
+    def wait_for_loading_spinner_to_be_visible(self):
+        locator = GenericLocators.LOADING_SPINNER
+        self.wait_until_locator_is_visible(locator)
+
+    def wait_for_loading_spinner_to_detatch(self):
+        locator = GenericLocators.LOADING_SPINNER
+        self.wait_until_locator_is_detached(locator)
+
     def wait_for_data_testid_to_be_visible(self,locator):
         """Normalizes a data-testid and waits for it to be visible"""
         normalized_locator = self.normalize_button_identifier(locator)
@@ -176,8 +186,11 @@ class BasePage:
     # Checks to see if specified filter card is present
     def is_filter_card_present(self, filter_group_name):
         locator = GenericLocators.FILTER_GROUP_IDENT(filter_group_name)
-        result = self.is_visible(locator)
-        return result
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)

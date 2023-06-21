@@ -4,7 +4,7 @@ from ....base.base_page import BasePage
 
 
 class MutationFrequencyLocators:
-    TITLE = lambda title_name: f'div[data-testid="{title_name}-title"]'
+    BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
 
 class MutationFrequencyPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -14,3 +14,8 @@ class MutationFrequencyPage(BasePage):
 
     def visit(self):
         self.driver.goto(self.URL)
+
+    def click_gene_or_mutation_tab(self, tab_name):
+        tab_name = tab_name.lower()
+        tab = MutationFrequencyLocators.BUTTON_GENE_MUTATION_TAB(tab_name)
+        self.click(tab)
