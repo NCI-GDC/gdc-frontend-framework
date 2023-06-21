@@ -10,6 +10,7 @@ class HeaderSectionLocators:
     PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
     REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter']"
+    HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
 
 class HeaderSection(BasePage):
 
@@ -34,3 +35,5 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
         elif page_to_load == "downloads":
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
+        elif page_to_load == "home":
+            self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
