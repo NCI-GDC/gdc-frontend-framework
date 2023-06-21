@@ -13,6 +13,7 @@ const CohortCreationStyledButton = tw.button`
   flex
   items-center
   w-full
+  max-w-[125px]
   gap-2
   rounded
   border-primary
@@ -68,7 +69,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const disabled = numCases === undefined || numCases === 0;
 
   return (
-    <div className="p-1 mr-4">
+    <div className="p-1">
       <Tooltip
         label={
           disabled ? (
