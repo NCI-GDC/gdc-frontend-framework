@@ -76,7 +76,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
             "No cases available"
           ) : (
             <>
-              Create a new cohort of{" "}
+              Create a new unsaved cohort of{" "}
               {numCases > 1 ? (
                 <>
                   these <b>{numCases.toLocaleString()}</b> cases
