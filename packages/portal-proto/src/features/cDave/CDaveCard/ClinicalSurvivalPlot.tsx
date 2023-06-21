@@ -7,10 +7,13 @@ import {
   GqlOperation,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-
-import SurvivalPlot, { SurvivalPlotTypes } from "../../charts/SurvivalPlot";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import SurvivalPlot, {
+  SurvivalPlotTypes,
+} from "@/features/charts/SurvivalPlot";
 import { isInterval } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { DEMO_COHORT_FILTERS } from "../constants";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;
@@ -25,9 +28,12 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
   customBinnedData,
   continuous,
 }: ClinicalSurvivalPlotProps) => {
+  const isDemoMode = useIsDemoApp();
   const [plotType, setPlotType] = useState(undefined);
   const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(selectCurrentCohortFilters(state)),
+    buildCohortGqlOperator(
+      isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+    ),
   );
 
   useEffect(() => {
