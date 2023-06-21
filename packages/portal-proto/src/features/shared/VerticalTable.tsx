@@ -557,7 +557,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p data-testid="showing-count" className="text-heading text-sm">
+      <p data-testid="text-showing-count" className="text-heading text-sm">
         Showing {outputString ?? "--"}
       </p>
     );
