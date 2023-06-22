@@ -8,6 +8,7 @@ import {
   useGetProjectsQuery,
   CancerDistributionTableData,
   FilterSet,
+  joinFilters,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -61,6 +62,7 @@ export const GeneCancerDistributionTable: React.FC<
       isSuccess={isSuccess}
       symbol={symbol}
       id={gene}
+      contextFilters={contextFilters}
       isGene
     />
   );
@@ -74,14 +76,6 @@ interface SSMSCancerDistributionTableProps {
 interface CellProps {
   value: string[];
   row: Row;
-}
-
-interface CellPropsMath {
-  value: {
-    numerator: number;
-    denominator: number;
-    percent: number;
-  };
 }
 
 export const SSMSCancerDistributionTable: React.FC<
@@ -110,6 +104,7 @@ interface CancerDistributionTableProps {
   readonly symbol: string;
   readonly id: string;
   readonly isGene: boolean;
+  readonly contextFilters?: FilterSet;
 }
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
@@ -120,6 +115,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   symbol,
   id,
   isGene,
+  contextFilters,
 }: CancerDistributionTableProps) => {
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -224,23 +220,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               sortingFn: (rowA, rowB) => {
-                if (rowA.cnv_gains.percent < rowB.cnv_gains.percent) {
+                if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
                   return 1;
                 }
-                if (rowA.cnv_gains.percent > rowB.cnv_gains.percent) {
+                if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
                   return -1;
                 }
                 return 0;
               },
               visible: true,
-              Cell: ({ value }: CellPropsMath) => {
-                return (
-                  <NumeratorDenominator
-                    numerator={value.numerator}
-                    denominator={value.denominator}
-                  />
-                );
-              },
             },
             {
               id: "cnv_losses",
@@ -259,23 +247,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               sortingFn: (rowA, rowB) => {
-                if (rowA.cnv_losses.percent < rowB.cnv_losses.percent) {
+                if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
                   return 1;
                 }
-                if (rowA.cnv_losses.percent > rowB.cnv_losses.percent) {
+                if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
                   return -1;
                 }
                 return 0;
               },
               visible: true,
-              Cell: ({ value }: CellPropsMath) => {
-                return (
-                  <NumeratorDenominator
-                    numerator={value.numerator}
-                    denominator={value.denominator}
-                  />
-                );
-              },
             },
             {
               id: "num_mutations",
@@ -301,6 +281,80 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ];
   }, [isGene, symbol]);
 
+  const createSSMAffectedFilters = (project: string, id: string): FilterSet => {
+    if (isGene) {
+      const geneFilters: FilterSet = {
+        mode: "and",
+        root: {
+          "cases.project.project_id": {
+            field: "cases.project.project_id",
+            operator: "includes",
+            operands: [project],
+          },
+          "genes.gene_id": {
+            field: "genes.gene_id",
+            operator: "includes",
+            operands: [id],
+          },
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operator: "exists",
+          },
+        },
+      };
+      return contextFilters
+        ? joinFilters(contextFilters, geneFilters)
+        : geneFilters;
+    } else {
+      return {
+        mode: "and",
+        root: {
+          "cases.project.project_id": {
+            field: "cases.project.project_id",
+            operator: "includes",
+            operands: [project],
+          },
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operator: "includes",
+            operands: [id],
+          },
+        },
+      };
+    }
+  };
+
+  const createCNVGainLossFilters = (
+    project: string,
+    gene: string,
+    filter: "Loss" | "Gain",
+  ) => {
+    const gainLossFilters: FilterSet = {
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          field: "cases.project.project_id",
+          operator: "includes",
+          operands: [project],
+        },
+        "genes.gene_id": {
+          field: "genes.gene_id",
+          operator: "includes",
+          operands: [id],
+        },
+        "cnvs.cnv_change": {
+          field: "cnvs.cnv_change",
+          operator: "includes",
+          operands: [filter],
+        },
+      },
+    };
+
+    return contextFilters
+      ? joinFilters(contextFilters, gainLossFilters)
+      : gainLossFilters;
+  };
+
   const formattedData = useMemo(
     () =>
       isSuccess
@@ -318,21 +372,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ssm_affected_cases: (
                   <CohortCreationButton
                     numCases={data.ssmFiltered[d.key] || 0}
-                    caseFilters={{
-                      mode: "and",
-                      root: {
-                        "cases.project.project_id": {
-                          field: "cases.project.project_id",
-                          operator: "includes",
-                          operands: [d.key],
-                        },
-                        "ssms.ssm_id": {
-                          field: "ssms.ssm_id",
-                          operator: "includes",
-                          operands: [id],
-                        },
-                      },
-                    }}
+                    caseFilters={createSSMAffectedFilters(d.key, id)}
                     label={
                       <NumeratorDenominator
                         numerator={data.ssmFiltered[d.key] || 0}
@@ -348,22 +388,49 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: {
-                        numerator: data.cnvGain[d.key] || 0,
-                        denominator: data.cnvTotal[d.key] || 0,
-                        percent: calculatePercent(
-                          data.cnvGain[d.key] || 0,
-                          data.cnvTotal[d.key] || 0,
-                        ),
-                      },
-                      cnv_losses: {
-                        numerator: data.cnvLoss[d.key] || 0,
-                        denominator: data.cnvTotal[d.key] || 0,
-                        percent: calculatePercent(
-                          data.cnvLoss[d.key] || 0,
-                          data.cnvTotal[d.key] || 0,
-                        ),
-                      },
+                      cnv_gains: (
+                        <CohortCreationButton
+                          numCases={data.cnvGain[d.key] || 0}
+                          caseFilters={createCNVGainLossFilters(
+                            d.key,
+                            id,
+                            "Gain",
+                          )}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvGain[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
+                        />
+                      ),
+                      cnv_gains_percent: calculatePercent(
+                        data.cnvGain[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
+                      ),
+                      cnv_losses: (
+                        <CohortCreationButton
+                          numCases={data.cnvLoss[d.key] || 0}
+                          caseFilters={createCNVGainLossFilters(
+                            d.key,
+                            id,
+                            "Loss",
+                          )}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvLoss[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
+                        />
+                      ),
+                      cnv_losses_percent: calculatePercent(
+                        data.cnvLoss[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
+                      ),
+
                       num_mutations:
                         (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
                     }
