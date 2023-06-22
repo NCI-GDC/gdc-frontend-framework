@@ -133,6 +133,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    setPage(0);
   };
 
   const handleSetPage = (pageIndex: number) => {
@@ -338,10 +339,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Cases">
+                  <ButtonTooltip
+                    label="Export All Except #Cases"
+                    comingSoon={true}
+                  >
                     <FunctionButton>JSON</FunctionButton>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
                     <FunctionButton>TSV</FunctionButton>
                   </ButtonTooltip>
                 </div>
@@ -388,14 +392,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   selectedSurvivalPlot={selectedSurvivalPlot}
                   handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                   width={width}
-                  pageSize={pageSize}
-                  page={page}
                   selectedMutations={selectedMutations}
                   setSelectedMutations={setSelectedMutations}
                   handleSMTotal={setSMTotal}
                   columnListOrder={columnListOrder}
                   visibleColumns={visibleColumns}
-                  searchTerm={searchTerm}
                   handleSsmToggled={handleSsmToggled}
                   toggledSsms={toggledSsms}
                   isDemoMode={isDemoMode}

@@ -547,7 +547,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
                 src={projectLogoPath}
                 layout="fill"
                 alt={`${props.project.project_id} logo`}
-                objectFit="contain"
+                style={{ objectFit: "contain" }}
                 className="nextImageFillFix"
               />
             </div>
