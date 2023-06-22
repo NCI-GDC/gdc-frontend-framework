@@ -193,7 +193,7 @@ export const createSetSlice = graphqlAPISlice
           graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {
             input: {
-              filters,
+              filters: filters ?? {},
               set_id,
               size,
               score,

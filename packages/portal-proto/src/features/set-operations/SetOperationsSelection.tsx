@@ -37,7 +37,7 @@ const SetOperationsSelection = (): JSX.Element => {
       selectedEntityType={selectedEntityType}
     />
   ) : (
-    // handle cohorts  as they require case set to be available
+    // handle cohorts as they require case set to be available
     <SetOperationChartsForCohorts selectedEntities={selectedEntities} />
   );
 };

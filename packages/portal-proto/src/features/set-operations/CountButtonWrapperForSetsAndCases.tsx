@@ -91,7 +91,7 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
 }: CountButtonWrapperForSetProps) => {
   const [loading, setLoading] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const disabled = count === 0;
+  const disabled = count === 0 || count === undefined;
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const coreDispatch = useCoreDispatch();
 
