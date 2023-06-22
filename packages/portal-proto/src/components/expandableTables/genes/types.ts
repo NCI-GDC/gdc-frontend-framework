@@ -76,14 +76,11 @@ export interface GenesTableProps {
   ) => void;
   handleGeneToggled: GeneToggledHandler;
   toggledGenes: ReadonlyArray<string>;
-  pageSize: number;
-  page: number;
   selectedGenes: Record<string, Row<Genes>>;
   setSelectedGenes: (action: SelectReducerAction<Genes>) => void;
   handleGTotal: (gTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];
-  searchTerm: string;
   isDemoMode?: boolean;
   genomicFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
