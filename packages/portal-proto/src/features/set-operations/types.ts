@@ -5,13 +5,8 @@ export type SelectedEntity = {
 };
 export type SelectedEntities = SelectedEntity[];
 
-export interface SetOperationsInputProps {
+export interface SetOperationsChartInputProps {
   selectedEntities: SelectedEntities;
-  selectedEntityType: SetOperationEntityType;
-}
-
-export interface SetOperationsForGenesSSMSCasesProps
-  extends SetOperationsInputProps {
-  setSelectedEntities: (SelectedEntities) => void;
-  setSelectedEntityType: (SetOperationEntityType) => void;
+  selectedEntityType?: SetOperationEntityType;
+  isLoading?: boolean;
 }

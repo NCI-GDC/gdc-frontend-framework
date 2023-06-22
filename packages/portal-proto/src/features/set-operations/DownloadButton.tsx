@@ -1,12 +1,12 @@
+import React, { useEffect, useState } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { ActionIcon, Loader, Tooltip } from "@mantine/core";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { MutationDefinition } from "@reduxjs/toolkit/query";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import { GqlOperation, useCoreDispatch } from "@gff/core";
-import React, { useEffect, useState } from "react";
-import download from "../../utils/download";
-import { convertDateToString } from "../../utils/date";
-import { ActionIcon, Loader, Tooltip } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import download from "@/utils/download";
+import { convertDateToString } from "@/utils/date";
 
 const ENTITY_TYPE_TO_TAR = {
   mutations: "ssm",

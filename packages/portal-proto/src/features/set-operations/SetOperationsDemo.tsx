@@ -1,14 +1,9 @@
+import { useEffect } from "react";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useSsmSetCountsQuery,
 } from "@gff/core";
-import { useEffect, useState } from "react";
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import {
-  SelectedEntities,
-  SetOperationEntityType,
-} from "@/features/set-operations/types";
-import SetOperationsPanel from "@/features/set-operations/SetOperationsPanel";
+import SetOperationsChartsForGeneSSMS from "@/features/set-operations/SetOperationsChartsForGeneSSMS";
 
 const DEMO_SETS = [
   {
@@ -106,20 +101,11 @@ const DEMO_SETS = [
   },
 ];
 
-const SetOperationsDemo = () => {
-  const isDemoMode = useIsDemoApp();
-  const [selectedEntities, setSelectedEntities] =
-    useState<SelectedEntities>(DEMO_SETS);
-  const [selectedEntityType, setSelectedEntityType] =
-    useState<SetOperationEntityType>("mutations");
-
+const SetOperationsDemo = (): JSX.Element => {
   const { data: demoCounts, isSuccess: demoCountsSuccess } =
-    useSsmSetCountsQuery(
-      {
-        setIds: DEMO_SETS.map((set) => set.id),
-      },
-      { skip: !isDemoMode },
-    );
+    useSsmSetCountsQuery({
+      setIds: DEMO_SETS.map((set) => set.id),
+    });
   const [createDemoSet1, demoSetResponse1] =
     useCreateSsmsSetFromFiltersMutation();
   const [createDemoSet2, demoSetResponse2] =
@@ -138,40 +124,27 @@ const SetOperationsDemo = () => {
       !demoSetResponse3.isSuccess);
 
   useEffect(() => {
-    if (isDemoMode) {
-      setSelectedEntities(DEMO_SETS);
-      setSelectedEntityType("mutations");
-
-      if (needsToCreateSets) {
-        createDemoSet1({
-          filters: DEMO_SETS[0].filters,
-          set_id: DEMO_SETS[0].id,
-        });
-        createDemoSet2({
-          filters: DEMO_SETS[1].filters,
-          set_id: DEMO_SETS[1].id,
-        });
-        createDemoSet3({
-          filters: DEMO_SETS[2].filters,
-          set_id: DEMO_SETS[2].id,
-        });
-      }
+    if (needsToCreateSets) {
+      createDemoSet1({
+        filters: DEMO_SETS[0].filters,
+        set_id: DEMO_SETS[0].id,
+      });
+      createDemoSet2({
+        filters: DEMO_SETS[1].filters,
+        set_id: DEMO_SETS[1].id,
+      });
+      createDemoSet3({
+        filters: DEMO_SETS[2].filters,
+        set_id: DEMO_SETS[2].id,
+      });
     }
-  }, [
-    isDemoMode,
-    needsToCreateSets,
-    createDemoSet1,
-    createDemoSet2,
-    createDemoSet3,
-  ]);
+  }, [needsToCreateSets, createDemoSet1, createDemoSet2, createDemoSet3]);
 
   return (
-    <SetOperationsPanel
-      selectedEntities={selectedEntities}
-      selectedEntityType={selectedEntityType}
-      setSelectedEntities={setSelectedEntities}
-      setSelectedEntityType={setSelectedEntityType}
-      isLoading={isDemoMode && (!demoCountsSuccess || creatingDemoSets)}
+    <SetOperationsChartsForGeneSSMS
+      selectedEntities={DEMO_SETS}
+      selectedEntityType="mutations"
+      isLoading={!demoCountsSuccess || creatingDemoSets}
     />
   );
 };
