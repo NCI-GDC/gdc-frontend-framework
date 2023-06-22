@@ -127,7 +127,6 @@ const useCasesSets = () => {
   );
 
   useEffect(() => {
-    //  const data = Object.values(cohorts).reduce((acc, cohort) => { return { ...acc, [cohort.id]: { name: cohort.name, count: cohort.caseCount } } }, {});
     const data: CohortSetItem = Object.values(cohorts).reduce(
       (acc, cohort) => {
         return {
