@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             <a className="block w-full h-full mt-2">
               <NIHLogo
                 layout="fill"
-                objectFit="contain"
+                style={{ objectFit: "contain" }}
                 data-testid="NIH_LOGO"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"

@@ -444,6 +444,63 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     }
   };
 
+  const handleTSVDownload = () => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headers = isGene
+      ? [
+          "Project",
+          "Disease Type",
+          "Primary Site",
+          "# SSM Affected Cases",
+          "# CNV Gains",
+          "# CNV Losses",
+          "# Mutations",
+        ]
+      : ["Project", "Disease Type", "Primary Site", "# SSM Affected Cases"];
+    const body = isGene
+      ? cancerDistributionTableDownloadData
+          .map(
+            ({
+              project,
+              disease_type,
+              primary_site,
+              ssm_affected_cases,
+              cnv_gains,
+              cnv_losses,
+              num_mutations,
+            }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+                cnv_gains,
+                cnv_losses,
+                num_mutations,
+              ].join("\t");
+            },
+          )
+          .join("\n")
+      : cancerDistributionTableDownloadData
+          .map(
+            ({ project, disease_type, primary_site, ssm_affected_cases }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+              ].join("\t");
+            },
+          )
+          .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
   return (
     <VerticalTable
       tableData={displayedData}
@@ -456,76 +513,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           <ButtonTooltip label=" " comingSoon={true}>
             <FunctionButton>JSON</FunctionButton>
           </ButtonTooltip>
-          <FunctionButton
-            onClick={() => {
-              const now = new Date();
-              const fileName = `cancer-distribution-table.${convertDateToString(
-                now,
-              )}.tsv`;
-              const headers = isGene
-                ? [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                    "# CNV Gains",
-                    "# CNV Losses",
-                    "# Mutations",
-                  ]
-                : [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                  ];
-              const body = isGene
-                ? cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                        cnv_gains,
-                        cnv_losses,
-                        num_mutations,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                          cnv_gains,
-                          cnv_losses,
-                          num_mutations,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n")
-                : cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n");
-              const tsv = [headers.join("\t"), body].join("\n");
-              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
-              saveAs(blob, fileName);
-            }}
-          >
-            TSV
-          </FunctionButton>
+          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
         </div>
       }
       pagination={{

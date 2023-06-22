@@ -266,6 +266,7 @@ export const useRangeFacet = (
     field,
     rangeCohortFilters,
     prevFilters,
+    prevRangeFilters,
     ranges,
     prevRanges,
     prevRangeFilters,

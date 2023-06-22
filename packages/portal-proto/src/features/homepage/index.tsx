@@ -77,7 +77,7 @@ const Homepage = (): JSX.Element => {
       <HPCardImgAlt
         head="Access Harmonized Clinical and Genomic Data"
         body={
-          <p className="font-content">
+          <div className="font-content">
             <p>
               Harmonized clinical and genomic data allow for convenient
               cross-analysis and comparison.
@@ -94,7 +94,7 @@ const Homepage = (): JSX.Element => {
               sequencing reads, ranging from whole genome to single-cell RNA,
               and generate high-level derived data.
             </p>
-          </p>
+          </div>
         }
         linkText="Learn More About Our Harmonization Process"
         href="https://gdc.cancer.gov/about-data/gdc-data-processing"
@@ -181,7 +181,7 @@ const Homepage = (): JSX.Element => {
           </>
         }
         body={
-          <p className="font-content">
+          <div className="font-content">
             <p>
               Seamlessly download clinical, biospecimen, and genomic data from
               your cohorts for further analysis.
@@ -197,7 +197,7 @@ const Homepage = (): JSX.Element => {
               are looking for somatic variants, gene expression data, slide
               images, or even files generated from a specific workflow.
             </p>
-          </p>
+          </div>
         }
         linkText="Explore Repository"
         href={{
