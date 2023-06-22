@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Popover, Box } from "@mantine/core";
+import { Box } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 import { BsList, BsX } from "react-icons/bs";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
@@ -23,78 +24,78 @@ const DND: React.FC<DNDProps> = ({
   defaultColumns,
 }: DNDProps) => {
   const [columnSearchTerm, setColumnSearchTerm] = useState("");
+  const ref = useClickOutside(() => setShowColumnMenu(false));
 
+  useClickOutside;
   return (
-    <div className="flex items-center">
-      <Popover
-        opened={showColumnMenu}
-        onClose={() => setShowColumnMenu(false)}
-        width={360}
-        position="bottom-end"
-        transition="scale"
-        withArrow
-        aria-label="column change button"
-        zIndex={1}
+    <div
+      data-testid="button-column-selector-box"
+      className="flex relative"
+      aria-label="column change button"
+      ref={ref}
+    >
+      <button
+        onClick={() => {
+          setShowColumnMenu(!showColumnMenu);
+          setColumnSearchTerm("");
+        }}
+        aria-label="show table menu"
       >
-        <Popover.Target>
-          <button
-            onClick={() => {
-              setShowColumnMenu(!showColumnMenu);
-              setColumnSearchTerm("");
-            }}
-          >
-            <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-              {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-            </Box>
-          </button>
-        </Popover.Target>
-        <Popover.Dropdown>
-          <div className="w-fit bg-base-max rounded-md">
-            {columnListOrder.length > 0 && (
-              <div className="p-1 bg-base-max items-center">
-                <div className="flex h-10 items-center border-1 border-black rounded-md">
-                  {columnSearchTerm.length === 0 && (
-                    <span className="flex absolute ml-2 text-xs pointer-events-none font-content">
-                      <SearchIcon className="text-[1rem] mr-2" />
-                      Search...
-                    </span>
-                  )}
-                  <input
-                    className="p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm"
-                    type="search"
-                    value={columnSearchTerm}
-                    onChange={(e) => setColumnSearchTerm(e.target.value)}
-                  />
-                  {columnSearchTerm.length > 0 && (
-                    <button onClick={() => setColumnSearchTerm("")}>
-                      <BsX size={"16px"} />
-                    </button>
-                  )}
-                </div>
-                <div className="flex w-80 mb-1 border-b-2 border-dotted">
-                  <button
-                    className="text-xs my-1"
-                    onClick={() => {
-                      handleColumnChange(defaultColumns);
-                      setShowColumnMenu(false);
-                      setColumnSearchTerm("");
-                    }}
-                  >
-                    Restore Defaults
+        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+        </Box>
+      </button>
+      {showColumnMenu && (
+        <div
+          data-testid="column-selector-popover-modal"
+          className="w-fit absolute bg-base-max z-10 py-3 px-4 right-3 top-10 border-1 border-solid border-base-lighter rounded"
+        >
+          {columnListOrder.length > 0 && (
+            <div className="p-1 bg-base-max items-center">
+              <div className="flex h-10 items-center border-1 border-black rounded-md">
+                {columnSearchTerm.length === 0 && (
+                  <span className="flex absolute ml-2 text-xs pointer-events-none font-content">
+                    <SearchIcon className="text-[1rem] mr-2" />
+                    Search...
+                  </span>
+                )}
+                <input
+                  data-testid="textbox-column-selector"
+                  className="p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm"
+                  type="search"
+                  value={columnSearchTerm}
+                  onChange={(e) => setColumnSearchTerm(e.target.value)}
+                  aria-label="search table columns"
+                />
+                {columnSearchTerm.length > 0 && (
+                  <button onClick={() => setColumnSearchTerm("")}>
+                    <BsX size={"16px"} />
                   </button>
-                </div>
-                <DndProvider backend={HTML5Backend}>
-                  <DragDrop
-                    listOptions={columnListOrder}
-                    handleColumnChange={handleColumnChange}
-                    columnSearchTerm={columnSearchTerm.trim()}
-                  />
-                </DndProvider>
+                )}
               </div>
-            )}
-          </div>
-        </Popover.Dropdown>
-      </Popover>
+              <div className="flex w-80 mb-1 border-b-2 border-dotted">
+                <button
+                  className="text-xs my-1"
+                  onClick={() => {
+                    handleColumnChange(defaultColumns);
+                    setShowColumnMenu(false);
+                    setColumnSearchTerm("");
+                  }}
+                >
+                  Restore Defaults
+                </button>
+              </div>
+              <DndProvider backend={HTML5Backend}>
+                <DragDrop
+                  listOptions={columnListOrder}
+                  handleColumnChange={handleColumnChange}
+                  columnSearchTerm={columnSearchTerm.trim()}
+                />
+              </DndProvider>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

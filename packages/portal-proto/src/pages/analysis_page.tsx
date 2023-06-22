@@ -12,6 +12,7 @@ import {
 } from "@gff/core";
 import QueryExpressionSection from "@/features/cohortBuilder/QueryExpressionSection";
 import { useCohortFacetFilters } from "@/features/cohortBuilder/utils";
+import { useState } from "react";
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
@@ -26,11 +27,20 @@ const SingleAppsPage: NextPage = () => {
     selectCurrentCohortName(state),
   );
   const filters = useCohortFacetFilters();
+  const [isSticky, setIsSticky] = useState(true);
 
   return (
     <UserFlowVariedPages
       {...{ indexPath: "/", headerElements }}
-      ContextBar={<ContextBar />}
+      ContextBar={
+        <ContextBar
+          isSticky={isSticky}
+          handleIsSticky={(isStickyParam: boolean) =>
+            setIsSticky(isStickyParam)
+          }
+        />
+      }
+      isContextBarSticky={isSticky}
     >
       <Head>
         <title>GDC Analysis Center</title>

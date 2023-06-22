@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useState } from "react";
+import { shallowEqual } from "react-redux";
 import Link from "next/link";
 import { Checkbox, Tooltip } from "@mantine/core";
 import { upperFirst } from "lodash";
@@ -8,6 +9,7 @@ import {
   selectSetsByType,
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
+  selectAvailableCohorts,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -108,6 +110,40 @@ const SelectCell: React.FC<SelectCellProps> = ({
   );
 };
 
+interface CohortSetItem {
+  caseSets: Record<string, string>;
+  caseCounts: Record<string, number>;
+}
+
+// custom hook to get all cohorts and counts
+const useCasesSets = () => {
+  const [casesSets, setCasesSets] = useState<CohortSetItem>({
+    caseSets: {},
+    caseCounts: {},
+  });
+  const cohorts = useCoreSelector(
+    (state) => selectAvailableCohorts(state),
+    shallowEqual,
+  );
+
+  useEffect(() => {
+    const data: CohortSetItem = Object.values(cohorts).reduce(
+      (acc, cohort) => {
+        return {
+          caseSets: { [cohort.id]: cohort.name, ...acc.caseSets },
+          caseCounts: { [cohort.id]: cohort.caseCount, ...acc.caseCounts },
+        };
+      },
+      {
+        caseSets: {},
+        caseCounts: {},
+      },
+    );
+    setCasesSets(data);
+  }, [cohorts]);
+  return casesSets;
+};
+
 interface SelectionPanelProps {
   readonly app: string;
   readonly setActiveApp?: (id: string, demoMode?: boolean) => void;
@@ -132,6 +168,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   const mutationSets = useCoreSelector((state) =>
     selectSetsByType(state, "ssms"),
   );
+
   const { data: geneCounts } = useGeneSetCountsQuery({
     setIds: Object.keys(geneSets),
   });
@@ -139,6 +176,10 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   const { data: mutationCounts } = useSsmSetCountsQuery({
     setIds: Object.keys(mutationSets),
   });
+
+  // cohorts are not sets, but we want to display them in the same table
+  // the associated case set will be created when a cohort is selected
+  const caseSetsAndCounts = useCasesSets();
 
   useEffect(() => {
     if (selectedEntities.length === 0) {
@@ -208,6 +249,36 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           count: count,
         };
       }),
+      ...Object.entries(caseSetsAndCounts.caseSets).map(([setId, setName]) => {
+        const count = caseSetsAndCounts.caseCounts?.[setId] || 0;
+        const disabled = shouldDisableInput(
+          "cohort",
+          count,
+          setId,
+          selectedEntityType,
+          selectedEntities,
+        );
+        return {
+          select: (
+            <SelectCell
+              setId={setId}
+              name={setName}
+              disabled={disabled}
+              count={count}
+              entityType="cohort"
+              selectedEntities={selectedEntities}
+              selectedEntityType={selectedEntityType}
+              setSelectedEntities={setSelectedEntities}
+              setSelectedEntityType={setSelectedEntityType}
+              key={`cohort-select-${setId}`}
+            />
+          ),
+          entityType: "cohort",
+          name: setName,
+          setId,
+          count,
+        };
+      }),
     ].sort((a, b) => {
       for (const sort of sortBy) {
         if (typeof a[sort.id] === "string") {
@@ -224,6 +295,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     // Prevent infinite rerender issue
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [
+    JSON.stringify(caseSetsAndCounts),
     JSON.stringify(geneSets),
     JSON.stringify(geneCounts),
     JSON.stringify(mutationSets),

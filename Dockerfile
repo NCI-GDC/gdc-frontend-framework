@@ -12,7 +12,7 @@ ENV NEXT_PUBLIC_BUILD_SHORT_SHA=$BUILD_SHORT_SHA
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
-RUN npm install --location=global lerna
+RUN npm install --location=global lerna@6.6.1
 COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/sapien/package.json ./packages/sapien/

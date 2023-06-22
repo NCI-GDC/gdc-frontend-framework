@@ -29,7 +29,10 @@ interface CancerDistributionTableTSVDownloadData {
   primary_site: string[];
   ssm_affected_cases: string;
 }
-import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import {
+  NumeratorDenominator,
+  ButtonTooltip,
+} from "@/components/expandableTables/shared";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -69,6 +72,14 @@ interface SSMSCancerDistributionTableProps {
 interface CellProps {
   value: string[];
   row: Row;
+}
+
+interface CellPropsMath {
+  value: {
+    numerator: number;
+    denominator: number;
+    percent: number;
+  };
 }
 
 export const SSMSCancerDistributionTable: React.FC<
@@ -128,9 +139,20 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       project,
     ]),
   );
+  const calculatePercent = (numerator, denominator) => {
+    if (numerator && denominator) {
+      return numerator / denominator;
+    }
+    return 0;
+  };
   const columnListOrder = useMemo(() => {
     const columns = [
-      { id: "project", columnName: "Project", visible: true },
+      {
+        id: "project",
+        columnName: "Project",
+        visible: true,
+        disableSortBy: true,
+      },
       {
         id: "disease_type",
         columnName: "Disease Type",
@@ -138,6 +160,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "primary_site",
@@ -146,11 +169,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Primary Site"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "ssm_affected_cases",
         columnName: (
-          <div>
+          <div className="whitespace-normal">
             <Tooltip
               label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
@@ -158,10 +182,19 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               withArrow
               width={250}
             >
-              <span># SSM Affected Cases</span>
+              <span className="whitespace-nowrap"># SSM Affected Cases</span>
             </Tooltip>
           </div>
         ),
+        sortingFn: (rowA, rowB) => {
+          if (rowA.ssm_percent < rowB.ssm_percent) {
+            return 1;
+          }
+          if (rowA.ssm_percent > rowB.ssm_percent) {
+            return -1;
+          }
+          return 0;
+        },
         visible: true,
       },
     ];
@@ -172,7 +205,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             {
               id: "cnv_gains",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
         / # Cases tested for Copy Number Variation in the Project
@@ -181,16 +214,33 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Gains</span>
+                    <span className="whitespace-nowrap"># CNV Gains</span>
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (rowA.cnv_gains.percent < rowB.cnv_gains.percent) {
+                  return 1;
+                }
+                if (rowA.cnv_gains.percent > rowB.cnv_gains.percent) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
+              Cell: ({ value }: CellPropsMath) => {
+                return (
+                  <NumeratorDenominator
+                    numerator={value.numerator}
+                    denominator={value.denominator}
+                  />
+                );
+              },
             },
             {
               id: "cnv_losses",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
         / # Cases tested for Copy Number Variation in Project
@@ -199,27 +249,47 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Losses</span>
+                    <span className="whitespace-nowrap"># CNV Losses</span>
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (rowA.cnv_losses.percent < rowB.cnv_losses.percent) {
+                  return 1;
+                }
+                if (rowA.cnv_losses.percent > rowB.cnv_losses.percent) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
+              Cell: ({ value }: CellPropsMath) => {
+                return (
+                  <NumeratorDenominator
+                    numerator={value.numerator}
+                    denominator={value.denominator}
+                  />
+                );
+              },
             },
             {
               id: "num_mutations",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
                     width={250}
                   >
-                    <span># Mutations</span>
+                    <span className="whitespace-nowrap"># Mutations</span>
                   </Tooltip>
                 </div>
               ),
               visible: true,
+              Cell: ({ value }: CellProps) => {
+                return <>{value.toLocaleString()}</>;
+              },
             },
           ]
         : []),
@@ -252,22 +322,24 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: (
-                        <NumeratorDenominator
-                          numerator={data.cnvGain[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
-                      cnv_losses: (
-                        <NumeratorDenominator
-                          numerator={data.cnvLoss[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
-                        />
-                      ),
+                      cnv_gains: {
+                        numerator: data.cnvGain[d.key] || 0,
+                        denominator: data.cnvTotal[d.key] || 0,
+                        percent: calculatePercent(
+                          data.cnvGain[d.key] || 0,
+                          data.cnvTotal[d.key] || 0,
+                        ),
+                      },
+                      cnv_losses: {
+                        numerator: data.cnvLoss[d.key] || 0,
+                        denominator: data.cnvTotal[d.key] || 0,
+                        percent: calculatePercent(
+                          data.cnvLoss[d.key] || 0,
+                          data.cnvTotal[d.key] || 0,
+                        ),
+                      },
                       num_mutations:
-                        (data.ssmFiltered[d.key] || 0) === 0
-                          ? 0
-                          : d.doc_count.toLocaleString(),
+                        (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
                     }
                   : {}),
               };
@@ -349,13 +421,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const {
     handlePageChange,
     handlePageSizeChange,
+    handleSortByChange,
     page,
     pages,
     size,
     from,
     total,
     displayedData,
-  } = useStandardPagination(formattedData);
+  } = useStandardPagination(formattedData, columnListOrder);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -365,88 +438,82 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
         break;
+      case "sortBy":
+        handleSortByChange(obj.sortBy);
+        break;
     }
+  };
+
+  const handleTSVDownload = () => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headers = isGene
+      ? [
+          "Project",
+          "Disease Type",
+          "Primary Site",
+          "# SSM Affected Cases",
+          "# CNV Gains",
+          "# CNV Losses",
+          "# Mutations",
+        ]
+      : ["Project", "Disease Type", "Primary Site", "# SSM Affected Cases"];
+    const body = isGene
+      ? cancerDistributionTableDownloadData
+          .map(
+            ({
+              project,
+              disease_type,
+              primary_site,
+              ssm_affected_cases,
+              cnv_gains,
+              cnv_losses,
+              num_mutations,
+            }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+                cnv_gains,
+                cnv_losses,
+                num_mutations,
+              ].join("\t");
+            },
+          )
+          .join("\n")
+      : cancerDistributionTableDownloadData
+          .map(
+            ({ project, disease_type, primary_site, ssm_affected_cases }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+              ].join("\t");
+            },
+          )
+          .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
   };
 
   return (
     <VerticalTable
       tableData={displayedData}
       columns={columnListOrder}
+      columnSorting={"manual"}
       selectableRow={false}
       showControls={false}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton
-            onClick={() => {
-              const now = new Date();
-              const fileName = `cancer-distribution-table.${convertDateToString(
-                now,
-              )}.tsv`;
-              const headers = isGene
-                ? [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                    "# CNV Gains",
-                    "# CNV Losses",
-                    "# Mutations",
-                  ]
-                : [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                  ];
-              const body = isGene
-                ? cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                        cnv_gains,
-                        cnv_losses,
-                        num_mutations,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                          cnv_gains,
-                          cnv_losses,
-                          num_mutations,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n")
-                : cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n");
-              const tsv = [headers.join("\t"), body].join("\n");
-              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
-              saveAs(blob, fileName);
-            }}
-          >
-            TSV
-          </FunctionButton>
+          <ButtonTooltip label=" " comingSoon={true}>
+            <FunctionButton>JSON</FunctionButton>
+          </ButtonTooltip>
+          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
         </div>
       }
       pagination={{
@@ -466,6 +533,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           : "uninitialized"
       }
       handleChange={handleChange}
+      initialSort={[
+        {
+          id: "ssm_affected_cases",
+          desc: false,
+        },
+      ]}
     />
   );
 };

@@ -49,6 +49,7 @@ This project uses
 #### Virtual Environment
 
 Ensure that you either create a virtual environment or are working in a Docker container.
+Make sure to create the environment in the holmes-py folder.
 
 _Creating a virtual environment:_
 
@@ -98,6 +99,13 @@ playwright install
 On Windows: Please update the env/default/python.properties as bellow.
 ````bash
 GAUGE_PYTHON_COMMAND = python
+````
+### Set APP Environment
+By default, the tests run on Production.
+To see all environments, visit this document specific to the data portal v2 [Test Framework](docs/test-framework.md).
+This command changes where the tests are pointed at.
+````bash
+export APP_ENVIRONMENT=ENVIRONMENT_NAME
 ````
 
 ### All specs

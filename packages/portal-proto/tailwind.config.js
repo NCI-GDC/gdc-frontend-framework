@@ -715,6 +715,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        "Custom-Repo-Width": "1370px",
+      },
       colors: {
         /* These colors come from the NCI color palette. The palette defines
          * six primary and five secondary colors. The extended palette defines

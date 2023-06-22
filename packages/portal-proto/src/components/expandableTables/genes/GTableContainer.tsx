@@ -247,7 +247,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         />
       )}
 
-      <div className="flex justify-between items-center mb-2 mt-8">
+      <div
+        data-testid="table-options-menu"
+        className="flex justify-between items-center mb-2 mt-8"
+      >
         <TableControls
           total={gTotal}
           numSelected={Object.keys(selectedGenes).length ?? 0}
@@ -274,11 +277,18 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           ]}
           additionalControls={
             <div className="flex gap-2">
-              <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                <FunctionButton>JSON</FunctionButton>
+              <ButtonTooltip
+                label="Export All Except #Cases and #Mutations"
+                comingSoon={true}
+              >
+                <FunctionButton data-testid="button-json-mutation-frequency">
+                  JSON
+                </FunctionButton>
               </ButtonTooltip>
               <ButtonTooltip label="Export current view" comingSoon={true}>
-                <FunctionButton>TSV</FunctionButton>
+                <FunctionButton data-testid="button-tsv-mutation-frequency">
+                  TSV
+                </FunctionButton>
               </ButtonTooltip>
             </div>
           }
@@ -312,15 +322,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneToggled={handleGeneToggled}
               width={width}
-              pageSize={pageSize}
-              page={page}
               toggledGenes={toggledGenes}
               selectedGenes={selectedGenes}
               setSelectedGenes={setSelectedGenes}
               handleGTotal={setGTotal}
               columnListOrder={columnListOrder}
               visibleColumns={visibleColumns}
-              searchTerm={searchTerm}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
               handleMutationCountClick={handleMutationCountClick}
@@ -337,7 +344,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               <span className="my-auto mx-1">Entries</span>
             </div>
           </div>
-          <div className="flex items-center justify-center grow text-sm">
+          <div
+            data-testid="text-showing-count"
+            className="flex items-center justify-center grow text-sm"
+          >
             <span>
               Showing
               <span className="font-bold">{` ${(tableData.genes_total === 0
