@@ -24,17 +24,14 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import DiscardChangesButton from "../DiscardChangesButton";
 import { UserInputContext } from "../UserInputModal";
 
-const CountCell = ({ countHook, setId }) => {
-  const { data, isSuccess } = countHook({ setId });
-  return isSuccess ? data : "";
-};
-
 interface SavedSetsProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
-  readonly countHook: UseQuery<QueryDefinition<any, any, any, any, any>>;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;
@@ -53,6 +50,10 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
+  const { data: counts, isSuccess } = countHook({
+    setIds: Object.keys(sets),
+  });
+
   const dispatch = useCoreDispatch();
   const existingFilters = existingFiltersHook();
   const existingOperation = existingFilters?.root?.[facetField];
@@ -71,9 +72,9 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         />
       ),
       name,
-      count: <CountCell countHook={countHook} setId={setId} />,
+      count: isSuccess ? (counts?.[setId] || 0).toLocaleString() : "...",
     }));
-  }, [sets, selectedSets, countHook]);
+  }, [sets, selectedSets, counts, isSuccess]);
 
   const columns = useMemo(() => {
     return [

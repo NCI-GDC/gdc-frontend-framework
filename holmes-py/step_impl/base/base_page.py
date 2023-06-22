@@ -1,13 +1,16 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_DIV_IDENT = lambda text: f'div:text("{text}")'
+    TEXT_IDENT = lambda text: f'text="{text}"'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
+    SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
+
+    CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
@@ -26,6 +29,7 @@ class GenericLocators:
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
@@ -42,6 +46,10 @@ class BasePage:
     def click(self, locator, force=False):
         self.wait_until_locator_is_visible(locator)
         self.driver.locator(locator).click(force=force)
+
+    def hover(self, locator):
+        """Hover over given locator"""
+        self.driver.locator(locator).hover()
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
@@ -77,6 +85,11 @@ class BasePage:
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
+
+    def get_filter_selection_count(self,filter_group_name,selection):
+        """Returns the count of how many items are associated with that filter in the current cohort"""
+        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
         return self.get_text(locator)
 
     def wait_until_locator_is_visible(self, locator):
@@ -123,7 +136,7 @@ class BasePage:
         return True
 
     def is_text_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_visible(locator)
         except:
@@ -131,7 +144,7 @@ class BasePage:
         return True
 
     def is_text_not_present(self, text):
-        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        locator = GenericLocators.TEXT_IDENT(text)
         try:
             self.wait_until_locator_is_hidden(locator)
         except:
@@ -198,6 +211,16 @@ class BasePage:
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
         self.click(locator)
 
+    def click_set_as_current_cohort_in_message(self):
+        """Clicks 'Set this as your current cohort' in a modal message"""
+        locator = GenericLocators.SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE
+        self.click(locator)
+
+    def click_create_or_save_button_in_cohort_modal(self):
+        """Clicks 'Create' or 'Save' in cohort modal"""
+        locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        self.click(locator)
+
     def make_selection_within_filter_group(self, filter_group_name, selection):
         """Clicks a checkbox within a filter group"""
         locator = GenericLocators.FILTER_GROUP_SELECTION_IDENT(filter_group_name, selection)
@@ -236,6 +259,7 @@ class BasePage:
         text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
         self.click(text_locator)
 
+    # This section of functions is for handling new tabs
     def perform_action_handle_new_tab(self, source:str, button:str):
         """
         perform_action_handle_new_tab performs an action to open a new tab,
@@ -246,10 +270,25 @@ class BasePage:
         :return: a page object for the new tab that has been opened
         """
         sources = {
-            "Home Page": self.click_button_ident_a_with_displayed_text_name
+            "Home Page": self.click_button_ident_a_with_displayed_text_name,
+            "Footer": self.click_button_ident_a_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
            sources.get(source)(button)
         new_tab = tab.value
         return new_tab
+
+    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
+        """
+        is_text_visible_on_new_tab checks for text on a given tab page.
+
+        :param new_tab: The tab page to be checked.
+        :param text_to_check: The <p> text to be searched for.
+        """
+        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
+        try:
+            new_tab.locator(expected_text_locator).wait_for(state='visible')
+        except:
+            return False
+        return True

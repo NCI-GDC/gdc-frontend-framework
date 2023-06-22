@@ -58,6 +58,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 
   return (
     <Card
+      data-testid={`${fieldName}-card`}
       shadow="sm"
       radius="md"
       p="xs"
@@ -74,6 +75,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             arrowSize={7}
           >
             <ActionIcon
+              data-testid="button-historgram-plot"
               variant="outline"
               className={
                 chartType === "histogram" && !noData
@@ -95,6 +97,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
           <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
             <ActionIcon
+              data-testid="button-survival-plot"
               variant="outline"
               className={
                 chartType === "survival"
@@ -121,6 +124,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             arrowSize={7}
           >
             <ActionIcon
+              data-testid="button-remove-card"
               onClick={() => updateFields(field)}
               className="border-primary text-primary-content"
               aria-label={`Remove ${fieldName} card`}
@@ -130,21 +134,19 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {continuous ? (
-        noData ? (
-          <div className="h-[32.1rem] w-full flex flex-col justify-start">
-            <p className="mx-auto my-2">No data for this property</p>
-          </div>
-        ) : (
-          <ContinuousData
-            initialData={(data as Stats)?.stats}
-            field={field}
-            fieldName={fieldName}
-            chartType={chartType}
-            noData={noData}
-            cohortFilters={cohortFilters}
-          />
-        )
+      {noData ? (
+        <div className="h-[32.1rem] w-full flex flex-col justify-start">
+          <p className="mx-auto my-2">No data for this property</p>
+        </div>
+      ) : continuous ? (
+        <ContinuousData
+          initialData={(data as Stats)?.stats}
+          field={field}
+          fieldName={fieldName}
+          chartType={chartType}
+          noData={noData}
+          cohortFilters={cohortFilters}
+        />
       ) : (
         <CategoricalData
           initialData={(data as Buckets)?.buckets}

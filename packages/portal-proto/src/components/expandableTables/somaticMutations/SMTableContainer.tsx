@@ -4,6 +4,7 @@ import {
   usePrevious,
   useGetSssmTableDataQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
   useCreateSsmsSetFromFiltersMutation,
@@ -132,6 +133,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    setPage(0);
   };
 
   const handleSetPage = (pageIndex: number) => {
@@ -282,10 +284,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              singleCountHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               appendSetHook={useAppendToSsmSetMutation}
               closeModal={() => setShowAddModal(false)}
               field={"ssms.ssm_id"}
+              sort="occurrence.case.project.project_id"
             />
           )}
           {showRemoveModal && (
@@ -298,7 +302,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               closeModal={() => setShowRemoveModal(false)}
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />
@@ -335,10 +339,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Cases">
+                  <ButtonTooltip
+                    label="Export All Except #Cases"
+                    comingSoon={true}
+                  >
                     <FunctionButton>JSON</FunctionButton>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
                     <FunctionButton>TSV</FunctionButton>
                   </ButtonTooltip>
                 </div>

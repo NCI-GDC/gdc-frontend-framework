@@ -434,13 +434,16 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row w-100 items-center justify-center flex-wrap">
+      <div className="flex w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg">{title}</div>
-        <div className="flex flex-row items-center ml-auto gap-1">
+        <div className="flex items-center ml-auto gap-1">
           <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
-                <DownloadButton aria-label="Download button with an icon">
+                <DownloadButton
+                  data-testid="button-download-survival-plot"
+                  aria-label="Download button with an icon"
+                >
                   <DownloadIcon size="1.25em" />
                 </DownloadButton>
               </Tooltip>
@@ -467,6 +470,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           <Tooltip label="Reset Survival Plot Zoom">
             <DownloadButton
               onClick={() => setXDomain(undefined)}
+              data-testid="button-reset-survival-plot"
               aria-label="reset button with an icon"
             >
               <ResetIcon size="1.15rem"></ResetIcon>
@@ -488,7 +492,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           {!hideLegend &&
             legend?.map((x, idx) => {
               return (
-                <div key={`${x.key}-${idx}`} className="px-2">
+                <div
+                  data-testid="text-cases-with-survival-data"
+                  key={`${x.key}-${idx}`}
+                  className="px-2"
+                >
                   {x.value}
                 </div>
               );
@@ -514,9 +522,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </div>
           </Tooltip>
         </div>
-        <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print font-content`}
-        >
+        <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
       </div>

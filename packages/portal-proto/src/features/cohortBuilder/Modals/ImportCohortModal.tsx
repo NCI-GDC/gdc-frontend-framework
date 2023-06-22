@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  useCoreSelector,
   useCoreDispatch,
-  selectAvailableCohorts,
   addNewCohortWithFilterAndMessage,
   FilterSet,
   hideModal,
@@ -11,7 +9,7 @@ import {
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 
 interface SubmitButtonProps {
   readonly ids: string[];
@@ -22,7 +20,6 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   ids,
   disabled,
 }: SubmitButtonProps) => {
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const coreDispatch = useCoreDispatch();
   const [name, setName] = useState(undefined);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
@@ -51,23 +48,17 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     }
   }, [response.isSuccess, name, coreDispatch, response.data]);
 
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
 
   return (
     <>
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             setName(newName);
             createSet({ values: ids });
           }}
-          onNameChange={onNameChange}
         />
       )}
       <DarkFunctionButton

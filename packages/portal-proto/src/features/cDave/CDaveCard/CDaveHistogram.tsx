@@ -60,6 +60,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
+  const hideYTicks = continuous && barChartData.every((d) => d.yCount === 0);
 
   return (
     <>
@@ -79,12 +80,14 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               defaultValue={"counts"}
             >
               <Radio
+                data-testid="radio-number-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="counts"
                 label="# of Cases"
                 color="nci-blue"
               />
               <Radio
+                data-testid="radio-percent-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="percent"
                 label="% of Cases"
@@ -100,6 +103,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   position={"left"}
                 >
                   <ActionIcon
+                    data-testid="button-histogram-download"
                     variant="outline"
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
@@ -124,6 +128,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               width={900}
               height={500}
               hideXTicks={hideXTicks}
+              hideYTicks={hideYTicks}
               xLabel={
                 hideXTicks
                   ? "Mouse over the histogram to see x-axis labels"
