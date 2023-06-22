@@ -30,6 +30,9 @@ class GenericLocators:
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
+    BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
+    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="button-bottom-switchSpring"]'
+
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
     FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
@@ -237,6 +240,16 @@ class BasePage:
     def click_create_or_save_button_in_cohort_modal(self):
         """Clicks 'Create' or 'Save' in cohort modal"""
         locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        self.click(locator)
+
+    def click_column_selector_button(self):
+        """Clicks table column selector button"""
+        locator = GenericLocators.BUTTON_COLUMN_SELECTOR
+        self.click(locator)
+
+    def click_switch_for_column_selector(self, switch_name):
+        """In the column selector pop-up modal, clicks specified switch"""
+        locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):

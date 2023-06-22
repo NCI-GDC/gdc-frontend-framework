@@ -300,6 +300,17 @@ def click_create_or_save_in_cohort_modal():
     """Clicks 'Create' or 'Save' in cohort modal"""
     APP.shared.click_create_or_save_button_in_cohort_modal()
 
+@step("Select or deselect these options from the table column selector <table>")
+def click_create_or_save_in_cohort_modal(table):
+    """
+    Clicks table column selector button.
+    In the column selector pop-up modal that appears, it clicks the specified switch.
+    """
+    APP.shared.click_column_selector_button()
+    for k, v in enumerate(table):
+        APP.shared.click_switch_for_column_selector(v[0])
+    APP.shared.click_column_selector_button()
+
 @step("Undo Action")
 def click_undo_in_message():
     """Clicks 'undo' in a modal message"""

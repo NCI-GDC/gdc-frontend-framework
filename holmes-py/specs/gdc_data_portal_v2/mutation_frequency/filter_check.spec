@@ -69,5 +69,3 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |SIFT Impact      |clear selection      |
   |Polyphen Impact  |clear selection      |
   |Consequence Type |clear selection      |
-
-* Pause "2" seconds

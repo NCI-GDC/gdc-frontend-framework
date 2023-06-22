@@ -27,6 +27,19 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |# CNV Loss                           |9      |
   |# Mutations                          |10     |
   |Annotations                          |11     |
+* Select or deselect these options from the table column selector
+  |table_column_to_select               |
+  |-------------------------------------|
+  |Gene ID                              |
+  |Cytoband                             |
+  |Type                                 |
+  |Annotations                          |
+* Verify the table header text is correct
+  |expected_text                        |column |
+  |-------------------------------------|-------|
+  |Gene ID                              |4      |
+  |Cytoband                             |7      |
+  |Type                                 |8      |
 
 ## Validate Mutation Table Headers Text
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -43,4 +56,11 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |# Affected Cases in Cohort           |8      |
   |# Affected Cases Across the GDC      |9      |
   |Impact                               |10     |
-* Pause "2" seconds
+* Select or deselect these options from the table column selector
+  |table_column_to_select               |
+  |-------------------------------------|
+  |Mutation ID                          |
+* Verify the table header text is correct
+  |expected_text                        |column |
+  |-------------------------------------|-------|
+  |Mutation ID                          |4      |
