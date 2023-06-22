@@ -12,6 +12,7 @@ import {
   useRemoveFromGeneSetMutation,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -24,6 +25,7 @@ import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelection
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import download from "src/utils/download";
 import {
   ButtonTooltip,
   PageSize,
@@ -81,6 +83,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
+
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -191,6 +195,155 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  const handleJSONDownload = async () => {
+    await download({
+      endpoint: "genes",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        // {
+        //   op: "and",
+        //   content: [
+        //     {
+        //       op: "and",
+        //       content: [
+        //         {
+        //           op: "in",
+        //           content: {
+        //             field: "cases.available_variation_data",
+        //             value: ["ssm"],
+        //           },
+        //         },
+        //         {
+        //           op: "NOT",
+        //           content: {
+        //             field: "genes.case.ssm.observation.observation_id",
+        //             value: "MISSING",
+        //           },
+        //         }
+        //       ]
+        //     },
+        //     {
+        //       op: "and",
+        //       content: [
+        //         ...[
+        //           {
+        //             content: {
+        //               field: "cases.available_variation_data",
+        //               value: ["ssm"],
+        //             },
+        //             op: "in",
+        //           },
+        //         ],
+        //         ...[buildCohortGqlOperator(cohortFilters)],
+        //       ],
+        //     },
+        //     {
+        //       op: "and",
+        //       content: [
+        //         {
+        //           content: {
+        //             field: "cases.available_variation_data",
+        //             value: ["ssm"],
+        //           },
+        //           op: "in",
+        //         },
+        //       ],
+        //     },
+        //     {
+        //       op: "and",
+        //       content: [
+        //         ...[
+        //           {
+        //             content: {
+        //               field: "cases.available_variation_data",
+        //               value: ["cnv"],
+        //             },
+        //             op: "in",
+        //           },
+        //         ],
+        //         ...[buildCohortGqlOperator(cohortFilters)]
+        //       ],
+        //     },
+        //     {
+        //       op: "and",
+        //       content: [
+        //         ...[
+        //           {
+        //             content: {
+        //               field: "cases.available_variation_data",
+        //               value: ["cnv"],
+        //             },
+        //             op: "in",
+        //           },
+        //           {
+        //             content: {
+        //               field: "cnvs.cnv_change",
+        //               value: ["Gain"],
+        //             },
+        //             op: "in",
+        //           },
+        //         ],
+        //         ...[buildCohortGqlOperator(cohortFilters)]
+        //       ],
+        //     },
+        //     {
+        //       op: "and",
+        //       content: [
+        //         ...[
+        //           {
+        //             content: {
+        //               field: "cases.available_variation_data",
+        //               value: ["cnv"],
+        //             },
+        //             op: "in",
+        //           },
+        //           {
+        //             content: {
+        //               field: "cnvs.cnv_change",
+        //               value: ["Loss"],
+        //             },
+        //             op: "in",
+        //           },
+        //         ],
+        //         ...[buildCohortGqlOperator(cohortFilters)]
+        //       ],
+        //     }
+        //   ]
+        // }
+        filters: {
+          op: "and",
+          content: [
+            {
+              op: "in",
+              content: {
+                field: "cases.available_variation_data",
+                value: ["ssm"],
+              },
+            },
+            {
+              op: "NOT",
+              content: {
+                field: "genes.case.ssm.observation.observation_id",
+                value: "MISSING",
+              },
+            },
+          ],
+        },
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: ["biotype", "symbol", "cytoband", "name", "gene_id"].join(","),
+      },
+      dispatch,
+    });
+  };
+
   return (
     <>
       {showSaveModal && (
@@ -281,7 +434,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 label="Export All Except #Cases and #Mutations"
                 comingSoon={true}
               >
-                <FunctionButton data-testid="button-json-mutation-frequency">
+                <FunctionButton
+                  onClick={() => handleJSONDownload()}
+                  data-testid="button-json-mutation-frequency"
+                >
                   JSON
                 </FunctionButton>
               </ButtonTooltip>
