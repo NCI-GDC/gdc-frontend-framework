@@ -7,9 +7,53 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import { CountButton } from "@/components/CountButton/CountButton";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import { Loader, Tooltip } from "@mantine/core";
+import {
+  CohortCreationStyledButton,
+  IconWrapper,
+} from "@/components/CohortCreationButton";
+import { FaPlus as PlusIcon } from "react-icons/fa";
+
+export const CreateFromCountButton = ({
+  tooltipLabel,
+  disabled,
+  handleOnClick,
+  count,
+  loading = false,
+}: {
+  tooltipLabel: string;
+  disabled: boolean;
+  handleOnClick: () => void;
+  count: number;
+  loading?: boolean;
+}): JSX.Element => {
+  return (
+    <div className="p-1">
+      <Tooltip label={tooltipLabel} withArrow>
+        <span>
+          <CohortCreationStyledButton
+            disabled={disabled}
+            onClick={handleOnClick}
+            aria-label={tooltipLabel}
+          >
+            <IconWrapper $disabled={disabled}>
+              <PlusIcon color="white" size={12} />
+            </IconWrapper>
+            <span className="w-fit">
+              {loading ? (
+                <Loader size="xs" />
+              ) : count !== undefined ? (
+                count.toLocaleString()
+              ) : null}
+            </span>
+          </CohortCreationStyledButton>
+        </span>
+      </Tooltip>
+    </div>
+  );
+};
 
 interface CountButtonWrapperForSetProps {
   readonly count: number | undefined;
@@ -60,7 +104,7 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
           )
         ))}
 
-      <CountButton
+      <CreateFromCountButton
         tooltipLabel={
           entityType !== "cohort"
             ? "Save as new set"
@@ -137,7 +181,7 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
           }}
         />
       )}
-      <CountButton
+      <CreateFromCountButton
         tooltipLabel={
           disabled
             ? "No cases available"
