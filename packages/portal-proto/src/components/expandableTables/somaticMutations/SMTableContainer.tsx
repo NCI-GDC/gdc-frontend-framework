@@ -339,10 +339,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip label="Export All Except #Cases">
+                  <ButtonTooltip
+                    label="Export All Except #Cases"
+                    comingSoon={true}
+                  >
                     <FunctionButton>JSON</FunctionButton>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
                     <FunctionButton>TSV</FunctionButton>
                   </ButtonTooltip>
                 </div>
