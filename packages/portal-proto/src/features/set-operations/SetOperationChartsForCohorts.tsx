@@ -81,7 +81,7 @@ const SetOperationChartsForCohorts = ({
   ]);
 
   return selectedEntities.length === 0 || loading ? (
-    <div className="flex flex-row items-center justify-center w-100 h-96">
+    <div className="flex items-center justify-center w-100 h-96">
       <Loader size={100} />
     </div>
   ) : selectedEntities.length === 2 ? (
