@@ -38,7 +38,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             TargetButtonChildren={"Create New Cohort"}
             disableTargetWidth={true}
             dropdownElements={[
-              { title: "Only Selected Cases (Coming soon)", disabled: true },
+              { title: "Only Selected Cases (Coming Soon)", disabled: true },
               {
                 title: "Existing Cohort With Selected Cases (Coming Soon)",
                 disabled: true,
