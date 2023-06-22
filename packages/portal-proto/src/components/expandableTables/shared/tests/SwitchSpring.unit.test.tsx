@@ -51,7 +51,7 @@ describe("<SwitchSpring />", () => {
       "cursor-not-allowed",
     );
 
-    expect(getByTestId("bottom-div-switchSpring")).toHaveClass(
+    expect(getByTestId("button-bottom-switchSpring")).toHaveClass(
       "border-gray-300",
     );
     await userEvent.click(getByTestId("button-middle-switchSpring"));
@@ -77,7 +77,7 @@ describe("<SwitchSpring />", () => {
       "cursor-not-allowed",
     );
 
-    expect(getByTestId("bottom-div-switchSpring")).toHaveClass(
+    expect(getByTestId("button-bottom-switchSpring")).toHaveClass(
       "border-activeColor",
     );
     await userEvent.click(getByTestId("button-middle-switchSpring"));
