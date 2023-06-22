@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC, Fragment } from "react";
+import React, { useState, useEffect, FC, Fragment, ReactNode } from "react";
 import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -99,11 +99,11 @@ interface VerticalTableProps {
   /**
    * caption to display at top of table
    */
-  tableTitle?: string;
+  tableTitle?: ReactNode;
   /**
    * html block left of column sorting controls
    */
-  additionalControls?: React.ReactNode;
+  additionalControls?: ReactNode;
   /**
    * Column sorting
    *
@@ -585,7 +585,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
-        {additionalControls && <div className="flex">{additionalControls}</div>}
+        {additionalControls && (
+          <div className="flex-1">{additionalControls}</div>
+        )}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
             <div className="flex mb-2 gap-2">
