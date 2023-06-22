@@ -33,6 +33,7 @@ import {
   NumeratorDenominator,
   ButtonTooltip,
 } from "@/components/expandableTables/shared";
+import CohortCreationButton from "@/components/CohortCreationButton";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -59,6 +60,7 @@ export const GeneCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={gene}
       isGene
     />
   );
@@ -94,6 +96,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={ssms}
       isGene={false}
     />
   );
@@ -105,6 +108,7 @@ interface CancerDistributionTableProps {
   readonly isError: boolean;
   readonly isSuccess: boolean;
   readonly symbol: string;
+  readonly id: string;
   readonly isGene: boolean;
 }
 
@@ -114,6 +118,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   isError,
   isSuccess,
   symbol,
+  id,
   isGene,
 }: CancerDistributionTableProps) => {
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
@@ -311,9 +316,30 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 primary_site: projectsById[d.key]?.primary_site || [],
 
                 ssm_affected_cases: (
-                  <NumeratorDenominator
-                    numerator={data.ssmFiltered[d.key] || 0}
-                    denominator={data.ssmTotal[d.key] || 0}
+                  <CohortCreationButton
+                    numCases={data.ssmFiltered[d.key] || 0}
+                    caseFilters={{
+                      mode: "and",
+                      root: {
+                        "cases.project.project_id": {
+                          field: "cases.project.project_id",
+                          operator: "includes",
+                          operands: [d.key],
+                        },
+                        "ssms.ssm_id": {
+                          field: "ssms.ssm_id",
+                          operator: "includes",
+                          operands: [id],
+                        },
+                      },
+                    }}
+                    label={
+                      <NumeratorDenominator
+                        numerator={data.ssmFiltered[d.key] || 0}
+                        denominator={data.ssmTotal[d.key] || 0}
+                        boldNumerator
+                      />
+                    }
                   />
                 ),
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],

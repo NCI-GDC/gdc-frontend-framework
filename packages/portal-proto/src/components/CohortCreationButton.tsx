@@ -11,7 +11,7 @@ import CreateCohortModal from "./Modals/CreateCohortModal";
 
 const CohortCreationStyledButton = tw.button`
   flex
-  items-center
+  items-stretch
   w-full
   max-w-[125px]
   gap-2
@@ -35,8 +35,6 @@ const IconWrapper = tw.span`
   border-r-1
   border-solid
   ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
-  h-full
-  min-h-[24px]
   flex
   items-center
   p-1
@@ -44,7 +42,7 @@ const IconWrapper = tw.span`
 
 interface CohortCreationButtonProps {
   readonly caseFilters: FilterSet;
-  readonly label: string | number;
+  readonly label: string | number | React.ReactElement;
   readonly numCases: number;
 }
 
