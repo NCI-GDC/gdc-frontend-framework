@@ -3,7 +3,7 @@ Date Created   : 06/20/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Filtering on the Mutation Frequency App
-Test-Case      : PEAR-898
+Test-Case      : PEAR-898, PEAR-916
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 

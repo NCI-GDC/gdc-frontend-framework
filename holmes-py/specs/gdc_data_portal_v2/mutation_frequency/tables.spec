@@ -2,8 +2,8 @@
 Date Created   : 06/21/2023
 Version			   : 1.0
 Owner		       : GDC QA
-Description		 :
-Test-Case      :
+Description		 : Validate Table Details
+Test-Case      : PEAR-899, PEAR-905
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 
