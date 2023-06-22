@@ -19,16 +19,17 @@ export const QuickSearch = (): JSX.Element => {
   const ref = useClickOutside(() => setPerformSearch(false));
   const router = useRouter();
 
-  const { data: quickSearchData, isFetching } =
-    useQuickSearch(searchTextForApi);
+  const {
+    data: { searchList, query },
+    isFetching,
+  } = useQuickSearch(searchTextForApi);
 
   // Checks search results returned against current search to make sure it matches
   useEffect(() => {
-    if (searchTextForApi && quickSearchData.query === searchTextForApi) {
-      setMatchedSearchList(quickSearchData.searchList);
+    if (searchTextForApi && query === searchTextForApi) {
+      setMatchedSearchList(searchList);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTextForApi, JSON.stringify(quickSearchData)]);
+  }, [searchTextForApi, searchList, query]);
 
   useEffect(() => {
     if (performSearch) {
