@@ -79,16 +79,16 @@ const useStandardPagination = (
             tempData.reverse();
           }
         } else {
-          switch (typeof tempData[0][obj.id]) {
+          switch (typeof tempData[0]?.[obj.id]) {
             case "number":
             case "string":
               tempData.sort((a, b) => {
                 // sort strings and numbers
                 if (a[obj.id] < b[obj.id]) {
-                  return obj.desc ? -1 : 1;
+                  return obj.desc ? 1 : -1;
                 }
                 if (a[obj.id] > b[obj.id]) {
-                  return obj.desc ? 1 : -1;
+                  return obj.desc ? -1 : 1;
                 }
                 return 0;
               });
