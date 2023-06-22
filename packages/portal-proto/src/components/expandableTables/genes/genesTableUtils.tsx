@@ -14,6 +14,7 @@ import { FilterSet } from "@gff/core";
 import {
   AnnotationsIcon,
   CheckboxSpring,
+  NumeratorDenominator,
   RatioSpring,
   SelectReducerAction,
   SelectedReducer,
@@ -25,6 +26,7 @@ import {
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import CohortCreationButton from "@/components/CohortCreationButton";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -246,7 +248,17 @@ export const geneCreateTableColumn = ({
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <CohortCreationButton
+                      label={
+                        <NumeratorDenominator
+                          numerator={numerator}
+                          denominator={denominator}
+                          numBold={true}
+                        />
+                      }
+                      numCases={numerator}
+                      caseFilters={{} as FilterSet}
+                    />
                   )}
                 </div>
               );
@@ -560,6 +572,7 @@ export const getGene = (
       numerator: g.ssm_case,
       denominator: cases,
     },
+    // also do numerator denominator
     CNVGain:
       cnvCases > 0
         ? `${g.case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
