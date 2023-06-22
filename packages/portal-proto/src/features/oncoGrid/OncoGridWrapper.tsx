@@ -424,7 +424,11 @@ const OncoGridWrapper: React.FC = () => {
       />
       {tracksModal}
       <div className="relative">
-        <LoadingOverlay visible={isLoading} overlayOpacity={0.9} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={isLoading}
+          overlayOpacity={0.9}
+        />
         <PositionedTooltip content={tooltipContent} />
         {consequenceTypeFilters.length === 0 && (
           <>

@@ -28,7 +28,12 @@ const DND: React.FC<DNDProps> = ({
 
   useClickOutside;
   return (
-    <div className="flex relative" aria-label="column change button" ref={ref}>
+    <div
+      data-testid="button-column-selector-box"
+      className="flex relative"
+      aria-label="column change button"
+      ref={ref}
+    >
       <button
         onClick={() => {
           setShowColumnMenu(!showColumnMenu);
@@ -41,7 +46,10 @@ const DND: React.FC<DNDProps> = ({
         </Box>
       </button>
       {showColumnMenu && (
-        <div className="w-fit absolute bg-base-max z-10 py-3 px-4 right-3 top-10 border-1 border-solid border-base-lighter rounded">
+        <div
+          data-testid="column-selector-popover-modal"
+          className="w-fit absolute bg-base-max z-10 py-3 px-4 right-3 top-10 border-1 border-solid border-base-lighter rounded"
+        >
           {columnListOrder.length > 0 && (
             <div className="p-1 bg-base-max items-center">
               <div className="flex h-10 items-center border-1 border-black rounded-md">
@@ -52,6 +60,7 @@ const DND: React.FC<DNDProps> = ({
                   </span>
                 )}
                 <input
+                  data-testid="textbox-column-selector"
                   className="p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm"
                   type="search"
                   value={columnSearchTerm}

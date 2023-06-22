@@ -448,7 +448,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 </DownloadButton>
               </Tooltip>
             </Menu.Target>
-            <Menu.Dropdown>
+            <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
                 onClick={() =>
                   handleDownloadSVG(downloadRef, "survival-plot.svg")

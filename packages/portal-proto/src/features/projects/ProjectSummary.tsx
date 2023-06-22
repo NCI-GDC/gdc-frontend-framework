@@ -110,7 +110,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   return (
     <>
       {isProjectFetching || isAnnotationFetching || isFileFetching ? (
-        <LoadingOverlay visible data-testid="loading" />
+        <LoadingOverlay visible data-testid="loading-spinner" />
       ) : projectData && Object.keys(projectData).length > 0 ? (
         <ProjectView {...projectWithAnnotation} />
       ) : (

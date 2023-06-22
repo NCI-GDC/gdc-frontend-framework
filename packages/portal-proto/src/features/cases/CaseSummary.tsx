@@ -55,7 +55,7 @@ export const CaseSummary = ({
       {isFetching ||
       isAnnotationCallFetching ||
       (data && data.case_id !== case_id) ? (
-        <LoadingOverlay visible data-testid="loading" />
+        <LoadingOverlay visible data-testid="loading-spinner" />
       ) : data && Object.keys(data).length > 0 && annotationCountData ? (
         <CaseView
           case_id={case_id}

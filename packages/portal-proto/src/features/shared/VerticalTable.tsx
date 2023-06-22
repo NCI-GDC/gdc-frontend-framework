@@ -557,7 +557,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p data-testid="showing-count" className="text-heading text-sm">
+      <p data-testid="text-showing-count" className="text-heading text-sm">
         Showing {outputString ?? "--"}
       </p>
     );
@@ -622,7 +622,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               {showControls && (
                 <div ref={ref}>
                   <button
-                    data-testid="column-selector-box"
+                    data-testid="button-column-selector-box"
                     aria-label="show table menu"
                     onClick={() => {
                       setShowColumnMenu(!showColumnMenu);
@@ -658,7 +658,11 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       </div>
       <>
         <div className="overflow-y-auto w-full relative">
-          <LoadingOverlay visible={showLoading} zIndex={0} />
+          <LoadingOverlay
+            data-testid="loading-spinner"
+            visible={showLoading}
+            zIndex={0}
+          />
           <Table columns={headings} data={table} />
         </div>
         {pagination && (
