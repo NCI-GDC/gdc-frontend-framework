@@ -47,6 +47,10 @@ class BasePage:
         self.wait_until_locator_is_visible(locator)
         self.driver.locator(locator).click(force=force)
 
+    def hover(self, locator):
+        """Hover over given locator"""
+        self.driver.locator(locator).hover()
+
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
 

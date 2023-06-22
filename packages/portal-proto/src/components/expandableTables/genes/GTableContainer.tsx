@@ -274,7 +274,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           ]}
           additionalControls={
             <div className="flex gap-2">
-              <ButtonTooltip label="Export All Except #Cases and #Mutations">
+              <ButtonTooltip
+                label="Export All Except #Cases and #Mutations"
+                comingSoon={true}
+              >
                 <FunctionButton>JSON</FunctionButton>
               </ButtonTooltip>
               <ButtonTooltip label="Export current view" comingSoon={true}>

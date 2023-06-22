@@ -1,14 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  createUseCoreDataHook,
-  DataStatus,
-  CoreDataSelectorResponse,
-} from "../../dataAccess";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { DAYS_IN_YEAR } from "../../constants";
+
+export interface CohortFacetDoc {
+  readonly key: string;
+  readonly doc_count: number;
+}
 
 const graphQLQuery = `
   query CohortComparison(
@@ -64,118 +60,67 @@ const graphQLQuery = `
   }
 `;
 
-export interface CohortFacetDoc {
-  readonly key: string;
-  readonly doc_count: number;
-}
+export const cohortFacetSlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    cohortFacets: builder.query({
+      query: ({
+        facetFields,
+        primaryCohortSetId,
+        comparisonCohortSetId,
+      }: {
+        facetFields: string[];
+        primaryCohortSetId: string;
+        comparisonCohortSetId: string;
+      }) => ({
+        graphQLQuery,
+        graphQLFilters: {
+          cohort1: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.case_id",
+                  value: [`set_id:${primaryCohortSetId}`],
+                },
+              },
+            ],
+          },
+          cohort2: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.case_id",
+                  value: [`set_id:${comparisonCohortSetId}`],
+                },
+              },
+            ],
+          },
+          facets: facetFields,
+          interval: 10 * DAYS_IN_YEAR,
+        },
+      }),
+      transformResponse: (response) => {
+        const facets1 = JSON.parse(response.data.viewer.explore.cohort1.facets);
+        const facets2 = JSON.parse(response.data.viewer.explore.cohort2.facets);
 
-export interface CohortFacet {
-  [facet_name: string]: {
-    buckets: Array<CohortFacetDoc>;
-  };
-}
+        facets1["diagnoses.age_at_diagnosis"] =
+          response.data.viewer.explore.cohort1.aggregations.diagnoses__age_at_diagnosis.histogram;
+        facets2["diagnoses.age_at_diagnosis"] =
+          response.data.viewer.explore.cohort2.aggregations.diagnoses__age_at_diagnosis.histogram;
 
-interface CohortComparisonData {
-  aggregations: CohortFacet[];
-  caseCounts: number[];
-}
-
-export interface CohortComparisonState {
-  readonly data: CohortComparisonData;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
-
-const initialState: CohortComparisonState = {
-  data: {
-    aggregations: [],
-    caseCounts: [],
-  },
-  status: "uninitialized",
-};
-
-export const fetchCohortFacets = createAsyncThunk<
-  GraphQLApiResponse,
-  {
-    facetFields: string[];
-    cohorts?: {
-      primary_cohort: {
-        filter: FilterSet;
-        name: string;
-      };
-      comparison_cohort: {
-        filter: FilterSet;
-        name: string;
-      };
-    };
-  },
-  { dispatch: CoreDispatch; state: CoreState }
->("cohortComparison/cohortFacets", async ({ facetFields, cohorts }) => {
-  const graphQLFilters = {
-    cohort1: buildCohortGqlOperator(cohorts?.primary_cohort.filter),
-    cohort2: buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
-    facets: facetFields,
-    interval: 10 * DAYS_IN_YEAR,
-  };
-  return await graphqlAPI(graphQLQuery, graphQLFilters);
-});
-
-const slice = createSlice({
-  name: "cases",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCohortFacets.fulfilled, (state, action) => {
-        const response = action.payload;
-
-        if (response.errors) {
-          state.status = "rejected";
-        } else {
-          const facets1 = JSON.parse(
-            response.data.viewer.explore.cohort1.facets,
-          );
-          const facets2 = JSON.parse(
-            response.data.viewer.explore.cohort2.facets,
-          );
-
-          facets1["diagnoses.age_at_diagnosis"] =
-            response.data.viewer.explore.cohort1.aggregations.diagnoses__age_at_diagnosis.histogram;
-          facets2["diagnoses.age_at_diagnosis"] =
-            response.data.viewer.explore.cohort2.aggregations.diagnoses__age_at_diagnosis.histogram;
-
-          state.data.aggregations = [facets1, facets2];
-          state.data.caseCounts = [
+        return {
+          aggregations: [facets1, facets2],
+          caseCounts: [
             response.data.viewer.explore.cohort1.hits.total,
             response.data.viewer.explore.cohort2.hits.total,
-          ];
-          state.status = "fulfilled";
-        }
-        return state;
-      })
-      .addCase(fetchCohortFacets.pending, (state) => {
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchCohortFacets.rejected, (state) => {
-        state.status = "rejected";
-        return state;
-      });
-  },
+          ],
+        };
+      },
+    }),
+  }),
 });
 
-export const cohortFacetsReducer = slice.reducer;
-
-export const selectCohortFacetsData = (
-  state: CoreState,
-): CoreDataSelectorResponse<CohortComparisonData> => {
-  return {
-    data: state.cohortComparison.facets.data,
-    status: state.cohortComparison.facets.status,
-  };
-};
-
-export const useCohortFacets = createUseCoreDataHook(
-  fetchCohortFacets,
-  selectCohortFacetsData,
-);
+export const { useCohortFacetsQuery } = cohortFacetSlice;

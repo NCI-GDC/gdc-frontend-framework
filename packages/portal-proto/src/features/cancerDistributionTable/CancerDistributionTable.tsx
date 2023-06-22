@@ -29,7 +29,10 @@ interface CancerDistributionTableTSVDownloadData {
   primary_site: string[];
   ssm_affected_cases: string;
 }
-import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import {
+  NumeratorDenominator,
+  ButtonTooltip,
+} from "@/components/expandableTables/shared";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -450,7 +453,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       showControls={false}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton>JSON</FunctionButton>
+          <ButtonTooltip label=" " comingSoon={true}>
+            <FunctionButton>JSON</FunctionButton>
+          </ButtonTooltip>
           <FunctionButton
             onClick={() => {
               const now = new Date();
