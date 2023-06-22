@@ -659,7 +659,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         name: set.name,
         count: isFetching ? "..." : summaryCounts?.[set.id],
       })),
-    [entityType, sets, summaryCounts],
+    [entityType, sets, summaryCounts, isFetching],
   );
 
   const tableData = useMemo(

@@ -274,7 +274,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           ]}
           additionalControls={
             <div className="flex gap-2">
-              <ButtonTooltip label="Export All Except #Cases and #Mutations">
+              <ButtonTooltip
+                label="Export All Except #Cases and #Mutations"
+                comingSoon={true}
+              >
                 <FunctionButton>JSON</FunctionButton>
               </ButtonTooltip>
               <ButtonTooltip label="Export current view" comingSoon={true}>
@@ -312,15 +315,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneToggled={handleGeneToggled}
               width={width}
-              pageSize={pageSize}
-              page={page}
               toggledGenes={toggledGenes}
               selectedGenes={selectedGenes}
               setSelectedGenes={setSelectedGenes}
               handleGTotal={setGTotal}
               columnListOrder={columnListOrder}
               visibleColumns={visibleColumns}
-              searchTerm={searchTerm}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
               handleMutationCountClick={handleMutationCountClick}

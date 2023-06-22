@@ -10,7 +10,7 @@ jest.mock("@gff/core", () => {
   const original = jest.requireActual("@gff/core");
   return {
     ...original,
-    useCohortFacets: jest.fn().mockReturnValue({
+    useCohortFacetsQuery: jest.fn().mockReturnValue({
       data: { aggregations: [], caseCounts: [] },
       isFetching: false,
       isUnitialized: false,

@@ -14,6 +14,7 @@ const CohortCreationStyledButton = tw.button`
   items-center
   w-full
   h-full
+  max-w-[125px]
   gap-2
   rounded
   border-primary
@@ -36,6 +37,7 @@ const IconWrapper = tw.span`
   border-solid
   ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
   h-full
+  min-h-[24px]
   flex
   items-center
   p-1

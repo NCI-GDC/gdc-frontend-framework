@@ -11,7 +11,7 @@ import {
   fetchToken,
   selectCurrentModal,
 } from "@gff/core";
-import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
+import { Button, LoadingOverlay, Menu, Badge, Tooltip } from "@mantine/core";
 import { ReactNode, useContext, useEffect } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             <a className="block w-full h-full mt-2">
               <NIHLogo
                 layout="fill"
-                objectFit="contain"
+                style={{ objectFit: "contain" }}
                 data-testid="NIH_LOGO"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"
@@ -123,10 +123,14 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <button className="flex items-center gap-1 font-heading">
-            <OptionsIcon size="22px" className="rotate-90" />
-            Manage Sets
-          </button>
+          <Tooltip label="Coming soon">
+            <Button unstyled>
+              <div className="flex items-center gap-1 font-heading">
+                <OptionsIcon size="22px" className="rotate-90" />
+                Manage Sets
+              </div>
+            </Button>
+          </Tooltip>
           <Link href="/cart" passHref>
             <Button unstyled data-testid="cartLink">
               <div className="flex items-center gap-1 font-heading">
