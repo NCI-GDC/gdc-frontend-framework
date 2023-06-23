@@ -138,7 +138,8 @@ mutation mutationsCreateRepositoryCaseSetMutation(
 export interface CreateCaseSetProps {
   readonly caseSetId: string; // pass a caseSetId to use
   readonly pendingFilters?: FilterSet;
-  modified?: boolean; // to control cohort modification flag
+  readonly modified?: boolean; // to control cohort modification flag
+  readonly cohortId?: string; // if set update this cohort instead of the current cohort
 }
 
 export const createCaseSet = createAsyncThunk<
@@ -149,12 +150,15 @@ export const createCaseSet = createAsyncThunk<
   "cohort/createCaseSet",
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async ({ caseSetId, pendingFilters = undefined }, thunkAPI) => {
+  async ({ caseSetId, pendingFilters = undefined, cohortId }, thunkAPI) => {
     const entityId = thunkAPI.getState().cohort.availableCohorts.currentCohort;
     if (entityId === undefined)
       return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
 
-    const cohort = cohortSelectors.selectById(thunkAPI.getState(), entityId);
+    const cohort = cohortSelectors.selectById(
+      thunkAPI.getState(),
+      cohortId ?? entityId,
+    );
     if (cohort === undefined || pendingFilters === undefined)
       return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
 
@@ -382,7 +386,7 @@ const handleFiltersForSet = createAsyncThunk<
   },
 );
 
-export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
+export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms.", "cnvs."];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -861,7 +865,9 @@ const slice = createSlice({
         const currentCohort = getCurrentCohort(state);
         const response = action.payload;
         const pendingFilters = action.meta.arg.pendingFilters;
-        const cohort = state.entities[currentCohort] as Cohort;
+        // use the cohortId from the action if it exists, otherwise use the current cohort
+        const cohortToUpdate = action.meta.arg.cohortId ?? currentCohort;
+        const cohort = state.entities[cohortToUpdate] as Cohort;
         if (pendingFilters === undefined) {
           console.error(
             "trying to create a case set with no pending filters",
@@ -872,7 +878,7 @@ const slice = createSlice({
         if (response.errors && Object.keys(response.errors).length > 0) {
           // reject the current cohort by setting status to rejected
           cohortsAdapter.updateOne(state, {
-            id: currentCohort,
+            id: cohortToUpdate,
             changes: {
               filters: pendingFilters,
               caseSet: {
@@ -903,7 +909,7 @@ const slice = createSlice({
         };
 
         cohortsAdapter.updateOne(state, {
-          id: currentCohort,
+          id: cohortToUpdate,
           changes: {
             filters: pendingFilters,
             modified: action.meta.arg.modified,
@@ -916,9 +922,9 @@ const slice = createSlice({
           },
         });
       })
-      .addCase(createCaseSet.pending, (state) => {
+      .addCase(createCaseSet.pending, (state, action) => {
         cohortsAdapter.updateOne(state, {
-          id: getCurrentCohort(state),
+          id: action.meta.arg.cohortId ?? getCurrentCohort(state),
           changes: {
             caseSet: {
               filters: undefined,
@@ -928,9 +934,9 @@ const slice = createSlice({
           },
         });
       })
-      .addCase(createCaseSet.rejected, (state) => {
+      .addCase(createCaseSet.rejected, (state, action) => {
         cohortsAdapter.updateOne(state, {
-          id: getCurrentCohort(state),
+          id: action.meta.arg.cohortId ?? getCurrentCohort(state),
           changes: {
             caseSet: {
               caseSetIds: undefined,
@@ -1333,6 +1339,24 @@ export const setActiveCohortList =
           caseSetId: cohortId,
           pendingFilters: cohort.filters,
           modified: false,
+        }),
+      );
+    }
+  };
+
+export const createCaseSetsIfNeeded =
+  (cohort: Cohort): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  async (dispatch: CoreDispatch) => {
+    // set the list of all cohorts
+
+    if (!cohort) return;
+    if (willRequireCaseSet(cohort.filters)) {
+      dispatch(
+        createCaseSet({
+          caseSetId: cohort.id,
+          pendingFilters: cohort.filters,
+          modified: true,
+          cohortId: cohort.id,
         }),
       );
     }
