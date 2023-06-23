@@ -12,6 +12,7 @@ import {
   selectSetsByType,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { useEffect, useState, useReducer } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -40,6 +41,7 @@ import {
   TableFilters,
   TablePlaceholder,
 } from "../shared";
+import download from "@/utils/download";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -119,6 +121,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
+
+  const dispatch = useCoreDispatch();
 
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
@@ -248,6 +252,71 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       ? caseFilter
       : combinedFilters;
 
+  const handleJSONDownload = async () => {
+    await download({
+      endpoint: "ssms",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: {
+          op: "and",
+          content: [
+            {
+              op: "in",
+              content: {
+                field: "genes.is_cancer_gene_census",
+                value: ["true"],
+              },
+            },
+          ],
+        },
+        // {
+        //   op: "and",
+        //   content: [
+        //     {
+        //       op: "in",
+        //       content: {
+        //         field: "cases.available_variation_data",
+        //         value: ["ssm"],
+        //       },
+        //     },
+        //     ...(buildCohortGqlOperator(
+        //       combinedFilters,
+        //     )?.content
+        //       ? Object(
+        //         buildCohortGqlOperator(
+        //           combinedFilters,
+        //         )?.content,
+        //       )
+        //       : []),
+        //   ],
+        // },
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "genomic_dna_change",
+          "mutation_subtype",
+          "consequence.transcript.consequence_type",
+          "consequence.transcript.annotation.vep_impact",
+          "consequence.transcript.annotation.sift_impact",
+          "consequence.transcript.annotation.polyphen_impact",
+          "consequence.transcript.is_canonical",
+          "consequence.transcript.gene.gene_id",
+          "consequence.transcript.gene.symbol",
+          "consequence.transcript.aa_change",
+          "ssm_id",
+        ].join(","),
+      },
+      dispatch,
+    });
+  };
+
   return (
     <>
       {caseFilter &&
@@ -340,11 +409,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               ]}
               additionalControls={
                 <div className="flex gap-2">
-                  <ButtonTooltip
-                    label="Export All Except #Cases"
-                    comingSoon={true}
-                  >
-                    <FunctionButton data-testid="button-json-mutation-frequency">
+                  <ButtonTooltip label="Export All Except #Cases">
+                    <FunctionButton
+                      onClick={() => handleJSONDownload()}
+                      data-testid="button-json-mutation-frequency"
+                    >
                       JSON
                     </FunctionButton>
                   </ButtonTooltip>
