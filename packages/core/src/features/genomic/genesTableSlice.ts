@@ -42,17 +42,17 @@ const GenesTableGraphQLQuery = `
             genesTableViewer: viewer {
               explore {
                 cases {
-                  hits(first: 0, filters: $ssmTested) {
+                  hits(first: 0, case_filters: $ssmTested) {
                     total
                   }
                 }
                 filteredCases: cases {
-                  hits(first: 0, filters: $geneCaseFilter) {
+                  hits(first: 0, case_filters: $geneCaseFilter) {
                     total
                   }
                 }
                 cnvCases: cases {
-                  hits(first: 0, filters: $cnvTested) {
+                  hits(first: 0, case_filters: $cnvTested) {
                     total
                   }
                 }
@@ -60,7 +60,7 @@ const GenesTableGraphQLQuery = `
                   hits(
                     first: $genesTable_size
                     offset: $genesTable_offset
-                    filters: $genesTable_filters
+                    case_filters: $genesTable_filters
                     score: $score
                     sort: $sort
                   ) {

@@ -41,15 +41,15 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
         ) {
           repository {
             files {
-              hits(filters: $filters) {
+              hits(case_filters: $filters) {
                 total
               }
             }
             cases {
-              hits(filters: $filters) {
+              hits(case_filters: $filters) {
                 total
               }
-              aggregations(filters: $filters) {
+              aggregations(case_filters: $filters) {
                 files__experimental_strategy {
                   buckets {
                     key

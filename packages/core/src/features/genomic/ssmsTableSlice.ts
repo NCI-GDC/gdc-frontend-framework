@@ -32,17 +32,17 @@ $sort: [Sort]
   viewer {
     explore {
       cases {
-        hits(first: 0, filters: $ssmTested) {
+        hits(first: 0, case_filters: $ssmTested) {
           total
         }
       }
       filteredCases: cases {
-        hits(first: 0, filters: $ssmCaseFilter) {
+        hits(first: 0, case_filters: $ssmCaseFilter) {
           total
         }
       }
       ssms {
-        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {
+        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, score: $score, sort: $sort) {
           total
           edges {
             node {
@@ -52,7 +52,7 @@ $sort: [Sort]
               mutation_subtype
               ssm_id
               consequence {
-                hits(first: 1, filters: $consequenceFilters) {
+                hits(first: 1, case_filters: $consequenceFilters) {
                   edges {
                     node {
                       transcript {

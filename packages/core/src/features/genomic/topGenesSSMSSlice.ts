@@ -31,7 +31,7 @@ query TopGeneQuery (
   viewer {
     explore {
         genes {
-            hits(first: $topTable_size, offset: $topTable_offset, filters: $topTable_filters, score: $geneScore) {
+            hits(first: $topTable_size, offset: $topTable_offset, case_filters: $topTable_filters, score: $geneScore) {
               total
               edges {
                 node {
@@ -45,7 +45,7 @@ query TopGeneQuery (
             }
           }
       ssms {
-        hits(first: $topTable_size, offset: $topTable_offset, filters: $topTable_filters, score: $ssmsScore, sort: $ssmsSort) {
+        hits(first: $topTable_size, offset: $topTable_offset, case_filters: $topTable_filters, score: $ssmsScore, sort: $ssmsSort) {
           total
           edges {
             node {

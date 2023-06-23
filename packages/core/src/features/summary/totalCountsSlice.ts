@@ -25,29 +25,29 @@ const CountsGraphQLQuery = `
     }
     repository {
       cases {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       files {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       }
     },
     explore {
       cases {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       genes {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       ssms {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       }

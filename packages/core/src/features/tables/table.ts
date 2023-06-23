@@ -31,17 +31,17 @@ export const tableApiSlice = graphqlAPISlice.injectEndpoints({
             genesTableViewer: viewer {
               explore {
                 cases {
-                  hits(first: 0, filters: $ssmTested) {
+                  hits(case_filters: 0, filters: $ssmTested) {
                     total
                   }
                 }
                 filteredCases: cases {
-                  hits(first: 0, filters: $geneCaseFilter) {
+                  hits(case_filters: 0, filters: $geneCaseFilter) {
                     total
                   }
                 }
                 cnvCases: cases {
-                  hits(first: 0, filters: $cnvTested) {
+                  hits(case_filters: 0, filters: $cnvTested) {
                     total
                   }
                 }
