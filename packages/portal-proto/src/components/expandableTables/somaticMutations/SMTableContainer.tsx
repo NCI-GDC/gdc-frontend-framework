@@ -267,35 +267,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           op: "and",
           content: [
             {
-              op: "in",
               content: {
                 field: "genes.is_cancer_gene_census",
                 value: ["true"],
               },
+              op: "in",
             },
+            ...(buildCohortGqlOperator(combinedFilters)?.content
+              ? Object(buildCohortGqlOperator(combinedFilters)?.content)
+              : []),
           ],
         },
-        // {
-        //   op: "and",
-        //   content: [
-        //     {
-        //       op: "in",
-        //       content: {
-        //         field: "cases.available_variation_data",
-        //         value: ["ssm"],
-        //       },
-        //     },
-        //     ...(buildCohortGqlOperator(
-        //       combinedFilters,
-        //     )?.content
-        //       ? Object(
-        //         buildCohortGqlOperator(
-        //           combinedFilters,
-        //         )?.content,
-        //       )
-        //       : []),
-        //   ],
-        // },
         attachment: true,
         format: "JSON",
         pretty: true,
