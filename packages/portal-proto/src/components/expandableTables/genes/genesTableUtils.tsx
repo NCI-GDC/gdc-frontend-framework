@@ -44,6 +44,10 @@ interface GeneCreateTableColumnProps {
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
+  generateFilters: (
+    type: "cnvgain" | "cnvloss" | "ssmaffected",
+    geneId: string,
+  ) => FilterSet;
 }
 
 export const geneCreateTableColumn = ({
@@ -58,6 +62,7 @@ export const geneCreateTableColumn = ({
   setEntityMetadata,
   genomicFilters,
   handleMutationCountClick,
+  generateFilters,
 }: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -257,7 +262,10 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={{} as FilterSet}
+                      caseFilters={generateFilters(
+                        "ssmaffected",
+                        row.original["geneID"],
+                      )}
                     />
                   )}
                 </>
@@ -349,7 +357,10 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={{} as FilterSet}
+                      caseFilters={generateFilters(
+                        "cnvgain",
+                        row.original["geneID"],
+                      )}
                     />
                   )}
                 </>
@@ -390,7 +401,10 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={{} as FilterSet}
+                      caseFilters={generateFilters(
+                        "cnvloss",
+                        row.original["geneID"],
+                      )}
                     />
                   )}
                 </>

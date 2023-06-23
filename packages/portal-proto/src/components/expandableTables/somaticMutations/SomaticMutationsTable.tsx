@@ -8,7 +8,11 @@ import React, {
 import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
-import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import {
+  GDCSsmsTable,
+  joinFilters,
+  useGetSomaticMutationTableSubrowQuery,
+} from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { Column, ExpTable, Subrow } from "../shared";
 
@@ -29,6 +33,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   projectId = undefined,
   isDemoMode = false,
   isModal = false,
+  cohortFilters,
 }: SomaticMutationsTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -36,6 +41,22 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [mutationID, setMutationID] = useState(undefined);
+
+  const generateFilters = useCallback(
+    (ssmId: string) => {
+      return joinFilters(cohortFilters, {
+        mode: "and",
+        root: {
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operator: "includes",
+            operands: [ssmId],
+          },
+        },
+      });
+    },
+    [cohortFilters],
+  );
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData: GDCSsmsTable) => {
@@ -110,6 +131,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         isDemoMode,
         setEntityMetadata,
         isModal,
+        generateFilters,
       });
     });
   }, [
@@ -125,6 +147,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setMutationID,
     handleSurvivalPlotToggled,
     setEntityMetadata,
+    generateFilters,
   ]);
 
   return (

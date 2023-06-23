@@ -50,6 +50,7 @@ interface SSMSCreateTableColumnProps {
   setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
   isModal?: boolean;
   isConsequenceTable?: boolean;
+  generateFilters: (ssmId: string) => FilterSet;
 }
 
 export const ssmsCreateTableColumn = ({
@@ -66,6 +67,7 @@ export const ssmsCreateTableColumn = ({
   setEntityMetadata,
   isModal,
   isConsequenceTable,
+  generateFilters,
 }: SSMSCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -372,7 +374,7 @@ export const ssmsCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={{} as FilterSet}
+                      caseFilters={generateFilters(row.original["mutationID"])}
                     />
                   )}
                 </div>

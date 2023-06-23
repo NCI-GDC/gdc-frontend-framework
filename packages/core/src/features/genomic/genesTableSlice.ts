@@ -179,6 +179,7 @@ export const fetchGenesTable = createAsyncThunk<
       selectCurrentCohortFilters(thunkAPI.getState()),
     );
 
+    // maybe don't need this
     const demoOrCohort = isDemoMode
       ? buildCohortGqlOperator(overwritingDemoFilter)
       : cohortFilters;

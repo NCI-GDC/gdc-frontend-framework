@@ -9,7 +9,7 @@ import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
+import { FilterSet, joinFilters, useGetGeneTableSubrowQuery } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ExpTable, Subrow } from "../shared";
 
@@ -28,6 +28,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   visibleColumns,
   isDemoMode = false,
   genomicFilters,
+  cohortFilters,
   handleMutationCountClick,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
@@ -36,6 +37,58 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [geneID, setGeneID] = useState(undefined);
+
+  const generateFilters = useCallback(
+    (type: "cnvgain" | "cnvloss" | "ssmaffected", geneId: string) => {
+      const cohortAndGenomic = joinFilters(cohortFilters, genomicFilters);
+
+      const commonFilters: FilterSet = joinFilters(cohortAndGenomic, {
+        mode: "and",
+        root: {
+          "genes.gene_id": {
+            field: "genes.gene_id",
+            operator: "includes",
+            operands: [geneId],
+          },
+        },
+      });
+
+      if (type === "cnvgain") {
+        return joinFilters(commonFilters, {
+          mode: "and",
+          root: {
+            "cnvs.cnv_change": {
+              field: "cnvs.cnv_change",
+              operator: "includes",
+              operands: ["Gain"],
+            },
+          },
+        });
+      } else if (type === "cnvloss") {
+        return joinFilters(commonFilters, {
+          mode: "and",
+          root: {
+            "cnvs.cnv_change": {
+              field: "cnvs.cnv_change",
+              operator: "includes",
+              operands: ["Loss"],
+            },
+          },
+        });
+      } else {
+        return joinFilters(commonFilters, {
+          mode: "and",
+          root: {
+            "ssms.ssm_id": {
+              field: "ssms.ssm_id",
+              operator: "exists",
+            },
+          },
+        });
+      }
+    },
+    [genomicFilters, cohortFilters],
+  );
 
   const useGeneTableFormat = useCallback(
     (initialData: Record<string, any>) => {
@@ -124,6 +177,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           setEntityMetadata,
           genomicFilters,
           handleMutationCountClick,
+          generateFilters,
         });
       });
   }, [
@@ -138,6 +192,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setEntityMetadata,
     handleSurvivalPlotToggled,
     handleMutationCountClick,
+    generateFilters,
   ]);
 
   return (
