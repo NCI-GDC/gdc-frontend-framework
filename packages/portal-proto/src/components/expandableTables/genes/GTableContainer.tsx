@@ -216,47 +216,30 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   op: "and",
                   content: [
                     {
-                      op: "and",
-                      content: [
-                        {
-                          op: "in",
-                          content: {
-                            field: "cases.available_variation_data",
-                            value: ["ssm"],
-                          },
-                        },
-                        {
-                          op: "NOT",
-                          content: {
-                            field: "genes.case.ssm.observation.observation_id",
-                            value: "MISSING",
-                          },
-                        },
-                      ],
+                      op: "in",
+                      content: {
+                        field: "cases.available_variation_data",
+                        value: ["ssm"],
+                      },
                     },
+                    {
+                      op: "NOT",
+                      content: {
+                        field: "genes.case.ssm.observation.observation_id",
+                        value: "MISSING",
+                      },
+                    },
+                    ...(buildCohortGqlOperator(
+                      joinFilters(cohortFilters, genomicFilters),
+                    )?.content
+                      ? Object(
+                          buildCohortGqlOperator(
+                            joinFilters(cohortFilters, genomicFilters),
+                          )?.content,
+                        )
+                      : []),
                   ],
                 },
-              ],
-            },
-            {
-              op: "and",
-              content: [
-                {
-                  op: "in",
-                  content: {
-                    field: "cases.available_variation_data",
-                    value: ["ssm"],
-                  },
-                },
-                ...(buildCohortGqlOperator(
-                  joinFilters(cohortFilters, genomicFilters),
-                )?.content
-                  ? Object(
-                      buildCohortGqlOperator(
-                        joinFilters(cohortFilters, genomicFilters),
-                      )?.content,
-                    )
-                  : []),
               ],
             },
           ],
