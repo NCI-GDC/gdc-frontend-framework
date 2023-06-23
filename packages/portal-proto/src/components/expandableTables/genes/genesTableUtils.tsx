@@ -246,21 +246,21 @@ export const geneCreateTableColumn = ({
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex justify-start">
+                <>
                   {row.getCanExpand() && (
                     <CohortCreationButton
                       label={
                         <NumeratorDenominator
                           numerator={numerator}
                           denominator={denominator}
-                          numBold={true}
+                          boldNumerator={true}
                         />
                       }
                       numCases={numerator}
                       caseFilters={{} as FilterSet}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -333,12 +333,26 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original["CNVGain"] ?? {
+                numerator: 0,
+                denominator: 1,
+              };
               return (
-                <div className={`content-center`}>
+                <>
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <CohortCreationButton
+                      label={
+                        <NumeratorDenominator
+                          numerator={numerator}
+                          denominator={denominator}
+                          boldNumerator={true}
+                        />
+                      }
+                      numCases={numerator}
+                      caseFilters={{} as FilterSet}
+                    />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -360,12 +374,26 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const { numerator, denominator } = row?.original["CNVLoss"] ?? {
+                numerator: 0,
+                denominator: 1,
+              };
               return (
-                <div className={`content-center`}>
+                <>
                   {row.getCanExpand() && (
-                    <TableCell row={row} accessor={accessor} anchor={false} />
+                    <CohortCreationButton
+                      label={
+                        <NumeratorDenominator
+                          numerator={numerator}
+                          denominator={denominator}
+                          boldNumerator={true}
+                        />
+                      }
+                      numCases={numerator}
+                      caseFilters={{} as FilterSet}
+                    />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -386,7 +414,7 @@ export const geneCreateTableColumn = ({
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
@@ -398,7 +426,7 @@ export const geneCreateTableColumn = ({
                       })}
                     </div>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -572,21 +600,14 @@ export const getGene = (
       numerator: g.ssm_case,
       denominator: cases,
     },
-    // also do numerator denominator
-    CNVGain:
-      cnvCases > 0
-        ? `${g.case_cnv_gain.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
-            (100 * g.case_cnv_gain) /
-            cnvCases
-          ).toFixed(2)}%)`
-        : `--`,
-    CNVLoss:
-      cnvCases > 0
-        ? `${g.case_cnv_loss.toLocaleString()} / ${cnvCases.toLocaleString()} (${(
-            (100 * g.case_cnv_loss) /
-            cnvCases
-          ).toFixed(2)}%)`
-        : `--`,
+    CNVGain: {
+      numerator: g.case_cnv_gain,
+      denominator: cnvCases,
+    },
+    CNVLoss: {
+      numerator: g.case_cnv_loss,
+      denominator: cnvCases,
+    },
     mutations: mutationCounts[g.gene_id],
     annotations: g.is_cancer_gene_census,
     // do not remove subRows key, It's needed for row.getCanExpand() to be true

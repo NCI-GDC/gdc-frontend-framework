@@ -11,10 +11,10 @@ import CreateCohortModal from "./Modals/CreateCohortModal";
 
 const CohortCreationStyledButton = tw.button`
   flex
-  items-center
+  items-stretch
   w-full
   h-full
-  max-w-[125px]
+  ${(p) => !p.$fullWidth && "max-w-[125px]"}
   gap-2
   rounded
   border-primary
@@ -36,11 +36,9 @@ const IconWrapper = tw.span`
   border-r-1
   border-solid
   ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
-  h-full
-  min-h-[24px]
+  p-1
   flex
   items-center
-  p-1
 `;
 
 interface CohortCreationButtonProps {
@@ -94,11 +92,12 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           <CohortCreationStyledButton
             disabled={disabled}
             onClick={() => setShowCreateCohort(true)}
+            $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           >
             <IconWrapper $disabled={disabled}>
               <PlusIcon color="white" size={12} />
             </IconWrapper>
-            <span className="pr-2">{label}</span>
+            <span className="pr-2 self-center">{label}</span>
           </CohortCreationStyledButton>
         </span>
       </Tooltip>

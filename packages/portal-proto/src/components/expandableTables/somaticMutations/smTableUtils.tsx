@@ -12,10 +12,11 @@ import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
 import { entityMetadataType } from "src/utils/contexts";
-import { SSMSData } from "@gff/core";
+import { FilterSet, SSMSData } from "@gff/core";
 import { externalLinks, humanify } from "src/utils";
 import {
   CheckboxSpring,
+  NumeratorDenominator,
   RatioSpring,
   SelectReducerAction,
   SelectedReducer,
@@ -29,6 +30,7 @@ import {
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 import { ImpactHeaderWithTooltip } from "../shared/ImpactHeaderWithTooltip";
+import CohortCreationButton from "@/components/CohortCreationButton";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -361,7 +363,17 @@ export const ssmsCreateTableColumn = ({
               return (
                 <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <CohortCreationButton
+                      label={
+                        <NumeratorDenominator
+                          numerator={numerator}
+                          denominator={denominator}
+                          boldNumerator={true}
+                        />
+                      }
+                      numCases={numerator}
+                      caseFilters={{} as FilterSet}
+                    />
                   )}
                 </div>
               );
