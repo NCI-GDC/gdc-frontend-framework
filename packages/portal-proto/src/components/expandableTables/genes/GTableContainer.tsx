@@ -206,132 +206,58 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         method: "POST",
       },
       params: {
-        // {
-        //   op: "and",
-        //   content: [
-        //     {
-        //       op: "and",
-        //       content: [
-        //         {
-        //           op: "in",
-        //           content: {
-        //             field: "cases.available_variation_data",
-        //             value: ["ssm"],
-        //           },
-        //         },
-        //         {
-        //           op: "NOT",
-        //           content: {
-        //             field: "genes.case.ssm.observation.observation_id",
-        //             value: "MISSING",
-        //           },
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       op: "and",
-        //       content: [
-        //         ...[
-        //           {
-        //             content: {
-        //               field: "cases.available_variation_data",
-        //               value: ["ssm"],
-        //             },
-        //             op: "in",
-        //           },
-        //         ],
-        //         ...[buildCohortGqlOperator(cohortFilters)],
-        //       ],
-        //     },
-        //     {
-        //       op: "and",
-        //       content: [
-        //         {
-        //           content: {
-        //             field: "cases.available_variation_data",
-        //             value: ["ssm"],
-        //           },
-        //           op: "in",
-        //         },
-        //       ],
-        //     },
-        //     {
-        //       op: "and",
-        //       content: [
-        //         ...[
-        //           {
-        //             content: {
-        //               field: "cases.available_variation_data",
-        //               value: ["cnv"],
-        //             },
-        //             op: "in",
-        //           },
-        //         ],
-        //         ...[buildCohortGqlOperator(cohortFilters)]
-        //       ],
-        //     },
-        //     {
-        //       op: "and",
-        //       content: [
-        //         ...[
-        //           {
-        //             content: {
-        //               field: "cases.available_variation_data",
-        //               value: ["cnv"],
-        //             },
-        //             op: "in",
-        //           },
-        //           {
-        //             content: {
-        //               field: "cnvs.cnv_change",
-        //               value: ["Gain"],
-        //             },
-        //             op: "in",
-        //           },
-        //         ],
-        //         ...[buildCohortGqlOperator(cohortFilters)]
-        //       ],
-        //     },
-        //     {
-        //       op: "and",
-        //       content: [
-        //         ...[
-        //           {
-        //             content: {
-        //               field: "cases.available_variation_data",
-        //               value: ["cnv"],
-        //             },
-        //             op: "in",
-        //           },
-        //           {
-        //             content: {
-        //               field: "cnvs.cnv_change",
-        //               value: ["Loss"],
-        //             },
-        //             op: "in",
-        //           },
-        //         ],
-        //         ...[buildCohortGqlOperator(cohortFilters)]
-        //       ],
-        //     }
-        //   ]
-        // }
         filters: {
           op: "and",
           content: [
             {
-              op: "in",
-              content: {
-                field: "cases.available_variation_data",
-                value: ["ssm"],
-              },
+              op: "and",
+              content: [
+                {
+                  op: "and",
+                  content: [
+                    {
+                      op: "and",
+                      content: [
+                        {
+                          op: "in",
+                          content: {
+                            field: "cases.available_variation_data",
+                            value: ["ssm"],
+                          },
+                        },
+                        {
+                          op: "NOT",
+                          content: {
+                            field: "genes.case.ssm.observation.observation_id",
+                            value: "MISSING",
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
             },
             {
-              op: "NOT",
-              content: {
-                field: "genes.case.ssm.observation.observation_id",
-                value: "MISSING",
-              },
+              op: "and",
+              content: [
+                {
+                  op: "in",
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["ssm"],
+                  },
+                },
+                ...(buildCohortGqlOperator(
+                  joinFilters(cohortFilters, genomicFilters),
+                )?.content
+                  ? Object(
+                      buildCohortGqlOperator(
+                        joinFilters(cohortFilters, genomicFilters),
+                      )?.content,
+                    )
+                  : []),
+              ],
             },
           ],
         },
