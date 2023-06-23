@@ -8,7 +8,7 @@ const NumeratorDenominator = ({
   boldNumerator?: boolean;
 }): JSX.Element => (
   <span
-    className="flex flex-wrap font-content"
+    className="flex flex-wrap font-content min-w-[100px]"
     data-testid="numeratorDenominatorTest"
   >
     <span className={boldNumerator ? "font-bold flex-none" : "flex-none"}>
