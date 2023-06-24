@@ -183,7 +183,10 @@ const CustomFacetGroup = (): JSX.Element => {
   // handle the case where there are no custom filters
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
-      <LoadingOverlay visible={!isDictionaryReady} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={!isDictionaryReady}
+      />
       <Modal
         size="lg"
         opened={opened}

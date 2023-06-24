@@ -168,7 +168,10 @@ export const FileFacetPanel = (): JSX.Element => {
             usedFacets={config.facets}
           />
         </Modal>
-        <LoadingOverlay visible={!isDictionaryReady} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={!isDictionaryReady}
+        />
         {facetDefinitions.map((x) => {
           const isDefault = getDefaultFacets().includes(x.full);
           const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);

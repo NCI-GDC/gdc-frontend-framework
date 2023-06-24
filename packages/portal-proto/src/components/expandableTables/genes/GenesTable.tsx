@@ -21,14 +21,11 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   handleGeneToggled,
   toggledGenes,
   width,
-  pageSize,
-  page,
   selectedGenes,
   setSelectedGenes,
   handleGTotal,
   columnListOrder,
   visibleColumns,
-  searchTerm,
   isDemoMode = false,
   genomicFilters,
   handleMutationCountClick,
@@ -142,11 +139,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     handleSurvivalPlotToggled,
     handleMutationCountClick,
   ]);
-
-  useEffect(() => {
-    setExpanded({});
-    setExpandedProxy({});
-  }, [visibleColumns, selectedGenes, page, searchTerm, pageSize]);
 
   return (
     <>

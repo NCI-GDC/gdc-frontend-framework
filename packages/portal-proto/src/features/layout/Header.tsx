@@ -98,7 +98,10 @@ export const Header: React.FC<HeaderProps> = ({
         Skip Navigation
       </a>
       <div className="flex flex-row justify-between">
-        <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={!(totalSuccess || dictSuccess)}
+        />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
             <a className="block w-full h-full mt-2">

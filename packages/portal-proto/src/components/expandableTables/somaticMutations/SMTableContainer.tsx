@@ -310,6 +310,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <div
+            data-testid="table-options-menu"
             className="flex justify-between items-center mb-2"
             ref={targetRef}
           >
@@ -343,10 +344,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     label="Export All Except #Cases"
                     comingSoon={true}
                   >
-                    <FunctionButton>JSON</FunctionButton>
+                    <FunctionButton data-testid="button-json-mutation-frequency">
+                      JSON
+                    </FunctionButton>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
-                    <FunctionButton>TSV</FunctionButton>
+                    <FunctionButton data-testid="button-tsv-mutation-frequency">
+                      TSV
+                    </FunctionButton>
                   </ButtonTooltip>
                 </div>
               }
@@ -392,14 +397,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   selectedSurvivalPlot={selectedSurvivalPlot}
                   handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                   width={width}
-                  pageSize={pageSize}
-                  page={page}
                   selectedMutations={selectedMutations}
                   setSelectedMutations={setSelectedMutations}
                   handleSMTotal={setSMTotal}
                   columnListOrder={columnListOrder}
                   visibleColumns={visibleColumns}
-                  searchTerm={searchTerm}
                   handleSsmToggled={handleSsmToggled}
                   toggledSsms={toggledSsms}
                   isDemoMode={isDemoMode}
@@ -424,7 +426,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row justify-between items-center text-sm">
+              <div
+                data-testid="text-showing-count"
+                className="flex flex-row justify-between items-center text-sm"
+              >
                 <span>
                   Showing
                   <span className="font-bold">{` ${(tableData.ssmsTotal === 0

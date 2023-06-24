@@ -89,7 +89,10 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
         Image is not available
       </div>
 
-      <LoadingOverlay visible={isFetching && !isError} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={isFetching && !isError}
+      />
 
       <div
         ref={osdContainerRef}

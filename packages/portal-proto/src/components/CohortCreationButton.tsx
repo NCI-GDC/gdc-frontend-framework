@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import CreateCohortModal from "./Modals/CreateCohortModal";
 
-const CohortCreationStyledButton = tw.button`
+export const CohortCreationStyledButton = tw.button`
   flex
   items-stretch
   w-full
@@ -30,7 +30,7 @@ const CohortCreationStyledButton = tw.button`
   disabled:text-base-light
 `;
 
-const IconWrapper = tw.span`
+export const IconWrapper = tw.span`
   ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
   border-r-1
   border-solid

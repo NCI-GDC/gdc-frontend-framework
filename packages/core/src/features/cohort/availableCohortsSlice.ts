@@ -1207,6 +1207,14 @@ export const selectCurrentCohortCaseSet = (
   return { ...cohort.caseSet };
 };
 
+export const selectCohortById = (
+  state: CoreState,
+  cohortId: string,
+): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
+
+export const selectAllCohorts = (state: CoreState) =>
+  cohortSelectors.selectEntities(state);
+
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
@@ -1285,7 +1293,7 @@ export const updateActiveCohortFilter =
   };
 
 /**
- * a thunk to optional create a caseSet when switching cohorts.
+ * a thunk to optionally create a caseSet when switching cohorts.
  * Note the assumption if the caseset member has ids then the caseset has previously been created.
  * @param cohortId
  */
@@ -1361,3 +1369,7 @@ export const createCaseSetsIfNeeded =
       );
     }
   };
+
+export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
+  return cohort?.caseSet.filters ?? cohort.filters;
+};

@@ -193,7 +193,7 @@ export const SelectCohortsModal = ({
   return (
     <>
       {loading ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay data-testid="loading-spinner" visible />
       ) : (
         <Modal
           opened={opened}

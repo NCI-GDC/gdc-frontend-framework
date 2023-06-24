@@ -99,6 +99,7 @@ export const ColumnOption: FC<ColumnProps> = ({
     <>
       {arrangeable ? (
         <div
+          data-testid={`column-selector-row-${columnName}`}
           ref={ref}
           className={`${columnStyles} opacity-${o}`}
           data-handler-id={handlerId}
@@ -121,7 +122,11 @@ export const ColumnOption: FC<ColumnProps> = ({
           </div>
         </div>
       ) : (
-        <div className={columnStylesDisabled} data-handler-id={handlerId}>
+        <div
+          data-testid={`column-selector-row-${columnName}`}
+          className={columnStylesDisabled}
+          data-handler-id={handlerId}
+        >
           <div className={`flex flex-row text-xs justify-between`}>
             <div className={`flex flex-row w-fit`}>
               <div className={`flex flex-row`}>

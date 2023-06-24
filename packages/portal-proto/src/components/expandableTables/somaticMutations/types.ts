@@ -76,14 +76,11 @@ export interface SomaticMutationsTableProps {
     name: string,
     field: string,
   ) => void;
-  pageSize: number;
-  page: number;
   selectedMutations: SelectedReducer<SomaticMutations>;
   setSelectedMutations: (action: SelectReducerAction<SomaticMutations>) => void;
   handleSMTotal: (smTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];
-  searchTerm: string;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   geneSymbol?: string;
