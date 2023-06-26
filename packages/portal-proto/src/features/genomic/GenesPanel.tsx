@@ -47,7 +47,7 @@ export const GenesPanel = ({
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival);
+  } = useGeneAndSSMPanelData(comparativeSurvival, true);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
 
