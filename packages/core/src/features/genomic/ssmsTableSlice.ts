@@ -42,7 +42,7 @@ $sort: [Sort]
         }
       }
       ssms {
-        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, score: $score, sort: $sort) {
+        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, filters: $ssmsTable_filters, score: $score, sort: $sort) {
           total
           edges {
             node {
@@ -52,7 +52,7 @@ $sort: [Sort]
               mutation_subtype
               ssm_id
               consequence {
-                hits(first: 1, case_filters: $consequenceFilters) {
+                hits(first: 1, filters: $consequenceFilters) {
                   edges {
                     node {
                       transcript {
