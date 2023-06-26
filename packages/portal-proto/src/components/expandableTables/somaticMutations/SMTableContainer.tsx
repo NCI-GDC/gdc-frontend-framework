@@ -23,6 +23,7 @@ import {
   SsmToggledHandler,
 } from "./types";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -121,6 +122,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
+
+  const [
+    downloadMutationsFrequencyActive,
+    setDownloadMutationsFrequencyActive,
+  ] = useState(false);
 
   const dispatch = useCoreDispatch();
 
@@ -253,6 +259,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       : combinedFilters;
 
   const handleJSONDownload = async () => {
+    setDownloadMutationsFrequencyActive(true);
     await download({
       endpoint: "ssms",
       method: "POST",
@@ -296,6 +303,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         ].join(","),
       },
       dispatch,
+      done: () => setDownloadMutationsFrequencyActive(false),
     });
   };
 
@@ -393,10 +401,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 <div className="flex gap-2">
                   <ButtonTooltip label="Export All Except #Cases">
                     <FunctionButton
-                      onClick={() => handleJSONDownload()}
+                      onClick={handleJSONDownload}
                       data-testid="button-json-mutation-frequency"
                     >
-                      JSON
+                      {downloadMutationsFrequencyActive ? (
+                        <Loader size="sm" />
+                      ) : (
+                        "JSON"
+                      )}
                     </FunctionButton>
                   </ButtonTooltip>
                   <ButtonTooltip label="Export current view" comingSoon={true}>
