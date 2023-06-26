@@ -20,6 +20,7 @@ import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -79,6 +80,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
+  const [downloadMutatedGenesActive, setDownloadMutatedGenesActive] =
+    useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -196,6 +199,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       : joinFilters(cohortFilters, genomicFilters);
 
   const handleJSONDownload = async () => {
+    setDownloadMutatedGenesActive(true);
     await download({
       endpoint: "genes",
       method: "POST",
@@ -250,6 +254,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         fields: ["biotype", "symbol", "cytoband", "name", "gene_id"].join(","),
       },
       dispatch,
+      done: () => setDownloadMutatedGenesActive(false),
     });
   };
 
@@ -344,7 +349,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   onClick={handleJSONDownload}
                   data-testid="button-json-mutation-frequency"
                 >
-                  JSON
+                  {downloadMutatedGenesActive ? <Loader size="sm" /> : "JSON"}
                 </FunctionButton>
               </ButtonTooltip>
               <ButtonTooltip label="Export current view" comingSoon={true}>
