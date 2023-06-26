@@ -64,6 +64,7 @@ export const GenesPanel = ({
         </Grid.Col>
         <Grid.Col span={6} className="relative">
           <LoadingOverlay
+            zIndex={0}
             data-testid="loading-spinner"
             visible={
               survivalPlotFetching ||
