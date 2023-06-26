@@ -5,7 +5,7 @@ query GeneSummary_relayQuery($filters: FiltersArgument) {
   viewer {
     explore {
       genes {
-        hits(first: 1, case_filters: $filters) {
+        hits(first: 1, filters: $filters) {
           edges {
             node {
               description
@@ -30,7 +30,7 @@ query GeneSummary_relayQuery($filters: FiltersArgument) {
         }
       }
       ssms{
-        aggregations(case_filters: $filters) {
+        aggregations(filters: $filters) {
           clinical_annotations__civic__gene_id{
             buckets {
               doc_count
