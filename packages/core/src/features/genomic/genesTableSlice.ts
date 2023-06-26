@@ -27,7 +27,8 @@ import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
-            $genesTable_filters: FiltersArgument
+            $genesTable_filters: FiltersArgument,
+            $genesTable_localFilters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int
             $score: String
@@ -61,6 +62,7 @@ const GenesTableGraphQLQuery = `
                     first: $genesTable_size
                     offset: $genesTable_offset
                     case_filters: $genesTable_filters
+                    filters: $genesTable_localFilters
                     score: $score
                     sort: $sort
                   ) {
@@ -212,6 +214,7 @@ export const fetchGenesTable = createAsyncThunk<
 
     const graphQlFilters = {
       genesTable_filters: tableFilters ? tableFilters : {},
+      genesTable_localFilters: buildCohortGqlOperator(genomicFilters),
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",

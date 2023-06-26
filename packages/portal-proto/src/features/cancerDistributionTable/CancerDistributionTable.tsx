@@ -122,7 +122,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       op: "in",
       content: {
         field: "project_id",
-        value: data?.projects.map((p) => p.key),
+        value: data?.projects.map((p) => p.key) ?? [],
       },
     },
     expand: [
