@@ -33,8 +33,9 @@ const HPCardImgAlt = ({
   return (
     <div className="bg-gradient-to-r from-[#1673A3] to-[#833689] px-7">
       <div className="py-10 max-w-screen-lg m-auto text-base-max flex gap-16 items-center">
-        <div
-          className="relative
+        <div>
+          <div
+            className="relative
           w-[340px]
           h-[340px]
           before:w-[248px]
@@ -53,33 +54,34 @@ const HPCardImgAlt = ({
           after:-right-2
           after:rounded-lg
           after:bg-summarybar-borderAlt"
-        >
-          <Image
-            alt={imgAlt}
-            src={imgSrc}
-            width={340}
-            height={340}
-            className="rounded-lg z-10"
-          />
-        </div>
-      </div>
-      <div className="w-2/3">
-        <h2 className="font-heading font-bold text-2xl pb-8 tracking-tight">
-          {head}
-        </h2>
-        <div className="py-1 space-y-5 max-w-4xl pb-4">{body}</div>
-        {typeof href === "string" ? (
-          <a
-            href={href}
-            target="_blank"
-            rel="noreferrer"
-            className={homepageButtonAltStyles}
           >
-            {linkText}
-          </a>
-        ) : (
-          <HomepageButtonAlt href={href}>{linkText}</HomepageButtonAlt>
-        )}
+            <Image
+              alt={imgAlt}
+              src={imgSrc}
+              width={340}
+              height={340}
+              className="rounded-lg z-10"
+            />
+          </div>
+        </div>
+        <div className="w-2/3">
+          <h2 className="font-heading font-bold text-2xl pb-8 tracking-tight">
+            {head}
+          </h2>
+          <div className="py-1 space-y-5 max-w-4xl pb-4">{body}</div>
+          {typeof href === "string" ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className={homepageButtonAltStyles}
+            >
+              {linkText}
+            </a>
+          ) : (
+            <HomepageButtonAlt href={href}>{linkText}</HomepageButtonAlt>
+          )}
+        </div>
       </div>
     </div>
   );
