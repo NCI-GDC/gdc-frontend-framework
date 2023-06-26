@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Tooltip } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
@@ -13,7 +13,8 @@ export const CohortCreationStyledButton = tw.button`
   flex
   items-stretch
   w-full
-  max-w-[125px]
+  h-full
+  ${(p) => !p.$fullWidth && "max-w-[125px]"}
   gap-2
   rounded
   border-primary
@@ -42,7 +43,7 @@ export const IconWrapper = tw.span`
 
 interface CohortCreationButtonProps {
   readonly caseFilters: FilterSet;
-  readonly label: string | number | React.ReactElement;
+  readonly label: ReactNode;
   readonly numCases: number;
 }
 
@@ -91,11 +92,12 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           <CohortCreationStyledButton
             disabled={disabled}
             onClick={() => setShowCreateCohort(true)}
+            $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           >
             <IconWrapper $disabled={disabled}>
               <PlusIcon color="white" size={12} />
             </IconWrapper>
-            <span className="pr-2">{label}</span>
+            <span className="pr-2 self-center">{label}</span>
           </CohortCreationStyledButton>
         </span>
       </Tooltip>

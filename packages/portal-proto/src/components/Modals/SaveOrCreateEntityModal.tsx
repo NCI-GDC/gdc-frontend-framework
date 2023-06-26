@@ -60,7 +60,7 @@ export const SaveOrCreateEntityModal = ({
       radius="md"
       zIndex={400}
       onClose={onClose}
-      withinPortal={false}
+      withinPortal={true}
       centered
     >
       <Box

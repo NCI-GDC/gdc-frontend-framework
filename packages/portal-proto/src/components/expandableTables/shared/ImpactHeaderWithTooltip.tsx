@@ -1,7 +1,7 @@
 import { Tooltip } from "@mantine/core";
 import tw from "tailwind-styled-components";
 
-export const ImpactHeaderWithTooltip = (): JSX.Element => {
+const ImpactHeaderWithTooltip = (): JSX.Element => {
   const TwIconDiv = tw.div`w-7 h-6 text-base-max rounded-md flex justify-center items-center mx-1`;
   const TwSpanParent = tw.span`flex gap-1`;
   const TwSpanFontNormal = tw.span`font-normal`;
@@ -107,3 +107,5 @@ export const ImpactHeaderWithTooltip = (): JSX.Element => {
     </Tooltip>
   );
 };
+
+export default ImpactHeaderWithTooltip;

@@ -408,6 +408,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   isModal={isModal}
                   geneSymbol={geneSymbol}
                   projectId={projectId}
+                  cohortFilters={cohortFilters}
                 />
               </div>
             )}
