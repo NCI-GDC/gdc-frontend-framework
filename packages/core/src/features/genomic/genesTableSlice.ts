@@ -27,6 +27,7 @@ import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
+            $caseFilters: FiltersArgument
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int
@@ -60,7 +61,8 @@ const GenesTableGraphQLQuery = `
                   hits(
                     first: $genesTable_size
                     offset: $genesTable_offset
-                    case_filters: $genesTable_filters
+                    filters: $genesTable_filters
+                    case_filters: $caseFilters
                     score: $score
                     sort: $sort
                   ) {
@@ -178,23 +180,25 @@ export const fetchGenesTable = createAsyncThunk<
     const cohortFilters = buildCohortGqlOperator(
       selectCurrentCohortFilters(thunkAPI.getState()),
     );
-
     const demoOrCohort = isDemoMode
       ? buildCohortGqlOperator(overwritingDemoFilter)
       : cohortFilters;
     const cohortFiltersContent = demoOrCohort?.content
       ? Object(demoOrCohort?.content)
       : [];
+    const genesTableFilters = buildCohortGqlOperator(genomicFilters);
     const geneAndCohortFilters = mergeGenomicAndCohortFilters(
       thunkAPI.getState(),
       genomicFilters,
     );
-    const filters = isDemoMode
-      ? buildCohortGqlOperator(
-          joinFilters(overwritingDemoFilter, genomicFilters),
-        )
-      : buildCohortGqlOperator(geneAndCohortFilters);
-    const filterContents = filters?.content ? Object(filters?.content) : [];
+    // const filters = isDemoMode
+    //   ? buildCohortGqlOperator(
+    //       joinFilters(overwritingDemoFilter, genomicFilters),
+    //     )
+    //   : buildCohortGqlOperator(geneAndCohortFilters);
+    const filterContents = genesTableFilters?.content
+      ? Object(genesTableFilters?.content)
+      : [];
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
     const tableFilters = convertFilterToGqlFilter(
       appendFilterToOperation(
@@ -209,9 +213,11 @@ export const fetchGenesTable = createAsyncThunk<
         searchFilters,
       ),
     );
+    console.log("tableFilters", tableFilters);
 
     const graphQlFilters = {
-      genesTable_filters: tableFilters ? tableFilters : {},
+      caseFilters: cohortFilters ? cohortFilters : {},
+      genesTable_filters: genesTableFilters ? genesTableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -338,6 +344,7 @@ export const fetchGenesTable = createAsyncThunk<
       const counts = await fetchSmsAggregations({
         ids: geneIds,
         filters: filterContents,
+        caseFilters: cohortFilters,
       });
       if (!counts.errors) {
         const countsData =
