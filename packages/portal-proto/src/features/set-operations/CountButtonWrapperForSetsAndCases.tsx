@@ -13,7 +13,7 @@ import { Loader, Tooltip } from "@mantine/core";
 import {
   CohortCreationStyledButton,
   IconWrapper,
-} from "@/components/CohortCreationButton";
+} from "@/components/CohortCreationButton/CohortCreationButtonWrapper";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 
 export const CreateFromCountButton = ({

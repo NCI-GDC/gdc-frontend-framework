@@ -8,7 +8,6 @@ const CreateCohortModal = ({
   onClose: () => void;
   onActionClick: (name: string) => void;
 }): JSX.Element => {
-  console.log("here");
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const onNameChange = (name: string) =>

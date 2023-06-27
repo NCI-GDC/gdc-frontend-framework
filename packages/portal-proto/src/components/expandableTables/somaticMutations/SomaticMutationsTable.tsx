@@ -10,11 +10,16 @@ import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
 import {
   GDCSsmsTable,
+  addNewCohortWithFilterAndMessage,
   joinFilters,
+  useCoreDispatch,
   useGetSomaticMutationTableSubrowQuery,
+  usePrevious,
 } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { Column, ExpTable, Subrow } from "../shared";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import { isEqual } from "lodash";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,
@@ -33,11 +38,8 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   projectId = undefined,
   isDemoMode = false,
   isModal = false,
-  cohortFilters,
+  combinedFilters,
 }: SomaticMutationsTableProps) => {
-  useEffect(() => {
-    console.log("Somatic M table Component mounted.");
-  }, []);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
@@ -47,7 +49,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const generateFilters = useCallback(
     (ssmId: string) => {
-      return joinFilters(cohortFilters, {
+      return joinFilters(combinedFilters, {
         mode: "and",
         root: {
           "ssms.ssm_id": {
@@ -58,7 +60,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         },
       });
     },
-    [cohortFilters],
+    [combinedFilters],
   );
 
   const useSomaticMutationsTableFormat = useCallback(
@@ -78,12 +80,14 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   );
 
   const transformResponse = useSomaticMutationsTableFormat(initialData);
-
+  const prevtransformResponse = usePrevious(transformResponse);
   useEffect(() => {
-    if (transformResponse[0]?.ssmsTotal)
-      handleSMTotal(transformResponse[0].ssmsTotal);
-    else handleSMTotal(0);
-  }, [transformResponse[0]?.ssmsTotal]);
+    if (!isEqual(prevtransformResponse, transformResponse)) {
+      if (transformResponse[0]?.ssmsTotal)
+        handleSMTotal(transformResponse[0].ssmsTotal);
+      else handleSMTotal(0);
+    }
+  }, [handleSMTotal, prevtransformResponse, transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -117,6 +121,18 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const coreDispatch = useCoreDispatch();
+  const createCohort = (name: string) => {
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: generateFilters(mutationID),
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
     return visibleColumns.map(({ id: accessor }: Column) => {
       return ssmsCreateTableColumn({
@@ -132,7 +148,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         isDemoMode,
         setEntityMetadata,
         isModal,
-        generateFilters,
+        setShowCreateCohort,
       });
     });
   }, [
@@ -148,28 +164,38 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setMutationID,
     handleSurvivalPlotToggled,
     setEntityMetadata,
-    generateFilters,
+    setShowCreateCohort,
   ]);
 
   return (
-    <ExpTable
-      status={status}
-      data={transformResponse}
-      columns={columns}
-      expanded={expanded}
-      handleExpandedProxy={handleExpandedProxy}
-      selectAll={setSelectedMutations}
-      allSelected={selectedMutations}
-      firstColumn={columnListOrder[0].id}
-      subrow={
-        <Subrow
-          id={mutationID}
-          width={width}
-          query={useGetSomaticMutationTableSubrowQuery}
-          subrowTitle={`Affected Cases Across The GDC`}
+    <>
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohort(newName);
+          }}
         />
-      }
-    />
+      )}
+      <ExpTable
+        status={status}
+        data={transformResponse}
+        columns={columns}
+        expanded={expanded}
+        handleExpandedProxy={handleExpandedProxy}
+        selectAll={setSelectedMutations}
+        allSelected={selectedMutations}
+        firstColumn={columnListOrder[0].id}
+        subrow={
+          <Subrow
+            id={mutationID}
+            width={width}
+            query={useGetSomaticMutationTableSubrowQuery}
+            subrowTitle={`Affected Cases Across The GDC`}
+          />
+        }
+      />
+    </>
   );
 };
 

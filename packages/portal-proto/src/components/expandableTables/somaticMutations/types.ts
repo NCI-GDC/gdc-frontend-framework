@@ -87,5 +87,5 @@ export interface SomaticMutationsTableProps {
   projectId?: string;
   isDemoMode?: boolean;
   isModal?: boolean;
-  cohortFilters: FilterSet;
+  combinedFilters: FilterSet;
 }

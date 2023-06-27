@@ -26,12 +26,12 @@ const GeneMutationFrequencyQuery = `
       geneFrequencyChartViewer: viewer {
         explore {
           cases {
-            hits(first: 0, case_filters: $geneFrequencyChart_filters) {
+            hits(first: 0, filters: $geneFrequencyChart_filters) {
               total
             }
           }
           genes {
-            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, case_filters: $geneFrequencyChart_filters, score: $score) {
+            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, filters: $geneFrequencyChart_filters, score: $score) {
               total
               edges {
                 node {

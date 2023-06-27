@@ -117,3 +117,5 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "mutations", columnName: "# Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
 ] as Column[];
+
+export type columnFilterType = "cnvgain" | "cnvloss" | "ssmaffected" | null;

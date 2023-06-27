@@ -3,7 +3,13 @@ import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
+import {
+  Genes,
+  SingleGene,
+  Gene,
+  GeneToggledHandler,
+  columnFilterType,
+} from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
@@ -24,9 +30,9 @@ import {
   TableHeader,
   ToggledCheck,
 } from "../shared";
-import CohortCreationButton from "@/components/CohortCreationButton";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import { CohortCreationButton } from "@/components/CohortCreationButton";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -44,10 +50,8 @@ interface GeneCreateTableColumnProps {
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
-  generateFilters: (
-    type: "cnvgain" | "cnvloss" | "ssmaffected",
-    geneId: string,
-  ) => FilterSet;
+  setColumnType: React.Dispatch<React.SetStateAction<columnFilterType>>;
+  setShowCreateCohort: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const geneCreateTableColumn = ({
@@ -62,9 +66,9 @@ export const geneCreateTableColumn = ({
   setEntityMetadata,
   genomicFilters,
   handleMutationCountClick,
-  generateFilters,
-}: // setShowCreateCohort,
-GeneCreateTableColumnProps): TableColumnDefinition => {
+  setColumnType,
+  setShowCreateCohort,
+}: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
       return {
@@ -263,9 +267,11 @@ GeneCreateTableColumnProps): TableColumnDefinition => {
                         />
                       }
                       numCases={numerator}
-                      generateFilters={() =>
-                        generateFilters("ssmaffected", row.original["geneID"])
-                      }
+                      handleClick={() => {
+                        setColumnType("ssmaffected");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
                 </>
@@ -357,9 +363,11 @@ GeneCreateTableColumnProps): TableColumnDefinition => {
                         />
                       }
                       numCases={numerator}
-                      generateFilters={() =>
-                        generateFilters("cnvgain", row.original["geneID"])
-                      }
+                      handleClick={() => {
+                        setColumnType("cnvgain");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
                 </>
@@ -400,9 +408,11 @@ GeneCreateTableColumnProps): TableColumnDefinition => {
                         />
                       }
                       numCases={numerator}
-                      generateFilters={() =>
-                        generateFilters("cnvloss", row.original["geneID"])
-                      }
+                      handleClick={() => {
+                        setColumnType("cnvloss");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
                 </>

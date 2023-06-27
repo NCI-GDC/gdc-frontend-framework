@@ -5,13 +5,22 @@ import React, {
   useMemo,
   useContext,
 } from "react";
-import { GenesTableProps } from "./types";
+import { GenesTableProps, columnFilterType } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { FilterSet, joinFilters, useGetGeneTableSubrowQuery } from "@gff/core";
+import {
+  FilterSet,
+  addNewCohortWithFilterAndMessage,
+  joinFilters,
+  useCoreDispatch,
+  useGetGeneTableSubrowQuery,
+  usePrevious,
+} from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ExpTable, Subrow } from "../shared";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import { isEqual } from "lodash";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   status,
@@ -31,9 +40,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   cohortFilters,
   handleMutationCountClick,
 }: GenesTableProps) => {
-  useEffect(() => {
-    console.log("Genestable Component mounted.");
-  }, []);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
@@ -41,8 +47,11 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [geneID, setGeneID] = useState(undefined);
 
+  const [columnType, setColumnType] = useState<columnFilterType>(null);
+
   const generateFilters = useCallback(
-    (type: "cnvgain" | "cnvloss" | "ssmaffected", geneId: string) => {
+    (type: columnFilterType, geneId: string) => {
+      if (type === null) return;
       const cohortAndGenomic = joinFilters(cohortFilters, genomicFilters);
       const commonFilters: FilterSet = joinFilters(cohortAndGenomic, {
         mode: "and",
@@ -118,11 +127,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const transformResponse = useGeneTableFormat(initialData);
 
+  const prevtransformResponse = usePrevious(transformResponse);
+
   useEffect(() => {
-    if (transformResponse[0]?.genesTotal)
-      handleGTotal(transformResponse[0].genesTotal);
-    else handleGTotal(0);
-  }, [transformResponse[0]?.genesTotal]);
+    if (!isEqual(prevtransformResponse, transformResponse)) {
+      if (transformResponse[0]?.genesTotal)
+        handleGTotal(transformResponse[0].genesTotal);
+      else handleGTotal(0);
+    }
+  }, [handleGTotal, prevtransformResponse, transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -156,6 +169,18 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const coreDispatch = useCoreDispatch();
+  const createCohort = (name: string) => {
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: generateFilters(columnType, geneID),
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
     return visibleColumns
@@ -173,7 +198,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           setEntityMetadata,
           genomicFilters,
           handleMutationCountClick,
-          generateFilters,
+          setColumnType,
+          setShowCreateCohort,
         });
       });
   }, [
@@ -188,27 +214,38 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setEntityMetadata,
     handleSurvivalPlotToggled,
     handleMutationCountClick,
-    generateFilters,
+    setColumnType,
+    setShowCreateCohort,
   ]);
 
   return (
-    <ExpTable
-      status={status}
-      data={transformResponse}
-      columns={columns}
-      expanded={expanded}
-      handleExpandedProxy={handleExpandedProxy}
-      selectAll={setSelectedGenes}
-      allSelected={selectedGenes}
-      firstColumn={columnListOrder[0].id}
-      subrow={
-        <Subrow
-          id={geneID}
-          width={width}
-          query={useGetGeneTableSubrowQuery}
-          subrowTitle={`# SSMS Affected Cases Across The GDC`}
+    <>
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohort(newName);
+          }}
         />
-      }
-    />
+      )}
+      <ExpTable
+        status={status}
+        data={transformResponse}
+        columns={columns}
+        expanded={expanded}
+        handleExpandedProxy={handleExpandedProxy}
+        selectAll={setSelectedGenes}
+        allSelected={selectedGenes}
+        firstColumn={columnListOrder[0].id}
+        subrow={
+          <Subrow
+            id={geneID}
+            width={width}
+            query={useGetGeneTableSubrowQuery}
+            subrowTitle={`# SSMS Affected Cases Across The GDC`}
+          />
+        }
+      />
+    </>
   );
 };

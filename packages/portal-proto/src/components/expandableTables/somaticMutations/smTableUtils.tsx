@@ -12,7 +12,7 @@ import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
 import { entityMetadataType } from "src/utils/contexts";
-import { FilterSet, SSMSData } from "@gff/core";
+import { SSMSData } from "@gff/core";
 import { externalLinks, humanify } from "src/utils";
 import {
   CheckboxSpring,
@@ -28,9 +28,9 @@ import {
   ToggledCheck,
   ImpactHeaderWithTooltip,
 } from "../shared";
-import CohortCreationButton from "@/components/CohortCreationButton";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import CohortCreationButton from "@/components/CohortCreationButton/CohortCreationButton";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -50,7 +50,7 @@ interface SSMSCreateTableColumnProps {
   setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
   isModal?: boolean;
   isConsequenceTable?: boolean;
-  generateFilters: (ssmId: string) => FilterSet;
+  setShowCreateCohort: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ssmsCreateTableColumn = ({
@@ -67,7 +67,7 @@ export const ssmsCreateTableColumn = ({
   setEntityMetadata,
   isModal,
   isConsequenceTable,
-  generateFilters,
+  setShowCreateCohort,
 }: SSMSCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -374,9 +374,10 @@ export const ssmsCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      generateFilters={() =>
-                        generateFilters(row.original["mutationID"])
-                      }
+                      handleClick={() => {
+                        setMutationID(row.original["mutationID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
                 </div>

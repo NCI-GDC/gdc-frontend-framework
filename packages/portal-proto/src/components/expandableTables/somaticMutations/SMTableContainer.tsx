@@ -131,10 +131,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     caseFilter: caseFilter,
   });
 
-  useEffect(() => {
-    console.log("SMTable Container Component mounted.");
-  }, []);
-
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     setPage(0);
@@ -412,7 +408,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   isModal={isModal}
                   geneSymbol={geneSymbol}
                   projectId={projectId}
-                  cohortFilters={cohortFilters}
+                  combinedFilters={combinedFilters}
                 />
               </div>
             )}

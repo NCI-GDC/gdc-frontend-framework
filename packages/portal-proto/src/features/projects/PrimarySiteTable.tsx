@@ -9,7 +9,7 @@ import {
 import { HeaderTitle } from "../shared/tailwindComponents";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import CohortCreationButton from "@/components/CohortCreationButton";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
 interface CellProps {
   value: string[];
@@ -83,7 +83,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             primary_site: obj.originalArgs.primary_site,
             disease_type: obj.data.disease_types,
             cases: (
-              <CohortCreationButton
+              <CohortCreationButtonWrapper
                 label={obj.data.casesTotal?.toLocaleString()}
                 numCases={obj.data.casesTotal}
                 caseFilters={{
