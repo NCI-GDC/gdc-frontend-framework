@@ -32,7 +32,7 @@ export const fetchTotalFileSize = createAsyncThunk<
   GqlOperation,
   { dispatch: CoreDispatch; state: CoreState }
 >("files/fetchFilesSize", async (filters?: GqlOperation) => {
-  const graphQlFilters = filters ? { filters: filters } : {};
+  const graphQlFilters = filters ? { case_filters: filters } : {};
   return await graphqlAPI(graphQLQuery, graphQlFilters);
 });
 

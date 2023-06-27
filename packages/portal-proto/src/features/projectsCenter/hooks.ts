@@ -65,8 +65,12 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: () => {
-            return {};
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          caseFilterSelector: (_ignored) => {
+            return {
+              mode: "and",
+              root: {},
+            };
           },
           localFilters: allFilters,
         }),
