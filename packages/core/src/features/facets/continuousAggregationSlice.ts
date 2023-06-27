@@ -32,11 +32,11 @@ export const buildContinuousAggregationRangeOnlyQuery = (
 
   // TODO update filters to case_filters
   return `
-  query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
+  query ContinuousAggregationQuery($caseFilters: FiltersArgument, $filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
     ${indexType} {
       ${itemType} {
-        aggregations(case_filters: $filters, filters: $filters) {
+        aggregations(case_filters: $caseFilters, filters: $filters) {
           ${queriedFacet} {
            stats {
                 Min : min
@@ -95,7 +95,8 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
       field,
     );
     const filtersGQL = {
-      filters: overrideFilters ?? filters ?? {},
+      caseFilters: overrideFilters ?? filters ?? {},
+      filters: {},
       filters2: { op: "range", content: [{ ranges: ranges }] },
     };
 
