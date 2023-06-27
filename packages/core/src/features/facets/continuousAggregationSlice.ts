@@ -36,7 +36,7 @@ export const buildContinuousAggregationRangeOnlyQuery = (
   viewer {
     ${indexType} {
       ${itemType} {
-        aggregations(case_filters: $filters) {
+        aggregations(case_filters: $filters, filters: $filters) {
           ${queriedFacet} {
            stats {
                 Min : min

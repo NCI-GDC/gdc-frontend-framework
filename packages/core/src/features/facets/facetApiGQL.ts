@@ -96,7 +96,8 @@ export const buildGraphGLBucketsQuery = (
      viewer {
              ${docType} {
               aggregations(
-                case_filters: $filters_0
+                case_filters: $filters_0,
+                filters: $filters_0,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets
@@ -114,7 +115,8 @@ export const buildGraphGLBucketsQuery = (
           ${index} {
             ${docType} {
               aggregations(
-                case_filters: $filters_0
+                case_filters: $filters_0,
+                filters: $filters_0,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets
