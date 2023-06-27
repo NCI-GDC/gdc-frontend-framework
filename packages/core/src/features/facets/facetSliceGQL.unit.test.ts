@@ -42,7 +42,7 @@ describe("test enum facet bucket queries", () => {
     expect(spyFetch).toBeCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
-        body: '{"query":"query QueryBucketCounts($filters_0: FiltersArgument!) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                case_filters: $filters_0\\n                filters: $filters_0\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}, cases__disease_type : disease_type{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{"filters_0":{}}}',
+        body: '{"query":"query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                case_filters: $caseFilters,\\n                filters:$filters,\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}, cases__disease_type : disease_type{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{"caseFilters":{}}}',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
