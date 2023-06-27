@@ -119,6 +119,15 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
+  const prevInitialData = usePrevious(initialData);
+  useEffect(() => {
+    if (!isEqual(prevInitialData, initialData)) {
+      setExpanded({});
+      setExpandedId(undefined);
+      setExpandedProxy({});
+    }
+  }, [initialData, prevInitialData]);
+
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const [showCreateCohort, setShowCreateCohort] = useState(false);
