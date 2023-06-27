@@ -65,7 +65,10 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectProjectFilters,
+          filterSelector: () => {
+            return {};
+          },
+          localFilters: allFilters,
         }),
       );
     }
