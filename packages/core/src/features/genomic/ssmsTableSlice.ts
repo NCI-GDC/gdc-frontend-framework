@@ -26,6 +26,7 @@ $ssmsTable_size: Int
 $consequenceFilters: FiltersArgument
 $ssmsTable_offset: Int
 $ssmsTable_filters: FiltersArgument
+$ssmsTable_localFilters: FiltersArgument
 $score: String
 $sort: [Sort]
 ) {
@@ -42,7 +43,7 @@ $sort: [Sort]
         }
       }
       ssms {
-        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, filters: $ssmsTable_filters, score: $score, sort: $sort) {
+        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, filters: $ssmsTable_localFilters, score: $score, sort: $sort) {
           total
           edges {
             node {
@@ -311,6 +312,7 @@ const generateFilter = ({
     },
     // for table filters use both cohort and genomic filter along with search filter
     ssmsTable_filters: tableFilters ? tableFilters : {},
+    ssmsTable_localFilters: buildCohortGqlOperator(genomicFilters),
     consequenceFilters: {
       content: [
         {
