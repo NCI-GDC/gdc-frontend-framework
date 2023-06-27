@@ -108,6 +108,7 @@ export const QuickSearch = (): JSX.Element => {
       return;
     }
     router.push(entityPath);
+    setSearchText("");
   };
 
   const onCancel = () => {

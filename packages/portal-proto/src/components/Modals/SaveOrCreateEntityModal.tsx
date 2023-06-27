@@ -3,7 +3,7 @@ import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
-export const SaveOrCreateCohortModal = ({
+export const SaveOrCreateEntityModal = ({
   entity,
   action = "Save",
   initialName = "",
@@ -11,6 +11,7 @@ export const SaveOrCreateCohortModal = ({
   onClose,
   onActionClick,
   onNameChange,
+  descriptionMessage,
   additionalDuplicateMessage,
 }: {
   entity: string;
@@ -20,6 +21,7 @@ export const SaveOrCreateCohortModal = ({
   onClose: () => void;
   onActionClick: (name: string) => void;
   onNameChange: (name: string) => boolean;
+  descriptionMessage?: string;
   additionalDuplicateMessage?: string;
 }): JSX.Element => {
   const form = useForm({
@@ -67,6 +69,9 @@ export const SaveOrCreateCohortModal = ({
           padding: "5px 25px 20px 10px",
         })}
       >
+        <p className="mb-2 text-sm font-content">
+          {descriptionMessage && descriptionMessage}
+        </p>
         <TextInput
           withAsterisk
           label="Name"

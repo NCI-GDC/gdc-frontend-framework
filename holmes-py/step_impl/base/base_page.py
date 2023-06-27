@@ -47,6 +47,10 @@ class BasePage:
         self.wait_until_locator_is_visible(locator)
         self.driver.locator(locator).click(force=force)
 
+    def hover(self, locator):
+        """Hover over given locator"""
+        self.driver.locator(locator).hover()
+
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
 
@@ -255,6 +259,7 @@ class BasePage:
         text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
         self.click(text_locator)
 
+    # This section of functions is for handling new tabs
     def perform_action_handle_new_tab(self, source:str, button:str):
         """
         perform_action_handle_new_tab performs an action to open a new tab,
@@ -265,10 +270,25 @@ class BasePage:
         :return: a page object for the new tab that has been opened
         """
         sources = {
-            "Home Page": self.click_button_ident_a_with_displayed_text_name
+            "Home Page": self.click_button_ident_a_with_displayed_text_name,
+            "Footer": self.click_button_ident_a_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
            sources.get(source)(button)
         new_tab = tab.value
         return new_tab
+
+    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
+        """
+        is_text_visible_on_new_tab checks for text on a given tab page.
+
+        :param new_tab: The tab page to be checked.
+        :param text_to_check: The <p> text to be searched for.
+        """
+        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
+        try:
+            new_tab.locator(expected_text_locator).wait_for(state='visible')
+        except:
+            return False
+        return True

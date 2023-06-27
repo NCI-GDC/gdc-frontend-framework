@@ -12,7 +12,7 @@ export const OncoGrid: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/oncogrid.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -39,7 +39,7 @@ export const SingleCellRnaSeq: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/scRnaSeqViz.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block"></div>
@@ -63,7 +63,7 @@ export const GeneExpression: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/gene-expression.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -89,7 +89,7 @@ export const ProteinPaint: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/proteinpaint.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -115,7 +115,7 @@ export const SetOperations: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/set-operations.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -138,7 +138,7 @@ export const CohortComparison: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/cohort-comparison.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -163,10 +163,9 @@ export const ClinicalDataAnalysis: React.FC<Clickable> = (props: Clickable) => {
       <div className="w-full h-full flex">
         <div className="w-full h-full relative group-hover:hidden">
           <Image
-            // className="flex"
             src="/user-flow/clinical-data-analysis.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -192,7 +191,7 @@ export const SequenceReads: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/sequence-reads.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">
@@ -284,7 +283,7 @@ export const SomaticMutations: React.FC<Clickable> = (props: Clickable) => {
           <Image
             src="/user-flow/somatic-mutations.png"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
         <div className="w-full h-full hidden group-hover:block">

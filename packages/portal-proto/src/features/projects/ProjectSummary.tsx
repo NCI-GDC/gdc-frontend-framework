@@ -7,8 +7,6 @@ import {
   useFilesFacetsByNameFilter,
   useCoreDispatch,
   FilterSet,
-  useCoreSelector,
-  selectAvailableCohorts,
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
@@ -34,7 +32,7 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import download from "src/utils/download";
 import PrimarySiteTable from "./PrimarySiteTable";
 
@@ -112,7 +110,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   return (
     <>
       {isProjectFetching || isAnnotationFetching || isFileFetching ? (
-        <LoadingOverlay visible data-testid="loading" />
+        <LoadingOverlay visible data-testid="loading-spinner" />
       ) : projectData && Object.keys(projectData).length > 0 ? (
         <ProjectView {...projectWithAnnotation} />
       ) : (
@@ -137,7 +135,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const dispatch = useCoreDispatch();
   const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const createCohortFromProjects = (name: string) => {
     const filters: FilterSet = {
@@ -158,9 +155,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       }),
     );
   };
-
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
 
   const formatDataForSummary = () => {
     const {
@@ -463,24 +457,25 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         isModal={projectData.isModal}
         leftElement={
           <div className="flex gap-4">
-            <Button
-              color="primary"
-              variant="outline"
-              className="bg-base-max border-primary font-medium text-sm"
-              onClick={() => setShowCreateCohort(true)}
+            <Tooltip
+              label={`Create a new unsaved cohort of ${projectData.project_id} cases`}
+              withArrow
             >
-              Create New Cohort
-            </Button>
+              <Button
+                color="primary"
+                variant="outline"
+                className="bg-base-max border-primary font-medium text-sm"
+                onClick={() => setShowCreateCohort(true)}
+              >
+                Create New Cohort
+              </Button>
+            </Tooltip>
             {showCreateCohort && (
-              <SaveOrCreateCohortModal
-                entity="cohort"
-                action="create"
-                opened
+              <CreateCohortModal
                 onClose={() => setShowCreateCohort(false)}
                 onActionClick={(newName: string) => {
                   createCohortFromProjects(newName);
                 }}
-                onNameChange={onNameChange}
               />
             )}
             <DropdownWithIcon

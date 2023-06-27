@@ -198,7 +198,6 @@ export const setCountSlice = graphqlAPISlice
 
             return { data: counts };
           },
-
           providesTags: (_result, _error, arg) =>
             arg.setIds.map((id) => ({ type: "ssmsSets", id })),
         },
@@ -250,6 +249,38 @@ export const setCountSlice = graphqlAPISlice
           { type: "caseSets", id: arg.setId },
         ],
       }),
+      caseSetCounts: builder.query<
+        Record<string, number>,
+        { setIds: string[] }
+      >({
+        queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
+          const counts: Record<string, number> = {};
+          for (const setId of _arg.setIds) {
+            const result = await fetchWithBQ({
+              graphQLQuery: caseSetCountQuery,
+              graphQLFilters: {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "cases.case_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+            });
+            if (result.error) {
+              return { error: result.error };
+            } else {
+              counts[setId as string] = transformCaseSetCountResponse(
+                result.data as GraphQLApiResponse<any>,
+              );
+            }
+          }
+          return { data: counts };
+        },
+        providesTags: (_result, _error, arg) =>
+          arg.setIds.map((id) => ({ type: "caseSets", id })),
+      }),
     }),
   });
 
@@ -283,4 +314,5 @@ export const {
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useCaseSetCountsQuery,
 } = setCountSlice;

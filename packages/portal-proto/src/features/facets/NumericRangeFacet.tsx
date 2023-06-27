@@ -509,7 +509,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   return (
     <>
-      <LoadingOverlay visible={!isSuccess} />
+      <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
       <div className="flex flex-col w-100 space-y-2 mt-1 ">
         <div className="flex flex-row  justify-items-stretch items-center">
           <input

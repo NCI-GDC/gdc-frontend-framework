@@ -48,7 +48,8 @@ import {
   updateCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
@@ -83,8 +84,8 @@ ${(p: CohortGroupButtonProps) =>
     ? "text-primary bg-base-light"
     : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest bg-base-max"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
-h-10
-w-10
+h-12
+w-12
 flex
 justify-center
 items-center
@@ -124,14 +125,12 @@ const removeQueryParamsFromRouter = (
  * @param cohorts: array of Cohort
  * @param onSelectionChanged
  * @param startingId: the selected id
- * @param hide_controls: set to true to hide the function buttons
  * @constructor
  */
 const CohortManager: React.FC<CohortManagerProps> = ({
   cohorts,
   onSelectionChanged,
   startingId,
-  hide_controls = false,
 }: CohortManagerProps) => {
   const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
@@ -152,13 +151,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     cohorts
       .filter((cohort) => cohort.id !== cohortId)
       .every((cohort) => cohort.name !== name);
-
-  // util function to check for duplicate names while creating the cohort
-  // passed to SavingCohortModal as a prop
-  const onCreateCohort = useCallback(
-    (name: string) => cohorts.every((cohort) => cohort.name !== name),
-    [cohorts],
-  );
 
   // Cohort specific actions
   const newCohort = useCallback(
@@ -275,7 +267,9 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {(isAddCohortLoading ||
         isCohortIdFetching ||
         isDeleteCohortLoading ||
-        isUpdateCohortLoading) && <LoadingOverlay visible />}
+        isUpdateCohortLoading) && (
+        <LoadingOverlay data-testid="loading-spinner" visible />
+      )}
       {/*  Modals Start   */}
 
       {showDelete && (
@@ -391,9 +385,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showSaveCohort && (
-        <SaveOrCreateCohortModal
+        <SaveCohortModal
           initialName={cohortName}
-          entity="cohort"
           opened
           onClose={() => setShowSaveCohort(false)}
           onActionClick={async (newName: string) => {
@@ -439,15 +432,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       )}
 
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={async (newName: string) => {
             newCohort(newName);
           }}
-          onNameChange={onCreateCohort}
         />
       )}
 
@@ -479,7 +468,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {/*  Modals End   */}
 
       <div className="border-opacity-0">
-        {!hide_controls ? (
+        <div className="flex gap-4">
           <div className="flex justify-center items-center">
             <Tooltip
               label="Discard Unsaved Changes"
@@ -495,26 +484,29 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   disabled={!cohortModified}
                   $isDiscard={true}
                 >
-                  <DiscardIcon size="16" aria-label="discard cohort changes" />
+                  <DiscardIcon aria-label="discard cohort changes" />
                 </CohortGroupButton>
               </span>
             </Tooltip>
 
-            <div className="flex flex-col" data-testid="cohort-list-dropdown">
+            <div
+              className="flex flex-col pt-5"
+              data-testid="cohort-list-dropdown"
+            >
               <Select
                 data={menu_items}
                 searchable
                 clearable={false}
                 value={startingId}
-                zIndex={310}
+                zIndex={290}
                 onChange={(x) => {
                   onSelectionChanged(x);
                 }}
                 itemComponent={CustomCohortSelectItem}
                 classNames={{
-                  root: "border-secondary-darkest w-80 p-0 pt-5",
+                  root: "border-secondary-darkest w-80",
                   input:
-                    "text-heading font-medium text-primary-darkest rounded-l-none h-[2.63rem]",
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-12",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
                 }}
                 aria-label="Select cohort"
@@ -537,83 +529,76 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               </div>
             </div>
           </div>
-        ) : (
-          <div>
-            <h2>{cohortName}</h2>
-          </div>
-        )}
-      </div>
-      {!hide_controls ? (
-        <>
-          <Tooltip label="Save Cohort" position="bottom" withArrow>
-            <span>
-              <CohortGroupButton
-                onClick={() => {
-                  !currentCohort?.saved
-                    ? setShowSaveCohort(true)
-                    : setShowUpdateCohort(true);
-                }}
-                disabled={currentCohort?.saved && !cohortModified}
-                data-testid="saveButton"
-              >
-                <SaveIcon size="1.5em" aria-label="Save cohort" />
-              </CohortGroupButton>
-            </span>
-          </Tooltip>
-          <Tooltip label="Add New Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              onClick={() => setShowCreateCohort(true)}
-              data-testid="addButton"
-            >
-              <AddIcon size="1.5em" aria-label="Add cohort" />
-            </CohortGroupButton>
-          </Tooltip>
-          <Tooltip label="Delete Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              data-testid="deleteButton"
-              onClick={() => {
-                setShowDelete(true);
-              }}
-            >
-              <DeleteIcon size="1.5em" aria-label="Delete cohort" />
-            </CohortGroupButton>
-          </Tooltip>
-          <Tooltip label="Import New Cohort" position="bottom" withArrow>
-            <CohortGroupButton
-              data-testid="uploadButton"
-              onClick={() =>
-                coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
-              }
-            >
-              <UploadIcon size="1.5em" aria-label="Upload cohort" />
-            </CohortGroupButton>
-          </Tooltip>
 
-          <Tooltip label="Export Cohort" position="bottom" withArrow>
-            <span>
+          <div className="flex justify-center items-center gap-4">
+            <Tooltip label="Save Cohort" position="bottom" withArrow>
+              <span>
+                <CohortGroupButton
+                  onClick={() => {
+                    !currentCohort?.saved
+                      ? setShowSaveCohort(true)
+                      : setShowUpdateCohort(true);
+                  }}
+                  disabled={currentCohort?.saved && !cohortModified}
+                  data-testid="saveButton"
+                >
+                  <SaveIcon size="1.5em" aria-label="Save cohort" />
+                </CohortGroupButton>
+              </span>
+            </Tooltip>
+            <Tooltip label="Add New Cohort" position="bottom" withArrow>
               <CohortGroupButton
-                data-testid="downloadButton"
-                disabled={isErrorCaseIds}
+                onClick={() => setShowCreateCohort(true)}
+                data-testid="addButton"
+              >
+                <AddIcon size="1.5em" aria-label="Add cohort" />
+              </CohortGroupButton>
+            </Tooltip>
+            <Tooltip label="Delete Cohort" position="bottom" withArrow>
+              <CohortGroupButton
+                data-testid="deleteButton"
                 onClick={() => {
-                  if (isFetchingCaseIds) {
-                    setExportCohortPending(true);
-                  } else {
-                    exportCohort(caseIds, cohortName);
-                  }
+                  setShowDelete(true);
                 }}
               >
-                {exportCohortPending ? (
-                  <Loader />
-                ) : (
-                  <DownloadIcon size="1.5em" aria-label="Download cohort" />
-                )}
+                <DeleteIcon size="1.5em" aria-label="Delete cohort" />
               </CohortGroupButton>
-            </span>
-          </Tooltip>
-        </>
-      ) : (
-        <div />
-      )}
+            </Tooltip>
+            <Tooltip label="Import New Cohort" position="bottom" withArrow>
+              <CohortGroupButton
+                data-testid="uploadButton"
+                onClick={() =>
+                  coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
+                }
+              >
+                <UploadIcon size="1.5em" aria-label="Upload cohort" />
+              </CohortGroupButton>
+            </Tooltip>
+
+            <Tooltip label="Export Cohort" position="bottom" withArrow>
+              <span>
+                <CohortGroupButton
+                  data-testid="downloadButton"
+                  disabled={isErrorCaseIds}
+                  onClick={() => {
+                    if (isFetchingCaseIds) {
+                      setExportCohortPending(true);
+                    } else {
+                      exportCohort(caseIds, cohortName);
+                    }
+                  }}
+                >
+                  {exportCohortPending ? (
+                    <Loader />
+                  ) : (
+                    <DownloadIcon size="1.5em" aria-label="Download cohort" />
+                  )}
+                </CohortGroupButton>
+              </span>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

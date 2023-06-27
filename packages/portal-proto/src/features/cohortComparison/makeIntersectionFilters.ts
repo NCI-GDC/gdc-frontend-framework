@@ -9,7 +9,7 @@ interface IntersectionFilters {
 const makeIntersectionFilters = (
   cohort1Filters: GqlOperation,
   cohort2Filters: GqlOperation,
-  caseIds: string[][],
+  caseSetIds: string[],
 ): IntersectionFilters => {
   // Data should be in only one of the cohorts, not both so exclude cases ids from the other set
 
@@ -25,27 +25,27 @@ const makeIntersectionFilters = (
     cohort2Content.push(cohort2Filters);
   }
 
-  if (caseIds[0]) {
+  if (caseSetIds[0]) {
     cohort2Content.push({
       op: "exclude",
-      content: { field: "cases.case_id", value: caseIds[0] },
+      content: { field: "cases.case_id", value: `set_id:${caseSetIds[0]}` },
     });
 
     intersectionContent.push({
       op: "in",
-      content: { field: "cases.case_id", value: caseIds[0] },
+      content: { field: "cases.case_id", value: `set_id:${caseSetIds[0]}` },
     });
   }
 
-  if (caseIds[1]) {
+  if (caseSetIds[1]) {
     cohort1Content.push({
       op: "exclude",
-      content: { field: "cases.case_id", value: caseIds[1] },
+      content: { field: "cases.case_id", value: `set_id:${caseSetIds[1]}` },
     });
 
     intersectionContent.push({
       op: "in",
-      content: { field: "cases.case_id", value: caseIds[1] },
+      content: { field: "cases.case_id", value: `set_id:${caseSetIds[1]}` },
     });
   }
 

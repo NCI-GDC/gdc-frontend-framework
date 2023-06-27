@@ -18,14 +18,11 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   width,
-  pageSize,
-  page,
   selectedMutations,
   setSelectedMutations,
   handleSMTotal,
   columnListOrder,
   visibleColumns,
-  searchTerm,
   handleSsmToggled = () => null,
   toggledSsms = [],
   geneSymbol = undefined,
@@ -129,11 +126,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     handleSurvivalPlotToggled,
     setEntityMetadata,
   ]);
-
-  useEffect(() => {
-    setExpanded({});
-    setExpandedProxy({});
-  }, [visibleColumns, selectedMutations, searchTerm, page, pageSize]);
 
   return (
     <>

@@ -1,11 +1,17 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
-import { CohortFacetDoc, DAYS_IN_YEAR, FilterSet } from "@gff/core";
-import BarChart from "../charts/BarChart";
-import PValue from "./PValue";
 import saveAs from "file-saver";
+import {
+  CohortFacetDoc,
+  DAYS_IN_YEAR,
+  FilterSet,
+  joinFilters,
+} from "@gff/core";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
+import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
+import CohortCreationButton from "@/components/CohortCreationButton";
+import PValue from "./PValue";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -41,6 +47,55 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     return bucket as string;
   };
 
+  const createFilters = (field: string, bucket: string): FilterSet => {
+    if (field == "diagnoses.age_at_diagnosis") {
+      if (Number(bucket) === 80 * DAYS_IN_YEAR) {
+        return {
+          mode: "and",
+          root: {
+            [field]: {
+              field,
+              operator: ">=",
+              operand: Number(bucket),
+            },
+          },
+        };
+      }
+
+      return {
+        mode: "and",
+        root: {
+          [field]: {
+            operator: "and",
+            operands: [
+              {
+                field,
+                operator: ">=",
+                operand: Number(bucket),
+              },
+              {
+                field,
+                operator: "<=",
+                operand: Number(bucket) + DAYS_IN_YEAR * 10 - 0.1,
+              },
+            ],
+          },
+        },
+      };
+    }
+
+    return {
+      mode: "and",
+      root: {
+        [field]: {
+          field,
+          operands: [bucket],
+          operator: "includes",
+        },
+      },
+    };
+  };
+
   let formattedData = useMemo(
     () =>
       data.map((cohort, idx) => {
@@ -50,6 +105,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
             return {
               key: formatBucket(facet.key, field),
               count: facet.doc_count,
+              filter: createFilters(field, facet.key),
             };
           });
         // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
@@ -61,7 +117,22 @@ export const FacetCard: React.FC<FacetCardProps> = ({
         if (missingValue === 0) {
           return formattedCohort;
         }
-        return [...formattedCohort, { count: missingValue, key: "missing" }];
+        return [
+          ...formattedCohort,
+          {
+            count: missingValue,
+            key: "missing",
+            filter: {
+              mode: "and",
+              root: {
+                [field]: {
+                  field,
+                  operator: "missing",
+                },
+              },
+            } as FilterSet,
+          },
+        ];
       }),
     [data, counts, field],
   );
@@ -80,7 +151,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       if (dataPoint) {
         return dataPoint;
       }
-      return { key: value, count: undefined };
+      return { key: value, count: undefined, filter: undefined };
     }),
   );
 
@@ -126,7 +197,6 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       `${fieldLabel}-comparison.tsv`,
     );
   };
-
   return (
     <Paper p="md" shadow="xs">
       <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
@@ -171,11 +241,37 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                 key={`${field}_${value}`}
               >
                 <td className="pl-2">{value}</td>
-                <td>{cohort1Value?.toLocaleString() || "--"}</td>
+                <td>
+                  <CohortCreationButton
+                    numCases={cohort1Value}
+                    label={cohort1Value?.toLocaleString() || "--"}
+                    caseFilters={
+                      cohort1Value === undefined
+                        ? undefined
+                        : joinFilters(
+                            cohorts.primary_cohort.filter,
+                            formattedData[0][idx].filter,
+                          )
+                    }
+                  />
+                </td>
                 <td>
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
                 </td>
-                <td>{cohort2Value?.toLocaleString() || "--"}</td>
+                <td>
+                  <CohortCreationButton
+                    numCases={cohort2Value}
+                    label={cohort2Value?.toLocaleString() || "--"}
+                    caseFilters={
+                      cohort2Value === undefined
+                        ? undefined
+                        : joinFilters(
+                            cohorts.comparison_cohort.filter,
+                            formattedData[1][idx].filter,
+                          )
+                    }
+                  />
+                </td>
                 <td>
                   {(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)} %
                 </td>

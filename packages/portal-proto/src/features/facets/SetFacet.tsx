@@ -109,6 +109,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           color="primary"
           variant="outline"
           size="xs"
+          data-testid={`button-${facetTitle}`}
         >
           + Add {facetTitle}
         </Button>

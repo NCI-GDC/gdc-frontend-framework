@@ -45,7 +45,7 @@ export const SSMSPanel = ({
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival);
+  } = useGeneAndSSMPanelData(comparativeSurvival, false);
 
   /**
    * Get the mutations in cohort
@@ -56,6 +56,7 @@ export const SSMSPanel = ({
     <div className="flex flex-col w-100 mx-6 mb-8">
       <div className="bg-base-max">
         <LoadingOverlay
+          data-testid="loading-spinner"
           visible={
             survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
           }

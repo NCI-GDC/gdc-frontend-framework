@@ -139,7 +139,7 @@ function getMatrixTrack(
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,
     allow2selectSamples: {
-      buttonText: "Update Cohort",
+      buttonText: "Create Cohort",
       attributes: ["case.case_id"],
       callback,
     },

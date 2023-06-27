@@ -54,7 +54,7 @@ export const GeneSummary = ({
   return (
     <>
       {isFetching ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay data-testid="loading-spinner" visible />
       ) : data && data.genes ? (
         <GeneView
           data={data}

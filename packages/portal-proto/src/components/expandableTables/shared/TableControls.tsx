@@ -71,7 +71,10 @@ const TableControls: React.FC<TableControlsProps> = ({
       <Group>{additionalControls}</Group>
       <div>
         {
-          <Text className="font-heading font-bold text-md">
+          <Text
+            data-testid="text-total"
+            className="font-heading font-bold text-md"
+          >
             TOTAL OF {total.toLocaleString("en-US")}{" "}
             {total == 1 ? label.toUpperCase() : `${label.toUpperCase()}S`}
           </Text>

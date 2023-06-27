@@ -55,7 +55,7 @@ describe("<Biospecimen />", () => {
     });
     const { getByTestId } = render(<Biospecimen caseId="testId" bioId="" />);
 
-    expect(getByTestId("loading")).toBeInTheDocument();
+    expect(getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should not show error text when the results are NOT empty and should render a Biotree comp with given data", () => {

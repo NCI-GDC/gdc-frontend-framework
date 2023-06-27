@@ -115,7 +115,7 @@ export const Biospecimen = ({
   return (
     <div className="mt-14">
       {isBiospecimentDataFetching ? (
-        <LoadingOverlay visible data-testid="loading" />
+        <LoadingOverlay visible data-testid="loading-spinner" />
       ) : selectedEntity &&
         Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (

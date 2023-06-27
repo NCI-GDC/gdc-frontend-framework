@@ -47,14 +47,14 @@ describe("<SwitchSpring />", () => {
       />,
     );
 
-    expect(getByTestId("middle-div-switchSpring")).toHaveClass(
+    expect(getByTestId("button-middle-switchSpring")).toHaveClass(
       "cursor-not-allowed",
     );
 
-    expect(getByTestId("bottom-div-switchSpring")).toHaveClass(
+    expect(getByTestId("button-bottom-switchSpring")).toHaveClass(
       "border-gray-300",
     );
-    await userEvent.click(getByTestId("middle-div-switchSpring"));
+    await userEvent.click(getByTestId("button-middle-switchSpring"));
 
     expect(mockHandleSwitch).not.toBeCalled();
   });
@@ -73,14 +73,14 @@ describe("<SwitchSpring />", () => {
       />,
     );
 
-    expect(getByTestId("middle-div-switchSpring")).not.toHaveClass(
+    expect(getByTestId("button-middle-switchSpring")).not.toHaveClass(
       "cursor-not-allowed",
     );
 
-    expect(getByTestId("bottom-div-switchSpring")).toHaveClass(
+    expect(getByTestId("button-bottom-switchSpring")).toHaveClass(
       "border-activeColor",
     );
-    await userEvent.click(getByTestId("middle-div-switchSpring"));
+    await userEvent.click(getByTestId("button-middle-switchSpring"));
 
     expect(mockHandleSwitch).toBeCalled();
   });

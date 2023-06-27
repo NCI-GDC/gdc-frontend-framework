@@ -18,6 +18,7 @@ export interface CollapsibleContainerProps {
    * Children for the Button when onlyIcon is false
    */
   readonly TargetElement?: ReactNode;
+  readonly ExtraControl?: ReactNode;
 }
 
 export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
@@ -33,6 +34,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
     tooltipText = undefined,
     tooltipPosition = "top",
     TargetElement,
+    ExtraControl,
   } = props;
   return (
     <div
@@ -44,12 +46,12 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
         <div className="flex-grow">
           <Top />
         </div>
-        <div className="flex flex-row items-center bg-primary pr-4 pb-2">
+        <div className="flex items-center bg-primary pr-4 gap-4">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <Button
                 data-testid="expandcollapseButton"
-                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-10"
+                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-12"
                 onClick={toggle}
                 classNames={{ leftIcon: `${!onlyIcon && "mr-0"} ` }}
                 aria-expanded={!isCollapsed}
@@ -80,6 +82,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
               </Button>
             </span>
           </Tooltip>
+          {ExtraControl && <>{ExtraControl}</>}
         </div>
       </div>
       <Collapse

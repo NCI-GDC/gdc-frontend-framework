@@ -86,7 +86,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       </div>
       <div className="w-full ">
         <div className="flex flex-nowrap justify-between items-center p-2 ">
-          <LoadingOverlay visible={!isSuccess} />
+          <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
           <Switch
             color="accent"
             checked={toggleValue}

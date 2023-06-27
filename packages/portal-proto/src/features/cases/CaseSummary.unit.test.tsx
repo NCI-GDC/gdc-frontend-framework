@@ -26,7 +26,7 @@ describe("<CaseSummary />", () => {
     jest.spyOn(func, "useAnnotations").mockReturnValue(loadingResponse);
     const { getByTestId } = render(<CaseSummary case_id="testId" bio_id="" />);
 
-    expect(getByTestId("loading")).toBeInTheDocument();
+    expect(getByTestId("loading-spinner")).toBeInTheDocument();
   });
 
   it("should show case not found error when wrong case id has been entered i.e, data is undefined", () => {

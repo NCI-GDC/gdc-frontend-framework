@@ -29,7 +29,10 @@ interface CancerDistributionTableTSVDownloadData {
   primary_site: string[];
   ssm_affected_cases: string;
 }
-import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import {
+  NumeratorDenominator,
+  ButtonTooltip,
+} from "@/components/expandableTables/shared";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -441,6 +444,63 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     }
   };
 
+  const handleTSVDownload = () => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headers = isGene
+      ? [
+          "Project",
+          "Disease Type",
+          "Primary Site",
+          "# SSM Affected Cases",
+          "# CNV Gains",
+          "# CNV Losses",
+          "# Mutations",
+        ]
+      : ["Project", "Disease Type", "Primary Site", "# SSM Affected Cases"];
+    const body = isGene
+      ? cancerDistributionTableDownloadData
+          .map(
+            ({
+              project,
+              disease_type,
+              primary_site,
+              ssm_affected_cases,
+              cnv_gains,
+              cnv_losses,
+              num_mutations,
+            }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+                cnv_gains,
+                cnv_losses,
+                num_mutations,
+              ].join("\t");
+            },
+          )
+          .join("\n")
+      : cancerDistributionTableDownloadData
+          .map(
+            ({ project, disease_type, primary_site, ssm_affected_cases }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+              ].join("\t");
+            },
+          )
+          .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
   return (
     <VerticalTable
       tableData={displayedData}
@@ -450,77 +510,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       showControls={false}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton
-            onClick={() => {
-              const now = new Date();
-              const fileName = `cancer-distribution-table.${convertDateToString(
-                now,
-              )}.tsv`;
-              const headers = isGene
-                ? [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                    "# CNV Gains",
-                    "# CNV Losses",
-                    "# Mutations",
-                  ]
-                : [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                  ];
-              const body = isGene
-                ? cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                        cnv_gains,
-                        cnv_losses,
-                        num_mutations,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                          cnv_gains,
-                          cnv_losses,
-                          num_mutations,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n")
-                : cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n");
-              const tsv = [headers.join("\t"), body].join("\n");
-              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
-              saveAs(blob, fileName);
-            }}
-          >
-            TSV
-          </FunctionButton>
+          <ButtonTooltip label=" " comingSoon={true}>
+            <FunctionButton>JSON</FunctionButton>
+          </ButtonTooltip>
+          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
         </div>
       }
       pagination={{

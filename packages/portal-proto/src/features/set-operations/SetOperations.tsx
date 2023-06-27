@@ -1,37 +1,36 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import {
-  UseMutation,
-  UseQuery,
-} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {
-  QueryDefinition,
-  MutationDefinition,
-} from "@reduxjs/toolkit/dist/query";
+import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { pickBy, upperFirst } from "lodash";
-import { Checkbox, Tooltip, ActionIcon, Loader } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { Checkbox } from "@mantine/core";
+
 import { Row } from "react-table";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
-  useCoreDispatch,
+  useCreateCaseSetFromFiltersMutation,
   GqlOperation,
 } from "@gff/core";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import { VerticalTable } from "@/features/shared/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { convertDateToString } from "src/utils/date";
 import { SelectedEntities, SetOperationEntityType } from "./types";
-import download from "src/utils/download";
-import { CountButton } from "@/components/CountButton/CountButton";
+import DownloadButton from "./DownloadButton";
+import CountButtonWrapperForSetsAndCases from "@/features/set-operations/CountButtonWrapperForSetsAndCases";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
 
 const ENTITY_TYPE_TO_FIELD = {
+  cohort: "cases.case_id",
   genes: "genes.gene_id",
   mutations: "ssms.ssm_id",
+};
+
+const ENTITY_TYPE_TO_CREATE_SET_HOOK = {
+  cohort: useCreateCaseSetFromFiltersMutation,
+  genes: useCreateGeneSetFromFiltersMutation,
+  mutations: useCreateSsmsSetFromFiltersMutation,
 };
 
 interface SetOperationsExternalProps {
@@ -410,137 +409,6 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
   );
 };
 
-interface CountButtonWrapperForSetProps {
-  readonly count: number | undefined;
-  readonly filters: Record<string, any>;
-  readonly entityType: SetOperationEntityType;
-}
-
-const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
-  count,
-  filters,
-  entityType,
-}: CountButtonWrapperForSetProps) => {
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const disabled = count === 0;
-
-  return (
-    <>
-      {showSaveModal &&
-        (entityType === "mutations" ? (
-          <SaveSelectionAsSetModal
-            filters={filters}
-            sort="occurrence.case.project.project_id"
-            initialSetName={"Custom Mutation Selection"}
-            saveCount={count}
-            setType={"ssms"}
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        ) : (
-          entityType === "genes" && (
-            <SaveSelectionAsSetModal
-              filters={filters}
-              initialSetName={"Custom Gene Selection"}
-              sort="case.project.project_id"
-              saveCount={count}
-              setType={"genes"}
-              setTypeLabel="gene"
-              createSetHook={useCreateGeneSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )
-        ))}
-
-      <CountButton
-        tooltipLabel="Save as new set"
-        disabled={disabled}
-        handleOnClick={() => setShowSaveModal(true)}
-        count={count}
-      />
-    </>
-  );
-};
-
-interface DownloadButtonProps {
-  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
-  readonly entityType: SetOperationEntityType;
-  readonly filters: GqlOperation;
-  readonly setKey: string;
-  readonly disabled: boolean;
-}
-
-const DownloadButton: React.FC<DownloadButtonProps> = ({
-  createSetHook,
-  entityType,
-  filters,
-  setKey,
-  disabled,
-}: DownloadButtonProps) => {
-  const [loading, setLoading] = useState(false);
-  const [createSet, response] = createSetHook();
-  const dispatch = useCoreDispatch();
-
-  useEffect(() => {
-    if (response.isLoading) {
-      setLoading(true);
-    }
-  }, [response.isLoading]);
-
-  useEffect(() => {
-    if (response.isSuccess) {
-      download({
-        params: {
-          attachment: true,
-          format: "tsv",
-          sets: [
-            {
-              id: response.data,
-              type: entityType === "mutations" ? "ssm" : "gene",
-              filename: `${setKey
-                .replace(/∩/g, "intersection")
-                .replace(/∪/g, "union")}-set-ids.${convertDateToString(
-                new Date(),
-              )}.tsv`,
-            },
-          ],
-        },
-        endpoint: "tar_sets",
-        method: "POST",
-        dispatch,
-        options: {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        },
-        form: true,
-        done: () => setLoading(false),
-      });
-    }
-  }, [response.isSuccess, dispatch, entityType, response.data, setKey]);
-
-  return (
-    <Tooltip
-      label={disabled ? "No items to export" : "Export as TSV"}
-      withArrow
-    >
-      <div className="w-fit">
-        <ActionIcon
-          onClick={() => createSet({ filters })}
-          color="primary"
-          variant="outline"
-          className={`${disabled ? "bg-base-lighter" : "bg-base-max"}`}
-          disabled={disabled}
-        >
-          {loading ? <Loader size={14} /> : <DownloadIcon />}
-        </ActionIcon>
-      </div>
-    </Tooltip>
-  );
-};
-
 interface SetOperationsProps {
   readonly sets: SelectedEntities;
   readonly entityType: "cohort" | "genes" | "mutations";
@@ -626,7 +494,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         columnName: "# Items",
         visible: true,
         Cell: ({ value, row }: { value: number; row: Row }) => (
-          <CountButtonWrapperForSet
+          <CountButtonWrapperForSetsAndCases
             count={value}
             filters={createSetFiltersByKey(
               (row.original as Record<string, any>).operationKey,
@@ -659,7 +527,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         name: set.name,
         count: isFetching ? "..." : summaryCounts?.[set.id],
       })),
-    [entityType, sets, summaryCounts],
+    [entityType, isFetching, sets, summaryCounts],
   );
 
   const tableData = useMemo(
@@ -688,11 +556,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             filters={createSetFiltersByKey(r.key, entityType, sets)}
             entityType={entityType}
             setKey={r.label}
-            createSetHook={
-              entityType === "mutations"
-                ? useCreateSsmsSetFromFiltersMutation
-                : useCreateGeneSetFromFiltersMutation
-            }
+            createSetHook={ENTITY_TYPE_TO_CREATE_SET_HOOK[entityType]}
             disabled={r.value === 0}
           />
         ),
@@ -759,7 +623,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 <td className="p-2 font-bold">Union of selected sets:</td>
                 <td />
                 <td>
-                  <CountButtonWrapperForSet
+                  <CountButtonWrapperForSetsAndCases
                     count={totalCount}
                     filters={unionFilter}
                     entityType={entityType}
@@ -769,11 +633,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                   <DownloadButton
                     setKey="union-of"
                     filters={unionFilter}
-                    createSetHook={
-                      entityType === "mutations"
-                        ? useCreateSsmsSetFromFiltersMutation
-                        : useCreateGeneSetFromFiltersMutation
-                    }
+                    createSetHook={ENTITY_TYPE_TO_CREATE_SET_HOOK[entityType]}
                     entityType={entityType}
                     disabled={totalCount === 0}
                   />

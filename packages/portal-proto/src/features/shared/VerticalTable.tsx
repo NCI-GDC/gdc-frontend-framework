@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC, Fragment } from "react";
+import React, { useState, useEffect, FC, Fragment, ReactNode } from "react";
 import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -9,13 +9,13 @@ import { isEqual } from "lodash";
 import { DataStatus } from "@gff/core";
 import {
   Box,
-  Popover,
   Select,
   Pagination,
   LoadingOverlay,
   TextInput,
   useMantineTheme,
 } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 
 export interface PaginationOptions {
   /**
@@ -99,11 +99,11 @@ interface VerticalTableProps {
   /**
    * caption to display at top of table
    */
-  tableTitle?: string;
+  tableTitle?: ReactNode;
   /**
    * html block left of column sorting controls
    */
-  additionalControls?: React.ReactNode;
+  additionalControls?: ReactNode;
   /**
    * Column sorting
    *
@@ -557,7 +557,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p data-testid="showing-count" className="text-heading text-sm">
+      <p data-testid="text-showing-count" className="text-heading text-sm">
         Showing {outputString ?? "--"}
       </p>
     );
@@ -576,6 +576,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [searchTerm]);
 
   const theme = useMantineTheme();
+  const ref = useClickOutside(() => setShowColumnMenu(false));
 
   return (
     <div className="grow overflow-hidden">
@@ -584,11 +585,13 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
-        {additionalControls && <div className="flex">{additionalControls}</div>}
+        {additionalControls && (
+          <div className="flex-1">{additionalControls}</div>
+        )}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
-            {search?.enabled && (
-              <div className="flex mb-2 gap-2">
+            <div className="flex mb-2 gap-2">
+              {search?.enabled && (
                 <TextInput
                   icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
                   data-testid="textbox-table-search-bar"
@@ -615,111 +618,109 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                     setSearchTerm(e.target.value);
                   }}
                 />
-                {showControls && (
-                  <Popover
-                    opened={showColumnMenu}
-                    onClose={() => setShowColumnMenu(false)}
-                    position="bottom"
-                    transition="scale"
-                    withArrow
-                    zIndex={1}
+              )}
+              {showControls && (
+                <div ref={ref}>
+                  <button
+                    data-testid="button-column-selector-box"
+                    aria-label="show table menu"
+                    onClick={() => {
+                      setShowColumnMenu(!showColumnMenu);
+                    }}
                   >
-                    <Popover.Target>
-                      <button
-                        data-testid="column-selector-box"
-                        onClick={() => {
-                          setShowColumnMenu(!showColumnMenu);
-                        }}
-                      >
-                        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-                          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-                        </Box>
-                      </button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <div
-                        className={`w-fit`}
-                        data-testid="column-selector-popover-modal"
-                      >
-                        {columns.length > 0 && showColumnMenu && (
-                          <div className="mr-0 ml-2">
-                            <DndProvider backend={HTML5Backend}>
-                              <DragDrop
-                                listOptions={columns} // here....
-                                handleColumnChange={handleColumnChange}
-                                columnSearchTerm={""}
-                              />
-                            </DndProvider>
-                          </div>
-                        )}
-                      </div>
-                    </Popover.Dropdown>
-                  </Popover>
-                )}
-              </div>
-            )}
+                    <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                      {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                    </Box>
+                  </button>
+                  {showColumnMenu && (
+                    <div
+                      className="w-max absolute bg-base-max z-10 py-3 px-4 right-3 border-1 border-solid border-base-lighter rounded"
+                      data-testid="column-selector-popover-modal"
+                    >
+                      {columns.length > 0 && showColumnMenu && (
+                        <div className="mr-0 ml-2">
+                          <DndProvider backend={HTML5Backend}>
+                            <DragDrop
+                              listOptions={columns} // here....
+                              handleColumnChange={handleColumnChange}
+                              columnSearchTerm={""}
+                            />
+                          </DndProvider>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
-      <div className="overflow-y-auto w-full relative">
-        <LoadingOverlay visible={showLoading} zIndex={0} />
-        <Table columns={headings} data={table} />
-      </div>
-      {pagination && (
-        <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
-          {!disablePageSize && (
-            <div className="flex flex-row items-center m-auto ml-0 text-sm">
-              <span className="my-auto mx-1">Show</span>
-              <Select
-                size="xs"
-                radius="md"
-                onChange={handlePageSizeChange}
-                value={pageSize?.toString()}
-                data={[
-                  { value: "10", label: "10" },
-                  { value: "20", label: "20" },
-                  { value: "40", label: "40" },
-                  { value: "100", label: "100" },
-                ]}
-                classNames={{
-                  root: "w-16 font-heading",
-                }}
-                aria-label="select page size"
-              />
-              <span className="my-auto mx-1">Entries</span>
-            </div>
-          )}
-
-          <ShowingCount />
-
-          <Pagination
-            data-testid="pagination"
-            color="accent"
-            className="ml-auto"
-            page={pageOn}
-            onChange={handlePageChange}
-            total={pageTotal}
-            size="sm"
-            radius="xs"
-            withEdges
-            classNames={{ item: "border-0" }}
-            getItemAriaLabel={(page) => {
-              switch (page) {
-                case "prev":
-                  return "previous page button";
-                case "next":
-                  return "next page button";
-                case "first":
-                  return "first page button";
-                case "last":
-                  return "last page button";
-                default:
-                  return `${page} page button`;
-              }
-            }}
+      <>
+        <div className="overflow-y-auto w-full relative">
+          <LoadingOverlay
+            data-testid="loading-spinner"
+            visible={showLoading}
+            zIndex={0}
           />
+          <Table columns={headings} data={table} />
         </div>
-      )}
+        {pagination && (
+          <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+            {!disablePageSize && (
+              <div className="flex flex-row items-center m-auto ml-0 text-sm">
+                <span className="my-auto mx-1">Show</span>
+                <Select
+                  size="xs"
+                  radius="md"
+                  onChange={handlePageSizeChange}
+                  value={pageSize?.toString()}
+                  data={[
+                    { value: "10", label: "10" },
+                    { value: "20", label: "20" },
+                    { value: "40", label: "40" },
+                    { value: "100", label: "100" },
+                  ]}
+                  classNames={{
+                    root: "w-16 font-heading",
+                  }}
+                  aria-label="select page size"
+                />
+                <span className="my-auto mx-1">Entries</span>
+              </div>
+            )}
+
+            <ShowingCount />
+
+            <Pagination
+              data-testid="pagination"
+              color="accent"
+              className="ml-auto"
+              page={pageOn}
+              onChange={handlePageChange}
+              total={pageTotal}
+              size="sm"
+              radius="xs"
+              withEdges
+              classNames={{ item: "border-0" }}
+              getItemAriaLabel={(page) => {
+                switch (page) {
+                  case "prev":
+                    return "previous page button";
+                  case "next":
+                    return "next page button";
+                  case "first":
+                    return "first page button";
+                  case "last":
+                    return "last page button";
+                  default:
+                    return `${page} page button`;
+                }
+              }}
+            />
+          </div>
+        )}
+      </>
     </div>
   );
 };

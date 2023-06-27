@@ -7,14 +7,13 @@ import {
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Text, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
 import { entityMetadataType } from "src/utils/contexts";
 import { SSMSData } from "@gff/core";
 import { externalLinks, humanify } from "src/utils";
-import tw from "tailwind-styled-components";
 import {
   CheckboxSpring,
   RatioSpring,
@@ -29,6 +28,7 @@ import {
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import { ImpactHeaderWithTooltip } from "../shared/ImpactHeaderWithTooltip";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -235,34 +235,40 @@ export const ssmsCreateTableColumn = ({
                 : originalLabel;
               const ssmsId = row.original[`mutationID`];
               return (
-                <div className="font-content">
-                  {label !== "" ? (
-                    <Tooltip
-                      label={originalLabel}
-                      disabled={!originalLabel?.length}
-                    >
-                      {isConsequenceTable ? (
-                        <span>{label}</span>
-                      ) : isModal && !geneSymbol ? (
-                        <PopupIconButton
-                          handleClick={() =>
-                            setEntityMetadata({
-                              entity_type: "ssms",
-                              entity_id: ssmsId,
-                            })
-                          }
-                          label={label}
-                        />
+                <>
+                  {row.getCanExpand() && (
+                    <div className="font-content">
+                      {label !== "" ? (
+                        <Tooltip
+                          label={originalLabel}
+                          disabled={!originalLabel?.length}
+                        >
+                          {isConsequenceTable ? (
+                            <span>{label}</span>
+                          ) : isModal && !geneSymbol ? (
+                            <PopupIconButton
+                              handleClick={() =>
+                                setEntityMetadata({
+                                  entity_type: "ssms",
+                                  entity_id: ssmsId,
+                                })
+                              }
+                              label={label}
+                            />
+                          ) : (
+                            <Link href={`/ssms/${ssmsId}`}>
+                              <a className="underline text-utility-link">
+                                {label}
+                              </a>
+                            </Link>
+                          )}
+                        </Tooltip>
                       ) : (
-                        <Link href={`/ssms/${ssmsId}`}>
-                          <a className="underline text-utility-link">{label}</a>
-                        </Link>
+                        <div className="text-lg ml-3">--</div>
                       )}
-                    </Tooltip>
-                  ) : (
-                    <div className="text-lg ml-3">--</div>
+                    </div>
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -290,7 +296,7 @@ export const ssmsCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
@@ -425,87 +431,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => {
-              const TwIconDiv = tw.div`w-7 h-6 text-base-max border rounded-md flex justify-center items-center mx-1`;
-              return (
-                <Tooltip
-                  label={
-                    <div className="flex flex-col gap-1">
-                      <Text>Impact for canonical transcript:</Text>
-                      <div className="flex gap-1">
-                        VEP:
-                        <TwIconDiv className="bg-impact-vep-high">HI</TwIconDiv>
-                        high
-                        <TwIconDiv className="bg-impact-vep-low">LO</TwIconDiv>
-                        low
-                        <TwIconDiv className="bg-impact-vep-moderate">
-                          MO
-                        </TwIconDiv>
-                        moderate
-                        <TwIconDiv className="bg-impact-vep-modifier">
-                          MR
-                        </TwIconDiv>
-                        modifier
-                      </div>
-                      <div className="flex gap-1">
-                        SIFT:
-                        <TwIconDiv className=" bg-impact-sift-deleterious">
-                          DH
-                        </TwIconDiv>
-                        deleterious
-                        <TwIconDiv className=" bg-impact-sift-deleterious_low_confidence">
-                          DL
-                        </TwIconDiv>
-                        deleterious_low_confidence
-                        <TwIconDiv className=" bg-impact-sift-tolerated">
-                          TO
-                        </TwIconDiv>
-                        tolerated
-                        <TwIconDiv className=" bg-impact-sift-tolerated_low_confidence">
-                          TL
-                        </TwIconDiv>
-                        tolerated_low_confidence
-                      </div>
-                      <div className="flex gap-1">
-                        PolyPhen:
-                        <TwIconDiv className="bg-impact-polyphen-benign">
-                          BE
-                        </TwIconDiv>
-                        benign
-                        <TwIconDiv className="bg-impact-polyphen-possibly_damaging">
-                          PO
-                        </TwIconDiv>
-                        possibly_damaging
-                        <TwIconDiv className="bg-impact-polyphen-probably_damaging">
-                          PR
-                        </TwIconDiv>
-                        probably_damaging
-                        <TwIconDiv className="bg-impact-polyphen-unknown">
-                          UN
-                        </TwIconDiv>
-                        unknown
-                      </div>
-                    </div>
-                  }
-                  width="auto"
-                  withArrow
-                  arrowSize={8}
-                  transition="fade"
-                  offset={10}
-                  transitionDuration={200}
-                  multiline
-                  classNames={{
-                    tooltip:
-                      "bg-base-lightest text-base-contrast-lightest font-heading text-left",
-                  }}
-                  position={geneSymbol && isModal ? "left-start" : "top"}
-                >
-                  <div className="font-heading text-left whitespace-pre-line">
-                    Impact
-                  </div>
-                </Tooltip>
-              );
-            },
+            header: () => <ImpactHeaderWithTooltip />,
             cell: ({ row }) => {
               return (
                 <div className="flex">
