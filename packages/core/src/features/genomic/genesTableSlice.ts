@@ -213,8 +213,8 @@ export const fetchGenesTable = createAsyncThunk<
     );
 
     const graphQlFilters = {
-      genesTable_filters: tableFilters ? tableFilters : {},
-      genesTable_localFilters: buildCohortGqlOperator(genomicFilters),
+      genesTable_filters: tableFilters ? tableFilters : {}, // use case_filters to filter cohort down to cases
+      genesTable_localFilters: buildCohortGqlOperator(genomicFilters), // use filters to apply local filters
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
