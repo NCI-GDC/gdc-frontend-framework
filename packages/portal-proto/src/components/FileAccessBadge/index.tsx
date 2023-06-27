@@ -15,6 +15,7 @@ export const FileAccessBadge = ({
       }
     `}
     data-testid="badgeElement"
+    fullWidth
   >
     {access}
   </Badge>
