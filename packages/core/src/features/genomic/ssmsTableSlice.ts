@@ -11,7 +11,7 @@ import {
 import {
   convertFilterToGqlFilter,
   GqlIntersection,
-  Intersection,
+  UnionOrIntersection,
   Union,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
@@ -26,7 +26,7 @@ $ssmsTable_size: Int
 $consequenceFilters: FiltersArgument
 $ssmsTable_offset: Int
 $ssmsTable_filters: FiltersArgument
-$ssmsTable_localFilters: FiltersArgument
+$caseFilters: FiltersArgument
 $score: String
 $sort: [Sort]
 ) {
@@ -43,7 +43,7 @@ $sort: [Sort]
         }
       }
       ssms {
-        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $ssmsTable_filters, filters: $ssmsTable_localFilters, score: $score, sort: $sort) {
+        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, case_filters: $caseFilters, filters: $ssmsTable_filters, score: $score, sort: $sort) {
           total
           edges {
             node {
@@ -236,30 +236,28 @@ const generateFilter = ({
   offset,
   searchTerm,
   geneSymbol,
-  genomicFilters,
-  cohortFilters,
+  genomicFilters, // local genomic filters
+  cohortFilters, // the cohort filters which used to filter the cases
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   // for case summary SMT we send caseFilter and cohortFilters carry filter associated with the project
-  const genomicPlusCohortFilters = caseFilter
-    ? caseFilter
-    : joinFilters(cohortFilters, genomicFilters);
+  const cohortFiltersOrCase = caseFilter ? caseFilter : cohortFilters;
   // if gene symbol combine geneSymbol with cohort and genomic filters else only use genomicPlusCohortFilters without geneSymbol.
-  const geneAndCohortFilters = geneSymbol
-    ? joinFilters(
-        {
-          mode: "and",
-          root: {
-            "genes.symbol": {
-              field: "genes.symbol",
-              operator: "includes",
-              operands: [geneSymbol],
-            },
-          },
-        },
-        genomicPlusCohortFilters,
-      )
-    : genomicPlusCohortFilters;
+  // const geneAndCohortFilters = geneSymbol
+  //   ? joinFilters(
+  //       {
+  //         mode: "and",
+  //         root: {
+  //           "genes.symbol": {
+  //             field: "genes.symbol",
+  //             operator: "includes",
+  //             operands: [geneSymbol],
+  //           },
+  //         },
+  //       },
+  //       genomicPlusCohortFilters,
+  //     )
+  //   : genomicPlusCohortFilters;
 
   const cohortFiltersGQl = buildCohortGqlOperator(
     // for Gene Summary, combine it with genesymbol
@@ -275,18 +273,15 @@ const generateFilter = ({
               },
             },
           },
-          cohortFilters,
+          cohortFiltersOrCase,
         )
-      : cohortFilters,
+      : cohortFiltersOrCase,
   );
 
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
   const tableFilters = convertFilterToGqlFilter(
     appendFilterToOperation(
-      filterSetToOperation(geneAndCohortFilters) as
-        | Union
-        | Intersection
-        | undefined,
+      filterSetToOperation(genomicFilters) as UnionOrIntersection | undefined,
       searchFilters,
     ),
   );
@@ -311,8 +306,8 @@ const generateFilter = ({
       op: "and",
     },
     // for table filters use both cohort and genomic filter along with search filter
-    ssmsTable_filters: tableFilters ? tableFilters : {},
-    ssmsTable_localFilters: buildCohortGqlOperator(genomicFilters),
+    caseFilters: cohortFiltersGQl ?? {},
+    ssmsTable_filters: tableFilters,
     consequenceFilters: {
       content: [
         {

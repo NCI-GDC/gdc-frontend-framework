@@ -8,7 +8,6 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import {
   buildCohortGqlOperator,
   FilterSet,
@@ -24,6 +23,7 @@ query TopGeneQuery (
   $consequenceFilters: FiltersArgument
   $topTable_offset: Int
   $topTable_filters: FiltersArgument
+  $caseFilters: FiltersArgument
   $ssmsScore: String
   $ssmsSort: [Sort]
   $geneScore: String
@@ -31,7 +31,7 @@ query TopGeneQuery (
   viewer {
     explore {
         genes {
-            hits(first: $topTable_size, offset: $topTable_offset, case_filters: $topTable_filters, score: $geneScore) {
+            hits(first: $topTable_size, offset: $topTable_offset, case_filters: $caseFilters, filters: $topTable_filters, score: $geneScore) {
               total
               edges {
                 node {
@@ -45,7 +45,7 @@ query TopGeneQuery (
             }
           }
       ssms {
-        hits(first: $topTable_size, offset: $topTable_offset, case_filters: $topTable_filters, score: $ssmsScore, sort: $ssmsSort) {
+        hits(first: $topTable_size, offset: $topTable_offset, case_filters: $caseFilters, filters: $topTable_filters, score: $ssmsScore, sort: $ssmsSort) {
           total
           edges {
             node {
@@ -103,6 +103,7 @@ export interface GeneSSMSEntry {
 }
 
 export interface FetchTopGeneProps {
+  cohortFilters: FilterSet;
   genomicFilters: FilterSet;
   isDemoMode: boolean;
   overwritingDemoFilter: FilterSet;
@@ -114,17 +115,17 @@ export const fetchTopGene = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/topGene",
-  async (
-    { genomicFilters, isDemoMode, overwritingDemoFilter }: FetchTopGeneProps,
-    thunkAPI,
-  ): Promise<GraphQLApiResponse> => {
+  async ({
+    cohortFilters,
+    genomicFilters,
+    isDemoMode,
+    overwritingDemoFilter,
+  }: FetchTopGeneProps): Promise<GraphQLApiResponse> => {
     const filters = isDemoMode
       ? buildCohortGqlOperator(
           joinFilters(overwritingDemoFilter, genomicFilters),
         )
-      : buildCohortGqlOperator(
-          mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
-        );
+      : buildCohortGqlOperator(genomicFilters);
     const filterContents = filters?.content ? Object(filters?.content) : [];
 
     const graphQlVariables = {
@@ -169,7 +170,8 @@ export const fetchTopGene = createAsyncThunk<
         op: "and",
       },
       topTable_offset: 0,
-      topTable_filters: filters ? filters : {},
+      topTable_filters: filters ?? {},
+      caseFilters: buildCohortGqlOperator(cohortFilters) ?? {},
       ssmsScore: "occurrence.case.project.project_id",
       geneScore: "case.project.project_id",
       ssmsSort: [
