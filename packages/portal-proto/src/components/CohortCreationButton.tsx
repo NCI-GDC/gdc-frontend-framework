@@ -42,15 +42,17 @@ export const IconWrapper = tw.span`
 `;
 
 interface CohortCreationButtonProps {
-  readonly caseFilters: FilterSet;
+  readonly caseFilters?: FilterSet;
   readonly label: ReactNode;
   readonly numCases: number;
+  readonly generateFilters?: () => FilterSet;
 }
 
 const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
-  caseFilters,
+  caseFilters = undefined,
   label,
   numCases,
+  generateFilters,
 }: CohortCreationButtonProps) => {
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const coreDispatch = useCoreDispatch();
@@ -58,7 +60,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const createCohort = (name: string) => {
     coreDispatch(
       addNewCohortWithFilterAndMessage({
-        filters: caseFilters,
+        filters: caseFilters ?? generateFilters(),
         name,
         message: "newCasesCohort",
       }),

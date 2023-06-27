@@ -35,6 +35,9 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   isModal = false,
   cohortFilters,
 }: SomaticMutationsTableProps) => {
+  useEffect(() => {
+    console.log("Somatic M table Component mounted.");
+  }, []);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
@@ -80,9 +83,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     if (transformResponse[0]?.ssmsTotal)
       handleSMTotal(transformResponse[0].ssmsTotal);
     else handleSMTotal(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transformResponse]);
+  }, [transformResponse[0]?.ssmsTotal]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -151,26 +152,24 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   ]);
 
   return (
-    <>
-      <ExpTable
-        status={status}
-        data={transformResponse}
-        columns={columns}
-        expanded={expanded}
-        handleExpandedProxy={handleExpandedProxy}
-        selectAll={setSelectedMutations}
-        allSelected={selectedMutations}
-        firstColumn={columnListOrder[0].id}
-        subrow={
-          <Subrow
-            id={mutationID}
-            width={width}
-            query={useGetSomaticMutationTableSubrowQuery}
-            subrowTitle={`Affected Cases Across The GDC`}
-          />
-        }
-      />
-    </>
+    <ExpTable
+      status={status}
+      data={transformResponse}
+      columns={columns}
+      expanded={expanded}
+      handleExpandedProxy={handleExpandedProxy}
+      selectAll={setSelectedMutations}
+      allSelected={selectedMutations}
+      firstColumn={columnListOrder[0].id}
+      subrow={
+        <Subrow
+          id={mutationID}
+          width={width}
+          query={useGetSomaticMutationTableSubrowQuery}
+          subrowTitle={`Affected Cases Across The GDC`}
+        />
+      }
+    />
   );
 };
 

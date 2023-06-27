@@ -63,7 +63,8 @@ export const geneCreateTableColumn = ({
   genomicFilters,
   handleMutationCountClick,
   generateFilters,
-}: GeneCreateTableColumnProps): TableColumnDefinition => {
+}: // setShowCreateCohort,
+GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
       return {
@@ -262,10 +263,9 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={generateFilters(
-                        "ssmaffected",
-                        row.original["geneID"],
-                      )}
+                      generateFilters={() =>
+                        generateFilters("ssmaffected", row.original["geneID"])
+                      }
                     />
                   )}
                 </>
@@ -357,10 +357,9 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={generateFilters(
-                        "cnvgain",
-                        row.original["geneID"],
-                      )}
+                      generateFilters={() =>
+                        generateFilters("cnvgain", row.original["geneID"])
+                      }
                     />
                   )}
                 </>
@@ -401,10 +400,9 @@ export const geneCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={generateFilters(
-                        "cnvloss",
-                        row.original["geneID"],
-                      )}
+                      generateFilters={() =>
+                        generateFilters("cnvloss", row.original["geneID"])
+                      }
                     />
                   )}
                 </>

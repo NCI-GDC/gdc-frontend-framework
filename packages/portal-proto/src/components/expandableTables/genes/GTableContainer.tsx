@@ -60,6 +60,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   isDemoMode = false,
   handleMutationCountClick,
 }: GTableContainerProps) => {
+  useEffect(() => {
+    console.log("GTable Container Component mounted.");
+  }, []);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");

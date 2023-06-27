@@ -374,7 +374,9 @@ export const ssmsCreateTableColumn = ({
                         />
                       }
                       numCases={numerator}
-                      caseFilters={generateFilters(row.original["mutationID"])}
+                      generateFilters={() =>
+                        generateFilters(row.original["mutationID"])
+                      }
                     />
                   )}
                 </div>

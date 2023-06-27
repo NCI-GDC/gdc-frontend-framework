@@ -31,6 +31,9 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   cohortFilters,
   handleMutationCountClick,
 }: GenesTableProps) => {
+  useEffect(() => {
+    console.log("Genestable Component mounted.");
+  }, []);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
@@ -41,7 +44,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const generateFilters = useCallback(
     (type: "cnvgain" | "cnvloss" | "ssmaffected", geneId: string) => {
       const cohortAndGenomic = joinFilters(cohortFilters, genomicFilters);
-
       const commonFilters: FilterSet = joinFilters(cohortAndGenomic, {
         mode: "and",
         root: {
@@ -52,7 +54,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           },
         },
       });
-
       if (type === "cnvgain") {
         return joinFilters(commonFilters, {
           mode: "and",
@@ -117,16 +118,11 @@ export const GenesTable: React.FC<GenesTableProps> = ({
 
   const transformResponse = useGeneTableFormat(initialData);
 
-  useEffect(
-    () => {
-      if (transformResponse[0]?.genesTotal)
-        handleGTotal(transformResponse[0].genesTotal);
-      else handleGTotal(0);
-    },
-    // TODO resolve dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transformResponse],
-  );
+  useEffect(() => {
+    if (transformResponse[0]?.genesTotal)
+      handleGTotal(transformResponse[0].genesTotal);
+    else handleGTotal(0);
+  }, [transformResponse[0]?.genesTotal]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -196,25 +192,23 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   ]);
 
   return (
-    <>
-      <ExpTable
-        status={status}
-        data={transformResponse}
-        columns={columns}
-        expanded={expanded}
-        handleExpandedProxy={handleExpandedProxy}
-        selectAll={setSelectedGenes}
-        allSelected={selectedGenes}
-        firstColumn={columnListOrder[0].id}
-        subrow={
-          <Subrow
-            id={geneID}
-            width={width}
-            query={useGetGeneTableSubrowQuery}
-            subrowTitle={`# SSMS Affected Cases Across The GDC`}
-          />
-        }
-      />
-    </>
+    <ExpTable
+      status={status}
+      data={transformResponse}
+      columns={columns}
+      expanded={expanded}
+      handleExpandedProxy={handleExpandedProxy}
+      selectAll={setSelectedGenes}
+      allSelected={selectedGenes}
+      firstColumn={columnListOrder[0].id}
+      subrow={
+        <Subrow
+          id={geneID}
+          width={width}
+          query={useGetGeneTableSubrowQuery}
+          subrowTitle={`# SSMS Affected Cases Across The GDC`}
+        />
+      }
+    />
   );
 };
