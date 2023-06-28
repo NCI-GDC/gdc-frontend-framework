@@ -36,6 +36,7 @@ import {
 } from "../shared";
 import { convertDateToString } from "@/utils/date";
 import saveAs from "file-saver";
+// import {  } from "@gff/core/src/features/gdcapi/gdcgraphql";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -193,7 +194,46 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  // const mtnFreqFilterUtil = (geneId: string) => {
+  //   return {
+  //     filters_case: {
+  //       content: [
+  //         {
+  //           content: {
+  //             field: "cases.available_variation_data",
+  //             value: ["ssm"],
+  //           },
+  //           op: "in",
+  //         },
+  //       ],
+  //       op: "and",
+  //     },
+  //     filters_gene: {
+  //       op: "and",
+  //       content: [
+  //         {
+  //           content: {
+  //             field: "genes.gene_id",
+  //             value: [geneId],
+  //           },
+  //           op: "in",
+  //         },
+  //         {
+  //           op: "NOT",
+  //           content: {
+  //             field: "cases.gene.ssm.observation.observation_id",
+  //             value: "MISSING",
+  //           },
+  //         },
+  //       ],
+  //     }
+  //   }
+  // };
   const handleTSVDownload = () => {
+    const {
+      genes: { genes, cases, cnvCases, filteredCases, mutationCounts },
+    } = data;
+    const gdcRemainingCases = [];
     const now = new Date();
     const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
     const tsvDownloadFields = [
@@ -209,12 +249,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       "# Mutations",
       "Annotations",
     ];
-    const visibleTSVFields = columnListOrder.filter(
-      ({ columnName, visible }) =>
-        visible && tsvDownloadFields.includes(columnName),
-    );
-    console.log("genes", tableData?.genes);
-    const body = tableData?.genes
+    const visibleTSVFields = columnListOrder
+      .filter(
+        ({ columnName, visible }) =>
+          visible && tsvDownloadFields.includes(columnName),
+      )
+      .map(({ columnName }) => columnName);
+    const body = genes
       .map(
         ({
           gene_id,
@@ -229,63 +270,50 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           is_cancer_gene_census,
         }) => {
           return [
+            ...[visibleTSVFields.includes("Gene ID") && gene_id],
+            ...[visibleTSVFields.includes("Symbol") && symbol],
+            ...[visibleTSVFields.includes("Name") && name],
+            ...[visibleTSVFields.includes("Cytoband") && cytoband.join(", ")],
+            ...[visibleTSVFields.includes("Type") && biotype],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Gene ID") && gene_id,
+              visibleTSVFields.includes("# SSM Affected Cases In Cohort") &&
+                `${numCases} / ${filteredCases} (${(
+                  (100 * numCases) /
+                  filteredCases
+                ).toFixed(2)}%)`,
             ],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Symbol") && symbol,
+              visibleTSVFields.includes(
+                "# SSM Affected Cases Across The GDC",
+              ) &&
+                [
+                  ...gdcRemainingCases,
+                  `${ssm_case} / ${cases} (${((100 * ssm_case) / cases).toFixed(
+                    2,
+                  )}%)`,
+                ].join(", "),
             ],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Name") && name,
+              visibleTSVFields.includes("# CNV Gain") &&
+                `${case_cnv_gain} / ${cnvCases} (${(
+                  (100 * case_cnv_gain) /
+                  cnvCases
+                ).toFixed(2)}%)`,
             ],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Cytoband") && cytoband,
+              visibleTSVFields.includes("# CNV Loss") &&
+                `${case_cnv_loss} / ${cnvCases} (${(
+                  (100 * case_cnv_loss) /
+                  cnvCases
+                ).toFixed(2)}%)`,
             ],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Type") && biotype,
-            ],
-            // pass filteredCases
-            ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("# SSM Affected Cases In Cohort") && numCases,
-            ],
-            // pass cases
-            ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("# SSM Affected Cases Across The GDC") && ssm_case,
-            ],
-            // todo, pass cnvCases, mutationCounts
-            ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("# CNV Gain") && case_cnv_gain,
+              visibleTSVFields.includes("# Mutations") &&
+                mutationCounts[gene_id],
             ],
             ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("# CNV Loss") && case_cnv_loss,
-            ],
-            ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("# Mutations") && gene_id,
-            ],
-            ...[
-              visibleTSVFields
-                .map(({ columnName }) => columnName)
-                .includes("Annotations") && is_cancer_gene_census,
+              visibleTSVFields.includes("Annotations") &&
+                (is_cancer_gene_census ? "Cancer Gene Census" : ""),
             ],
           ].join("\t");
         },
