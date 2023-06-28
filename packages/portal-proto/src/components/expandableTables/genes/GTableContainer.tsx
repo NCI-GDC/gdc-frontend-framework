@@ -34,6 +34,8 @@ import {
   TableFilters,
   TablePlaceholder,
 } from "../shared";
+import { convertDateToString } from "@/utils/date";
+import saveAs from "file-saver";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -191,6 +193,110 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  const handleTSVDownload = () => {
+    const now = new Date();
+    const fileName = `frequently-mutated-genes.${convertDateToString(now)}.tsv`;
+    const tsvDownloadFields = [
+      "Gene ID",
+      "Symbol",
+      "Name",
+      "Cytoband",
+      "Type",
+      "# SSM Affected Cases In Cohort",
+      "# SSM Affected Cases Across The GDC",
+      "# CNV Gain",
+      "# CNV Loss",
+      "# Mutations",
+      "Annotations",
+    ];
+    const visibleTSVFields = columnListOrder.filter(
+      ({ columnName, visible }) =>
+        visible && tsvDownloadFields.includes(columnName),
+    );
+    console.log("genes", tableData?.genes);
+    const body = tableData?.genes
+      .map(
+        ({
+          gene_id,
+          symbol,
+          name,
+          cytoband,
+          biotype,
+          numCases,
+          ssm_case,
+          case_cnv_gain,
+          case_cnv_loss,
+          is_cancer_gene_census,
+        }) => {
+          return [
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Gene ID") && gene_id,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Symbol") && symbol,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Name") && name,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Cytoband") && cytoband,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Type") && biotype,
+            ],
+            // pass filteredCases
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("# SSM Affected Cases In Cohort") && numCases,
+            ],
+            // pass cases
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("# SSM Affected Cases Across The GDC") && ssm_case,
+            ],
+            // todo, pass cnvCases, mutationCounts
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("# CNV Gain") && case_cnv_gain,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("# CNV Loss") && case_cnv_loss,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("# Mutations") && gene_id,
+            ],
+            ...[
+              visibleTSVFields
+                .map(({ columnName }) => columnName)
+                .includes("Annotations") && is_cancer_gene_census,
+            ],
+          ].join("\t");
+        },
+      )
+      .join("\n");
+
+    const tsv = [tsvDownloadFields.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
   return (
     <>
       {showSaveModal && (
@@ -285,8 +391,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   JSON
                 </FunctionButton>
               </ButtonTooltip>
-              <ButtonTooltip label="Export current view" comingSoon={true}>
-                <FunctionButton data-testid="button-tsv-mutation-frequency">
+              <ButtonTooltip label="Export current view">
+                <FunctionButton
+                  onClick={handleTSVDownload}
+                  data-testid="button-tsv-mutation-frequency"
+                >
                   TSV
                 </FunctionButton>
               </ButtonTooltip>
