@@ -176,6 +176,8 @@ export const useLocalFilters = (
     prevAllFilters,
     prevEnumValues,
     enumValues,
+    cohortFilters,
+    localFilters,
   ]);
 
   return {

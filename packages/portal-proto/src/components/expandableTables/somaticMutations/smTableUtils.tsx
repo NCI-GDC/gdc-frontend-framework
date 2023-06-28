@@ -50,7 +50,7 @@ interface SSMSCreateTableColumnProps {
   setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
   isModal?: boolean;
   isConsequenceTable?: boolean;
-  setShowCreateCohort: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCreateCohort?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ssmsCreateTableColumn = ({

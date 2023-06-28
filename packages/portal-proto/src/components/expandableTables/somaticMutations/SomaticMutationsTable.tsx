@@ -85,7 +85,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
           } as FilterSet;
         });
     },
-    [combinedFilters],
+    [combinedFilters, createSet],
   );
 
   const useSomaticMutationsTableFormat = useCallback(

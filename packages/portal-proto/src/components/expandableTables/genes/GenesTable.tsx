@@ -156,7 +156,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           }
         });
     },
-    [genomicFilters, cohortFilters],
+    [genomicFilters, cohortFilters, createSet],
   );
 
   const [showCreateCohort, setShowCreateCohort] = useState(false);
