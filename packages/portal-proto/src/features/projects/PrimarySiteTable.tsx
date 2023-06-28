@@ -97,7 +97,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
                     "cases.primary_site": {
                       field: "cases.primary_site",
                       operator: "includes",
-                      operands: [obj.originalArgs.primary_site],
+                      operands: [obj.originalArgs.primary_site.toLowerCase()],
                     },
                   },
                 }}

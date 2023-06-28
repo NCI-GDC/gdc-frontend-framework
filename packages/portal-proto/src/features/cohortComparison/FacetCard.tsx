@@ -87,8 +87,8 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     return {
       mode: "and",
       root: {
-        [field]: {
-          field,
+        [`cases.${field}`]: {
+          field: `cases.${field}`,
           operands: [bucket],
           operator: "includes",
         },
