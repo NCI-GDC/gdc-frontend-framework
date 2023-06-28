@@ -7,7 +7,7 @@ export const FileAccessBadge = ({
   access: AccessType;
 }): JSX.Element => (
   <Badge
-    className={`w-full capitalize text-xs font-bold font-content
+    className={`w-full max-w-[8em] capitalize text-xs font-bold font-content
       ${
         access === "open" //TODO: keep or change to theme color (used same for the repository file table)
           ? "bg-nci-green-lighter/50 text-nci-green-darkest"
