@@ -10,11 +10,11 @@ import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import { Loader, Tooltip } from "@mantine/core";
+import { FaPlus as PlusIcon } from "react-icons/fa";
 import {
   CohortCreationStyledButton,
   IconWrapper,
-} from "@/components/CohortCreationButton/CohortCreationButtonWrapper";
-import { FaPlus as PlusIcon } from "react-icons/fa";
+} from "@/components/CohortCreationButton/CohortCreationButton";
 
 export const CreateFromCountButton = ({
   tooltipLabel,
@@ -145,6 +145,7 @@ const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
     }
   }, [response.isLoading]);
 
+  console.log({ filters });
   const createCohort = (name: string) => {
     createSet({
       // TODO: possibly add error handling
