@@ -103,11 +103,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
                 operands: [`set_id:${setId}`],
                 operator: "includes",
               },
-              "genes.gene_id": {
-                field: "genes.gene_id",
-                operator: "includes",
-                operands: [geneId],
-              },
             },
           };
 
@@ -115,10 +110,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "cnvs.cnv_change": {
-                  field: "cnvs.cnv_change",
-                  operator: "includes",
-                  operands: ["Gain"],
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "gain",
+                },
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
                 },
               },
             });
@@ -126,10 +126,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "cnvs.cnv_change": {
-                  field: "cnvs.cnv_change",
-                  operator: "includes",
-                  operands: ["Loss"],
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "loss",
+                },
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
                 },
               },
             });
@@ -140,6 +145,11 @@ export const GenesTable: React.FC<GenesTableProps> = ({
                 "ssms.ssm_id": {
                   field: "ssms.ssm_id",
                   operator: "exists",
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "includes",
+                  operands: [geneId],
                 },
               },
             });
