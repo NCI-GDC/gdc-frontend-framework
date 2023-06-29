@@ -68,7 +68,10 @@
     },
     "grade_classification": {
       "label": "Grade Classification",
-      "facets": ["cases.diagnoses.tumor_grade"],
+      "facets": [
+        "cases.diagnoses.tumor_grade",
+        "cases.diagnoses.who_cns_grade"
+      ],
       "docType": "cases",
       "index": "repository"
     },
