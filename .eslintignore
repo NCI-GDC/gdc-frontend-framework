@@ -2,3 +2,4 @@ dist
 *.css
 setupTests.ts
 holmes-py/**/*
+Dockerfile
