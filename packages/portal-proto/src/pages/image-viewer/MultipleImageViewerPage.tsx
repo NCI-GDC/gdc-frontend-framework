@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { MultipleImageViewer } from "@/components/MultipleImageViewer";
+import { MultipleImageViewer } from "@/components/ImageViewer/MultipleImageViewer";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { useRouter } from "next/router";

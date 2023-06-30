@@ -1,5 +1,4 @@
 import React from "react";
-import { Image } from "@/components/Image";
 import { Divider } from "@mantine/core";
 import {
   MdPlayArrow,
@@ -49,23 +48,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
       {inactive && <div className="h-1" />}
       <div className="flex justify-between mb-1">
-        {entry.iconSize ? (
-          <Image
-            className="m-auto"
-            src={`/user-flow/${entry.icon}`}
-            height={entry.iconSize.height}
-            width={entry.iconSize.width}
-            alt={`${entry.name} icon`}
-          />
-        ) : (
-          <Image
-            className="m-auto"
-            src={`/user-flow/${entry.icon}`}
-            height="48"
-            width="48"
-            alt={`${entry.name} icon`}
-          />
-        )}
+        {entry.icon}
         <div className="flex flex-col">
           <Button
             className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${

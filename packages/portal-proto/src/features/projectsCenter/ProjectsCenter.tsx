@@ -12,7 +12,7 @@ export const ProjectsCenter = (): JSX.Element => {
     <>
       <PersistGate persistor={persistor}>
         <div className="flex flex-col mt-4 ">
-          <div className="flex flex-row mx-3">
+          <div className="flex flex-row mx-3" data-testid="projects-table">
             <ProjectFacetPanel />
             <ProjectsTable />
           </div>

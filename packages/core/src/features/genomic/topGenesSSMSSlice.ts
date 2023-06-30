@@ -97,6 +97,8 @@ export interface GeneSSMSEntry {
   ssms: {
     readonly name: string;
     readonly symbol: string;
+    readonly aa_change?: string;
+    readonly consequence_type: string;
   };
 }
 
@@ -254,9 +256,9 @@ const slice = createSlice({
               },
               ssms: {
                 symbol: ssms[0]?.ssm_id,
-                name: ssms[0]?.consequence[0]?.aa_change
-                  ? `${ssms[0]?.consequence[0]?.gene?.symbol} ${ssms[0]?.consequence[0]?.aa_change}`
-                  : ssms[0]?.consequence[0]?.gene?.symbol,
+                name: ssms[0]?.consequence[0]?.gene?.symbol,
+                aa_change: ssms[0]?.consequence[0]?.aa_change,
+                consequence_type: ssms[0]?.consequence[0]?.consequence_type,
               },
             },
           ],

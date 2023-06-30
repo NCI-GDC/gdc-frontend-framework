@@ -6,3 +6,9 @@ export interface GenomicTableProps {
     field: string,
   ) => void;
 }
+
+// pass to Survival Plot when survivalPlotData data is undefined/not ready
+export const emptySurvivalPlot = {
+  overallStats: { pValue: undefined },
+  survivalData: [],
+};

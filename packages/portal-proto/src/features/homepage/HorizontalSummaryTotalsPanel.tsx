@@ -1,6 +1,12 @@
 import { SummaryStatsItem } from "@/features/homepage/SummaryStatsItem";
 import { useTotalCounts, useVersionInfoDetails } from "@gff/core";
 import { AnchorLink } from "@/components/AnchorLink";
+import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
+import PrimarySitesIcon from "public/user-flow/icons/summary/primary-sites.svg";
+import UsersIcon from "public/user-flow/icons/summary/users.svg";
+import FilesIcon from "public/user-flow/icons/summary/files.svg";
+import GenesIcon from "public/user-flow/icons/summary/genes.svg";
+import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
 
 const HorizontalSummaryTotalsPanel = (): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
@@ -25,38 +31,74 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         <SummaryStatsItem
           title="Projects"
           count={countsInfo.projectsCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/projects.svg"
+          icon={
+            <ProjectsIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Projects counts"
+              role="img"
+            />
+          }
         />
         <SummaryStatsItem
           title="Primary Sites"
           count={countsInfo.primarySiteCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/primary-sites.svg"
+          icon={
+            <PrimarySitesIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Primary Sites counts"
+              role="img"
+            />
+          }
         />
         <SummaryStatsItem
           title="Cases"
           count={countsInfo.repositoryCaseCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/users.svg"
+          icon={
+            <UsersIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Cases counts"
+              role="img"
+            />
+          }
         />
         <SummaryStatsItem
           title="Files"
           count={countsInfo.fileCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/files.svg"
+          icon={
+            <FilesIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Files counts"
+              role="img"
+            />
+          }
         />
         <SummaryStatsItem
           title="Genes"
           count={countsInfo.genesCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/genes.svg"
+          icon={
+            <GenesIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Genes counts"
+              role="img"
+            />
+          }
         />
         <SummaryStatsItem
           title="Mutations"
           count={countsInfo.mutationCounts}
-          size={ICON_SIZE}
-          icon="/user-flow/icons/summary/gene-mutation.svg"
+          icon={
+            <MutationsIcon
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              aria-label="Mutations counts"
+              role="img"
+            />
+          }
         />
       </div>
     </div>

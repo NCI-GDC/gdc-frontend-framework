@@ -1,4 +1,4 @@
-import { Column } from "@/components/expandableTables/shared/types";
+import { Column } from "@/components/expandableTables/shared/";
 
 export const DEFAULT_CONSEQUENCE_TABLE_ORDER: Column[] = [
   { id: "gene", columnName: "Gene", visible: true },

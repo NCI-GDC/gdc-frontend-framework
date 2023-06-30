@@ -60,10 +60,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
     } else {
       const filteredFields = fields.filter(
         (f) =>
-          f.description?.toLowerCase().search(searchTerm.toLowerCase()) > -1 ||
+          f.description?.toLowerCase().search(searchTerm.trim().toLowerCase()) >
+            -1 ||
           toDisplayName(f.field_name)
             .toLowerCase()
-            .search(searchTerm.toLowerCase()) > -1,
+            .search(searchTerm.trim().toLowerCase()) > -1,
       );
 
       setVisibleFields(
@@ -77,7 +78,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
     <>
       <span
         onClick={() => setGroupOpen(!groupOpen)}
-        onKeyPress={createKeyboardAccessibleFunction(() =>
+        onKeyDown={createKeyboardAccessibleFunction(() =>
           setGroupOpen(!groupOpen),
         )}
         tabIndex={0}

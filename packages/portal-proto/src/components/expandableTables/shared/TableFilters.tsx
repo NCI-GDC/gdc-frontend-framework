@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { MdSearch as SearchIcon } from "react-icons/md";
-import { animated, useSpring } from "@react-spring/web";
+import React, { useEffect, useRef, useState } from "react";
+import { MdClose as CloseIcon, MdSearch as SearchIcon } from "react-icons/md";
 import DND from "./DND";
 import { Column } from "./types";
+import { TextInput } from "@mantine/core";
 
 interface TableFiltersProps {
-  search: string;
+  searchTerm: string;
+  ariaTextOverwrite?: string;
   handleSearch: (term: string) => void;
   columnListOrder: Column[];
   handleColumnChange: (columnListOrder: any) => void;
@@ -14,8 +15,9 @@ interface TableFiltersProps {
   defaultColumns: Column[];
 }
 
-export const TableFilters: React.FC<TableFiltersProps> = ({
-  search,
+const TableFilters: React.FC<TableFiltersProps> = ({
+  searchTerm,
+  ariaTextOverwrite,
   handleSearch,
   columnListOrder,
   handleColumnChange,
@@ -23,61 +25,52 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
   setShowColumnMenu,
   defaultColumns,
 }: TableFiltersProps) => {
-  const [searchToggled, setSearchToggled] = useState(false);
-  const inputWidth = 300;
+  const inputRef = useRef(null);
+  const [ariaText, setAriaText] = useState(
+    ariaTextOverwrite ?? "Table Search Input",
+  );
 
-  const searchSpring = useSpring({
-    from: { opacity: 0, width: 0 },
-    to: { opacity: 1, width: searchToggled ? inputWidth + 8 : 39 },
-    immediate: false,
-  });
-
-  const inputSpring = useSpring({
-    from: { opacity: 0, width: 0 },
-    to: { opacity: 1, width: searchToggled ? inputWidth : 0, height: 25 },
-    immediate: false,
-  });
+  useEffect(() => {
+    // only during mount
+    if (searchTerm?.length > 0) {
+      inputRef?.current.focus();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex items-center gap-2">
-      <animated.div
-        style={searchSpring}
-        onMouseLeave={() =>
-          setSearchToggled(search.length === 0 ? false : true)
-        }
-        className={`flex h-10 p-1 mt-3 border-1 border-black bg-white items-center rounded`}
-      >
-        {searchToggled && (
-          <div className={`flex items-center`}>
-            {search.length === 0 && (
-              <span
-                className={`flex absolute ml-2 text-xs pointer-events-none italic`}
-              >
-                <div className={`mt-0.5 ml-1 mr-1`}>
-                  <SearchIcon />
-                </div>
-                Search...
-              </span>
-            )}
-            <animated.input
-              style={inputSpring}
-              className={`p-1 border-none text-base focus:outline-none h-4 text-xs`}
-              type="text"
-              value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+      <TextInput
+        icon={<SearchIcon size={24} />}
+        placeholder="Search"
+        aria-label={ariaText}
+        classNames={{
+          input:
+            "focus:border-primary focus:border-2 focus:drop-shadow-xl border-base-lighter",
+          wrapper: "w-72",
+        }}
+        size="sm"
+        rightSection={
+          searchTerm?.length > 0 && (
+            <CloseIcon
+              onClick={() => {
+                handleSearch("");
+                if (ariaText !== "Table Search Input")
+                  setAriaText("Table Search Input");
+              }}
+              className="cursor-pointer"
+              aria-label="clear text"
             />
-          </div>
-        )}
-        {!searchToggled && (
-          <button
-            onMouseEnter={() => setSearchToggled(true)}
-            onFocus={() => setSearchToggled(true)}
-            className={`mt-0.5 mx-1 p-0.5`}
-          >
-            <SearchIcon />
-          </button>
-        )}
-      </animated.div>
+          )
+        }
+        ref={inputRef}
+        value={searchTerm}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+          if (ariaText !== "Table Search Input")
+            setAriaText("Table Search Input");
+        }}
+      />
       <DND
         showColumnMenu={showColumnMenu}
         setShowColumnMenu={setShowColumnMenu}
@@ -88,3 +81,5 @@ export const TableFilters: React.FC<TableFiltersProps> = ({
     </div>
   );
 };
+
+export default TableFilters;

@@ -12,7 +12,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, download
 * Navigate to "Cohort" from "Header" "section"
 
 
-## Export All GDC Cohort
+## Export All Cases Cohort
 * Download "Download" from "Cohort Bar"
 * Read from "Download from Cohort Bar"
 * Verify that "Download from Cohort Bar" has expected information

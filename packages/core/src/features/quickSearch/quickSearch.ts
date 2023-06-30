@@ -31,14 +31,16 @@ export const fetchQuickSearch = createAsyncThunk<
   string,
   { dispatch: CoreDispatch; state: CoreState }
 >("quickSearch/fetchQuickSearch", async (searchString: string) => {
-  const response = await fetch(
-    `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=5`,
-  );
-  if (response.ok) {
-    return await response.json();
-  }
+  if (searchString.length > 0) {
+    const response = await fetch(
+      `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=5`,
+    );
+    if (response.ok) {
+      return await response.json();
+    }
 
-  throw Error(await response.text());
+    throw Error(await response.text());
+  }
 });
 
 const slice = createSlice({
@@ -50,7 +52,7 @@ const slice = createSlice({
       .addCase(fetchQuickSearch.fulfilled, (state, action) => {
         const response = action.payload;
 
-        state.searchList = response.data.query.hits;
+        state.searchList = response?.data?.query?.hits;
         state.status = "fulfilled";
         return state;
       })

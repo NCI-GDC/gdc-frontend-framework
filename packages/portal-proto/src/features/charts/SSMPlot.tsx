@@ -50,7 +50,7 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  if (data.cases.length <= 5) {
+  if (data.cases.length < 5) {
     return null;
   }
 
@@ -109,9 +109,16 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
       <div>
         <ChartTitleBar
           title={title}
-          filename={CHART_NAME}
+          filename="cancer-distribution-bar-chart"
           divId={chartDivId}
-          jsonData={{}}
+          jsonData={[
+            ...sortedData.map(({ project: label, percent: value }) => {
+              return {
+                label,
+                value,
+              };
+            }),
+          ]}
         />
       </div>
       <div className="">

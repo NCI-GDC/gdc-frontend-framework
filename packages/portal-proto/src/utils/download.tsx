@@ -1,10 +1,10 @@
-import { isPlainObject, includes, reduce } from "lodash";
-import urlJoin from "url-join";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { includes, isPlainObject, reduce } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
+import urlJoin from "url-join";
 
 const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -84,7 +84,6 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
  * @param options options object provided to fetch, see here for possible values: https://developer.mozilla.org/en-US/docs/Web/API/fetch
  * @param queryParams body to be attached with POST request or url params with GET request
  * @param done callback function to be called after the download has been initiated
- * @param filename
  * @param Modal400 Modal for 400 error
  * @param Modal403 Modal for 403 error
  * @param customErrorMessage custom mesage to be passed for 400 errors
@@ -111,7 +110,6 @@ const download = async ({
   dispatch: CoreDispatch;
   queryParams?: string;
   done?: () => void;
-  filename?: string;
   altMessage?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
@@ -119,6 +117,7 @@ const download = async ({
   form?: boolean;
 }): Promise<void> => {
   let canceled = false;
+  const controller = new AbortController();
 
   // place notification in timeout to avoid flicker on fast calls
   const showNotificationTimeout = setTimeout(
@@ -127,6 +126,7 @@ const download = async ({
         message: (
           <DownloadNotification
             onClick={() => {
+              controller.abort();
               cleanNotifications();
               canceled = true;
               if (done) {
@@ -276,6 +276,7 @@ const download = async ({
     return value;
   };
 
+  const signal = controller.signal;
   if (form) {
     addFormAndSubmit();
     setTimeout(() => {
@@ -301,6 +302,7 @@ const download = async ({
         {
           ...options,
           body,
+          signal,
         },
       ).then(handleDownloadResponse);
     } else {
@@ -315,6 +317,7 @@ const download = async ({
         }`,
         {
           ...options,
+          signal,
         },
       ).then(handleDownloadResponse);
     }

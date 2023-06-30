@@ -145,7 +145,17 @@ export const buildSSMSTableSearchFilters = (
       operands: [
         {
           operator: "includes",
+          field: "genes.gene_id",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
           field: "ssms.genomic_dna_change",
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "genes.symbol",
           operands: [`*${term}*`],
         },
         {

@@ -32,6 +32,6 @@ class CaseSummaryPage(BasePage):
         removed_file_message = CaseSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
 
-    # In 'Biospecimen Suppliment File' area, clicks first 'Download' button in the table
-    def click_biospecimen_suppliment_file_first_download_button(self):
+    # In 'Biospecimen Supplement File' area, clicks first 'Download' button in the table
+    def click_biospecimen_supplement_file_first_download_button(self):
         self.click(CaseSummaryLocators.BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT)

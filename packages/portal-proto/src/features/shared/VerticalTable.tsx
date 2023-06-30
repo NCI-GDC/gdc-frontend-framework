@@ -553,7 +553,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     }
 
     return (
-      <p className="text-heading text-sm">Showing {outputString ?? "--"}</p>
+      <p data-testid="showing-count" className="text-heading text-sm">
+        Showing {outputString ?? "--"}
+      </p>
     );
   };
 
@@ -561,7 +563,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     //prevents unneeded api calls if user is typing something
     const delayDebounceFn = setTimeout(() => {
       handleChange({
-        newSearch: searchTerm,
+        newSearch: searchTerm.trim(),
       });
     }, 250);
 
@@ -619,6 +621,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   >
                     <Popover.Target>
                       <button
+                        data-testid="column-selector-box"
                         onClick={() => {
                           setShowColumnMenu(!showColumnMenu);
                         }}
@@ -629,7 +632,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       </button>
                     </Popover.Target>
                     <Popover.Dropdown>
-                      <div className={`w-fit`}>
+                      <div
+                        className={`w-fit`}
+                        data-testid="column-selector-popover-modal"
+                      >
                         {columns.length > 0 && showColumnMenu && (
                           <div className="mr-0 ml-2">
                             <DndProvider backend={HTML5Backend}>
@@ -682,6 +688,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           <ShowingCount />
 
           <Pagination
+            data-testid="pagination"
             color="accent"
             className="ml-auto"
             page={pageOn}

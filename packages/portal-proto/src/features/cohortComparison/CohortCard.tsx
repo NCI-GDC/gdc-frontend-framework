@@ -49,7 +49,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
             S<sub>1</sub> : {cohorts?.primary_cohort.name}
           </p>
           <p className="basis-1/4 text-right">
-            {counts[0] ? counts[0].toLocaleString() : 0}
+            {casesFetching ? "..." : counts[0] ? counts[0].toLocaleString() : 0}
           </p>
         </div>
         <div className="flex justify-between font-content py-1">
@@ -57,7 +57,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
             S<sub>2</sub> : {cohorts?.comparison_cohort.name}
           </p>
           <p className="basis-1/4 text-right">
-            {counts[1] ? counts[1].toLocaleString() : 0}
+            {casesFetching ? "..." : counts[1] ? counts[1].toLocaleString() : 0}
           </p>
         </div>
       </div>

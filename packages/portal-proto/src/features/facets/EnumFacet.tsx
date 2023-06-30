@@ -135,7 +135,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         .filter((entry) =>
           searchTerm === ""
             ? entry
-            : entry[0].toLowerCase().includes(searchTerm.toLowerCase()),
+            : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
         )
     : [];
 

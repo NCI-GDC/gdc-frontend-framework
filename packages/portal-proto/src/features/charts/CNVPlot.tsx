@@ -51,15 +51,15 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Failed to fetch chart: {error}</div>;
   }
 
-  if (data.cases.length <= 5) {
-    return null;
-  }
-
-  const caseData = data.cases.filter(
+  const caseData = data?.cases.filter(
     (d) => d.gain !== undefined || d.loss !== undefined,
   );
 
-  const caseTotal = <CountSpan>{data.caseTotal.toLocaleString()}</CountSpan>;
+  if (caseData.length < 5) {
+    return null;
+  }
+
+  const caseTotal = <CountSpan>{data?.caseTotal.toLocaleString()}</CountSpan>;
   const mutationTotal = (
     <CountSpan>{data.mutationTotal.toLocaleString()}</CountSpan>
   );
@@ -96,6 +96,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     .sort((a, b) => (a.percent < b.percent ? 1 : -1))
     .slice(0, 20);
 
+  let exportedData = sortedData;
+
   const datasets = [];
   if (lossChecked) {
     datasets.push({
@@ -122,11 +124,13 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   }
 
   if (!lossChecked && !gainChecked) {
+    // sort by gain value desc and then loss value desc
     const emptyData = orderBy(
       chartData.map((d) => ({ gain: 0, loss: 0, ...d })),
       ["gain", "loss"],
       ["desc", "desc"],
     ).slice(0, 20);
+    exportedData = emptyData;
     datasets.push({
       y: emptyData.map(() => null),
       x: emptyData.map((d) => d.project),
@@ -141,15 +145,25 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const onClickHandler = (mouseEvent) => {
     router.push(`/projects/${mouseEvent.points[0].x}`);
   };
+
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
     <div className="border border-base-lighter p-4">
       <div>
         <ChartTitleBar
           title={title}
-          filename={CHART_NAME}
+          filename="cancer-distribution-bar-chart"
           divId={chartDivId}
-          jsonData={{}}
+          jsonData={[
+            ...exportedData.map(({ project: symbol, gain, loss, total }) => {
+              return {
+                symbol,
+                gain: gain ? (gain / total) * 100 : 0,
+                loss: loss ? (loss / total) * 100 : 0,
+                total,
+              };
+            }),
+          ]}
         />
       </div>
       <div>

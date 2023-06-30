@@ -386,7 +386,18 @@ export interface FileDefaults {
     readonly workflow_type: string;
     readonly updated_datetime: string;
     readonly input_files?: ReadonlyArray<{
+      readonly file_name: string;
+      readonly data_category: string;
+      readonly data_type: string;
+      readonly data_format: string;
+      readonly file_size: number;
       readonly file_id: string;
+      readonly state: string;
+      readonly submitter_id: string;
+      readonly access: string;
+      readonly created_datetime: string;
+      readonly updated_datetime: string;
+      readonly md5sum: string;
     }>;
     readonly metadata?: {
       readonly read_groups: Array<{

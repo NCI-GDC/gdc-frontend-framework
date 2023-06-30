@@ -28,7 +28,9 @@ interface RemoveFromSetModalProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly closeModal: () => void;
-  readonly countHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly countHook: UseQuery<
+    QueryDefinition<any, any, any, Record<string, number>, string>
+  >;
   readonly removeFromSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;

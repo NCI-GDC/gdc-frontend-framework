@@ -7,12 +7,11 @@ import React, {
 } from "react";
 import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
-import { ExpTable } from "../shared/ExpTable";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
+import { ExpTable, Subrow } from "../shared";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   status,
@@ -32,6 +31,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   searchTerm,
   isDemoMode = false,
   genomicFilters,
+  handleMutationCountClick,
 }: GenesTableProps) => {
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
@@ -126,6 +126,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           isDemoMode,
           setEntityMetadata,
           genomicFilters,
+          handleMutationCountClick,
         });
       });
   }, [
@@ -139,6 +140,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     isDemoMode,
     setEntityMetadata,
     handleSurvivalPlotToggled,
+    handleMutationCountClick,
   ]);
 
   useEffect(() => {

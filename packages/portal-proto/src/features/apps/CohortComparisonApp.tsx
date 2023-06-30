@@ -5,7 +5,8 @@ import {
   selectCurrentCohortName,
   FilterSet,
   selectCurrentCohortFilterSet,
-  selectAvailableCohortByName,
+  Cohort,
+  selectCohortFilterSetById,
 } from "@gff/core";
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import CohortComparison from "../cohortComparison/CohortComparison";
@@ -70,9 +71,9 @@ const CohortComparisonApp: React.FC = () => {
     selectCurrentCohortFilterSet(state),
   );
 
-  const [comparisonCohort, setComparisonCohort] = useState();
-  const comparisonCohortFilter = useCoreSelector(
-    (state) => selectAvailableCohortByName(state, comparisonCohort)?.filters,
+  const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
+  const comparisonCohortFilter = useCoreSelector((state) =>
+    selectCohortFilterSetById(state, comparisonCohort?.id),
   );
 
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
@@ -87,7 +88,7 @@ const CohortComparisonApp: React.FC = () => {
         },
         comparison_cohort: {
           filter: comparisonCohortFilter,
-          name: comparisonCohort,
+          name: comparisonCohort?.name,
         },
       };
 

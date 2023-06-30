@@ -6,8 +6,8 @@ import { Statistics } from "@gff/core";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { ButtonTooltip } from "@/components/expandableTables/shared";
 
 interface CardControlsProps {
   readonly continuous: boolean;

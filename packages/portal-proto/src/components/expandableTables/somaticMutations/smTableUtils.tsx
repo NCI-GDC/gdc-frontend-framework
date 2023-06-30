@@ -1,28 +1,34 @@
 import React, { Dispatch, SetStateAction } from "react";
-import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
-import { SelectedReducer, SelectReducerAction } from "../shared/types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import { TableCell, TableHeader } from "../shared/sharedTableCells";
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
-import CheckboxSpring from "../shared/CheckboxSpring";
-import { Survival } from "../shared/types";
-import { TableColumnDefinition } from "../shared/types";
-import { Image } from "@/components/Image";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { Text, Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { SSMSData } from "@gff/core";
-import { externalLinks } from "src/utils";
+import { externalLinks, humanify } from "src/utils";
 import tw from "tailwind-styled-components";
+import {
+  CheckboxSpring,
+  RatioSpring,
+  SelectReducerAction,
+  SelectedReducer,
+  Survival,
+  SwitchSpring,
+  TableCell,
+  TableColumnDefinition,
+  TableHeader,
+  ToggledCheck,
+} from "../shared";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -67,9 +73,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -88,7 +92,7 @@ export const ssmsCreateTableColumn = ({
           },
         ],
       };
-    case "cohort": // adds/removes a gene to the current cohort.
+    case "cohort": // adds/removes an ssm to the current cohort.
       return {
         header: " ",
         footer: (props) => props.column.id,
@@ -96,26 +100,34 @@ export const ssmsCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to add/remove mutations to/from your cohort filters"
+              />
             ),
             cell: ({ row }) => {
+              const isToggledSsm = toggledSsms.includes(
+                row.original?.mutationID,
+              );
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={toggledSsms.includes(row.original?.mutationID)}
+                      isActive={isToggledSsm}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }
@@ -127,7 +139,11 @@ export const ssmsCreateTableColumn = ({
                         })
                       }
                       tooltip={
-                        isDemoMode && "Feature not available in demo mode"
+                        isDemoMode
+                          ? "Feature not available in demo mode"
+                          : isToggledSsm
+                          ? `Click to remove ${row.original?.DNAChange} from cohort filters`
+                          : `Click to add ${row.original?.DNAChange} to cohort filters`
                       }
                       disabled={isDemoMode}
                     />
@@ -146,7 +162,10 @@ export const ssmsCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
+              <TableHeader
+                title={startCase(accessor)}
+                tooltip="Click to change the survival plot display"
+              />
             ),
             cell: ({ row }) => {
               if (row.depth > 0) {
@@ -168,6 +187,7 @@ export const ssmsCreateTableColumn = ({
                 <>
                   {row.getCanExpand() && (
                     <ToggledCheck
+                      ariaText={`Toggle survival plot for ${row?.original.proteinChange} mutation`}
                       margin="ml-0.5"
                       isActive={row.original["survival"].checked}
                       icon={<SurvivalIcon size={24} />}
@@ -216,17 +236,15 @@ export const ssmsCreateTableColumn = ({
                       {isConsequenceTable ? (
                         <span>{label}</span>
                       ) : isModal && !geneSymbol ? (
-                        <button
-                          className="text-utility-link underline font-content"
-                          onClick={() =>
+                        <PopupIconButton
+                          handleClick={() =>
                             setEntityMetadata({
                               entity_type: "ssms",
                               entity_id: ssmsId,
                             })
                           }
-                        >
-                          {label}
-                        </button>
+                          label={label}
+                        />
                       ) : (
                         <Link href={`/ssms/${ssmsId}`}>
                           <a className="underline text-utility-link">{label}</a>
@@ -339,12 +357,10 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
                     <ProteinChange
                       proteinChange={row.original["proteinChange"]}
@@ -353,7 +369,7 @@ export const ssmsCreateTableColumn = ({
                       setEntityMetadata={setEntityMetadata}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -491,9 +507,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="Gene Strand" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="Gene Strand" className="w-18" />,
             cell: ({ row }) => {
               return (
                 <div className="font-content text-lg font-bold">
@@ -511,9 +525,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="AA Change" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="AA Change" className="w-18" />,
             cell: ({ row }) => {
               const label = row.original["aa_change"];
               return (
@@ -536,9 +548,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title="Transcript" tooltip={""} className="w-18" />
-            ),
+            header: () => <TableHeader title="Transcript" className="w-18" />,
             cell: ({ row }) => {
               const transcript_id = row.original?.transcript_id;
               const isC = row.original["is_canonical"] as boolean;
@@ -565,16 +575,9 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => (
-              <TableCell
-                row={row}
-                accessor={accessor}
-                anchor={false}
-                tooltip={""}
-              />
+              <TableCell row={row} accessor={accessor} anchor={false} />
             ),
           },
         ],
@@ -586,9 +589,7 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               const geneSymbol = row.original["gene_id"];
               return (
@@ -612,16 +613,9 @@ export const ssmsCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => (
-              <TableCell
-                row={row}
-                accessor={accessor}
-                anchor={false}
-                tooltip={""}
-              />
+              <TableCell row={row} accessor={accessor} anchor={false} />
             ),
           },
         ],
@@ -684,20 +678,22 @@ export const getMutation = (
     occurrence,
   } = sm;
 
-  const {
-    transcript: {
-      consequence_type,
-      gene: { gene_id, symbol },
-      aa_change,
-      annotation: {
-        polyphen_impact,
-        polyphen_score,
-        sift_impact,
-        sift_score,
-        vep_impact,
-      },
-    },
-  } = consequence[0];
+  const [
+    {
+      transcript: {
+        consequence_type = undefined,
+        gene: { gene_id = undefined, symbol = undefined } = {},
+        aa_change = undefined,
+        annotation: {
+          polyphen_impact = undefined,
+          polyphen_score = undefined,
+          sift_impact = undefined,
+          sift_score = undefined,
+          vep_impact = undefined,
+        } = {},
+      } = {},
+    } = {},
+  ] = consequence;
 
   return {
     select: ssm_id,
@@ -722,7 +718,9 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      label: aa_change ? symbol + " " + aa_change : symbol,
+      label: `${symbol} ${aa_change ? aa_change : ""} ${humanify({
+        term: consequence_type?.replace("_variant", "").replace("_", " "),
+      })}`,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,

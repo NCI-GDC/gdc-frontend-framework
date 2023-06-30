@@ -84,6 +84,7 @@ interface VictoryBarChartProps {
   readonly xLabel?: string;
   readonly width?: number;
   readonly height?: number;
+  readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
 }
 
@@ -94,6 +95,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   xLabel,
   width = 400,
   height = 400,
+  hideYTicks = false,
   hideXTicks = false,
 }: VictoryBarChartProps) => {
   return (
@@ -107,6 +109,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         dependentAxis
         label={yLabel}
         axisLabelComponent={<VictoryLabel dy={-70} />}
+        tickLabelComponent={hideYTicks ? <></> : undefined}
         style={{
           tickLabels: { fontSize: 25, fontFamily: "Noto Sans" },
           grid: { stroke: "#F5F5F5", strokeWidth: 1 },

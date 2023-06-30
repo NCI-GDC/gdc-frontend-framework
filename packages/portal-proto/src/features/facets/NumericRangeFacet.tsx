@@ -794,10 +794,6 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         <FacetHeader>
           <Tooltip
             label={description}
-            classNames={{
-              arrow: "bg-base-light",
-              tooltip: "bg-base-max text-base-contrast-max",
-            }}
             position="bottom-start"
             multiline
             width={220}

@@ -40,7 +40,7 @@ export const SaveOrCreateCohortModal = ({
 
   const description =
     Object.keys(form.errors).length === 0 &&
-    (!onNameChange(form.values.name) ? (
+    (!onNameChange((form?.values?.name || "").trim()) ? (
       <span className="text-warningColorText">
         <WarningIcon className="text-warningColor inline mr-0.5" />A {entity}{" "}
         with the same name already exists.{" "}
@@ -120,7 +120,7 @@ export const SaveOrCreateCohortModal = ({
             aria-label={`Save button to add a ${entity}`}
             onClick={() => {
               if (form.validate().hasErrors) return;
-              onActionClick(form.values.name);
+              onActionClick((form?.values?.name || "").trim());
               form.reset();
               onClose();
             }}

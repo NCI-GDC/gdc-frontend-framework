@@ -114,7 +114,7 @@ export const SearchInput: React.FC = () => {
             role="button"
             tabIndex={0}
             onClick={() => clearSearch()}
-            onKeyPress={createKeyboardAccessibleFunction(clearSearch)}
+            onKeyDown={createKeyboardAccessibleFunction(clearSearch)}
             className="text-xs grow-0 mr-1 cursor-pointer"
           >
             Clear
@@ -151,7 +151,7 @@ export const SearchInput: React.FC = () => {
                         color="white"
                         tabIndex={0}
                         onClick={() => toggleCategory(selected, cat)}
-                        onKeyPress={createKeyboardAccessibleFunction(() =>
+                        onKeyDown={createKeyboardAccessibleFunction(() =>
                           toggleCategory(selected, cat),
                         )}
                         leftSection={selected ? <CheckIcon /> : undefined}

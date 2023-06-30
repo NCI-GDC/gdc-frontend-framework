@@ -2,7 +2,7 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: master
+    ref: 0.2.0
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
@@ -23,7 +23,6 @@ include:
 stages:
   - .pre
   - test
-  - build
   - unit
   - release
   - "tag image"
@@ -36,6 +35,8 @@ image: docker.osdc.io/node:16-alpine3.15
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   npm_config_cache: .npm
+  npm_config_proxy: http://cloud-proxy:3128
+  npm_config_https_proxy: http://cloud-proxy:3128
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
 
 workflow:
@@ -45,54 +46,29 @@ workflow:
         DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
     - when: always
 
-Install npm packages:
-  stage: .pre
-  script:
-    - npm install npm@7
-    - npm ci --cache .npm
-  variables:
-    npm_config_proxy: http://cloud-proxy:3128
-    npm_config_https_proxy: http://cloud-proxy:3128
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: push
-  <<: *default_rules
-
 Linting:
   stage: test
   before_script:
-    - eslint -v || npm ci
+    - npm install npm@7
+    - npm ci --cache .npm
   script:
     - npm run lint
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
   <<: *default_rules
 
 Prettier Checks:
   stage: test
   before_script:
-    - prettier -v || npm ci
+    - npm install npm@7
+    - npm ci --cache .npm
   script:
     - npm run format:check
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-      - .npm/
-    policy: pull
   <<: *default_rules
 
-Build core and compile portal:
-  stage: build
+Build and test core and portal:
+  stage: test
   before_script:
-    - lerna -v || npm ci
+    - npm install npm@7
+    - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
@@ -100,39 +76,8 @@ Build core and compile portal:
     - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
-  cache:
-    - key: $CI_COMMIT_REF_SLUG
-      paths:
-        - node_modules/
-        - .npm/
-      policy: pull
-    - key: "Built-$CI_COMMIT_REF_SLUG"
-      untracked: true
-      paths:
-        - node_modules/
-        - .npm/
-        - packages/
-        - dist/
-      policy: push
-  <<: *default_rules
-
-Run unit tests:
-  stage: unit
-  needs:
-    - Build core and compile portal
-  before_script:
-    - jest -v || npm ci
-  script:
+    - cd ${CI_PROJECT_DIR}
     - npm run test:all
-  retry: 2
-  cache:
-    - key: "Built-$CI_COMMIT_REF_SLUG"
-      paths:
-        - node_modules/
-        - .npm/
-        - packages/
-        - dist/
-      policy: pull
   <<: *default_rules
 
 Build and push image:

@@ -71,6 +71,16 @@ describe("validateInputs", () => {
     expect(
       validateRangeInput([
         { name: "bin", from: "10", to: "20" },
+        { name: "bin   ", from: "20", to: "30" },
+      ]),
+    ).toEqual({
+      "ranges.0.name": "Bin names must be unique",
+      "ranges.1.name": "Bin names must be unique",
+    });
+
+    expect(
+      validateRangeInput([
+        { name: "bin", from: "10", to: "20" },
         { name: "bin1", from: "15", to: "30" },
       ]),
     ).toEqual({

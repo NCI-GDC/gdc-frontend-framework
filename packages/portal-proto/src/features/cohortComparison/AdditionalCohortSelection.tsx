@@ -1,21 +1,24 @@
 import { useState, useMemo } from "react";
-import { Button } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import {
   useCoreSelector,
-  selectCurrentCohortName,
+  selectCurrentCohort,
   selectAvailableCohorts,
+  Cohort,
 } from "@gff/core";
 import {
   VerticalTable,
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import FunctionButton from "@/components/FunctionButton";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface AdditionalCohortSelectionProps {
-  readonly app: Record<string, any>;
+  readonly app: string;
   readonly setActiveApp?: (id: string, demoMode?: boolean) => void;
   readonly setOpen: (open: boolean) => void;
-  readonly setComparisonCohort: (cohort) => void;
+  readonly setComparisonCohort: (cohort: Cohort) => void;
 }
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
@@ -24,20 +27,17 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   setOpen,
   setComparisonCohort,
 }: AdditionalCohortSelectionProps) => {
-  const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
+  const primaryCohort = useCoreSelector((state) => selectCurrentCohort(state));
   const availableCohorts = useCoreSelector((state) =>
     selectAvailableCohorts(state),
   );
 
   const cohorts = useMemo(
-    () =>
-      availableCohorts.filter((cohort) => cohort.name !== primaryCohortName),
-    [primaryCohortName, availableCohorts],
+    () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort.id),
+    [primaryCohort, availableCohorts],
   );
 
-  const [selectedCohort, setSelectedCohort] = useState(null);
+  const [selectedCohort, setSelectedCohort] = useState<Cohort>(null);
 
   const closeCohortSelection = () => {
     setOpen(false);
@@ -48,19 +48,38 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     () =>
       cohorts.map((cohort) => ({
         select: (
-          <input
-            type="radio"
-            name="additional-cohort-selection"
-            id={cohort.id}
-            onChange={() => setSelectedCohort(cohort.name)}
-            checked={selectedCohort === cohort.name}
-            aria-label={`Select ${cohort.name}`}
-          />
+          <Tooltip label="Cohort is empty" disabled={cohort?.caseCount !== 0}>
+            <span>
+              <input
+                type="radio"
+                name="additional-cohort-selection"
+                id={cohort.id}
+                onChange={() => setSelectedCohort(cohort)}
+                checked={selectedCohort?.id === cohort.id}
+                aria-label={`Select ${cohort.name}`}
+                disabled={!cohort?.caseCount}
+              />
+            </span>
+          </Tooltip>
         ),
-        name: <label htmlFor={cohort.name}>{cohort.name}</label>,
-        count: cohort?.caseCount,
+        name: (
+          <label
+            htmlFor={cohort.id}
+            className={!cohort?.caseCount ? "text-base-lighter" : undefined}
+          >
+            {cohort.name}
+          </label>
+        ),
+        count: (
+          <span
+            className={!cohort?.caseCount ? "text-base-lighter" : undefined}
+          >
+            {cohort?.caseCount?.toLocaleString()}
+          </span>
+        ),
       })),
-    [cohorts, selectedCohort],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(cohorts), selectedCohort?.id],
   );
 
   const {
@@ -100,54 +119,62 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   };
 
   return (
-    <div className="bg-base-max flex flex-col flex-grow h-full ">
-      <div className="flex flex-row no-wrap items-center pr-4">
-        <div className="p-4 font-heading font-semibold text-primary-content-darkest">
-          <p>Select a cohort to compare with {primaryCohortName}</p>
-        </div>
-        <div className="flex flex-row ml-auto">
-          <Button
-            variant={"filled"}
-            onClick={() => {
-              setActiveApp(`${app.id}`, true);
-              closeCohortSelection();
+    <div className="bg-base-max">
+      <div className="p-4">
+        <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
+          Select a cohort to compare with {primaryCohort.name}
+        </h2>
+        <p className="font-content pb-2 w-3/4">
+          Display the survival analysis of your cohorts and compare
+          characteristics such as gender, vital status and age at diagnosis.
+          Create cohorts in the Analysis Center.
+        </p>
+        <div className="w-3/4">
+          <VerticalTable
+            tableData={displayedData}
+            columns={columns}
+            selectableRow={false}
+            showControls={false}
+            pagination={{
+              page,
+              pages,
+              size,
+              from,
+              total,
+              label: "cohorts",
             }}
-            className="bg-primary border-primary-darkest text-primary-contrast hover:bg-primary-lighter mx-2"
-          >
-            Demo
-          </Button>
-          <div>
-            <Button
-              disabled={selectedCohort === null}
-              variant={"filled"}
-              className="bg-primary border-primary-darkest disabled:text-opacity-80 disabled:bg-base text-primary-contrast hover:bg-primary-lighter"
-              onClick={() => {
-                setComparisonCohort(selectedCohort);
-                closeCohortSelection();
-              }}
-            >
-              Run
-            </Button>
-          </div>
+            handleChange={handleChange}
+          />
         </div>
       </div>
-
-      <div className="pl-2">
-        <VerticalTable
-          tableData={displayedData}
-          columns={columns}
-          selectableRow={false}
-          showControls={false}
-          pagination={{
-            page,
-            pages,
-            size,
-            from,
-            total,
-            label: "cohorts",
+      <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
+        <FunctionButton
+          className="mr-auto"
+          onClick={() => {
+            setActiveApp(app, true);
+            closeCohortSelection();
           }}
-          handleChange={handleChange}
-        />
+        >
+          Demo
+        </FunctionButton>
+        <FunctionButton
+          className="mr-4"
+          onClick={() => {
+            setActiveApp(null);
+            setOpen(false);
+          }}
+        >
+          Cancel
+        </FunctionButton>
+        <DarkFunctionButton
+          disabled={selectedCohort === null}
+          onClick={() => {
+            setOpen(false);
+            setComparisonCohort(selectedCohort);
+          }}
+        >
+          Run
+        </DarkFunctionButton>
       </div>
     </div>
   );

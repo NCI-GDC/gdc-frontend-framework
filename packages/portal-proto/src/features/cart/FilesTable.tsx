@@ -16,6 +16,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
@@ -100,40 +101,33 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         ? data?.files.map((file) => ({
             remove: <RemoveFromCartButton files={[file]} iconOnly />,
             uuid: (
-              <button
-                className="text-utility-link underline font-content text-left"
-                onClick={() =>
+              <PopupIconButton
+                handleClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
                     entity_id: file.file_id,
                   })
                 }
-              >
-                {file.file_id}
-              </button>
+                label={file.file_id}
+                customStyle="text-utility-link underline font-content text-left"
+              />
             ),
             access: <FileAccessBadge access={file.access} />,
             name: (
-              <button
-                className="text-utility-link underline font-content text-left"
-                onClick={() =>
+              <PopupIconButton
+                handleClick={() =>
                   setEntityMetadata({
                     entity_type: "file",
                     entity_id: file.file_id,
                   })
                 }
-              >
-                {file.file_name}
-              </button>
+                label={file.file_name}
+                customStyle="text-utility-link underline font-content text-left"
+              />
             ),
             cases: (
-              <button
-                className={`font-content ${
-                  file.cases?.length > 0
-                    ? "text-utility-link underline"
-                    : "cursor-default"
-                }`}
-                onClick={() => {
+              <PopupIconButton
+                handleClick={() => {
                   if (file.cases?.length === 0) return;
                   setEntityMetadata({
                     entity_type: file.cases?.length === 1 ? "case" : "file",
@@ -143,22 +137,28 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                         : file.file_id,
                   });
                 }}
-              >
-                {file.cases?.length.toLocaleString() || 0}
-              </button>
+                label={file.cases?.length.toLocaleString() || 0}
+                customAriaLabel={`Open ${
+                  file.cases?.length === 1 ? "case" : "file"
+                } information in modal`}
+                customStyle={`font-content ${
+                  file.cases?.length > 0
+                    ? "text-utility-link underline"
+                    : "cursor-default"
+                }`}
+              />
             ),
             project: (
-              <button
-                className="text-utility-link underline font-content"
-                onClick={() =>
+              <PopupIconButton
+                handleClick={() =>
                   setEntityMetadata({
                     entity_type: "project",
                     entity_id: file.project_id,
                   })
                 }
-              >
-                {file.project_id}
-              </button>
+                label={file.project_id}
+                customStyle="text-utility-link underline font-content"
+              />
             ),
             data_category: file.data_category,
             data_format: file.data_format,

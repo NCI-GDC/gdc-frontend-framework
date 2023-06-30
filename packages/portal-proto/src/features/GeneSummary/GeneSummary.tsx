@@ -24,6 +24,7 @@ import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 import { DEFAULT_MUTATION_TABLE_ORDER } from "../shared/mutationTableConfig";
+import { CollapsibleList } from "@/components/CollapsibleList";
 
 interface GeneViewProps {
   data: {
@@ -175,11 +176,25 @@ const GeneView = ({
     Object.keys(externalLinksObj).forEach((link) => {
       const modified = {
         [`${externalLinkNames[link] || link.replace(/_/, " ")}`]:
-          externalLinksObj[link] && externalLinksObj[link]?.length ? (
-            <AnchorLink
-              href={externalLinks[link](externalLinksObj[link])}
-              title={externalLinksObj[link]}
-            />
+          externalLinksObj[link]?.length > 0 ? (
+            <>
+              {Array.isArray(externalLinksObj[link]) ? (
+                <CollapsibleList
+                  data={externalLinksObj[link]?.map((item) => (
+                    <AnchorLink
+                      href={externalLinks[link](item)}
+                      title={item}
+                      key={item}
+                    />
+                  ))}
+                />
+              ) : (
+                <AnchorLink
+                  href={externalLinks[link](externalLinksObj[link])}
+                  title={externalLinksObj[link]}
+                />
+              )}
+            </>
           ) : (
             "--"
           ),
@@ -231,7 +246,7 @@ const GeneView = ({
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
-              <div className="grid grid-cols-2 gap-8 mt-2 mb-16">
+              <div className="grid grid-cols-2 gap-8 mt-2 mb-8">
                 <SSMPlot
                   page="gene"
                   gene={gene_id}

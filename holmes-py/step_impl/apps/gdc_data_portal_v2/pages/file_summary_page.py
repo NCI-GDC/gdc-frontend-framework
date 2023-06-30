@@ -4,8 +4,8 @@ from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
 class FileSummaryLocators:
     # Ideally, after PEAR-1085 is developed, these can be replaced with unique IDs
-    ADD_TO_CART_BUTTON_IDENT = 'text="Add to Cart"'
-    REMOVE_FROM_CART_BUTTON_IDENT = 'text="Remove From Cart"'
+    ADD_TO_CART_BUTTON_IDENT = 'text="Add to Cart" >> nth=0'
+    REMOVE_FROM_CART_BUTTON_IDENT = 'text="Remove From Cart" >> nth=0'
 
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'

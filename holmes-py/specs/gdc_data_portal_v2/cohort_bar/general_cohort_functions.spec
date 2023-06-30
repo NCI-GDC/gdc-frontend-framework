@@ -11,12 +11,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
-Note: 'All GDC' must be the current cohort when this is executed
-## Default cohort All GDC should not be discarded, edited, or deleted
-* "Save" should be disabled in the Cohort Bar
-* "Delete" should be disabled in the Cohort Bar
-* "Discard" should be disabled in the Cohort Bar
-
 ## Save a cohort for the first time
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
@@ -58,7 +52,7 @@ Note: 'All GDC' must be the current cohort when this is executed
 ## Delete a saved cohort
 * Select "Delete" from the Cohort Bar
 * "Delete" "test save 1" and "remove modal" in the Cohort Bar section
-* "All GDC" should be the active cohort
+* "Added unsaved cohort" should be the active cohort
 
 ## Delete an unsaved cohort
 * Make the following selections from "Exposure" tab on the Cohort Builder page
@@ -68,7 +62,12 @@ Note: 'All GDC' must be the current cohort when this is executed
 * Is text "Changes not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
-* "All GDC" should be the active cohort
+* "New Unsaved Cohort" should be the active cohort
 
-Need to reset what cohort is selected for subsequent tests
-* Switch cohort to "All GDC" from the Cohort Bar dropdown list
+## Delete New Unsaved Cohort
+* "New Unsaved Cohort" should be the active cohort
+* Is text "Changes not saved" present on the page
+* Select "Delete" from the Cohort Bar
+* "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
+* "New Unsaved Cohort" should be the active cohort
+* Is text "Changes not saved" present on the page

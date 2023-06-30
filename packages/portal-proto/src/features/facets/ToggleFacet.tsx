@@ -55,10 +55,6 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       <FacetHeader>
         <Tooltip
           label={description || "No description available"}
-          classNames={{
-            arrow: "bg-base-light",
-            tooltip: "bg-base-max text-base-contrast-max",
-          }}
           position="bottom-start"
           multiline
           width={220}

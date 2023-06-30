@@ -61,22 +61,6 @@ class CohortBar(BasePage):
         # It does not click the 'browse' button without force parameter set to 'True'
         self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
 
-    # Waits for a piece of text to appear in the temporary cohort modal
-    # That modal appears after an action has been performed on a cohort
-    # state (e.g create, save, delete, etc. )
-    def wait_for_text_in_cohort_message(self, text, action):
-        text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
-        try:
-            self.wait_until_locator_is_visible(text_locator)
-            if action.lower() == "remove modal":
-                # Remove the message after locating it.
-                # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
-                x_button_locator = text_locator + CohortBarLocators.X_BUTTON_IN_TEMP_COHORT_MESSAGE
-                self.click(x_button_locator)
-        except:
-            return False
-        return True
-
     def is_secondary_cohort_bar_save_screen_present(self):
         locator = CohortBarLocators.SECOND_SAVE_MODAL
         try:

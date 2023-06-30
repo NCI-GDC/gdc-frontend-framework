@@ -4,6 +4,7 @@ import {
   usePrevious,
   useGetSssmTableDataQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
   useCreateSsmsSetFromFiltersMutation,
@@ -15,19 +16,12 @@ import {
 import { useEffect, useState, useReducer } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
 import { useMeasure } from "react-use";
-import { default as PageStepper } from "../shared/PageStepperMantine";
-import { default as PageSize } from "../shared/PageSizeMantine";
-import { default as TableControls } from "../shared/TableControlsMantine";
-import TablePlaceholder from "../shared/TablePlaceholder";
 import {
   SomaticMutations,
   DEFAULT_SMTABLE_ORDER,
   SsmToggledHandler,
 } from "./types";
-import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
-import { default as TableFilters } from "../shared/TableFiltersMantine";
-import { ButtonTooltip } from "@/components/expandableTables/shared/ButtonTooltip";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -35,6 +29,17 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import {
+  ButtonTooltip,
+  Column,
+  PageSize,
+  PageStepper,
+  SelectReducerAction,
+  SelectedReducer,
+  TableControls,
+  TableFilters,
+  TablePlaceholder,
+} from "../shared";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -63,6 +68,10 @@ export interface SMTableContainerProps {
    * boolean used to determine if the links need to be opened in a summary modal or a Link
    */
   isModal?: boolean;
+  /*
+   *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
+   */
+  searchTermsForGene?: { geneId?: string; geneSymbol?: string };
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -80,10 +89,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
+  searchTermsForGene,
 }: SMTableContainerProps) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(
+    searchTermsForGene?.geneId ?? "",
+  );
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [ref, { width }] = useMeasure();
   const [columnListOrder, setColumnListOrder] = useState(columnsList);
@@ -112,7 +124,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     pageSize: pageSize,
     offset: pageSize * page,
     searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm : undefined,
+      debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
@@ -126,6 +138,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const handleSetPage = (pageIndex: number) => {
     setPage(pageIndex);
   };
+
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 300,
+    duration: 1000,
+  });
+
+  useEffect(() => {
+    // should happen only on mount
+    if (searchTerm) scrollIntoView();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleColumnChange = (columnUpdate) => {
     setColumnListOrder(columnUpdate);
@@ -260,10 +283,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              singleCountHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               appendSetHook={useAppendToSsmSetMutation}
               closeModal={() => setShowAddModal(false)}
               field={"ssms.ssm_id"}
+              sort="occurrence.case.project.project_id"
             />
           )}
           {showRemoveModal && (
@@ -276,14 +301,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               }
               setType={"ssms"}
               setTypeLabel="mutation"
-              countHook={useSsmSetCountQuery}
+              countHook={useSsmSetCountsQuery}
               closeModal={() => setShowRemoveModal(false)}
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />
           )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
-          <div className="flex justify-between items-center mb-2">
+          <div
+            className="flex justify-between items-center mb-2"
+            ref={targetRef}
+          >
             <TableControls
               total={smTotal}
               numSelected={Object.keys(selectedMutations).length ?? 0}
@@ -321,7 +349,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             />
 
             <TableFilters
-              search={searchTerm}
+              searchTerm={searchTerm}
+              ariaTextOverwrite={
+                searchTermsForGene?.geneSymbol &&
+                `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
+              }
               handleSearch={handleSearch}
               columnListOrder={columnListOrder}
               handleColumnChange={handleColumnChange}

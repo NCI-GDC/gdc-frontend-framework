@@ -60,7 +60,7 @@ export const SSMSSummary = ({
           sift_score,
           polyphen_impact,
           polyphen_score,
-        },
+        } = {},
       },
     } = summaryData;
 
@@ -116,9 +116,7 @@ export const SSMSSummary = ({
     const {
       cosmic_id,
       civic,
-      transcript: {
-        annotation: { dbsnp },
-      },
+      transcript: { annotation: { dbsnp } = {} },
     } = summaryData;
 
     const arr = [];
@@ -195,7 +193,7 @@ export const SSMSSummary = ({
 
             <div className="mt-8 mb-16">
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <div className="grid grid-cols-2 mb-16 mt-2">
+              <div className="grid grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />
               </div>
 

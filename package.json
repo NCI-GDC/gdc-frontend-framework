@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,8 @@
   },
   "lint-staged": {
     "**/*": [
-      "prettier --write --ignore-unknown"
+      "prettier --write --ignore-unknown",
+      "eslint --fix"
     ]
   },
   "repository": {
@@ -59,6 +60,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
+    "@svgr/webpack": "^8.0.1",
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.178",

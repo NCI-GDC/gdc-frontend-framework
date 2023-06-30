@@ -13,6 +13,7 @@ import {
   addCaseCount,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
+  addNewCohort,
 } from "./features/cohort/availableCohortsSlice";
 import {
   fetchCohortCaseCounts,
@@ -54,7 +55,7 @@ startCoreListening({
 });
 
 startCoreListening({
-  matcher: isAnyOf(addNewCohortWithFilterAndMessage),
+  matcher: isAnyOf(addNewCohortWithFilterAndMessage, addNewCohort),
   effect: async (_, listenerApi) => {
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),

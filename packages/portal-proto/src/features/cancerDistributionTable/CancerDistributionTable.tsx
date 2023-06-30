@@ -17,7 +17,19 @@ import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { processFilters } from "src/utils";
-import { NumeratorDenominator } from "@/components/expandableTables/shared/NumeratorDenominator";
+import { convertDateToString } from "src/utils/date";
+import saveAs from "file-saver";
+
+interface CancerDistributionTableTSVDownloadData {
+  num_mutations?: number;
+  cnv_losses?: string;
+  cnv_gains?: string;
+  project: string;
+  disease_type: string[];
+  primary_site: string[];
+  ssm_affected_cases: string;
+}
+import { NumeratorDenominator } from "@/components/expandableTables/shared";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -266,6 +278,74 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [isSuccess, projectsFetching],
   );
 
+  const cancerDistributionTableDownloadData = useMemo(
+    () =>
+      data?.projects
+        .map((d) => {
+          return {
+            project: d.key,
+            disease_type: projectsById[d.key]?.disease_type
+              ? [...projectsById[d.key]?.disease_type].sort()
+              : [],
+            primary_site: projectsById[d.key]?.primary_site
+              ? [...projectsById[d.key]?.primary_site].sort()
+              : [],
+            ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
+            ssm_affected_cases: `${data.ssmFiltered[d.key] || 0} / ${
+              data.ssmTotal[d.key] || 0
+            } (${
+              data.ssmTotal[d.key]
+                ? (
+                    (100 * (data.ssmFiltered[d.key] || 0)) /
+                    (data.ssmTotal[d.key] || 1)
+                  ).toFixed(2) ?? `0.00`
+                : `0.00`
+            }%)`,
+            ...(isGene && {
+              cnv_gains: `${data.cnvGain[d.key] || 0} / ${
+                data.cnvTotal[d.key] || 0
+              } (${
+                data.cnvTotal
+                  ? (
+                      (100 * (data.cnvGain[d.key] || 0)) /
+                      (data.cnvTotal[d.key] || 1)
+                    ).toFixed(2) ?? `0.00`
+                  : `0.00`
+              }%)`,
+            }),
+            ...(isGene && {
+              cnv_losses: `${data.cnvLoss[d.key] || 0} / ${
+                data.cnvTotal[d.key] || 0
+              } (${
+                data.cnvTotal
+                  ? (
+                      (100 * (data.cnvLoss[d.key] || 0)) /
+                      (data.cnvTotal[d.key] || 1)
+                    ).toFixed(2) ?? `0.00`
+                  : `0.00`
+              }%)`,
+            }),
+            ...(isGene && {
+              num_mutations:
+                (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
+            }),
+          };
+        })
+        .sort(
+          (a, b) => b.ssm_percent - a.ssm_percent,
+        ) as CancerDistributionTableTSVDownloadData[],
+    [
+      projectsById,
+      data?.projects,
+      data?.cnvGain,
+      data?.cnvLoss,
+      data?.cnvTotal,
+      data?.ssmFiltered,
+      data?.ssmTotal,
+      isGene,
+    ],
+  );
+
   const {
     handlePageChange,
     handlePageSizeChange,
@@ -297,7 +377,76 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       additionalControls={
         <div className="flex gap-2 mb-2">
           <FunctionButton>JSON</FunctionButton>
-          <FunctionButton>TSV</FunctionButton>
+          <FunctionButton
+            onClick={() => {
+              const now = new Date();
+              const fileName = `cancer-distribution-table.${convertDateToString(
+                now,
+              )}.tsv`;
+              const headers = isGene
+                ? [
+                    "Project",
+                    "Disease Type",
+                    "Primary Site",
+                    "# SSM Affected Cases",
+                    "# CNV Gains",
+                    "# CNV Losses",
+                    "# Mutations",
+                  ]
+                : [
+                    "Project",
+                    "Disease Type",
+                    "Primary Site",
+                    "# SSM Affected Cases",
+                  ];
+              const body = isGene
+                ? cancerDistributionTableDownloadData
+                    .map(
+                      ({
+                        project,
+                        disease_type,
+                        primary_site,
+                        ssm_affected_cases,
+                        cnv_gains,
+                        cnv_losses,
+                        num_mutations,
+                      }) => {
+                        return [
+                          project,
+                          disease_type,
+                          primary_site,
+                          ssm_affected_cases,
+                          cnv_gains,
+                          cnv_losses,
+                          num_mutations,
+                        ].join("\t");
+                      },
+                    )
+                    .join("\n")
+                : cancerDistributionTableDownloadData
+                    .map(
+                      ({
+                        project,
+                        disease_type,
+                        primary_site,
+                        ssm_affected_cases,
+                      }) => {
+                        return [
+                          project,
+                          disease_type,
+                          primary_site,
+                          ssm_affected_cases,
+                        ].join("\t");
+                      },
+                    )
+                    .join("\n");
+              const tsv = [headers.join("\t"), body].join("\n");
+              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+              saveAs(blob, fileName);
+            }}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       pagination={{

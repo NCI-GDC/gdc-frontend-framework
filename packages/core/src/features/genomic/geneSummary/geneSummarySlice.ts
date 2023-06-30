@@ -33,10 +33,10 @@ export interface GeneSummaryData {
   civic?: string;
   gene_id: string;
   external_db_ids: {
-    entrez_gene: string;
-    uniprotkb_swissprot: string;
-    hgnc: string;
-    omim_gene: string;
+    entrez_gene: string[];
+    uniprotkb_swissprot: string[];
+    hgnc: string[];
+    omim_gene: string[];
   };
 }
 
@@ -75,11 +75,10 @@ const slice = createSlice({
           is_cancer_gene_census: gene.node.is_cancer_gene_census,
           gene_id: gene.node.gene_id,
           external_db_ids: {
-            entrez_gene: gene.node.external_db_ids.entrez_gene[0],
-            uniprotkb_swissprot:
-              gene.node.external_db_ids.uniprotkb_swissprot[0],
-            hgnc: gene.node.external_db_ids.hgnc[0],
-            omim_gene: gene.node.external_db_ids.omim_gene[0],
+            entrez_gene: gene.node.external_db_ids.entrez_gene,
+            uniprotkb_swissprot: gene.node.external_db_ids.uniprotkb_swissprot,
+            hgnc: gene.node.external_db_ids.hgnc,
+            omim_gene: gene.node.external_db_ids.omim_gene,
           },
         }))[0];
 

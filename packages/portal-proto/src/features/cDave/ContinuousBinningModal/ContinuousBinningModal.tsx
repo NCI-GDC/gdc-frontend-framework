@@ -384,6 +384,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           if (!result.hasErrors) {
                             setSavedRangeRows(rangeForm.values.ranges);
 
+                            rangeForm.setFieldValue(
+                              `ranges.${idx}.name`,
+                              rangeForm.values.ranges[idx].name.trim(),
+                            );
                             rangeForm.insertListItem("ranges", {
                               name: "",
                               from: "",

@@ -1,23 +1,30 @@
 import React, { Dispatch, SetStateAction } from "react";
+import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
+import { CountButton } from "@/components/CountButton/CountButton";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
+import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import CheckboxSpring from "../shared/CheckboxSpring";
-import SwitchSpring from "../shared/SwitchSpring";
-import RatioSpring from "../shared/RatioSpring";
-import { SelectedReducer, TableColumnDefinition } from "../shared/types";
-import { AnnotationsIcon } from "../shared/sharedTableUtils";
-import { TableCell, TableHeader } from "../shared/sharedTableCells";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
-import { SelectReducerAction } from "../shared/types";
-import { Image } from "@/components/Image";
-import { startCase } from "lodash";
-import ToggledCheck from "@/components/expandableTables/shared/ToggledCheck";
 import { entityMetadataType } from "src/utils/contexts";
 import { FilterSet } from "@gff/core";
+import {
+  AnnotationsIcon,
+  CheckboxSpring,
+  RatioSpring,
+  SelectReducerAction,
+  SelectedReducer,
+  SwitchSpring,
+  TableCell,
+  TableColumnDefinition,
+  TableHeader,
+  ToggledCheck,
+} from "../shared";
+import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
+import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -34,6 +41,7 @@ interface GeneCreateTableColumnProps {
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
+  handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
 export const geneCreateTableColumn = ({
@@ -47,6 +55,7 @@ export const geneCreateTableColumn = ({
   isDemoMode,
   setEntityMetadata,
   genomicFilters,
+  handleMutationCountClick,
 }: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -56,9 +65,7 @@ export const geneCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <>
@@ -87,28 +94,31 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip="Click to add/remove genes to/from your cohort filters"
                 className="flex justify-start"
               />
             ),
             cell: ({ row }) => {
+              const isToggledGene = toggledGenes.includes(row.original?.geneID);
               return (
                 <>
                   {row.getCanExpand() && (
                     <SwitchSpring
-                      isActive={toggledGenes.includes(row.original?.geneID)}
+                      isActive={isToggledGene}
                       icon={
                         isDemoMode ? (
-                          <Image
-                            src={"/user-flow/icons/CohortSym_inactive.svg"}
+                          <CohortInactiveIcon
                             width={16}
                             height={16}
+                            aria-label="inactive cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         ) : (
-                          <Image
-                            src={"/user-flow/icons/cohort-dna.svg"}
+                          <CohortActiveIcon
                             width={16}
                             height={16}
+                            aria-label="active cohort icon"
+                            viewBox="-4 -1 30 30"
                           />
                         )
                       }
@@ -120,7 +130,11 @@ export const geneCreateTableColumn = ({
                         })
                       }
                       tooltip={
-                        isDemoMode && "Feature not available in demo mode"
+                        isDemoMode
+                          ? "Feature not available in demo mode"
+                          : isToggledGene
+                          ? `Click to remove ${row.original?.symbol} from cohort filters`
+                          : `Click to add ${row.original?.symbol} to cohort filters`
                       }
                       disabled={isDemoMode}
                     />
@@ -141,7 +155,7 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
+                tooltip="Click to change the survival plot display"
                 className="mr-3"
               />
             ),
@@ -167,30 +181,17 @@ export const geneCreateTableColumn = ({
               return (
                 <>
                   {row.getCanExpand() && (
-                    <Tooltip
-                      label={`${tooltip}`}
-                      disabled={!tooltip || tooltip.length == 0}
-                      withArrow
-                      arrowSize={6}
-                      transition="fade"
-                      transitionDuration={200}
-                      multiline
-                      classNames={{
-                        tooltip:
-                          "bg-base-lightest text-base-contrast-max font-heading text-bold text-left",
-                      }}
-                    >
-                      <ToggledCheck
-                        margin="ml-0.5"
-                        isActive={row.original["survival"].checked}
-                        icon={<SurvivalIcon size={24} />}
-                        selected={row.original["survival"]}
-                        handleSwitch={handleSurvivalPlotToggled}
-                        survivalProps={{ plot: "gene.symbol" }}
-                        tooltip={tooltip}
-                        disabled={disabled}
-                      />
-                    </Tooltip>
+                    <ToggledCheck
+                      margin="ml-0.5"
+                      ariaText={`Toggle survival plot for ${row?.original.symbol} gene`}
+                      isActive={row.original["survival"].checked}
+                      icon={<SurvivalIcon size={24} />}
+                      selected={row.original["survival"]}
+                      handleSwitch={handleSurvivalPlotToggled}
+                      survivalProps={{ plot: "gene.symbol" }}
+                      tooltip={tooltip}
+                      disabled={disabled}
+                    />
                   )}
                 </>
               );
@@ -205,9 +206,7 @@ export const geneCreateTableColumn = ({
         columns: [
           {
             accessorKey: accessor,
-            header: () => (
-              <TableHeader title={startCase(accessor)} tooltip={""} />
-            ),
+            header: () => <TableHeader title={startCase(accessor)} />,
             cell: ({ row }) => {
               return (
                 <div>
@@ -276,7 +275,7 @@ export const geneCreateTableColumn = ({
               ] ?? { numerator: 0, denominator: 1 };
               return (
                 <div className="flex items-center gap-2">
-                  {row.getCanExpand() && (
+                  {numerator !== 0 && row.getCanExpand() && (
                     <div className="flex items-center">
                       <button
                         aria-label="expand or collapse subrow"
@@ -325,12 +324,7 @@ export const geneCreateTableColumn = ({
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                 </div>
               );
@@ -357,12 +351,7 @@ export const geneCreateTableColumn = ({
               return (
                 <div className={`content-center`}>
                   {row.getCanExpand() && (
-                    <TableCell
-                      row={row}
-                      accessor={accessor}
-                      anchor={false}
-                      tooltip={""}
-                    />
+                    <TableCell row={row} accessor={accessor} anchor={false} />
                   )}
                 </div>
               );
@@ -380,7 +369,6 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title={startCase(accessor)}
-                tooltip={""}
                 className="mx-4 whitespace-nowrap"
               />
             ),
@@ -421,13 +409,26 @@ export const geneCreateTableColumn = ({
               />
             ),
             cell: ({ row }) => {
+              const count = row?.original["mutations"] ?? 0;
+              const disabled = count === 0;
               return (
                 <>
                   {row.getCanExpand() && (
-                    <span>
-                      {row?.original["mutations"]?.toLocaleString("en-US") ??
-                        ""}
-                    </span>
+                    <CountButton
+                      tooltipLabel={
+                        count === 0
+                          ? `No SSMs in ${row?.original?.symbol}`
+                          : `Search the mutations table for ${row?.original?.symbol}`
+                      }
+                      disabled={disabled}
+                      handleOnClick={() => {
+                        handleMutationCountClick(
+                          row?.original?.geneID,
+                          row?.original?.symbol,
+                        );
+                      }}
+                      count={count}
+                    />
                   )}
                 </>
               );
@@ -445,7 +446,6 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title="Symbol"
-                tooltip=""
                 className="flex flex-row justify-start w-14 mr-2"
               />
             ),
@@ -454,9 +454,8 @@ export const geneCreateTableColumn = ({
                 ? row.original[`${accessor}`]
                 : "";
               return (
-                <button
-                  className="text-utility-link underline font-content"
-                  onClick={() =>
+                <PopupIconButton
+                  handleClick={() =>
                     setEntityMetadata({
                       entity_type: "genes",
                       entity_id: row.original?.geneID,
@@ -465,9 +464,8 @@ export const geneCreateTableColumn = ({
                       contextFilters: genomicFilters,
                     })
                   }
-                >
-                  {label}
-                </button>
+                  label={label}
+                />
               );
             },
           },
@@ -483,7 +481,6 @@ export const geneCreateTableColumn = ({
             header: () => (
               <TableHeader
                 title="Name"
-                tooltip=""
                 className="flex flex-row justify-start lg:w-100 md:w-32 sm:w-16"
               />
             ),
@@ -507,11 +504,7 @@ export const geneCreateTableColumn = ({
           {
             accessorKey: accessor,
             header: () => (
-              <TableHeader
-                title={startCase(accessor)}
-                tooltip={""}
-                className="w-fit"
-              />
+              <TableHeader title={startCase(accessor)} className="w-fit" />
             ),
             cell: ({ row }) => {
               return (
@@ -520,7 +513,6 @@ export const geneCreateTableColumn = ({
                     row={row}
                     accessor={accessor}
                     anchor={["symbol"].includes(accessor)}
-                    tooltip={""}
                   />
                 </div>
               );

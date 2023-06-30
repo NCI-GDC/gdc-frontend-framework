@@ -18,6 +18,7 @@ import {
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import {
   SelectProjectButton,
@@ -98,7 +99,7 @@ const ProjectsTable: React.FC = () => {
       columnName: "Project",
       visible: true,
       Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-28">{value}</div>;
+        return <div className="text-left">{value}</div>;
       },
     },
     {
@@ -186,17 +187,15 @@ const ProjectsTable: React.FC = () => {
             selected: project_id,
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
-                <button
-                  className="text-utility-link underline font-content"
-                  onClick={() =>
+                <PopupIconButton
+                  handleClick={() =>
                     setEntityMetadata({
                       entity_type: "project",
                       entity_id: project_id,
                     })
                   }
-                >
-                  {project_id}
-                </button>
+                  label={project_id}
+                />
               </OverflowTooltippedLabel>
             ),
             disease_type: disease_type,
@@ -332,8 +331,18 @@ const ProjectsTable: React.FC = () => {
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton />
-          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+          <FunctionButton
+            data-testid="button-json-projects-table"
+            onClick={handleDownloadJSON}
+          >
+            JSON
+          </FunctionButton>
+          <FunctionButton
+            data-testid="button-tsv-projects-table"
+            onClick={handleDownloadTSV}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       tableData={formattedTableData}

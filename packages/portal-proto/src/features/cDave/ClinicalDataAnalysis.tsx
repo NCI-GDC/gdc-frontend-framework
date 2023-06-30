@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
@@ -14,13 +14,7 @@ import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
 import { DemoText } from "../shared/tailwindComponents";
 
-export interface ClinicalDataAnalysisProps {
-  onLoaded?: () => void;
-}
-
-const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
-  onLoaded,
-}: ClinicalDataAnalysisProps) => {
+const ClinicalDataAnalysis: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
@@ -68,12 +62,6 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
       setActiveFields([...activeFields, field]);
     }
   };
-
-  useEffect(() => {
-    if (!isFetching) {
-      onLoaded && onLoaded();
-    }
-  }, [isFetching, onLoaded]);
 
   return isFetching ? (
     <div className="flex relative justify-center items-center h-screen/2">

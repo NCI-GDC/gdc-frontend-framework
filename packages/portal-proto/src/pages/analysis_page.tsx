@@ -10,8 +10,8 @@ import {
   selectCurrentCohortName,
   useCoreSelector,
 } from "@gff/core";
-import { useCohortFacetFilters } from "@/features/cohortBuilder/CohortGroup";
 import QueryExpressionSection from "@/features/cohortBuilder/QueryExpressionSection";
+import { useCohortFacetFilters } from "@/features/cohortBuilder/utils";
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();

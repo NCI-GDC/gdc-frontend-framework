@@ -11,6 +11,7 @@ import {
   selectFacetDefinitionByName,
   Buckets,
   Stats,
+  GqlOperation,
 } from "@gff/core";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
@@ -23,6 +24,7 @@ interface CDaveCardProps {
   readonly data: Buckets | Stats;
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
+  readonly cohortFilters: GqlOperation;
 }
 
 const CDaveCard: React.FC<CDaveCardProps> = ({
@@ -30,6 +32,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   data,
   updateFields,
   initialDashboardRender,
+  cohortFilters,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const { scrollIntoView, targetRef } = useScrollIntoView();
@@ -57,6 +60,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     <Card
       shadow="sm"
       radius="md"
+      p="xs"
       ref={(ref) => (targetRef.current = ref)}
       className="border-1 border-base-lightest"
     >
@@ -126,13 +130,18 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {continuous ? (
+      {noData ? (
+        <div className="h-[32.1rem] w-full flex flex-col justify-start">
+          <p className="mx-auto my-2">No data for this property</p>
+        </div>
+      ) : continuous ? (
         <ContinuousData
           initialData={(data as Stats)?.stats}
           field={field}
           fieldName={fieldName}
           chartType={chartType}
           noData={noData}
+          cohortFilters={cohortFilters}
         />
       ) : (
         <CategoricalData

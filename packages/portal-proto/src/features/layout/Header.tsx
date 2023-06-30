@@ -43,6 +43,7 @@ import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { SummaryModalContext } from "src/utils/contexts";
+import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
@@ -100,13 +101,13 @@ export const Header: React.FC<HeaderProps> = ({
         <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
-            <a className="block w-full h-full">
-              <Image
-                src="/NIH_GDC_DataPortal-logo.svg"
+            <a className="block w-full h-full mt-2">
+              <NIHLogo
                 layout="fill"
                 objectFit="contain"
                 data-testid="NIH_LOGO"
-                alt="NIH GDC Data Portal logo"
+                aria-label="NIH GDC Data Portal logo"
+                role="img"
               />
             </a>
           </Link>

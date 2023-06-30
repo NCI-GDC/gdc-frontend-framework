@@ -785,8 +785,13 @@ module.exports = {
         linkDarkerColor: "#1D6796",
         emptyCartLighterColor: "#e0e9f0",
       },
+      minHeight: {
+        "screen-60vh": "60vh",
+        "screen-50vh": "50vh",
+      },
       maxHeight: {
         "screen-90vh": "90vh",
+        "screen-60vh": "60vh",
       },
       height: {
         "nci-logo": "54px",

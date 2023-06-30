@@ -96,12 +96,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   return (
     <div className="relative pr-2 border-r-2">
       {title ? (
-        <ChartTitleBar
-          title={title}
-          divId={CHART_NAME}
-          filename={CHART_NAME}
-          jsonData={{}}
-        />
+        <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
       ) : null}
       <div className="w-100 h-100">
         <LoadingOverlay visible={!isSuccess} />
