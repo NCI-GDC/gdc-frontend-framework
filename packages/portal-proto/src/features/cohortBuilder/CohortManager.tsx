@@ -546,7 +546,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </CohortGroupButton>
               </span>
             </Tooltip>
-            <Tooltip label="Add New Cohort" position="bottom" withArrow>
+            <Tooltip
+              label="Create New Unsaved Cohort"
+              position="bottom"
+              withArrow
+            >
               <CohortGroupButton
                 onClick={() => setShowCreateCohort(true)}
                 data-testid="addButton"
