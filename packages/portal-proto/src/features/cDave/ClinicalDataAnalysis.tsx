@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
-  useClinicalAnalysis,
   useClinicalFields,
+  useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
@@ -12,6 +12,7 @@ import Controls from "./Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
+import { DemoText } from "../shared/tailwindComponents";
 
 export interface ClinicalDataAnalysisProps {
   onLoaded?: () => void;
@@ -22,9 +23,10 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
 }: ClinicalDataAnalysisProps) => {
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
-  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS);
+  const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
 
   const { data: fields } = useClinicalFields();
+
   const cDaveFields = Object.values(fields)
     .map((d) => ({ ...d, ...parseFieldName(d.name) }))
     .filter(
@@ -53,9 +55,10 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
     data: cDaveResult,
     isFetching,
     isSuccess,
-  } = useClinicalAnalysis({
-    filters: cohortFilters,
+  } = useGetClinicalAnalysisQuery({
+    case_filters: cohortFilters,
     facets: cDaveFields.map((f) => f.full),
+    size: 0,
   });
 
   const updateFields = (field: string) => {
@@ -78,17 +81,18 @@ const ClinicalDataAnalysis: React.FC<ClinicalDataAnalysisProps> = ({
         loaderProps={{ size: "xl", color: "primary" }}
         visible={isFetching}
         data-testid="please_wait_spinner"
+        zIndex={0}
       />
     </div>
   ) : (
     <>
       {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing cases with low grade gliomas (TCGA-LGG project)."}
-        </span>
+        <DemoText>
+          Demo showing cases with low grade gliomas (TCGA-LGG project).
+        </DemoText>
       )}
 
-      <div className="flex">
+      <div className="flex gap-4">
         <Controls
           updateFields={updateFields}
           cDaveFields={cDaveFields}

@@ -16,7 +16,7 @@ tags: gdc-data-portal-v2, regression, home-page, navigation
   |-------------------------------------------|-------------------------------------------------------|
   |Learn More About Our Harmonization Process |GDC for processing genomic data                        |
   |Contact Us                                 |For assistance with GDC query                          |
-  |Data Release 36.0 - December 12, 2022      |Data Migrated from the Legacy Archive to Active Portal |
+  |Data Release 36.0 - December 12, 2022      |A complete list of files for DR27.0                    |
 
 ## Validate Navigation Buttons - same tab
 * Selecting these buttons should take the user to correct page in the same tab

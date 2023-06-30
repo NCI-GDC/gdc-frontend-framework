@@ -72,3 +72,11 @@ export const CountsIcon = tw.div<CountsIconProps>`
   font-heading
   rounded-md
   `;
+
+export const DemoText = tw.span`
+font-content
+italic
+px-2
+py-4
+mt-4
+`;

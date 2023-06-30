@@ -8,7 +8,7 @@ import React, {
 import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import { getGene, createTableColumn } from "./genesTableUtils";
+import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
 import { Subrow } from "../shared/Subrow";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
@@ -115,7 +115,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     return visibleColumns
       .map(({ id }) => id)
       .map((accessor) => {
-        return createTableColumn(
+        return geneCreateTableColumn({
           accessor,
           selectedGenes,
           setSelectedGenes,
@@ -126,7 +126,7 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           isDemoMode,
           setEntityMetadata,
           genomicFilters,
-        );
+        });
       });
   }, [
     visibleColumns,

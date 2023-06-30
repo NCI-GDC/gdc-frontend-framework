@@ -79,6 +79,9 @@ export const DropdownWithIcon = ({
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
+          classNames={{
+            rightIcon: "border-l pl-1 -mr-2",
+          }}
         >
           {TargetButtonChildren}
         </Button>

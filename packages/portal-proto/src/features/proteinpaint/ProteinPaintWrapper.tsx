@@ -1,17 +1,24 @@
-import { useEffect, useRef, FC } from "react";
+import { useEffect, useRef, useCallback, FC } from "react";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
-  buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
   useUserDetails,
   useCoreDispatch,
+  buildCohortGqlOperator,
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
+import { DemoText } from "../shared/tailwindComponents";
+import {
+  SelectSamples,
+  SelectSamplesCallBackArg,
+  SelectSamplesCallback,
+  getFilters,
+} from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
 
@@ -31,33 +38,23 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const { data: userDetails } = useUserDetails();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
-  const prevArg = useRef<any>();
-
+  const prevArg = useRef<any>({});
   const coreDispatch = useCoreDispatch();
-
-  const callback = function (arg: SelectSamplesCallBackArg): void {
-    const { samples, source } = arg;
-    const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
-    const filters: FilterSet = {
-      mode: "and",
-      root: {
-        "occurrence.case.case_id": {
-          operator: "includes",
-          field: "occurrence.case.case_id",
-          operands: ids,
-        },
-      },
-    };
-    coreDispatch(
-      // TODO: option to edit a cohort using ImportCohortModal???
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        message: "newCasesCohort",
-        // TODO: improve cohort name constructor
-        name: source + ` (n=${samples.length})`,
-      }),
-    );
-  };
+  const callback = useCallback<SelectSamplesCallback>(
+    (arg: SelectSamplesCallBackArg) => {
+      const filters = getFilters(arg);
+      coreDispatch(
+        // TODO: option to edit a cohort using ImportCohortModal???
+        addNewCohortWithFilterAndMessage({
+          filters,
+          message: "newCasesCohort",
+          // TODO: improve cohort name constructor
+          name: arg.source + ` (n=${arg.samples.length})`,
+        }),
+      );
+    },
+    [coreDispatch],
+  );
 
   useEffect(
     () => {
@@ -66,7 +63,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       if (!data) return;
       if (isDemoMode) data.geneSymbol = "MYC";
       // compare the argument to runpp to avoid unnecessary render
-      if (isEqual(prevArg.current, data)) return;
+      if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
       prevArg.current = data;
 
       const toolContainer = rootElem.parentNode.parentNode
@@ -88,7 +85,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         });
       }
     },
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       props.gene2canonicalisoform,
       props.mds3_ssm2canonicalisoform,
@@ -103,9 +100,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   return (
     <div>
       {isDemoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {"Demo showing MYC variants for all GDC."}
-        </span>
+        <DemoText>Demo showing MYC variants for all GDC.</DemoText>
       )}
       <div
         ref={divRef}
@@ -147,31 +142,14 @@ interface PpApi {
   update(arg: any): null;
 }
 
-type SampleData = {
-  "case.case_id"?: string;
-};
-
-interface SelectSamplesCallBackArg {
-  samples: SampleData[];
-  source: string;
-}
-
-type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
-
-interface SelectSamples {
-  buttonText: string;
-  attributes: string[];
-  callback: SelectSamplesCallback;
-}
-
 function getLollipopTrack(
   props: PpProps,
   filter0: any,
   callback: SelectSamplesCallback,
 ) {
-  // host in gdc is just a relative url path,
-  // using the same domain as the GDC portal where PP is embedded
   const arg: Mds3Arg = {
+    // host in gdc is just a relative url path,
+    // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
     genome: "hg38", // hardcoded for gdc
     tracks: [
@@ -179,6 +157,7 @@ function getLollipopTrack(
         type: "mds3",
         dslabel: "GDC",
         filter0,
+        // allow2selectSamples: { buttons },
         allow2selectSamples: {
           buttonText: "Create Cohort",
           attributes: ["case.case_id"],

@@ -9,8 +9,6 @@ import {
   SetTypes,
   useCoreSelector,
   selectSetsByType,
-  FilterSet,
-  buildCohortGqlOperator,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -21,7 +19,7 @@ import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
-  readonly filters: FilterSet;
+  readonly filters: Record<string, any>;
   readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
@@ -130,7 +128,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         <DarkFunctionButton
           onClick={() =>
             createSet({
-              filters: buildCohortGqlOperator(filters) ?? {},
+              filters: filters ?? {},
               size: form.values.top,
               score: sort,
             })

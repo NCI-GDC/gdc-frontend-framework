@@ -187,7 +187,7 @@ const ProjectsTable: React.FC = () => {
             project_id: (
               <OverflowTooltippedLabel label={project_id}>
                 <button
-                  className="text-utility-link underline"
+                  className="text-utility-link underline font-content"
                   onClick={() =>
                     setEntityMetadata({
                       entity_type: "project",
@@ -202,7 +202,10 @@ const ProjectsTable: React.FC = () => {
             disease_type: disease_type,
             primary_site: primary_site,
             program: (
-              <OverflowTooltippedLabel label={program?.name}>
+              <OverflowTooltippedLabel
+                label={program?.name}
+                className="font-content"
+              >
                 {program?.name}
               </OverflowTooltippedLabel>
             ),

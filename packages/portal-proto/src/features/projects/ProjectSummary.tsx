@@ -1,14 +1,20 @@
+import React, { useState } from "react";
 import {
   useGetProjectsQuery,
   useAnnotations,
   AnnotationDefaults,
   ProjectDefaults,
   useFilesFacetsByNameFilter,
+  useCoreDispatch,
+  FilterSet,
+  useCoreSelector,
+  selectAvailableCohorts,
+  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
-import { Button, LoadingOverlay, Tooltip } from "@mantine/core";
+import { Button, Loader, LoadingOverlay, Tooltip } from "@mantine/core";
 import {
   calculatePercentageAsNumber,
   humanify,
@@ -28,6 +34,9 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
+import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import download from "src/utils/download";
+import PrimarySiteTable from "./PrimarySiteTable";
 
 export interface ContextualProjectViewProps {
   readonly projectId: string;
@@ -125,6 +134,34 @@ export interface ProjectViewProps extends ProjectDefaults {
 export const ProjectView: React.FC<ProjectViewProps> = (
   projectData: ProjectViewProps,
 ) => {
+  const dispatch = useCoreDispatch();
+  const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
+  const createCohortFromProjects = (name: string) => {
+    const filters: FilterSet = {
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          operator: "includes",
+          field: "cases.project.project_id",
+          operands: [projectData.project_id],
+        },
+      },
+    };
+    dispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: filters,
+        name,
+        message: "newProjectsCohort",
+      }),
+    );
+  };
+
+  const onNameChange = (name: string) =>
+    cohorts.every((cohort) => cohort.name !== name);
+
   const formatDataForSummary = () => {
     const {
       project_id,
@@ -404,7 +441,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const message = projectData.hasControlledAccess ? (
-    <>
+    <p className="font-content">
       The project has controlled access data which requires dbGaP Access. See
       instructions for{" "}
       <a
@@ -415,7 +452,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       >
         Obtaining Access to Controlled Data.
       </a>
-    </>
+    </p>
   ) : null;
 
   return (
@@ -426,6 +463,26 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         isModal={projectData.isModal}
         leftElement={
           <div className="flex gap-4">
+            <Button
+              color="primary"
+              variant="outline"
+              className="bg-base-max border-primary font-medium text-sm"
+              onClick={() => setShowCreateCohort(true)}
+            >
+              Create New Cohort
+            </Button>
+            {showCreateCohort && (
+              <SaveOrCreateCohortModal
+                entity="cohort"
+                action="create"
+                opened
+                onClose={() => setShowCreateCohort(false)}
+                onActionClick={(newName: string) => {
+                  createCohortFromProjects(newName);
+                }}
+                onNameChange={onNameChange}
+              />
+            )}
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -471,11 +528,43 @@ Data Transfer Tool is recommended for transferring large volumes of data."
             >
               <Button
                 variant="outline"
-                leftIcon={<DownloadIcon size="1.25em" />}
+                leftIcon={
+                  manifestDownloadActive ? (
+                    <Loader size={20} />
+                  ) : (
+                    <DownloadIcon size="1.25em" />
+                  )
+                }
                 className="text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max"
                 classNames={{ label: "font-medium text-sm" }}
+                onClick={() => {
+                  setManifestDownloadActive(true);
+                  download({
+                    endpoint: "files",
+                    method: "POST",
+                    options: {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    },
+                    dispatch,
+                    params: {
+                      filters: {
+                        op: "in",
+                        content: {
+                          field: "cases.project.project_id",
+                          value: [projectData.project_id],
+                        },
+                      },
+                      return_type: "manifest",
+                      size: 10000,
+                    },
+                    done: () => setManifestDownloadActive(false),
+                  });
+                }}
               >
-                Manifest
+                {manifestDownloadActive ? "Processing" : "Manifest"}
               </Button>
             </Tooltip>
           </div>
@@ -529,6 +618,14 @@ Data Transfer Tool is recommended for transferring large volumes of data."
                   tableData={formatDataForExpCategoryTable()}
                 />
               )}
+            </div>
+          )}
+          {projectData?.primary_site?.length > 1 && (
+            <div className="mb-16">
+              <PrimarySiteTable
+                projectId={projectData?.project_id}
+                primarySites={projectData?.primary_site}
+              />
             </div>
           )}
         </div>

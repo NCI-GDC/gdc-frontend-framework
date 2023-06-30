@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, createContext } from "react";
 import { useRouter } from "next/router";
 import { useScrollIntoView } from "@mantine/hooks";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
@@ -11,10 +11,7 @@ import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
 
-import { CSSTransition } from "react-transition-group";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
-import AdditionalCohortSelection from "./AdditionalCohortSelection";
-import { clearComparisonCohorts } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const ActiveAnalysisToolNoSSR = dynamic(
@@ -79,11 +76,12 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
       </div>
       <div className="mx-4 my-2">
         <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
-          Tools
+          Analysis Tools
         </h2>
 
         <div className="flex gap-6 flex-wrap">
           {activeApps
+            .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
             .map((k) => initialApps[k])
             .map((x: AppRegistrationEntry, idx: number) => {
               return (
@@ -107,6 +105,13 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   );
 };
 
+export const SelectionScreenContext = createContext({
+  selectionScreenOpen: false,
+  setSelectionScreenOpen: undefined,
+  app: undefined,
+  setActiveApp: undefined,
+});
+
 interface AnalysisWorkspaceProps {
   readonly app: string | undefined;
 }
@@ -118,17 +123,15 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 115 });
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
-  const appInfo = useMemo(
-    () => REGISTERED_APPS.find((a) => a.id === app),
-    [app],
-  );
+  const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+
   useEffect(() => {
-    setCohortSelectionOpen(!isDemoMode && appInfo?.selectAdditionalCohort);
+    setCohortSelectionOpen(
+      !isDemoMode && appInfo?.selectionScreen !== undefined,
+    );
 
     if (app) {
       scrollIntoView();
-    } else {
-      clearComparisonCohorts();
     }
   }, [app, isDemoMode, appInfo, scrollIntoView]);
 
@@ -142,49 +145,23 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   return (
     <div ref={(ref) => (targetRef.current = ref)}>
-      <CSSTransition in={cohortSelectionOpen} timeout={500}>
-        {(state) => (
-          <div
-            className={
-              {
-                entering:
-                  "animate-slide-up min-h-[550px] w-full flex flex-col absolute z-[200]",
-                entered: "min-h-[550px] w-full flex flex-col absolute z-[200]",
-                exiting:
-                  "animate-slide-down min-h-[550px] w-full flex flex-col absolute z-[200]",
-                exited: "hidden translate-x-0",
-              }[state]
-            }
-          >
-            <AnalysisBreadcrumbs
-              currentApp={app}
-              setCohortSelectionOpen={setCohortSelectionOpen}
-              cohortSelectionOpen={cohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-              onDemoApp={isDemoMode}
-            />
-            <AdditionalCohortSelection
-              app={app}
-              setOpen={setCohortSelectionOpen}
-              setActiveApp={handleAppSelected}
-            />
-          </div>
-        )}
-      </CSSTransition>
-      {app && !cohortSelectionOpen && (
-        <>
+      {app && (
+        <SelectionScreenContext.Provider
+          value={{
+            selectionScreenOpen: cohortSelectionOpen,
+            setSelectionScreenOpen: setCohortSelectionOpen,
+            app,
+            setActiveApp: handleAppSelected,
+          }}
+        >
           <AnalysisBreadcrumbs
-            currentApp={app}
-            setCohortSelectionOpen={setCohortSelectionOpen}
-            cohortSelectionOpen={cohortSelectionOpen}
-            setActiveApp={handleAppSelected}
             onDemoApp={isDemoMode}
             rightComponent={
               app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
             }
           />
           <ActiveAnalysisToolNoSSR appId={app} onLoaded={handleAppLoaded} />
-        </>
+        </SelectionScreenContext.Provider>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
     </div>

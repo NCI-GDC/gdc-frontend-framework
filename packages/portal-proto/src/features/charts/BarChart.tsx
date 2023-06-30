@@ -73,6 +73,7 @@ const BarChart: React.FC<BarChartProps> = ({
             ticktext: data.ticktext,
             tickfont: {
               size: 12,
+              family: "Noto Sans, sans-serif",
               color: "rgb(107, 107, 107)",
             },
             tickangle: data?.datasets?.[0]?.x.length > 6 ? 35 : undefined,
@@ -80,12 +81,13 @@ const BarChart: React.FC<BarChartProps> = ({
           yaxis: {
             title: data.yAxisTitle,
             titlefont: {
-              family: "Arial, sans-serif",
+              family: "Noto Sans, sans-serif",
               size: 14,
             },
             tickfont: {
               size: 12,
               color: "rgb(107, 107, 107)",
+              family: "Noto Sans, sans-serif",
             },
           },
           margin: {
@@ -116,17 +118,19 @@ const BarChart: React.FC<BarChartProps> = ({
             tickfont: {
               size: 12,
               color: "rgb(107, 107, 107)",
+              family: "Noto Sans, sans-serif",
             },
           },
           xaxis: {
             title: data.yAxisTitle,
             titlefont: {
-              family: "Arial, sans-serif",
+              family: "Noto Sans, sans-serif",
               size: 14,
             },
             tickfont: {
               size: 12,
               color: "rgb(107, 107, 107)",
+              family: "Noto Sans, sans-serif",
             },
           },
           margin: {

@@ -780,6 +780,13 @@ module.exports = {
         },
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#976F21", //lighter orangish
+        cartDarkerOrange: "#C7501A",
+        cartLighterOrange: "#C7501A33",
+        linkDarkerColor: "#1D6796",
+        emptyCartLighterColor: "#e0e9f0",
+      },
+      maxHeight: {
+        "screen-90vh": "90vh",
       },
       height: {
         "nci-logo": "54px",
@@ -808,7 +815,7 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
-        content: ["Montserrat", "sans-serif"],
+        content: ["Noto Sans", "sans-serif"],
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {

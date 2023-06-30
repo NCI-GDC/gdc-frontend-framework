@@ -87,6 +87,9 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
       t: 0,
       b: 0,
     },
+    font: {
+      color: "#333333",
+    },
   };
 
   const [layout, setLayout] = useState(initialLayout);
@@ -136,12 +139,17 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     y: [...dataLabelPositions.map((d) => d.y)],
     type: "scatter",
     mode: "text+markers",
-    text: [...sortedChartData.map((d) => d.value)],
+    text: [
+      ...sortedChartData.map((d) =>
+        d?.value !== undefined ? d.value.toLocaleString() : undefined,
+      ),
+    ],
     hoverinfo: "none",
     marker: {
       size: 30,
       opacity: 0,
     },
+
     showlegend: false,
   };
 

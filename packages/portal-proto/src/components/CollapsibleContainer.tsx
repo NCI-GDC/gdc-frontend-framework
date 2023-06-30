@@ -10,15 +10,26 @@ export interface CollapsibleContainerProps {
   readonly toggle: () => void;
   readonly Top: React.FC<unknown>;
   readonly onlyIcon?: boolean;
+  readonly isContextBar?: boolean;
 }
 
 export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
   props: PropsWithChildren<CollapsibleContainerProps>,
 ) => {
-  const { Top, isCollapsed, toggle, children, onlyIcon = true } = props;
-
+  const {
+    Top,
+    isCollapsed,
+    toggle,
+    children,
+    onlyIcon = true,
+    isContextBar = false,
+  } = props;
   return (
-    <div className="flex flex-col">
+    <div
+      className={`flex flex-col ${
+        isContextBar && "overflow-y-auto max-h-screen-90vh"
+      }`}
+    >
       <div className="flex flex-row">
         <div className="flex-grow">
           <Top />

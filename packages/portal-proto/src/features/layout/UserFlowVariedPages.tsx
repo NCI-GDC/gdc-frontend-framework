@@ -1,4 +1,5 @@
 import { PropsWithChildren, ReactNode, useEffect } from "react";
+import { showNotification } from "@mantine/notifications";
 import {
   isString,
   useCoreSelector,
@@ -6,9 +7,20 @@ import {
   fetchNotifications,
   selectBanners,
   fetchUserDetails,
+  selectCurrentCohortName,
+  selectCohortMessage,
+  clearCohortMessage,
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
+import {
+  DeleteCohortNotification,
+  DiscardChangesCohortNotification,
+  ErrorCohortNotification,
+  NewCohortNotification,
+  SavedCohortNotification,
+  NewCohortNotificationWithSetAsCurrent,
+} from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
@@ -16,6 +28,7 @@ interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
+  readonly ContextBar?: ReactNode;
 }
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -23,6 +36,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   indexPath = "/",
   Options,
   children,
+  ContextBar = undefined,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
 
@@ -34,6 +48,96 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   const banners = useCoreSelector((state) => selectBanners(state));
 
+  const currentCohortName = useCoreSelector((state) =>
+    selectCurrentCohortName(state),
+  );
+  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
+
+  useEffect(() => {
+    if (cohortMessage) {
+      for (const message of cohortMessage) {
+        const cmdAndParam = message.split("|", 3);
+        if (cmdAndParam.length == 3) {
+          if (cmdAndParam[0] === "newCohort") {
+            showNotification({
+              message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "deleteCohort") {
+            showNotification({
+              message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCohort") {
+            showNotification({
+              message: <SavedCohortNotification />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "discardChanges") {
+            showNotification({
+              message: <DiscardChangesCohortNotification />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "error") {
+            showNotification({
+              message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "newCasesCohort") {
+            showNotification({
+              message: (
+                <NewCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "newProjectsCohort") {
+            showNotification({
+              message: (
+                <NewCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+        }
+      }
+
+      dispatch(clearCohortMessage());
+    }
+  }, [cohortMessage, dispatch, currentCohortName]);
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header className="flex-none bg-base-max sticky top-0 z-[300]">
@@ -41,10 +145,11 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
           <Banner {...banner} key={banner.id} />
         ))}
         <Header {...{ headerElements, indexPath, Options }} />
+        {ContextBar ? ContextBar : null}
       </header>
       <main
         data-tour="full_page_content"
-        className="flex flex-grow flex-col overflow-x-hidden overflow-y-hidden"
+        className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
         id="main"
       >
         {children}

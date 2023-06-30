@@ -14,7 +14,6 @@ import {
   selectCurrentCohortFilterSet,
   useCoreSelector,
   selectAvailableCohorts,
-  DEFAULT_COHORT_ID,
 } from "@gff/core";
 import { convertFilterToComponent } from "./QueryRepresentation";
 import CohortManager from "@/features/cohortBuilder/CohortManager";
@@ -85,7 +84,7 @@ export const useCohortFacetFilters = (): FilterSet => {
 
 export const CohortGroup: React.FC = () => {
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(DEFAULT_COHORT_ID);
+  const [currentIndex, setCurrentIndex] = useState(undefined);
   const handleCohortSelection = (idx) => {
     setCurrentIndex(idx);
   };

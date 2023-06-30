@@ -14,7 +14,7 @@ class HomePageLocators:
 
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-home-page-{button_name}']"
 
-    LIVE_STAT_BY_CATEGORY_IDENT = lambda expected_statistic: f'div[class="grid grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between"] >> text="{expected_statistic}"'
+    LIVE_STAT_BY_CATEGORY_IDENT = lambda expected_statistic: f'div[data-testid="homepage-live-statistics"] >> text="{expected_statistic}"'
 
 
 class HomePage(BasePage):

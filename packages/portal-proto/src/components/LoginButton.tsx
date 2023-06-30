@@ -20,9 +20,7 @@ export const LoginButton = ({
     <Button
       classNames={{
         root: !fromHeader ? "hover:bg-primary-darker" : "",
-        label: fromHeader
-          ? "text-primary-darkest font-header text-sm font-medium"
-          : "",
+        label: fromHeader ? "text-primary-darkest text-sm font-medium" : "",
       }}
       onClick={async () => {
         fromSession && dispatch(hideModal());

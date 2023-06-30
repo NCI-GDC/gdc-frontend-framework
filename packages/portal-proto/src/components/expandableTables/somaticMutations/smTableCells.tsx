@@ -4,10 +4,12 @@ import { humanify } from "src/utils";
 import { truncate } from "lodash";
 import { Dispatch, SetStateAction } from "react";
 import { entityMetadataType } from "src/utils/contexts";
+import Link from "next/link";
 
 export const ProteinChange = ({
   proteinChange,
   shouldLink,
+  shouldOpenModal,
   setEntityMetadata,
 }: {
   proteinChange: {
@@ -15,15 +17,16 @@ export const ProteinChange = ({
     aaChange: string;
     geneId: string;
   };
+  shouldOpenModal: boolean;
   shouldLink: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
     <div className="flex flex-row w-max justify-start font-content">
-      {shouldLink ? (
+      {shouldOpenModal ? (
         <button
-          className="text-utility-link underline mx-0.5"
+          className="text-utility-link underline mx-0.5 font-content"
           onClick={() =>
             setEntityMetadata({
               entity_type: "genes",
@@ -33,6 +36,10 @@ export const ProteinChange = ({
         >
           {symbol}
         </button>
+      ) : shouldLink ? (
+        <Link href={`/genes/${proteinChange.geneId}`}>
+          <a className="underline text-utility-link">{symbol}</a>
+        </Link>
       ) : (
         <span className="mx-0.5">{symbol}</span>
       )}
@@ -66,7 +73,7 @@ export const Consequences = ({
 export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
-  const twIconStyles = `w-7 h-6 text-base-max font-bold border rounded-md flex justify-center items-center`;
+  const twIconStyles = `w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center`;
   const blankIconStyles = `w-7 h-6 font-bold flex justify-center items-center`;
 
   return (

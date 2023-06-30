@@ -13,12 +13,12 @@ import {
 } from "./filters";
 
 import {
-  DEFAULT_COHORT_ID,
   Cohort,
   addNewCohort,
   addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
+  setCohort,
   setCurrentCohortId,
   updateCohortFilter,
   removeCohortFilter,
@@ -72,15 +72,9 @@ import {
   CountsData,
 } from "./countSlice";
 
-import {
-  setComparisonCohorts,
-  clearComparisonCohorts,
-  selectComparisonCohorts,
-} from "./comparisonCohortsSlice";
 import { defaultCohortNameGenerator } from "./utils";
 
 export {
-  DEFAULT_COHORT_ID,
   Cohort,
   EnumOperandValue,
   FilterSet,
@@ -97,6 +91,7 @@ export {
   addNewCohortWithFilterAndMessage,
   removeCohort,
   updateCohortName,
+  setCohort,
   setCurrentCohortId,
   updateCohortFilter,
   removeCohortFilter,
@@ -113,9 +108,6 @@ export {
   selectCohortBuilderConfig,
   selectCohortBuilderConfigFilters,
   selectCohortBuilderConfigCategory,
-  setComparisonCohorts,
-  clearComparisonCohorts,
-  selectComparisonCohorts,
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,

@@ -144,7 +144,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           ) : null}
         </div>
       </FacetHeader>
-      <div className="flex flex row flex-nowrap items-center p-2 ">
+      <div className="flex flex-nowrap items-center p-2 ">
         <TextInput
           size="xs"
           placeholder={`Enter ${facetTitle}`}

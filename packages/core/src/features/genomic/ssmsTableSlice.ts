@@ -163,6 +163,7 @@ export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly geneSymbol?: string;
   readonly genomicFilters: FilterSet;
   readonly cohortFilters: FilterSet;
+  readonly caseFilter: FilterSet | undefined;
 }
 
 interface ssmtableResponse {
@@ -226,8 +227,12 @@ const generateFilter = ({
   geneSymbol,
   genomicFilters,
   cohortFilters,
+  caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
-  const genomicPlusCohortFilters = joinFilters(cohortFilters, genomicFilters);
+  // for case summary SMT we send caseFilter and cohortFilters carry filter associated with the project
+  const genomicPlusCohortFilters = caseFilter
+    ? caseFilter
+    : joinFilters(cohortFilters, genomicFilters);
   // if gene symbol combine geneSymbol with cohort and genomic filters else only use genomicPlusCohortFilters without geneSymbol.
   const geneAndCohortFilters = geneSymbol
     ? joinFilters(

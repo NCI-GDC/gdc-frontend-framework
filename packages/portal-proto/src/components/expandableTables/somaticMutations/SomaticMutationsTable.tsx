@@ -8,7 +8,7 @@ import React, {
 import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { ExpTable } from "../shared/ExpTable";
-import { getMutation, createTableColumn } from "./smTableUtils";
+import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
 import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
 import { Subrow } from "../shared/Subrow";
 import { Column } from "@/components/expandableTables/shared/types";
@@ -31,6 +31,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   handleSsmToggled = () => null,
   toggledSsms = [],
   geneSymbol = undefined,
+  projectId = undefined,
   isDemoMode = false,
   isModal = false,
 }: SomaticMutationsTableProps) => {
@@ -101,7 +102,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
     return visibleColumns.map(({ id: accessor }: Column) => {
-      return createTableColumn(
+      return ssmsCreateTableColumn({
         accessor,
         selectedMutations,
         setSelectedMutations,
@@ -110,14 +111,16 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         handleSsmToggled,
         toggledSsms,
         geneSymbol,
+        projectId,
         isDemoMode,
         setEntityMetadata,
         isModal,
-      );
+      });
     });
   }, [
     visibleColumns,
     geneSymbol,
+    projectId,
     selectedMutations,
     handleSsmToggled,
     setSelectedMutations,

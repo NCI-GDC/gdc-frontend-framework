@@ -54,16 +54,14 @@ const DND: React.FC<DNDProps> = ({
               <div className="p-1 bg-base-max items-center">
                 <div className="flex h-10 items-center border-1 border-black rounded-md">
                   {columnSearchTerm.length === 0 && (
-                    <span className="flex absolute ml-2 text-xs pointer-events-none italic">
-                      <div className="mt-0.5 ml-2 mr-2">
-                        <SearchIcon />
-                      </div>
+                    <span className="flex absolute ml-2 text-xs pointer-events-none font-content">
+                      <SearchIcon className="text-[1rem] mr-2" />
                       Search...
                     </span>
                   )}
                   <input
                     className="p-1 w-11/12 border-none text-base focus:outline-none h-4 text-sm"
-                    type="text"
+                    type="search"
                     value={columnSearchTerm}
                     onChange={(e) => setColumnSearchTerm(e.target.value)}
                   />

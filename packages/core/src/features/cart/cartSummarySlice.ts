@@ -51,7 +51,7 @@ export const fetchCartSummary = createAsyncThunk<
   return await graphqlAPI(graphQLQuery, graphQLFilters);
 });
 
-interface CartAggregation {
+export interface CartAggregation {
   case_count: number;
   doc_count: number;
   file_size: number;

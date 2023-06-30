@@ -60,10 +60,8 @@ startCoreListening({
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
     );
 
-    // get the latest cohort that was created using addNewCohortWithFilterAndMessage
-    // index is 1 because ALL GDC will always be the first one.
-    const latestCohortFilter = cohorts[1]?.filters;
-    const latestCohortId = cohorts[1]?.id;
+    const latestCohortFilter = cohorts[0]?.filters;
+    const latestCohortId = cohorts[0]?.id;
 
     const res = await fetchGdcCases({
       filters: buildCohortGqlOperator(latestCohortFilter),

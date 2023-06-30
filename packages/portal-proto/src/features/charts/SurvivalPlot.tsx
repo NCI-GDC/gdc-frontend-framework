@@ -165,7 +165,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-mutated`,
           value: (
-            <div className="text-gdc-survival-0">
+            <div className="text-gdc-survival-0 font-content">
               S<sub>1</sub>
               {` (N = ${getCaseCount(results2.length > 0)})`}
               {plotType === "mutation" && (
@@ -181,7 +181,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-mutated`,
           value: (
-            <div className="text-gdc-survival-1">
+            <div className="text-gdc-survival-1 font-content">
               S<sub>2</sub>
               {` (N = ${getCaseCount(results2.length === 0)})`}
               {plotType === "mutation" && (
@@ -200,7 +200,9 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
                 key: `${name}-cannot-compare`,
                 value: (
                   <div>
-                    <span>Not enough data to compare</span>
+                    <span className="font-content">
+                      Not enough data to compare
+                    </span>
                   </div>
                 ),
                 style: {
@@ -214,7 +216,9 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
     : [
         {
           key: `${name}-not-enough-data`,
-          value: <span>{`Not enough survival data for ${name}`}</span>,
+          value: (
+            <span className="font-content">{`Not enough survival data for ${name}`}</span>
+          ),
         },
       ];
 };
@@ -237,7 +241,7 @@ const buildManyLegend = (
                 width: "100%",
               },
               value: (
-                <div>
+                <div className="font-content">
                   <span>Not enough data to compare</span>
                 </div>
               ),
@@ -247,14 +251,14 @@ const buildManyLegend = (
               key: `${names[i]}-not-enough-data`,
               value: (
                 <span
-                  className={`text-gdc-survival-${i}`}
+                  className={`text-gdc-survival-${i} font-content`}
                 >{`Not enough survival data for ${names[i]}`}</span>
               ),
             }
           : {
               key: names[i],
               value: (
-                <span className={`text-gdc-survival-${i}`}>
+                <span className={`text-gdc-survival-${i} font-content`}>
                   S<sub>{i + 1}</sub>
                   {` (N = ${r.donors.length.toLocaleString()})`}
                   {plotType === SurvivalPlotTypes.categorical && (
@@ -267,7 +271,11 @@ const buildManyLegend = (
     : [
         {
           key: `${field}-not-enough-data`,
-          value: <span>Not enough survival data for this facet</span>,
+          value: (
+            <span className="font-content">
+              Not enough survival data for this facet
+            </span>
+          ),
         },
       ];
 };
@@ -419,19 +427,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-row w-100 items-center justify-center flex-wrap">
-        <div className="flex ml-auto text-montserrat text-lg text-primary-content-dark ">
-          {title}
-        </div>
+        <div className="flex ml-auto text-montserrat text-lg">{title}</div>
         <div className="flex flex-row items-center ml-auto gap-1">
           <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
-              <div className="flex">
-                <Tooltip label="Download Survival Plot data or image">
-                  <DownloadButton aria-label="Download button with an icon">
-                    <DownloadIcon size="1.25em" />
-                  </DownloadButton>
-                </Tooltip>
-              </div>
+              <Tooltip label="Download Survival Plot data or image">
+                <DownloadButton aria-label="Download button with an icon">
+                  <DownloadIcon size="1.25em" />
+                </DownloadButton>
+              </Tooltip>
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item
@@ -496,14 +500,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               )
             }
           >
-            <div className="text-xs">
+            <div className="text-xs font-content">
               {isNumber(pValue) &&
                 `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
           </Tooltip>
         </div>
         <div
-          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print`}
+          className={`flex flex-row w-full justify-end text-xs mr-8 text-primary-content no-print font-content`}
         >
           drag to zoom
         </div>

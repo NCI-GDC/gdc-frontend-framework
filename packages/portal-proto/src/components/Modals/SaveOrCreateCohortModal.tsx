@@ -59,6 +59,7 @@ export const SaveOrCreateCohortModal = ({
       zIndex={400}
       onClose={onClose}
       withinPortal={false}
+      centered
     >
       <Box
         sx={() => ({
@@ -75,6 +76,9 @@ export const SaveOrCreateCohortModal = ({
           styles={() => ({
             description: {
               marginTop: "5px",
+            },
+            input: {
+              fontFamily: "Noto Sans, sans-serif",
             },
           })}
           data-autofocus

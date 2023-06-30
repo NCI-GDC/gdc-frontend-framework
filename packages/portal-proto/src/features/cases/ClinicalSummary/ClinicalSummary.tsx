@@ -8,7 +8,7 @@ import {
   Exposures,
   FamilyHistories,
   FollowUps,
-} from "@gff/core/dist/features/cases/types";
+} from "@gff/core";
 import { Divider, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
@@ -108,7 +108,7 @@ export const ClinicalSummary = ({
           root: "w-full",
           tabsList: "mt-2 border-1 border-base-lighter border-b-3 p-2",
           panel: "max-w-full overflow-x-auto pt-0",
-          tab: "text-secondary-contrast-lighter font-bold text-sm px-4 py-1 mr-2 data-active:bg-nci-cyan-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
+          tab: "text-secondary-contrast-lighter font-bold font-heading text-sm px-4 py-1 mr-2 data-active:bg-nci-cyan-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
         }}
         styles={(theme) => ({
           tab: {

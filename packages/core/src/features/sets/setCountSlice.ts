@@ -103,6 +103,34 @@ export const setCountSlice = graphqlAPISlice
           { type: "geneSets", id: arg.setId },
         ],
       }),
+      geneSetCounts: builder.query({
+        async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+          const counts: Record<string, number> = {};
+          for (const setId of _arg.setIds) {
+            const result = await fetchWithBQ({
+              graphQLQuery: geneSetCountQuery,
+              graphQLFilters: {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "genes.gene_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+            });
+            if (result.error) {
+              return { error: result.error };
+            } else {
+              counts[setId as string] = transformGeneSetCountResponse(
+                result.data as GraphQLApiResponse<any>,
+              );
+            }
+          }
+
+          return { data: counts };
+        },
+      }),
       ssmSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
           graphQLQuery: ssmsSetCountQuery,
@@ -136,6 +164,34 @@ export const setCountSlice = graphqlAPISlice
         providesTags: (_result, _error, arg) => [
           { type: "ssmsSets", id: arg.setId },
         ],
+      }),
+      ssmSetCounts: builder.query({
+        async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+          const counts: Record<string, number> = {};
+          for (const setId of _arg.setIds) {
+            const result = await fetchWithBQ({
+              graphQLQuery: ssmsSetCountQuery,
+              graphQLFilters: {
+                filters: {
+                  op: "=",
+                  content: {
+                    field: "ssms.ssm_id",
+                    value: `set_id:${setId}`,
+                  },
+                },
+              },
+            });
+            if (result.error) {
+              return { error: result.error };
+            } else {
+              counts[setId as string] = transformSsmsSetCountResponse(
+                result.data as GraphQLApiResponse<any>,
+              );
+            }
+          }
+
+          return { data: counts };
+        },
       }),
       caseSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
@@ -213,6 +269,8 @@ export const setCountQueryFactory = async (
 
 export const {
   useGeneSetCountQuery,
+  useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useSsmSetCountsQuery,
   useCaseSetCountQuery,
 } = setCountSlice;

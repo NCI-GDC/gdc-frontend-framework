@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex flex-row justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
             className="flex items-center gap-1"
@@ -122,13 +122,13 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <button className="flex items-center gap-1">
+          <button className="flex items-center gap-1 font-heading">
             <OptionsIcon size="22px" className="rotate-90" />
             Manage Sets
           </button>
           <Link href="/cart" passHref>
             <Button unstyled data-testid="cartLink">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 font-heading">
                 <CartIcon size="22px" className="text-primary-darkest" />
                 Cart
                 <Badge
@@ -147,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Button
                   rightIcon={<ArrowDropDownIcon size="2em" />}
                   variant="subtle"
-                  className="text-primary-darkest font-header text-sm font-medium"
+                  className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
                 >
@@ -259,7 +259,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="flex items-center gap-1"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
-                <p>GDC Apps</p>
+                <p className="font-heading">GDC Apps</p>
               </button>
             </Menu.Target>
             <Menu.Dropdown>

@@ -25,7 +25,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ["cart", "bannerNotification", "cohort", "sets"],
+  whitelist: ["cart", "bannerNotification", "sets"],
 };
 
 export const coreStore = configureStore({

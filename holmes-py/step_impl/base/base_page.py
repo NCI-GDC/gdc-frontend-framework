@@ -36,6 +36,9 @@ class BasePage:
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
 
+    def get_attribute(self, locator, name: str):
+        return self.driver.locator(locator).get_attribute(name)
+
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
 
@@ -65,10 +68,25 @@ class BasePage:
     def wait_until_locator_is_detached(self, locator):
         self.driver.locator(locator).wait_for(state='detached', timeout= 60000)
 
+    # wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden
+    def wait_until_locator_is_hidden(self, locator):
+        self.driver.locator(locator).wait_for(state='hidden', timeout= 15000)
+
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_DIV_IDENT(text)
-        is_text_present = self.is_visible(locator)
-        return is_text_present
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
+
+    def is_text_not_present(self, text):
+        locator = GenericLocators.TEXT_DIV_IDENT(text)
+        try:
+            self.wait_until_locator_is_hidden(locator)
+        except:
+            return False
+        return True
 
     def is_cohort_bar_case_count_present(self, case_count):
         locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)

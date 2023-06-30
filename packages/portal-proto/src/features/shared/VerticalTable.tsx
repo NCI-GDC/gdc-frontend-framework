@@ -89,7 +89,7 @@ interface VerticalTableProps {
    */
   columns: Columns[];
   /**
-   * ???
+   * ??? TODO remove
    */
   selectableRow: boolean;
   /**
@@ -157,6 +157,7 @@ interface VerticalTableProps {
    * Optional default table sort state
    */
   initialSort?: Array<SortingRule<any>>;
+  footer?: React.ReactNode;
 }
 
 /**
@@ -269,6 +270,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   },
   search,
   initialSort = [],
+  footer = undefined,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
@@ -281,7 +283,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [columns]);
 
   useEffect(() => {
-    if (status === "fulfilled") {
+    if (tableData) {
       setTable(tableData);
     }
     setShowLoading(status === "pending" || status === "uninitialized");
@@ -400,7 +402,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                         ? column.isSortedDesc
                           ? "descending"
                           : "ascending"
-                        : "none"
+                        : undefined
                     }
                     tabIndex={column.canSort === false ? -1 : 0}
                     onKeyDown={(event) => {
@@ -478,7 +480,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       );
                     })}
                   </tr>
-                  {row.state.expanded > 0 && (
+                  {(row.state.expanded as number) > 0 && (
                     <tr {...row.getRowProps()} key={`row-${index}-2`}>
                       <td colSpan={headings.length}>{row.state.content}</td>
                     </tr>
@@ -488,11 +490,16 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             })
           )}
         </tbody>
+        {footer && (
+          <tfoot className="font-heading text-sm text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-t-4 h-full">
+            {footer}
+          </tfoot>
+        )}
       </table>
     );
   };
 
-  //For smoother setting of pagination so the values don't bounce around when loading new data
+  // For smoother setting of pagination so the values don't bounce around when loading new data
   const [pageSize, setPageSize] = useState(10);
   const [pageOn, setPageOn] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
@@ -556,7 +563,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       handleChange({
         newSearch: searchTerm,
       });
-    }, 500);
+    }, 250);
 
     return () => clearTimeout(delayDebounceFn);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -571,7 +578,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
-        {additionalControls && <div>{additionalControls}</div>}
+        {additionalControls && <div className="flex">{additionalControls}</div>}
         {(search?.enabled || showControls) && (
           <div className="flex items-center">
             {search?.enabled && (
@@ -591,9 +598,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                       <MdClose
                         onClick={() => {
                           setSearchTerm("");
-                          handleChange({
-                            newSearch: "",
-                          });
                         }}
                         className="cursor-pointer"
                       />
@@ -602,9 +606,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
-                    handleChange({
-                      newSearch: e.target.value,
-                    });
                   }}
                 />
                 {showControls && (
@@ -650,7 +651,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         )}
       </div>
       <div className="overflow-y-auto w-full relative">
-        <LoadingOverlay visible={showLoading} />
+        <LoadingOverlay visible={showLoading} zIndex={0} />
         <Table columns={headings} data={table} />
       </div>
       {pagination && (

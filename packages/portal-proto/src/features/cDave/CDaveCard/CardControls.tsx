@@ -32,7 +32,7 @@ const CardControls: React.FC<CardControlsProps> = ({
   return (
     <>
       <div className="flex justify-between py-2">
-        <div>
+        <div className="flex flex-wrap gap-2">
           <DropdownWithIcon
             RightIcon={<DownIcon size={20} />}
             TargetButtonChildren={"Create New Cohort"}
@@ -48,7 +48,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             zIndex={100}
           />
           <ButtonTooltip label=" " comingSoon={true}>
-            <Button className="bg-base-max text-primary border-primary ml-2">
+            <Button className="bg-base-max text-primary border-primary">
               TSV
             </Button>
           </ButtonTooltip>

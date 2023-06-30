@@ -19,11 +19,11 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import { DEFAULT_GENE_SUMMARY_TABLE_ORDER } from "./mutationTableConfig";
 import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
+import { DEFAULT_MUTATION_TABLE_ORDER } from "../shared/mutationTableConfig";
 
 interface GeneViewProps {
   data: {
@@ -113,10 +113,14 @@ const GeneView = ({
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
     const Strand = gene_strand && gene_strand === 1 ? <HiPlus /> : <HiMinus />;
-    const annotation = is_cancer_gene_census
-      ? // TODO: need to change this after figuring out what to do with clicking on it
-        "Cancer Gene Census"
-      : "--";
+    const annotation = is_cancer_gene_census ? (
+      <AnchorLink
+        href="https://cancer.sanger.ac.uk/census"
+        title="Cancer Gene Census"
+      />
+    ) : (
+      "--"
+    );
     const synonymsList = synonyms?.length && (
       <ul>
         {synonyms?.map((s) => (
@@ -250,15 +254,13 @@ const GeneView = ({
               />
 
               <div className="mt-14">
-                <div className="flex items-center gap-2">
-                  <HeaderTitle>Most Frequent Somatic Mutations</HeaderTitle>
-                </div>
                 <SMTableContainer
-                  columnsList={DEFAULT_GENE_SUMMARY_TABLE_ORDER}
+                  columnsList={DEFAULT_MUTATION_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}
                   isModal={isModal}
+                  tableTitle="Most Frequent Somatic Mutations"
                 />
               </div>
             </div>

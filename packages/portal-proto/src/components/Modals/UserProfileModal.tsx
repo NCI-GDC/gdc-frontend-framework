@@ -69,21 +69,22 @@ export const UserProfileModal = ({
       size="60%"
       buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}
     >
-      <div className={`${!data ? "py-15px" : "py-5px"} border-y border-y-base`}>
+      <div className={`${!data ? "py-4" : "py-2"}`}>
         {data.length > 0 ? (
           <ScrollableTableWithFixedHeader
             tableData={{
               headers: headings,
               tableRows: data,
             }}
+            maxRowsBeforeScroll={10}
           />
         ) : (
-          <div data-testid="warningText">
-            <Text className="mb-4">
+          <div data-testid="warningText" className="mt-4">
+            <Text className="mb-4 font-content">
               You do not have any access to controlled access data for projects
               available in the GDC Data Portal.
             </Text>
-            <Text>
+            <Text className="font-content">
               For instructions on{" "}
               <a
                 href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"

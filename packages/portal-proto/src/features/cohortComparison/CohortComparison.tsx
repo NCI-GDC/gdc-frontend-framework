@@ -5,6 +5,7 @@ import { FilterSet, useCohortFacets } from "@gff/core";
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
+import { DemoText } from "../shared/tailwindComponents";
 
 interface CohortComparisonProps {
   readonly cohorts?: {
@@ -55,11 +56,10 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   return (
     <>
       {demoMode && (
-        <span className="font-heading italic px-2 py-4 mt-4">
-          {
-            "Demo showing cases with low grade gliomas with and without mutations in the genes IDH1 and IDH2."
-          }
-        </span>
+        <DemoText>
+          Demo showing cases with low grade gliomas with and without mutations
+          in the genes IDH1 and IDH2.
+        </DemoText>
       )}
       <div className="flex gap-4 pt-2">
         <div className="p-1 flex basis-7/12 flex-col gap-4">

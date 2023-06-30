@@ -173,11 +173,11 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         header: "text-xl",
       }}
     >
-      <p>
+      <p className="font-content">
         Configure your bins, then click <b>Save Bins</b> to update the analysis
         plots.
       </p>
-      <div className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2">
+      <div className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content">
         <p>
           Available values from <b>{stats.min}</b> to{" "}
           <b>
@@ -192,7 +192,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       <div className="bg-base-lightest p-4 flex flex-col">
         <div className="flex">
           <div className="flex-grow">
-            {"Define bins by:"}
+            <span className="font-content">Define bins by:</span>
             {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <div
@@ -210,7 +210,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   e.target.checked ? setBinMethod("interval") : undefined
                 }
               />
-              <label htmlFor="continuous-bin-modal-interval-size">
+              <label
+                htmlFor="continuous-bin-modal-interval-size"
+                className="font-content"
+              >
                 A set interval of
               </label>
               <TextInput
@@ -222,7 +225,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
               />
-              <label htmlFor="continuous-bin-modal-interval-min">
+              <label
+                htmlFor="continuous-bin-modal-interval-min"
+                className="font-content"
+              >
                 with values from
               </label>
               <TextInput
@@ -234,7 +240,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
               />
-              <label htmlFor="continuous-bin-modal-interval-max">
+              <label
+                htmlFor="continuous-bin-modal-interval-max"
+                className="font-content"
+              >
                 to less than
               </label>
               <TextInput
@@ -288,13 +297,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               name="binMethod"
               aria-label="select range"
               checked={binMethod === "ranges"}
-              className="px-2 "
+              className="px-2"
+              classNames={{ label: "font-content" }}
               color="nci-blue"
               onChange={(e) =>
                 e.target.checked ? setBinMethod("ranges") : undefined
               }
             />
-            Custom ranges:
+            <span className="font-content">Custom ranges:</span>
           </div>
           <table
             className="border-separate"

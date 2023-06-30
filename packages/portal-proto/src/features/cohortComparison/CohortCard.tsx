@@ -39,20 +39,26 @@ const CohortCard: React.FC<CohortCardProps> = ({
 }: CohortCardProps) => {
   return (
     <Paper p="md" className="h-fit">
-      <div className="flex justify-between">
-        <div>
-          <h2 className="font-heading text-lg font-semibold">Cohort</h2>
-          <p className="font-heading py-1 text-[#1F77B4] font-semibold">
+      <div className="font-semibold">
+        <div className="flex justify-between font-heading text-lg py-1">
+          <h2 className="basis-3/4">Cohort</h2>
+          <h2 className="basis-1/4 text-right"># Cases</h2>
+        </div>
+        <div className="flex justify-between font-content py-1">
+          <p className="text-[#1F77B4] basis-3/4">
             S<sub>1</sub> : {cohorts?.primary_cohort.name}
           </p>
-          <p className="py-1 text-[#BD5800] font-semibold">
-            S<sub>2</sub> : {cohorts?.comparison_cohort.name}
+          <p className="basis-1/4 text-right">
+            {counts[0] ? counts[0].toLocaleString() : 0}
           </p>
         </div>
-        <div>
-          <h2 className="font-heading text-lg font-semibold"># Cases</h2>
-          <p className="py-1 ">{counts[0] ? counts[0].toLocaleString() : 0}</p>
-          <p className="py-1">{counts[1] ? counts[1].toLocaleString() : 0}</p>
+        <div className="flex justify-between font-content py-1">
+          <p className="text-[#BD5800] basis-3/4">
+            S<sub>2</sub> : {cohorts?.comparison_cohort.name}
+          </p>
+          <p className="basis-1/4 text-right">
+            {counts[1] ? counts[1].toLocaleString() : 0}
+          </p>
         </div>
       </div>
       <hr />

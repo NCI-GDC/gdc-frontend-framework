@@ -8,12 +8,7 @@ import {
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
 import { omit } from "lodash";
-import {
-  useCoreDispatch,
-  clearCohortFilters,
-  FilterSet,
-  DEFAULT_COHORT_ID,
-} from "@gff/core";
+import { useCoreDispatch, clearCohortFilters, FilterSet } from "@gff/core";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertFilterToComponent } from "./QueryRepresentation";
 
@@ -158,114 +153,105 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   return (
     <QueryExpressionContainer>
-      {currentCohortId !== DEFAULT_COHORT_ID ? (
-        <QueryExpressionsExpandedContext.Provider
-          value={[expandedState[currentCohortId], setExpandedState]}
-        >
-          <div className="flex flex-col w-full bg-primary">
-            <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
-              <OverflowTooltippedLabel
-                label={currentCohortName}
-                className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
+      <QueryExpressionsExpandedContext.Provider
+        value={[expandedState[currentCohortId], setExpandedState]}
+      >
+        <div className="flex flex-col w-full bg-primary">
+          <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
+            <OverflowTooltippedLabel
+              label={currentCohortName}
+              className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
+            >
+              {currentCohortName}
+            </OverflowTooltippedLabel>
+            <>
+              <button
+                className={`text-sm font-montserrat pl-2 ${
+                  noFilters
+                    ? "cursor-not-allowed text-secondary-contrast-darkest"
+                    : "cursor-pointer text-secondary-contrast-darkest"
+                }`}
+                onClick={clearAllFilters}
+                disabled={noFilters}
               >
-                {currentCohortName}
-              </OverflowTooltippedLabel>
-              <>
-                <button
-                  className={`text-sm font-montserrat pl-2 ${
-                    noFilters
-                      ? "cursor-not-allowed text-secondary-contrast-darkest"
-                      : "cursor-pointer text-secondary-contrast-darkest"
-                  }`}
-                  onClick={clearAllFilters}
+                Clear All
+              </button>
+              <div className="display flex gap-2 ml-auto mr-3">
+                <ActionIcon
+                  variant={allQueryExpressionsCollapsed ? "filled" : "outline"}
+                  color="white"
+                  onClick={() =>
+                    allQueryExpressionsCollapsed
+                      ? setExpandedState({
+                          type: "expandAll",
+                          cohortId: currentCohortId,
+                        })
+                      : setExpandedState({
+                          type: "collapseAll",
+                          cohortId: currentCohortId,
+                        })
+                  }
+                  aria-label="Expand/collapse all queries"
+                  aria-expanded={!allQueryExpressionsCollapsed}
                   disabled={noFilters}
                 >
-                  Clear All
-                </button>
-                <div className="display flex gap-2 ml-auto mr-3">
-                  <ActionIcon
-                    variant={
-                      allQueryExpressionsCollapsed ? "filled" : "outline"
-                    }
-                    color="white"
-                    onClick={() =>
-                      allQueryExpressionsCollapsed
-                        ? setExpandedState({
-                            type: "expandAll",
-                            cohortId: currentCohortId,
-                          })
-                        : setExpandedState({
-                            type: "collapseAll",
-                            cohortId: currentCohortId,
-                          })
-                    }
-                    aria-label="Expand/collapse all queries"
-                    aria-expanded={!allQueryExpressionsCollapsed}
-                    disabled={noFilters}
-                  >
-                    {allQueryExpressionsCollapsed ? (
-                      <>
-                        <LeftArrowIcon size={20} className="text-primary" />
-                        <RightArrowIcon size={20} className="text-primary" />
-                      </>
-                    ) : (
-                      <>
-                        <RightArrowIcon size={20} className="text-white" />
-                        <LeftArrowIcon size={20} className="text-white" />
-                      </>
-                    )}
-                  </ActionIcon>
-                  <ActionIcon
-                    variant={filtersSectionCollapsed ? "outline" : "filled"}
-                    color={filtersSectionCollapsed ? "white" : "white"}
-                    onClick={() =>
-                      setFiltersSectionCollapsed(!filtersSectionCollapsed)
-                    }
-                    aria-label="Expand/collapse filters section"
-                    aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                    className={`data-disabled:bg-gray-300`}
-                  >
-                    {filtersSectionCollapsed ? (
-                      <>
-                        <DownArrowIcon size={30} className="text-white" />
-                      </>
-                    ) : (
-                      <>
-                        <UpArrowIcon size={30} className="text-primary" />
-                      </>
-                    )}
-                  </ActionIcon>
-                </div>
-              </>
-            </div>
-            <div
-              className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
-                filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
-              }`}
-              style={
-                filtersSectionCollapsed && numOfRows > MAX_COLLAPSED_ROWS
-                  ? { maxHeight: collapsedHeight }
-                  : undefined
-              }
-              ref={filtersRef}
-            >
-              {noFilters ? (
-                <p className="pb-2">No filters currently applied.</p>
-              ) : (
-                Object.keys(filters.root).map((k) => {
-                  return convertFilterToComponent(filters.root[k]);
-                })
-              )}
-            </div>
+                  {allQueryExpressionsCollapsed ? (
+                    <>
+                      <LeftArrowIcon size={20} className="text-primary" />
+                      <RightArrowIcon size={20} className="text-primary" />
+                    </>
+                  ) : (
+                    <>
+                      <RightArrowIcon size={20} className="text-white" />
+                      <LeftArrowIcon size={20} className="text-white" />
+                    </>
+                  )}
+                </ActionIcon>
+                <ActionIcon
+                  variant={filtersSectionCollapsed ? "outline" : "filled"}
+                  color={filtersSectionCollapsed ? "white" : "white"}
+                  onClick={() =>
+                    setFiltersSectionCollapsed(!filtersSectionCollapsed)
+                  }
+                  aria-label="Expand/collapse filters section"
+                  aria-expanded={!filtersSectionCollapsed}
+                  disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                  className={`data-disabled:bg-gray-300`}
+                >
+                  {filtersSectionCollapsed ? (
+                    <>
+                      <DownArrowIcon size={30} className="text-white" />
+                    </>
+                  ) : (
+                    <>
+                      <UpArrowIcon size={30} className="text-primary" />
+                    </>
+                  )}
+                </ActionIcon>
+              </div>
+            </>
           </div>
-        </QueryExpressionsExpandedContext.Provider>
-      ) : (
-        <span className="text-md p-3 text-primary-darkest ">
-          Currently viewing all cases in the GDC. Further refine your cohort
-          with tools such as the Cohort Builder.
-        </span>
-      )}
+          <div
+            className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
+              filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
+            }`}
+            style={
+              filtersSectionCollapsed && numOfRows > MAX_COLLAPSED_ROWS
+                ? { maxHeight: collapsedHeight }
+                : undefined
+            }
+            ref={filtersRef}
+          >
+            {noFilters ? (
+              <p className="pb-2 font-content">No filters currently applied.</p>
+            ) : (
+              Object.keys(filters.root).map((k) => {
+                return convertFilterToComponent(filters.root[k]);
+              })
+            )}
+          </div>
+        </div>
+      </QueryExpressionsExpandedContext.Provider>
     </QueryExpressionContainer>
   );
 };

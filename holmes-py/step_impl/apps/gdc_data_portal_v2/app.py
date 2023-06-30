@@ -18,8 +18,9 @@ from ..gdc_data_portal_v2.pages.cohort_bar import CohortBar
 
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
-        APP_ENDPOINT = f"APP_ENDPOINT{os.getenv('APP_ENVIRONMENT','')}"
-        self.url = f"{os.getenv(APP_ENDPOINT)}/"
+        app_endpoint_var = "APP_ENDPOINT_PROD" if not os.getenv(
+            'APP_ENVIRONMENT') else f"APP_ENDPOINT_{os.environ['APP_ENVIRONMENT']}"
+        self.url = f"{os.getenv(app_endpoint_var)}/"
         self.driver = webdriver
         self.init_pages()
 
@@ -34,6 +35,6 @@ class GDCDataPortalV2App:
         self.cohort_builder_page = CohortBuilderPage(self.driver, self.url)
         self.analysis_center_page = AnalysisCenterPage(self.driver, self.url)
         self.clinical_data_analysis = ClinicalDataAnalysisPage(self.driver, self.url)
-        self.file_summary_page = FileSummaryPage(self.driver,self.url)
-        self.case_summary_page = CaseSummaryPage(self.driver,self.url)
+        self.file_summary_page = FileSummaryPage(self.driver, self.url)
+        self.case_summary_page = CaseSummaryPage(self.driver, self.url)
         self.cohort_bar = CohortBar(self.driver, self.url)

@@ -1,27 +1,12 @@
 import { render } from "@testing-library/react";
 import * as core from "@gff/core";
-import { DEFAULT_COHORT_ID } from "@gff/core";
 import QueryExpressionSection from "../QueryExpressionSection";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
 
 describe("<QueryExpressionSection />", () => {
-  it("Default cohort shows all cases message", () => {
-    const { getByText } = render(
-      <QueryExpressionSection
-        filters={{ mode: "and", root: {} }}
-        currentCohortId={DEFAULT_COHORT_ID}
-        currentCohortName={"All GDC"}
-      />,
-    );
-
-    expect(
-      getByText("Currently viewing all cases in the GDC.", { exact: false }),
-    ).toBeInTheDocument();
-  });
-
-  it("Non-default cohort with no filters shows empty message", () => {
+  it("Cohort with no filters shows empty message", () => {
     const { getByText, getByRole } = render(
       <QueryExpressionSection
         filters={{ mode: "and", root: {} }}
@@ -39,7 +24,7 @@ describe("<QueryExpressionSection />", () => {
     ).toBeDisabled();
   });
 
-  it("Non-default cohort with filters shows cohort name and controls", () => {
+  it("Cohort with filters shows cohort name and controls", () => {
     jest.spyOn(core, "useGeneSymbol").mockReturnValue({
       data: {},
       isError: false,

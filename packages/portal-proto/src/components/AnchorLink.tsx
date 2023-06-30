@@ -17,7 +17,11 @@ export const AnchorLink = ({
   return (
     <span className="flex gap-2 items-center">
       <Link href={href} passHref>
-        <Anchor className="flex gap-1 underline" size="sm" target="_blank">
+        <Anchor
+          className="flex gap-1 underline font-content"
+          size="sm"
+          target="_blank"
+        >
           <FiExternalLink className="mt-1" />
           {title}
         </Anchor>

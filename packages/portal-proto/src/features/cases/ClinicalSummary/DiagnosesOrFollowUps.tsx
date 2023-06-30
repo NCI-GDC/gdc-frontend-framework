@@ -1,7 +1,7 @@
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { BasicTable } from "@/components/Tables/BasicTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import type { Diagnoses, FollowUps } from "@gff/core/dist/features/cases/types";
+import type { Diagnoses, FollowUps } from "@gff/core";
 import { Tabs, Tooltip, Text } from "@mantine/core";
 import { useState } from "react";
 import { ageDisplay, humanify } from "src/utils";

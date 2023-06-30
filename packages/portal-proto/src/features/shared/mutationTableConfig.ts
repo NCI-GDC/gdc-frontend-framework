@@ -1,6 +1,6 @@
 import { Column } from "@/components/expandableTables/shared/types";
 
-export const DEFAULT_GENE_SUMMARY_TABLE_ORDER: Column[] = [
+export const DEFAULT_MUTATION_TABLE_ORDER: Column[] = [
   { id: "select", columnName: "Select", visible: true },
   { id: "mutationID", columnName: "Mutation ID", visible: false },
   { id: "DNAChange", columnName: "DNA Change", visible: true },
