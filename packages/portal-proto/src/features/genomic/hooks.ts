@@ -263,7 +263,7 @@ export const useGeneAndSSMPanelData = (
         comparativeSurvival?.field,
         isGene,
       ),
-    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters],
+    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters, isGene],
   );
 
   const {

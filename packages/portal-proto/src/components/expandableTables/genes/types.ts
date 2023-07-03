@@ -27,8 +27,14 @@ export interface Gene {
   };
   symbol: string;
   survival: Survival;
-  CNVGain: string;
-  CNVLoss: string;
+  CNVGain: {
+    numerator: number;
+    denominator: number;
+  };
+  CNVLoss: {
+    numerator: number;
+    denominator: number;
+  };
   cytoband: string[];
   annotations: boolean;
   mutations: string;
@@ -110,3 +116,5 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "mutations", columnName: "# Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
 ] as Column[];
+
+export type columnFilterType = "cnvgain" | "cnvloss" | "ssmaffected" | null;
