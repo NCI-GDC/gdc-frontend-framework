@@ -13,7 +13,11 @@ describe("<AnalysisBreadcrumb />", () => {
           setSelectionScreenOpen: jest.fn(),
         }}
       >
-        <AnalysisBreadcrumbs />
+        <AnalysisBreadcrumbs
+          rightComponent={null}
+          onDemoApp={false}
+          skipCohortsSelection={true}
+        />
       </SelectionScreenContext.Provider>,
     );
 
@@ -31,7 +35,11 @@ describe("<AnalysisBreadcrumb />", () => {
           setSelectionScreenOpen: jest.fn(),
         }}
       >
-        <AnalysisBreadcrumbs onDemoApp={true} />
+        <AnalysisBreadcrumbs
+          onDemoApp={true}
+          rightComponent={null}
+          skipCohortsSelection={true}
+        />
       </SelectionScreenContext.Provider>,
     );
 
@@ -49,7 +57,11 @@ describe("<AnalysisBreadcrumb />", () => {
           setSelectionScreenOpen: jest.fn(),
         }}
       >
-        <AnalysisBreadcrumbs />
+        <AnalysisBreadcrumbs
+          onDemoApp={false}
+          rightComponent={null}
+          skipCohortsSelection={false}
+        />
       </SelectionScreenContext.Provider>,
     );
 
@@ -68,7 +80,11 @@ describe("<AnalysisBreadcrumb />", () => {
           setSelectionScreenOpen: jest.fn(),
         }}
       >
-        <AnalysisBreadcrumbs />
+        <AnalysisBreadcrumbs
+          onDemoApp={false}
+          rightComponent={null}
+          skipCohortsSelection={false}
+        />
       </SelectionScreenContext.Provider>,
     );
 

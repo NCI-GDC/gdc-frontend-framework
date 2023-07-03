@@ -5,9 +5,9 @@ import { SelectionScreenContext } from "./AnalysisWorkspace";
 import { REGISTERED_APPS } from "./registeredApps";
 
 interface AnalysisBreadcrumbsProps {
-  readonly rightComponent?: React.ReactElement;
-  readonly onDemoApp?: boolean;
-  readonly skipCohortsSelection?: boolean;
+  readonly rightComponent: React.ReactElement;
+  readonly onDemoApp: boolean;
+  readonly skipCohortsSelection: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
@@ -22,7 +22,6 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   const displayAdditionalSteps =
     !skipCohortsSelection && appInfo?.selectionScreen !== undefined;
 
-  // probably add unit tests
   return (
     <div className="w-full bg-primary px-4 py-2 flex items-center ">
       <Button

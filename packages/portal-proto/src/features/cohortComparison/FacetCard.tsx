@@ -12,24 +12,13 @@ import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import PValue from "./PValue";
+import { CohortComparisonType } from "./CohortComparison";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
   readonly counts: number[];
-  // make it the same type and use across all
-  readonly cohorts?: {
-    primary_cohort: {
-      filter: FilterSet;
-      name: string;
-      id: string;
-    };
-    comparison_cohort: {
-      filter: FilterSet;
-      name: string;
-      id: string;
-    };
-  };
+  readonly cohorts: CohortComparisonType;
 }
 
 export const FacetCard: React.FC<FacetCardProps> = ({
@@ -163,7 +152,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
     customdata: cohort.map((facet) => facet.count),
     hovertemplate: `<b>${
-      cohorts?.[idx === 0 ? "primary_cohort" : "comparison_cohort"]?.name
+      cohorts[idx === 0 ? "primary_cohort" : "comparison_cohort"]?.name
     }</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
     marker: {
       color: idx === 0 ? "#1F77B4" : "#BD5800",
@@ -251,9 +240,9 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     caseFilters={
                       cohort1Value === undefined
                         ? undefined
-                        : cohorts?.primary_cohort.filter &&
+                        : cohorts.primary_cohort?.filter &&
                           joinFilters(
-                            cohorts?.primary_cohort?.filter,
+                            cohorts.primary_cohort.filter,
                             formattedData[0][idx].filter,
                           )
                     }
@@ -269,9 +258,9 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     caseFilters={
                       cohort2Value === undefined
                         ? undefined
-                        : cohorts?.comparison_cohort.filter &&
+                        : cohorts.comparison_cohort?.filter &&
                           joinFilters(
-                            cohorts?.comparison_cohort?.filter,
+                            cohorts.comparison_cohort.filter,
                             formattedData[1][idx].filter,
                           )
                     }

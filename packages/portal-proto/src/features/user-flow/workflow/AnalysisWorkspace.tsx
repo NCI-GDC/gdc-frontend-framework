@@ -9,7 +9,6 @@ import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
-
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
@@ -122,15 +121,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-  const skipCohortsSelection = router?.query?.skipCohortsSelection === "true";
+  const skipCohortsSelection =
+    router?.query?.skipCohortsSelection === "true" || isDemoMode;
 
   useEffect(() => {
     setCohortSelectionOpen(
-      !skipCohortsSelection &&
-        !isDemoMode &&
-        appInfo?.selectionScreen !== undefined,
+      !skipCohortsSelection && appInfo?.selectionScreen !== undefined,
     );
-  }, [app, isDemoMode, appInfo, skipCohortsSelection]);
+  }, [app, appInfo, skipCohortsSelection]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
@@ -149,7 +147,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         >
           <AnalysisBreadcrumbs
             onDemoApp={isDemoMode}
-            skipCohortsSelection={isDemoMode || skipCohortsSelection}
+            skipCohortsSelection={skipCohortsSelection}
             rightComponent={
               app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
             }

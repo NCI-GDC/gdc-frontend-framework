@@ -63,12 +63,15 @@ export const cohortComparisonDemo2: {
     },
   },
   name: "Low grade gliomas - IDH1 and IDH2 not mutated",
-  id: "demoCohort2Id", // need to name better (probably null or undefined)
+  id: "demoCohort2Id",
 };
 
 const CohortComparisonApp: React.FC = () => {
   const isDemoMode = useIsDemoApp();
+  const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
+    useContext(SelectionScreenContext);
 
+  /* Primary Cohort Details */
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
@@ -78,14 +81,14 @@ const CohortComparisonApp: React.FC = () => {
   const primaryCohortFilter = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
   );
+  /* Primary Cohort Details End */
 
+  /* Comparison Cohort Details */
   const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
   const comparisonCohortFilter = useCoreSelector((state) =>
     selectCohortFilterSetById(state, comparisonCohort?.id),
   );
-
-  const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
-    useContext(SelectionScreenContext);
+  /* Comparison Cohort Details End */
 
   const cohorts = isDemoMode
     ? {
