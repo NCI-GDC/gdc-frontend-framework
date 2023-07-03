@@ -3,6 +3,7 @@ import { Paper } from "@mantine/core";
 import { FIELD_LABELS } from "src/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
 import { FilterSet } from "@gff/core";
+import Link from "next/link";
 const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
   ssr: false,
 });
@@ -16,10 +17,12 @@ interface CohortCardProps {
     primary_cohort: {
       filter: FilterSet;
       name: string;
+      id: string;
     };
     comparison_cohort: {
       filter: FilterSet;
       name: string;
+      id: string;
     };
   };
   readonly survivalPlotSelectable: boolean;
@@ -62,6 +65,17 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
+      <div className="mt-2 flex justify-center">
+        <Link
+          href={`/analysis_page?app=SetOperations&skipCohortsSelection=true&cohort1Id=${cohorts.primary_cohort.id}&cohort2Id=${cohorts.comparison_cohort.id}`}
+          passHref
+        >
+          <a className="underline text-primary cursor-pointer">
+            Open Venn diagram
+          </a>
+        </Link>
+      </div>
+
       {!casesFetching && caseSetIds.length !== 0 ? (
         <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
       ) : (

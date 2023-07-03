@@ -82,7 +82,11 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
           onClick={() => createSet({ filters })}
           color="primary"
           variant="outline"
-          className={`${disabled ? "bg-base-lighter" : "bg-base-max"}`}
+          className={`${
+            disabled
+              ? "bg-base-lighter"
+              : "bg-base-max hover:bg-primary hover:text-base-max"
+          }`}
           disabled={disabled}
         >
           {loading ? <Loader size={14} /> : <DownloadIcon />}

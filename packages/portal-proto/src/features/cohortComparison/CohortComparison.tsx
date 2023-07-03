@@ -17,10 +17,12 @@ interface CohortComparisonProps {
     primary_cohort: {
       filter: FilterSet;
       name: string;
+      id: string;
     };
     comparison_cohort: {
       filter: FilterSet;
       name: string;
+      id: string;
     };
   };
   readonly demoMode?: boolean;

@@ -8,6 +8,7 @@ import {
   AnyAction,
   EntityId,
   EntityState,
+  Dictionary,
 } from "@reduxjs/toolkit";
 
 import { CoreState } from "../../reducers";
@@ -1035,8 +1036,22 @@ export const selectCurrentCohortFilterSet = (
 };
 
 /**
+ * Returns the cohort's name given the id
+ * @param state
+ * @param cohortId
+ */
+export const selectCohortNameById = (
+  state: CoreState,
+  cohortId: string,
+): string | undefined => {
+  const cohort = cohortSelectors.selectById(state, cohortId);
+  return cohort?.name;
+};
+
+/**
  * Returns the current cohort filters as a FilterSet
  * @param state
+ * @param cohortId
  */
 export const selectCohortFilterSetById = (
   state: CoreState,
@@ -1206,7 +1221,7 @@ export const selectCohortById = (
   cohortId: string,
 ): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
-export const selectAllCohorts = (state: CoreState) =>
+export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
   cohortSelectors.selectEntities(state);
 
 export const useCurrentCohortFilters = (): FilterSet | undefined => {

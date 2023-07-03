@@ -4,7 +4,6 @@ import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { pickBy, upperFirst } from "lodash";
 import { Checkbox } from "@mantine/core";
-
 import { Row } from "react-table";
 import {
   useCreateSsmsSetFromFiltersMutation,

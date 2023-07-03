@@ -7,14 +7,16 @@ import {
   selectCurrentCohortFilterSet,
   Cohort,
   selectCohortFilterSetById,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import CohortComparison from "../cohortComparison/CohortComparison";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
 
-export const cohortDemo1: {
+export const cohortComparisonDemo1: {
   filter: FilterSet;
   name: string;
+  id: string;
 } = {
   filter: {
     mode: "and",
@@ -32,11 +34,13 @@ export const cohortDemo1: {
     },
   },
   name: "Low grade gliomas - IDH1 or IDH2 mutated",
+  id: "demoCohort1Id",
 };
 
-export const cohortDemo2: {
+export const cohortComparisonDemo2: {
   filter: FilterSet;
   name: string;
+  id: string;
 } = {
   filter: {
     mode: "and",
@@ -59,6 +63,7 @@ export const cohortDemo2: {
     },
   },
   name: "Low grade gliomas - IDH1 and IDH2 not mutated",
+  id: "demoCohort2Id", // need to name better (probably null or undefined)
 };
 
 const CohortComparisonApp: React.FC = () => {
@@ -66,6 +71,9 @@ const CohortComparisonApp: React.FC = () => {
 
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
+  );
+  const primaryCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
   );
   const primaryCohortFilter = useCoreSelector((state) =>
     selectCurrentCohortFilterSet(state),
@@ -80,15 +88,20 @@ const CohortComparisonApp: React.FC = () => {
     useContext(SelectionScreenContext);
 
   const cohorts = isDemoMode
-    ? { primary_cohort: cohortDemo1, comparison_cohort: cohortDemo2 }
+    ? {
+        primary_cohort: cohortComparisonDemo1,
+        comparison_cohort: cohortComparisonDemo2,
+      }
     : {
         primary_cohort: {
           filter: primaryCohortFilter,
           name: primaryCohortName,
+          id: primaryCohortId,
         },
         comparison_cohort: {
           filter: comparisonCohortFilter,
           name: comparisonCohort?.name,
+          id: comparisonCohort?.id,
         },
       };
 
