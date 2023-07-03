@@ -545,6 +545,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
                 [e.target.value]: !selectedSets[e.target.value],
               })
             }
+            aria-label="checkbox for selecting table row"
           />
         ),
         setOperation: r.label,
