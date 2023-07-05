@@ -32,7 +32,7 @@ import {
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
-import CohortCreationButton from "@/components/CohortCreationButton";
+import { CohortCreationButton } from "@/components/CohortCreationButton";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
