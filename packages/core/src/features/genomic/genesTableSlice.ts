@@ -15,7 +15,7 @@ import {
   filterSetToOperation,
   selectCurrentCohortFilterSet,
 } from "../cohort";
-import { selectCurrentCohortFilters } from "../cohort";
+// import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
   Union,
@@ -170,22 +170,21 @@ export const fetchGenesTable = createAsyncThunk<
       offset,
       searchTerm,
       genomicFilters,
-      isDemoMode,
-      overwritingDemoFilter,
+      cohortFilters,
     }: GenomicTableProps,
-    thunkAPI,
   ): Promise<GraphQLApiResponse> => {
     // filters for the current cohort
-    const cohortFilters = buildCohortGqlOperator(
-      selectCurrentCohortFilters(thunkAPI.getState()),
-    );
+    // const cohortFilters = buildCohortGqlOperator(
+    //   selectCurrentCohortFilters(thunkAPI.getState()),
+    // );
 
     // if demo mode is on, we use the demo filter instead of the cohort filter
-    const demoOrCohort = isDemoMode
-      ? buildCohortGqlOperator(overwritingDemoFilter)
-      : cohortFilters;
-    const cohortFiltersContent = demoOrCohort?.content
-      ? Object(demoOrCohort?.content)
+    // const demoOrCohort = isDemoMode
+    //   ? buildCohortGqlOperator(overwritingDemoFilter)
+    //   : cohortFilters;
+    const caseFilters = buildCohortGqlOperator(cohortFilters);
+    const cohortFiltersContent = caseFilters?.content
+      ? Object(caseFilters?.content)
       : [];
 
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
@@ -223,7 +222,7 @@ export const fetchGenesTable = createAsyncThunk<
     // );
 
     const graphQlFilters = {
-      caseFilters: cohortFilters ? cohortFilters : {},
+      caseFilters: caseFilters ? caseFilters : {},
       genesTable_filters: genesTableFilters ? genesTableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
@@ -351,7 +350,7 @@ export const fetchGenesTable = createAsyncThunk<
       const counts = await fetchSmsAggregations({
         ids: geneIds,
         filters: filterContents,
-        caseFilters: cohortFilters,
+        caseFilters: caseFilters,
       });
       if (!counts.errors) {
         const countsData =

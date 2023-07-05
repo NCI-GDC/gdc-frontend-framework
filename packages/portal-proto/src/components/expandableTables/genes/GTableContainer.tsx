@@ -157,8 +157,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
+    cohortFilters: cohortFilters,
   });
 
   useEffect(() => {

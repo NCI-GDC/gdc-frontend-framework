@@ -58,8 +58,7 @@ export const GenesPanel = ({
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
-            isDemoMode={isDemoMode}
-            overwritingDemoFilter={overwritingDemoFilter}
+            cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
           />
         </Grid.Col>
         <Grid.Col span={6} className="relative">
