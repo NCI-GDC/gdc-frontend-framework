@@ -16,7 +16,7 @@ describe("<AnalysisBreadcrumb />", () => {
         <AnalysisBreadcrumbs
           rightComponent={null}
           onDemoApp={false}
-          skipCohortsSelection={true}
+          skipSelectionScreen={true}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -38,7 +38,7 @@ describe("<AnalysisBreadcrumb />", () => {
         <AnalysisBreadcrumbs
           onDemoApp={true}
           rightComponent={null}
-          skipCohortsSelection={true}
+          skipSelectionScreen={true}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -60,7 +60,7 @@ describe("<AnalysisBreadcrumb />", () => {
         <AnalysisBreadcrumbs
           onDemoApp={false}
           rightComponent={null}
-          skipCohortsSelection={false}
+          skipSelectionScreen={false}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -83,7 +83,7 @@ describe("<AnalysisBreadcrumb />", () => {
         <AnalysisBreadcrumbs
           onDemoApp={false}
           rightComponent={null}
-          skipCohortsSelection={false}
+          skipSelectionScreen={false}
         />
       </SelectionScreenContext.Provider>,
     );
