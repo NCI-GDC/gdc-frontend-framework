@@ -56,7 +56,15 @@ const CohortCard: React.FC<CohortCardProps> = ({
       <hr />
       <div className="mt-2 flex justify-center">
         <Link
-          href={`/analysis_page?app=SetOperations&skipCohortsSelection=true&cohort1Id=${cohorts.primary_cohort.id}&cohort2Id=${cohorts.comparison_cohort.id}`}
+          href={{
+            pathname: "/analysis_page",
+            query: {
+              app: "SetOperations",
+              skipSelectionScreen: "true",
+              cohort1Id: cohorts.primary_cohort.id,
+              cohort2Id: cohorts.comparison_cohort.id,
+            },
+          }}
           passHref
         >
           <a className="underline text-primary font-bold">Open Venn diagram</a>

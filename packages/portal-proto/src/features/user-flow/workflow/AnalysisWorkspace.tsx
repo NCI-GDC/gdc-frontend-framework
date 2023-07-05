@@ -121,14 +121,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
-  const skipCohortsSelection =
-    router?.query?.skipCohortsSelection === "true" || isDemoMode;
+  const skipSelectionScreen =
+    router?.query?.skipSelectionScreen === "true" || isDemoMode;
 
   useEffect(() => {
     setCohortSelectionOpen(
-      !skipCohortsSelection && appInfo?.selectionScreen !== undefined,
+      !skipSelectionScreen && appInfo?.selectionScreen !== undefined,
     );
-  }, [app, appInfo, skipCohortsSelection]);
+  }, [app, appInfo, skipSelectionScreen]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
@@ -147,7 +147,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         >
           <AnalysisBreadcrumbs
             onDemoApp={isDemoMode}
-            skipCohortsSelection={skipCohortsSelection}
+            skipSelectionScreen={skipSelectionScreen}
             rightComponent={
               app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
             }

@@ -7,20 +7,20 @@ import { REGISTERED_APPS } from "./registeredApps";
 interface AnalysisBreadcrumbsProps {
   readonly rightComponent: React.ReactElement;
   readonly onDemoApp: boolean;
-  readonly skipCohortsSelection: boolean;
+  readonly skipSelectionScreen: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   rightComponent,
   onDemoApp,
-  skipCohortsSelection,
+  skipSelectionScreen,
 }: AnalysisBreadcrumbsProps) => {
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
 
   const displayAdditionalSteps =
-    !skipCohortsSelection && appInfo?.selectionScreen !== undefined;
+    !skipSelectionScreen && appInfo?.selectionScreen !== undefined;
 
   return (
     <div className="w-full bg-primary px-4 py-2 flex items-center ">
