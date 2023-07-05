@@ -8,9 +8,14 @@ import React, {
 import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
-import { GDCSsmsTable, useGetSomaticMutationTableSubrowQuery } from "@gff/core";
+import {
+  GDCSsmsTable,
+  useGetSomaticMutationTableSubrowQuery,
+  usePrevious,
+} from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { Column, ExpTable, Subrow } from "../shared";
+import isEqual from "lodash/isEqual";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,
@@ -92,6 +97,15 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
+
+  const prevInitialData = usePrevious(initialData);
+  useEffect(() => {
+    if (!isEqual(prevInitialData, initialData)) {
+      setExpanded({});
+      setExpandedId(undefined);
+      setExpandedProxy({});
+    }
+  }, [initialData, prevInitialData]);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 

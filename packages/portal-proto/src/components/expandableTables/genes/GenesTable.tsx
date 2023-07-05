@@ -9,9 +9,10 @@ import { GenesTableProps } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
+import { useGetGeneTableSubrowQuery, usePrevious } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ExpTable, Subrow } from "../shared";
+import isEqual from "lodash/isEqual";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   status,
@@ -104,6 +105,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
+
+  const prevInitialData = usePrevious(initialData);
+  useEffect(() => {
+    if (!isEqual(prevInitialData, initialData)) {
+      setExpanded({});
+      setExpandedId(undefined);
+      setExpandedProxy({});
+    }
+  }, [initialData, prevInitialData]);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
