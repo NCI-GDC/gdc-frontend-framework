@@ -10,8 +10,8 @@ import {
 import { calculatePercentageAsNumber, humanify } from "src/utils";
 import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
-import CohortCreationButton from "@/components/CohortCreationButton";
 import PValue from "./PValue";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -242,7 +242,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
               >
                 <td className="pl-2">{value}</td>
                 <td>
-                  <CohortCreationButton
+                  <CohortCreationButtonWrapper
                     numCases={cohort1Value}
                     label={cohort1Value?.toLocaleString() || "--"}
                     caseFilters={
@@ -259,7 +259,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
                 </td>
                 <td>
-                  <CohortCreationButton
+                  <CohortCreationButtonWrapper
                     numCases={cohort2Value}
                     label={cohort2Value?.toLocaleString() || "--"}
                     caseFilters={

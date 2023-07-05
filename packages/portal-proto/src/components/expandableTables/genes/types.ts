@@ -89,6 +89,7 @@ export interface GenesTableProps {
   visibleColumns: Column[];
   isDemoMode?: boolean;
   genomicFilters: FilterSet;
+  cohortFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 

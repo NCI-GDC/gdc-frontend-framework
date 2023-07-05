@@ -5,13 +5,25 @@ import React, {
   useMemo,
   useContext,
 } from "react";
-import { GenesTableProps } from "./types";
+import { GenesTableProps, columnFilterType } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getGene, geneCreateTableColumn } from "./genesTableUtils";
 import { Genes } from "./types";
-import { useGetGeneTableSubrowQuery } from "@gff/core";
+import {
+  FilterSet,
+  addNewCohortWithFilterAndMessage,
+  buildCohortGqlOperator,
+  joinFilters,
+  useCoreDispatch,
+  useCreateCaseSetFromFiltersMutation,
+  useGetGeneTableSubrowQuery,
+  usePrevious,
+} from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ExpTable, Subrow } from "../shared";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import { isEqual } from "lodash";
+import { LoadingOverlay } from "@mantine/core";
 
 export const GenesTable: React.FC<GenesTableProps> = ({
   status,
@@ -28,14 +40,138 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   visibleColumns,
   isDemoMode = false,
   genomicFilters,
+  cohortFilters,
   handleMutationCountClick,
 }: GenesTableProps) => {
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
+  const [loading, setLoading] = useState(false);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [geneID, setGeneID] = useState(undefined);
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const [columnType, setColumnType] = useState<columnFilterType>(null);
+
+  // const mergeObjects = (obj1, obj2) => {
+  //   const mergedObj = {
+  //     mode: obj1.mode || obj2.mode,
+  //     root: { ...obj1.root },
+  //   };
+
+  //   for (const key in obj2.root) {
+  //     if (mergedObj.root.hasOwnProperty(key)) {
+  //       const existingOperands = mergedObj.root[key].operands || [];
+  //       const newOperands = obj2.root[key].operands || [];
+  //       mergedObj.root[key] = {
+  //         ...mergedObj.root[key],
+  //         operands: Array.from(new Set([...existingOperands, ...newOperands])),
+  //       };
+  //     } else {
+  //       mergedObj.root[key] = obj2.root[key];
+  //     }
+  //   }
+
+  //   return mergedObj;
+  // };
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [response.isLoading]);
+
+  const generateFilters = useCallback(
+    async (type: columnFilterType, geneId: string) => {
+      if (type === null) return;
+      const cohortAndGenomic = buildCohortGqlOperator(
+        joinFilters(cohortFilters, genomicFilters),
+      );
+      console.log({ cohortAndGenomic });
+
+      return await createSet({ filters: cohortAndGenomic })
+        .unwrap()
+        .then((setId) => {
+          const commonFilters: FilterSet = {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+            },
+          };
+
+          if (type === "cnvgain") {
+            return joinFilters(commonFilters, {
+              mode: "and",
+              root: {
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "gain",
+                },
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
+                },
+              },
+            });
+          } else if (type === "cnvloss") {
+            return joinFilters(commonFilters, {
+              mode: "and",
+              root: {
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "loss",
+                },
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
+                },
+              },
+            });
+          } else {
+            return joinFilters(commonFilters, {
+              mode: "and",
+              root: {
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "exists",
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "includes",
+                  operands: [geneId],
+                },
+              },
+            });
+          }
+        });
+    },
+    [genomicFilters, cohortFilters, createSet],
+  );
+
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const coreDispatch = useCoreDispatch();
+  const createCohort = async (name: string) => {
+    const mainFilter = await generateFilters(columnType, geneID);
+    console.log({ mainFilter });
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
 
   const useGeneTableFormat = useCallback(
     (initialData: Record<string, any>) => {
@@ -63,17 +199,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   );
 
   const transformResponse = useGeneTableFormat(initialData);
+  const prevtransformResponse = usePrevious(transformResponse);
 
-  useEffect(
-    () => {
+  useEffect(() => {
+    if (!isEqual(prevtransformResponse, transformResponse)) {
       if (transformResponse[0]?.genesTotal)
         handleGTotal(transformResponse[0].genesTotal);
       else handleGTotal(0);
-    },
-    // TODO resolve dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transformResponse],
-  );
+    }
+  }, [handleGTotal, prevtransformResponse, transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -105,7 +239,14 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedProxy]);
 
-  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const prevInitialData = usePrevious(initialData);
+  useEffect(() => {
+    if (!isEqual(prevInitialData, initialData)) {
+      setExpanded({});
+      setExpandedId(undefined);
+      setExpandedProxy({});
+    }
+  }, [initialData, prevInitialData]);
 
   // todo replace this callback w/ transformResponse inside rtk endpoint call
   const columns = useMemo<ColumnDef<Genes>[]>(() => {
@@ -124,6 +265,8 @@ export const GenesTable: React.FC<GenesTableProps> = ({
           setEntityMetadata,
           genomicFilters,
           handleMutationCountClick,
+          setColumnType,
+          setShowCreateCohort,
         });
       });
   }, [
@@ -138,10 +281,21 @@ export const GenesTable: React.FC<GenesTableProps> = ({
     setEntityMetadata,
     handleSurvivalPlotToggled,
     handleMutationCountClick,
+    setColumnType,
+    setShowCreateCohort,
   ]);
 
   return (
     <>
+      {loading && <LoadingOverlay visible />}
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohort(newName);
+          }}
+        />
+      )}
       <ExpTable
         status={status}
         data={transformResponse}

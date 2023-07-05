@@ -14,7 +14,7 @@ import { FaPlus as PlusIcon } from "react-icons/fa";
 import {
   CohortCreationStyledButton,
   IconWrapper,
-} from "@/components/CohortCreationButton";
+} from "@/components/CohortCreationButton/CohortCreationButton";
 
 export const CreateFromCountButton = ({
   tooltipLabel,

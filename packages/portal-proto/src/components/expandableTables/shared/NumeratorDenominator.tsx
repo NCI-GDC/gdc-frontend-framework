@@ -8,15 +8,15 @@ const NumeratorDenominator = ({
   boldNumerator?: boolean;
 }): JSX.Element => (
   <span
-    className="flex flex-wrap font-content"
+    className="flex flex-wrap font-content min-w-[100px]"
     data-testid="numeratorDenominatorTest"
   >
-    <span className={boldNumerator ? "font-bold" : undefined}>
+    <span className={boldNumerator ? "font-bold flex-none" : "flex-none"}>
       {denominator === 0 ? 0 : numerator.toLocaleString()}
     </span>
-    <span className="mx-0.5">&#47;</span>
-    <span className="mr-0.5">{denominator.toLocaleString()}</span>
-    <span>
+    <span className="mx-0.5 flex-none">&#47;</span>
+    <span className="mr-0.5 flex-none">{denominator.toLocaleString()}</span>
+    <span className="flex-wrap">
       (
       {numerator === 0 || denominator === 0
         ? "0.00%"

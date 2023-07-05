@@ -34,7 +34,7 @@ import {
   NumeratorDenominator,
   ButtonTooltip,
 } from "@/components/expandableTables/shared";
-import CohortCreationButton from "@/components/CohortCreationButton";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -370,7 +370,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 primary_site: projectsById[d.key]?.primary_site || [],
 
                 ssm_affected_cases: (
-                  <CohortCreationButton
+                  <CohortCreationButtonWrapper
                     numCases={data.ssmFiltered[d.key] || 0}
                     caseFilters={createSSMAffectedFilters(d.key, id)}
                     label={
@@ -389,7 +389,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...(isGene
                   ? {
                       cnv_gains: (
-                        <CohortCreationButton
+                        <CohortCreationButtonWrapper
                           numCases={data.cnvGain[d.key] || 0}
                           caseFilters={createCNVGainLossFilters(
                             d.key,
@@ -410,7 +410,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                         data.cnvTotal[d.key] || 0,
                       ),
                       cnv_losses: (
-                        <CohortCreationButton
+                        <CohortCreationButtonWrapper
                           numCases={data.cnvLoss[d.key] || 0}
                           caseFilters={createCNVGainLossFilters(
                             d.key,
