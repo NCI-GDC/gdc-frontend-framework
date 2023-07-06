@@ -11,7 +11,6 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import {
   buildCohortGqlOperator,
   FilterSet,
-  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
 
@@ -105,8 +104,6 @@ export interface GeneSSMSEntry {
 export interface FetchTopGeneProps {
   cohortFilters: FilterSet;
   genomicFilters: FilterSet;
-  isDemoMode: boolean;
-  overwritingDemoFilter: FilterSet;
 }
 
 export const fetchTopGene = createAsyncThunk<
@@ -118,15 +115,11 @@ export const fetchTopGene = createAsyncThunk<
   async ({
     cohortFilters,
     genomicFilters,
-    isDemoMode,
-    overwritingDemoFilter,
   }: FetchTopGeneProps): Promise<GraphQLApiResponse> => {
-    const filters = isDemoMode
-      ? buildCohortGqlOperator(
-          joinFilters(overwritingDemoFilter, genomicFilters),
-        )
-      : buildCohortGqlOperator(genomicFilters);
-    const filterContents = filters?.content ? Object(filters?.content) : [];
+    const localFilters = buildCohortGqlOperator(genomicFilters);
+    const filterContents = localFilters?.content
+      ? Object(localFilters?.content)
+      : [];
 
     const graphQlVariables = {
       ssmTested: {
@@ -170,7 +163,7 @@ export const fetchTopGene = createAsyncThunk<
         op: "and",
       },
       topTable_offset: 0,
-      topTable_filters: filters ?? {},
+      topTable_filters: localFilters ?? {},
       caseFilters: buildCohortGqlOperator(cohortFilters) ?? {},
       ssmsScore: "occurrence.case.project.project_id",
       geneScore: "case.project.project_id",

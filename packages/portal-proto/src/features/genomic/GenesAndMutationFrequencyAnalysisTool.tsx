@@ -79,10 +79,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const prevFilters = usePrevious(filters);
 
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
-    cohortFilters,
-    genomicFilters,
-    isDemoMode,
-    overwritingDemoFilter,
+    cohortFilters: isDemoMode ? overwritingDemoFilter : cohortFilters,
+    genomicFilters: genomicFilters,
   }); // get the default top gene/ssms to show by default
 
   /**

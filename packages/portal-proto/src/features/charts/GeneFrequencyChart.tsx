@@ -81,7 +81,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   title = "Distribution of Most Frequently Mutated Genes",
   maxBins = 20,
   orientation = "v",
-  cohortFilters,
+  cohortFilters = undefined,
 }: GeneFrequencyChartProps) => {
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
