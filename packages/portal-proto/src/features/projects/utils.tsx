@@ -6,12 +6,12 @@ import {
   humanify,
   sortByPropertyAsc,
 } from "@/utils/index";
-import { formatDataForHorizontalTable } from "../files/utils";
 import {
   PercentBar,
   PercentBarComplete,
   PercentBarLabel,
 } from "../shared/tailwindComponents";
+import { formatDataForHorizontalTable } from "../files/utils";
 
 interface TableSummaryReturnType {
   readonly headerName: string;
