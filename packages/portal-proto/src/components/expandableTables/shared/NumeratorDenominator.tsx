@@ -1,11 +1,9 @@
 const NumeratorDenominator = ({
   numerator,
   denominator,
-}: // list
-{
+}: {
   numerator: number;
   denominator: number;
-  // list: boolean
 }): JSX.Element => (
   <span
     className="flex flex-wrap font-content"
