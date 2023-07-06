@@ -90,7 +90,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
       const cohortAndGenomic = buildCohortGqlOperator(
         joinFilters(cohortFilters, genomicFilters),
       );
-      console.log({ cohortAndGenomic });
 
       return await createSet({ filters: cohortAndGenomic })
         .unwrap()
@@ -110,15 +109,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "genes.cnv.cnv_change": {
-                  field: "genes.cnv.cnv_change",
-                  operator: "includes",
-                  operands: ["gain"],
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "gain",
                 },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "includes",
-                  operands: [geneId],
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
                 },
               },
             });
@@ -126,15 +125,15 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "genes.cnv.cnv_change": {
-                  field: "genes.cnv.cnv_change",
-                  operator: "includes",
-                  operands: ["loss"],
+                "gene.cnv.cnv_change": {
+                  field: "gene.cnv.cnv_change",
+                  operator: "=",
+                  operand: "loss",
                 },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "includes",
-                  operands: [geneId],
+                "gene.gene_id": {
+                  field: "gene.gene_id",
+                  operator: "=",
+                  operand: geneId,
                 },
               },
             });
@@ -163,7 +162,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const coreDispatch = useCoreDispatch();
   const createCohort = async (name: string) => {
     const mainFilter = await generateFilters(columnType, geneID);
-    console.log({ mainFilter });
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: mainFilter,

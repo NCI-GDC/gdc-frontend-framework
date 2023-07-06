@@ -62,7 +62,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const generateFilters = useCallback(
     async (ssmId: string) => {
-      console.log({ combinedFilters });
       return await createSet({
         filters: buildCohortGqlOperator(combinedFilters),
       })
@@ -159,7 +158,6 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   const coreDispatch = useCoreDispatch();
   const createCohort = async (name: string) => {
     const mainFilter = await generateFilters(mutationID);
-    console.log({ mainFilter });
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: mainFilter,
