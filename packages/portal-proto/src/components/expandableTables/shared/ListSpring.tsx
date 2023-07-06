@@ -67,6 +67,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
               denominator: item.denominator ?? 0,
               project: item.project,
             }}
+            list={true}
             index={index}
           />
         </div>

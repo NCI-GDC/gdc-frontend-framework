@@ -319,7 +319,11 @@ export const ssmsCreateTableColumn = ({
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      list={false}
+                    />
                   )}
                 </div>
               );
@@ -361,7 +365,11 @@ export const ssmsCreateTableColumn = ({
               return (
                 <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      list={false}
+                    />
                   )}
                 </div>
               );

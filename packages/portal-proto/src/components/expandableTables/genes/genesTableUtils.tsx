@@ -246,7 +246,11 @@ export const geneCreateTableColumn = ({
               return (
                 <div className="flex justify-start">
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      list={false}
+                    />
                   )}
                 </div>
               );
@@ -297,7 +301,11 @@ export const geneCreateTableColumn = ({
                     </div>
                   )}
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <RatioSpring
+                      index={0}
+                      item={{ numerator, denominator }}
+                      list={false}
+                    />
                   )}
                 </div>
               );

@@ -11,11 +11,13 @@ interface Item {
 interface RatioSpringProps {
   item: Item;
   index: number;
+  list: boolean;
 }
 
 const RatioSpring: React.FC<RatioSpringProps> = ({
   item,
   index,
+  list,
 }: RatioSpringProps) => {
   const staggeredSpring = useSpring({
     from: { opacity: 0 },
@@ -29,11 +31,46 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
     <animated.ul style={staggeredSpring}>
       <li key={`subrow-item-${index}`} className="list-none">
         <div className="flex">
-          {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
-          <NumeratorDenominator
-            numerator={numerator}
-            denominator={denominator}
-          />
+          {!list ? (
+            <>
+              <>
+                {project && (
+                  <span className="font-bold mx-0.5">{project}:</span>
+                )}{" "}
+              </>
+              <NumeratorDenominator
+                numerator={numerator}
+                denominator={denominator}
+              />
+            </>
+          ) : (
+            <>
+              <div
+                className="flex [overflow-wrap:anywhere] font-content"
+                data-testid="numeratorDenominatorTest"
+              >
+                {project ? (
+                  <span className="font-bold mx-0.5">{project}:</span>
+                ) : null}
+                <div className="inline-block">
+                  <span>
+                    {denominator === 0 ? 0 : numerator.toLocaleString()}
+                  </span>{" "}
+                  &#47; <span>{denominator.toLocaleString()}</span>
+                  <span>
+                    {` (${
+                      numerator === 0 || denominator === 0
+                        ? "0.00%"
+                        : (numerator / denominator).toLocaleString(undefined, {
+                            style: "percent",
+                            minimumFractionDigits: 2,
+                          })
+                    }) `}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </li>
     </animated.ul>
