@@ -60,7 +60,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
     (item: TableSubrowDataWithRatio, index: number) => {
       return (
         <div className="col-span-1">
-          <div className="flex">
+          <div className="flex items-center">
             <Circle size="0.65em" className="text-primary shrink-0 mr-2" />
             <RatioSpring
               item={{

@@ -256,11 +256,25 @@ export const geneCreateTableColumn = ({
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex justify-start">
+                <>
                   {row.getCanExpand() && (
-                    <RatioSpring index={0} item={{ numerator, denominator }} />
+                    <CohortCreationButton
+                      label={
+                        <NumeratorDenominator
+                          numerator={numerator}
+                          denominator={denominator}
+                          boldNumerator={true}
+                        />
+                      }
+                      numCases={numerator}
+                      handleClick={() => {
+                        setColumnType("ssmaffected");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
+                    />
                   )}
-                </div>
+                </>
               );
             },
           },
