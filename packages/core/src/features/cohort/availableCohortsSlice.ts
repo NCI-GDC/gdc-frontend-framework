@@ -8,6 +8,7 @@ import {
   AnyAction,
   EntityId,
   EntityState,
+  Dictionary,
 } from "@reduxjs/toolkit";
 
 import { CoreState } from "../../reducers";
@@ -1206,7 +1207,7 @@ export const selectCohortById = (
   cohortId: string,
 ): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
-export const selectAllCohorts = (state: CoreState) =>
+export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
   cohortSelectors.selectEntities(state);
 
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
