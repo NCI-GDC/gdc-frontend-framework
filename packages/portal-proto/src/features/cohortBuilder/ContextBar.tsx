@@ -180,13 +180,13 @@ const ContextBar = ({
 
   return (
     <CollapsibleContainer
-      Top={() => (
+      Top={
         <CohortManager
           cohorts={cohorts}
           onSelectionChanged={handleCohortSelection}
           startingId={currentIndex}
         />
-      )}
+      }
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}
