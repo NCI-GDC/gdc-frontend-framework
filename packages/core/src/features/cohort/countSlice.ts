@@ -10,10 +10,7 @@ import { buildCohortGqlOperator, joinFilters } from "./filters";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCurrentCohortFilterOrCaseSet,
-  selectCurrentCohortFilterSet,
-} from "./availableCohortsSlice";
+import { selectCurrentCohortFilterSet } from "./availableCohortsSlice";
 
 export interface CountsData {
   readonly caseCount: number;
@@ -98,9 +95,10 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
-    thunkAPI.getState(),
-  );
+  // TODO remove this old code
+  // const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
+  //   thunkAPI.getState(),
+  // );
   const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
   const caseSSMFilter = buildCohortGqlOperator(
     joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
@@ -137,7 +135,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
     }),
   );
 
-  const cohortFiltersGQL = buildCohortGqlOperator(cohortFiltersWithCaseSet);
+  const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
   const graphQlFilters = {
     filters: cohortFiltersGQL ?? {},
     ssmCaseFilter: caseSSMFilter,

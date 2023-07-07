@@ -14,7 +14,6 @@ import {
   joinFilters,
   OperandValue,
   Operation,
-  selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectFacetByDocTypeAndField,
   useCoreDispatch,
@@ -25,6 +24,7 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
+  selectCurrentCohortGeneAndSSMCaseSet,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -83,8 +83,8 @@ const useGenomicFiltersByNames = (
   }, {});
 };
 
-const useCohortOrCaseSetFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
+const useCohortFacetFilter = (): FilterSet => {
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 export const useGenomicFacetFilter = (): FilterSet => {
@@ -139,7 +139,7 @@ export const useGenesFacets = (
     [],
   );
 
-  const cohortFilters = useCohortOrCaseSetFacetFilter();
+  const cohortFilters = useCohortFacetFilter();
 
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
@@ -233,7 +233,7 @@ export const useGeneAndSSMPanelData = (
 ): GeneAndSSMPanelData => {
   const isDemoMode = useIsDemoApp();
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
+    selectCurrentCohortGeneAndSSMCaseSet(state),
   );
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),

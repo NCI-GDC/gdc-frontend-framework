@@ -409,8 +409,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               },
               "genes.gene_id": {
                 field: "genes.gene_id",
-                operator: "includes",
-                operands: [id],
+                operator: "=",
+                operand: id,
               },
               "cnvs.cnv_change": {
                 field: "cnvs.cnv_change",

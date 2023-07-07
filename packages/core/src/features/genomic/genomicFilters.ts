@@ -5,12 +5,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreState } from "../../reducers";
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  joinFilters,
-} from "../cohort/filters";
-import { selectCurrentCohortFilterOrCaseSet } from "../cohort/availableCohortsSlice";
+import { buildCohortGqlOperator, FilterSet, joinFilters } from "../cohort";
+import { selectCurrentCohortFilters } from "../cohort";
 
 const initialState: FilterSet = {
   mode: "and",
@@ -75,8 +71,7 @@ export const selectGenomicGqlFilters = (
 export const mergeGenomicAndCohortFilters = (
   state: CoreState,
   genomicFilters: FilterSet,
-): FilterSet =>
-  joinFilters(selectCurrentCohortFilterOrCaseSet(state), genomicFilters);
+): FilterSet => joinFilters(selectCurrentCohortFilters(state), genomicFilters);
 
 /**
  * Deprecated

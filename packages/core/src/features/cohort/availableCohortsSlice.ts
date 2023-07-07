@@ -1127,7 +1127,7 @@ export const selectCurrentCohortGqlFilters = (
  * Used to create a cohort that work with both explore and repository indexes
  * @param state
  */
-export const selectCurrentCohortFilterOrCaseSet = (
+export const selectCurrentCohortGeneAndSSMCaseSet = (
   state: CoreState,
 ): FilterSet => {
   const cohort = cohortSelectors.selectById(
@@ -1143,18 +1143,14 @@ export const selectCurrentCohortFilterOrCaseSet = (
  * Main selector of the current Cohort Filters.
  * @param state
  */
-export const selectCurrentCohortFilters = (
-  state: CoreState,
-): FilterSet | undefined => selectCurrentCohortFilterOrCaseSet(state);
-
-/**
- * CurrentCohort filters for GraphQL
- * @param state
- */
-export const selectCurrentCohortFiltersGQL = (
-  state: CoreState,
-): GqlOperation | undefined =>
-  buildCohortGqlOperator(selectCurrentCohortFilterOrCaseSet(state));
+export const selectCurrentCohortFilters = (state: CoreState): FilterSet => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    getCurrentCohortFromCoreState(state),
+  );
+  if (cohort === undefined) return { mode: "and", root: {} };
+  return cohort.filters;
+};
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
@@ -1356,8 +1352,6 @@ export const setActiveCohortList =
 export const createCaseSetsIfNeeded =
   (cohort: Cohort): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch) => {
-    // set the list of all cohorts
-
     if (!cohort) return;
     if (willRequireCaseSet(cohort.filters)) {
       dispatch(

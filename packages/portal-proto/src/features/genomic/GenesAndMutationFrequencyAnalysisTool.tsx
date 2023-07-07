@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  selectCurrentCohortFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
   joinFilters,
   useCoreSelector,
   buildCohortGqlOperator,
@@ -52,7 +52,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneSymbol: undefined,
   });
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
+    selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 
   const genomicFilters: FilterSet = useAppSelector((state) =>

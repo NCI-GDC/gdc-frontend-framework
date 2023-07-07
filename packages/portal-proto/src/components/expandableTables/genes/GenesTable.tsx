@@ -109,13 +109,13 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "gene.cnv.cnv_change": {
-                  field: "gene.cnv.cnv_change",
+                "genes.cnv.cnv_change": {
+                  field: "genes.cnv.cnv_change",
                   operator: "=",
                   operand: "gain",
                 },
-                "gene.gene_id": {
-                  field: "gene.gene_id",
+                "genes.gene_id": {
+                  field: "genes.gene_id",
                   operator: "=",
                   operand: geneId,
                 },
@@ -125,13 +125,13 @@ export const GenesTable: React.FC<GenesTableProps> = ({
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
-                "gene.cnv.cnv_change": {
-                  field: "gene.cnv.cnv_change",
+                "genes.cnv.cnv_change": {
+                  field: "genes.cnv.cnv_change",
                   operator: "=",
                   operand: "loss",
                 },
-                "gene.gene_id": {
-                  field: "gene.gene_id",
+                "genes.gene_id": {
+                  field: "genes.gene_id",
                   operator: "=",
                   operand: geneId,
                 },
