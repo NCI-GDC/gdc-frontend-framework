@@ -54,28 +54,6 @@ export const GenesTable: React.FC<GenesTableProps> = ({
   const { setEntityMetadata } = useContext(SummaryModalContext);
   const [columnType, setColumnType] = useState<columnFilterType>(null);
 
-  // const mergeObjects = (obj1, obj2) => {
-  //   const mergedObj = {
-  //     mode: obj1.mode || obj2.mode,
-  //     root: { ...obj1.root },
-  //   };
-
-  //   for (const key in obj2.root) {
-  //     if (mergedObj.root.hasOwnProperty(key)) {
-  //       const existingOperands = mergedObj.root[key].operands || [];
-  //       const newOperands = obj2.root[key].operands || [];
-  //       mergedObj.root[key] = {
-  //         ...mergedObj.root[key],
-  //         operands: Array.from(new Set([...existingOperands, ...newOperands])),
-  //       };
-  //     } else {
-  //       mergedObj.root[key] = obj2.root[key];
-  //     }
-  //   }
-
-  //   return mergedObj;
-  // };
-
   useEffect(() => {
     if (response.isLoading) {
       setLoading(true);

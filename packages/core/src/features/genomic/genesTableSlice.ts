@@ -15,7 +15,6 @@ import {
   filterSetToOperation,
   selectCurrentCohortFilterSet,
 } from "../cohort";
-// import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
   Union,
@@ -196,30 +195,9 @@ export const fetchGenesTable = createAsyncThunk<
         searchFilters,
       ),
     );
-    // const geneAndCohortFilters = mergeGenomicAndCohortFilters(
-    //   thunkAPI.getState(),
-    //   genomicFilters,
-    // );
-    // const filters = isDemoMode
-    //   ? buildCohortGqlOperator(
-    //       joinFilters(overwritingDemoFilter, genomicFilters),
-    //     )
-    //   : buildCohortGqlOperator(geneAndCohortFilters);
     const filterContents = genesTableFilters?.content
       ? Object(genesTableFilters?.content)
       : [];
-
-    // const tableFilters = convertFilterToGqlFilter(
-    //   appendFilterToOperation(
-    //     isDemoMode
-    //       ? (filterSetToOperation(
-    //           joinFilters(overwritingDemoFilter, genomicFilters),
-    //         ) as Union | Intersection | undefined)
-    //       : (filterSetToOperation(geneAndCohortFilters) as
-    //           UnionOrIntersection | undefined),
-    //     searchFilters,
-    //   ),
-    // );
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},

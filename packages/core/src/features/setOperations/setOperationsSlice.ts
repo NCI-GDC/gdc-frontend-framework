@@ -10,7 +10,7 @@ export const setOperationSlice = graphqlAPISlice.injectEndpoints({
           viewer {
             explore {
               genes {
-                hits(case_filters: $filters, first: 0) {
+                hits(filters: $filters, first: 0) {
                   total
                 }
               }
@@ -30,7 +30,7 @@ export const setOperationSlice = graphqlAPISlice.injectEndpoints({
           viewer {
             explore {
               ssms {
-                hits(case_filters: $filters, first: 0) {
+                hits(filters: $filters, first: 0) {
                   total
                 }
               }
@@ -50,7 +50,7 @@ export const setOperationSlice = graphqlAPISlice.injectEndpoints({
           viewer {
             explore {
               cases {
-                hits(case_filters: $filters, first: 0) {
+                hits(filters: $filters, first: 0) {
                   total
                 }
               }

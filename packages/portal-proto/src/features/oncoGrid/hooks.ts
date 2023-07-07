@@ -13,7 +13,7 @@ import {
   isIncludes,
   OperandValue,
   Operation,
-  selectCurrentCohortFilterOrCaseSet,
+  selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   selectFacetByDocTypeAndField,
   useCurrentCohortFilters,
@@ -63,7 +63,7 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 };
 
 const useCohortOrCaseSetFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {

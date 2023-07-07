@@ -74,7 +74,8 @@ const ListSpring: React.FC<ListSpringProps> = ({
         </div>
       );
     },
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [subDataSorted],
   );
 
   return (

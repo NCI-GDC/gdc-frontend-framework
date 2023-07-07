@@ -147,12 +147,8 @@ export const useGenesFacets = (
   const prevEnumValues = usePrevious(enumValues);
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const selectLocalGenomicFiltersPlusCohortFilters = (_ignore) =>
-      joinFilters(isDemoMode ? demoFilter : cohortFilters, genomicFilters);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selectCohortFilters = (_ignore) =>
       isDemoMode ? demoFilter : cohortFilters;
-    // joinFilters(isDemoMode ? demoFilter : cohortFilters, genomicFilters);
     if (
       !facet ||
       !isEqual(prevCohortFilters, cohortFilters) ||
