@@ -43,6 +43,7 @@ import {
   TablePlaceholder,
 } from "../shared";
 import download from "@/utils/download";
+import { convertDateToString } from "@/utils/date";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -285,6 +286,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               : []),
           ],
         },
+        filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
         pretty: true,
