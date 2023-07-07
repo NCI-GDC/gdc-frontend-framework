@@ -20,11 +20,13 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
+  onSelectionChanged,
 }: {
   initialName: string;
   onClose: () => void;
   cohortId: string;
   filters: FilterSet;
+  onSelectionChanged: (id: string) => void;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
@@ -55,7 +57,7 @@ const SaveCohortModal = ({
         coreDispatch(
           setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
         );
-        //onSelectionChanged(payload.id);
+        onSelectionChanged(payload.id);
         coreDispatch(
           removeCohort({
             shouldShowMessage: false,

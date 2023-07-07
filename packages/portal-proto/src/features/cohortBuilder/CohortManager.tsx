@@ -204,7 +204,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
-  console.log(showSaveCohort);
 
   const menu_items = [
     ...cohorts
@@ -377,6 +376,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           onClose={() => setShowSaveCohort(false)}
           cohortId={cohortId}
           filters={filters}
+          onSelectionChanged={onSelectionChanged}
         />
       )}
 
