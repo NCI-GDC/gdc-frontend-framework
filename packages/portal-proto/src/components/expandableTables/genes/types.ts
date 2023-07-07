@@ -27,8 +27,14 @@ export interface Gene {
   };
   symbol: string;
   survival: Survival;
-  CNVGain: string;
-  CNVLoss: string;
+  CNVGain: {
+    numerator: number;
+    denominator: number;
+  };
+  CNVLoss: {
+    numerator: number;
+    denominator: number;
+  };
   cytoband: string[];
   annotations: boolean;
   mutations: string;

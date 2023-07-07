@@ -81,11 +81,11 @@ const ListSpring: React.FC<ListSpringProps> = ({
     <>
       <animated.div
         ref={subRef}
-        className="flex flex-col bg-inherit absolute mt-2 ml-2 p-2"
+        className="flex flex-col bg-inherit absolute mt-2 ml-0.5 p-0.5"
         style={horizontalSpring}
       >
         <span className="font-semibold text-[1rem] mb-2">{subrowTitle}</span>
-        <div className="columns-4 gap-4 font-content text-sm">
+        <div className="columns-4 gap-1 font-content text-[13.5px]">
           {subDataSorted.map((item, i) => renderItems({ ...item }, i))}
         </div>
       </animated.div>

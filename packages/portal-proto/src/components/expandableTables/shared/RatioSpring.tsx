@@ -29,7 +29,10 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
 
   return (
     <animated.ul style={staggeredSpring}>
-      <li key={`subrow-item-${index}`} className="list-none">
+      <li
+        key={`subrow-item-${index}`}
+        className={`list-none ${list && "-ml-2"}`}
+      >
         <div className="flex">
           {!list ? (
             <>
