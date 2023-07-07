@@ -38,7 +38,7 @@ $sort: [Sort]
         }
       }
       filteredCases: cases {
-        hits(first: 0, case_filters: $ssmCaseFilter) {
+        hits(first: 0, case_filters: $ssmCaseFilter, filters: $ssmsTable_filters) {
           total
         }
       }
@@ -259,29 +259,50 @@ const generateFilter = ({
   //     )
   //   : genomicPlusCohortFilters;
 
-  const cohortFiltersGQl = buildCohortGqlOperator(
-    // for Gene Summary, combine it with genesymbol
-    geneSymbol
-      ? joinFilters(
-          {
-            mode: "and",
-            root: {
-              "genes.symbol": {
-                field: "genes.symbol",
-                operator: "includes",
-                operands: [geneSymbol],
-              },
+  // convert cohortFilters to GQL
+
+  const cohortFiltersGQl = buildCohortGqlOperator(cohortFiltersOrCase);
+
+  //   // for Gene Summary, combine it with genesymbol
+  //   geneSymbol
+  //     ? joinFilters(
+  //         {
+  //           mode: "and",
+  //           root: {
+  //             "genes.symbol": {
+  //               field: "genes.symbol",
+  //               operator: "includes",
+  //               operands: [geneSymbol],
+  //             },
+  //           },
+  //         },
+  //         cohortFiltersOrCase,
+  //       )
+  //     : cohortFiltersOrCase,
+  // );
+
+  const genomicFiltersWithPossibleGeneSymbol = geneSymbol
+    ? joinFilters(
+        {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
             },
           },
-          cohortFiltersOrCase,
-        )
-      : cohortFiltersOrCase,
-  );
+        },
+        genomicFilters,
+      )
+    : genomicFilters;
 
   const searchFilters = buildSSMSTableSearchFilters(searchTerm);
   const tableFilters = convertFilterToGqlFilter(
     appendFilterToOperation(
-      filterSetToOperation(genomicFilters) as UnionOrIntersection | undefined,
+      filterSetToOperation(genomicFiltersWithPossibleGeneSymbol) as
+        | UnionOrIntersection
+        | undefined,
       searchFilters,
     ),
   );
