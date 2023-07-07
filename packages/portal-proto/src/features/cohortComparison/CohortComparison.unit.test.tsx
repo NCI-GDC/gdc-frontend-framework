@@ -1,8 +1,8 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import {
-  cohortDemo1 as mockDemo1,
-  cohortDemo2 as mockDemo2,
+  cohortComparisonDemo1 as mockDemo1,
+  cohortComparisonDemo2 as mockDemo2,
 } from "../apps/CohortComparisonApp";
 import CohortComparison from "./CohortComparison";
 
@@ -37,6 +37,7 @@ describe("<CohortComparison />", () => {
           primary_cohort: mockDemo1,
           comparison_cohort: mockDemo2,
         }}
+        demoMode={false}
       />,
     );
     expect(
