@@ -70,7 +70,7 @@ export const useSetupInitialCohorts = (): void => {
     isSuccess,
     isError,
     JSON.stringify(outdatedCohortsIds),
-    JSON.stringify(cohorts),
+    JSON.stringify(cohorts.map((cohort) => cohort.id)),
   ]);
   /* eslint-enable */
 };
