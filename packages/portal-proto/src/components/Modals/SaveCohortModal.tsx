@@ -15,8 +15,6 @@ import {
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 
-import { modalStyles } from "./styles";
-
 const SaveCohortModal = ({
   initialName = "",
   onClose,
@@ -84,19 +82,22 @@ const SaveCohortModal = ({
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
       title={showReplaceCohort ? "Replace Existing Cohort" : "Save Cohort"}
       closeButtonLabel="Cancel"
-      classNames={modalStyles}
       size={"md"}
       withinPortal={false}
+      classNames={{
+        modal: "p-0",
+        title: "text-xl",
+      }}
       centered
     >
       {showReplaceCohort ? (
         <>
           <div className="p-4">
-            <p className="font-content">
+            <p className="font-content text-sm">
               A saved cohort with same name already exists. Are you sure you
               want to replace it?
             </p>
-            <p className="text-sm font-content mt-1">
+            <p className="text-xs font-content mt-1">
               You cannot undo this action.
             </p>
           </div>
