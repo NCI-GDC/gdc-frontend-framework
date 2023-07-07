@@ -122,6 +122,14 @@ interface MatrixArg {
   host: string;
   launchGdcMatrix: boolean;
   filter0: FilterSet;
+  opts: MatrixArgOpts;
+}
+
+interface MatrixArgOpts {
+  matrix: MatrixArgOptsMatrix;
+}
+
+interface MatrixArgOptsMatrix {
   allow2selectSamples?: SelectSamples;
 }
 
@@ -138,10 +146,14 @@ function getMatrixTrack(
     host: props.basepath || (basepath as string),
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,
-    allow2selectSamples: {
-      buttonText: "Create Cohort",
-      attributes: ["case.case_id"],
-      callback,
+    opts: {
+      matrix: {
+        allow2selectSamples: {
+          buttonText: "Create Cohort",
+          attributes: ["case.case_id"],
+          callback,
+        },
+      },
     },
   };
 
