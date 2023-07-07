@@ -240,47 +240,7 @@ const generateFilter = ({
   cohortFilters, // the cohort filters which used to filter the cases
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
-  // for case summary SMT we send caseFilter and cohortFilters carry filter associated with the project
-  const cohortFiltersOrCase = caseFilter ? caseFilter : cohortFilters;
-  // if gene symbol combine geneSymbol with cohort and genomic filters else only use genomicPlusCohortFilters without geneSymbol.
-  // const geneAndCohortFilters = geneSymbol
-  //   ? joinFilters(
-  //       {
-  //         mode: "and",
-  //         root: {
-  //           "genes.symbol": {
-  //             field: "genes.symbol",
-  //             operator: "includes",
-  //             operands: [geneSymbol],
-  //           },
-  //         },
-  //       },
-  //       genomicPlusCohortFilters,
-  //     )
-  //   : genomicPlusCohortFilters;
-
-  // convert cohortFilters to GQL
-
-  const cohortFiltersGQl = buildCohortGqlOperator(cohortFiltersOrCase);
-
-  //   // for Gene Summary, combine it with genesymbol
-  //   geneSymbol
-  //     ? joinFilters(
-  //         {
-  //           mode: "and",
-  //           root: {
-  //             "genes.symbol": {
-  //               field: "genes.symbol",
-  //               operator: "includes",
-  //               operands: [geneSymbol],
-  //             },
-  //           },
-  //         },
-  //         cohortFiltersOrCase,
-  //       )
-  //     : cohortFiltersOrCase,
-  // );
-
+  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -327,7 +287,10 @@ const generateFilter = ({
       op: "and",
     },
     // for table filters use both cohort and genomic filter along with search filter
-    caseFilters: cohortFiltersGQl ?? {},
+    // for case summary we need to not use case filter
+    caseFilters: caseFilter
+      ? buildCohortGqlOperator(caseFilter)
+      : cohortFiltersGQl,
     ssmsTable_filters: tableFilters,
     consequenceFilters: {
       content: [
