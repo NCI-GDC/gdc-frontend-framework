@@ -44,17 +44,17 @@ const ListSpring: React.FC<ListSpringProps> = ({
     immediate: true,
   });
 
-  const subDataSorted = useMemo(() => {
-    return subData
-      .map((x): TableSubrowDataWithRatio => {
-        return { ...x, ratio: itemRatio(x) };
-      })
-      .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
-        if (itemRatio(a) > itemRatio(b)) return -1;
-        if (itemRatio(a) < itemRatio(b)) return 1;
-        return 0;
-      });
-  }, [subData]);
+  const subDataSorted = useMemo(
+    () =>
+      subData
+        .map((x): TableSubrowDataWithRatio => ({ ...x, ratio: itemRatio(x) }))
+        .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
+          if (itemRatio(a) > itemRatio(b)) return -1;
+          if (itemRatio(a) < itemRatio(b)) return 1;
+          return 0;
+        }),
+    [subData],
+  );
 
   const renderItems = useCallback(
     (item: TableSubrowDataWithRatio, index: number) => {
