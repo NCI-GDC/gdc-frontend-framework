@@ -20,7 +20,7 @@ const StickyControl = ({
   >
     <span>
       <ActionIcon
-        data-testid="pinunpinButton"
+        data-testid="button-cohort-bar-pin-unpin"
         variant="filled"
         className="bg-primary-darker hover:bg-primary-darkest h-12 w-12"
         onClick={() => handleIsSticky(!isSticky)}
