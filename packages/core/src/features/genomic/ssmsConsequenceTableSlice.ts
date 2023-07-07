@@ -23,7 +23,7 @@ query ConsequencesTable (
   viewer {
     explore {
       ssms {
-        hits(first: 1, case_filters: $filters) {
+        hits(first: 1, filters: $filters) {
           edges {
             node {
               consequence {
