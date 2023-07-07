@@ -156,6 +156,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             value: [projectData.project_id],
           },
         },
+        size: projectData.summary?.case_count,
       },
       done: () => setBiospecimenDownloadActive(false),
     });
@@ -186,6 +187,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             value: [projectData.project_id],
           },
         },
+        size: projectData.summary?.case_count,
       },
       done: () => setBiospecimenDownloadActive(false),
     });
@@ -214,6 +216,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             value: [projectData.project_id],
           },
         },
+        size: projectData.summary?.case_count,
       },
       done: () => setClinicalDownloadActive(false),
     });
@@ -244,6 +247,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             value: [projectData.project_id],
           },
         },
+        size: projectData.summary?.case_count,
       },
       done: () => setClinicalDownloadActive(false),
     });
