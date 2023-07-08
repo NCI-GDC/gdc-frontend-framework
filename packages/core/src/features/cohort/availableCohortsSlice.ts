@@ -168,14 +168,16 @@ export const createCaseSet = createAsyncThunk<
       REQUIRES_CASE_SET_FILTERS,
     );
 
-    const { query, parameters, variables } =
-      buildCaseSetGQLQueryAndVariablesFromFilters(
-        dividedFilters.withPrefix,
-        caseSetId,
-      );
-
-    const graphQL = buildCaseSetMutationQuery(parameters, query);
-    return graphqlAPI(graphQL, variables);
+    const graphQL = buildCaseSetMutationQuery(
+      "$inputFilters: CreateSetInput",
+      "case (input: $inputFilters) { set_id size }",
+    );
+    return graphqlAPI(graphQL, {
+      inputFilters: {
+        filters: buildCohortGqlOperator(dividedFilters.withPrefix),
+        set_id: `genes-ssms-${caseSetId}`,
+      },
+    });
   },
 );
 
