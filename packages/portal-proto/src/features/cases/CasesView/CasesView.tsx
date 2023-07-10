@@ -29,6 +29,8 @@ import {
   HandleChangeInput,
   VerticalTable,
 } from "@/features/shared/VerticalTable";
+import saveAs from "file-saver";
+import { convertDateToString } from "@/utils/date";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -81,6 +83,7 @@ export const ContextualCasesView: React.FC = () => {
     fields: [
       "case_id",
       "submitter_id",
+      "submitter_slide_ids",
       "primary_site",
       "disease_type",
       "project.project_id",
@@ -317,6 +320,60 @@ export const ContextualCasesView: React.FC = () => {
     }
   };
 
+  const handleJSONDownload = () => {
+    const json = data.map(
+      ({
+        filesCount,
+        experimental_strategies,
+        primary_site,
+        submitter_slide_ids,
+        disease_type,
+        case_id,
+        project_id,
+        program,
+        submitter_id,
+        age_at_diagnosis,
+        race,
+        gender,
+        ethnicity,
+        vital_status,
+      }) => {
+        return {
+          summary: {
+            file_count: filesCount,
+            experimental_strategies: experimental_strategies.map(
+              ({ experimental_strategy }) => {
+                return { experimental_strategy };
+              },
+            ),
+            primary_site,
+            submitter_slide_ids: submitter_slide_ids,
+            disease_type,
+            case_id,
+            project: {
+              project_id,
+              program: {
+                name: program,
+              },
+            },
+            submitter_id,
+            diagnoses: [{ age_at_diagnosis }],
+            demographic: {
+              race,
+              gender,
+              ethnicity,
+              vital_status,
+            },
+          },
+        };
+      },
+    );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, `cohort.${convertDateToString(new Date())}.json`);
+  };
+
   return (
     <div className="flex flex-col mx-1" data-testid="cases-table">
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
@@ -361,7 +418,12 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary" className="bg-base-max">
+              <Button
+                onClick={handleJSONDownload}
+                variant="outline"
+                color="primary"
+                className="bg-base-max"
+              >
                 JSON
               </Button>
             </ButtonTooltip>

@@ -230,6 +230,7 @@ export interface ProjectDefaults {
 export interface AnnotationDefaults {
   readonly id: string;
   readonly entity_submitter_id: string;
+  readonly submitter_slide_ids: string[];
   readonly notes: string;
   readonly submitter_id: string;
   readonly classification: string;
