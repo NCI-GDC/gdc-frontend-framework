@@ -266,6 +266,17 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
     );
   };
 
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol([
+    operation.operand.toString(),
+  ]);
+
+  let value = "";
+  if (operation.field === "genes.gene_id") {
+    value = isSuccess ? geneSymbolDict[operation.operand] ?? "..." : "...";
+  } else {
+    value = operation.operand.toString();
+  }
+
   return (
     <>
       {showLabel ? (
@@ -278,7 +289,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
         >
           {operation.operator}
         </button>
-        <QueryRepresentationText>{operation.operand}</QueryRepresentationText>
+        <QueryRepresentationText>{value}</QueryRepresentationText>
       </div>
     </>
   );

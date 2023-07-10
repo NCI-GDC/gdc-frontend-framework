@@ -49,7 +49,7 @@ const caseSetCountQuery = `query caseSetCounts(
   $filters: FiltersArgument
 ) {
   viewer {
-    repository {
+    explore {
       cases {
         hits(filters: $filters, first: 0) {
           total
@@ -62,7 +62,7 @@ const caseSetCountQuery = `query caseSetCounts(
 const transformCaseSetCountResponse = (
   response: GraphQLApiResponse<any>,
 ): number => {
-  return response.data.viewer.repository.cases.hits.total;
+  return response.data.viewer.explore.cases.hits.total;
 };
 
 export const setCountSlice = graphqlAPISlice
@@ -208,7 +208,7 @@ export const setCountSlice = graphqlAPISlice
           $filters: FiltersArgument
         ) {
           viewer {
-            repository {
+            explore {
               cases {
                 hits(filters: $filters, first: 0) {
                   total

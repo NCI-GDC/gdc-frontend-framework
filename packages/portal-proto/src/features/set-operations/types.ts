@@ -6,7 +6,8 @@ export type SelectedEntity = {
 export type SelectedEntities = SelectedEntity[];
 
 export interface SetOperationsChartInputProps {
-  selectedEntities: SelectedEntities;
+  selectedEntities: SelectedEntities | undefined;
   selectedEntityType?: SetOperationEntityType;
   isLoading?: boolean;
+  isCohortComparisonDemo?: boolean;
 }
