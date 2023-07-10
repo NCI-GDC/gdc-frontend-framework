@@ -11,10 +11,9 @@ import {
   GQLDocType,
   GQLIndexType,
   isIncludes,
-  joinFilters,
   OperandValue,
   Operation,
-  selectCurrentCohortFilterOrCaseSet,
+  selectCurrentCohortFilters,
   selectCurrentCohortFiltersByName,
   selectFacetByDocTypeAndField,
   useCurrentCohortFilters,
@@ -64,7 +63,7 @@ const useGenomicFilterByName = (field: string): OperandValue => {
 };
 
 const useCohortOrCaseSetFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilterOrCaseSet(state));
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 const useGenomicFacetFilter = (): FilterSet => {
@@ -100,7 +99,8 @@ export const useGenesFacet = (
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selectLocalGenomicFiltersPlusCohortFilters = (_ignore) =>
-      joinFilters(cohortFilters, genomicFilters);
+      cohortFilters;
+
     if (
       !facet ||
       !isEqual(prevCohortFilters, currentCohortFilters) ||
@@ -112,7 +112,8 @@ export const useGenesFacet = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectLocalGenomicFiltersPlusCohortFilters,
+          caseFilterSelector: selectLocalGenomicFiltersPlusCohortFilters,
+          localFilters: genomicFilters,
         }),
       );
     }

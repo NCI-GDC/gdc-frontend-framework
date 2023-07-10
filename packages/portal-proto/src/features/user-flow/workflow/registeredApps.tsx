@@ -176,7 +176,7 @@ export const REGISTERED_APPS = [
       <ProteinPaintIcon
         height={48}
         width={80}
-        viewbox="-12 0 80 48"
+        viewBox="-12 0 80 48"
         role="img"
         aria-label="ProteinPaint icon"
       />

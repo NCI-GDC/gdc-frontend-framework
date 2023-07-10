@@ -14,6 +14,7 @@ import {
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
   addNewCohort,
+  createCaseSetsIfNeeded,
 } from "./features/cohort/availableCohortsSlice";
 import {
   fetchCohortCaseCounts,
@@ -73,5 +74,16 @@ startCoreListening({
     listenerApi.dispatch(
       addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
     );
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(addNewCohortWithFilterAndMessage),
+  effect: async (_action, listenerApi) => {
+    const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
+      (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
+    );
+    // This optionally creates a case set if needed for the new cohort
+    listenerApi.dispatch(createCaseSetsIfNeeded(cohorts[0]));
   },
 });
