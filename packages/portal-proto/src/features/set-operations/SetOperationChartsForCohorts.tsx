@@ -14,6 +14,10 @@ import {
   SetOperationsThree,
   SetOperationsTwo,
 } from "@/features/set-operations/SetOperations";
+import {
+  cohortComparisonDemo1,
+  cohortComparisonDemo2,
+} from "../apps/CohortComparisonApp";
 
 /**
  * This component handles the case when the user has selected cohorts for set operations.
@@ -23,6 +27,7 @@ import {
  */
 const SetOperationChartsForCohorts = ({
   selectedEntities,
+  isCohortComparisonDemo,
 }: SetOperationsChartInputProps): JSX.Element => {
   // set up three calls to create case set from filters for cohorts 0, 1, and 2
   const [createSet0, createSet0Response] =
@@ -36,18 +41,22 @@ const SetOperationChartsForCohorts = ({
   const allCohorts = useCoreSelector((state) => selectAllCohorts(state));
 
   const cohorts = useMemo(() => {
-    return selectedEntities.map((se) => allCohorts[se.id]);
+    return selectedEntities?.map((se) => allCohorts[se.id]);
   }, [selectedEntities, allCohorts]);
 
   // if the cohorts are not already case sets, create them
   useEffect(() => {
     createSet0({
-      filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
+      filters: isCohortComparisonDemo
+        ? buildCohortGqlOperator(cohortComparisonDemo1.filter)
+        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
     });
     createSet1({
-      filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
+      filters: isCohortComparisonDemo
+        ? buildCohortGqlOperator(cohortComparisonDemo2.filter)
+        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
     });
-    if (cohorts.length == 3)
+    if (cohorts?.length == 3)
       // if there are 3 cohorts, create the third one
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
@@ -61,30 +70,41 @@ const SetOperationChartsForCohorts = ({
     createSet0Response.isLoading ||
     createSet1Response.isUninitialized ||
     createSet1Response.isLoading ||
-    (cohorts.length == 3 && // if there are 3 cohorts, check the third one
+    (cohorts?.length == 3 && // if there are 3 cohorts, check the third one
       (createSet2Response.isUninitialized || createSet2Response.isLoading));
 
   // create the sets that will be used for the set operations
   const selectedSets = useMemo(() => {
     return [
-      { name: cohorts[0].name, id: createSet0Response.data },
-      { name: cohorts[1].name, id: createSet1Response.data },
-      ...(cohorts.length == 3
+      {
+        name: isCohortComparisonDemo
+          ? cohortComparisonDemo1.name
+          : cohorts[0]?.name,
+        id: createSet0Response.data,
+      },
+      {
+        name: isCohortComparisonDemo
+          ? cohortComparisonDemo2.name
+          : cohorts[1]?.name,
+        id: createSet1Response.data,
+      },
+      ...(cohorts?.length == 3
         ? [{ name: cohorts[2].name, id: createSet2Response.data }]
         : []),
     ];
   }, [
+    isCohortComparisonDemo,
     cohorts,
     createSet0Response.data,
     createSet1Response.data,
     createSet2Response.data,
   ]);
 
-  return selectedEntities.length === 0 || loading ? (
+  return selectedEntities?.length === 0 || loading ? (
     <div className="flex items-center justify-center w-100 h-96">
       <Loader size={100} />
     </div>
-  ) : selectedEntities.length === 2 ? (
+  ) : isCohortComparisonDemo || selectedEntities?.length === 2 ? (
     <SetOperationsTwo
       sets={selectedSets}
       entityType="cohort"

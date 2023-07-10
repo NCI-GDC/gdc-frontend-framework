@@ -14,7 +14,10 @@ export interface CohortModel {
   modified_datetime: string;
 }
 
-export type CohortAdd = Pick<CohortModel, "name" | "filters" | "type">;
+export type CohortAdd = {
+  cohort: Pick<CohortModel, "name" | "filters" | "type">;
+  delete_existing: boolean;
+};
 export type CohortUpdate = Pick<
   CohortModel,
   "id" | "name" | "filters" | "type"
