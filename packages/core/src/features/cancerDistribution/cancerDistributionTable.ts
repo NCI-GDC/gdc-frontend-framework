@@ -1,5 +1,5 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
-import { GqlIntersection } from "../gdcapi/filters";
+import { GqlIntersection, Includes } from "../gdcapi/filters";
 import { Buckets, Bucket } from "../gdcapi/gdcapi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
@@ -68,7 +68,22 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         gene: string;
         contextFilters: FilterSet | undefined;
       }) => {
-        const gqlContextFilter = buildCohortGqlOperator(request.contextFilters);
+        const contextGene =
+          ((request.contextFilters?.root["genes.gene_id"] as Includes)
+            ?.operands as string[]) ?? [];
+        const contextWithGene = {
+          mode: "and",
+          root: {
+            ...request.contextFilters?.root,
+            ["genes.gene_id"]: {
+              operator: "includes",
+              field: "genes.gene_id",
+              operands: [request.gene, ...contextGene],
+            } as Includes,
+          },
+        };
+
+        const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
         return {
           graphQLQuery: `
         query CancerDistributionTable(
@@ -160,13 +175,13 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                {
-                  op: "in",
-                  content: {
-                    field: "genes.gene_id",
-                    value: [request.gene],
-                  },
-                },
+                // {
+                //   op: "in",
+                //   content: {
+                //     field: "genes.gene_id",
+                //     value: [request.gene],
+                //   },
+                // },
                 ...(gqlContextFilter
                   ? (gqlContextFilter as GqlIntersection)?.content
                   : []),
@@ -189,13 +204,13 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: "MISSING",
                   },
                 },
-                {
-                  op: "in",
-                  content: {
-                    field: "genes.gene_id",
-                    value: [request.gene],
-                  },
-                },
+                // {
+                //   op: "in",
+                //   content: {
+                //     field: "genes.gene_id",
+                //     value: [request.gene],
+                //   },
+                // },
                 ...(gqlContextFilter
                   ? (gqlContextFilter as GqlIntersection)?.content
                   : []),
@@ -218,13 +233,13 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                {
-                  op: "in",
-                  content: {
-                    field: "genes.gene_id",
-                    value: [request.gene],
-                  },
-                },
+                // {
+                //   op: "in",
+                //   content: {
+                //     field: "genes.gene_id",
+                //     value: [request.gene],
+                //   },
+                // },
                 ...(gqlContextFilter
                   ? (gqlContextFilter as GqlIntersection)?.content
                   : []),
@@ -247,13 +262,13 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                {
-                  op: "in",
-                  content: {
-                    field: "genes.gene_id",
-                    value: [request.gene],
-                  },
-                },
+                // {
+                //   op: "in",
+                //   content: {
+                //     field: "genes.gene_id",
+                //     value: [request.gene],
+                //   },
+                // },
                 ...(gqlContextFilter
                   ? (gqlContextFilter as GqlIntersection)?.content
                   : []),

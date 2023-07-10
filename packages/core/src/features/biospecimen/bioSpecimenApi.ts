@@ -8,7 +8,7 @@ query BiospecimenCard_relayQuery(
     viewer {
       repository {
         cases {
-          hits(first: 1, filters: $filters) {
+          hits(first: 1, case_filters: $filters) {
             edges {
               node {
                 case_id

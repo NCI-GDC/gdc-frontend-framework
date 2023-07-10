@@ -3,7 +3,13 @@ import { startCase } from "lodash";
 import { Tooltip } from "@mantine/core";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Genes, SingleGene, Gene, GeneToggledHandler } from "./types";
+import {
+  Genes,
+  SingleGene,
+  Gene,
+  GeneToggledHandler,
+  columnFilterType,
+} from "./types";
 import {
   IoMdTrendingDown as SurvivalIcon,
   IoIosArrowDropdownCircle as DownIcon,
@@ -25,6 +31,7 @@ import {
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
+import { CohortCreationButton } from "@/components/CohortCreationButton";
 
 interface GeneCreateTableColumnProps {
   accessor: string;
@@ -42,6 +49,8 @@ interface GeneCreateTableColumnProps {
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
+  setColumnType: React.Dispatch<React.SetStateAction<columnFilterType>>;
+  setShowCreateCohort: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const geneCreateTableColumn = ({
@@ -56,6 +65,8 @@ export const geneCreateTableColumn = ({
   setEntityMetadata,
   genomicFilters,
   handleMutationCountClick,
+  setColumnType,
+  setShowCreateCohort,
 }: GeneCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -244,15 +255,25 @@ export const geneCreateTableColumn = ({
                 "SSMSAffectedCasesInCohort"
               ] ?? { numerator: 0, denominator: 1 };
               return (
-                <div className="flex justify-start">
+                <>
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      list={false}
+                    <CohortCreationButton
+                      label={
+                        <RatioSpring
+                          index={0}
+                          item={{ numerator, denominator }}
+                          list={false}
+                        />
+                      }
+                      numCases={numerator}
+                      handleClick={() => {
+                        setColumnType("ssmaffected");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -334,15 +355,25 @@ export const geneCreateTableColumn = ({
                 denominator: 1,
               };
               return (
-                <div className={`content-center`}>
+                <>
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      list={false}
+                    <CohortCreationButton
+                      label={
+                        <RatioSpring
+                          index={0}
+                          item={{ numerator, denominator }}
+                          list={false}
+                        />
+                      }
+                      numCases={numerator}
+                      handleClick={() => {
+                        setColumnType("cnvgain");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -369,15 +400,25 @@ export const geneCreateTableColumn = ({
                 denominator: 1,
               };
               return (
-                <div className={`content-center`}>
+                <>
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      list={false}
+                    <CohortCreationButton
+                      label={
+                        <RatioSpring
+                          index={0}
+                          item={{ numerator, denominator }}
+                          list={false}
+                        />
+                      }
+                      numCases={numerator}
+                      handleClick={() => {
+                        setColumnType("cnvloss");
+                        setGeneID(row.original["geneID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
-                </div>
+                </>
               );
             },
           },
@@ -398,7 +439,7 @@ export const geneCreateTableColumn = ({
             ),
             cell: ({ row }) => {
               return (
-                <div>
+                <>
                   {row.getCanExpand() && (
                     <div className={`flex flex-col items-center`}>
                       {row.original["cytoband"].map((cytoband, key) => {
@@ -410,7 +451,7 @@ export const geneCreateTableColumn = ({
                       })}
                     </div>
                   )}
-                </div>
+                </>
               );
             },
           },

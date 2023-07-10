@@ -25,10 +25,11 @@ import {
   TableColumnDefinition,
   TableHeader,
   ToggledCheck,
+  ImpactHeaderWithTooltip,
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
-import { ImpactHeaderWithTooltip } from "../shared/ImpactHeaderWithTooltip";
+import CohortCreationButton from "@/components/CohortCreationButton/CohortCreationButton";
 
 interface SSMSCreateTableColumnProps {
   accessor: string;
@@ -48,6 +49,7 @@ interface SSMSCreateTableColumnProps {
   setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
   isModal?: boolean;
   isConsequenceTable?: boolean;
+  setShowCreateCohort?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ssmsCreateTableColumn = ({
@@ -64,6 +66,7 @@ export const ssmsCreateTableColumn = ({
   setEntityMetadata,
   isModal,
   isConsequenceTable,
+  setShowCreateCohort,
 }: SSMSCreateTableColumnProps): TableColumnDefinition => {
   switch (accessor) {
     case "select":
@@ -365,10 +368,19 @@ export const ssmsCreateTableColumn = ({
               return (
                 <div className="flex justify-between flex-nowrap items-center">
                   {row.getCanExpand() && (
-                    <RatioSpring
-                      index={0}
-                      item={{ numerator, denominator }}
-                      list={false}
+                    <CohortCreationButton
+                      label={
+                        <RatioSpring
+                          index={0}
+                          item={{ numerator, denominator }}
+                          list={false}
+                        />
+                      }
+                      numCases={numerator}
+                      handleClick={() => {
+                        setMutationID(row.original["mutationID"]);
+                        setShowCreateCohort(true);
+                      }}
                     />
                   )}
                 </div>

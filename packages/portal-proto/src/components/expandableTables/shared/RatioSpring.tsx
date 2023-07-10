@@ -44,6 +44,7 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
               <NumeratorDenominator
                 numerator={numerator}
                 denominator={denominator}
+                boldNumerator
               />
             </>
           ) : (

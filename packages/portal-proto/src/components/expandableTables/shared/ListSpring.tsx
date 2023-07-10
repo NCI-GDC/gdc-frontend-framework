@@ -44,17 +44,17 @@ const ListSpring: React.FC<ListSpringProps> = ({
     immediate: true,
   });
 
-  const subDataSorted = useMemo(() => {
-    return subData
-      .map((x): TableSubrowDataWithRatio => {
-        return { ...x, ratio: itemRatio(x) };
-      })
-      .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
-        if (itemRatio(a) > itemRatio(b)) return -1;
-        if (itemRatio(a) < itemRatio(b)) return 1;
-        return 0;
-      });
-  }, [subData]);
+  const subDataSorted = useMemo(
+    () =>
+      subData
+        .map((x): TableSubrowDataWithRatio => ({ ...x, ratio: itemRatio(x) }))
+        .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
+          if (itemRatio(a) > itemRatio(b)) return -1;
+          if (itemRatio(a) < itemRatio(b)) return 1;
+          return 0;
+        }),
+    [subData],
+  );
 
   const renderItems = useCallback(
     (item: TableSubrowDataWithRatio, index: number) => {
@@ -73,19 +73,18 @@ const ListSpring: React.FC<ListSpringProps> = ({
         </div>
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [subDataSorted],
+    [],
   );
 
   return (
     <>
       <animated.div
         ref={subRef}
-        className="flex flex-col bg-inherit absolute mt-2 ml-0.5 p-0.5"
+        className="absolute mt-2 ml-2"
         style={horizontalSpring}
       >
         <span className="font-semibold text-[1rem] mb-2">{subrowTitle}</span>
-        <div className="columns-4 gap-1 font-content text-[13.5px]">
+        <div className="grid grid-cols-4 gap-column-4 gap-row-1 font-content text-sm">
           {subDataSorted.map((item, i) => renderItems({ ...item }, i))}
         </div>
       </animated.div>

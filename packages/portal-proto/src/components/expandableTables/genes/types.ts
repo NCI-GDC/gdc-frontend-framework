@@ -89,6 +89,7 @@ export interface GenesTableProps {
   visibleColumns: Column[];
   isDemoMode?: boolean;
   genomicFilters: FilterSet;
+  cohortFilters: FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }
 
@@ -116,3 +117,5 @@ export const DEFAULT_GTABLE_ORDER = [
   { id: "mutations", columnName: "# Mutations", visible: true },
   { id: "annotations", columnName: "Annotations", visible: true },
 ] as Column[];
+
+export type columnFilterType = "cnvgain" | "cnvloss" | "ssmaffected" | null;

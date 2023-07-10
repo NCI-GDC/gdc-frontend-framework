@@ -35,7 +35,7 @@ const imageViewerGraphlQLQuery = `
       repository {
         cases {
           hits(
-            filters: $filters
+            case_filters: $filters
             first: $cases_size
             offset: $cases_offset
           ) {
