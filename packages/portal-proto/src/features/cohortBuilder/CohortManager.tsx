@@ -18,7 +18,6 @@ import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
   addNewCohort,
   removeCohort,
-  copyCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
   useCoreDispatch,
@@ -33,11 +32,9 @@ import {
   FilterSet,
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
-  useAddCohortMutation,
   resetSelectedCases,
   Modals,
   selectCurrentModal,
-  setCurrentCohortId,
   useGetCasesQuery,
   Operation,
   updateActiveCohortFilter,
@@ -45,7 +42,6 @@ import {
   showModal,
   DataStatus,
   setCohort,
-  updateCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -144,14 +140,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
 
-  // util function to check for duplicate names while saving the cohort
-  // here we filter the current cohort id so as not to so duplicate name warning
-  // passed to SavingCohortModal as a prop
-  const onSaveCohort = (name: string) =>
-    cohorts
-      .filter((cohort) => cohort.id !== cohortId)
-      .every((cohort) => cohort.name !== name);
-
   // Cohort specific actions
   const newCohort = useCallback(
     (customName: string) => {
@@ -202,7 +190,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   ]);
 
   // Cohort persistence
-  const [addCohort, { isLoading: isAddCohortLoading }] = useAddCohortMutation();
   const [deleteCohortFromBE, { isLoading: isDeleteCohortLoading }] =
     useDeleteCohortMutation();
   const [updateCohort, { isLoading: isUpdateCohortLoading }] =
@@ -264,8 +251,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       data-tour="cohort_management_bar"
       className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
     >
-      {(isAddCohortLoading ||
-        isCohortIdFetching ||
+      {(isCohortIdFetching ||
         isDeleteCohortLoading ||
         isUpdateCohortLoading) && (
         <LoadingOverlay data-testid="loading-spinner" visible />
@@ -387,47 +373,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       {showSaveCohort && (
         <SaveCohortModal
           initialName={cohortName}
-          opened
           onClose={() => setShowSaveCohort(false)}
-          onActionClick={async (newName: string) => {
-            const prevCohort = cohortId;
-            const addBody = {
-              name: newName,
-              type: "static",
-              filters:
-                Object.keys(filters.root).length > 0
-                  ? buildCohortGqlOperator(filters)
-                  : {},
-            };
-
-            await addCohort(addBody)
-              .unwrap()
-              .then((payload) => {
-                coreDispatch(
-                  copyCohort({ sourceId: prevCohort, destId: payload.id }),
-                );
-                // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-                // which does not exist will cause this
-                // Therefore, copy the unsaved cohort to the new cohort id received from
-                // the BE.
-                coreDispatch(setCurrentCohortId(payload.id));
-                coreDispatch(updateCohortName(newName));
-                coreDispatch(
-                  setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-                );
-                onSelectionChanged(payload.id);
-                coreDispatch(
-                  removeCohort({
-                    shouldShowMessage: false,
-                    currentID: prevCohort,
-                  }),
-                );
-              })
-              .catch(() =>
-                coreDispatch(setCohortMessage(["error|saving|allId"])),
-              );
-          }}
-          onNameChange={onSaveCohort}
+          cohortId={cohortId}
+          filters={filters}
+          onSelectionChanged={onSelectionChanged}
         />
       )}
 
