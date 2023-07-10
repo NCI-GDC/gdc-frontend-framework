@@ -112,12 +112,11 @@ export const buildGraphGLBucketsQuery = (
         }
      }`;
   else
-    return `query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
+    return `query QueryBucketCounts($filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
-                case_filters: $caseFilters,
                 filters:$filters,
                 aggregations_filter_themselves: false
               ) {
