@@ -7,6 +7,8 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
+    LOADING_SPINNER = '[data-testid="loading-spinner"] >> nth=0'
+
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
 
@@ -26,14 +28,18 @@ class GenericLocators:
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
+    TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
-    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]'
+    BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
+    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="button-bottom-switchSpring"]'
+
+    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
     FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
     FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
 
-    SHOWING_NUMBER_OF_ITEMS = "[data-testid='showing-count']"
+    SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -92,6 +98,14 @@ class BasePage:
         locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
         return self.get_text(locator)
 
+    def get_table_header_text_by_column(self,column):
+        """
+        Gets text of table header by column.
+        Column indexing begins at '1'
+        """
+        table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
+        return self.get_text(table_header_text_locator)
+
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
@@ -124,6 +138,14 @@ class BasePage:
 
     def wait_for_selector(self, locator):
         self.driver.wait_for_selector(locator)
+
+    def wait_for_loading_spinner_to_be_visible(self):
+        locator = GenericLocators.LOADING_SPINNER
+        self.wait_until_locator_is_visible(locator)
+
+    def wait_for_loading_spinner_to_detatch(self):
+        locator = GenericLocators.LOADING_SPINNER
+        self.wait_until_locator_is_detached(locator)
 
     def wait_for_data_testid_to_be_visible(self,locator):
         """Normalizes a data-testid and waits for it to be visible"""
@@ -180,8 +202,11 @@ class BasePage:
     # Checks to see if specified filter card is present
     def is_filter_card_present(self, filter_group_name):
         locator = GenericLocators.FILTER_GROUP_IDENT(filter_group_name)
-        result = self.is_visible(locator)
-        return result
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
@@ -219,6 +244,16 @@ class BasePage:
     def click_create_or_save_button_in_cohort_modal(self):
         """Clicks 'Create' or 'Save' in cohort modal"""
         locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        self.click(locator)
+
+    def click_column_selector_button(self):
+        """Clicks table column selector button"""
+        locator = GenericLocators.BUTTON_COLUMN_SELECTOR
+        self.click(locator)
+
+    def click_switch_for_column_selector(self, switch_name):
+        """In the column selector pop-up modal, clicks specified switch"""
+        locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):

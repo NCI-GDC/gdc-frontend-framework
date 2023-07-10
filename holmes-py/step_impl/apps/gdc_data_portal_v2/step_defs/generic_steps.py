@@ -1,6 +1,8 @@
 import json
 import tarfile
 import time
+import re
+
 from datetime import datetime as dt
 
 from getgauge.python import step, before_spec, after_spec, data_store
@@ -200,11 +202,28 @@ def verify_showing_item_text(number_of_items_text):
     showing_items_text = APP.shared.get_showing_count_text()
     assert f"{showing_items_text}" in showing_items_text, f"The page is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table header text is correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table header has the correct text"""
+    for k, v in enumerate(table):
+        table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
+        # Remove new lines from input
+        table_header_text_by_column = table_header_text_by_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_column = re.sub(' +', ' ', table_header_text_by_column)
+        assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
     is_data_testid_visible = APP.shared.wait_for_data_testid_to_be_visible(data_testid)
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
+
+@step("Wait for loading spinner")
+def wait_for_loading_spinner_to_appear_then_disappear():
+    """Waits for specified data-testid to be present on the page"""
+    APP.shared.wait_for_loading_spinner_to_be_visible()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
@@ -280,6 +299,17 @@ def click_radio_buttons(table):
 def click_create_or_save_in_cohort_modal():
     """Clicks 'Create' or 'Save' in cohort modal"""
     APP.shared.click_create_or_save_button_in_cohort_modal()
+
+@step("Select or deselect these options from the table column selector <table>")
+def click_create_or_save_in_cohort_modal(table):
+    """
+    Clicks table column selector button.
+    In the column selector pop-up modal that appears, it clicks the specified switch.
+    """
+    APP.shared.click_column_selector_button()
+    for k, v in enumerate(table):
+        APP.shared.click_switch_for_column_selector(v[0])
+    APP.shared.click_column_selector_button()
 
 @step("Undo Action")
 def click_undo_in_message():
