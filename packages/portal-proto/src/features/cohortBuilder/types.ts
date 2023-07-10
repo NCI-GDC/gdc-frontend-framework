@@ -2,6 +2,6 @@ import { Cohort } from "@gff/core";
 
 export interface CohortManagerProps {
   readonly cohorts: Cohort[];
-  onSelectionChanged: (string) => void;
+  onSelectionChanged: (id: string) => void;
   startingId: string;
 }

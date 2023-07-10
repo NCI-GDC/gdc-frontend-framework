@@ -26,8 +26,8 @@ export const cohortApiSlice = coreCreateApi({
       providesTags: (_result, _error, arg) => [{ type: "Cohort", id: arg }],
     }),
     addCohort: builder.mutation<CohortModel, CohortAdd>({
-      query: (cohort) => ({
-        url: "/cohorts",
+      query: ({ cohort, delete_existing }) => ({
+        url: `/cohorts?delete_existing=${delete_existing}`,
         method: "POST",
         body: cohort,
       }),

@@ -12,21 +12,12 @@ import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
 import PValue from "./PValue";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
-
+import { CohortComparisonType } from "./CohortComparison";
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
   readonly counts: number[];
-  readonly cohorts?: {
-    primary_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
-    comparison_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
-  };
+  readonly cohorts: CohortComparisonType;
 }
 
 export const FacetCard: React.FC<FacetCardProps> = ({
@@ -160,7 +151,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     y: cohort.map((facet) => (facet.count / counts[idx]) * 100),
     customdata: cohort.map((facet) => facet.count),
     hovertemplate: `<b>${
-      cohorts[idx === 0 ? "primary_cohort" : "comparison_cohort"].name
+      cohorts[idx === 0 ? "primary_cohort" : "comparison_cohort"]?.name
     }</b><br /> %{y:.0f}% Cases (%{customdata:,})<extra></extra>`,
     marker: {
       color: idx === 0 ? "#1F77B4" : "#BD5800",
