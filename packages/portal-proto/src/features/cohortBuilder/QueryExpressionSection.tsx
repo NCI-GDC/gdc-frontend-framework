@@ -157,7 +157,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         value={[expandedState[currentCohortId], setExpandedState]}
       >
         <div className="flex flex-col w-full bg-primary">
-          <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
+          <div
+            data-testid="text-cohort-filters-top-row"
+            className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
+          >
             <OverflowTooltippedLabel
               label={currentCohortName}
               className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
@@ -166,7 +169,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             </OverflowTooltippedLabel>
             <>
               <button
-                data-testid="clear-all-cohort-filters"
+                data-testid="button-clear-all-cohort-filters"
                 className={`text-sm font-montserrat pl-2 ${
                   noFilters
                     ? "cursor-not-allowed text-secondary-contrast-darkest"
@@ -179,6 +182,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               </button>
               <div className="display flex gap-2 ml-auto mr-3">
                 <ActionIcon
+                  data-testid="button-expand-collapse-cohort-queries"
                   variant={allQueryExpressionsCollapsed ? "filled" : "outline"}
                   color="white"
                   onClick={() =>
@@ -209,6 +213,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   )}
                 </ActionIcon>
                 <ActionIcon
+                  data-testid="button-expand-collapse-cohort-filters-section"
                   variant={filtersSectionCollapsed ? "outline" : "filled"}
                   color={filtersSectionCollapsed ? "white" : "white"}
                   onClick={() =>
@@ -233,6 +238,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             </>
           </div>
           <div
+            data-testid="text-cohort-filters"
             className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
               filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
             }`}
@@ -244,7 +250,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             ref={filtersRef}
           >
             {noFilters ? (
-              <p className="pb-2 font-content">No filters currently applied.</p>
+              <p
+                data-testid="text-no-active-cohort-filter"
+                className="pb-2 font-content"
+              >
+                No filters currently applied.
+              </p>
             ) : (
               Object.keys(filters.root).map((k) => {
                 return convertFilterToComponent(filters.root[k]);
