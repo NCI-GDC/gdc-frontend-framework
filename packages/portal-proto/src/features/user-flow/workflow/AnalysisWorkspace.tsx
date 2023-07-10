@@ -9,7 +9,6 @@ import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
-
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
@@ -122,12 +121,14 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+  const skipSelectionScreen =
+    router?.query?.skipSelectionScreen === "true" || isDemoMode;
 
   useEffect(() => {
     setCohortSelectionOpen(
-      !isDemoMode && appInfo?.selectionScreen !== undefined,
+      !skipSelectionScreen && appInfo?.selectionScreen !== undefined,
     );
-  }, [app, isDemoMode, appInfo]);
+  }, [app, appInfo, skipSelectionScreen]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
@@ -146,6 +147,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
         >
           <AnalysisBreadcrumbs
             onDemoApp={isDemoMode}
+            skipSelectionScreen={skipSelectionScreen}
             rightComponent={
               app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
             }

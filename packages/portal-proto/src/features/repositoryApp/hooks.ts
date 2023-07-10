@@ -147,7 +147,7 @@ export const useLocalFilters = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    const selectCohortAndRepositoryFilters = () => allFilters;
+    const selectCohortAndRepositoryFilters = () => cohortFilters;
     if (
       !facet ||
       !isEqual(prevAllFilters, allFilters) ||
@@ -161,7 +161,8 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectCohortAndRepositoryFilters,
+          caseFilterSelector: selectCohortAndRepositoryFilters,
+          localFilters: localFilters,
         }),
       );
     }
@@ -175,6 +176,8 @@ export const useLocalFilters = (
     prevAllFilters,
     prevEnumValues,
     enumValues,
+    cohortFilters,
+    localFilters,
   ]);
 
   return {

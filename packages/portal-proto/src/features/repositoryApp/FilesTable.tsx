@@ -56,7 +56,8 @@ const FilesTables: React.FC = () => {
     isError,
     isSuccess,
   } = useGetFilesQuery({
-    filters: cohortGqlOperator,
+    case_filters: buildCohortGqlOperator(cohortFilters),
+    filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
       "annotations", //annotations
       "cases.project", //project_id
