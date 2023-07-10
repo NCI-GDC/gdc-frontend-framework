@@ -24,13 +24,13 @@ const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
   viewer {
     repository {
       cases {
-        hits(filters: $filters) {
+        hits(case_filters: $filters) {
           total
         }
       }
       files {
         aggregations(
-          filters: $fileFilters
+          case_filters: $fileFilters
           aggregations_filter_themselves: false
         ) {
           files__data_type: data_type {

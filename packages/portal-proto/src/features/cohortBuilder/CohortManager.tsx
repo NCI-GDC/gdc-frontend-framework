@@ -167,7 +167,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     isError: isErrorCaseIds,
   } = useGetCasesQuery(
     {
-      filters: buildCohortGqlOperator(currentCohort?.filters ?? undefined),
+      case_filters: buildCohortGqlOperator(currentCohort?.filters ?? undefined),
       fields: ["case_id"],
       size: 50000,
     },

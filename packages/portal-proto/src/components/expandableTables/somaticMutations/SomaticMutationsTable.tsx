@@ -9,13 +9,20 @@ import { SomaticMutationsTableProps, SomaticMutations } from "./types";
 import { ExpandedState, ColumnDef } from "@tanstack/react-table";
 import { getMutation, ssmsCreateTableColumn } from "./smTableUtils";
 import {
+  FilterSet,
   GDCSsmsTable,
+  addNewCohortWithFilterAndMessage,
+  buildCohortGqlOperator,
+  useCoreDispatch,
+  useCreateCaseSetFromFiltersMutation,
   useGetSomaticMutationTableSubrowQuery,
   usePrevious,
 } from "@gff/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { Column, ExpTable, Subrow } from "../shared";
-import isEqual from "lodash/isEqual";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import { isEqual } from "lodash";
+import { LoadingOverlay } from "@mantine/core";
 
 export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   status,
@@ -34,13 +41,51 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   projectId = undefined,
   isDemoMode = false,
   isModal = false,
+  combinedFilters,
 }: SomaticMutationsTableProps) => {
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
+  const [loading, setLoading] = useState(false);
   const [expandedProxy, setExpandedProxy] = useState<ExpandedState>({});
   const [expanded, setExpanded] = useState<ExpandedState>(
     {} as Record<number, boolean>,
   );
   const [expandedId, setExpandedId] = useState<number>(undefined);
   const [mutationID, setMutationID] = useState(undefined);
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [response.isLoading]);
+
+  const generateFilters = useCallback(
+    async (ssmId: string) => {
+      return await createSet({
+        filters: buildCohortGqlOperator(combinedFilters),
+      })
+        .unwrap()
+        .then((setId) => {
+          return {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+              "ssms.ssm_id": {
+                field: "ssms.ssm_id",
+                operator: "includes",
+                operands: [ssmId],
+              },
+            },
+          } as FilterSet;
+        });
+    },
+    [combinedFilters, createSet],
+  );
 
   const useSomaticMutationsTableFormat = useCallback(
     (initialData: GDCSsmsTable) => {
@@ -59,14 +104,14 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
   );
 
   const transformResponse = useSomaticMutationsTableFormat(initialData);
-
+  const prevtransformResponse = usePrevious(transformResponse);
   useEffect(() => {
-    if (transformResponse[0]?.ssmsTotal)
-      handleSMTotal(transformResponse[0].ssmsTotal);
-    else handleSMTotal(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transformResponse]);
+    if (!isEqual(prevtransformResponse, transformResponse)) {
+      if (transformResponse[0]?.ssmsTotal)
+        handleSMTotal(transformResponse[0].ssmsTotal);
+      else handleSMTotal(0);
+    }
+  }, [handleSMTotal, prevtransformResponse, transformResponse]);
 
   const handleExpandedProxy = (exp: ExpandedState) => {
     setExpandedProxy(exp);
@@ -109,6 +154,19 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const coreDispatch = useCoreDispatch();
+  const createCohort = async (name: string) => {
+    const mainFilter = await generateFilters(mutationID);
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
   const columns = useMemo<ColumnDef<SomaticMutations>[]>(() => {
     return visibleColumns.map(({ id: accessor }: Column) => {
       return ssmsCreateTableColumn({
@@ -124,6 +182,7 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
         isDemoMode,
         setEntityMetadata,
         isModal,
+        setShowCreateCohort,
       });
     });
   }, [
@@ -139,10 +198,20 @@ export const SomaticMutationsTable: React.FC<SomaticMutationsTableProps> = ({
     setMutationID,
     handleSurvivalPlotToggled,
     setEntityMetadata,
+    setShowCreateCohort,
   ]);
 
   return (
     <>
+      {loading && <LoadingOverlay visible />}
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            createCohort(newName);
+          }}
+        />
+      )}
       <ExpTable
         status={status}
         data={transformResponse}

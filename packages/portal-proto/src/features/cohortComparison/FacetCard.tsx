@@ -10,10 +10,9 @@ import {
 import { calculatePercentageAsNumber, humanify } from "src/utils";
 import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
-import CohortCreationButton from "@/components/CohortCreationButton";
 import PValue from "./PValue";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 import { CohortComparisonType } from "./CohortComparison";
-
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
@@ -234,14 +233,13 @@ export const FacetCard: React.FC<FacetCardProps> = ({
               >
                 <td className="pl-2">{value}</td>
                 <td>
-                  <CohortCreationButton
+                  <CohortCreationButtonWrapper
                     numCases={cohort1Value}
                     label={cohort1Value?.toLocaleString() || "--"}
                     caseFilters={
                       cohort1Value === undefined
                         ? undefined
-                        : cohorts.primary_cohort?.filter &&
-                          joinFilters(
+                        : joinFilters(
                             cohorts.primary_cohort.filter,
                             formattedData[0][idx].filter,
                           )
@@ -252,14 +250,13 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
                 </td>
                 <td>
-                  <CohortCreationButton
+                  <CohortCreationButtonWrapper
                     numCases={cohort2Value}
                     label={cohort2Value?.toLocaleString() || "--"}
                     caseFilters={
                       cohort2Value === undefined
                         ? undefined
-                        : cohorts.comparison_cohort?.filter &&
-                          joinFilters(
+                        : joinFilters(
                             cohorts.comparison_cohort.filter,
                             formattedData[1][idx].filter,
                           )
