@@ -74,20 +74,6 @@ export const fetchGeneFrequencies = createAsyncThunk<
     genomicFilters,
     cohortFilters,
   }: GenomicTableProps): Promise<GraphQLApiResponse> => {
-    // const filters = isDemoMode
-    //   ? buildCohortGqlOperator(
-    //       joinFilters(overwritingDemoFilter, genomicFilters),
-    //     )
-    //   : buildCohortGqlOperator(
-    //       mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
-    //     );
-
-    // const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
-
-    // const caseFilters = buildCohortGqlOperator(
-    //   isDemoMode ? overwritingDemoFilter : cohortFilters,
-    // );
-
     const caseFilters = buildCohortGqlOperator(cohortFilters);
 
     const graphQlVariables = {
