@@ -28,6 +28,7 @@ interface CancerDistributionTableTSVDownloadData {
   disease_type: string[];
   primary_site: string[];
   ssm_affected_cases: string;
+  ssm_percent: number;
 }
 import {
   NumeratorDenominator,
@@ -501,6 +502,35 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     saveAs(blob, fileName);
   };
 
+  const handleJSONDownload = () => {
+    const json = cancerDistributionTableDownloadData.map(
+      ({ project, disease_type, primary_site, ssm_percent, num_mutations }) => {
+        return {
+          project_id: project,
+          disease_type,
+          site: primary_site,
+          num_affected_cases: data.ssmFiltered[project] ?? 0,
+          num_affected_cases_total: data.ssmTotal[project] ?? 0,
+          num_affected_cases_percent: ssm_percent,
+          num_cnv_gain: data.cnvGain[project] ?? 0,
+          num_cnv_gain_percent: data.cnvGain
+            ? data.cnvGain[project] / data.cnvTotal[project]
+            : 0,
+          num_cnv_loss: data.cnvLoss[project] ?? 0,
+          num_cnv_loss_percent: data.cnvLoss
+            ? data.cnvLoss[project] / data.cnvTotal[project]
+            : 0,
+          num_cnv_cases_total: data.cnvTotal[project] ?? 0,
+          mutations_counts: num_mutations,
+        };
+      },
+    );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, "cancer-distribution-data.json");
+  };
+
   return (
     <VerticalTable
       tableData={displayedData}
@@ -510,8 +540,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       showControls={false}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <ButtonTooltip label=" " comingSoon={true}>
-            <FunctionButton>JSON</FunctionButton>
+          <ButtonTooltip label=" ">
+            <FunctionButton onClick={handleJSONDownload}>JSON</FunctionButton>
           </ButtonTooltip>
           <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
         </div>
