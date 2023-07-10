@@ -172,15 +172,6 @@ export const fetchGenesTable = createAsyncThunk<
       cohortFilters,
     }: GenomicTableProps,
   ): Promise<GraphQLApiResponse> => {
-    // filters for the current cohort
-    // const cohortFilters = buildCohortGqlOperator(
-    //   selectCurrentCohortFilters(thunkAPI.getState()),
-    // );
-
-    // if demo mode is on, we use the demo filter instead of the cohort filter
-    // const demoOrCohort = isDemoMode
-    //   ? buildCohortGqlOperator(overwritingDemoFilter)
-    //   : cohortFilters;
     const caseFilters = buildCohortGqlOperator(cohortFilters);
     const cohortFiltersContent = caseFilters?.content
       ? Object(caseFilters?.content)
