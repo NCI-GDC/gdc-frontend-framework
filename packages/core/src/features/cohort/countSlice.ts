@@ -95,10 +95,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  // TODO remove this old code
-  // const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
-  //   thunkAPI.getState(),
-  // );
   const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
   const caseSSMFilter = buildCohortGqlOperator(
     joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
