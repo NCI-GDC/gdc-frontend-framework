@@ -48,7 +48,8 @@ const useCohortCentricFiles = () => {
 
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const { data: fileData } = useGetFilesQuery({
-    filters: buildCohortGqlOperator(allFilters),
+    case_filters: buildCohortGqlOperator(cohortFilters),
+    filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
       "annotations", //annotations
       "cases.project", //project_id

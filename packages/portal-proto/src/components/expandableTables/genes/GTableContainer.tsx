@@ -164,8 +164,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
+    cohortFilters: cohortFilters,
   });
 
   useEffect(() => {
@@ -408,6 +407,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               visibleColumns={visibleColumns}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
+              cohortFilters={cohortFilters}
               handleMutationCountClick={handleMutationCountClick}
             />
           </div>
