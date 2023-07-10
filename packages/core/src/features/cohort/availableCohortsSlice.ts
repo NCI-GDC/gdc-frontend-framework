@@ -1126,7 +1126,7 @@ export const selectCurrentCohortGqlFilters = (
 /**
  * Returns either a filterSet or a filter containing a caseSetId that was created
  * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
- * Used to create a cohort that work with both explore and repository indexes
+ * Used to create a cohort that works with both explore and repository indexes
  * @param state
  */
 export const selectCurrentCohortGeneAndSSMCaseSet = (

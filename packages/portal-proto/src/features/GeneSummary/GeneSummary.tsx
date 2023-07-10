@@ -9,7 +9,7 @@ import {
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
-  selectCurrentCohortFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
 } from "@gff/core";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
@@ -79,7 +79,7 @@ const GeneView = ({
 }: GeneViewProps) => {
   const isDemo = useIsDemoApp();
   const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
+    selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
