@@ -271,21 +271,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         method: "POST",
       },
       params: {
-        filters: {
-          op: "and",
-          content: [
-            {
-              content: {
-                field: "genes.is_cancer_gene_census",
-                value: ["true"],
-              },
-              op: "in",
-            },
-            ...(buildCohortGqlOperator(combinedFilters)?.content
-              ? Object(buildCohortGqlOperator(combinedFilters)?.content)
-              : []),
-          ],
-        },
+        filters:
+          Object(buildCohortGqlOperator(combinedFilters)?.content)[0] ?? {},
         filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
