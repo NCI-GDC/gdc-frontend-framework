@@ -12,6 +12,10 @@ import {
   availableCohortsReducer,
   addNewCohortWithFilterAndMessage,
   divideCurrentCohortFilterSetFilterByPrefix,
+  divideFilterSetByPrefix,
+  buildCaseSetGQLQueryAndVariablesFromFilters,
+  buildCaseSetMutationQuery,
+  REQUIRES_CASE_SET_FILTERS,
   processCaseSetResponse,
 } from "../availableCohortsSlice";
 import * as cohortSlice from "../availableCohortsSlice";
@@ -765,29 +769,27 @@ describe("caseSet creation", () => {
   afterAll(() => {
     jest.clearAllMocks();
   });
-  // TODO: remove this code once code is removed from availableCohorts
-  /* Deprecating this test because it is no longer relevant.
-const cohortFilters: FilterSet = {
-  mode: "and",
-  root: {
-    "genes.symbol": {
-      field: "genes.symbol",
-      operands: ["KRAS"],
-      operator: "includes",
-    },
-    "ssms.ssm_id": {
-      field: "ssms.ssm_id",
-      operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
-      operator: "includes",
-    },
-    "cases.primary_site": {
-      field: "cases.primary_site",
-      operands: ["pancreas"],
-      operator: "includes",
-    },
-  },
-};
 
+  const cohortFilters: FilterSet = {
+    mode: "and",
+    root: {
+      "genes.symbol": {
+        field: "genes.symbol",
+        operands: ["KRAS"],
+        operator: "includes",
+      },
+      "ssms.ssm_id": {
+        field: "ssms.ssm_id",
+        operands: ["84aef48f-31e6-52e4-8e05-7d5b9ab15087"],
+        operator: "includes",
+      },
+      "cases.primary_site": {
+        field: "cases.primary_site",
+        operands: ["pancreas"],
+        operator: "includes",
+      },
+    },
+  };
 
   test("divide the cohort filters", () => {
     const dividedFilters = divideFilterSetByPrefix(
@@ -825,9 +827,6 @@ const cohortFilters: FilterSet = {
     expect(dividedFilters).toEqual(expected);
   });
 
-   */
-
-  /* Deprecated
   test("build the createSetQuery", () => {
     const dividedFilters = divideFilterSetByPrefix(
       cohortFilters,
@@ -892,7 +891,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
  }
 }`);
   });
-  */
+
   test("extract caseset response", () => {
     const data = {
       genesCases: { set_id: "genes-4kaetNCo-HlpwBloLEcRy}", size: 4941 },
