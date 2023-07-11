@@ -3,6 +3,7 @@ from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_IDENT = lambda text: f'text="{text}"'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
+
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
@@ -11,6 +12,9 @@ class GenericLocators:
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
+
+    BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = '[data-testid="button-clear-all-cohort-filters"]'
+    TEXT_NO_ACTIVE_COHORT_FILTERS = '[data-testid="text-no-active-cohort-filter"]'
 
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
@@ -49,9 +53,9 @@ class BasePage:
         self.driver.goto(url)
 
     # Force: Whether to bypass the actionability checks
-    def click(self, locator, force=False):
+    def click(self, locator, force=False, timeout=45000):
         self.wait_until_locator_is_visible(locator)
-        self.driver.locator(locator).click(force=force)
+        self.driver.locator(locator).click(force=force,timeout=timeout)
 
     def hover(self, locator):
         """Hover over given locator"""
@@ -208,6 +212,14 @@ class BasePage:
             return False
         return True
 
+    def is_no_active_cohort_filter_text_present(self):
+        """
+        Returns if the text 'No filters currently applied.' is displayed
+        in the active cohort filter area
+        """
+        text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
+        return self.is_visible(text_no_active_filter_locator)
+
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
         self.click(locator)
@@ -245,6 +257,16 @@ class BasePage:
         """Clicks 'Create' or 'Save' in cohort modal"""
         locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
         self.click(locator)
+
+    def clear_active_cohort_filters(self):
+        """
+        Clears the active cohort filters by clicking the "Clear All" button
+        """
+        if not self.is_no_active_cohort_filter_text_present():
+            button_clear_all_active_cohort_filters_locator = GenericLocators.BUTTON_CLEAR_ACTIVE_COHORT_FILTERS
+            self.click(button_clear_all_active_cohort_filters_locator)
+            text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
+            self.wait_for_data_testid_to_be_visible(text_no_active_filter_locator)
 
     def click_column_selector_button(self):
         """Clicks table column selector button"""
