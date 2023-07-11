@@ -157,8 +157,6 @@ export const useEnumFacets = (
   const prevEnumValues = usePrevious(enumValues);
   const prevFilterLength = usePrevious(facet.length);
 
-  console.log("currentCohortFilters", currentCohortFilters);
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     if (
