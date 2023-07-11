@@ -53,6 +53,7 @@ import {
   selectCohortFilterSetById,
   selectCohortNameById,
   selectCurrentCohortFiltersByNames,
+  useCurrentCohortWithGeneAndSsmCaseSet,
   getCohortFilterForAPI,
   selectAllCohorts,
 } from "./availableCohortsSlice";
@@ -122,6 +123,7 @@ export {
   selectCurrentCohortGqlFilters,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
+  useCurrentCohortWithGeneAndSsmCaseSet,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
