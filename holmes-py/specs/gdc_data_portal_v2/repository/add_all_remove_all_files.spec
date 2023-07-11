@@ -42,6 +42,8 @@ tags: gdc-data-portal-v2, repository, regression
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |GATK4 MuTect2        |
+* Wait for loading spinner
+* Pause "2" seconds
 * Select "Add All" on the Repository page
 * Is modal with text "files to the cart" present on the page and "Keep Modal"
 * Select "Add All" on the Repository page

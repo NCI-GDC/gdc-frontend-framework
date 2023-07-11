@@ -17,6 +17,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|---------------------|
   |Gender           |female               |
   |Vital Status     |alive                |
+* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "test save 1" in the Cohort Bar section
@@ -29,6 +30,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection                    |
   |-----------------|-----------------------------|
   |Disease Type     |adenomas and adenocarcinomas |
+* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
 * The secondary Cohort Bar save screen should appear
@@ -59,6 +61,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|
   |Tobacco Smoking Status   |1                            |
+* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * "Delete" "has been deleted" and "remove modal" in the Cohort Bar section

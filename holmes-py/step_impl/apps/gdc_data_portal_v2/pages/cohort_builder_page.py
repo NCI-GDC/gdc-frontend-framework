@@ -27,14 +27,13 @@ class CohortBuilderPageLocators:
     QUERY_EXPRESSION_TEXT = lambda text: f'div:text("{text}")'
 
     ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = '//input[@aria-label="show only properties with values"]'
-    SPINNER_IDENT = f'[repeatcount="indefinite"]'
 
 class CohortBuilderPage(BasePage):
 
     def __init__(self, driver: Page, url) -> None:
         super().__init__(driver)
         self.driver = driver
-        self.URL = "{}/analysis_page?app=CohortBuilder".format(url)
+        self.URL = "{}analysis_page?app=CohortBuilder".format(url)
 
     def navigate(self):
         self.goto(self.URL)
@@ -95,7 +94,8 @@ class CohortBuilderPage(BasePage):
     def click_only_show_properties_with_values_checkbox(self):
         locator = CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
         self.click(locator)
-        self.wait_until_locator_is_detached(CohortBuilderPageLocators.SPINNER_IDENT)
+        self.wait_for_loading_spinner_to_be_visible()
+        self.wait_for_loading_spinner_to_detatch()
 
     # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):
