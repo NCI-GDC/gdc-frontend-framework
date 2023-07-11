@@ -7,8 +7,8 @@ class MutationFrequencyLocators:
     BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
 
 class MutationFrequencyPage(BasePage):
-    def __init__(self, driver: Page, url: str) -> None:
-        self.URL = "{}/analysis_page?app=MutationFrequencyApp".format(url)
+    def __init__(self, driver: Page, url) -> None:
+        self.URL = "{}analysis_page?app=MutationFrequencyApp".format(url)
         self.driver = driver  # driver is PW page
         super().__init__(self.driver)
 

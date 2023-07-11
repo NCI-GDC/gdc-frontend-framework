@@ -15,8 +15,8 @@ class ClinicalDataAnalysisLocators:
     ANALYSIS_CARD = lambda card_name: f"[data-testid='{card_name}-card']"
 
 class ClinicalDataAnalysisPage(BasePage):
-    def __init__(self, driver: Page, url: str) -> None:
-        self.URL = "{}/analysis_page?app=CDave".format(url)
+    def __init__(self, driver: Page, url) -> None:
+        self.URL = "{}analysis_page?app=CDave".format(url)
         self.driver = driver  # driver is PW page
 
     def visit(self):
