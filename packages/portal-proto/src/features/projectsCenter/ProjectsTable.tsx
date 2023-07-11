@@ -277,8 +277,6 @@ const ProjectsTable: React.FC = () => {
           "primary_site",
           "program.name",
           "summary.case_count",
-          "summary.data_categories.data_category",
-          "summary.data_categories.case_count",
           "summary.experimental_strategies.experimental_strategy",
           "summary.experimental_strategies.case_count",
           "summary.file_count",
