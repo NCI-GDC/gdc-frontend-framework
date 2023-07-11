@@ -295,7 +295,6 @@ const ProjectsTable: React.FC = () => {
       "Primary Site",
       "Program",
       "Cases",
-      "Data Category",
       "Experimental Strategy",
       "Files",
     ];
@@ -306,12 +305,7 @@ const ProjectsTable: React.FC = () => {
           disease_type,
           primary_site,
           program: { name },
-          summary: {
-            case_count,
-            data_categories,
-            experimental_strategies,
-            file_count,
-          },
+          summary: { case_count, experimental_strategies, file_count },
         }) => {
           return [
             project_id,
@@ -319,9 +313,6 @@ const ProjectsTable: React.FC = () => {
             [...primary_site].sort(),
             name,
             case_count,
-            [
-              ...data_categories.map(({ data_category }) => data_category),
-            ].sort(),
             [
               ...experimental_strategies.map(
                 ({ experimental_strategy }) => experimental_strategy,
