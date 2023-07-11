@@ -58,18 +58,15 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
 
-  const setCohort = (id: string) => {
-    coreDispatch(setActiveCohort(id));
-  };
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
 
   useEffect(() => {
     if (currentCohortId === undefined && cohorts.length > 0) {
-      setCohort(cohorts[0].id);
+      coreDispatch(setActiveCohort(cohorts[0].id));
     }
-  }, [currentCohortId, cohorts.length]);
+  }, [currentCohortId, cohorts, coreDispatch]);
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
