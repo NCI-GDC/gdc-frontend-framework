@@ -3,7 +3,6 @@ import {
   VerticalTable,
   HandleChangeInput,
   Columns,
-  filterColumnCells,
 } from "../shared/VerticalTable";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import { Row, TableInstance } from "react-table";
@@ -27,11 +26,11 @@ import {
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
+import saveAs from "file-saver";
 
 interface CellProps {
   value: string[];
@@ -289,37 +288,53 @@ const ProjectsTable: React.FC = () => {
   };
 
   const handleDownloadTSV = () => {
-    downloadTSV(
-      data.projectData,
-      filterColumnCells(columns),
-      `projects-table.${convertDateToString(new Date())}.tsv`,
-      {
-        blacklist: ["selected"],
-        overwrite: {
-          program: {
-            composer: "program.name",
+    const fileName = `projects-table.${convertDateToString(new Date())}.tsv`;
+    const headers = [
+      "Project",
+      "Disease Type",
+      "Primary Site",
+      "Program",
+      "Cases",
+      "Data Category",
+      "Experimental Strategy",
+      "Files",
+    ];
+    const body = data?.projectData
+      .map(
+        ({
+          project_id,
+          disease_type,
+          primary_site,
+          program: { name },
+          summary: {
+            case_count,
+            data_categories,
+            experimental_strategies,
+            file_count,
           },
-          cases: {
-            composer: "summary.case_count",
-          },
-          data_categories: {
-            composer: (project) =>
-              project.summary.data_categories.map(
-                (category) => category.data_category,
-              ) || "--",
-          },
-          experimental_strategies: {
-            composer: (project) =>
-              project.summary.experimental_strategies.map(
-                (strategy) => strategy.experimental_strategy,
-              ) || "--",
-          },
-          files: {
-            composer: "summary.file_count",
-          },
+        }) => {
+          return [
+            project_id,
+            [...disease_type].sort(),
+            [...primary_site].sort(),
+            name,
+            case_count,
+            [
+              ...data_categories.map(({ data_category }) => data_category),
+            ].sort(),
+            [
+              ...experimental_strategies.map(
+                ({ experimental_strategy }) => experimental_strategy,
+              ),
+            ].sort(),
+            file_count,
+          ].join("\t");
         },
-      },
-    );
+      )
+      .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
   };
 
   //update everything that uses table component
