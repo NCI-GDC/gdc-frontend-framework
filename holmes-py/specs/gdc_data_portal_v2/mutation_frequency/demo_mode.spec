@@ -14,6 +14,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Validate Gene Tab Demo
 * Wait for loading spinner
+* Is text "Mutation Frequency Demo" present on the page
 * Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page
 * Is text "- IDH1 Not Mutated Cases" present on the page
 * Is text "- IDH1 Mutated Cases" present on the page
@@ -25,6 +26,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_tooltip                     |row  |column |
   |-------------------------------------|-----|-------|
   |Feature not available in demo mode   |1    |2      |
+  |Search the mutations table for IDH1  |1    |10     |
+  |Cancer Gene Census                   |1    |11     |
+  |Feature not available in demo mode   |10   |2      |
 
 ## Validate Mutation Tab Demo
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -36,3 +40,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text                        |row  |column |
   |-------------------------------------|-----|-------|
   |chr2:g.208248388C>T                  |1    |4      |
+* Verify the table body tooltips are correct
+  |expected_tooltip                     |row  |column |
+  |-------------------------------------|-----|-------|
+  |Feature not available in demo mode   |1    |2      |
+  |Feature not available in demo mode   |10   |2      |
