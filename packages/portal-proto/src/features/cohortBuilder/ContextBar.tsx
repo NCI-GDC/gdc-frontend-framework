@@ -12,7 +12,6 @@ import {
   setActiveCohort,
   Modals,
   showModal,
-  setCurrentCohortId,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   useGetAllFilesMutation,
@@ -55,9 +54,6 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(
-    cohorts.length > 0 ? cohorts[0].id : undefined,
-  );
 
   /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
@@ -69,16 +65,15 @@ const ContextBar = ({
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
   /* download active end */
 
-  const setCohort = (id: string) => {
-    coreDispatch(setActiveCohort(id));
-  };
-  const handleCohortSelection = (idx: string) => {
-    setCohort(idx);
-  };
-
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
+
+  useEffect(() => {
+    if (currentCohortId === undefined && cohorts.length > 0) {
+      coreDispatch(setActiveCohort(cohorts[0].id));
+    }
+  }, [currentCohortId, cohorts, coreDispatch]);
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
@@ -100,17 +95,6 @@ const ContextBar = ({
         callback(cartFiles, currentCart, coreDispatch);
       });
   };
-
-  useEffect(() => {
-    if (currentIndex === undefined && cohorts.length > 0) {
-      setCurrentIndex(cohorts[0].id);
-      coreDispatch(setCurrentCohortId(cohorts[0].id));
-    }
-  }, [cohorts, currentIndex, coreDispatch]);
-
-  useEffect(() => {
-    setCurrentIndex(currentCohortId);
-  }, [currentCohortId]);
 
   const downloadFilter: GqlOperation =
     buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
@@ -288,13 +272,7 @@ const ContextBar = ({
 
   return (
     <CollapsibleContainer
-      Top={
-        <CohortManager
-          cohorts={cohorts}
-          onSelectionChanged={handleCohortSelection}
-          startingId={currentIndex}
-        />
-      }
+      Top={<CohortManager />}
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}
