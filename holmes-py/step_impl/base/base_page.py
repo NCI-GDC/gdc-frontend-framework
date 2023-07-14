@@ -2,7 +2,7 @@ from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
     TEXT_IDENT = lambda text: f'text="{text}"'
-    TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
+    TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
