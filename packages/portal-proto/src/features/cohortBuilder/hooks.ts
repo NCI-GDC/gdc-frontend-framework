@@ -43,7 +43,7 @@ export const useSetupInitialCohorts = (): void => {
                 name: data.name,
                 filters: buildGqlOperationToFilterSet(data.filters),
                 caseSet: {
-                  ...existingCohort.caseSet,
+                  ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
                 },
                 modified_datetime: data.modified_datetime,
                 saved: true,
