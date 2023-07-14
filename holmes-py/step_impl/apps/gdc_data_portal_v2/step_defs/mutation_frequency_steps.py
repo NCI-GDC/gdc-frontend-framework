@@ -12,3 +12,7 @@ def start_app():
 @step("Switch to <tab_name> tab in the Mutation Frequency app")
 def name_cohort(tab_name: str):
     APP.mutation_frequency_page.click_gene_or_mutation_tab(tab_name)
+
+@step("Select <button_name> in the Mutation Frequency app")
+def click_custom_filter_button(button_name: str):
+    APP.mutation_frequency_page.click_custom_filter_button(button_name)
