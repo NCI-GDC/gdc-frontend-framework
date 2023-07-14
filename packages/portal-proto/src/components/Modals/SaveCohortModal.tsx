@@ -20,18 +20,16 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
-  onSelectionChanged,
 }: {
   initialName: string;
   onClose: () => void;
   cohortId: string;
   filters: FilterSet;
-  onSelectionChanged: (id: string) => void;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
-  const [addCohort] = useAddCohortMutation();
+  const [addCohort, { isLoading }] = useAddCohortMutation();
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
@@ -52,18 +50,17 @@ const SaveCohortModal = ({
         // which does not exist will cause this
         // Therefore, copy the unsaved cohort to the new cohort id received from
         // the BE.
-        coreDispatch(setCurrentCohortId(payload.id));
-        coreDispatch(updateCohortName(newName));
         coreDispatch(
           setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
         );
-        onSelectionChanged(payload.id);
         coreDispatch(
           removeCohort({
             shouldShowMessage: false,
             currentID: prevCohort,
           }),
         );
+        coreDispatch(setCurrentCohortId(payload.id));
+        coreDispatch(updateCohortName(newName));
         onClose();
       })
       .catch((e: FetchBaseQueryError) => {
@@ -136,6 +133,7 @@ const SaveCohortModal = ({
           }}
           descriptionMessage={"Provide a name to save your current cohort."}
           closeOnAction={false}
+          loading={isLoading}
         />
       )}
     </Modal>

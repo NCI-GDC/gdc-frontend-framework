@@ -1232,6 +1232,14 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
 
+export const useCurrentCohortWithGeneAndSsmCaseSet = ():
+  | FilterSet
+  | undefined => {
+  return useCoreSelector((state) =>
+    selectCurrentCohortGeneAndSSMCaseSet(state),
+  );
+};
+
 /**
  * A thunk to create a case set when adding filter that require them
  * This primary used to handle gene and ssms applications
