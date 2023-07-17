@@ -19,8 +19,8 @@ class AnalysisCenterLocators:
     ANALYSIS_CENTER_HEADER = 'a[data-testid="button-header-analysis"]'
 
 class AnalysisCenterPage(BasePage):
-    def __init__(self, driver: Page, url):
-        self.URL = "{}analysis_page".format(url)
+    def __init__(self, driver: Page, url:str) -> None:
+        self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
 
     def visit(self):

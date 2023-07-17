@@ -26,8 +26,8 @@ class RepositoryPageLocators:
     IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="details-image-viewer"] >> text={field_name}{value} >> td'
 
 class RepositoryPage(BasePage):
-    def __init__(self, driver: Page, url) -> None:
-        self.URL = "{}analysis_page?app=Downloads".format(url)
+    def __init__(self, driver: Page, url: str) -> None:
+        self.URL = "{}/analysis_page?app=Downloads".format(url)
         self.driver = driver  # driver is PW page
         super().__init__(self.driver)
 

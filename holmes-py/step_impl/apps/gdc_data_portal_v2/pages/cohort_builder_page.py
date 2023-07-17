@@ -33,7 +33,7 @@ class CohortBuilderPage(BasePage):
     def __init__(self, driver: Page, url) -> None:
         super().__init__(driver)
         self.driver = driver
-        self.URL = "{}analysis_page?app=CohortBuilder".format(url)
+        self.URL = "{}/analysis_page?app=CohortBuilder".format(url)
 
     def navigate(self):
         self.goto(self.URL)

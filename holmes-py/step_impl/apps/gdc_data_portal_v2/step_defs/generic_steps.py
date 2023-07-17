@@ -239,9 +239,14 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
 
 @step("Wait for loading spinner")
 def wait_for_loading_spinner_to_appear_then_disappear():
-    """Waits for specified data-testid to be present on the page"""
+    """Waits for loading spinner to appear and disappear on the page"""
     APP.shared.wait_for_loading_spinner_to_be_visible()
     APP.shared.wait_for_loading_spinner_to_detatch()
+
+@step("Wait for cohort bar case count loading spinner")
+def wait_for_cohort_bar_case_count_loading_spinner_to_appear_then_disappear():
+    """Waits for cohort bar case count loading spinner to appear and disappear on the page"""
+    APP.shared.wait_for_cohort_bar_case_count_loading_spinner_to_detatch()
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):

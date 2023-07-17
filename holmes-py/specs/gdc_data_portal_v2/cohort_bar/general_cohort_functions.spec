@@ -30,7 +30,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection                    |
   |-----------------|-----------------------------|
   |Disease Type     |adenomas and adenocarcinomas |
-* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
 * The secondary Cohort Bar save screen should appear

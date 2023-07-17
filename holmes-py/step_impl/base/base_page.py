@@ -9,6 +9,7 @@ class GenericLocators:
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
     LOADING_SPINNER = '[data-testid="loading-spinner"] >> nth=0'
+    LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
@@ -149,6 +150,10 @@ class BasePage:
 
     def wait_for_loading_spinner_to_detatch(self):
         locator = GenericLocators.LOADING_SPINNER
+        self.wait_until_locator_is_detached(locator)
+
+    def wait_for_cohort_bar_case_count_loading_spinner_to_detatch(self):
+        locator = GenericLocators.LOADING_SPINNER_COHORT_BAR_CASE_COUNT
         self.wait_until_locator_is_detached(locator)
 
     def wait_for_data_testid_to_be_visible(self,locator):
