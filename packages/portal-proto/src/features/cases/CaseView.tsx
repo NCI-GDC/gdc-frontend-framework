@@ -518,6 +518,9 @@ export const CaseView: React.FC<CaseViewProps> = ({
             demographic={demographic}
             family_histories={family_histories}
             exposures={exposures}
+            case_id={case_id}
+            submitter_id={data?.submitter_id}
+            project_id={data?.project?.project_id}
           />
         </div>
 
@@ -533,7 +536,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
         )}
 
         <div ref={targetRef} id="biospecimen" className="mb-8">
-          <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
+          <Biospecimen
+            caseId={case_id}
+            bioId={bio_id}
+            isModal={isModal}
+            submitter_id={data?.submitter_id}
+            project_id={data?.project?.project_id}
+          />
         </div>
         {biospecimenFilteredFiles?.length > 0 && (
           <div className="mb-16">

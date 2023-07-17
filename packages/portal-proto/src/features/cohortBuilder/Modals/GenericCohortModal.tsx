@@ -75,7 +75,14 @@ export const GenericCohortModal = ({
           >
             Cancel
           </Button>
-          <Button variant={"filled"} color="secondary" onClick={onActionClick}>
+          <Button
+            variant={"filled"}
+            color="secondary"
+            onClick={() => {
+              onActionClick();
+              onClose();
+            }}
+          >
             {actionText}
           </Button>
         </Group>
