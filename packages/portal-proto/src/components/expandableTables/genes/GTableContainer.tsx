@@ -183,22 +183,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
-  const filterSwitch = (length, content) => {
-    switch (length) {
-      case 0:
-        return {};
-      case 1:
-        return content[0];
-      case length >= 2:
-        return {
-          op: "and",
-          content: [content[0], content[1]],
-        };
-      default:
-        return {};
-    }
-  };
-
   const setFilters =
     Object.keys(selectedGenes).length > 0
       ? ({
@@ -213,14 +197,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
+  // data analysis (genes) endpt filters homomorphic to gql filters
+
+  const tableFilters =
+    buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
+
   const handleJSONDownload = async () => {
     setDownloadMutatedGenesActive(true);
-    const content =
-      buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters))
-        ?.content ?? [];
-    const length = Object.keys(content)?.length ?? 0;
-    const filters = filterSwitch(length, content);
-
     await download({
       endpoint: "genes",
       method: "POST",
@@ -231,7 +214,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         method: "POST",
       },
       params: {
-        filters: filters,
+        filters: tableFilters,
         attachment: true,
         format: "JSON",
         pretty: true,
