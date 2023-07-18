@@ -6,7 +6,8 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
-  selectCurrentCohortFilters,
+  joinFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
   FilterSet,
 } from "../cohort";
 import {
@@ -23,7 +24,8 @@ export interface FetchFacetByNameGQLProps {
   readonly field: string | ReadonlyArray<string>;
   readonly docType?: GQLDocType;
   readonly index?: GQLIndexType;
-  readonly filterSelector?: (state: CoreState) => FilterSet;
+  readonly caseFilterSelector?: (state: CoreState) => FilterSet;
+  readonly localFilters?: FilterSet;
 }
 
 export const fetchFacetByNameGQL = createAsyncThunk<
@@ -37,11 +39,12 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       field,
       docType = "cases",
       index = "explore" as GQLIndexType,
-      filterSelector = selectCurrentCohortFilters,
+      caseFilterSelector = selectCurrentCohortGeneAndSSMCaseSet,
+      localFilters = undefined,
     },
     thunkAPI,
   ) => {
-    const filters = buildCohortGqlOperator(filterSelector(thunkAPI.getState()));
+    const caseFilters = caseFilterSelector(thunkAPI.getState());
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
@@ -54,7 +57,9 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 
     const queryGQL = buildGraphGLBucketsQuery(filtersToQuery, docType, index);
     const filtersGQL = {
-      filters_0: filters ? filters : {},
+      filters: buildCohortGqlOperator(
+        joinFilters(caseFilters, localFilters ?? { mode: "and", root: {} }),
+      ),
     };
     return graphqlAPI(queryGQL, filtersGQL);
   },

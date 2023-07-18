@@ -53,7 +53,14 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
-    const { getByTestId } = render(<Biospecimen caseId="testId" bioId="" />);
+    const { getByTestId } = render(
+      <Biospecimen
+        caseId="testId"
+        bioId=""
+        project_id="test_project_id"
+        submitter_id="test_submitter_id"
+      />,
+    );
 
     expect(getByTestId("loading-spinner")).toBeInTheDocument();
   });
@@ -75,7 +82,12 @@ describe("<Biospecimen />", () => {
     });
     jest.spyOn(func, "useCoreSelector").mockReturnValue(["test1id", "test2id"]);
     const { queryByLabelText, getAllByRole, getByText } = render(
-      <Biospecimen caseId="testId" bioId="" />,
+      <Biospecimen
+        caseId="testId"
+        bioId=""
+        project_id="test_project_id"
+        submitter_id="test_submitter_id"
+      />,
     );
 
     expect(queryByLabelText("Case ID not found")).toBeNull();

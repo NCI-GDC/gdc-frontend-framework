@@ -8,16 +8,15 @@ import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import { mergeGenomicAndCohortFilters } from "./genomicFilters";
 import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
-  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
+      $caseFilters: FiltersArgument
       $geneFrequencyChart_filters: FiltersArgument
       $geneFrequencyChart_size: Int
       $geneFrequencyChart_offset: Int
@@ -26,12 +25,12 @@ const GeneMutationFrequencyQuery = `
       geneFrequencyChartViewer: viewer {
         explore {
           cases {
-            hits(first: 0, filters: $geneFrequencyChart_filters) {
+            hits(first: 0, case_filters: $caseFilters, filters: $geneFrequencyChart_filters) {
               total
             }
           }
           genes {
-            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, filters: $geneFrequencyChart_filters, score: $score) {
+            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, case_filters: $caseFilters, filters: $geneFrequencyChart_filters, score: $score) {
               total
               edges {
                 node {
@@ -69,26 +68,17 @@ export const fetchGeneFrequencies = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "genes/geneFrequencyChart",
-  async (
-    {
-      pageSize = 20,
-      offset = 0,
-      genomicFilters,
-      isDemoMode,
-      overwritingDemoFilter,
-    }: GenomicTableProps,
-    thunkAPI,
-  ): Promise<GraphQLApiResponse> => {
-    const filters = isDemoMode
-      ? buildCohortGqlOperator(
-          joinFilters(overwritingDemoFilter, genomicFilters),
-        )
-      : buildCohortGqlOperator(
-          mergeGenomicAndCohortFilters(thunkAPI.getState(), genomicFilters),
-        );
+  async ({
+    pageSize = 20,
+    offset = 0,
+    genomicFilters,
+    cohortFilters,
+  }: GenomicTableProps): Promise<GraphQLApiResponse> => {
+    const caseFilters = buildCohortGqlOperator(cohortFilters);
 
     const graphQlVariables = {
-      geneFrequencyChart_filters: filters ?? {},
+      caseFilters: caseFilters,
+      geneFrequencyChart_filters: buildCohortGqlOperator(genomicFilters) ?? {},
       geneFrequencyChart_size: pageSize,
       geneFrequencyChart_offset: offset,
       score: "case.project.project_id",

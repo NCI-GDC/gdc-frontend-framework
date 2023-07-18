@@ -9,7 +9,7 @@ import { FloatingPosition } from "@mantine/core/lib/Floating";
 export interface CollapsibleContainerProps {
   readonly isCollapsed: boolean;
   readonly toggle: () => void;
-  readonly Top: React.FC<unknown>;
+  readonly Top: ReactNode;
   readonly onlyIcon?: boolean;
   readonly isContextBar?: boolean;
   readonly tooltipText?: string;
@@ -43,9 +43,7 @@ export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
       }`}
     >
       <div className="flex flex-row">
-        <div className="flex-grow">
-          <Top />
-        </div>
+        <div className="flex-grow">{Top}</div>
         <div className="flex items-center bg-primary pr-4 gap-4">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>

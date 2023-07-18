@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
 import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
-import { Button, Input, LoadingOverlay } from "@mantine/core";
+import { Button, Input, Loader, LoadingOverlay } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -17,20 +17,26 @@ import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import download from "@/utils/download";
 
 interface BiospecimenProps {
-  caseId: string;
-  bioId: string;
-  isModal?: boolean;
+  readonly caseId: string;
+  readonly bioId: string;
+  readonly isModal?: boolean;
+  readonly project_id: string;
+  readonly submitter_id: string;
 }
 
 export const Biospecimen = ({
   caseId,
   bioId,
   isModal = false,
+  project_id,
+  submitter_id,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
-
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
@@ -111,6 +117,64 @@ export const Biospecimen = ({
     submitter_id: selectedEntity?.submitter_id,
   });
 
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
     <div className="mt-14">
@@ -127,16 +191,27 @@ export const Biospecimen = ({
           <DropdownWithIcon
             dropdownElements={[
               {
-                title: "TSV (Coming soon)",
+                title: "TSV",
                 icon: <DownloadIcon size={16} aria-label="download icon" />,
+                onClick: handleBiospeciemenTSVDownload,
               },
               {
-                title: "JSON (Coming soon)",
+                title: "JSON",
                 icon: <DownloadIcon size={16} aria-label="download icon" />,
+                onClick: handleBiospeciemenJSONDownload,
               },
             ]}
-            TargetButtonChildren="Download"
-            LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            TargetButtonChildren={
+              biospecimenDownloadActive ? "Processing" : "Download"
+            }
+            LeftIcon={
+              biospecimenDownloadActive ? (
+                <Loader size={20} />
+              ) : (
+                <DownloadIcon size="1rem" aria-label="download icon" />
+              )
+            }
+            zIndex={5}
           />
 
           <div className="flex mt-2 gap-4">
