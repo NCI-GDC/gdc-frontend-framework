@@ -213,6 +213,25 @@ def verify_table_header_text(table):
         table_header_text_by_column = re.sub(' +', ' ', table_header_text_by_column)
         assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
+@step("Verify the table body text is correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table body has the correct text"""
+    for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
+        # Remove new lines from input
+        table_body_text_by_row_column = table_body_text_by_row_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_body_text_by_row_column = re.sub(' +', ' ', table_body_text_by_row_column)
+        assert f"{table_body_text_by_row_column}" == v[0], f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+
+@step("Verify the table body tooltips are correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table body has correct tooltips"""
+    for k, v in enumerate(table):
+        APP.shared.hover_table_body_by_row_column(v[1],v[2])
+        is_tooltip_text_present = APP.shared.is_text_present(v[0])
+        assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
