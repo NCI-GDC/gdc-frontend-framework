@@ -81,6 +81,9 @@ class BasePage:
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
+    def scroll_into_view_if_needed(self, locator):
+        self.driver.locator(locator).scroll_into_view_if_needed()
+
     def normalize_button_identifier(self, button_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return button_name.lower().replace(" ", "-")
@@ -128,6 +131,7 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
         # The hover function is finicky. Calling it twice, and then bypassing
         # actionability checks seem to make the hover more consistent.
+        self.scroll_into_view_if_needed(table_locator_to_select)
         self.hover(table_locator_to_select)
         self.hover(table_locator_to_select, force=True)
 
