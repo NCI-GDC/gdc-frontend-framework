@@ -33,7 +33,7 @@ class GenericLocators:
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
-    TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) >> nth=0'
+    TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
@@ -131,7 +131,7 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
         # The hover function is finicky. Calling it twice, and then bypassing
         # actionability checks seem to make the hover more consistent.
-        self.scroll_into_view_if_needed(table_locator_to_select)
+
         self.hover(table_locator_to_select)
         self.hover(table_locator_to_select, force=True)
 
