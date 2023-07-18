@@ -16,11 +16,12 @@ tags: gdc-data-portal-v2, navigation, analysis-center
 * Search in a filter card from "Demographic" tab on the Cohort Builder page
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|
-  |Age at Diagnosis |input from value     |90  |
+  |Age at Diagnosis |input from value     |90    |
 * Activate the following objects from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |
+* Wait for cohort bar case count loading spinner
 * Navigate to "Analysis" from "Header" "section"
 * Validate analysis tool tooltip
   |tool_name                |tooltip_description                                                        |

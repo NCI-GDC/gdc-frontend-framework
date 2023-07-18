@@ -297,6 +297,7 @@ class BasePage:
             self.click(button_clear_all_active_cohort_filters_locator)
             text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
             self.wait_for_data_testid_to_be_visible(text_no_active_filter_locator)
+            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
     def click_column_selector_button(self):
         """Clicks table column selector button"""
