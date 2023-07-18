@@ -60,7 +60,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|
   |Tobacco Smoking Status   |1                            |
-* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
