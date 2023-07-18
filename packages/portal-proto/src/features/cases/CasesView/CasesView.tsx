@@ -170,6 +170,7 @@ export const ContextualCasesView: React.FC = () => {
                   variant="outline"
                   compact
                   classNames={{
+                    rightIcon: "border-l",
                     leftIcon: "m-0",
                   }}
                   size="xs"
