@@ -13,6 +13,7 @@ def start_app():
 
 @step("Select <button_name> on the Repository page")
 def select_repository_page_button(button_name: str):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.repository_page.click_repository_page_button(button_name)
 
 @step("Select <button_name> on the Image Viewer page")

@@ -223,6 +223,7 @@ def verify_showing_item_text(number_of_items_text):
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
         # Remove new lines from input
@@ -234,6 +235,7 @@ def verify_table_header_text(table):
 @step("Verify the table body text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table body has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
         # Remove new lines from input
@@ -244,6 +246,7 @@ def verify_table_header_text(table):
 
 @step("Verify the table body tooltips are correct <table>")
 def verify_table_header_text(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     """Verifies the table body has correct tooltips"""
     for k, v in enumerate(table):
         APP.shared.hover_table_body_by_row_column(v[1],v[2])
@@ -266,6 +269,11 @@ def wait_for_loading_spinner_generic_to_appear_then_disappear():
 def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
     """Waits for cohort bar case count loading spinner to disappear on the page"""
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
+@step("Wait for table loading spinner")
+def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
+    """Waits for table loading spinner to disappear on the page"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
