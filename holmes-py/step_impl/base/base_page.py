@@ -59,9 +59,9 @@ class BasePage:
         self.wait_until_locator_is_visible(locator)
         self.driver.locator(locator).click(force=force,timeout=timeout)
 
-    def hover(self, locator):
+    def hover(self, locator, force=False):
         """Hover over given locator"""
-        self.driver.locator(locator).hover()
+        self.driver.locator(locator).hover(force=force)
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
@@ -126,8 +126,10 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        # The hover function is finicky. Calling it twice, and then bypassing
+        # actionability checks seem to make the hover more consistent.
         self.hover(table_locator_to_select)
-        self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select, force=True)
 
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
