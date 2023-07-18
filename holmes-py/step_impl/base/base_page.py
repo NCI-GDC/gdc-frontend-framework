@@ -1,15 +1,16 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_IDENT = lambda text: f'text="{text}"'
+    TEXT_IDENT = lambda text: f'text="{text}" >> nth=0'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
-    LOADING_SPINNER = '[data-testid="loading-spinner"] >> nth=0'
+    LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
     LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
+    LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
     CART_IDENT = '[data-testid="cartLink"]'
@@ -111,6 +112,23 @@ class BasePage:
         table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
         return self.get_text(table_header_text_locator)
 
+    def get_table_body_text_by_row_column(self,row,column):
+        """
+        Gets text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        return self.get_text(table_locator_to_select)
+
+    def hover_table_body_by_row_column(self,row,column):
+        """
+        Hovers over specified cell in table by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select)
+
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
@@ -145,15 +163,22 @@ class BasePage:
         self.driver.wait_for_selector(locator)
 
     def wait_for_loading_spinner_to_be_visible(self):
-        locator = GenericLocators.LOADING_SPINNER
+        locator = GenericLocators.LOADING_SPINNER_GENERIC
         self.wait_until_locator_is_visible(locator)
 
     def wait_for_loading_spinner_to_detatch(self):
-        locator = GenericLocators.LOADING_SPINNER
+        """Waits for the generic loading spinner to disappear on the page"""
+        locator = GenericLocators.LOADING_SPINNER_GENERIC
         self.wait_until_locator_is_detached(locator)
 
-    def wait_for_cohort_bar_case_count_loading_spinner_to_detatch(self):
+    def wait_for_loading_spinner_cohort_bar_case_count_to_detatch(self):
+        """Waits for the cohort bar case count loading spinner to disappear on the page"""
         locator = GenericLocators.LOADING_SPINNER_COHORT_BAR_CASE_COUNT
+        self.wait_until_locator_is_detached(locator)
+
+    def wait_for_loading_spinner_table_to_detatch(self):
+        """Waits for the table (repository, projects, mutation frequency, etc.) loading spinner to disappear on the page"""
+        locator = GenericLocators.LOADING_SPINNER_TABLE
         self.wait_until_locator_is_detached(locator)
 
     def wait_for_data_testid_to_be_visible(self,locator):
