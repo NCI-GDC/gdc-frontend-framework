@@ -1362,7 +1362,11 @@ export const setActiveCohortList =
     const cohort = selectCurrentCohort(getState());
 
     if (!cohort) return;
-    if (cohortId && willRequireCaseSet(cohort.filters)) {
+    if (
+      cohortId &&
+      willRequireCaseSet(cohort.filters) &&
+      cohort.caseSet.status === "uninitialized"
+    ) {
       dispatch(
         createCaseSet({
           caseSetId: cohortId,
