@@ -7,7 +7,7 @@ class MutationFrequencyLocators:
     BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
     BUTTON_CUSTOM_FILTER = lambda button_name: f'[data-testid="button-{button_name}"]'
 
-    MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of") >> .. >> .. >> .. >> .. >> .. >> .. >> ..'
+    MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of")'
 
 class MutationFrequencyPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
