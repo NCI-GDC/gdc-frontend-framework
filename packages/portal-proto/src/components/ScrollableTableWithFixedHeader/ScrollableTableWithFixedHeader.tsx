@@ -1,6 +1,6 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
 import { createStyles, Table, ScrollArea } from "@mantine/core";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -40,34 +40,50 @@ export const ScrollableTableWithFixedHeader = ({
 }: ScrollableTableWithFixedHeaderProps): JSX.Element => {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
+  const [tableMaxHeight, setTableMaxHeight] = useState(0);
 
   const scrollAreaRef = useRef(null);
   const tableHeaderRef = useRef(null);
   const tableBodyRef = useRef(null);
 
-  const scrollAreaBorderHeight =
-    scrollAreaRef.current !== null
-      ? parseFloat(
-          window.getComputedStyle(scrollAreaRef.current).borderTopWidth,
-        ) +
-        parseFloat(window.getComputedStyle(scrollAreaRef.current).borderBottom)
-      : 0;
+  useEffect(() => {
+    const calculateTableMaxHeight = () => {
+      const scrollAreaBorderHeight =
+        scrollAreaRef.current !== null
+          ? parseFloat(
+              window.getComputedStyle(scrollAreaRef.current).borderTopWidth,
+            ) +
+            parseFloat(
+              window.getComputedStyle(scrollAreaRef.current).borderBottom,
+            )
+          : 0;
 
-  const tableHeaderHeight =
-    tableHeaderRef.current !== null
-      ? parseFloat(window.getComputedStyle(tableHeaderRef.current).height)
-      : 0;
+      const tableHeaderHeight =
+        tableHeaderRef.current !== null
+          ? parseFloat(window.getComputedStyle(tableHeaderRef.current).height)
+          : 0;
 
-  const tableBodyHeight =
-    tableBodyRef.current !== null
-      ? parseFloat(window.getComputedStyle(tableBodyRef.current).height)
-      : 0;
+      const tableBodyHeight =
+        tableBodyRef.current !== null
+          ? parseFloat(window.getComputedStyle(tableBodyRef.current).height)
+          : 0;
 
-  // max row * height of table row (tableBodyHeight/noOfRows) + height of the table header + scrollarea top and bottom border width
-  const tableMaxHeight =
-    maxRowsBeforeScroll * (tableBodyHeight / tableData.tableRows.length) +
-    tableHeaderHeight +
-    scrollAreaBorderHeight;
+      const calculatedTableMaxHeight =
+        maxRowsBeforeScroll * (tableBodyHeight / tableData.tableRows.length) +
+        tableHeaderHeight +
+        scrollAreaBorderHeight;
+
+      setTableMaxHeight(calculatedTableMaxHeight);
+    };
+
+    calculateTableMaxHeight();
+
+    window.addEventListener("resize", calculateTableMaxHeight);
+
+    return () => {
+      window.removeEventListener("resize", calculateTableMaxHeight);
+    };
+  }, [maxRowsBeforeScroll, tableData.tableRows.length]);
 
   return (
     <ScrollArea.Autosize

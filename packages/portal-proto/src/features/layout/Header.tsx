@@ -150,7 +150,7 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </Link>
           {userInfo?.data?.username ? (
-            <Menu width={200} data-testid="userdropdown">
+            <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
                 <Button
                   rightIcon={<ArrowDropDownIcon size="2em" />}
