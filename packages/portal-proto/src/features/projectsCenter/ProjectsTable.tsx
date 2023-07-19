@@ -289,15 +289,24 @@ const ProjectsTable: React.FC = () => {
 
   const handleDownloadTSV = () => {
     const fileName = `projects-table.${convertDateToString(new Date())}.tsv`;
+    const visibleColumns = columns
+      .filter(({ visible }) => visible)
+      .map(({ columnName }) => columnName);
+
     const headers = [
-      "Project",
-      "Disease Type",
-      "Primary Site",
-      "Program",
-      "Cases",
-      "Experimental Strategy",
-      "Files",
+      ...[visibleColumns.includes("Project") ? "Project" : ""],
+      ...[visibleColumns.includes("Disease Type") ? "Disease Type" : ""],
+      ...[visibleColumns.includes("Primary Site") ? "Primary Site" : ""],
+      ...[visibleColumns.includes("Program") ? "Program" : ""],
+      ...[visibleColumns.includes("Cases") ? "Cases" : ""],
+      ...[
+        visibleColumns.includes("Experimental Strategy")
+          ? "Experimental Strategy"
+          : "",
+      ],
+      ...[visibleColumns.includes("Files") ? "Files" : ""],
     ];
+
     const body = data?.projectData
       .map(
         ({
@@ -308,22 +317,38 @@ const ProjectsTable: React.FC = () => {
           summary: { case_count, experimental_strategies, file_count },
         }) => {
           return [
-            project_id,
-            [...disease_type].sort(),
-            [...primary_site].sort(),
-            name,
-            case_count,
-            [
-              ...experimental_strategies.map(
-                ({ experimental_strategy }) => experimental_strategy,
-              ),
-            ].sort(),
-            file_count,
-          ].join("\t");
+            ...[visibleColumns.includes("Project") ? project_id : null],
+            ...[
+              visibleColumns.includes("Disease Type")
+                ? [...disease_type].sort()
+                : null,
+            ],
+            ...[
+              visibleColumns.includes("Primary Site")
+                ? [...primary_site].sort()
+                : null,
+            ],
+            ...[visibleColumns.includes("Program") ? name : null],
+            ...[visibleColumns.includes("Cases") ? case_count : null],
+            ...[
+              visibleColumns.includes("Experimental Strategy")
+                ? [
+                    ...experimental_strategies.map(
+                      ({ experimental_strategy }) => experimental_strategy,
+                    ),
+                  ].sort()
+                : null,
+            ],
+            ...[visibleColumns.includes("Files") ? file_count : null],
+          ]
+            .filter((item) => item !== null)
+            .join("\t");
         },
       )
       .join("\n");
-    const tsv = [headers.join("\t"), body].join("\n");
+    const tsv = [headers.filter(({ length }) => length).join("\t"), body].join(
+      "\n",
+    );
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
     saveAs(blob, fileName);
   };
