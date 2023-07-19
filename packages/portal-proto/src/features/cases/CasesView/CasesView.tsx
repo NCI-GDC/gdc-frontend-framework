@@ -338,7 +338,7 @@ export const ContextualCasesView: React.FC = () => {
         filesCount,
         experimental_strategies,
         primary_site,
-        // submitter_slide_ids,
+        submitter_slide_ids,
         disease_type,
         case_id,
         project_id,
@@ -359,7 +359,7 @@ export const ContextualCasesView: React.FC = () => {
               },
             ),
             primary_site,
-            // submitter_slide_ids: submitter_slide_ids,
+            submitter_slide_ids: submitter_slide_ids,
             disease_type,
             case_id,
             project: {
