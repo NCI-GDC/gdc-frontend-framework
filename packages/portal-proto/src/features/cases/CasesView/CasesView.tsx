@@ -165,13 +165,15 @@ export const ContextualCasesView: React.FC = () => {
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
+                      size={18}
                     />
                   }
                   variant="outline"
                   compact
                   classNames={{
-                    rightIcon: "border-l",
-                    leftIcon: "m-0",
+                    root: "w-12 pr-0",
+                    rightIcon: "border-l ml-0",
+                    leftIcon: "mr-2",
                   }}
                   size="xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
