@@ -33,7 +33,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |HHS Vulnerability Disclosure               |If you make a good faith effort to comply with this policy     |
   |U.S. Department of Health and Human Services|Receive the latest updates from the Secretary, Blogs,         |
   |National Institutes of Health              |National Institutes of Health, 9000 Rockville Pike, Bethesda,  |
-  |National Cancer Institute                  |Research to improve the lives of people with cancer            |
+  |National Cancer Institute                  |National Cancer Institute                                      |
   |USA.gov                                    |Ask USA.gov a question at                                      |
 
 ## Validate Navigation Links - same tab
