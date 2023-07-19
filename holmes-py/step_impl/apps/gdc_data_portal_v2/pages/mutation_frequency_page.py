@@ -27,9 +27,11 @@ class MutationFrequencyPage(BasePage):
         button_locator = MutationFrequencyLocators.BUTTON_CUSTOM_FILTER(button_name)
         self.click(button_locator)
 
-    # After add custom filter button has been clicked, we make sure the correct modal has loaded.
-    # Then, we click the 'browse' button to open the file explorer.
     def click_custom_filter_import_browse(self, button_text_name:str):
+        """
+        After add custom filter button has been clicked, we make sure the correct modal has loaded.
+        Then, we click the 'browse' button to open the file explorer.
+        """
         self.wait_until_locator_is_visible(MutationFrequencyLocators.MODAL_ADD_CUSTOM_FILTER)
         # It does not click the 'browse' button without force parameter set to 'True'
         self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
