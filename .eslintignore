@@ -3,3 +3,4 @@ dist
 setupTests.ts
 holmes-py/**/*
 Dockerfile
+README.md
