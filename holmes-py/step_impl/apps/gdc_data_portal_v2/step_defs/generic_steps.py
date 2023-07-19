@@ -22,6 +22,24 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@after_spec
+def remove_active_cohort_filters():
+    """
+    After each spec file's execution, this function will run. The intention is to
+    clear the active cohort filters to setup the next spec run.
+
+    First, we check to see if there is the 'No filters currently applied' text is present.
+    If not, we then check to see if we are on the analysis center page. If not,
+    then we go to the analysis center. Then, we click the 'Clear All' button to remove
+    the active cohort filters. Finally, we wait to see the the text confirming there
+    are no active cohort filters present.
+    """
+    if not APP.shared.is_no_active_cohort_filter_text_present():
+        if not APP.analysis_center_page.is_analysis_center_page_present():
+            APP.analysis_center_page.visit()
+            APP.header_section.wait_for_page_to_load("analysis")
+        APP.shared.clear_active_cohort_filters()
+
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
@@ -205,6 +223,7 @@ def verify_showing_item_text(number_of_items_text):
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
         # Remove new lines from input
@@ -213,6 +232,27 @@ def verify_table_header_text(table):
         table_header_text_by_column = re.sub(' +', ' ', table_header_text_by_column)
         assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
+@step("Verify the table body text is correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table body has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
+        # Remove new lines from input
+        table_body_text_by_row_column = table_body_text_by_row_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_body_text_by_row_column = re.sub(' +', ' ', table_body_text_by_row_column)
+        assert f"{table_body_text_by_row_column}" == v[0], f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+
+@step("Verify the table body tooltips are correct <table>")
+def verify_table_header_text(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    """Verifies the table body has correct tooltips"""
+    for k, v in enumerate(table):
+        APP.shared.hover_table_body_by_row_column(v[1],v[2])
+        is_tooltip_text_present = APP.shared.is_text_present(v[0])
+        assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
@@ -220,10 +260,20 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
 @step("Wait for loading spinner")
-def wait_for_loading_spinner_to_appear_then_disappear():
-    """Waits for specified data-testid to be present on the page"""
+def wait_for_loading_spinner_generic_to_appear_then_disappear():
+    """Waits for loading spinner to appear and disappear on the page"""
     APP.shared.wait_for_loading_spinner_to_be_visible()
     APP.shared.wait_for_loading_spinner_to_detatch()
+
+@step("Wait for cohort bar case count loading spinner")
+def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
+    """Waits for cohort bar case count loading spinner to disappear on the page"""
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
+@step("Wait for table loading spinner")
+def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
+    """Waits for table loading spinner to disappear on the page"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
@@ -310,6 +360,11 @@ def click_create_or_save_in_cohort_modal(table):
     for k, v in enumerate(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
+
+@step("Clear active cohort filters")
+def clear_active_cohort_filters():
+    # Clicks the 'clear all' button in the cohort query area
+    APP.shared.clear_active_cohort_filters()
 
 @step("Undo Action")
 def click_undo_in_message():
