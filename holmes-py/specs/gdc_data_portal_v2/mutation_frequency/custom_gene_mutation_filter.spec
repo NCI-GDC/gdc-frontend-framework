@@ -17,7 +17,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Upload "Custom Gene Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Is text "6 submitted gene identifiers mapped to 6 unique GDC genes" present on the page
 * Select "Submit"
-* Wait for loading spinner
 * Verify the table body text is correct
   |expected_text                        |row  |column |
   |-------------------------------------|-----|-------|
@@ -42,7 +41,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
 * Select "Submit"
-* Wait for loading spinner
 * Verify the table body text is correct
   |expected_text                       |row  |column |
   |------------------------------------|-----|-------|
