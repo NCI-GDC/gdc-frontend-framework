@@ -806,12 +806,14 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             </FacetText>
           </Tooltip>
           <div className="flex flex-row">
-            <FacetIconButton
-              onClick={toggleFlip}
-              aria-label="Flip between form and chart"
-            >
-              <FlipIcon size="1.45em" className={controlsIconStyle} />
-            </FacetIconButton>
+            {rangeDatatype !== "range" && (
+              <FacetIconButton
+                onClick={toggleFlip}
+                aria-label="Flip between form and chart"
+              >
+                <FlipIcon size="1.45em" className={controlsIconStyle} />
+              </FacetIconButton>
+            )}
             <FacetIconButton
               onClick={() => {
                 clearFilters(field);
