@@ -1,9 +1,9 @@
 # Mutation Frequency - Custom Gene and Mutation Filters
-Date Created    : 07/14/2023
-Version			: 1.0
-Owner		    : GDC QA
+Date Created  : 07/14/2023
+Version			  : 1.0
+Owner		      : GDC QA
 Description		: Custom Filtering on the Mutation Frequency App
-Test-Case       : PEAR-732
+Test-Case     : PEAR-732
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 
@@ -18,11 +18,22 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Is text "6 submitted gene identifiers mapped to 6 unique GDC genes" present on the page
 * Select "Submit"
 * Wait for loading spinner
+* Verify the table body text is correct
+  |expected_text                        |row  |column |
+  |-------------------------------------|-----|-------|
+  |MUC16                                |1    |4      |
+  |FAT3                                 |2    |4      |
+  |FAM135B                              |3    |4      |
+  |ANK1                                 |4    |4      |
+  |RB1                                  |5    |4      |
+  |MYH9                                 |6    |4      |
+* Verify the page is showing "1 - 6 of 6 genes"
+* Is text "- MUC16 Not Mutated Cases" present on the page
+* Is text "- MUC16 Mutated Cases" present on the page
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
   |Custom Gene Filters  |clear selection      |
-* Wait for loading spinner
 
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -32,7 +43,16 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
 * Select "Submit"
 * Wait for loading spinner
-* Pause "10" seconds
+* Verify the table body text is correct
+  |expected_text                       |row  |column |
+  |------------------------------------|-----|-------|
+  |KRASG12D                            |1    |5      |
+  |ACVR2AK437Rfs*5                     |2    |5      |
+  |KRASQ61H                            |3    |5      |
+  |FGFR3S249C                          |4    |5      |
+* Verify the page is showing "1 - 4 of 4 somatic mutations"
+* Is text "- KRAS G12D Missense Not Mutated Cases" present on the page
+* Is text "- KRAS G12D Missense Mutated Cases" present on the page
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
