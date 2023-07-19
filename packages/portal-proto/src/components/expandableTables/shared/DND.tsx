@@ -35,7 +35,7 @@ const DND: React.FC<DNDProps> = ({
       aria-label="column change button"
       ref={ref}
     >
-      <ButtonTooltip label={!showColumnMenu && "Customize Columns"}>
+      <ButtonTooltip label={!showColumnMenu ? "Customize Columns" : ""}>
         <button
           onClick={() => {
             setShowColumnMenu(!showColumnMenu);
