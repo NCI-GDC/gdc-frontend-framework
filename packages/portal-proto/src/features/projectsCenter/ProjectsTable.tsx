@@ -318,12 +318,12 @@ const ProjectsTable: React.FC = () => {
             ...[visibleColumns.includes("Project") ? project_id : null],
             ...[
               visibleColumns.includes("Disease Type")
-                ? [...disease_type].sort()
+                ? [...disease_type].sort(Intl.Collator().compare)
                 : null,
             ],
             ...[
               visibleColumns.includes("Primary Site")
-                ? [...primary_site].sort()
+                ? [...primary_site].sort(Intl.Collator().compare)
                 : null,
             ],
             ...[visibleColumns.includes("Program") ? name : null],
@@ -334,7 +334,7 @@ const ProjectsTable: React.FC = () => {
                     ...experimental_strategies.map(
                       ({ experimental_strategy }) => experimental_strategy,
                     ),
-                  ].sort()
+                  ].sort(Intl.Collator().compare)
                 : null,
             ],
             ...[visibleColumns.includes("Files") ? file_count : null],
