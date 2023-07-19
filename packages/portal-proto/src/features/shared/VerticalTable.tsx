@@ -659,7 +659,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
       <>
         <div className="overflow-y-auto w-full relative">
           <LoadingOverlay
-            data-testid="loading-spinner"
+            data-testid="loading-spinner-table"
             visible={showLoading}
             zIndex={0}
           />

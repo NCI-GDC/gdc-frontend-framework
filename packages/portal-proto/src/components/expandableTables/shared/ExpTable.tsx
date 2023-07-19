@@ -62,7 +62,7 @@ export const ExpTable: React.FC<ExpTableProps> = ({
   return (
     <div className="relative overflow-x-auto">
       <LoadingOverlay
-        data-testid="loading-spinner"
+        data-testid="loading-spinner-table"
         visible={status === "pending"}
       />
       <table className="w-full border border-base-lighter text-sm">
