@@ -97,7 +97,7 @@ tags: cohort-selections
   |Data Format      |clear selection      |
 
 ## Cohort Builder - Range Card Functions
-
+* Clear active cohort filters
 * Search in a filter card from "Demographic" tab on the Cohort Builder page
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|
@@ -112,7 +112,7 @@ tags: cohort-selections
 * Select the following radio buttons
   |radio_id                                           |
   |---------------------------------------------------|
-  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_1 |
+  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_3 |
 
 * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
@@ -120,7 +120,7 @@ tags: cohort-selections
   |Age at Diagnosis |clear selection      |
 
 ## Cohort Builder - Date Card Functions
-
+* Clear active cohort filters
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
   |filter_name      |
   |-----------------|
@@ -146,7 +146,7 @@ tags: cohort-selections
 * Pause "1" seconds
 
 ## Cohort Builder - String Card Functions
-
+* Clear active cohort filters
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
   |filter_name      |
   |-----------------|
