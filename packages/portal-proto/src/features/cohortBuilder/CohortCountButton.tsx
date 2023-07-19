@@ -31,7 +31,13 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
           </>
         ) : (
           <>
-            <Loader color="gray" size="xs" className="mr-2" /> {adjustedLabel}{" "}
+            <Loader
+              data-testid="loading-spinner-cohort-case-count"
+              color="gray"
+              size="xs"
+              className="mr-2"
+            />{" "}
+            {adjustedLabel}{" "}
           </>
         )}
       </div>

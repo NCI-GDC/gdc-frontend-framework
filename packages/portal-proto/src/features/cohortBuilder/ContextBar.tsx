@@ -17,6 +17,8 @@ import {
   useGetAllFilesMutation,
   GdcFile,
   selectCart,
+  GqlOperation,
+  useFilteredCohortCounts,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -49,14 +51,19 @@ const ContextBar = ({
   useSetupInitialCohorts();
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
-
+  const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
+  const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+
+  /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
   const [downloadMetadataActive, setDownloadMetadataActive] = useState(false);
   const [downloadSampleSheetActive, setDownloadSampleSheetActive] =
     useState(false);
-  const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
-  const [activeTab, setActiveTab] = useState<string | null>("summary");
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
+  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  /* download active end */
 
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
@@ -71,6 +78,8 @@ const ContextBar = ({
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
+  const cohortCounts = useFilteredCohortCounts();
+  const caseCounts = cohortCounts?.data?.caseCount;
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const [getFileSizeSliceData, { isLoading: fetchingFilesForCohort }] =
@@ -87,6 +96,9 @@ const ContextBar = ({
       });
   };
 
+  const downloadFilter: GqlOperation =
+    buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+
   const handleMetadataDownload = () => {
     setDownloadMetadataActive(true);
     download({
@@ -100,7 +112,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: buildCohortGqlOperator(cohortFilters),
+        filters: downloadFilter,
         fields: METADATA_FIELDS.join(","),
         format: "JSON",
         pretty: "True",
@@ -127,7 +139,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: buildCohortGqlOperator(cohortFilters),
+        filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
       },
@@ -148,7 +160,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: buildCohortGqlOperator(cohortFilters),
+        filters: downloadFilter,
         tsv_format: "sample-sheet",
         fields: SAMPLE_SHEET_FIELDS.join(","),
         format: "tsv",
@@ -159,6 +171,102 @@ const ContextBar = ({
           .slice(0, 10)}.tsv`,
       },
       done: () => setDownloadSampleSheetActive(false),
+    });
+  };
+
+  const handleClinicalTSVDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filename: `clinical.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleClinicalJSONDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `clinical.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filename: `biospecimen.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
     });
   };
 
@@ -267,18 +375,24 @@ const ContextBar = ({
               <>
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON (Coming Soon)" },
-                    { title: "TSV (Coming Soon)" },
+                    { title: "JSON ", onClick: handleBiospeciemenJSONDownload },
+                    { title: "TSV", onClick: handleBiospeciemenTSVDownload },
                   ]}
-                  TargetButtonChildren="Biospecimen"
+                  TargetButtonChildren={
+                    biospecimenDownloadActive ? "Processing" : "Biospecimen"
+                  }
+                  LeftIcon={biospecimenDownloadActive && <Loader size={20} />}
                 />
 
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON (Coming Soon)" },
-                    { title: "TSV (Coming Soon)" },
+                    { title: "JSON", onClick: handleClinicalJSONDownload },
+                    { title: "TSV", onClick: handleClinicalTSVDownload },
                   ]}
-                  TargetButtonChildren="Clinical"
+                  TargetButtonChildren={
+                    clinicalDownloadActive ? "Processing" : "Clinical"
+                  }
+                  LeftIcon={clinicalDownloadActive && <Loader size={20} />}
                 />
               </>
             )}

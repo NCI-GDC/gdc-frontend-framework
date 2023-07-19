@@ -1,7 +1,7 @@
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
-    TEXT_IDENT = lambda text: f'text="{text}"'
+    TEXT_IDENT = lambda text: f'text="{text}" >> nth=0'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}")'
     X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
@@ -105,6 +105,23 @@ class BasePage:
         """
         table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
         return self.get_text(table_header_text_locator)
+
+    def get_table_body_text_by_row_column(self,row,column):
+        """
+        Gets text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        return self.get_text(table_locator_to_select)
+
+    def hover_table_body_by_row_column(self,row,column):
+        """
+        Hovers over specified cell in table by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select)
 
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
