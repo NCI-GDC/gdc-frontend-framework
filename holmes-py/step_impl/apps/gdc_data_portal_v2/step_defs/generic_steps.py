@@ -225,6 +225,7 @@ def verify_showing_item_text(number_of_items_text):
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
         # Remove new lines from input
@@ -237,6 +238,7 @@ def verify_table_header_text(table):
 def verify_table_header_text(table):
     """Verifies the table body has the correct text"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
         # Remove new lines from input
@@ -247,6 +249,7 @@ def verify_table_header_text(table):
 
 @step("Verify the table body tooltips are correct <table>")
 def verify_table_header_text(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     """Verifies the table body has correct tooltips"""
     for k, v in enumerate(table):

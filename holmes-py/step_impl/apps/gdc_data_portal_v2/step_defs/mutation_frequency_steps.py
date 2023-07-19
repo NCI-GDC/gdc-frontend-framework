@@ -15,4 +15,6 @@ def name_cohort(tab_name: str):
 
 @step("Select <button_name> in the Mutation Frequency app")
 def click_custom_filter_button(button_name: str):
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.mutation_frequency_page.click_custom_filter_button(button_name)
