@@ -7,8 +7,11 @@ import {
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  GqlOperation,
+  useFilteredCohortCounts,
 } from "@gff/core";
-import { Button, createStyles, Divider, Menu } from "@mantine/core";
+import { Button, createStyles, Divider, Loader, Menu } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
@@ -31,6 +34,7 @@ import {
 } from "@/features/shared/VerticalTable";
 import saveAs from "file-saver";
 import { convertDateToString } from "@/utils/date";
+import download from "@/utils/download";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -67,6 +71,7 @@ const getSlideCountFromCaseSummary = (
 
 export const ContextualCasesView: React.FC = () => {
   const dispatch = useCoreDispatch();
+  const { setEntityMetadata } = useContext(SummaryModalContext);
   const { classes } = useStyles();
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
@@ -78,6 +83,15 @@ export const ContextualCasesView: React.FC = () => {
   );
   const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
+  /* download active */
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
+  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  /* download active end */
+
+  const cohortCounts = useFilteredCohortCounts();
+  const caseCounts =
+    pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -118,8 +132,6 @@ export const ContextualCasesView: React.FC = () => {
   useEffect(() => {
     setOffset(0);
   }, [cohortFilters]);
-
-  const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const cases = useMemo(
     () =>
@@ -326,7 +338,7 @@ export const ContextualCasesView: React.FC = () => {
         filesCount,
         experimental_strategies,
         primary_site,
-        submitter_slide_ids,
+        // submitter_slide_ids,
         disease_type,
         case_id,
         project_id,
@@ -347,7 +359,7 @@ export const ContextualCasesView: React.FC = () => {
               },
             ),
             primary_site,
-            submitter_slide_ids: submitter_slide_ids,
+            // submitter_slide_ids: submitter_slide_ids,
             disease_type,
             case_id,
             project: {
@@ -373,6 +385,112 @@ export const ContextualCasesView: React.FC = () => {
     });
     saveAs(blob, `cohort.${convertDateToString(new Date())}.json`);
   };
+  const downloadFilter: GqlOperation =
+    pickedCases.length > 0
+      ? {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: pickedCases,
+          },
+        }
+      : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+
+  const handleClinicalTSVDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        filename: `clinical.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleClinicalJSONDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `clinical.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        filename: `biospecimen.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
 
   return (
     <div className="flex flex-col mx-1" data-testid="cases-table">
@@ -389,12 +507,16 @@ export const ContextualCasesView: React.FC = () => {
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON (Coming Soon)" },
-                { title: "TSV (Coming Soon)" },
+                { title: "JSON", onClick: handleBiospeciemenJSONDownload },
+                { title: "TSV", onClick: handleBiospeciemenTSVDownload },
               ]}
-              TargetButtonChildren="Biospecimen"
+              TargetButtonChildren={
+                biospecimenDownloadActive ? "Processing" : "Biospecimen"
+              }
               LeftIcon={
-                pickedCases.length ? (
+                biospecimenDownloadActive ? (
+                  <Loader size={20} />
+                ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
@@ -404,12 +526,16 @@ export const ContextualCasesView: React.FC = () => {
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON (Coming Soon)" },
-                { title: "TSV (Coming Soon)" },
+                { title: "JSON", onClick: handleClinicalJSONDownload },
+                { title: "TSV", onClick: handleClinicalTSVDownload },
               ]}
-              TargetButtonChildren="Clinical"
+              TargetButtonChildren={
+                clinicalDownloadActive ? "Processing" : "Clinical"
+              }
               LeftIcon={
-                pickedCases.length ? (
+                clinicalDownloadActive ? (
+                  <Loader size={20} />
+                ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>

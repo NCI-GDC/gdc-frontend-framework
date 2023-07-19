@@ -1,7 +1,7 @@
 import { useCoreSelector, selectUserDetailsInfo } from "@gff/core";
 import { Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
-import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader";
+import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader/ScrollableTableWithFixedHeader";
 import { BaseModal } from "./BaseModal";
 
 export const UserProfileModal = ({
