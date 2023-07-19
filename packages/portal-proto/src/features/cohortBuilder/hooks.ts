@@ -6,7 +6,6 @@ import {
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
   setActiveCohortList,
-  DataStatus,
   Cohort,
   removeCohort,
   addNewCohort,
@@ -44,8 +43,7 @@ export const useSetupInitialCohorts = (): void => {
                 name: data.name,
                 filters: buildGqlOperationToFilterSet(data.filters),
                 caseSet: {
-                  caseSetId: buildGqlOperationToFilterSet(data.filters),
-                  status: "fulfilled" as DataStatus,
+                  ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
                 },
                 modified_datetime: data.modified_datetime,
                 saved: true,
@@ -66,7 +64,7 @@ export const useSetupInitialCohorts = (): void => {
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [
     coreDispatch,
-    cohortsListData,
+    JSON.stringify(cohortsListData),
     isSuccess,
     isError,
     JSON.stringify(outdatedCohortsIds),

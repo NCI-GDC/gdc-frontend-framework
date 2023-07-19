@@ -40,10 +40,10 @@ tags: regression, smoke
 * Verify that the "Search for a file property" text is displayed on "Add a File Filter" "modal"
 
 ## # file properties on Add a File Filter modal
-* Verify that the "299 file properties" text is displayed on "Add a File Filter" "modal"
+* Verify that the "303 file properties" text is displayed on "Add a File Filter" "modal"
 
 ## # file counts listed on Add a File Filter modal
-* Verify "299" items on Add a File Filter filter list
+* Verify "303" items on Add a File Filter filter list
 
 ## File filter list does not start with 'files.' on Add a File Filter modal
 * Verify file filter names do not start with "files."

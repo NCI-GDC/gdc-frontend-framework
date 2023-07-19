@@ -59,6 +59,7 @@ export const SaveOrCreateEntityBody = ({
   descriptionMessage,
   additionalDuplicateMessage,
   closeOnAction = true,
+  loading = false,
 }: {
   entity: string;
   action?: string;
@@ -69,6 +70,7 @@ export const SaveOrCreateEntityBody = ({
   descriptionMessage?: string;
   additionalDuplicateMessage?: string;
   closeOnAction?: boolean;
+  loading?: boolean;
 }): JSX.Element => {
   const form = useForm({
     initialValues: {
@@ -169,6 +171,7 @@ export const SaveOrCreateEntityBody = ({
               }
             }}
             data-testid="action-button"
+            loading={loading}
           >
             {upperFirst(action)}
           </Button>

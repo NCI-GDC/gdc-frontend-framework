@@ -10,6 +10,7 @@ import {
   mock_single_family_histories,
 } from "./FamilyHistoryOrExposure.unit.test";
 import { Demographic } from "@gff/core";
+import * as func from "@gff/core";
 
 const demographic = {
   race: "asian",
@@ -23,6 +24,11 @@ const demographic = {
 };
 
 describe("<ClinicalSummary /> ", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
+  });
+
   it("should render appropriate information when data is present", async () => {
     const { getByTestId, getByText } = render(
       <ClinicalSummary
@@ -31,6 +37,9 @@ describe("<ClinicalSummary /> ", () => {
         follow_ups={mockSingleFollowUps}
         diagnoses={mockSingleDiagnoses}
         exposures={mock_single_exposures}
+        case_id="test_case_id"
+        project_id="test_project_id"
+        submitter_id="test_submitter_id"
       />,
     );
 
@@ -57,6 +66,9 @@ describe("<ClinicalSummary /> ", () => {
         follow_ups={[]}
         diagnoses={[]}
         exposures={[]}
+        case_id="test_case_id"
+        project_id="test_project_id"
+        submitter_id="test_submitter_id"
       />,
     );
 

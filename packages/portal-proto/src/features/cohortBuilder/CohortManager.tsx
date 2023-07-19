@@ -14,8 +14,8 @@ import {
 } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import saveAs from "file-saver";
-import { CohortManagerProps } from "@/features/cohortBuilder/types";
 import {
+  selectAvailableCohorts,
   addNewCohort,
   removeCohort,
   selectCurrentCohortName,
@@ -42,6 +42,7 @@ import {
   showModal,
   DataStatus,
   setCohort,
+  setActiveCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -123,14 +124,11 @@ const removeQueryParamsFromRouter = (
  * @param startingId: the selected id
  * @constructor
  */
-const CohortManager: React.FC<CohortManagerProps> = ({
-  cohorts,
-  onSelectionChanged,
-  startingId,
-}: CohortManagerProps) => {
+const CohortManager: React.FC = () => {
   const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
 
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   // Info about current Cohort
   const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
   const cohortName = useCoreSelector((state) => selectCurrentCohortName(state));
@@ -376,7 +374,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           onClose={() => setShowSaveCohort(false)}
           cohortId={cohortId}
           filters={filters}
-          onSelectionChanged={onSelectionChanged}
         />
       )}
 
@@ -446,10 +443,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 data={menu_items}
                 searchable
                 clearable={false}
-                value={startingId}
+                value={cohortId}
                 zIndex={290}
                 onChange={(x) => {
-                  onSelectionChanged(x);
+                  coreDispatch(setActiveCohort(x));
                 }}
                 itemComponent={CustomCohortSelectItem}
                 classNames={{

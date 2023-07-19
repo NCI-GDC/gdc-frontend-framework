@@ -6,7 +6,8 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
-  selectCurrentCohortFilters,
+  joinFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
   FilterSet,
 } from "../cohort";
 import {
@@ -38,14 +39,12 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       field,
       docType = "cases",
       index = "explore" as GQLIndexType,
-      caseFilterSelector = selectCurrentCohortFilters,
+      caseFilterSelector = selectCurrentCohortGeneAndSSMCaseSet,
       localFilters = undefined,
     },
     thunkAPI,
   ) => {
-    const filters = buildCohortGqlOperator(
-      caseFilterSelector(thunkAPI.getState()),
-    );
+    const caseFilters = caseFilterSelector(thunkAPI.getState());
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
@@ -58,8 +57,9 @@ export const fetchFacetByNameGQL = createAsyncThunk<
 
     const queryGQL = buildGraphGLBucketsQuery(filtersToQuery, docType, index);
     const filtersGQL = {
-      caseFilters: filters ?? {},
-      filters: buildCohortGqlOperator(localFilters),
+      filters: buildCohortGqlOperator(
+        joinFilters(caseFilters, localFilters ?? { mode: "and", root: {} }),
+      ),
     };
     return graphqlAPI(queryGQL, filtersGQL);
   },
