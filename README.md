@@ -148,11 +148,17 @@ local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost
 {
   "GFF v2 proxy": {
     "source": 3010,
-    "target": 3001
+    "target": 3001,
+    "key": "localhost-key.pem",
+    "cert": "localhost.pem",
+    "hostname": "localhost"
   },
   "MyTool proxy": {
     "source": 3011,
-    "target": 3000
+    "target": 3000,
+    "key": "localhost-key.pem",
+    "cert": "localhost.pem",
+    "hostname": "localhost"
   }
 }
 ```
