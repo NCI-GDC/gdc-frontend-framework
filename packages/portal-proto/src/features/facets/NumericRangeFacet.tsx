@@ -208,6 +208,12 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   );
 };
 
+// clamp value between min and max
+const clamp = (value: number, min: number, max: number): number | undefined => {
+  if (value === undefined) return undefined;
+  return Math.min(Math.max(value, min), max);
+};
+
 interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
@@ -328,7 +334,13 @@ const FromTo: React.FC<FromToProps> = ({
             // units are always days
             value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
-              setFromValue(adjustYearsToDays(value, units));
+              setFromValue(
+                clamp(
+                  adjustYearsToDays(value, units),
+                  lowerUnitRange,
+                  upperUnitRange,
+                ),
+              );
               changedCallback();
             }}
             hideControls
@@ -357,7 +369,13 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
-              setToValue(adjustYearsToDays(value, units));
+              setToValue(
+                clamp(
+                  adjustYearsToDays(value, units),
+                  lowerUnitRange,
+                  upperUnitRange,
+                ),
+              );
               changedCallback();
             }}
             value={adjustDaysToYears(toValue, units)}
@@ -720,7 +738,7 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         field={field}
         minimum={adjMinimum}
         maximum={adjMaximum}
-        units=""
+        units="range"
         {...hooks}
         clearValues={clearValues}
       />
