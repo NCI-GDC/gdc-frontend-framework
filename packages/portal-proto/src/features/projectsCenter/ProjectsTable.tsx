@@ -308,6 +308,14 @@ const ProjectsTable: React.FC = () => {
                 ) || "--"
               ).sort(Intl.Collator().compare),
           },
+          disease_type: {
+            composer: (project) =>
+              [...project.disease_type].sort(Intl.Collator().compare) || "--",
+          },
+          primary_site: {
+            composer: (project) =>
+              [...project.primary_site].sort(Intl.Collator().compare) || "--",
+          },
           files: {
             composer: "summary.file_count",
           },
