@@ -112,7 +112,6 @@ export interface Exposures {
 
 export interface caseSummaryDefaults {
   readonly case_id: string;
-  readonly submitter_slide_ids: string[];
   readonly disease_type: string;
   readonly files?: Array<caseFileType>;
   readonly demographic?: Demographic;

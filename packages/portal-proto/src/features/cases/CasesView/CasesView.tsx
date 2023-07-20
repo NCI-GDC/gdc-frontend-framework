@@ -98,7 +98,6 @@ export const ContextualCasesView: React.FC = () => {
     fields: [
       "case_id",
       "submitter_id",
-      "submitter_slide_ids",
       "primary_site",
       "disease_type",
       "project.project_id",
