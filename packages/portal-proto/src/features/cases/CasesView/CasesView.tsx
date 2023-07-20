@@ -32,7 +32,6 @@ import {
   HandleChangeInput,
   VerticalTable,
 } from "@/features/shared/VerticalTable";
-import saveAs from "file-saver";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
 
@@ -87,6 +86,8 @@ export const ContextualCasesView: React.FC = () => {
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [cohortTableDownloadActive, setCohortTableDownloadActive] =
+    useState(false);
   /* download active end */
 
   const cohortCounts = useFilteredCohortCounts();
@@ -332,59 +333,6 @@ export const ContextualCasesView: React.FC = () => {
     }
   };
 
-  const handleJSONDownload = () => {
-    const json = data.map(
-      ({
-        filesCount,
-        experimental_strategies,
-        primary_site,
-        submitter_slide_ids,
-        disease_type,
-        case_id,
-        project_id,
-        program,
-        submitter_id,
-        age_at_diagnosis,
-        race,
-        gender,
-        ethnicity,
-        vital_status,
-      }) => {
-        return {
-          summary: {
-            file_count: filesCount,
-            experimental_strategies: experimental_strategies.map(
-              ({ experimental_strategy }) => {
-                return { experimental_strategy };
-              },
-            ),
-            primary_site,
-            submitter_slide_ids: submitter_slide_ids,
-            disease_type,
-            case_id,
-            project: {
-              project_id,
-              program: {
-                name: program,
-              },
-            },
-            submitter_id,
-            diagnoses: [{ age_at_diagnosis }],
-            demographic: {
-              race,
-              gender,
-              ethnicity,
-              vital_status,
-            },
-          },
-        };
-      },
-    );
-    const blob = new Blob([JSON.stringify(json, null, 2)], {
-      type: "text/json",
-    });
-    saveAs(blob, `cohort.${convertDateToString(new Date())}.json`);
-  };
   const downloadFilter: GqlOperation =
     pickedCases.length > 0
       ? {
@@ -395,6 +343,62 @@ export const ContextualCasesView: React.FC = () => {
           },
         }
       : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+
+  const handleJSONDownload = () => {
+    setCohortTableDownloadActive(true);
+    download({
+      endpoint: "files",
+      // endpoint: "cases",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        filename: `cohort.${convertDateToString(new Date())}.json`,
+        filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        // downloadFilter?,
+        format: "JSON",
+        // fields: [
+        //   "submitter_slide_ids",
+        //   "submitter_id",
+        //   "case_id,project.project_id",
+        //   "project.program.name",
+        //   "primary_site",
+        //   "disease_type",
+        //   "diagnoses.age_at_diagnosis",
+        //   "demographic.vital_status",
+        //   "demographic.days_to_death",
+        //   "demographic.race",
+        //   "demographic.gender",
+        //   "demographic.ethnicity",
+        //   "summary.file_count",
+        //   "summary.experimental_strategies.experimental_strategy"
+        // ].join(","),
+        fields: [
+          "cases.summary.file_count",
+          "cases.summary.experimental_strategies.experimental_strategy",
+          "cases.project.primary_site",
+          "cases.project.disease_type",
+          "cases.case_id",
+          "cases.project.project_id",
+          "cases.project.program.name",
+          "cases.samples.submitter_id",
+          "cases.diagnoses.age_at_diagnosis",
+          "cases.demographic.ethnicity",
+          "cases.demographic.gender",
+          "cases.demographic.race",
+          "cases.diagnoses.vital_status",
+        ].join(","),
+        // caseCounts
+        size: 10,
+      },
+      done: () => setCohortTableDownloadActive(false),
+    });
+  };
 
   const handleClinicalTSVDownload = () => {
     setClinicalDownloadActive(true);
@@ -542,17 +546,14 @@ export const ContextualCasesView: React.FC = () => {
                 ) : null
               }
             />
-
-            <ButtonTooltip label=" " comingSoon={true}>
-              <Button
-                onClick={handleJSONDownload}
-                variant="outline"
-                color="primary"
-                className="bg-base-max"
-              >
-                JSON
-              </Button>
-            </ButtonTooltip>
+            <Button
+              onClick={handleJSONDownload}
+              variant="outline"
+              color="primary"
+              className="bg-base-max"
+            >
+              {cohortTableDownloadActive ? <Loader /> : "JSON"}
+            </Button>
             <ButtonTooltip label=" " comingSoon={true}>
               <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
