@@ -16,6 +16,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
+import { ButtonTooltip } from "@/components/expandableTables/shared";
 
 export interface PaginationOptions {
   /**
@@ -621,17 +622,21 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               )}
               {showControls && (
                 <div ref={ref}>
-                  <button
-                    data-testid="button-column-selector-box"
-                    aria-label="show table menu"
-                    onClick={() => {
-                      setShowColumnMenu(!showColumnMenu);
-                    }}
+                  <ButtonTooltip
+                    label={!showColumnMenu ? "Customize Columns" : ""}
                   >
-                    <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-                      {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-                    </Box>
-                  </button>
+                    <button
+                      data-testid="button-column-selector-box"
+                      aria-label="show table menu"
+                      onClick={() => {
+                        setShowColumnMenu(!showColumnMenu);
+                      }}
+                    >
+                      <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+                        {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+                      </Box>
+                    </button>
+                  </ButtonTooltip>
                   {showColumnMenu && (
                     <div
                       className="w-max absolute bg-base-max z-10 py-3 px-4 right-3 border-1 border-solid border-base-lighter rounded"
