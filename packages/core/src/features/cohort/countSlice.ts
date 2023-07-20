@@ -10,10 +10,7 @@ import { buildCohortGqlOperator, joinFilters } from "./filters";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCurrentCohortFilterOrCaseSet,
-  selectCurrentCohortFilterSet,
-} from "./availableCohortsSlice";
+import { selectCurrentCohortFilterSet } from "./availableCohortsSlice";
 
 export interface CountsData {
   readonly caseCount: number;
@@ -53,39 +50,39 @@ const CountsGraphQLQuery = `
   viewer {
     repository {
       cases {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       files {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       sequenceReads : cases {
-        hits(filters: $sequenceReadsCaseFilter, first: 0) {
+        hits(case_filters: $sequenceReadsCaseFilter, first: 0) {
           total
         }
       }
     },
     explore {
       cases {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       genes {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       },
       ssms {
-        hits(filters: $filters, first: 0) {
+        hits(case_filters: $filters, first: 0) {
           total
         }
       }
      ssmsCases : cases {
-        hits(filters: $ssmCaseFilter, first: 0) {
+        hits(case_filters: $ssmCaseFilter, first: 0) {
           total
         }
       }
@@ -98,9 +95,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFiltersWithCaseSet = selectCurrentCohortFilterOrCaseSet(
-    thunkAPI.getState(),
-  );
   const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
   const caseSSMFilter = buildCohortGqlOperator(
     joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
@@ -137,7 +131,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
     }),
   );
 
-  const cohortFiltersGQL = buildCohortGqlOperator(cohortFiltersWithCaseSet);
+  const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
   const graphQlFilters = {
     filters: cohortFiltersGQL ?? {},
     ssmCaseFilter: caseSSMFilter,

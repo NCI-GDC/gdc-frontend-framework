@@ -7,7 +7,6 @@ import {
   handleOperation,
   FilterSet,
   removeCohortFilter,
-  selectCurrentCohortFilters,
   fetchFacetByNameGQL,
   updateCohortFilter,
   useCoreDispatch,
@@ -20,12 +19,13 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectTotalCountsByName,
-  useCurrentCohortFilters,
   selectMultipleFacetsByDocTypeAndField,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortFiltersByNames,
   GqlOperation,
   buildCohortGqlOperator,
+  selectCurrentCohortGeneAndSSMCaseSet,
+  useCurrentCohortWithGeneAndSsmCaseSet,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -41,7 +41,9 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilters(state));
+  return useCoreSelector((state) =>
+    selectCurrentCohortGeneAndSSMCaseSet(state),
+  );
 };
 
 export const extractValue = (op: Operation): EnumOperandValue => {
@@ -88,7 +90,7 @@ export const useEnumFacet = (
   );
 
   const enumValues = useCohortFacetFilterByName(field);
-  const currentCohortFilters = useCurrentCohortFilters();
+  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -149,7 +151,7 @@ export const useEnumFacets = (
   const coreDispatch = useCoreDispatch();
 
   const enumValues = useEnumFiltersByNames(fields);
-  const currentCohortFilters = useCurrentCohortFilters();
+  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -269,7 +271,6 @@ export const useRangeFacet = (
     prevRangeFilters,
     ranges,
     prevRanges,
-    prevRangeFilters,
     docType,
     indexType,
   ]);

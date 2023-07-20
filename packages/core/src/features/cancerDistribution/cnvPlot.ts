@@ -7,7 +7,7 @@ import {
 } from "../../dataAccess";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
-import { GqlIntersection } from "../gdcapi/filters";
+import { GqlIntersection, Includes } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphQLQuery = `query CancerDistributionCNV(
@@ -60,7 +60,22 @@ const fetchCnvAnalysisQuery = async (
   gene: string,
   contextFilters: FilterSet | undefined,
 ): Promise<GraphQLApiResponse> => {
-  const gqlContextFilter = buildCohortGqlOperator(contextFilters);
+  const contextGene =
+    ((contextFilters?.root["genes.gene_id"] as Includes)
+      ?.operands as string[]) ?? [];
+  const contextWithGene = {
+    mode: "and",
+    root: {
+      ...contextFilters?.root,
+      ["genes.gene_id"]: {
+        operator: "includes",
+        field: "genes.gene_id",
+        operands: [gene, ...contextGene],
+      } as Includes,
+    },
+  };
+
+  const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
   const graphQLFilters = {
     cnvAll: {
       op: "and",
@@ -77,13 +92,6 @@ const fetchCnvAnalysisQuery = async (
           content: {
             field: "cnvs.cnv_change",
             value: ["Gain", "Loss"],
-          },
-        },
-        {
-          op: "in",
-          content: {
-            field: "genes.gene_id",
-            value: [gene],
           },
         },
         ...(gqlContextFilter
@@ -108,13 +116,6 @@ const fetchCnvAnalysisQuery = async (
             value: ["Gain"],
           },
         },
-        {
-          op: "in",
-          content: {
-            field: "genes.gene_id",
-            value: [gene],
-          },
-        },
         ...(gqlContextFilter
           ? (gqlContextFilter as GqlIntersection)?.content
           : []),
@@ -135,13 +136,6 @@ const fetchCnvAnalysisQuery = async (
           content: {
             field: "cnvs.cnv_change",
             value: ["Loss"],
-          },
-        },
-        {
-          op: "in",
-          content: {
-            field: "genes.gene_id",
-            value: [gene],
           },
         },
         ...(gqlContextFilter
@@ -171,19 +165,13 @@ const fetchCnvAnalysisQuery = async (
             value: ["cnv"],
           },
         },
-        {
-          op: "in",
-          content: {
-            field: "genes.gene_id",
-            value: [gene],
-          },
-        },
         ...(gqlContextFilter
           ? (gqlContextFilter as GqlIntersection)?.content
           : []),
       ],
     },
   };
+
   const results: GraphQLApiResponse<any> = await graphqlAPI(
     graphQLQuery,
     graphQLFilters,

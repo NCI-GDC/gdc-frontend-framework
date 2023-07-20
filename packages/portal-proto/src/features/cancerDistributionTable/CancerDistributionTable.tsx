@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Tooltip } from "@mantine/core";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
 import {
@@ -8,6 +8,10 @@ import {
   useGetProjectsQuery,
   CancerDistributionTableData,
   FilterSet,
+  useCreateCaseSetFromFiltersMutation,
+  buildCohortGqlOperator,
+  addNewCohortWithFilterAndMessage,
+  useCoreDispatch,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -28,11 +32,11 @@ interface CancerDistributionTableTSVDownloadData {
   disease_type: string[];
   primary_site: string[];
   ssm_affected_cases: string;
+  ssm_percent: number;
 }
-import {
-  NumeratorDenominator,
-  ButtonTooltip,
-} from "@/components/expandableTables/shared";
+import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import { CohortCreationButton } from "@/components/CohortCreationButton/";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -59,6 +63,8 @@ export const GeneCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={gene}
+      contextFilters={contextFilters}
       isGene
     />
   );
@@ -74,14 +80,6 @@ interface CellProps {
   row: Row;
 }
 
-interface CellPropsMath {
-  value: {
-    numerator: number;
-    denominator: number;
-    percent: number;
-  };
-}
-
 export const SSMSCancerDistributionTable: React.FC<
   SSMSCancerDistributionTableProps
 > = ({ ssms, symbol }: SSMSCancerDistributionTableProps) => {
@@ -94,6 +92,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={ssms}
       isGene={false}
     />
   );
@@ -105,7 +104,17 @@ interface CancerDistributionTableProps {
   readonly isError: boolean;
   readonly isSuccess: boolean;
   readonly symbol: string;
+  readonly id: string;
   readonly isGene: boolean;
+  readonly contextFilters?: FilterSet;
+}
+
+interface CreateSSMCohortParams {
+  project: string;
+  id: string;
+  gene?: string;
+  filter?: "Loss" | "Gain";
+  mode: "CNV" | "SSM";
 }
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
@@ -114,14 +123,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   isError,
   isSuccess,
   symbol,
+  id,
   isGene,
+  contextFilters,
 }: CancerDistributionTableProps) => {
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
+  const [loading, setLoading] = useState(false);
+  const [createCohortParams, setCreateCohortParams] = useState<
+    CreateSSMCohortParams | undefined
+  >(undefined);
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
       op: "in",
       content: {
         field: "project_id",
-        value: data?.projects.map((p) => p.key),
+        value: data?.projects.map((p) => p.key) ?? [],
       },
     },
     expand: [
@@ -132,6 +149,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ],
     size: data?.projects.length,
   });
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [response.isLoading]);
 
   const projectsById = Object.fromEntries(
     (projects?.projectData || []).map((project) => [
@@ -219,23 +244,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               sortingFn: (rowA, rowB) => {
-                if (rowA.cnv_gains.percent < rowB.cnv_gains.percent) {
+                if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
                   return 1;
                 }
-                if (rowA.cnv_gains.percent > rowB.cnv_gains.percent) {
+                if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
                   return -1;
                 }
                 return 0;
               },
               visible: true,
-              Cell: ({ value }: CellPropsMath) => {
-                return (
-                  <NumeratorDenominator
-                    numerator={value.numerator}
-                    denominator={value.denominator}
-                  />
-                );
-              },
             },
             {
               id: "cnv_losses",
@@ -254,23 +271,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 </div>
               ),
               sortingFn: (rowA, rowB) => {
-                if (rowA.cnv_losses.percent < rowB.cnv_losses.percent) {
+                if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
                   return 1;
                 }
-                if (rowA.cnv_losses.percent > rowB.cnv_losses.percent) {
+                if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
                   return -1;
                 }
                 return 0;
               },
               visible: true,
-              Cell: ({ value }: CellPropsMath) => {
-                return (
-                  <NumeratorDenominator
-                    numerator={value.numerator}
-                    denominator={value.denominator}
-                  />
-                );
-              },
             },
             {
               id: "num_mutations",
@@ -296,6 +305,139 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ];
   }, [isGene, symbol]);
 
+  const coreDispatch = useCoreDispatch();
+
+  const createSSMAffectedFilters = useCallback(
+    async (project: string, id: string): Promise<FilterSet> => {
+      return await createSet({
+        filters: buildCohortGqlOperator(contextFilters),
+      })
+        .unwrap()
+        .then((setId) => {
+          if (isGene) {
+            return {
+              mode: "and",
+              root: {
+                "cases.case_id": {
+                  field: "cases.case_id",
+                  operands: [`set_id:${setId}`],
+                  operator: "includes",
+                },
+                "cases.project.project_id": {
+                  field: "cases.project.project_id",
+                  operator: "includes",
+                  operands: [project],
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "includes",
+                  operands: [id],
+                },
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "exists",
+                },
+              },
+            };
+          } else {
+            return {
+              mode: "and",
+              root: {
+                "cases.case_id": {
+                  field: "cases.case_id",
+                  operands: [`set_id:${setId}`],
+                  operator: "includes",
+                },
+                "cases.project.project_id": {
+                  field: "cases.project.project_id",
+                  operator: "includes",
+                  operands: [project],
+                },
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "includes",
+                  operands: [id],
+                },
+              },
+            };
+          }
+        });
+    },
+    [contextFilters, createSet, isGene],
+  );
+
+  const createSSMAffectedFiltersCohort = async (
+    name: string,
+    project: string,
+    id: string,
+  ) => {
+    const mainFilter = await createSSMAffectedFilters(project, id);
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
+  const createCNVGainLossFilters = useCallback(
+    async (
+      project: string,
+      gene: string,
+      filter: "Loss" | "Gain",
+    ): Promise<FilterSet> => {
+      return await createSet({
+        filters: buildCohortGqlOperator(contextFilters),
+      })
+        .unwrap()
+        .then((setId) => {
+          return {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+              "cases.project.project_id": {
+                field: "cases.project.project_id",
+                operator: "includes",
+                operands: [project],
+              },
+              "genes.gene_id": {
+                field: "genes.gene_id",
+                operator: "=",
+                operand: id,
+              },
+              "genes.cnv.cnv_change": {
+                field: "genes.cnv.cnv_change",
+                operator: "=",
+                operand: filter,
+              },
+            },
+          };
+        });
+    },
+    [contextFilters, createSet, id],
+  );
+
+  const createCNVGainLossCohort = async (
+    name: string,
+    project: string,
+    gene: string,
+    filter: "Loss" | "Gain",
+  ) => {
+    const mainFilter = await createCNVGainLossFilters(project, gene, filter);
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
   const formattedData = useMemo(
     () =>
       isSuccess
@@ -311,9 +453,25 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 primary_site: projectsById[d.key]?.primary_site || [],
 
                 ssm_affected_cases: (
-                  <NumeratorDenominator
-                    numerator={data.ssmFiltered[d.key] || 0}
-                    denominator={data.ssmTotal[d.key] || 0}
+                  <CohortCreationButton
+                    numCases={data.ssmFiltered[d.key] || 0}
+                    handleClick={() => {
+                      setCreateCohortParams({
+                        project: d.key,
+                        id: id,
+                        mode: "SSM",
+                        gene: undefined,
+                        filter: undefined,
+                      });
+                      setShowCreateCohort(true);
+                    }}
+                    label={
+                      <NumeratorDenominator
+                        numerator={data.ssmFiltered[d.key] || 0}
+                        denominator={data.ssmTotal[d.key] || 0}
+                        boldNumerator
+                      />
+                    }
                   />
                 ),
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
@@ -322,22 +480,59 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...row,
                 ...(isGene
                   ? {
-                      cnv_gains: {
-                        numerator: data.cnvGain[d.key] || 0,
-                        denominator: data.cnvTotal[d.key] || 0,
-                        percent: calculatePercent(
-                          data.cnvGain[d.key] || 0,
-                          data.cnvTotal[d.key] || 0,
-                        ),
-                      },
-                      cnv_losses: {
-                        numerator: data.cnvLoss[d.key] || 0,
-                        denominator: data.cnvTotal[d.key] || 0,
-                        percent: calculatePercent(
-                          data.cnvLoss[d.key] || 0,
-                          data.cnvTotal[d.key] || 0,
-                        ),
-                      },
+                      cnv_gains: (
+                        <CohortCreationButton
+                          numCases={data.cnvGain[d.key] || 0}
+                          handleClick={() => {
+                            setCreateCohortParams({
+                              project: d.key,
+                              id: id,
+                              mode: "CNV",
+                              gene: undefined,
+                              filter: "Gain",
+                            });
+                            setShowCreateCohort(true);
+                          }}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvGain[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
+                        />
+                      ),
+                      cnv_gains_percent: calculatePercent(
+                        data.cnvGain[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
+                      ),
+                      cnv_losses: (
+                        <CohortCreationButton
+                          numCases={data.cnvLoss[d.key] || 0}
+                          handleClick={() => {
+                            setCreateCohortParams({
+                              project: d.key,
+                              id: id,
+                              mode: "CNV",
+                              gene: undefined,
+                              filter: "Loss",
+                            });
+                            setShowCreateCohort(true);
+                          }}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvLoss[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
+                        />
+                      ),
+                      cnv_losses_percent: calculatePercent(
+                        data.cnvLoss[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
+                      ),
+
                       num_mutations:
                         (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
                     }
@@ -501,44 +696,107 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     saveAs(blob, fileName);
   };
 
-  return (
-    <VerticalTable
-      tableData={displayedData}
-      columns={columnListOrder}
-      columnSorting={"manual"}
-      selectableRow={false}
-      showControls={false}
-      additionalControls={
-        <div className="flex gap-2 mb-2">
-          <ButtonTooltip label=" " comingSoon={true}>
-            <FunctionButton>JSON</FunctionButton>
-          </ButtonTooltip>
-          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
-        </div>
-      }
-      pagination={{
-        page,
-        pages,
-        size,
-        from,
-        total,
-      }}
-      status={
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
-      handleChange={handleChange}
-      initialSort={[
-        {
-          id: "ssm_affected_cases",
-          desc: false,
+  const handleJSONDownload = () => {
+    const json = cancerDistributionTableDownloadData
+      .map(
+        ({
+          project,
+          disease_type,
+          primary_site,
+          ssm_percent,
+          num_mutations,
+        }) => {
+          return {
+            project_id: project,
+            disease_type,
+            site: primary_site,
+            num_affected_cases: data.ssmFiltered[project] ?? 0,
+            num_affected_cases_total: data.ssmTotal[project] ?? 0,
+            num_affected_cases_percent: ssm_percent,
+            ...(isGene && { num_cnv_gain: data.cnvGain[project] ?? 0 }),
+            ...(isGene && {
+              num_cnv_gain_percent:
+                data?.cnvGain[project] / data?.cnvTotal[project] || 0,
+            }),
+            ...(isGene && { num_cnv_loss: data.cnvLoss[project] ?? 0 }),
+            ...(isGene && {
+              num_cnv_loss_percent:
+                data?.cnvLoss[project] / data?.cnvTotal[project] || 0,
+            }),
+            ...(isGene && { num_cnv_cases_total: data.cnvTotal[project] ?? 0 }),
+            mutations_counts: num_mutations,
+          };
         },
-      ]}
-    />
+      )
+      .sort(
+        (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
+      );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, "cancer-distribution-data.json");
+  };
+
+  return (
+    <>
+      {loading && <LoadingOverlay visible />}
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            if (createCohortParams.mode === "SSM") {
+              createSSMAffectedFiltersCohort(
+                newName,
+                createCohortParams.project,
+                createCohortParams.id,
+              );
+            } else {
+              createCNVGainLossCohort(
+                newName,
+                createCohortParams.project,
+                createCohortParams.gene,
+                createCohortParams.filter,
+              );
+            }
+          }}
+        />
+      )}
+      <VerticalTable
+        tableData={displayedData}
+        columns={columnListOrder}
+        columnSorting={"manual"}
+        selectableRow={false}
+        showControls={false}
+        additionalControls={
+          <div className="flex gap-2 mb-2">
+            <FunctionButton onClick={handleJSONDownload}>JSON</FunctionButton>
+            <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
+          </div>
+        }
+        pagination={{
+          page,
+          pages,
+          size,
+          from,
+          total,
+        }}
+        status={
+          isFetching
+            ? "pending"
+            : isSuccess
+            ? "fulfilled"
+            : isError
+            ? "rejected"
+            : "uninitialized"
+        }
+        handleChange={handleChange}
+        initialSort={[
+          {
+            id: "ssm_affected_cases",
+            desc: false,
+          },
+        ]}
+      />
+    </>
   );
 };

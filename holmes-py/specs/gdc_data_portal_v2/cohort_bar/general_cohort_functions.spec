@@ -17,6 +17,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|---------------------|
   |Gender           |female               |
   |Vital Status     |alive                |
+* Wait for loading spinner
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "test save 1" in the Cohort Bar section

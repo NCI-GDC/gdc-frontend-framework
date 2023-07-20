@@ -11,6 +11,8 @@ tags: gdc-data-portal-v2, regression, home-page
 * On GDC Data Portal V2 app
 
 ## Validate Live Statistics
+* Is text "Mutations" present on the page
+* Pause "2" seconds
 * Live statistics should display correct values
   |category       |expected_statistic |
   |---------------|-------------------|
@@ -18,5 +20,5 @@ tags: gdc-data-portal-v2, regression, home-page
   |Primary Sites  |67                 |
   |Cases          |86,513             |
   |Files          |887,872            |
-  |Genes          |22,369             |
-  |Mutations      |2,744,846          |
+  |Genes          |22,450             |
+  |Mutations      |2,761,145          |

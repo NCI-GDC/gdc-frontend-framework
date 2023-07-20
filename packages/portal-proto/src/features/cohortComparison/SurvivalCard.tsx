@@ -10,7 +10,7 @@ import {
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
-import CohortCreationButton from "@/components/CohortCreationButton";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
 const survivalDataCompletenessFilters: readonly GqlOperation[] = [
   {
@@ -186,7 +186,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                 <tr>
                   <td className="pl-2">Overall Survival Analysis</td>
                   <td>
-                    <CohortCreationButton
+                    <CohortCreationButtonWrapper
                       numCases={
                         survivalPrimaryCaseSetResponse.isSuccess
                           ? cohort1Count
@@ -209,7 +209,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   </td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
                   <td>
-                    <CohortCreationButton
+                    <CohortCreationButtonWrapper
                       numCases={
                         survivalComparisonCaseSetResponse.isSuccess
                           ? cohort2Count

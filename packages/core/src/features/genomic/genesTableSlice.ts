@@ -13,20 +13,18 @@ import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
   filterSetToOperation,
-  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
-import { mergeGenomicAndCohortFilters } from "./genomicFilters";
-import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
-  Intersection,
   Union,
+  UnionOrIntersection,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
+            $caseFilters: FiltersArgument
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int
@@ -42,17 +40,17 @@ const GenesTableGraphQLQuery = `
             genesTableViewer: viewer {
               explore {
                 cases {
-                  hits(first: 0, filters: $ssmTested) {
+                  hits(first: 0, case_filters: $ssmTested) {
                     total
                   }
                 }
                 filteredCases: cases {
-                  hits(first: 0, filters: $geneCaseFilter) {
+                  hits(first: 0, case_filters: $geneCaseFilter) {
                     total
                   }
                 }
                 cnvCases: cases {
-                  hits(first: 0, filters: $cnvTested) {
+                  hits(first: 0, case_filters: $cnvTested) {
                     total
                   }
                 }
@@ -61,6 +59,7 @@ const GenesTableGraphQLQuery = `
                     first: $genesTable_size
                     offset: $genesTable_offset
                     filters: $genesTable_filters
+                    case_filters: $caseFilters
                     score: $score
                     sort: $sort
                   ) {
@@ -170,48 +169,30 @@ export const fetchGenesTable = createAsyncThunk<
       offset,
       searchTerm,
       genomicFilters,
-      isDemoMode,
-      overwritingDemoFilter,
+      cohortFilters,
     }: GenomicTableProps,
-    thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const cohortFilters = buildCohortGqlOperator(
-      selectCurrentCohortFilters(thunkAPI.getState()),
-    );
-
-    const demoOrCohort = isDemoMode
-      ? buildCohortGqlOperator(overwritingDemoFilter)
-      : cohortFilters;
-    const cohortFiltersContent = demoOrCohort?.content
-      ? Object(demoOrCohort?.content)
+    const caseFilters = buildCohortGqlOperator(cohortFilters);
+    const cohortFiltersContent = caseFilters?.content
+      ? Object(caseFilters?.content)
       : [];
-    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
-      thunkAPI.getState(),
-      genomicFilters,
-    );
-    const filters = isDemoMode
-      ? buildCohortGqlOperator(
-          joinFilters(overwritingDemoFilter, genomicFilters),
-        )
-      : buildCohortGqlOperator(geneAndCohortFilters);
-    const filterContents = filters?.content ? Object(filters?.content) : [];
+
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
-    const tableFilters = convertFilterToGqlFilter(
+
+    // filters for the genes table using local filters
+    const genesTableFilters = convertFilterToGqlFilter(
       appendFilterToOperation(
-        isDemoMode
-          ? (filterSetToOperation(
-              joinFilters(overwritingDemoFilter, genomicFilters),
-            ) as Union | Intersection | undefined)
-          : (filterSetToOperation(geneAndCohortFilters) as
-              | Union
-              | Intersection
-              | undefined),
+        filterSetToOperation(genomicFilters) as UnionOrIntersection | undefined,
         searchFilters,
       ),
     );
+    const filterContents = genesTableFilters?.content
+      ? Object(genesTableFilters?.content)
+      : [];
 
     const graphQlFilters = {
-      genesTable_filters: tableFilters ? tableFilters : {},
+      caseFilters: caseFilters ? caseFilters : {},
+      genesTable_filters: genesTableFilters ? genesTableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -338,6 +319,7 @@ export const fetchGenesTable = createAsyncThunk<
       const counts = await fetchSmsAggregations({
         ids: geneIds,
         filters: filterContents,
+        caseFilters: caseFilters,
       });
       if (!counts.errors) {
         const countsData =

@@ -13,6 +13,7 @@ def start_app():
 
 @step("Select <button_name> on the Repository page")
 def select_repository_page_button(button_name: str):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.repository_page.click_repository_page_button(button_name)
 
 @step("Select <button_name> on the Image Viewer page")
@@ -79,6 +80,7 @@ def verify_slide_image_is_visible():
 
 @step("Verify the slide image viewer is showing <number_of_cases> cases")
 def verify_slide_image_viewer_case_count(number_of_cases):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     showing_cases_slide_image_text = APP.repository_page.get_image_viewer_showing_cases_text()
     assert f"Showing {number_of_cases}" in showing_cases_slide_image_text, f"The slide image viewer page is not showing expected number of cases - {number_of_cases}"
 

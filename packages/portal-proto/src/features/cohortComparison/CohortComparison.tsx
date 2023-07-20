@@ -12,18 +12,22 @@ import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 import { DemoText } from "../shared/tailwindComponents";
 
-interface CohortComparisonProps {
-  readonly cohorts?: {
-    primary_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
-    comparison_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
+export interface CohortComparisonType {
+  primary_cohort: {
+    filter: FilterSet;
+    name: string;
+    id: string;
   };
-  readonly demoMode?: boolean;
+  comparison_cohort: {
+    filter: FilterSet;
+    name: string;
+    id: string;
+  };
+}
+
+interface CohortComparisonProps {
+  readonly cohorts: CohortComparisonType;
+  readonly demoMode: boolean;
 }
 
 const CohortComparison: React.FC<CohortComparisonProps> = ({
