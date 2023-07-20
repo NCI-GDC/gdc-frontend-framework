@@ -6,6 +6,7 @@ import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "@/features/shared/DragDrop";
+import { ButtonTooltip } from ".";
 import { Column } from "./types";
 
 interface DNDProps {
@@ -34,17 +35,19 @@ const DND: React.FC<DNDProps> = ({
       aria-label="column change button"
       ref={ref}
     >
-      <button
-        onClick={() => {
-          setShowColumnMenu(!showColumnMenu);
-          setColumnSearchTerm("");
-        }}
-        aria-label="show table menu"
-      >
-        <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
-          {!showColumnMenu ? <BsList /> : <BsX size={17} />}
-        </Box>
-      </button>
+      <ButtonTooltip label={!showColumnMenu ? "Customize Columns" : ""}>
+        <button
+          onClick={() => {
+            setShowColumnMenu(!showColumnMenu);
+            setColumnSearchTerm("");
+          }}
+          aria-label="show table menu"
+        >
+          <Box className="border border-primary p-2 rounded-md cursor-pointer text-primary hover:bg-primary hover:text-base-max">
+            {!showColumnMenu ? <BsList /> : <BsX size={17} />}
+          </Box>
+        </button>
+      </ButtonTooltip>
       {showColumnMenu && (
         <div
           data-testid="column-selector-popover-modal"
