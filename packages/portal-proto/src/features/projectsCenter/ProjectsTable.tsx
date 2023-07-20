@@ -300,17 +300,13 @@ const ProjectsTable: React.FC = () => {
           cases: {
             composer: "summary.case_count",
           },
-          data_categories: {
-            composer: (project) =>
-              project.summary.data_categories.map(
-                (category) => category.data_category,
-              ) || "--",
-          },
           experimental_strategies: {
             composer: (project) =>
-              project.summary.experimental_strategies.map(
-                (strategy) => strategy.experimental_strategy,
-              ) || "--",
+              (
+                project.summary.experimental_strategies.map(
+                  (strategy) => strategy.experimental_strategy,
+                ) || "--"
+              ).sort(Intl.Collator().compare),
           },
           files: {
             composer: "summary.file_count",
