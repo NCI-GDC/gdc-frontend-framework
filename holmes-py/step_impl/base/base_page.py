@@ -49,14 +49,15 @@ class GenericLocators:
 
 class BasePage:
     def __init__(self, driver) -> None:
+        driver.set_default_timeout(5000)
         self.driver = driver
 
     def goto(self, url):
         self.driver.goto(url)
 
     # Force: Whether to bypass the actionability checks
-    def click(self, locator, force=False, timeout=45000):
-        self.wait_until_locator_is_visible(locator)
+    def click(self, locator, force=False, timeout=5000):
+        self.wait_until_locator_is_visible(locator, timeout=timeout)
         self.driver.locator(locator).click(force=force,timeout=timeout)
 
     def hover(self, locator, force=False):
