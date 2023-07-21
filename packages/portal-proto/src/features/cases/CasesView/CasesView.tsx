@@ -367,7 +367,8 @@ export const ContextualCasesView: React.FC = () => {
         fields: [
           "submitter_slide_ids",
           "submitter_id",
-          "case_id,project.project_id",
+          "case_id",
+          "project.project_id",
           "project.program.name",
           "primary_site",
           "disease_type",
@@ -377,7 +378,7 @@ export const ContextualCasesView: React.FC = () => {
           "demographic.race",
           "demographic.gender",
           "demographic.ethnicity",
-          "summary.experimental_strategies.file_count",
+          "summary.file_count",
           "summary.experimental_strategies.experimental_strategy",
         ].join(","),
         size: caseCounts,
