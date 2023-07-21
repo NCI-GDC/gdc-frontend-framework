@@ -362,6 +362,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `cohort.${convertDateToString(new Date())}.json`,
         filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         attachment: true,
+        pretty: true,
         format: "JSON",
         fields: [
           "submitter_slide_ids",
