@@ -177,10 +177,10 @@ trigger_ui_tests_uat:
   variables:
     APP_ENVIRONMENT: QA_UAT
   needs:
-    - job: deploy_qa/uat2
+    - job: deploy_qa/uat
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat2"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
       allow_failure: true
 
 trigger_ui_tests_scheduled:
