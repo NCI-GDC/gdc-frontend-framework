@@ -646,11 +646,23 @@ export const endpointSlice = coreCreateApi({
       }),
       transformResponse: (response) => response.data.hits,
     }),
+    getCaseSsms: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "case_ssms",
+        //fetchAll: false,
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
   }),
 });
 
-export const { useGetGenesQuery, useGetCasesQuery, useGetSsmsQuery } =
-  endpointSlice;
+export const {
+  useGetGenesQuery,
+  useGetCasesQuery,
+  useGetSsmsQuery,
+  useGetCaseSsmsQuery,
+} = endpointSlice;
 export const endpointSliceMiddleware = endpointSlice.middleware as Middleware;
 export const endpointSliceReducerPath: string = endpointSlice.reducerPath;
 export const endpointReducer: Reducer = endpointSlice.reducer as Reducer;

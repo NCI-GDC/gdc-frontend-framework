@@ -257,6 +257,16 @@ export interface GqlUnion {
   readonly content: ReadonlyArray<GqlOperation>;
 }
 
+interface NumericFromTo {
+  readonly from: number;
+  readonly to: number;
+}
+
+export interface GqlRange {
+  readonly op: "range";
+  readonly content: ReadonlyArray<{ ranges: NumericFromTo[] }>;
+}
+
 export interface GqlOperationHandler<T> {
   handleEquals: (op: GqlEquals) => T;
   handleNotEquals: (op: GqlNotEquals) => T;

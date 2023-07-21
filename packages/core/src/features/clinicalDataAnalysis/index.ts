@@ -2,6 +2,8 @@ import { combineReducers } from "@reduxjs/toolkit";
 import {
   useGetClinicalAnalysisQuery,
   clinicalAnalysisApiReducer,
+  useGetContinuousDataStatsQuery,
+  ClinicalContinuousStatsData,
 } from "./clinicalDataAnalysisSlice";
 import {
   fetchClinicalFieldsResult,
@@ -12,6 +14,8 @@ export {
   fetchClinicalFieldsResult,
   useClinicalFields,
   useGetClinicalAnalysisQuery,
+  useGetContinuousDataStatsQuery,
+  ClinicalContinuousStatsData,
 };
 
 export const clinicalDataAnalysisReducer = combineReducers({

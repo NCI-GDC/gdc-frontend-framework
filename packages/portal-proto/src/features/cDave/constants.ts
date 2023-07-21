@@ -30,6 +30,14 @@ export const CONTINUOUS_FACET_TYPES = [
   "double",
 ];
 
+export const HIDE_QQ_BOX_FIELDS = [
+  "demographic.year_of_birth",
+  "demographic.year_of_death",
+  "diagnoses.year_of_diagnosis",
+  "exposures.tobacco_smoking_onset_year",
+  "exposures.tobacco_smoking_quit_year",
+];
+
 export const COLOR_MAP = {
   demographic: "nci-blue",
   diagnoses: "nci-orange",
@@ -156,6 +164,38 @@ export const FACET_SORT = {
     "tobacco_smoking_onset_year",
     "tobacco_smoking_quit_year",
   ],
+};
+
+export const BOX_QQ_DATA_DIMENSIONS = {
+  age_at_diagnosis: {
+    axisTitle: "Age",
+    unit: "Years",
+  },
+  cigarettes_per_day: {},
+  circumferential_resection_margin: {},
+  days_to_birth: { unit: "Days" },
+  days_to_death: { unit: "Days" },
+  days_to_hiv_diagnosis: { unit: "Days" },
+  days_to_last_follow_up: { unit: "Days" },
+  days_to_last_known_disease_status: { unit: "Days" },
+  days_to_new_event: { unit: "Days" },
+  days_to_recurrence: { unit: "Days" },
+  days_to_treatment_end: { unit: "Days" },
+  days_to_treatment_start: { unit: "Days" },
+  height: {
+    axisTitle: "Height",
+    unit: "cm",
+  },
+  tumor_largest_dimension_diameter: {
+    axisTitle: "Diameter",
+    unit: "cm",
+  },
+  weight: {
+    axisTitle: "Weight",
+    unit: "kg",
+  },
+  year_of_diagnosis: { unit: "Years" },
+  years_smoked: { unit: "Years" },
 };
 
 export const TABS = {
