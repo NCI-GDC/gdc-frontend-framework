@@ -57,7 +57,7 @@ class BasePage:
     # Force: Whether to bypass the actionability checks
     def click(self, locator, force=False, timeout=5000):
         self.wait_until_locator_is_visible(locator, timeout=timeout)
-        self.driver.locator(locator).click(force=force,timeout=timeout)
+        self.driver.locator(locator).click(force=force, timeout=timeout)
 
     def hover(self, locator, force=False):
         """Hover over given locator"""
@@ -135,17 +135,17 @@ class BasePage:
         self.hover(table_locator_to_select)
         self.hover(table_locator_to_select, force=True)
 
-    def wait_until_locator_is_visible(self, locator, timeout=60000):
+    def wait_until_locator_is_visible(self, locator, timeout=5000):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
-        self.driver.locator(locator).wait_for(state='visible', timeout= timeout)
+        self.driver.locator(locator).wait_for(state='visible', timeout=timeout)
 
-    def wait_until_locator_is_detached(self, locator):
+    def wait_until_locator_is_detached(self, locator, timeout=30000):
         """wait for element to not be present in DOM"""
-        self.driver.locator(locator).wait_for(state='detached', timeout= 60000)
+        self.driver.locator(locator).wait_for(state='detached', timeout=timeout)
 
-    def wait_until_locator_is_hidden(self, locator):
+    def wait_until_locator_is_hidden(self, locator, timeout=5000):
         """wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden"""
-        self.driver.locator(locator).wait_for(state='hidden', timeout= 15000)
+        self.driver.locator(locator).wait_for(state='hidden', timeout=timeout)
 
     def wait_for_text_in_temporary_message(self, text, action="remove modal"):
         """
