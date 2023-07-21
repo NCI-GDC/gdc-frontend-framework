@@ -257,7 +257,7 @@ export interface GqlUnion {
   readonly content: ReadonlyArray<GqlOperation>;
 }
 
-interface NumericFromTo {
+export interface NumericFromTo {
   readonly from: number;
   readonly to: number;
 }
