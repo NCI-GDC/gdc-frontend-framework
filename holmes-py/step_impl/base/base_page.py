@@ -135,9 +135,9 @@ class BasePage:
         self.hover(table_locator_to_select)
         self.hover(table_locator_to_select, force=True)
 
-    def wait_until_locator_is_visible(self, locator):
+    def wait_until_locator_is_visible(self, locator, timeout=60000):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
-        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
+        self.driver.locator(locator).wait_for(state='visible', timeout= timeout)
 
     def wait_until_locator_is_detached(self, locator):
         """wait for element to not be present in DOM"""
