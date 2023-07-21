@@ -298,30 +298,34 @@ const ProjectsTable: React.FC = () => {
         vc.forEach((col) => {
           switch (col) {
             case "Project":
-              tsv.push(i.project_id);
+              tsv.push(i?.project_id ?? "");
               break;
             case "Program":
-              tsv.push(i.program.name);
+              tsv.push(i?.program?.name ?? "");
               break;
             case "Cases":
-              tsv.push(i.summary.case_count);
+              tsv.push(i?.summary?.case_count ?? 0);
               break;
             case "Files":
-              tsv.push(i.summary.file_count);
+              tsv.push(i?.summary?.file_count ?? 0);
               break;
             case "Disease Type":
-              tsv.push([...i.disease_type].sort(Intl.Collator().compare));
+              tsv.push(
+                [...i?.disease_type].sort(Intl.Collator().compare) ?? [],
+              );
               break;
             case "Primary Site":
-              tsv.push([...i.primary_site].sort(Intl.Collator().compare));
+              tsv.push(
+                [...i?.primary_site].sort(Intl.Collator().compare) ?? [],
+              );
               break;
             case "Experimental Strategy":
               tsv.push(
                 [
-                  ...i.summary.experimental_strategies.map(
+                  ...i?.summary?.experimental_strategies.map(
                     ({ experimental_strategy }) => experimental_strategy,
                   ),
-                ].sort(Intl.Collator().compare),
+                ].sort(Intl.Collator().compare) ?? [],
               );
               break;
           }
