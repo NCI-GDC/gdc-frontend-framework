@@ -45,7 +45,7 @@ test("SSM lolliplot arguments", () => {
       filter0: { abc: "xyz" },
       allow2selectSamples: {
         buttonText: "Create Cohort",
-        attributes: ["case.case_id"],
+        attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
         callback: runpparg.tracks[0]?.allow2selectSamples?.callback,
       },
     },
