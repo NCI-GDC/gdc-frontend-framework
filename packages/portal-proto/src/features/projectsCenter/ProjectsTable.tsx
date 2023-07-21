@@ -287,66 +287,50 @@ const ProjectsTable: React.FC = () => {
 
   const handleDownloadTSV = () => {
     const fileName = `projects-table.${convertDateToString(new Date())}.tsv`;
-    const visibleColumns = columns
+    const vc = columns
+      .filter(({ id }) => id !== "selected")
       .filter(({ visible }) => visible)
       .map(({ columnName }) => columnName);
 
-    const headers = [
-      ...[visibleColumns.includes("Project") ? "Project" : ""],
-      ...[visibleColumns.includes("Disease Type") ? "Disease Type" : ""],
-      ...[visibleColumns.includes("Primary Site") ? "Primary Site" : ""],
-      ...[visibleColumns.includes("Program") ? "Program" : ""],
-      ...[visibleColumns.includes("Cases") ? "Cases" : ""],
-      ...[
-        visibleColumns.includes("Experimental Strategy")
-          ? "Experimental Strategy"
-          : "",
-      ],
-      ...[visibleColumns.includes("Files") ? "Files" : ""],
-    ];
-
     const body = data?.projectData
-      .map(
-        ({
-          project_id,
-          disease_type,
-          primary_site,
-          program: { name },
-          summary: { case_count, experimental_strategies, file_count },
-        }) => {
-          return [
-            ...[visibleColumns.includes("Project") ? project_id : null],
-            ...[
-              visibleColumns.includes("Disease Type")
-                ? [...disease_type].sort(Intl.Collator().compare)
-                : null,
-            ],
-            ...[
-              visibleColumns.includes("Primary Site")
-                ? [...primary_site].sort(Intl.Collator().compare)
-                : null,
-            ],
-            ...[visibleColumns.includes("Program") ? name : null],
-            ...[visibleColumns.includes("Cases") ? case_count : null],
-            ...[
-              visibleColumns.includes("Experimental Strategy")
-                ? [
-                    ...experimental_strategies.map(
-                      ({ experimental_strategy }) => experimental_strategy,
-                    ),
-                  ].sort(Intl.Collator().compare)
-                : null,
-            ],
-            ...[visibleColumns.includes("Files") ? file_count : null],
-          ]
-            .filter((item) => item !== null)
-            .join("\t");
-        },
-      )
+      .map((i) => {
+        const tsv = [];
+        vc.forEach((col) => {
+          switch (col) {
+            case "Project":
+              tsv.push(i.project_id);
+              break;
+            case "Program":
+              tsv.push(i.program.name);
+              break;
+            case "Cases":
+              tsv.push(i.summary.case_count);
+              break;
+            case "Files":
+              tsv.push(i.summary.file_count);
+              break;
+            case "Disease Type":
+              tsv.push([...i.disease_type].sort(Intl.Collator().compare));
+              break;
+            case "Primary Site":
+              tsv.push([...i.primary_site].sort(Intl.Collator().compare));
+              break;
+            case "Experimental Strategy":
+              tsv.push(
+                [
+                  ...i.summary.experimental_strategies.map(
+                    ({ experimental_strategy }) => experimental_strategy,
+                  ),
+                ].sort(Intl.Collator().compare),
+              );
+              break;
+          }
+        });
+        return tsv.join("\t");
+      })
       .join("\n");
-    const tsv = [headers.filter(({ length }) => length).join("\t"), body].join(
-      "\n",
-    );
+
+    const tsv = [vc.join("\t"), body].join("\n");
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
     saveAs(blob, fileName);
   };
