@@ -20,7 +20,6 @@ const config: InitialOptionsTsJest = {
     "^@/features/(.*)$": "<rootDir>/src/features/$1",
     "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
-    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
     "\\.svg$": "<rootDir>/__mocks__/svg.ts",
   },
