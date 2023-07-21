@@ -49,7 +49,6 @@ class GenericLocators:
 
 class BasePage:
     def __init__(self, driver) -> None:
-        driver.set_default_timeout(5000)
         self.driver = driver
 
     def goto(self, url):
