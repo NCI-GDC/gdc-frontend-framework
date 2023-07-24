@@ -1,6 +1,6 @@
 import { CartAggregation } from "@gff/core";
 import fileSize from "filesize";
-import { ScrollableTableWithFixedHeader } from "@/components/ScrollableTableWithFixedHeader";
+import { ScrollableTableWithFixedHeader } from "@/components/ScrollableTableWithFixedHeader/ScrollableTableWithFixedHeader";
 
 const columnListOrder = ["Project", "Cases", "Files", "File Size"];
 

@@ -10,11 +10,13 @@ import { CoreDispatch } from "../../store";
 
 export interface QuickSearchState {
   searchList: Array<Record<string, any>>;
+  query: string;
   status: DataStatus;
 }
 
 const initialState: QuickSearchState = {
   searchList: [],
+  query: "",
   status: "uninitialized",
 };
 
@@ -51,8 +53,8 @@ const slice = createSlice({
     builder
       .addCase(fetchQuickSearch.fulfilled, (state, action) => {
         const response = action.payload;
-
         state.searchList = response?.data?.query?.hits;
+        state.query = action.meta.arg;
         state.status = "fulfilled";
         return state;
       })
@@ -75,9 +77,11 @@ export const selectSearchLists = (
   state: CoreState,
 ): CoreDataSelectorResponse<{
   searchList: Array<Record<string, any>>;
+  query?: string;
 }> => ({
   data: {
     searchList: state.quickSearch.searchList,
+    query: state.quickSearch.query,
   },
   status: state.quickSearch.status,
 });

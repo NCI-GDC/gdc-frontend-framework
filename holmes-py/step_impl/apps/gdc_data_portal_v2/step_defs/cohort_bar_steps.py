@@ -28,6 +28,7 @@ def click_named_button_wait_for_message_text(button_name: str, message_text: str
     :param message_text: The text in the temporary message that we are waiting for
     :param action: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
     """
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.click_button_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_temporary_message(message_text, action)
     assert is_cohort_message_present, f"The text '{message_text}' is NOT present"

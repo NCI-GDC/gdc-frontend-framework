@@ -1,7 +1,7 @@
 import { FilterSet } from "@gff/core";
 
 export type SampleData = {
-  "case.case_id"?: string;
+  "cases.case_id"?: string;
 };
 
 export interface SelectSamplesCallBackArg {
@@ -11,16 +11,22 @@ export interface SelectSamplesCallBackArg {
 
 export type SelectSamplesCallback = (samples: SelectSamplesCallBackArg) => void;
 
+export type attrMapping = {
+  from: string;
+  to?: string;
+  convert?: boolean;
+};
+
 export interface SelectSamples {
   buttonText: string;
-  attributes: string[];
+  attributes: attrMapping[];
   callback?: SelectSamplesCallback;
 }
 
 export function getFilters(arg: SelectSamplesCallBackArg): FilterSet {
   const { samples } = arg;
   // see comments below about SV-2228
-  const ids = samples.map((d) => d["case.case_id"]).filter((d) => d && true);
+  const ids = samples.map((d) => d["cases.case_id"]).filter((d) => d && true);
   return {
     mode: "and",
     root: {

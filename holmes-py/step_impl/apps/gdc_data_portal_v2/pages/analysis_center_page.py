@@ -19,12 +19,16 @@ class AnalysisCenterLocators:
     ANALYSIS_CENTER_HEADER = 'a[data-testid="button-header-analysis"]'
 
 class AnalysisCenterPage(BasePage):
-    def __init__(self, driver: Page, url: str) -> None:
+    def __init__(self, driver: Page, url:str) -> None:
         self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
 
     def visit(self):
         self.driver.goto(self.URL)
+
+    def is_analysis_center_page_present(self):
+        locator = AnalysisCenterLocators.FEATURED_TOOL_REPOSITORY
+        return self.is_visible(locator)
 
     def navigate_to_app(self, app_name: str):
         locator = AnalysisCenterLocators.BUTTON_APP_PLAY_OR_DEMO(app_name)

@@ -45,7 +45,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-----------------|-------------------------------------|
   |Biotype          |lncRNA                               |
   |VEP Impact       |low                                  |
-* Wait for loading spinner
+* Wait for table loading spinner
 * Verify the page is showing "1 - 2 of 2 genes"
 * Perform the following actions on a filter card
   |filter_name      |action               |
@@ -61,7 +61,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |SIFT Impact      |tolerated_low_confidence             |
   |Polyphen Impact  |probably_damaging                    |
   |Consequence Type |start_lost                           |
-* Wait for loading spinner
+* Wait for table loading spinner
 * Verify the page is showing "1 - 1 of 1 somatic mutations"
 * Perform the following actions on a filter card
   |filter_name      |action               |
