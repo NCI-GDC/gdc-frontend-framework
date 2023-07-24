@@ -1,4 +1,4 @@
-import { useSsmsConsequenceTable } from "@gff/core";
+import { useCoreDispatch, useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
@@ -15,6 +15,9 @@ import {
   PageStepper,
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
+import { Loader } from "@mantine/core";
+import download from "@/utils/download";
+import { convertDateToString } from "@/utils/date";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -35,6 +38,11 @@ export const SMSConsequenceTableContainer: React.FC<
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [tableData, setTableData] = useState<ConsequenceTableData[]>([]);
+  const [
+    consequenceTableJSONDownloadActive,
+    setConsequenceTableJSONDownloadActive,
+  ] = useState(false);
+  const dispatch = useCoreDispatch();
 
   const {
     handlePageChange,
@@ -141,6 +149,55 @@ export const SMSConsequenceTableContainer: React.FC<
     }
   }, [status, initialData]);
 
+  const handleJSONDownload = async () => {
+    setConsequenceTableJSONDownloadActive(true);
+    await download({
+      endpoint: "ssms",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: {
+          content: [
+            {
+              content: {
+                field: "ssms.ssm_id",
+                value: [ssmsId],
+              },
+              op: "in",
+            },
+          ],
+          op: "and",
+        },
+        filename: `consequences-data.${convertDateToString(new Date())}.json`,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "consequence.transcript.transcript_id",
+          "consequence.transcript.aa_change",
+          "consequence.transcript.is_canonical",
+          "consequence.transcript.consequence_type",
+          "consequence.transcript.annotation.hgvsc",
+          "consequence.transcript.annotation.polyphen_impact",
+          "consequence.transcript.annotation.polyphen_score",
+          "consequence.transcript.annotation.sift_score",
+          "consequence.transcript.annotation.sift_impact",
+          "consequence.transcript.annotation.vep_impact",
+          "consequence.transcript.gene.gene_id",
+          "consequence.transcript.gene.symbol",
+          "consequence.transcript.gene.gene_strand",
+        ].join(","),
+      },
+      dispatch,
+      done: () => setConsequenceTableJSONDownloadActive(false),
+    });
+  };
+
   return (
     <>
       <div className="mt-12">
@@ -150,8 +207,10 @@ export const SMSConsequenceTableContainer: React.FC<
 
         <div className="flex mb-2 justify-between">
           <div className="flex gap-2">
-            <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
-              <FunctionButton>JSON</FunctionButton>
+            <ButtonTooltip label="Export All Except #Cases">
+              <FunctionButton onClick={handleJSONDownload}>
+                {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+              </FunctionButton>
             </ButtonTooltip>
             <ButtonTooltip label="Export current view" comingSoon={true}>
               <FunctionButton>TSV</FunctionButton>
