@@ -15,6 +15,8 @@ import {
   PageStepper,
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
+import { convertDateToString } from "@/utils/date";
+import saveAs from "file-saver";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -141,6 +143,52 @@ export const SMSConsequenceTableContainer: React.FC<
     }
   }, [status, initialData]);
 
+  const handleTSVDownload = () => {
+    const fileName = `consequences-table.${convertDateToString(
+      new Date(),
+    )}.tsv`;
+    const headers = [
+      "Gene",
+      "AA Change",
+      "Consequence",
+      "Coding DNA Change",
+      "Impact",
+      "Gene Strand",
+      "Transcript",
+    ];
+    // todo: modify consequences
+    // {!consequences
+    //   ? "--"
+    //   : humanify({
+    //       term: consequences?.replace("_variant", "").replace("_", " "),
+    //     })}
+    const body = initialData?.consequence?.map(
+      ({
+        transcript: {
+          gene: { symbol },
+          aa_change,
+          consequence_type,
+          annotation: { hgvsc },
+          transcript_id,
+        },
+      }) => {
+        // vep_impact, sift_impact, sift_score, polyphen_impact, polyphen_score
+        return [
+          symbol,
+          aa_change,
+          consequence_type, // format
+          hgvsc,
+          // todo: impact tooltip display put together
+          transcript_id,
+        ];
+      },
+    );
+
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
   return (
     <>
       <div className="mt-12">
@@ -153,8 +201,8 @@ export const SMSConsequenceTableContainer: React.FC<
             <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
               <FunctionButton>JSON</FunctionButton>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton>TSV</FunctionButton>
+            <ButtonTooltip label="Export current view">
+              <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
             </ButtonTooltip>
           </div>
 
