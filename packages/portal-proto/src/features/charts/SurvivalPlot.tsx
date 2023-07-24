@@ -324,17 +324,40 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData =
-    plotType === SurvivalPlotTypes.mutation ||
-    plotType == SurvivalPlotTypes.categorical ||
-    plotType === SurvivalPlotTypes.continuous
-      ? enoughDataOnSomeCurves(plotData)
-      : enoughData(plotData);
-
   const { setEntityMetadata } = useContext(SummaryModalContext);
+
+  const shouldPlot = (plotType, plotData) => {
+    switch (plotType) {
+      case SurvivalPlotTypes.overall:
+        return (
+          plotData.length > 0
+            ? enoughDataOnSomeCurves(plotData)
+            : enoughData(plotData)
+        )
+          ? true
+          : false;
+      case SurvivalPlotTypes.mutation:
+        return enoughData(plotData) &&
+          plotData.every((result) => result?.donors?.length > 0)
+          ? true
+          : false;
+      case SurvivalPlotTypes.categorical:
+        return enoughDataOnSomeCurves(plotData) &&
+          plotData.length > 0 &&
+          plotData.every((result) => result.donors.length >= MINIMUM_CASES)
+          ? true
+          : false;
+      case SurvivalPlotTypes.continuous:
+        return enoughDataOnSomeCurves(plotData) &&
+          plotData.length > 0 &&
+          plotData.every((result) => result.donors.length >= MINIMUM_CASES)
+          ? true
+          : false;
+    }
+  };
   // hook to call renderSurvivalPlot
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    shouldPlot(plotType, plotData) ? plotData : [],
     xDomain,
     setXDomain,
     height,
@@ -343,7 +366,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
 
   const containerForDownload = useSurvival(
-    hasEnoughData ? plotData : [],
+    shouldPlot(plotType, plotData) ? plotData : [],
     xDomain,
     setXDomain,
     height,
