@@ -265,15 +265,20 @@ export const ssmsCreateTableColumn = ({
                               />
                             </ButtonTooltip>
                           ) : (
-                            <Link href={`/ssms/${ssmsId}`}>
-                              <ButtonTooltip
-                                label={originalLabel.length && originalLabel}
-                              >
-                                <a className="underline text-utility-link">
-                                  {label}
-                                </a>
-                              </ButtonTooltip>
-                            </Link>
+                            <ButtonTooltip
+                              label={originalLabel.length && originalLabel}
+                            >
+                              <div>
+                                <Link
+                                  className="pointer-events-auto hover:cursor-pointer"
+                                  href={`/ssms/${ssmsId}`}
+                                >
+                                  <a className="underline text-utility-link">
+                                    {label}
+                                  </a>
+                                </Link>
+                              </div>
+                            </ButtonTooltip>
                           )}
                         </>
                       ) : (
