@@ -274,7 +274,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               />
 
               <div className={cardStyle}>
-                <LoadingOverlay visible={!isSuccess} />
+                <LoadingOverlay
+                  data-testid="loading-spinner"
+                  visible={!isSuccess}
+                />
                 {total == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
@@ -315,7 +318,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <OverflowTooltippedLabel label={value}>
                             <span className="font-content">{value}</span>
                           </OverflowTooltippedLabel>
-                          <div className="flex-none text-right w-14 font-content">
+                          <div
+                            data-testid={`text-${value}`}
+                            className="flex-none text-right w-14 font-content"
+                          >
                             {count.toLocaleString()}
                           </div>
                           {showPercent ? (

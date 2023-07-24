@@ -4,3 +4,10 @@ export type SelectedEntity = {
   id: string;
 };
 export type SelectedEntities = SelectedEntity[];
+
+export interface SetOperationsChartInputProps {
+  selectedEntities: SelectedEntities | undefined;
+  selectedEntityType?: SetOperationEntityType;
+  isLoading?: boolean;
+  isCohortComparisonDemo?: boolean;
+}

@@ -37,6 +37,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
 
   return (
     <Card
+      data-testid={`${entry.name}-tool`}
       shadow="sm"
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
@@ -51,6 +52,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.icon}
         <div className="flex flex-col">
           <Button
+            data-testid={`button-${entry.name}`}
             className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${
               inactive ? "opacity-50" : ""
             }`}
@@ -66,6 +68,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           </Button>
           {entry.hasDemo ? (
             <Button
+              data-testid={`button-${entry.name} Demo`}
               onClick={() =>
                 onClick(
                   {
@@ -91,6 +94,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       <Divider variant="dotted" />
       <div className="flex flex-col items-center text-xs">
         <Button
+          data-testid="select-description-tool"
           onClick={() => setDescriptionVisible()}
           variant="white"
           size="xs"
@@ -109,6 +113,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           {entry.name}
         </Button>
         <div
+          data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
           className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
         >
@@ -124,7 +129,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
-          <div className="flex items-center text-secondary-darkest">
+          <div
+            data-testid="text-case-count-tool"
+            className="flex items-center text-secondary-darkest"
+          >
             <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             {caseCounts === 0 && (
               <Tooltip

@@ -59,7 +59,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
           )}
         </>
       ) : (
-        <LoadingOverlay visible />
+        <LoadingOverlay data-testid="loading-spinner" visible />
       )}
     </div>
   );

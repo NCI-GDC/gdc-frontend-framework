@@ -19,6 +19,7 @@ import { TableHeader } from "./sharedTableCells";
 import { TableCell } from "./sharedTableCells";
 import { SurvivalIcon } from "./sharedTableUtils";
 import { AnnotationsIcon } from "./sharedTableUtils";
+import ImpactHeaderWithTooltip from "./ImpactHeaderWithTooltip";
 import type {
   Column,
   TableType,
@@ -54,6 +55,7 @@ export {
   TableHeader,
   SurvivalIcon,
   AnnotationsIcon,
+  ImpactHeaderWithTooltip,
 };
 
 export type {

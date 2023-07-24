@@ -1,4 +1,4 @@
-import { GDCSsmsTable } from "@gff/core";
+import { FilterSet, GDCSsmsTable } from "@gff/core";
 import { Survival } from "../shared/types";
 import { Column, SelectedReducer, SelectReducerAction } from "../shared/types";
 
@@ -76,18 +76,16 @@ export interface SomaticMutationsTableProps {
     name: string,
     field: string,
   ) => void;
-  pageSize: number;
-  page: number;
   selectedMutations: SelectedReducer<SomaticMutations>;
   setSelectedMutations: (action: SelectReducerAction<SomaticMutations>) => void;
   handleSMTotal: (smTotal: number) => void;
   columnListOrder: Column[];
   visibleColumns: Column[];
-  searchTerm: string;
   handleSsmToggled?: SsmToggledHandler;
   toggledSsms?: ReadonlyArray<string>;
   geneSymbol?: string;
   projectId?: string;
   isDemoMode?: boolean;
   isModal?: boolean;
+  combinedFilters: FilterSet;
 }

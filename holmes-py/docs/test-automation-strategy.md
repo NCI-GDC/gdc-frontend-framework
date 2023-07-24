@@ -7,7 +7,7 @@
 ### Core Programming Language and Version
 The `holmes-py` utilizes `Python` programming language
 
-Version: `3.7.x`
+Version: `3.8.x`
 
 ## Major elements to locate
 ### List of locators:

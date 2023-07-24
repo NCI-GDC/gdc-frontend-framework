@@ -12,6 +12,7 @@ import {
   selectSetsByType,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { useEffect, useState, useReducer } from "react";
 import { SomaticMutationsTable } from "./SomaticMutationsTable";
@@ -22,6 +23,7 @@ import {
   SsmToggledHandler,
 } from "./types";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -40,6 +42,8 @@ import {
   TableFilters,
   TablePlaceholder,
 } from "../shared";
+import download from "@/utils/download";
+import { convertDateToString } from "@/utils/date";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -120,6 +124,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
+  const [
+    downloadMutationsFrequencyActive,
+    setDownloadMutationsFrequencyActive,
+  ] = useState(false);
+
+  const dispatch = useCoreDispatch();
+
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * page,
@@ -133,6 +144,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    setPage(0);
   };
 
   const handleSetPage = (pageIndex: number) => {
@@ -247,6 +259,42 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       ? caseFilter
       : combinedFilters;
 
+  const handleJSONDownload = async () => {
+    setDownloadMutationsFrequencyActive(true);
+    await download({
+      endpoint: "ssms",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: buildCohortGqlOperator(combinedFilters) ?? {},
+        filename: `mutations.${convertDateToString(new Date())}.json`,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "genomic_dna_change",
+          "mutation_subtype",
+          "consequence.transcript.consequence_type",
+          "consequence.transcript.annotation.vep_impact",
+          "consequence.transcript.annotation.sift_impact",
+          "consequence.transcript.annotation.polyphen_impact",
+          "consequence.transcript.is_canonical",
+          "consequence.transcript.gene.gene_id",
+          "consequence.transcript.gene.symbol",
+          "consequence.transcript.aa_change",
+          "ssm_id",
+        ].join(","),
+      },
+      dispatch,
+      done: () => setDownloadMutationsFrequencyActive(false),
+    });
+  };
+
   return (
     <>
       {caseFilter &&
@@ -309,6 +357,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <div
+            data-testid="table-options-menu"
             className="flex justify-between items-center mb-2"
             ref={targetRef}
           >
@@ -339,10 +388,21 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               additionalControls={
                 <div className="flex gap-2">
                   <ButtonTooltip label="Export All Except #Cases">
-                    <FunctionButton>JSON</FunctionButton>
+                    <FunctionButton
+                      onClick={handleJSONDownload}
+                      data-testid="button-json-mutation-frequency"
+                    >
+                      {downloadMutationsFrequencyActive ? (
+                        <Loader size="sm" />
+                      ) : (
+                        "JSON"
+                      )}
+                    </FunctionButton>
                   </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
-                    <FunctionButton>TSV</FunctionButton>
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
+                    <FunctionButton data-testid="button-tsv-mutation-frequency">
+                      TSV
+                    </FunctionButton>
                   </ButtonTooltip>
                 </div>
               }
@@ -388,20 +448,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   selectedSurvivalPlot={selectedSurvivalPlot}
                   handleSurvivalPlotToggled={handleSurvivalPlotToggled}
                   width={width}
-                  pageSize={pageSize}
-                  page={page}
                   selectedMutations={selectedMutations}
                   setSelectedMutations={setSelectedMutations}
                   handleSMTotal={setSMTotal}
                   columnListOrder={columnListOrder}
                   visibleColumns={visibleColumns}
-                  searchTerm={searchTerm}
                   handleSsmToggled={handleSsmToggled}
                   toggledSsms={toggledSsms}
                   isDemoMode={isDemoMode}
                   isModal={isModal}
                   geneSymbol={geneSymbol}
                   projectId={projectId}
+                  combinedFilters={combinedFilters}
                 />
               </div>
             )}
@@ -420,7 +478,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row justify-between items-center text-sm">
+              <div
+                data-testid="text-showing-count"
+                className="flex flex-row justify-between items-center text-sm"
+              >
                 <span>
                   Showing
                   <span className="font-bold">{` ${(tableData.ssmsTotal === 0

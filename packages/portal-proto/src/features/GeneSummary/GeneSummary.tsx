@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
@@ -9,7 +9,7 @@ import {
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
-  selectCurrentCohortFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
 } from "@gff/core";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
@@ -54,7 +54,7 @@ export const GeneSummary = ({
   return (
     <>
       {isFetching ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay data-testid="loading-spinner" visible />
       ) : data && data.genes ? (
         <GeneView
           data={data}
@@ -79,13 +79,16 @@ const GeneView = ({
 }: GeneViewProps) => {
   const isDemo = useIsDemoApp();
   const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
+    selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
   // Hence, passing it via a callback as contextFilters
-  const genomicFilters = contextSensitive ? contextFilters : undefined;
-  let cohortFilters = undefined;
+  const genomicFilters = useMemo(
+    () => (contextSensitive ? contextFilters : undefined),
+    [contextFilters, contextSensitive],
+  );
+  let cohortFilters: FilterSet = undefined;
 
   if (contextSensitive) {
     // if it's for mutation frequency demo use different filter (TCGA-LGG) than the current cohort filter

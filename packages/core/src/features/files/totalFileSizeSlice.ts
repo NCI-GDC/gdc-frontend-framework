@@ -20,7 +20,7 @@ const graphQLQuery = `query Queries($filters: FiltersArgument) {
     }
     repository {
       cases {
-          hits(filters: $filters, first: 0) {
+          hits(case_filters: $filters, first: 0) {
             total
           }
         }

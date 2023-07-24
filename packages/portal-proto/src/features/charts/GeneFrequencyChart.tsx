@@ -71,8 +71,7 @@ interface GeneFrequencyChartProps {
   readonly title?: string;
   readonly maxBins?: number;
   readonly orientation?: string;
-  readonly isDemoMode?: boolean;
-  readonly overwritingDemoFilter?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
@@ -82,15 +81,13 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   title = "Distribution of Most Frequently Mutated Genes",
   maxBins = 20,
   orientation = "v",
-  isDemoMode = false,
-  overwritingDemoFilter,
+  cohortFilters = undefined,
 }: GeneFrequencyChartProps) => {
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
     offset: 0,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: overwritingDemoFilter,
+    cohortFilters: cohortFilters,
   });
 
   return (
@@ -99,7 +96,11 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
         <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
       ) : null}
       <div className="w-100 h-100">
-        <LoadingOverlay visible={!isSuccess} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={!isSuccess}
+          zIndex={1}
+        />
         <BarChart
           data={processChartData(data)}
           marginBottom={marginBottom}

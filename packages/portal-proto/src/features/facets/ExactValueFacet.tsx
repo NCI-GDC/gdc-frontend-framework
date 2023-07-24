@@ -140,7 +140,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           ) : null}
         </div>
       </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2 ">
+      <div className="flex flex-nowrap items-center p-2">
         <TextInput
           size="xs"
           placeholder={`Enter ${facetTitle}`}
@@ -148,13 +148,13 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           aria-label="enter value to add filter"
           value={textValue}
           onChange={(event) => setTextValue(event.currentTarget.value)}
-        ></TextInput>
+        />
         <ActionIcon
           size="md"
           aria-label="add string value"
           className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
           onClick={() => {
-            if (textValue.length > 0) addValue(textValue);
+            if (textValue.length > 0) addValue(textValue.trim());
           }}
         >
           <PlusIcon />

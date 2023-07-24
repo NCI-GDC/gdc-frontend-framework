@@ -35,7 +35,7 @@ const Header: React.FC = () => {
           <Image
             src="/NIH_GDC_DataPortal-logo.svg"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
             alt="NCI GDC Data Portal logo"
           />
         </div>

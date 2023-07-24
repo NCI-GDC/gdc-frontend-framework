@@ -11,8 +11,7 @@ tags: gdc-data-portal-v2, repository, repository_filters
 tags: regression, smoke
 
 * On GDC Data Portal V2 app
-* Navigate to "Analysis" from "Header" "section"
-* Navigate to "Repository" from "Analysis" "app"
+* Navigate to "Downloads" from "Header" "section"
 
 ## Filters on Repository
 * Verify that the "Filters" text is displayed on "Repository" "app"
@@ -41,10 +40,10 @@ tags: regression, smoke
 * Verify that the "Search for a file property" text is displayed on "Add a File Filter" "modal"
 
 ## # file properties on Add a File Filter modal
-* Verify that the "299 file properties" text is displayed on "Add a File Filter" "modal"
+* Verify that the "303 file properties" text is displayed on "Add a File Filter" "modal"
 
 ## # file counts listed on Add a File Filter modal
-* Verify "299" items on Add a File Filter filter list
+* Verify "303" items on Add a File Filter filter list
 
 ## File filter list does not start with 'files.' on Add a File Filter modal
 * Verify file filter names do not start with "files."

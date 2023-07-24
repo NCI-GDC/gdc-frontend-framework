@@ -164,7 +164,10 @@ const FacetSelectionPanel = ({
         />
       </Group>
       <div data-testid="list-file-filters">
-        <LoadingOverlay visible={facets === undefined} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={facets === undefined}
+        />
         <FacetList
           data={filteredData}
           handleFilterSelected={handleFilterSelected}

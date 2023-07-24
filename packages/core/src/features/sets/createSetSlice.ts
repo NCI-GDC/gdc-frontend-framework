@@ -63,6 +63,22 @@ const createCaseSetMutation = `mutation createSet(
 }
 `;
 
+const createCaseSetExploreMutation = `mutation createSet(
+  $input: CreateSetInput
+) {
+  sets {
+    create {
+      explore {
+        case(input: $input) {
+          set_id
+          size
+        }
+      }
+    }
+  }
+}
+`;
+
 const transformCaseSetResponse = (
   response: GraphQLApiResponse<any>,
 ): string => {
@@ -172,6 +188,24 @@ export const createSetSlice = graphqlAPISlice
           { type: "ssmsSets", id: arg?.set_id },
         ],
       }),
+      createCaseSetFromFilters: builder.mutation({
+        query: ({ filters, size, score, set_id }) => ({
+          graphQLQuery: createCaseSetExploreMutation,
+          graphQLFilters: {
+            input: {
+              filters: filters ?? {},
+              set_id,
+              size,
+              score,
+            },
+          },
+        }),
+        transformResponse: (response) =>
+          response.data.sets.create.explore.case.set_id,
+        invalidatesTags: (_result, _error, arg) => [
+          { type: "caseSets", id: arg?.set_id },
+        ],
+      }),
     }),
   });
 
@@ -205,4 +239,5 @@ export const {
   useCreateCaseSetFromValuesMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateCaseSetFromFiltersMutation,
 } = createSetSlice;

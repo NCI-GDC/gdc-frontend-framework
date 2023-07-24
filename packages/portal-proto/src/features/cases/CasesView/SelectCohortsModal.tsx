@@ -1,5 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { modalStyles } from "@/components/Modals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
@@ -189,14 +189,11 @@ export const SelectCohortsModal = ({
       isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
-
   const [showCreateCohort, setShowCreateCohorts] = useState(false);
   return (
     <>
       {loading ? (
-        <LoadingOverlay visible />
+        <LoadingOverlay data-testid="loading-spinner" visible />
       ) : (
         <Modal
           opened={opened}
@@ -212,16 +209,12 @@ export const SelectCohortsModal = ({
           zIndex={400}
         >
           {showCreateCohort && (
-            <SaveOrCreateCohortModal
-              entity="cohort"
-              action="create"
-              opened={showCreateCohort}
+            <CreateCohortModal
               onClose={() => setShowCreateCohorts(false)}
               onActionClick={async (newName: string) => {
                 await createCohortFromCases(newName);
                 onClose();
               }}
-              onNameChange={onNameChange}
             />
           )}
 

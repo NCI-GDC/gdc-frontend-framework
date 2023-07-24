@@ -12,12 +12,13 @@ import {
   setActiveCohort,
   Modals,
   showModal,
-  setCurrentCohortId,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   useGetAllFilesMutation,
   GdcFile,
   selectCart,
+  GqlOperation,
+  useFilteredCohortCounts,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -26,49 +27,59 @@ import {
   MdOutlineViewComfy as TableIcon,
 } from "react-icons/md";
 import download from "src/utils/download";
-import SummaryFacets, { SummaryFacetInfo } from "./SummaryFacets";
+import SummaryFacets from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { mapGdcFileToCartFile } from "@/features/files/utils";
 import { addToCart } from "@/features/cart/updateCart";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { useSetupInitialCohorts } from "./hooks";
+import {
+  INITIAL_SUMMARY_FIELDS,
+  METADATA_EXPAND_PROPS,
+  METADATA_FIELDS,
+  SAMPLE_SHEET_FIELDS,
+} from "./utils";
+import StickyControl from "./StickyControl";
 
-const ContextBar: React.FC = () => {
+const ContextBar = ({
+  handleIsSticky,
+  isSticky,
+}: {
+  handleIsSticky: (isSticky: boolean) => void;
+  isSticky: boolean;
+}): JSX.Element => {
+  useSetupInitialCohorts();
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
-
-  useSetupInitialCohorts();
-
+  const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
+  const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(
-    cohorts.length > 0 ? cohorts[0].id : undefined,
-  );
+
+  /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
   const [downloadMetadataActive, setDownloadMetadataActive] = useState(false);
   const [downloadSampleSheetActive, setDownloadSampleSheetActive] =
     useState(false);
-
-  useEffect(() => {
-    if (currentIndex === undefined && cohorts.length > 0) {
-      setCurrentIndex(cohorts[0].id);
-      coreDispatch(setCurrentCohortId(cohorts[0].id));
-    }
-  }, [cohorts, currentIndex, coreDispatch]);
-
-  const setCohort = (id: string) => {
-    coreDispatch(setActiveCohort(id));
-  };
-  const handleCohortSelection = (idx: string) => {
-    setCohort(idx);
-  };
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
+  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  /* download active end */
 
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
 
+  useEffect(() => {
+    if (currentCohortId === undefined && cohorts.length > 0) {
+      coreDispatch(setActiveCohort(cohorts[0].id));
+    }
+  }, [currentCohortId, cohorts, coreDispatch]);
+
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
+  const cohortCounts = useFilteredCohortCounts();
+  const caseCounts = cohortCounts?.data?.caseCount;
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const [getFileSizeSliceData, { isLoading: fetchingFilesForCohort }] =
@@ -85,55 +96,183 @@ const ContextBar: React.FC = () => {
       });
   };
 
-  useEffect(() => {
-    setCurrentIndex(currentCohortId);
-  }, [currentCohortId]);
+  const downloadFilter: GqlOperation =
+    buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
 
-  // TODO: move this to a configuration files or slice
-  const [summaryFields] = useState([
-    {
-      field: "cases.primary_site",
-      name: "Primary Site",
-      docType: "cases",
-      indexType: "repository",
-    },
-    {
-      field: "cases.disease_type",
-      name: "Disease Type",
-      docType: "cases",
-      indexType: "repository",
-    },
-    {
-      field: "cases.project.project_id",
-      name: "Project",
-      docType: "cases",
-      indexType: "repository",
-    },
-    {
-      field: "cases.project.program.name",
-      name: "Program",
-      docType: "cases",
-      indexType: "repository",
-    },
-    {
-      field: "cases.demographic.gender",
-      name: "Gender",
-      docType: "cases",
-      indexType: "repository",
-    },
-  ] as ReadonlyArray<SummaryFacetInfo>);
+  const handleMetadataDownload = () => {
+    setDownloadMetadataActive(true);
+    download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filters: downloadFilter,
+        fields: METADATA_FIELDS.join(","),
+        format: "JSON",
+        pretty: "True",
+        attachment: "True",
+        expand: METADATA_EXPAND_PROPS.join(","),
+        filename: `metadata.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+      },
+      done: () => setDownloadMetadataActive(false),
+    });
+  };
 
-  const [activeTab, setActiveTab] = useState<string | null>("summary");
+  const handleManifestDownload = () => {
+    setDownloadManifestActive(true);
+    download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filters: downloadFilter,
+        return_type: "manifest",
+        size: 10000,
+      },
+      done: () => setDownloadManifestActive(false),
+    });
+  };
+
+  const handleSampleSheetDownload = () => {
+    setDownloadSampleSheetActive(true);
+    download({
+      endpoint: "files",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filters: downloadFilter,
+        tsv_format: "sample-sheet",
+        fields: SAMPLE_SHEET_FIELDS.join(","),
+        format: "tsv",
+        pretty: "True",
+        attachment: "True",
+        filename: `gdc_sample_sheet.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tsv`,
+      },
+      done: () => setDownloadSampleSheetActive(false),
+    });
+  };
+
+  const handleClinicalTSVDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filename: `clinical.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleClinicalJSONDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `clinical.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        filename: `biospecimen.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch: coreDispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.cohort.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
 
   return (
     <CollapsibleContainer
-      Top={() => (
-        <CohortManager
-          cohorts={cohorts}
-          onSelectionChanged={handleCohortSelection}
-          startingId={currentIndex}
-        />
-      )}
+      Top={<CohortManager />}
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}
@@ -146,6 +285,9 @@ const ContextBar: React.FC = () => {
       tooltipPosition="left"
       TargetElement={
         <CohortCountButton countName="casesMax" label="CASES" bold />
+      }
+      ExtraControl={
+        <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
@@ -166,155 +308,21 @@ const ContextBar: React.FC = () => {
                 },
                 {
                   title: "Download Manifest",
-                  onClick: () => {
-                    setDownloadManifestActive(true);
-                    download({
-                      endpoint: "files",
-                      method: "POST",
-                      options: {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                      },
-                      dispatch: coreDispatch,
-                      params: {
-                        filters: buildCohortGqlOperator(cohortFilters),
-                        return_type: "manifest",
-                        size: 10000,
-                      },
-                      done: () => setDownloadManifestActive(false),
-                    });
-                  },
+                  onClick: handleManifestDownload,
                   icon: downloadManifestActive ? (
                     <Loader size={14} />
                   ) : undefined,
                 },
                 {
                   title: "Metadata",
-                  onClick: () => {
-                    setDownloadMetadataActive(true);
-                    download({
-                      endpoint: "files",
-                      method: "POST",
-                      options: {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                      },
-                      dispatch: coreDispatch,
-                      params: {
-                        filters: buildCohortGqlOperator(cohortFilters),
-                        fields: [
-                          "state",
-                          "access",
-                          "md5sum",
-                          "data_format",
-                          "data_type",
-                          "data_category",
-                          "file_name",
-                          "file_size",
-                          "file_id",
-                          "platform",
-                          "experimental_strategy",
-                          "center.short_name",
-                          "annotations.annotation_id",
-                          "annotations.entity_id",
-                          "tags",
-                          "submitter_id",
-                          "archive.archive_id",
-                          "archive.submitter_id",
-                          "archive.revision",
-                          "associated_entities.entity_id",
-                          "associated_entities.entity_type",
-                          "associated_entities.case_id",
-                          "analysis.analysis_id",
-                          "analysis.workflow_type",
-                          "analysis.updated_datetime",
-                          "analysis.input_files.file_id",
-                          "analysis.metadata.read_groups.read_group_id",
-                          "analysis.metadata.read_groups.is_paired_end",
-                          "analysis.metadata.read_groups.read_length",
-                          "analysis.metadata.read_groups.library_name",
-                          "analysis.metadata.read_groups.sequencing_center",
-                          "analysis.metadata.read_groups.sequencing_date",
-                          "downstream_analyses.output_files.access",
-                          "downstream_analyses.output_files.file_id",
-                          "downstream_analyses.output_files.file_name",
-                          "downstream_analyses.output_files.data_category",
-                          "downstream_analyses.output_files.data_type",
-                          "downstream_analyses.output_files.data_format",
-                          "downstream_analyses.workflow_type",
-                          "downstream_analyses.output_files.file_size",
-                          "index_files.file_id",
-                        ].join(","),
-                        format: "JSON",
-                        pretty: "True",
-                        attachment: "True",
-                        expand: [
-                          "metadata_files",
-                          "annotations",
-                          "archive",
-                          "associated_entities",
-                          "center",
-                          "analysis",
-                          "analysis.input_files",
-                          "analysis.metadata",
-                          "analysis.metadata_files",
-                          "analysis.downstream_analyses",
-                          "analysis.downstream_analyses.output_files",
-                          "reference_genome",
-                          "index_file",
-                        ].join(","),
-                        filename: `metadata.cohort.${new Date()
-                          .toISOString()
-                          .slice(0, 10)}.json`,
-                      },
-                      done: () => setDownloadMetadataActive(false),
-                    });
-                  },
+                  onClick: handleMetadataDownload,
                   icon: downloadMetadataActive ? (
                     <Loader size={14} />
                   ) : undefined,
                 },
                 {
                   title: "Sample Sheet",
-                  onClick: () => {
-                    setDownloadSampleSheetActive(true);
-                    download({
-                      endpoint: "files",
-                      method: "POST",
-                      options: {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                      },
-                      dispatch: coreDispatch,
-                      params: {
-                        filters: buildCohortGqlOperator(cohortFilters),
-                        tsv_format: "sample-sheet",
-                        fields: [
-                          "file_id",
-                          "file_name",
-                          "data_category",
-                          "data_type",
-                          "cases.project.project_id",
-                          "cases.submitter_id",
-                          "cases.samples.submitter_id",
-                          "cases.samples.sample_type",
-                        ].join(","),
-                        format: "tsv",
-                        pretty: "True",
-                        attachment: "True",
-                        filename: `gdc_sample_sheet.${new Date()
-                          .toISOString()
-                          .slice(0, 10)}.tsv`,
-                      },
-                      done: () => setDownloadSampleSheetActive(false),
-                    });
-                  },
+                  onClick: handleSampleSheetDownload,
                   icon: downloadSampleSheetActive ? (
                     <Loader size={14} />
                   ) : undefined,
@@ -367,18 +375,24 @@ const ContextBar: React.FC = () => {
               <>
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON (Coming Soon)" },
-                    { title: "TSV (Coming Soon)" },
+                    { title: "JSON ", onClick: handleBiospeciemenJSONDownload },
+                    { title: "TSV", onClick: handleBiospeciemenTSVDownload },
                   ]}
-                  TargetButtonChildren="Biospecimen"
+                  TargetButtonChildren={
+                    biospecimenDownloadActive ? "Processing" : "Biospecimen"
+                  }
+                  LeftIcon={biospecimenDownloadActive && <Loader size={20} />}
                 />
 
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON (Coming Soon)" },
-                    { title: "TSV (Coming Soon)" },
+                    { title: "JSON", onClick: handleClinicalJSONDownload },
+                    { title: "TSV", onClick: handleClinicalTSVDownload },
                   ]}
-                  TargetButtonChildren="Clinical"
+                  TargetButtonChildren={
+                    clinicalDownloadActive ? "Processing" : "Clinical"
+                  }
+                  LeftIcon={clinicalDownloadActive && <Loader size={20} />}
                 />
               </>
             )}

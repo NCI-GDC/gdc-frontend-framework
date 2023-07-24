@@ -56,7 +56,8 @@ const FilesTables: React.FC = () => {
     isError,
     isSuccess,
   } = useGetFilesQuery({
-    filters: cohortGqlOperator,
+    case_filters: buildCohortGqlOperator(cohortFilters),
+    filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
       "annotations", //annotations
       "cases.project", //project_id
@@ -361,69 +362,80 @@ const FilesTables: React.FC = () => {
     totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
+  const Stats = () => (
+    <div className="flex gap-1 text-xl items-center">
+      <div>
+        Total of{" "}
+        <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+        {tempPagination?.total > 1 || tempPagination?.total === 0
+          ? "Files"
+          : "File"}
+      </div>
+      <div>
+        <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+        <strong className="mr-1">{totalCaseCount}</strong>
+        {fileSizeSliceData?.data?.total_case_count > 1 ||
+        fileSizeSliceData?.data?.total_case_count === 0
+          ? "Cases"
+          : "Case"}
+      </div>
+      <div>
+        <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+        {totalFileSize}
+      </div>
+    </div>
+  );
+
   return (
-    <VerticalTable
-      additionalControls={
-        <div className="flex gap-2 items-center">
-          <div className="flex gap-2">
-            <FunctionButton
-              onClick={handleDownloadJSON}
-              data-testid="button-json-files-table"
-            >
-              JSON
-            </FunctionButton>
-            <FunctionButton
-              onClick={handleDownloadTSV}
-              data-testid="button-tsv-files-table"
-            >
-              TSV
-            </FunctionButton>
-          </div>
-          <div className="flex gap-1 text-xl">
-            <div>
-              Total of{" "}
-              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 || tempPagination?.total === 0
-                ? "Files"
-                : "File"}
+    <>
+      <div className="flex justify-end Custom-Repo-Width:hidden">
+        <Stats />
+      </div>
+      <VerticalTable
+        additionalControls={
+          <div className="flex gap-2 items-center justify-between mr-2">
+            <div className="flex gap-2">
+              <FunctionButton
+                onClick={handleDownloadJSON}
+                data-testid="button-json-files-table"
+              >
+                JSON
+              </FunctionButton>
+              <FunctionButton
+                onClick={handleDownloadTSV}
+                data-testid="button-tsv-files-table"
+              >
+                TSV
+              </FunctionButton>
             </div>
-            <div>
-              <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
-              <strong className="mr-1">{totalCaseCount}</strong>
-              {fileSizeSliceData?.data?.total_case_count > 1 ||
-              fileSizeSliceData?.data?.total_case_count === 0
-                ? "Cases"
-                : "Case"}
-            </div>
-            <div>
-              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              {totalFileSize}
+            <div className="hidden Custom-Repo-Width:block">
+              <Stats />
             </div>
           </div>
-        </div>
-      }
-      tableData={formattedTableData}
-      columns={columns}
-      columnSorting={"manual"}
-      selectableRow={false}
-      pagination={{
-        ...tempPagination,
-        label: "files",
-      }}
-      status={
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
-      handleChange={handleChange}
-      search={{
-        enabled: true,
-      }}
-    />
+        }
+        tableData={formattedTableData}
+        columns={columns}
+        columnSorting={"manual"}
+        selectableRow={false}
+        pagination={{
+          ...tempPagination,
+          label: "files",
+        }}
+        status={
+          isFetching
+            ? "pending"
+            : isSuccess
+            ? "fulfilled"
+            : isError
+            ? "rejected"
+            : "uninitialized"
+        }
+        handleChange={handleChange}
+        search={{
+          enabled: true,
+        }}
+      />
+    </>
   );
 };
 

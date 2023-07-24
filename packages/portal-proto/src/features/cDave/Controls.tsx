@@ -305,6 +305,7 @@ const Controls: React.FC<ControlPanelProps> = ({
         data-testid="cdave-control-panel"
       >
         <Input
+          data-testid="textbox-cdave-search-bar"
           placeholder="Search"
           className="p-2"
           value={searchTerm}
@@ -317,7 +318,10 @@ const Controls: React.FC<ControlPanelProps> = ({
             )
           }
         />
-        <p className="p-2 font-heading font-medium">
+        <p
+          data-testid="text-fields-with-values"
+          className="p-2 font-heading font-medium"
+        >
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values
         </p>

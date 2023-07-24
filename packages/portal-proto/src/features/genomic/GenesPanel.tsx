@@ -47,7 +47,7 @@ export const GenesPanel = ({
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival);
+  } = useGeneAndSSMPanelData(comparativeSurvival, true);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
 
@@ -58,12 +58,13 @@ export const GenesPanel = ({
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
-            isDemoMode={isDemoMode}
-            overwritingDemoFilter={overwritingDemoFilter}
+            cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
           />
         </Grid.Col>
         <Grid.Col span={6} className="relative">
           <LoadingOverlay
+            zIndex={0}
+            data-testid="loading-spinner"
             visible={
               survivalPlotFetching ||
               (!survivalPlotReady && !topGeneSSMSSuccess)

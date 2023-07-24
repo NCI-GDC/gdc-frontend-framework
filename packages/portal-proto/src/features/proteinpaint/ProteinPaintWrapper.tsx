@@ -160,7 +160,9 @@ function getLollipopTrack(
         // allow2selectSamples: { buttons },
         allow2selectSamples: {
           buttonText: "Create Cohort",
-          attributes: ["case.case_id"],
+          attributes: [
+            { from: "sample_id", to: "cases.case_id", convert: true },
+          ],
           callback,
         },
       },

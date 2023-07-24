@@ -25,11 +25,12 @@ export const buildGraphGLBucketQuery = (
 
   if (docType == "projects")
     return `
-    query QueryBucketCounts($filters_0: FiltersArgument!) {
+    query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {
              ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters
+                filters:$filters
                 aggregations_filter_themselves: false
               ) {
                   ${queriedFacet} {
@@ -43,12 +44,13 @@ export const buildGraphGLBucketQuery = (
        }
      }`;
   else
-    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
+    return `query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters
+                filters:$filters
                 aggregations_filter_themselves: false
               ) {
                 ${queriedFacet} {
@@ -92,11 +94,12 @@ export const buildGraphGLBucketsQuery = (
 
   if (docType == "projects")
     return `
-    query QueryBucketCounts($filters_0: FiltersArgument!) {
+    query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {
              ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters,
+                filters:$filters,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets
@@ -109,12 +112,12 @@ export const buildGraphGLBucketsQuery = (
         }
      }`;
   else
-    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
+    return `query QueryBucketCounts($filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
-                filters: $filters_0
+                filters:$filters,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets

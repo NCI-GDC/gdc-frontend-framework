@@ -28,7 +28,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
-      <table className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto ">
+      <table
+        data-testid="table-card"
+        className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto"
+      >
         <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
           <tr>
             <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">

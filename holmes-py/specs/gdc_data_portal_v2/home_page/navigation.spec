@@ -11,15 +11,15 @@ tags: gdc-data-portal-v2, regression, home-page, navigation
 * On GDC Data Portal V2 app
 
 ## Validate Navigation Buttons - different tab
-* These buttons on the "Home Page" should take the user to correct page in a new tab
+* These links on the "Home Page" should take the user to correct page in a new tab
   |button_text                                |text_on_expected_page                                  |
   |-------------------------------------------|-------------------------------------------------------|
   |Learn More About Our Harmonization Process |GDC for processing genomic data                        |
   |Contact Us                                 |For assistance with GDC query                          |
-  |Data Release 36.0 - December 12, 2022      |A complete list of files for DR27.0                    |
+  |Data Release                               |A complete list of files for DR27.0                    |
 
 ## Validate Navigation Buttons - same tab
-* Selecting these buttons should take the user to correct page in the same tab
+* These links should take the user to correct page in the same tab
   |button_text                    |expected_landing_page|
   |-------------------------------|---------------------|
   |Explore Our Cancer Datasets    |Analysis             |

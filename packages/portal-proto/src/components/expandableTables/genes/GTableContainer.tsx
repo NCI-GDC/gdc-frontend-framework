@@ -12,6 +12,7 @@ import {
   useRemoveFromGeneSetMutation,
   joinFilters,
   buildCohortGqlOperator,
+  useCoreDispatch,
 } from "@gff/core";
 import { useEffect, useReducer, useState } from "react";
 import { DEFAULT_GTABLE_ORDER, Genes, GeneToggledHandler } from "./types";
@@ -19,11 +20,13 @@ import { GenesTable } from "./GenesTable";
 import { useMeasure } from "react-use";
 import FunctionButton from "@/components/FunctionButton";
 import { useDebouncedValue } from "@mantine/hooks";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
+import download from "src/utils/download";
 import {
   ButtonTooltip,
   PageSize,
@@ -77,10 +80,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genes_total: 0,
     genes: [],
   });
+  const [downloadMutatedGenesActive, setDownloadMutatedGenesActive] =
+    useState(false);
 
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
+
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     setVisibleColumns(columnListOrder.filter((col) => col.visible));
@@ -157,8 +164,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     searchTerm:
       debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: cohortFilters,
+    cohortFilters: cohortFilters,
   });
 
   useEffect(() => {
@@ -190,6 +196,41 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           mode: "and",
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
+
+  // data analysis (genes) endpt filters homomorphic to gql filters
+
+  const tableFilters =
+    buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
+
+  const handleJSONDownload = async () => {
+    setDownloadMutatedGenesActive(true);
+    await download({
+      endpoint: "genes",
+      method: "POST",
+      options: {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+      params: {
+        filters: tableFilters,
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "biotype",
+          "symbol",
+          "cytoband",
+          "name",
+          "gene_id",
+          "is_cancer_gene_census",
+        ].join(","),
+      },
+      dispatch,
+      done: () => setDownloadMutatedGenesActive(false),
+    });
+  };
 
   return (
     <>
@@ -247,7 +288,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         />
       )}
 
-      <div className="flex justify-between items-center mb-2 mt-8">
+      <div
+        data-testid="table-options-menu"
+        className="flex justify-between items-center mb-2 mt-8"
+      >
         <TableControls
           total={gTotal}
           numSelected={Object.keys(selectedGenes).length ?? 0}
@@ -275,10 +319,17 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           additionalControls={
             <div className="flex gap-2">
               <ButtonTooltip label="Export All Except #Cases and #Mutations">
-                <FunctionButton>JSON</FunctionButton>
+                <FunctionButton
+                  onClick={handleJSONDownload}
+                  data-testid="button-json-mutation-frequency"
+                >
+                  {downloadMutatedGenesActive ? <Loader size="sm" /> : "JSON"}
+                </FunctionButton>
               </ButtonTooltip>
               <ButtonTooltip label="Export current view" comingSoon={true}>
-                <FunctionButton>TSV</FunctionButton>
+                <FunctionButton data-testid="button-tsv-mutation-frequency">
+                  TSV
+                </FunctionButton>
               </ButtonTooltip>
             </div>
           }
@@ -312,17 +363,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneToggled={handleGeneToggled}
               width={width}
-              pageSize={pageSize}
-              page={page}
               toggledGenes={toggledGenes}
               selectedGenes={selectedGenes}
               setSelectedGenes={setSelectedGenes}
               handleGTotal={setGTotal}
               columnListOrder={columnListOrder}
               visibleColumns={visibleColumns}
-              searchTerm={searchTerm}
               isDemoMode={isDemoMode}
               genomicFilters={genomicFilters}
+              cohortFilters={cohortFilters}
               handleMutationCountClick={handleMutationCountClick}
             />
           </div>
@@ -337,7 +386,10 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               <span className="my-auto mx-1">Entries</span>
             </div>
           </div>
-          <div className="flex items-center justify-center grow text-sm">
+          <div
+            data-testid="text-showing-count"
+            className="flex items-center justify-center grow text-sm"
+          >
             <span>
               Showing
               <span className="font-bold">{` ${(tableData.genes_total === 0

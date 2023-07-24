@@ -23,12 +23,14 @@ import {
 } from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { useElementSize } from "@mantine/hooks";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
   readonly ContextBar?: ReactNode;
+  readonly isContextBarSticky?: boolean;
 }
 
 export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
@@ -37,6 +39,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   Options,
   children,
   ContextBar = undefined,
+  isContextBarSticky = false,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
 
@@ -138,15 +141,27 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
     }
   }, [cohortMessage, dispatch, currentCohortName]);
 
+  const { ref: headerRef, height: headerHeight } = useElementSize();
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
-      <header className="flex-none bg-base-max sticky top-0 z-[300]">
+      <header
+        className="flex-none bg-base-max sticky top-0 z-[300]"
+        ref={headerRef}
+      >
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
         <Header {...{ headerElements, indexPath, Options }} />
-        {ContextBar ? ContextBar : null}
       </header>
+      <div
+        className={`${isContextBarSticky ? `sticky z-[299]` : ""}`}
+        style={{
+          top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+        }}
+      >
+        {ContextBar ? ContextBar : null}
+      </div>
       <main
         data-tour="full_page_content"
         className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"

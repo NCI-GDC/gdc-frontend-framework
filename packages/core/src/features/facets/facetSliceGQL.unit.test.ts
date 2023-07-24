@@ -17,7 +17,7 @@ describe("test enum facet bucket queries", () => {
     expect(spyFetch).toBeCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
-        body: '{"query":"query QueryBucketCounts($filters_0: FiltersArgument!) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                filters: $filters_0\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{"filters_0":{}}}',
+        body: '{"query":"query QueryBucketCounts($filters: FiltersArgument) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                filters:$filters,\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{}}',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ describe("test enum facet bucket queries", () => {
     expect(spyFetch).toBeCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
-        body: '{"query":"query QueryBucketCounts($filters_0: FiltersArgument!) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                filters: $filters_0\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}, cases__disease_type : disease_type{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{"filters_0":{}}}',
+        body: '{"query":"query QueryBucketCounts($filters: FiltersArgument) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                filters:$filters,\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}, cases__disease_type : disease_type{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{}}',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@mantine/core";
+import { Button, Tooltip } from "@mantine/core";
 import {
   useAppSelector,
   useAppDispatch,
@@ -10,12 +10,10 @@ import {
 } from "@/features/projectsCenter/pickedProjectsSlice";
 import {
   FilterSet,
-  useCoreSelector,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
-  selectAvailableCohorts,
 } from "@gff/core";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { CountsIcon } from "../shared/tailwindComponents";
 
 const ProjectsCohortButton = (): JSX.Element => {
@@ -25,7 +23,6 @@ const ProjectsCohortButton = (): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const createCohortFromProjects = (name: string) => {
     const filters: FilterSet = {
@@ -48,38 +45,38 @@ const ProjectsCohortButton = (): JSX.Element => {
     );
   };
 
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
-
   return (
     <>
-      <Button
-        data-testid="button-create-new-cohort-projects-table"
-        variant="outline"
-        color="primary"
-        disabled={pickedProjects.length == 0}
-        leftIcon={
-          pickedProjects.length ? (
-            <CountsIcon $count={pickedProjects.length}>
-              {pickedProjects.length}{" "}
-            </CountsIcon>
-          ) : null
-        }
-        onClick={() => setShowCreateCohort(true)}
-        className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+      <Tooltip
+        label="Create a new unsaved cohort of cases in selected project(s)"
+        withArrow
       >
-        Create New Cohort
-      </Button>
+        <span>
+          <Button
+            data-testid="button-create-new-cohort-projects-table"
+            variant="outline"
+            color="primary"
+            disabled={pickedProjects.length == 0}
+            leftIcon={
+              pickedProjects.length ? (
+                <CountsIcon $count={pickedProjects.length}>
+                  {pickedProjects.length}{" "}
+                </CountsIcon>
+              ) : null
+            }
+            onClick={() => setShowCreateCohort(true)}
+            className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          >
+            Create New Cohort
+          </Button>
+        </span>
+      </Tooltip>
       {showCreateCohort && (
-        <SaveOrCreateCohortModal
-          entity="cohort"
-          action="create"
-          opened
+        <CreateCohortModal
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             createCohortFromProjects(newName);
           }}
-          onNameChange={onNameChange}
         />
       )}
     </>

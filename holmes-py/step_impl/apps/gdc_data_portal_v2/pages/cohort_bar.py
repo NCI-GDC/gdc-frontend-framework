@@ -6,7 +6,7 @@ from ....base.base_page import GenericLocators
 class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
-    COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> div:text("{cohort_name}")'
+    COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> span:text("{cohort_name}")'
     ACTIVE_COHORT = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
 
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '

@@ -45,8 +45,8 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       data-testid="tooltipSwitchSpring"
     >
       <animated.div
+        data-testid="button-middle-switchSpring"
         style={sliderSpring}
-        data-testid="middle-div-switchSpring"
         className={classNames(
           "border border-lightgray",
           disabled ? "cursor-not-allowed" : "cursor-pointer",
@@ -67,6 +67,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         aria-disabled={disabled}
       >
         <animated.div
+          data-testid="button-bottom-switchSpring"
           style={ballSpring}
           className={`ml-1 border-2 rounded-sm ${
             disabled ? "border-gray-300" : "border-activeColor"
@@ -74,7 +75,6 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
              bg-white ${icon && `rounded-xl`} ${
             isActive && `bg-lightgray`
           } h-5`}
-          data-testid="bottom-div-switchSpring"
         >
           <div className={margin}>{icon}</div>
         </animated.div>

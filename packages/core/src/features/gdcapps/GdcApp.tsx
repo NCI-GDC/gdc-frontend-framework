@@ -40,7 +40,7 @@ export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
 
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
-  const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
+  const id = createAppID(name, version);
 
   // need to create store and provider.
   // return a component representing this app
@@ -112,6 +112,9 @@ export interface CreateGDCAppStore {
   readonly reducers: (...args: any) => any;
 }
 
+export const createAppID = (name: string, version: string): string =>
+  uuidv5(`${name}::${version}`, GDC_APP_NAMESPACE);
+
 // ----------------------------------------------------------------------------------------
 // Apps with Local Storage
 //
@@ -121,7 +124,7 @@ export const createAppStore = (
 ): Record<any, any> => {
   const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
-  const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
+  const id = createAppID(name, version);
 
   const store = configureStore({
     reducer: reducers,

@@ -65,7 +65,14 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectProjectFilters,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          caseFilterSelector: (_ignored) => {
+            return {
+              mode: "and",
+              root: {},
+            };
+          },
+          localFilters: allFilters,
         }),
       );
     }

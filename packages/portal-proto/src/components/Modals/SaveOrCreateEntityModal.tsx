@@ -3,7 +3,7 @@ import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
-export const SaveOrCreateCohortModal = ({
+export const SaveOrCreateEntityModal = ({
   entity,
   action = "Save",
   initialName = "",
@@ -11,6 +11,7 @@ export const SaveOrCreateCohortModal = ({
   onClose,
   onActionClick,
   onNameChange,
+  descriptionMessage,
   additionalDuplicateMessage,
 }: {
   entity: string;
@@ -19,8 +20,57 @@ export const SaveOrCreateCohortModal = ({
   opened: boolean;
   onClose: () => void;
   onActionClick: (name: string) => void;
-  onNameChange: (name: string) => boolean;
+  onNameChange?: (name: string) => boolean;
+  descriptionMessage?: string;
   additionalDuplicateMessage?: string;
+}): JSX.Element => {
+  return (
+    <Modal
+      title={`${upperFirst(action)} ${upperFirst(entity)}`}
+      opened={opened}
+      padding={0}
+      radius="md"
+      zIndex={400}
+      onClose={onClose}
+      withinPortal={false}
+      centered
+    >
+      <SaveOrCreateEntityBody
+        entity={entity}
+        action={action}
+        initialName={initialName}
+        onClose={onClose}
+        onActionClick={onActionClick}
+        onNameChange={onNameChange}
+        descriptionMessage={descriptionMessage}
+        additionalDuplicateMessage={additionalDuplicateMessage}
+      />
+    </Modal>
+  );
+};
+
+export const SaveOrCreateEntityBody = ({
+  entity,
+  action = "Save",
+  initialName = "",
+  onClose,
+  onActionClick,
+  onNameChange,
+  descriptionMessage,
+  additionalDuplicateMessage,
+  closeOnAction = true,
+  loading = false,
+}: {
+  entity: string;
+  action?: string;
+  initialName?: string;
+  onClose: () => void;
+  onActionClick: (name: string) => void;
+  onNameChange?: (name: string) => boolean;
+  descriptionMessage?: string;
+  additionalDuplicateMessage?: string;
+  closeOnAction?: boolean;
+  loading?: boolean;
 }): JSX.Element => {
   const form = useForm({
     initialValues: {
@@ -40,7 +90,7 @@ export const SaveOrCreateCohortModal = ({
 
   const description =
     Object.keys(form.errors).length === 0 &&
-    (!onNameChange((form?.values?.name || "").trim()) ? (
+    (onNameChange && !onNameChange((form?.values?.name || "").trim()) ? (
       <span className="text-warningColorText">
         <WarningIcon className="text-warningColor inline mr-0.5" />A {entity}{" "}
         with the same name already exists.{" "}
@@ -51,22 +101,16 @@ export const SaveOrCreateCohortModal = ({
     ));
 
   return (
-    <Modal
-      title={`${upperFirst(action)} ${upperFirst(entity)}`}
-      opened={opened}
-      padding={0}
-      radius="md"
-      zIndex={400}
-      onClose={onClose}
-      withinPortal={false}
-      centered
-    >
+    <>
       <Box
         sx={() => ({
           fontFamily: '"Noto", "sans-serif"',
           padding: "5px 25px 20px 10px",
         })}
       >
+        <p className="mb-2 text-sm font-content">
+          {descriptionMessage && descriptionMessage}
+        </p>
         <TextInput
           withAsterisk
           label="Name"
@@ -122,14 +166,17 @@ export const SaveOrCreateCohortModal = ({
               if (form.validate().hasErrors) return;
               onActionClick((form?.values?.name || "").trim());
               form.reset();
-              onClose();
+              if (closeOnAction) {
+                onClose();
+              }
             }}
             data-testid="action-button"
+            loading={loading}
           >
             {upperFirst(action)}
           </Button>
         </Group>
       </Box>
-    </Modal>
+    </>
   );
 };

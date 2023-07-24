@@ -28,8 +28,8 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   return (
     <animated.ul style={staggeredSpring}>
       <li key={`subrow-item-${index}`} className="list-none">
-        <div className="flex">
-          {project && <span className="font-bold mx-0.5">{project}:</span>}{" "}
+        <div className="flex flex-wrap">
+          {project && <span className="font-bold ml-0.5 mr-1">{project}:</span>}
           <NumeratorDenominator
             numerator={numerator}
             denominator={denominator}

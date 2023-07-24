@@ -6,11 +6,8 @@ import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import { Column, ExpTable } from "@/components/expandableTables/shared";
 
 export interface ConsequenceTableProps {
-  ssmsId: string;
   status: string;
   readonly tableData: ConsequenceTableData[];
-  pageSize: number;
-  page: number;
   columnListOrder: Column[];
   visibleColumns: Column[];
 }
@@ -29,6 +26,7 @@ export const ConsequenceTable: React.FC<ConsequenceTableProps> = ({
       return visibleColumns.map(({ id: accessor }: Column) => {
         return ssmsCreateTableColumn({
           accessor,
+          isConsequenceTable: true,
         });
       });
     }, // eslint-disable-next-line react-hooks/exhaustive-deps

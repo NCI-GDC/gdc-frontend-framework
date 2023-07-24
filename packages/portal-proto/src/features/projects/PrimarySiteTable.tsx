@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useGetProjectPrimarySitesQuery } from "@gff/core";
+import { Row } from "react-table";
 import {
   VerticalTable,
   HandleChangeInput,
@@ -7,8 +8,8 @@ import {
 } from "@/features/shared/VerticalTable";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import CollapsibleRow from "@/features/shared/CollapsibleRow";
-import { Row } from "react-table";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
 interface CellProps {
   value: string[];
@@ -33,6 +34,7 @@ const columnListOrderStart: Columns[] = [
     id: "cases",
     columnName: "Cases",
     visible: true,
+    sortingFn: (rowA, rowB) => rowA.caseNum - rowB.caseNum,
   },
   {
     id: "experimental_strategy",
@@ -44,6 +46,7 @@ const columnListOrderStart: Columns[] = [
     id: "files",
     columnName: "Files",
     visible: true,
+    Cell: ({ value }: CellProps) => <>{value?.toLocaleString()}</>,
   },
 ];
 
@@ -62,27 +65,48 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   const [columnListOrder, setColumnListOrder] = useState(columnListOrderStart);
 
   //get details for each item in primarySites
-  const primarySiteDetialsPromises = primarySites.map((primary_site: string) =>
+  const primarySiteDetailsPromises = primarySites.map((primary_site: string) =>
     //eslint-disable-next-line
     useGetProjectPrimarySitesQuery({ projectId, primary_site }),
   );
   let loadingData = true;
-  if (primarySiteDetialsPromises.every((obj) => obj.isSuccess)) {
+  if (primarySiteDetailsPromises.every((obj) => obj.isSuccess)) {
     loadingData = false;
   }
 
   useEffect(() => {
     //Check if all data is loaded before showing
     setTableData(
-      primarySiteDetialsPromises.map((obj) => {
+      primarySiteDetailsPromises.map((obj) => {
         if (obj.data) {
           return {
             primary_site: obj.originalArgs.primary_site,
             disease_type: obj.data.disease_types,
-            cases: obj.data.casesTotal?.toLocaleString(),
+            cases: (
+              <CohortCreationButtonWrapper
+                label={obj.data.casesTotal?.toLocaleString()}
+                numCases={obj.data.casesTotal}
+                caseFilters={{
+                  mode: "and",
+                  root: {
+                    "cases.project.project_id": {
+                      field: "cases.project.project_id",
+                      operator: "includes",
+                      operands: [projectId],
+                    },
+                    "cases.primary_site": {
+                      field: "cases.primary_site",
+                      operator: "includes",
+                      operands: [obj.originalArgs.primary_site.toLowerCase()],
+                    },
+                  },
+                }}
+              />
+            ),
+            caseNum: obj.data.casesTotal,
             experimental_strategy:
               obj.data.files__experimental_strategy.join(", "),
-            files: obj.data.filesTotal?.toLocaleString(),
+            files: obj.data.filesTotal,
           };
         } else {
           return {
@@ -112,7 +136,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     handleSortByChange,
     displayedData,
     ...paginationProps
-  } = useStandardPagination(filteredTableData);
+  } = useStandardPagination(filteredTableData, columnListOrder);
 
   useEffect(() => {
     // set default on load to be sorted by primary site

@@ -87,6 +87,8 @@ export interface Union {
   readonly operands: ReadonlyArray<Operation>;
 }
 
+export type UnionOrIntersection = Union | Intersection;
+
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
   handleNotEquals: (op: NotEquals) => T;

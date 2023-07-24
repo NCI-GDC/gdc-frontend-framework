@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Tooltip } from "@mantine/core";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 import { Row } from "react-table";
 import Link from "next/link";
 import {
@@ -8,6 +8,10 @@ import {
   useGetProjectsQuery,
   CancerDistributionTableData,
   FilterSet,
+  useCreateCaseSetFromFiltersMutation,
+  buildCohortGqlOperator,
+  addNewCohortWithFilterAndMessage,
+  useCoreDispatch,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -28,8 +32,11 @@ interface CancerDistributionTableTSVDownloadData {
   disease_type: string[];
   primary_site: string[];
   ssm_affected_cases: string;
+  ssm_percent: number;
 }
 import { NumeratorDenominator } from "@/components/expandableTables/shared";
+import { CohortCreationButton } from "@/components/CohortCreationButton/";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 
 interface GeneCancerDistributionTableProps {
   readonly gene: string;
@@ -56,6 +63,8 @@ export const GeneCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={gene}
+      contextFilters={contextFilters}
       isGene
     />
   );
@@ -83,6 +92,7 @@ export const SSMSCancerDistributionTable: React.FC<
       isError={isError}
       isSuccess={isSuccess}
       symbol={symbol}
+      id={ssms}
       isGene={false}
     />
   );
@@ -94,7 +104,17 @@ interface CancerDistributionTableProps {
   readonly isError: boolean;
   readonly isSuccess: boolean;
   readonly symbol: string;
+  readonly id: string;
   readonly isGene: boolean;
+  readonly contextFilters?: FilterSet;
+}
+
+interface CreateSSMCohortParams {
+  project: string;
+  id: string;
+  gene?: string;
+  filter?: "Loss" | "Gain";
+  mode: "CNV" | "SSM";
 }
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
@@ -103,14 +123,22 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   isError,
   isSuccess,
   symbol,
+  id,
   isGene,
+  contextFilters,
 }: CancerDistributionTableProps) => {
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
+  const [loading, setLoading] = useState(false);
+  const [createCohortParams, setCreateCohortParams] = useState<
+    CreateSSMCohortParams | undefined
+  >(undefined);
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
       op: "in",
       content: {
         field: "project_id",
-        value: data?.projects.map((p) => p.key),
+        value: data?.projects.map((p) => p.key) ?? [],
       },
     },
     expand: [
@@ -122,15 +150,34 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     size: data?.projects.length,
   });
 
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [response.isLoading]);
+
   const projectsById = Object.fromEntries(
     (projects?.projectData || []).map((project) => [
       project.project_id,
       project,
     ]),
   );
+  const calculatePercent = (numerator, denominator) => {
+    if (numerator && denominator) {
+      return numerator / denominator;
+    }
+    return 0;
+  };
   const columnListOrder = useMemo(() => {
     const columns = [
-      { id: "project", columnName: "Project", visible: true },
+      {
+        id: "project",
+        columnName: "Project",
+        visible: true,
+        disableSortBy: true,
+      },
       {
         id: "disease_type",
         columnName: "Disease Type",
@@ -138,6 +185,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Disease Types"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "primary_site",
@@ -146,11 +194,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         Cell: ({ value, row }: CellProps) => (
           <CollapsibleRow value={value} row={row} label={"Primary Site"} />
         ),
+        disableSortBy: true,
       },
       {
         id: "ssm_affected_cases",
         columnName: (
-          <div>
+          <div className="whitespace-normal">
             <Tooltip
               label={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
     / # Cases tested for Simple Somatic Mutations in the Project`}
@@ -158,10 +207,19 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               withArrow
               width={250}
             >
-              <span># SSM Affected Cases</span>
+              <span className="whitespace-nowrap"># SSM Affected Cases</span>
             </Tooltip>
           </div>
         ),
+        sortingFn: (rowA, rowB) => {
+          if (rowA.ssm_percent < rowB.ssm_percent) {
+            return 1;
+          }
+          if (rowA.ssm_percent > rowB.ssm_percent) {
+            return -1;
+          }
+          return 0;
+        },
         visible: true,
       },
     ];
@@ -172,7 +230,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             {
               id: "cnv_gains",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
         / # Cases tested for Copy Number Variation in the Project
@@ -181,16 +239,25 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Gains</span>
+                    <span className="whitespace-nowrap"># CNV Gains</span>
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
+                  return 1;
+                }
+                if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
             },
             {
               id: "cnv_losses",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Cases tested for CNV in Project affected by CNV loss event in ${symbol}
         / # Cases tested for Copy Number Variation in Project
@@ -199,32 +266,177 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     withArrow
                     width={250}
                   >
-                    <span># CNV Losses</span>
+                    <span className="whitespace-nowrap"># CNV Losses</span>
                   </Tooltip>
                 </div>
               ),
+              sortingFn: (rowA, rowB) => {
+                if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
+                  return 1;
+                }
+                if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
+                  return -1;
+                }
+                return 0;
+              },
               visible: true,
             },
             {
               id: "num_mutations",
               columnName: (
-                <div>
+                <div className="whitespace-normal">
                   <Tooltip
                     label={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
                     multiline
                     withArrow
                     width={250}
                   >
-                    <span># Mutations</span>
+                    <span className="whitespace-nowrap"># Mutations</span>
                   </Tooltip>
                 </div>
               ),
               visible: true,
+              Cell: ({ value }: CellProps) => {
+                return <>{value.toLocaleString()}</>;
+              },
             },
           ]
         : []),
     ];
   }, [isGene, symbol]);
+
+  const coreDispatch = useCoreDispatch();
+
+  const createSSMAffectedFilters = useCallback(
+    async (project: string, id: string): Promise<FilterSet> => {
+      return await createSet({
+        filters: buildCohortGqlOperator(contextFilters),
+      })
+        .unwrap()
+        .then((setId) => {
+          if (isGene) {
+            return {
+              mode: "and",
+              root: {
+                "cases.case_id": {
+                  field: "cases.case_id",
+                  operands: [`set_id:${setId}`],
+                  operator: "includes",
+                },
+                "cases.project.project_id": {
+                  field: "cases.project.project_id",
+                  operator: "includes",
+                  operands: [project],
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "includes",
+                  operands: [id],
+                },
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "exists",
+                },
+              },
+            };
+          } else {
+            return {
+              mode: "and",
+              root: {
+                "cases.case_id": {
+                  field: "cases.case_id",
+                  operands: [`set_id:${setId}`],
+                  operator: "includes",
+                },
+                "cases.project.project_id": {
+                  field: "cases.project.project_id",
+                  operator: "includes",
+                  operands: [project],
+                },
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "includes",
+                  operands: [id],
+                },
+              },
+            };
+          }
+        });
+    },
+    [contextFilters, createSet, isGene],
+  );
+
+  const createSSMAffectedFiltersCohort = async (
+    name: string,
+    project: string,
+    id: string,
+  ) => {
+    const mainFilter = await createSSMAffectedFilters(project, id);
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
+
+  const createCNVGainLossFilters = useCallback(
+    async (
+      project: string,
+      gene: string,
+      filter: "Loss" | "Gain",
+    ): Promise<FilterSet> => {
+      return await createSet({
+        filters: buildCohortGqlOperator(contextFilters),
+      })
+        .unwrap()
+        .then((setId) => {
+          return {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+              "cases.project.project_id": {
+                field: "cases.project.project_id",
+                operator: "includes",
+                operands: [project],
+              },
+              "genes.gene_id": {
+                field: "genes.gene_id",
+                operator: "=",
+                operand: id,
+              },
+              "genes.cnv.cnv_change": {
+                field: "genes.cnv.cnv_change",
+                operator: "=",
+                operand: filter,
+              },
+            },
+          };
+        });
+    },
+    [contextFilters, createSet, id],
+  );
+
+  const createCNVGainLossCohort = async (
+    name: string,
+    project: string,
+    gene: string,
+    filter: "Loss" | "Gain",
+  ) => {
+    const mainFilter = await createCNVGainLossFilters(project, gene, filter);
+    coreDispatch(
+      addNewCohortWithFilterAndMessage({
+        filters: mainFilter,
+        name,
+        message: "newCasesCohort",
+      }),
+    );
+  };
 
   const formattedData = useMemo(
     () =>
@@ -241,9 +453,25 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 primary_site: projectsById[d.key]?.primary_site || [],
 
                 ssm_affected_cases: (
-                  <NumeratorDenominator
-                    numerator={data.ssmFiltered[d.key] || 0}
-                    denominator={data.ssmTotal[d.key] || 0}
+                  <CohortCreationButton
+                    numCases={data.ssmFiltered[d.key] || 0}
+                    handleClick={() => {
+                      setCreateCohortParams({
+                        project: d.key,
+                        id: id,
+                        mode: "SSM",
+                        gene: undefined,
+                        filter: undefined,
+                      });
+                      setShowCreateCohort(true);
+                    }}
+                    label={
+                      <NumeratorDenominator
+                        numerator={data.ssmFiltered[d.key] || 0}
+                        denominator={data.ssmTotal[d.key] || 0}
+                        boldNumerator
+                      />
+                    }
                   />
                 ),
                 ssm_percent: data.ssmFiltered[d.key] / data.ssmTotal[d.key],
@@ -253,21 +481,60 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 ...(isGene
                   ? {
                       cnv_gains: (
-                        <NumeratorDenominator
-                          numerator={data.cnvGain[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
+                        <CohortCreationButton
+                          numCases={data.cnvGain[d.key] || 0}
+                          handleClick={() => {
+                            setCreateCohortParams({
+                              project: d.key,
+                              id: id,
+                              mode: "CNV",
+                              gene: undefined,
+                              filter: "Gain",
+                            });
+                            setShowCreateCohort(true);
+                          }}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvGain[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
                         />
+                      ),
+                      cnv_gains_percent: calculatePercent(
+                        data.cnvGain[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
                       ),
                       cnv_losses: (
-                        <NumeratorDenominator
-                          numerator={data.cnvLoss[d.key] || 0}
-                          denominator={data.cnvTotal[d.key] || 0}
+                        <CohortCreationButton
+                          numCases={data.cnvLoss[d.key] || 0}
+                          handleClick={() => {
+                            setCreateCohortParams({
+                              project: d.key,
+                              id: id,
+                              mode: "CNV",
+                              gene: undefined,
+                              filter: "Loss",
+                            });
+                            setShowCreateCohort(true);
+                          }}
+                          label={
+                            <NumeratorDenominator
+                              numerator={data.cnvLoss[d.key] || 0}
+                              denominator={data.cnvTotal[d.key] || 0}
+                              boldNumerator
+                            />
+                          }
                         />
                       ),
+                      cnv_losses_percent: calculatePercent(
+                        data.cnvLoss[d.key] || 0,
+                        data.cnvTotal[d.key] || 0,
+                      ),
+
                       num_mutations:
-                        (data.ssmFiltered[d.key] || 0) === 0
-                          ? 0
-                          : d.doc_count.toLocaleString(),
+                        (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
                     }
                   : {}),
               };
@@ -349,13 +616,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const {
     handlePageChange,
     handlePageSizeChange,
+    handleSortByChange,
     page,
     pages,
     size,
     from,
     total,
     displayedData,
-  } = useStandardPagination(formattedData);
+  } = useStandardPagination(formattedData, columnListOrder);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -365,107 +633,170 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
         break;
+      case "sortBy":
+        handleSortByChange(obj.sortBy);
+        break;
     }
   };
 
+  const handleTSVDownload = () => {
+    const now = new Date();
+    const fileName = `cancer-distribution-table.${convertDateToString(
+      now,
+    )}.tsv`;
+    const headers = isGene
+      ? [
+          "Project",
+          "Disease Type",
+          "Primary Site",
+          "# SSM Affected Cases",
+          "# CNV Gains",
+          "# CNV Losses",
+          "# Mutations",
+        ]
+      : ["Project", "Disease Type", "Primary Site", "# SSM Affected Cases"];
+    const body = isGene
+      ? cancerDistributionTableDownloadData
+          .map(
+            ({
+              project,
+              disease_type,
+              primary_site,
+              ssm_affected_cases,
+              cnv_gains,
+              cnv_losses,
+              num_mutations,
+            }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+                cnv_gains,
+                cnv_losses,
+                num_mutations,
+              ].join("\t");
+            },
+          )
+          .join("\n")
+      : cancerDistributionTableDownloadData
+          .map(
+            ({ project, disease_type, primary_site, ssm_affected_cases }) => {
+              return [
+                project,
+                disease_type,
+                primary_site,
+                ssm_affected_cases,
+              ].join("\t");
+            },
+          )
+          .join("\n");
+    const tsv = [headers.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
+  const handleJSONDownload = () => {
+    const json = cancerDistributionTableDownloadData
+      .map(
+        ({
+          project,
+          disease_type,
+          primary_site,
+          ssm_percent,
+          num_mutations,
+        }) => {
+          return {
+            project_id: project,
+            disease_type,
+            site: primary_site,
+            num_affected_cases: data.ssmFiltered[project] ?? 0,
+            num_affected_cases_total: data.ssmTotal[project] ?? 0,
+            num_affected_cases_percent: ssm_percent,
+            ...(isGene && { num_cnv_gain: data.cnvGain[project] ?? 0 }),
+            ...(isGene && {
+              num_cnv_gain_percent:
+                data?.cnvGain[project] / data?.cnvTotal[project] || 0,
+            }),
+            ...(isGene && { num_cnv_loss: data.cnvLoss[project] ?? 0 }),
+            ...(isGene && {
+              num_cnv_loss_percent:
+                data?.cnvLoss[project] / data?.cnvTotal[project] || 0,
+            }),
+            ...(isGene && { num_cnv_cases_total: data.cnvTotal[project] ?? 0 }),
+            mutations_counts: num_mutations,
+          };
+        },
+      )
+      .sort(
+        (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
+      );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
+    });
+    saveAs(blob, "cancer-distribution-data.json");
+  };
+
   return (
-    <VerticalTable
-      tableData={displayedData}
-      columns={columnListOrder}
-      selectableRow={false}
-      showControls={false}
-      additionalControls={
-        <div className="flex gap-2 mb-2">
-          <FunctionButton>JSON</FunctionButton>
-          <FunctionButton
-            onClick={() => {
-              const now = new Date();
-              const fileName = `cancer-distribution-table.${convertDateToString(
-                now,
-              )}.tsv`;
-              const headers = isGene
-                ? [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                    "# CNV Gains",
-                    "# CNV Losses",
-                    "# Mutations",
-                  ]
-                : [
-                    "Project",
-                    "Disease Type",
-                    "Primary Site",
-                    "# SSM Affected Cases",
-                  ];
-              const body = isGene
-                ? cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                        cnv_gains,
-                        cnv_losses,
-                        num_mutations,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                          cnv_gains,
-                          cnv_losses,
-                          num_mutations,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n")
-                : cancerDistributionTableDownloadData
-                    .map(
-                      ({
-                        project,
-                        disease_type,
-                        primary_site,
-                        ssm_affected_cases,
-                      }) => {
-                        return [
-                          project,
-                          disease_type,
-                          primary_site,
-                          ssm_affected_cases,
-                        ].join("\t");
-                      },
-                    )
-                    .join("\n");
-              const tsv = [headers.join("\t"), body].join("\n");
-              const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
-              saveAs(blob, fileName);
-            }}
-          >
-            TSV
-          </FunctionButton>
-        </div>
-      }
-      pagination={{
-        page,
-        pages,
-        size,
-        from,
-        total,
-      }}
-      status={
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
-      handleChange={handleChange}
-    />
+    <>
+      {loading && <LoadingOverlay visible />}
+      {showCreateCohort && (
+        <CreateCohortModal
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            if (createCohortParams.mode === "SSM") {
+              createSSMAffectedFiltersCohort(
+                newName,
+                createCohortParams.project,
+                createCohortParams.id,
+              );
+            } else {
+              createCNVGainLossCohort(
+                newName,
+                createCohortParams.project,
+                createCohortParams.gene,
+                createCohortParams.filter,
+              );
+            }
+          }}
+        />
+      )}
+      <VerticalTable
+        tableData={displayedData}
+        columns={columnListOrder}
+        columnSorting={"manual"}
+        selectableRow={false}
+        showControls={false}
+        additionalControls={
+          <div className="flex gap-2 mb-2">
+            <FunctionButton onClick={handleJSONDownload}>JSON</FunctionButton>
+            <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
+          </div>
+        }
+        pagination={{
+          page,
+          pages,
+          size,
+          from,
+          total,
+        }}
+        status={
+          isFetching
+            ? "pending"
+            : isSuccess
+            ? "fulfilled"
+            : isError
+            ? "rejected"
+            : "uninitialized"
+        }
+        handleChange={handleChange}
+        initialSort={[
+          {
+            id: "ssm_affected_cases",
+            desc: false,
+          },
+        ]}
+      />
+    </>
   );
 };

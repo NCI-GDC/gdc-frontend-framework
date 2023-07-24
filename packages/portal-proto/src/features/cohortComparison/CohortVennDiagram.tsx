@@ -21,17 +21,17 @@ interface CohortVennDiagramProps {
       name: string;
     };
   };
-  readonly caseIds: string[][];
+  readonly caseSetIds: string[];
 }
 
 const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
   cohorts,
-  caseIds,
+  caseSetIds,
 }: CohortVennDiagramProps) => {
   const filters = makeIntersectionFilters(
     buildCohortGqlOperator(cohorts?.primary_cohort.filter),
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
-    caseIds,
+    caseSetIds,
   );
 
   const { data } = useVennIntersectionData({

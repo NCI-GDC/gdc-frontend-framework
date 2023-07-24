@@ -19,7 +19,7 @@ class HomePageLocators:
 
 class HomePage(BasePage):
     def __init__(self, driver: Page, url):
-        self.URL = "{}/".format(url)
+        self.URL = "{}".format(url)
         self.driver = driver  # driver is PW page
 
     """Home page actions """
@@ -34,11 +34,3 @@ class HomePage(BasePage):
     def is_live_category_statistic_present(self, expected_statistic:str):
         expected_statistic_locator = HomePageLocators.LIVE_STAT_BY_CATEGORY_IDENT(expected_statistic)
         return self.is_visible(expected_statistic_locator)
-
-    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
-        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
-        try:
-            new_tab.locator(expected_text_locator).wait_for(state='visible')
-        except:
-            return False
-        return True

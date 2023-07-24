@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PaginationOptions } from "@/features/shared/VerticalTable";
+import { PaginationOptions, Columns } from "@/features/shared/VerticalTable";
 import { SortingRule } from "react-table";
 
 /**
@@ -10,6 +10,7 @@ import { SortingRule } from "react-table";
  */
 const useStandardPagination = (
   fullData: Record<string, any>[],
+  columnListOrder?: Columns[],
 ): PaginationOptions & {
   displayedData: Record<string, any>[];
   /**
@@ -29,6 +30,7 @@ const useStandardPagination = (
   const [activePage, setActivePage] = useState(1);
   const [activeSort, setActiveSort] = useState<SortingRule<any>[]>([]);
   const [displayedData, setDisplayedData] = useState([]);
+  const [columnSortingFns, setColumnSortingFns] = useState({});
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -44,6 +46,21 @@ const useStandardPagination = (
   };
 
   useEffect(() => {
+    if (!columnListOrder) {
+      return;
+    }
+    // looks through columnListOrder for columns that have sortingFn and add them to an easily retrievable object
+    setColumnSortingFns(
+      columnListOrder.reduce((output, column) => {
+        if (column.sortingFn) {
+          output[column.id] = column.sortingFn;
+        }
+        return output;
+      }, {}),
+    );
+  }, [columnListOrder]);
+
+  useEffect(() => {
     // if data changes set to first page
     setActivePage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,22 +71,65 @@ const useStandardPagination = (
     if (activeSort.length > 0) {
       // If multiple filters
       activeSort.forEach((obj) => {
-        tempData.sort((a, b) => {
-          // sort strings and numbers
-          if (a[obj.id] < b[obj.id]) {
-            return obj.desc ? -1 : 1;
+        // check if special instructions
+        if (columnSortingFns[obj.id]) {
+          // sort by sortingFn
+          tempData.sort(columnSortingFns[obj.id]);
+          if (obj.desc) {
+            tempData.reverse();
           }
-          if (a[obj.id] > b[obj.id]) {
-            return obj.desc ? 1 : -1;
+        } else {
+          switch (typeof tempData[0]?.[obj.id]) {
+            case "number":
+            case "string":
+              tempData.sort((a, b) => {
+                // sort strings and numbers
+                if (a[obj.id] < b[obj.id]) {
+                  return obj.desc ? 1 : -1;
+                }
+                if (a[obj.id] > b[obj.id]) {
+                  return obj.desc ? -1 : 1;
+                }
+                return 0;
+              });
+              break;
+            case "object":
+              // check if array
+              if (Array.isArray(tempData[0][obj.id])) {
+                //if array sort by length
+                tempData.sort((a, b) => {
+                  if (a[obj.id].length < b[obj.id].length) {
+                    return obj.desc ? -1 : 1;
+                  }
+                  if (a[obj.id].length > b[obj.id].length) {
+                    return obj.desc ? 1 : -1;
+                  }
+                  //If same length sort by first item
+                  try {
+                    if (a[obj.id][0] > b[obj.id][0]) {
+                      return obj.desc ? -1 : 1;
+                    }
+                    if (a[obj.id][0] < b[obj.id][0]) {
+                      return obj.desc ? 1 : -1;
+                    }
+                  } catch {
+                    return 0;
+                  }
+                  return 0;
+                });
+                break;
+              }
+            // fallsthrough non array object needs sortingFn
+            default:
+              console.error(`cannot sort by ${obj.id} no sortingFn given`);
           }
-          return 0;
-        });
+        }
       });
     }
     setDisplayedData(
       tempData.slice((activePage - 1) * pageSize, activePage * pageSize),
     );
-  }, [fullData, activePage, pageSize, activeSort]);
+  }, [fullData, activePage, pageSize, activeSort, columnSortingFns]);
 
   return {
     handlePageSizeChange,
