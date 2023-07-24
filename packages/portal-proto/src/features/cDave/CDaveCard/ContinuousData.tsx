@@ -13,7 +13,7 @@ import CardControls from "./CardControls";
 import { CustomInterval, NamedFromTo, ChartTypes } from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { isInterval, createBuckets, parseContinuousBucket } from "../utils";
-import BoxQQPlot from "./BoxQQPlot";
+import BoxQQSection from "./BoxQQSection";
 
 const processContinuousResultData = (
   data: Record<string, number>,
@@ -120,7 +120,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   return (
     <>
       {chartType === "boxqq" ? (
-        <BoxQQPlot field={field} data={statsData} />
+        <BoxQQSection field={field} data={statsData} />
       ) : (
         <>
           {chartType === "histogram" ? (

@@ -1,3 +1,4 @@
+import React from "react";
 import { isNumber } from "lodash";
 import { Loader } from "@mantine/core";
 import {
@@ -15,9 +16,8 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
 } from "@gff/core";
-import tailwindConfig from "tailwind.config";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DEMO_COHORT_FILTERS, COLOR_MAP } from "../constants";
+import { DEMO_COHORT_FILTERS } from "../constants";
 import { qnorm } from "../utils";
 
 const getQuantile = (count: number, quantile: number) =>
@@ -55,9 +55,17 @@ const getTrendLine = (chartValues: { x: number; y: number }[]) => {
 
 interface QQPlotProps {
   readonly field: string;
+  readonly color: string;
+  readonly height: number;
+  readonly width: number;
 }
 
-const QQPlot: React.FC<QQPlotProps> = ({ field }: QQPlotProps) => {
+const QQPlot: React.FC<QQPlotProps> = ({
+  field,
+  height,
+  width,
+  color,
+}: QQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
   const isDemoMode = useIsDemoApp();
@@ -66,7 +74,6 @@ const QQPlot: React.FC<QQPlotProps> = ({ field }: QQPlotProps) => {
     root: {
       [`cases.${field}`]: {
         field: `cases.${field}`,
-
         operator: "exists",
       },
     },
@@ -122,9 +129,7 @@ const QQPlot: React.FC<QQPlotProps> = ({ field }: QQPlotProps) => {
   }));
 
   // place yAxis on left side of chart
-  const xMin = Math.min(...chartValues.map((v) => Math.floor(v.x)));
-  const color =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[clinicalType]]?.DEFAULT;
+  const xMin = Math.min(...chartValues.map((v) => v.x));
 
   return isLoading ? (
     <Loader />
@@ -132,19 +137,20 @@ const QQPlot: React.FC<QQPlotProps> = ({ field }: QQPlotProps) => {
     <>Not enough data</>
   ) : (
     <VictoryChart
-      height={500}
-      width={400}
-      padding={{ left: 80, right: 20, bottom: 80, top: 80 }}
+      height={height}
+      width={width}
+      padding={{ left: 80, right: 20, bottom: 60, top: 50 }}
     >
       <VictoryLabel
         dy={20}
         dx={40}
         text="QQ Plot"
-        style={{ fontSize: 20, fontFamily: "Noto Sans" }}
+        style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />
       <VictoryAxis
         label="Theoretical Normal Quantiles"
         axisLabelComponent={<VictoryLabel dy={5} />}
+        style={{ ticks: { stroke: "black", size: 8 } }}
       />
       <VictoryAxis
         dependentAxis
@@ -152,7 +158,10 @@ const QQPlot: React.FC<QQPlotProps> = ({ field }: QQPlotProps) => {
         label="Sample Quantiles"
         axisLabelComponent={<VictoryLabel dy={-40} />}
       />
-      <VictoryScatter data={chartValues} style={{ data: { fill: color } }} />
+      <VictoryScatter
+        data={chartValues}
+        style={{ data: { stroke: color, strokeWidth: 2, fill: "none" } }}
+      />
       <VictoryLine data={getTrendLine(chartValues)} />
     </VictoryChart>
   );

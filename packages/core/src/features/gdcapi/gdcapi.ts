@@ -650,7 +650,6 @@ export const endpointSlice = coreCreateApi({
       query: (request: GdcApiRequest) => ({
         request,
         endpoint: "case_ssms",
-        //fetchAll: false,
       }),
       transformResponse: (response) => response.data.hits,
     }),

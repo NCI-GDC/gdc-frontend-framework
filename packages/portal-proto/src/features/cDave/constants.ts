@@ -168,11 +168,8 @@ export const FACET_SORT = {
 
 export const BOX_QQ_DATA_DIMENSIONS = {
   age_at_diagnosis: {
-    axisTitle: "Age",
-    unit: "Years",
+    unit: "Days",
   },
-  cigarettes_per_day: {},
-  circumferential_resection_margin: {},
   days_to_birth: { unit: "Days" },
   days_to_death: { unit: "Days" },
   days_to_hiv_diagnosis: { unit: "Days" },
@@ -183,15 +180,12 @@ export const BOX_QQ_DATA_DIMENSIONS = {
   days_to_treatment_end: { unit: "Days" },
   days_to_treatment_start: { unit: "Days" },
   height: {
-    axisTitle: "Height",
     unit: "cm",
   },
   tumor_largest_dimension_diameter: {
-    axisTitle: "Diameter",
     unit: "cm",
   },
   weight: {
-    axisTitle: "Weight",
     unit: "kg",
   },
   year_of_diagnosis: { unit: "Years" },

@@ -1,13 +1,46 @@
 import React, { useState } from "react";
 import { Tooltip, Box } from "@mantine/core";
 import {
+  LineSegment,
   VictoryAxis,
   VictoryBoxPlot,
   VictoryChart,
   VictoryLabel,
   VictoryLabelProps,
   VictoryScatter,
+  Box as VictoryBox,
+  BoxProps,
 } from "victory";
+
+const CustomQ1 = (props: BoxProps) => {
+  return (
+    <>
+      <VictoryBox {...props} />
+      <LineSegment
+        x1={props.x}
+        y1={props.y + props.height}
+        x2={props.x + props.width}
+        y2={props.y + props.height}
+        style={{ strokeWidth: 1.5 }}
+      />
+    </>
+  );
+};
+
+const CustomQ3 = (props: BoxProps) => {
+  return (
+    <>
+      <VictoryBox {...props} />
+      <LineSegment
+        x1={props.x}
+        y1={props.y}
+        x2={props.x + props.width}
+        y2={props.y}
+        style={{ strokeWidth: 1.5 }}
+      />
+    </>
+  );
+};
 
 interface BoxPlotTooltipProps {
   readonly visible: boolean;
@@ -35,17 +68,24 @@ const BoxPlotTooltip: React.FC<BoxPlotTooltipProps> = ({
 
 interface BoxPlotProps {
   readonly data: {
-    readonly min: string;
-    readonly max: string;
-    readonly median: string;
-    readonly mean: string;
-    readonly q1: string;
-    readonly q3: string;
+    readonly min: number;
+    readonly max: number;
+    readonly median: number;
+    readonly mean: number;
+    readonly q1: number;
+    readonly q3: number;
   };
   readonly color: string;
+  readonly height: number;
+  readonly width: number;
 }
 
-const BoxPlot: React.FC<BoxPlotProps> = ({ data, color }: BoxPlotProps) => {
+const BoxPlot: React.FC<BoxPlotProps> = ({
+  data,
+  color,
+  height,
+  width,
+}: BoxPlotProps) => {
   const [tooltipProps, setShowTooltipProps] = useState<{
     visible: boolean;
     x?: number;
@@ -57,27 +97,39 @@ const BoxPlot: React.FC<BoxPlotProps> = ({ data, color }: BoxPlotProps) => {
 
   return (
     <VictoryChart
-      height={500}
-      width={400}
-      padding={{ left: 80, right: 20, bottom: 80, top: 80 }}
-      minDomain={{ x: 1, y: Number(data.min) }}
-      maxDomain={{ x: 1, y: Number(data.max) }}
+      height={height}
+      width={width}
+      padding={{ left: 60, right: 20, bottom: 40, top: 50 }}
+      minDomain={{ x: 1, y: data.min }}
+      maxDomain={{ x: 1, y: data.max }}
     >
       <VictoryLabel
         dy={20}
         dx={40}
         text="Box Plot"
-        style={{ fontSize: 20, fontFamily: "Noto Sans" }}
+        style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />
-      <VictoryAxis dependentAxis />
+      <VictoryAxis
+        dependentAxis
+        style={{ grid: { stroke: "#F5F5F5", strokeWidth: 1 } }}
+        crossAxis={false}
+      />
       <VictoryBoxPlot
-        style={{ q1: { fill: color }, q3: { fill: color } }}
-        boxWidth={50}
+        style={{
+          q1: { fill: color },
+          q3: { fill: color },
+          min: { strokeWidth: 1.5 },
+          max: { strokeWidth: 1.5 },
+          median: { strokeWidth: 1.5 },
+        }}
+        boxWidth={40}
         minLabelComponent={<></>}
         maxLabelComponent={<></>}
         q1LabelComponent={<></>}
         q3LabelComponent={<></>}
         medianLabelComponent={<></>}
+        q1Component={<CustomQ1 />}
+        q3Component={<CustomQ3 />}
         data={[
           {
             x: 1,
@@ -209,8 +261,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({ data, color }: BoxPlotProps) => {
         labels
       />
       <VictoryScatter
-        data={[{ y: Number(data.mean), x: 1 }]}
-        style={{ data: { fill: "white" } }}
+        data={[{ y: data.mean, x: 1 }]}
+        style={{ data: { fill: "white", stroke: "#F5F5F5", strokeWidth: 1.5 } }}
         size={5}
         symbol={"plus"}
         labels={() => ""}

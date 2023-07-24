@@ -135,8 +135,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                 <BoxPlotIcon
                   className={
                     chartType === "boxqq"
-                      ? "text-primary-contrast"
-                      : "text-primary"
+                      ? "text-primary-contrast rotate-90"
+                      : "text-primary rotate-90"
                   }
                 />
               </ActionIcon>

@@ -1,10 +1,11 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import tw from "tailwind-styled-components";
 import { DAYS_IN_YEAR, ClinicalContinuousStatsData } from "@gff/core";
 import tailwindConfig from "tailwind.config";
 import { BOX_QQ_DATA_DIMENSIONS, COLOR_MAP } from "../constants";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
+import { useResizeObserver } from "@mantine/hooks";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -14,7 +15,7 @@ interface BoxQQPlotProps {
   readonly data: ClinicalContinuousStatsData;
 }
 
-const BoxQQPlot: React.FC<BoxQQPlotProps> = ({
+const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
   data,
 }: BoxQQPlotProps) => {
@@ -22,15 +23,19 @@ const BoxQQPlot: React.FC<BoxQQPlotProps> = ({
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
 
   const color =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[clinicalType]]?.DEFAULT;
+    tailwindConfig.theme.extend.colors[
+      COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
+    ]?.DEFAULT;
   const dataDimension =
     BOX_QQ_DATA_DIMENSIONS?.[clinicalNestedField ?? clinicalField];
 
   const formatValue = useCallback(
     (value: number) => {
-      return (
-        dataDimension?.unit === "Years" ? value / DAYS_IN_YEAR : value
-      ).toFixed(2);
+      return Number(
+        dataDimension?.unit === "Years"
+          ? value / DAYS_IN_YEAR
+          : value.toFixed(2),
+      );
     },
     [dataDimension],
   );
@@ -44,17 +49,30 @@ const BoxQQPlot: React.FC<BoxQQPlotProps> = ({
     q3: formatValue(data.q3),
   };
 
+  const [boxPlotRef, boundingRectBox] = useResizeObserver();
+  const [qqPlotRef, boundingRectQQ] = useResizeObserver();
+
   return (
     <>
       <div className="flex flex-row">
-        <div className="w-full h-full basis-1/2">
-          <BoxPlot data={formattedData} color={color} />
+        <div className="w-full h-72 basis-1/3" ref={boxPlotRef}>
+          <BoxPlot
+            data={formattedData}
+            color={color}
+            width={boundingRectBox.width}
+            height={boundingRectBox.height}
+          />
         </div>
-        <div className="w-full h-full basis-1/2">
-          <QQPlot field={field} />
+        <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
+          <QQPlot
+            field={field}
+            color={color}
+            width={boundingRectQQ.width}
+            height={boundingRectQQ.height}
+          />
         </div>
       </div>
-      <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
+      <div className="min-h-44 block overflow-auto w-full relative border-base-light border-1">
         <table
           data-testid="table-card"
           className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto"
@@ -65,34 +83,34 @@ const BoxQQPlot: React.FC<BoxQQPlotProps> = ({
                 Statistics
               </th>
               <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
-                {dataDimension?.unit}
+                {dataDimension?.unit || "Quantities"}
               </th>
             </tr>
           </thead>
           <tbody>
             <LightTableRow>
               <td>Minimum</td>
-              <td>{formattedData.min.toLocaleString()}</td>
+              <td>{formattedData.min}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>Maximum</td>
-              <td>{formattedData.max.toLocaleString()}</td>
+              <td>{formattedData.max}</td>
             </DarkTableRow>
             <LightTableRow>
               <td>Mean</td>
-              <td>{formattedData.mean.toLocaleString()}</td>
+              <td>{formattedData.mean}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>Median</td>
-              <td>{formattedData.median.toLocaleString()}</td>
+              <td>{formattedData.median}</td>
             </DarkTableRow>
             <LightTableRow>
               <td>Standard Deviation</td>
-              <td>{formatValue(data.std_dev).toLocaleString()}</td>
+              <td>{formatValue(data.std_dev)}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>IQR</td>
-              <td>{formatValue(data.iqr).toLocaleString()}</td>
+              <td>{formatValue(data.iqr)}</td>
             </DarkTableRow>
           </tbody>
         </table>
@@ -101,4 +119,4 @@ const BoxQQPlot: React.FC<BoxQQPlotProps> = ({
   );
 };
 
-export default BoxQQPlot;
+export default BoxQQSection;
