@@ -1,3 +1,4 @@
+import os
 from os import getenv
 from pathlib import Path
 from uuid import uuid1
@@ -45,7 +46,7 @@ class WebDriver:
 
     @before_suite
     def start_page(self):
-        if getenv('IS_DOCKER') == '1':
+        if getenv('APP_ENVIRONMENT') and os.environ['APP_ENVIRONMENT'].lower() != 'prod':
             ignore_https_errors = True
         else:
             ignore_https_errors = False
