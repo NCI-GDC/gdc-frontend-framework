@@ -17,6 +17,7 @@ import {
 } from "@/components/expandableTables/shared";
 import { convertDateToString } from "@/utils/date";
 import saveAs from "file-saver";
+import { humanify } from "src/utils";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -156,34 +157,39 @@ export const SMSConsequenceTableContainer: React.FC<
       "Gene Strand",
       "Transcript",
     ];
-    // todo: modify consequences
-    // {!consequences
-    //   ? "--"
-    //   : humanify({
-    //       term: consequences?.replace("_variant", "").replace("_", " "),
-    //     })}
-    const body = initialData?.consequence?.map(
-      ({
-        transcript: {
-          gene: { symbol },
-          aa_change,
-          consequence_type,
-          annotation: { hgvsc },
-          transcript_id,
+    const body = initialData?.consequence
+      ?.map(
+        ({
+          transcript: {
+            gene: { symbol, gene_strand },
+            aa_change,
+            consequence_type,
+            annotation: {
+              hgvsc,
+              vep_impact,
+              sift_impact,
+              sift_score,
+              polyphen_impact,
+              polyphen_score,
+            },
+            transcript_id,
+            is_canonical,
+          },
+        }) => {
+          return [
+            symbol,
+            aa_change,
+            `${humanify({
+              term: consequence_type.replace("_variant", "").replace("_", " "),
+            })}`,
+            hgvsc,
+            `${`VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`}`,
+            gene_strand,
+            `${transcript_id}${is_canonical ? ` (Canonical)` : ``}`,
+          ].join("\t");
         },
-      }) => {
-        // vep_impact, sift_impact, sift_score, polyphen_impact, polyphen_score
-        return [
-          symbol,
-          aa_change,
-          consequence_type, // format
-          hgvsc,
-          // todo: impact tooltip display put together
-          transcript_id,
-        ];
-      },
-    );
-
+      )
+      .join("\n");
     const tsv = [headers.join("\t"), body].join("\n");
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
     saveAs(blob, fileName);
