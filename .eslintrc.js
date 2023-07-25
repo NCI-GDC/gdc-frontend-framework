@@ -22,6 +22,7 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["jsx-a11y", "react", "react-hooks", "@typescript-eslint"],
+  ignorePatterns: ["**/*.svg"],
   rules: {
     // disable these because we're using React 17+ with the jsx transform
     // need to reverify these rules
