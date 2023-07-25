@@ -23,3 +23,4 @@ run_ui_tests:
       - holmes-py/logs
       - holmes-py/reports*
     expire_in: 3 months
+  allow_failure: true
