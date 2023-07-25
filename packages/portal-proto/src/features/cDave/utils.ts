@@ -103,14 +103,12 @@ export const isInterval = (
 };
 
 /**
- * Allows you to find the quantile (percentile) Q for any probability p
+ * Takes a probability (p) and returns the value (quantile) at which the cumulative
+ * distribution function reaches or exceeds that probability
  * from https://rangevoting.org/Qnorm.html
- * @param p
- * @returns
  */
 export const qnorm = (p: number): number => {
   // ALGORITHM AS 111, APPL.STATIST., VOL.26, 118-121, 1977.
-  // Computes z = invNorm(p)
 
   const split = 0.42;
 
