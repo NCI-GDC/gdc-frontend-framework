@@ -11,6 +11,7 @@ import {
   Box as VictoryBox,
   BoxProps,
 } from "victory";
+import tailwindConfig from "tailwind.config";
 
 const CustomQ1 = (props: BoxProps) => {
   return (
@@ -95,6 +96,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
     visible: false,
   });
 
+  const emptyChart = Object.values(data).every((val) => val === 0);
+
   return (
     <VictoryChart
       height={height}
@@ -111,8 +114,14 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       />
       <VictoryAxis
         dependentAxis
-        style={{ grid: { stroke: "#F5F5F5", strokeWidth: 1 } }}
+        style={{
+          grid: {
+            stroke: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+            strokeWidth: 1,
+          },
+        }}
         crossAxis={false}
+        tickLabelComponent={emptyChart ? <></> : undefined}
       />
       <VictoryBoxPlot
         style={{
@@ -154,7 +163,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps.x,
                         y: labelProps.y,
-                        text: `Minimum: ${labelProps.text}`,
+                        text: `Minimum: ${data.min.toLocaleString()}`,
                       });
                     },
                   },
@@ -177,7 +186,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps?.x,
                         y: labelProps?.y,
-                        text: `Maximum: ${labelProps.text}`,
+                        text: `Maximum: ${data.max.toLocaleString()}`,
                       });
                     },
                   },
@@ -200,7 +209,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps.x,
                         y: labelProps.y,
-                        text: `Median: ${labelProps.text}`,
+                        text: `Median: ${data.median.toLocaleString()}`,
                       });
                     },
                   },
@@ -223,7 +232,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps.x,
                         y: labelProps.y,
-                        text: `Q1: ${labelProps.text}`,
+                        text: `Q1: ${data.q1.toLocaleString()}`,
                       });
                     },
                   },
@@ -246,7 +255,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps.x,
                         y: labelProps.y,
-                        text: `Q3: ${labelProps.text}`,
+                        text: `Q3: ${data.q3.toLocaleString()}`,
                       });
                     },
                   },
@@ -262,7 +271,13 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       />
       <VictoryScatter
         data={[{ y: data.mean, x: 1 }]}
-        style={{ data: { fill: "white", stroke: "#F5F5F5", strokeWidth: 1.5 } }}
+        style={{
+          data: {
+            fill: "white",
+            stroke: tailwindConfig.theme.extend.colors["gdc-grey"].lighter,
+            strokeWidth: 1.5,
+          },
+        }}
         size={5}
         symbol={"plus"}
         labels={() => ""}
@@ -279,7 +294,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                         visible: true,
                         x: labelProps.x,
                         y: labelProps.y,
-                        text: `Mean: ${data.mean}`,
+                        text: `Mean: ${data.mean.toLocaleString()}`,
                       });
                     },
                   },

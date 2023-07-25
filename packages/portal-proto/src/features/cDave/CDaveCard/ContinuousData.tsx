@@ -116,7 +116,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     }
   }, [resultData, customBinnedData]);
 
-  console.log("resultData", resultData);
   return (
     <>
       {chartType === "boxqq" ? (

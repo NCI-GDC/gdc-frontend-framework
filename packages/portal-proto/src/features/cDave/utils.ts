@@ -102,12 +102,16 @@ export const isInterval = (
   return false;
 };
 
-// from https://rangevoting.org/Qnorm.html
-export const qnorm = function (p) {
+/**
+ * Allows you to find the quantile (percentile) Q for any probability p
+ * from https://rangevoting.org/Qnorm.html
+ * @param p
+ * @returns
+ */
+export const qnorm = (p: number): number => {
   // ALGORITHM AS 111, APPL.STATIST., VOL.26, 118-121, 1977.
   // Computes z = invNorm(p)
 
-  p = parseFloat(p);
   const split = 0.42;
 
   const a0 = 2.50662823884;
@@ -127,8 +131,8 @@ export const qnorm = function (p) {
 
   const q = p - 0.5;
 
-  let r;
-  let ppnd;
+  let r: number;
+  let ppnd: number;
 
   if (Math.abs(q) <= split) {
     r = q * q;

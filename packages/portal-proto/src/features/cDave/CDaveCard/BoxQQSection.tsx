@@ -90,27 +90,27 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           <tbody>
             <LightTableRow>
               <td>Minimum</td>
-              <td>{formattedData.min}</td>
+              <td>{formattedData.min.toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>Maximum</td>
-              <td>{formattedData.max}</td>
+              <td>{formattedData.max.toLocaleString()}</td>
             </DarkTableRow>
             <LightTableRow>
               <td>Mean</td>
-              <td>{formattedData.mean}</td>
+              <td>{formattedData.mean.toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>Median</td>
-              <td>{formattedData.median}</td>
+              <td>{formattedData.median.toLocaleString()}</td>
             </DarkTableRow>
             <LightTableRow>
               <td>Standard Deviation</td>
-              <td>{formatValue(data.std_dev)}</td>
+              <td>{formatValue(data.std_dev).toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
               <td>IQR</td>
-              <td>{formatValue(data.iqr)}</td>
+              <td>{formatValue(data.iqr).toLocaleString()}</td>
             </DarkTableRow>
           </tbody>
         </table>
