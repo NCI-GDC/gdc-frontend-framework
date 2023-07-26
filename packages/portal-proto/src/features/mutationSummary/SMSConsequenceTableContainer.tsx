@@ -198,7 +198,9 @@ export const SMSConsequenceTableContainer: React.FC<
             <span>
               Showing
               <span className="font-bold px-1">
-                {from.toLocaleString("en-US")}
+                {from >= 0 && displayedData.length > 0
+                  ? (from + 1).toLocaleString("en-US")
+                  : 0}
               </span>
               -
               <span className="font-bold px-1">
