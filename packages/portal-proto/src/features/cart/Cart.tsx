@@ -50,8 +50,8 @@ const Cart: React.FC = () => {
 
   return cart.length === 0 ? (
     <Grid justify="center" className="bg-base-lightest flex-grow">
-      <Grid.Col span={4} className="mt-20 flex flex-col items-center">
-        <div className="h-40 w-40 rounded-[50%] bg-emptyCartLighterColor flex justify-center items-center">
+      <Grid.Col span={4} className="my-20 flex flex-col items-center">
+        <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
           <CartIcon size={80} className="text-primary-darkest" />
         </div>
         <p className="uppercase text-primary-darkest text-2xl font-montserrat mt-4">
