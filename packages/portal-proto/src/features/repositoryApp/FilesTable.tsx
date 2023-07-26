@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { capitalize } from "lodash";
+import { useState, useContext, useEffect } from "react";
+import { capitalize, isEqual } from "lodash";
 import fileSize from "filesize";
 import {
   VerticalTable,
@@ -20,6 +20,7 @@ import {
   GdcFile,
   Operation,
   useGetFilesQuery,
+  usePrevious,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -43,11 +44,21 @@ const FilesTables: React.FC = () => {
     selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
+
+  const prevAllFilters = usePrevious(allFilters);
+
   const cohortGqlOperator = buildCohortGqlOperator(allFilters);
 
   const [sortBy, setSortBy] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    if (!isEqual(prevAllFilters, allFilters)) {
+      setPageSize(20);
+      setOffset(0);
+    }
+  }, [prevAllFilters, allFilters]);
 
   const coreDispatch = useCoreDispatch();
   const {

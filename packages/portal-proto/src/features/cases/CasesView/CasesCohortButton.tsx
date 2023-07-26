@@ -92,6 +92,7 @@ export const CasesCohortButton = (): JSX.Element => {
         ${pickedCases.length > 1 ? " Cases" : " Case"}`}
         menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
         customPosition="bottom-start"
+        zIndex={10}
       />
 
       {openSelectCohorts && (
