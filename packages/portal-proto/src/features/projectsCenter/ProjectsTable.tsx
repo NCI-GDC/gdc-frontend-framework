@@ -310,11 +310,15 @@ const ProjectsTable: React.FC = () => {
           },
           disease_type: {
             composer: (project) =>
-              [...project.disease_type].sort(Intl.Collator().compare) || "--",
+              [...project.disease_type]
+                .sort(Intl.Collator().compare)
+                .join(",") || "--",
           },
           primary_site: {
             composer: (project) =>
-              [...project.primary_site].sort(Intl.Collator().compare) || "--",
+              [...project.primary_site]
+                .sort(Intl.Collator().compare)
+                .join(",") || "--",
           },
           files: {
             composer: "summary.file_count",
