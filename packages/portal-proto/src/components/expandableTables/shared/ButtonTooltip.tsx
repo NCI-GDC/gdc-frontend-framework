@@ -27,6 +27,8 @@ export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
           {comingSoon ? "Coming soon" : label}
         </Text>
       }
+      position="top-start"
+      arrowPosition="center"
       disabled={!label?.length}
       width={width}
       withArrow

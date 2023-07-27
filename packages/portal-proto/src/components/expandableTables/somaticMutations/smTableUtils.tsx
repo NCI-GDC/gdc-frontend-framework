@@ -7,7 +7,6 @@ import {
 import { ProteinChange, Impacts, Consequences } from "./smTableCells";
 import { SomaticMutations, Impact, SsmToggledHandler } from "./types";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Tooltip } from "@mantine/core";
 import { startCase } from "lodash";
 import { AnchorLink } from "@/components/AnchorLink";
 import Link from "next/link";
@@ -27,6 +26,7 @@ import {
   TableHeader,
   ToggledCheck,
   ImpactHeaderWithTooltip,
+  ButtonTooltip,
 } from "../shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
@@ -243,30 +243,44 @@ export const ssmsCreateTableColumn = ({
                   {row.getCanExpand() && (
                     <div className="font-content">
                       {label !== "" ? (
-                        <Tooltip
-                          label={originalLabel}
-                          disabled={!originalLabel?.length}
-                        >
+                        <>
                           {isConsequenceTable ? (
-                            <span>{label}</span>
+                            <ButtonTooltip
+                              label={originalLabel.length && originalLabel}
+                            >
+                              <span>{label}</span>
+                            </ButtonTooltip>
                           ) : isModal && !geneSymbol ? (
-                            <PopupIconButton
-                              handleClick={() =>
-                                setEntityMetadata({
-                                  entity_type: "ssms",
-                                  entity_id: ssmsId,
-                                })
-                              }
-                              label={label}
-                            />
+                            <ButtonTooltip
+                              label={originalLabel.length && originalLabel}
+                            >
+                              <PopupIconButton
+                                handleClick={() =>
+                                  setEntityMetadata({
+                                    entity_type: "ssms",
+                                    entity_id: ssmsId,
+                                  })
+                                }
+                                label={label}
+                              />
+                            </ButtonTooltip>
                           ) : (
-                            <Link href={`/ssms/${ssmsId}`}>
-                              <a className="underline text-utility-link">
-                                {label}
-                              </a>
-                            </Link>
+                            <ButtonTooltip
+                              label={originalLabel.length && originalLabel}
+                            >
+                              <div>
+                                <Link
+                                  className="pointer-events-auto hover:cursor-pointer"
+                                  href={`/ssms/${ssmsId}`}
+                                >
+                                  <a className="underline text-utility-link">
+                                    {label}
+                                  </a>
+                                </Link>
+                              </div>
+                            </ButtonTooltip>
                           )}
-                        </Tooltip>
+                        </>
                       ) : (
                         <div className="text-lg ml-3">--</div>
                       )}
