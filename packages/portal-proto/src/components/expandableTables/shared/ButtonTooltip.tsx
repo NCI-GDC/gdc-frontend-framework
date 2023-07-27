@@ -28,6 +28,7 @@ export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
         </Text>
       }
       position="top-start"
+      arrowPosition="center"
       disabled={!label?.length}
       width={width}
       withArrow
