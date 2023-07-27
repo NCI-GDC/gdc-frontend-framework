@@ -161,7 +161,7 @@ const buildOnePlotLegend = (data, name) => {
 const buildTwoPlotLegend = (data, name: string, plotType: string) => {
   const hasEnoughData = enoughData(data);
   const results1 = data.length > 0 ? data[0].donors : [];
-  const results2 = data.length > 0 ? data[1].donors : [];
+  const results2 = data.length > 1 ? data[1].donors : [];
 
   const getCaseCount = (condition) =>
     condition
