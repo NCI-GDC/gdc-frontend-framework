@@ -163,8 +163,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
-                        x: labelProps.x,
-                        y: labelProps.y,
+                        x: labelProps?.x,
+                        y: labelProps?.y,
                         text: `Minimum: ${data.min.toLocaleString()}`,
                       });
                     },
@@ -209,8 +209,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
-                        x: labelProps.x,
-                        y: labelProps.y,
+                        x: labelProps?.x,
+                        y: labelProps?.y,
                         text: `Median: ${data.median.toLocaleString()}`,
                       });
                     },
@@ -232,8 +232,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
-                        x: labelProps.x,
-                        y: labelProps.y,
+                        x: labelProps?.x,
+                        y: labelProps?.y,
                         text: `Q1: ${data.q1.toLocaleString()}`,
                       });
                     },
@@ -255,8 +255,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
-                        x: labelProps.x,
-                        y: labelProps.y,
+                        x: labelProps?.x,
+                        y: labelProps?.y,
                         text: `Q3: ${data.q3.toLocaleString()}`,
                       });
                     },
@@ -294,8 +294,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                     mutation: (labelProps: VictoryLabelProps) => {
                       setShowTooltipProps({
                         visible: true,
-                        x: labelProps.x,
-                        y: labelProps.y,
+                        x: labelProps?.x,
+                        y: labelProps?.y,
                         text: `Mean: ${data.mean.toLocaleString()}`,
                       });
                     },
