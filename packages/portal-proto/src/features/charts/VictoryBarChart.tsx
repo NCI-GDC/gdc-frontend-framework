@@ -27,8 +27,8 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
         <Tooltip
           label={
             <>
-              {datum.fullName}: {datum.yCount.toLocaleString()} (
-              {(datum.yCount / datum.yTotal).toLocaleString(undefined, {
+              {datum?.fullName}: {datum?.yCount.toLocaleString()} (
+              {(datum?.yCount / datum?.yTotal).toLocaleString(undefined, {
                 style: "percent",
                 minimumFractionDigits: 2,
               })}
