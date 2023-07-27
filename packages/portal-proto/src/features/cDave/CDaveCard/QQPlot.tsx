@@ -151,6 +151,9 @@ const QQPlot: React.FC<QQPlotProps> = ({
   }));
 
   const xMin = Math.floor(Math.min(...chartValues.map((v) => v.x)));
+  const yMin = Math.floor(Math.min(...chartValues.map((v) => v.y)));
+  const xMax = Math.ceil(Math.max(...chartValues.map((v) => v.x)));
+  const yMax = Math.ceil(Math.max(...chartValues.map((v) => v.y)));
 
   return isLoading ? (
     <Loader />
@@ -161,11 +164,12 @@ const QQPlot: React.FC<QQPlotProps> = ({
       height={height}
       width={width}
       padding={{ left: 80, right: 20, bottom: 60, top: 50 }}
-      minDomain={{ x: xMin }}
+      minDomain={{ x: xMin, y: yMin < 0 ? yMin : 0 }}
+      maxDomain={{ x: xMax, y: yMax }}
     >
       <VictoryLabel
         dy={20}
-        dx={40}
+        dx={60}
         text="QQ Plot"
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />
@@ -173,11 +177,14 @@ const QQPlot: React.FC<QQPlotProps> = ({
         label="Theoretical Normal Quantiles"
         axisLabelComponent={<VictoryLabel dy={5} />}
         tickLabelComponent={emptyChart ? <></> : <VictoryLabel dy={-5} />}
+        tickFormat={(t) => Number(t.toFixed())}
+        tickCount={8}
         style={{ ticks: { stroke: "black", size: 8 } }}
+        crossAxis={false}
       />
       <VictoryAxis
         dependentAxis
-        axisValue={emptyChart ? undefined : xMin}
+        axisValue={xMin}
         label="Sample Quantiles"
         axisLabelComponent={<VictoryLabel dy={-40} />}
         tickLabelComponent={emptyChart ? <></> : <VictoryLabel dx={5} />}

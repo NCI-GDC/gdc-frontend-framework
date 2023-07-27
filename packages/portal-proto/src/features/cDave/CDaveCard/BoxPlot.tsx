@@ -121,6 +121,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           },
         }}
         crossAxis={false}
+        tickCount={8}
         tickLabelComponent={emptyChart ? <></> : undefined}
       />
       <VictoryBoxPlot

@@ -79,7 +79,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         >
           <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
             <tr>
-              <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
+              <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1 pl-1">
                 Statistics
               </th>
               <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
@@ -89,27 +89,27 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           </thead>
           <tbody>
             <LightTableRow>
-              <td>Minimum</td>
+              <td className="pl-1">Minimum</td>
               <td>{formattedData.min.toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
-              <td>Maximum</td>
+              <td className="pl-1">Maximum</td>
               <td>{formattedData.max.toLocaleString()}</td>
             </DarkTableRow>
             <LightTableRow>
-              <td>Mean</td>
+              <td className="pl-1">Mean</td>
               <td>{formattedData.mean.toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
-              <td>Median</td>
+              <td className="pl-1">Median</td>
               <td>{formattedData.median.toLocaleString()}</td>
             </DarkTableRow>
             <LightTableRow>
-              <td>Standard Deviation</td>
+              <td className="pl-1">Standard Deviation</td>
               <td>{formatValue(data.std_dev).toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
-              <td>IQR</td>
+              <td className="pl-1">IQR</td>
               <td>{formatValue(data.iqr).toLocaleString()}</td>
             </DarkTableRow>
           </tbody>
