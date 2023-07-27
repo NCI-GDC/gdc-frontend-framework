@@ -12,7 +12,6 @@ import {
 import { trimFirstFieldNameToTitle } from "@gff/core";
 import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values && values.length > 0 && values.includes("true");
@@ -65,9 +64,6 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton onClick={clearFilters} aria-label="clear selection">
-            <UndoIcon size="1.15em" className={controlsIconStyle} />
-          </FacetIconButton>
           {dismissCallback ? (
             <FacetIconButton
               onClick={() => {
