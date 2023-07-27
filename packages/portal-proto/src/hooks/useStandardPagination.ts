@@ -61,12 +61,6 @@ const useStandardPagination = (
   }, [columnListOrder]);
 
   useEffect(() => {
-    // if data changes set to first page
-    setActivePage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fullData]);
-
-  useEffect(() => {
     const tempData = [...fullData];
     if (activeSort.length > 0) {
       // If multiple filters

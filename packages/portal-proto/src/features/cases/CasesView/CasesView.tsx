@@ -32,6 +32,7 @@ import {
   HandleChangeInput,
   VerticalTable,
 } from "@/features/shared/VerticalTable";
+import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
 
 const useStyles = createStyles((theme) => ({
@@ -85,6 +86,8 @@ export const ContextualCasesView: React.FC = () => {
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [cohortTableDownloadActive, setCohortTableDownloadActive] =
+    useState(false);
   /* download active end */
 
   const cohortCounts = useFilteredCohortCounts();
@@ -343,6 +346,47 @@ export const ContextualCasesView: React.FC = () => {
         }
       : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
 
+  const handleJSONDownload = () => {
+    setCohortTableDownloadActive(true);
+    download({
+      endpoint: "cases",
+      method: "POST",
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+      dispatch,
+      params: {
+        filename: `cohort.${convertDateToString(new Date())}.json`,
+        filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        attachment: true,
+        pretty: true,
+        format: "JSON",
+        fields: [
+          "submitter_slide_ids",
+          "submitter_id",
+          "case_id",
+          "project.project_id",
+          "project.program.name",
+          "primary_site",
+          "disease_type",
+          "diagnoses.age_at_diagnosis",
+          "demographic.vital_status",
+          "demographic.days_to_death",
+          "demographic.race",
+          "demographic.gender",
+          "demographic.ethnicity",
+          "summary.file_count",
+          "summary.experimental_strategies.experimental_strategy",
+        ].join(","),
+        size: caseCounts,
+      },
+      done: () => setCohortTableDownloadActive(false),
+    });
+  };
+
   const handleClinicalTSVDownload = () => {
     setClinicalDownloadActive(true);
     download({
@@ -489,12 +533,14 @@ export const ContextualCasesView: React.FC = () => {
                 ) : null
               }
             />
-
-            <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary" className="bg-base-max">
-                JSON
-              </Button>
-            </ButtonTooltip>
+            <Button
+              onClick={handleJSONDownload}
+              variant="outline"
+              color="primary"
+              className="bg-base-max"
+            >
+              {cohortTableDownloadActive ? <Loader /> : "JSON"}
+            </Button>
             <ButtonTooltip label=" " comingSoon={true}>
               <Button variant="outline" color="primary" className="bg-base-max">
                 TSV
