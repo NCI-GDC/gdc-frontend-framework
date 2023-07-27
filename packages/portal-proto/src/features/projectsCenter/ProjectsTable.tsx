@@ -300,17 +300,25 @@ const ProjectsTable: React.FC = () => {
           cases: {
             composer: "summary.case_count",
           },
-          data_categories: {
-            composer: (project) =>
-              project.summary.data_categories.map(
-                (category) => category.data_category,
-              ) || "--",
-          },
           experimental_strategies: {
             composer: (project) =>
-              project.summary.experimental_strategies.map(
-                (strategy) => strategy.experimental_strategy,
-              ) || "--",
+              (
+                project.summary.experimental_strategies.map(
+                  (strategy) => strategy.experimental_strategy,
+                ) || "--"
+              ).sort(Intl.Collator().compare),
+          },
+          disease_type: {
+            composer: (project) =>
+              [...project.disease_type]
+                .sort(Intl.Collator().compare)
+                .join(",") || "--",
+          },
+          primary_site: {
+            composer: (project) =>
+              [...project.primary_site]
+                .sort(Intl.Collator().compare)
+                .join(",") || "--",
           },
           files: {
             composer: "summary.file_count",
