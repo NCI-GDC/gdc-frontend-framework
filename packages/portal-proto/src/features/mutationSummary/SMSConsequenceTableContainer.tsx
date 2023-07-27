@@ -1,4 +1,4 @@
-import { useCoreDispatch, useSsmsConsequenceTable } from "@gff/core";
+import { useSsmsConsequenceTable } from "@gff/core";
 import { useEffect, useState } from "react";
 import { useMeasure } from "react-use";
 import ConsequenceTable from "@/features/mutationSummary/ConsequenceTable";
@@ -16,7 +16,7 @@ import {
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
 import { Loader } from "@mantine/core";
-import download from "@/utils/download";
+import saveAs from "file-saver";
 import { convertDateToString } from "@/utils/date";
 
 export interface SMSConsequenceTableContainerProps {
@@ -42,7 +42,6 @@ export const SMSConsequenceTableContainer: React.FC<
     consequenceTableJSONDownloadActive,
     setConsequenceTableJSONDownloadActive,
   ] = useState(false);
-  const dispatch = useCoreDispatch();
 
   const {
     handlePageChange,
@@ -149,53 +148,52 @@ export const SMSConsequenceTableContainer: React.FC<
     }
   }, [status, initialData]);
 
-  const handleJSONDownload = async () => {
+  const handleJSONDownload = () => {
     setConsequenceTableJSONDownloadActive(true);
-    await download({
-      endpoint: "ssms",
-      method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
+    const json = initialData.consequence.map(
+      ({
+        transcript: {
+          aa_change,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          consequence_type,
+          gene: { gene_id, gene_strand, symbol },
+          transcript_id,
+          is_canonical,
         },
-        method: "POST",
+      }) => {
+        return {
+          transcript_id,
+          aa_change,
+          is_canonical,
+          consequence_type,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          gene: {
+            gene_id,
+            symbol,
+            gene_strand,
+          },
+        };
       },
-      params: {
-        filters: {
-          content: [
-            {
-              content: {
-                field: "ssms.ssm_id",
-                value: [ssmsId],
-              },
-              op: "in",
-            },
-          ],
-          op: "and",
-        },
-        filename: `consequences-data.${convertDateToString(new Date())}.json`,
-        attachment: true,
-        format: "JSON",
-        pretty: true,
-        fields: [
-          "consequence.transcript.transcript_id",
-          "consequence.transcript.aa_change",
-          "consequence.transcript.is_canonical",
-          "consequence.transcript.consequence_type",
-          "consequence.transcript.annotation.hgvsc",
-          "consequence.transcript.annotation.polyphen_impact",
-          "consequence.transcript.annotation.polyphen_score",
-          "consequence.transcript.annotation.sift_score",
-          "consequence.transcript.annotation.sift_impact",
-          "consequence.transcript.annotation.vep_impact",
-          "consequence.transcript.gene.gene_id",
-          "consequence.transcript.gene.symbol",
-          "consequence.transcript.gene.gene_strand",
-        ].join(","),
-      },
-      dispatch,
-      done: () => setConsequenceTableJSONDownloadActive(false),
+    );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "text/json",
     });
+    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
+    setConsequenceTableJSONDownloadActive(false);
   };
 
   return (
@@ -207,7 +205,7 @@ export const SMSConsequenceTableContainer: React.FC<
 
         <div className="flex mb-2 justify-between">
           <div className="flex gap-2">
-            <ButtonTooltip label="Export All Except #Cases">
+            <ButtonTooltip label="Export All">
               <FunctionButton onClick={handleJSONDownload}>
                 {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
               </FunctionButton>
