@@ -108,7 +108,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
     >
       <VictoryLabel
         dy={20}
-        dx={40}
+        // Centered, adjusted for padding
+        dx={width / 2 - 10}
         text="Box Plot"
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />

@@ -169,14 +169,14 @@ const QQPlot: React.FC<QQPlotProps> = ({
     >
       <VictoryLabel
         dy={20}
-        dx={60}
+        dx={width / 2}
         text="QQ Plot"
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />
       <VictoryAxis
         label="Theoretical Normal Quantiles"
         axisLabelComponent={<VictoryLabel dy={5} />}
-        tickLabelComponent={emptyChart ? <></> : <VictoryLabel dy={-5} />}
+        tickLabelComponent={<VictoryLabel dy={-5} />}
         tickFormat={(t) => Number(t.toFixed())}
         tickCount={8}
         style={{ ticks: { stroke: "black", size: 8 } }}
