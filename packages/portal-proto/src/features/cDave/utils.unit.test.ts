@@ -2,6 +2,7 @@ import {
   createBuckets,
   filterUsefulFacets,
   parseFieldName,
+  qnorm,
   toDisplayName,
 } from "./utils";
 
@@ -99,5 +100,14 @@ describe("parseFieldName", () => {
       field_type: "treatments",
       full: "diagnoses.treatments.treatment_type",
     });
+  });
+});
+
+describe("qnorm", () => {
+  it("calculates correctly", () => {
+    expect(qnorm(0)).toEqual(0);
+    expect(qnorm(0.05)).toEqual(-1.6448536279366273);
+    expect(qnorm(0.5)).toEqual(0);
+    expect(qnorm(0.75)).toEqual(0.6744897496907685);
   });
 });

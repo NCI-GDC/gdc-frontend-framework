@@ -8,10 +8,17 @@ import {
   useClinicalFields,
   clinicalFieldsReducer,
 } from "./clinicalFieldsSlice";
+import {
+  useGetContinuousDataStatsQuery,
+  ClinicalContinuousStatsData,
+} from "./clinicalContinuousStatsSlice";
+
 export {
   fetchClinicalFieldsResult,
   useClinicalFields,
   useGetClinicalAnalysisQuery,
+  useGetContinuousDataStatsQuery,
+  ClinicalContinuousStatsData,
 };
 
 export const clinicalDataAnalysisReducer = combineReducers({

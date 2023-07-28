@@ -7,17 +7,7 @@ import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
-import { GqlOperation } from "../gdcapi/filters";
-
-export interface NumericFromTo {
-  readonly from: number;
-  readonly to: number;
-}
-
-export interface RangeOperation {
-  readonly op: "range";
-  readonly ranges: ReadonlyArray<NumericFromTo>;
-}
+import { GqlOperation, NumericFromTo } from "../gdcapi/filters";
 
 export const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
