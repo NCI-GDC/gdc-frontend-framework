@@ -1,12 +1,18 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { Grid, Checkbox, Button } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   useCoreSelector,
   selectAllSets,
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
+  addSets,
+  useCoreDispatch,
+  removeSets,
+  SetTypes,
 } from "@gff/core";
 import {
   VerticalTable,
@@ -15,6 +21,41 @@ import {
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { WarningBanner } from "@/components/WarningBanner";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
+
+interface SelectedSets {
+  readonly setId: string;
+  readonly setName: string;
+  readonly setType: SetTypes;
+}
+
+interface DeleteSetsNotificationProps {
+  readonly sets: SelectedSets[];
+}
+
+const DeleteSetsNotification: React.FC<DeleteSetsNotificationProps> = ({
+  sets,
+}: DeleteSetsNotificationProps) => {
+  const dispatch = useCoreDispatch();
+  console.log(sets);
+  return (
+    <>
+      {sets.length === 1 ? (
+        <p>
+          <b>{sets[0].setName}</b> has been deleted
+        </p>
+      ) : (
+        <p>{sets.length} sets have been deleted</p>
+      )}
+      <Button
+        variant={"white"}
+        onClick={() => dispatch(addSets(sets))}
+        leftIcon={<UndoIcon />}
+      >
+        <span className="underline">Undo</span>
+      </Button>
+    </>
+  );
+};
 
 const CreateSetInstructions = () => (
   <p className="py-2 font-montserrat">
@@ -28,19 +69,22 @@ const CreateSetInstructions = () => (
   </p>
 );
 
-interface SelectedThingButtonProps {
-  selection: string[];
-  text: string;
+interface SelectedSetButtonProps {
+  readonly selection: SelectedSets[];
+  readonly text: string;
+  readonly onClick: () => void;
 }
 
-const SelectedThingButton: React.FC<SelectedThingButtonProps> = ({
+const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
   selection,
   text,
-}: SelectedThingButtonProps) => {
+  onClick,
+}: SelectedSetButtonProps) => {
   return (
     <Button
       variant="outline"
       color="primary"
+      onClick={onClick}
       disabled={selection.length == 0}
       leftIcon={
         selection.length ? (
@@ -55,7 +99,7 @@ const SelectedThingButton: React.FC<SelectedThingButtonProps> = ({
 };
 
 const ManageSets: React.FC = () => {
-  const [selectedSets, setSelectedSets] = useState<string[]>([]);
+  const [selectedSets, setSelectedSets] = useState<SelectedSets[]>([]);
   const sets = useCoreSelector((state) => selectAllSets(state));
   const { data: geneCounts, isSuccess: geneCountsSuccess } =
     useGeneSetCountsQuery({ setIds: Object.keys(sets.genes) });
@@ -64,6 +108,14 @@ const ManageSets: React.FC = () => {
 
   const noSets =
     Object.keys(sets.genes).length === 0 && Object.keys(sets.ssms).length === 0;
+  const deprecatedOrEmptySets =
+    (geneCountsSuccess &&
+      Object.values(geneCounts).some((count) => count === 0)) ||
+    (ssmsCountsSuccess &&
+      Object.values(ssmsCounts).some((count) => count === 0));
+  const selectedSetIds = selectedSets.map((set) => set.setId);
+
+  const dispatch = useCoreDispatch();
 
   const columns = useMemo(
     () => [
@@ -97,11 +149,16 @@ const ManageSets: React.FC = () => {
         select: (
           <Checkbox
             value={setId}
-            checked={selectedSets.includes(setId)}
+            checked={selectedSetIds.includes(setId)}
             onChange={() =>
-              selectedSets.includes(setId)
-                ? setSelectedSets(selectedSets.filter((id) => id !== setId))
-                : setSelectedSets([...selectedSets, setId])
+              selectedSetIds.includes(setId)
+                ? setSelectedSets(
+                    selectedSets.filter((set) => set.setId !== setId),
+                  )
+                : setSelectedSets([
+                    ...selectedSets,
+                    { setId, setName, setType: "ssms" },
+                  ])
             }
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -116,12 +173,17 @@ const ManageSets: React.FC = () => {
         select: (
           <Checkbox
             value={setId}
-            checked={selectedSets.includes(setId)}
-            onChange={() =>
-              selectedSets.includes(setId)
-                ? setSelectedSets(selectedSets.filter((id) => id !== setId))
-                : setSelectedSets([...selectedSets, setId])
-            }
+            checked={selectedSetIds.includes(setId)}
+            onChange={() => {
+              selectedSetIds.includes(setId)
+                ? setSelectedSets(
+                    selectedSets.filter((set) => set.setId !== setId),
+                  )
+                : setSelectedSets([
+                    ...selectedSets,
+                    { setId, setName, setType: "genes" },
+                  ]);
+            }}
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -133,6 +195,7 @@ const ManageSets: React.FC = () => {
       })),
     ];
   }, [
+    selectedSetIds,
     selectedSets,
     sets,
     geneCounts,
@@ -184,14 +247,59 @@ const ManageSets: React.FC = () => {
       />
       <CreateSetInstructions />
       <div className="flex flex-row gap-2 py-2">
+        {/*
         <SelectedThingButton
           selection={selectedSets}
           text={"Export Selected"}
+          onClick={}
         />
-        <SelectedThingButton
+      */}
+        <SelectedSetButton
           selection={selectedSets}
           text={"Delete Selected"}
+          onClick={() => {
+            dispatch(removeSets(selectedSets));
+            showNotification({
+              message: <DeleteSetsNotification sets={selectedSets} />,
+            });
+            setSelectedSets([]);
+          }}
         />
+        {deprecatedOrEmptySets && (
+          <Button
+            variant="outline"
+            color="primary"
+            className="border-primary"
+            onClick={() => {
+              const emptyGeneSetIds = Object.entries(geneCounts)
+                .filter((set) => set[1] === 0)
+                .map((set) => set[0]);
+              const emptySsmSetIds = Object.entries(ssmsCounts)
+                .filter((set) => set[1] === 0)
+                .map((set) => set[0]);
+
+              const emptyGeneSets = Object.entries(sets.genes)
+                .map(([setId, setName]) => ({
+                  setId,
+                  setName,
+                  setType: "genes" as SetTypes,
+                }))
+                .filter((set) => emptyGeneSetIds.includes(set.setId));
+
+              const emptySsmSets = Object.entries(sets.ssms)
+                .map(([setId, setName]) => ({
+                  setId,
+                  setName,
+                  setType: "ssms" as SetTypes,
+                }))
+                .filter((set) => emptySsmSetIds.includes(set.setId));
+
+              dispatch(removeSets([...emptyGeneSets, ...emptySsmSets]));
+            }}
+          >
+            Delete Empty or Deprecated
+          </Button>
+        )}
       </div>
       <div className="w-3/4">
         <VerticalTable
