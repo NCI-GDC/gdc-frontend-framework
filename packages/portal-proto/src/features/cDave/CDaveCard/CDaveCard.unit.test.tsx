@@ -116,6 +116,10 @@ describe("CDaveCard", () => {
       isFetching: false,
       isSuccess: true,
     } as any);
+    jest.spyOn(core, "useGetContinuousDataStatsQuery").mockReturnValue({
+      isFetching: false,
+      isSuccess: true,
+    } as any);
 
     const { getByRole } = render(
       <CDaveCard
@@ -142,6 +146,10 @@ describe("CDaveCard", () => {
     });
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "-28.0-166.8000001": 38 },
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+    jest.spyOn(core, "useGetContinuousDataStatsQuery").mockReturnValue({
       isFetching: false,
       isSuccess: true,
     } as any);

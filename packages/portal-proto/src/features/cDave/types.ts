@@ -12,4 +12,4 @@ export type NamedFromTo = NumericFromTo & {
 
 export type CategoricalBins = Record<string, number | Record<string, number>>;
 
-export type ChartTypes = "histogram" | "survival" | "qq";
+export type ChartTypes = "histogram" | "survival" | "boxqq";

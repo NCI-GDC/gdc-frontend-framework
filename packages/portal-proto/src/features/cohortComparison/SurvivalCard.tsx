@@ -175,11 +175,15 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   <th>
                     # Cases S<sub>1</sub>
                   </th>
-                  <th>%</th>
+                  <th>
+                    % Cases S<sub>1</sub>
+                  </th>
                   <th>
                     # Cases S<sub>2</sub>
                   </th>
-                  <th>%</th>
+                  <th>
+                    % Cases S<sub>2</sub>
+                  </th>
                 </tr>
               </thead>
               <tbody className="font-content text-md">
