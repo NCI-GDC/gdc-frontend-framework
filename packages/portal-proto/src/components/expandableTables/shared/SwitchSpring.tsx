@@ -28,8 +28,8 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 }: SwitchSpringProps) => {
   const ballSpring = useSpring({
     width: 20,
-    y: -1,
-    x: isActive ? 16 : -4,
+    y: 0,
+    x: isActive ? 12 : -4,
   });
 
   const sliderSpring = useSpring({

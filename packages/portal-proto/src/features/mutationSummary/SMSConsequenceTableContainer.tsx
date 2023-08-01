@@ -149,9 +149,7 @@ export const SMSConsequenceTableContainer: React.FC<
       new Date(),
     )}.tsv`;
 
-    const vc = visibleColumns
-      .filter(({ id }) => id !== "selected")
-      .map(({ columnName }) => columnName);
+    const vc = visibleColumns.map(({ columnName }) => columnName);
 
     const body = initialData?.consequence
       ?.map((i) => {
