@@ -148,18 +148,14 @@ export const SMSConsequenceTableContainer: React.FC<
     const fileName = `consequences-table.${convertDateToString(
       new Date(),
     )}.tsv`;
-    const headers = [
-      "Gene",
-      "AA Change",
-      "Consequence",
-      "Coding DNA Change",
-      "Impact",
-      "Gene Strand",
-      "Transcript",
-    ];
+
+    const vc = visibleColumns
+      .filter(({ id }) => id !== "selected")
+      .map(({ columnName }) => columnName);
+
     const body = initialData?.consequence
-      ?.map(
-        ({
+      ?.map((i) => {
+        const {
           transcript: {
             gene: { symbol, gene_strand },
             aa_change,
@@ -175,22 +171,61 @@ export const SMSConsequenceTableContainer: React.FC<
             transcript_id,
             is_canonical,
           },
-        }) => {
-          return [
-            symbol,
-            aa_change,
-            `${humanify({
-              term: consequence_type.replace("_variant", "").replace("_", " "),
-            })}`,
-            hgvsc,
-            `${`VEP: ${vep_impact}, SIFT: ${sift_impact} - score ${sift_score}, PolyPhen: ${polyphen_impact} - score ${polyphen_score}`}`,
-            gene_strand,
-            `${transcript_id}${is_canonical ? ` (Canonical)` : ``}`,
-          ].join("\t");
-        },
-      )
+        } = i;
+        const tsv = [];
+        vc.forEach((col) => {
+          switch (col) {
+            case "Gene":
+              tsv.push(symbol);
+              break;
+            case "AA Change":
+              tsv.push(aa_change ?? "--");
+              break;
+            case "Consequences":
+              tsv.push(
+                consequence_type
+                  ? humanify({
+                      term: consequence_type
+                        .replace("_variant", "")
+                        .replace("_", " "),
+                    })
+                  : ``,
+              );
+              break;
+            case "Coding DNA Change":
+              tsv.push(hgvsc);
+              break;
+            case "Impact":
+              tsv.push(
+                `${[
+                  `${vep_impact ? `VEP: ${vep_impact}` : ``}`,
+                  `${
+                    sift_impact
+                      ? `SIFT: ${sift_impact} - score ${sift_score}`
+                      : ``
+                  }`,
+                  `${
+                    polyphen_impact
+                      ? `PolyPhen: ${polyphen_impact} - score ${polyphen_score}`
+                      : ``
+                  }`,
+                ]
+                  .filter(({ length }) => length)
+                  .join(", ")}`,
+              );
+              break;
+            case "Gene Strand":
+              tsv.push(gene_strand);
+              break;
+            case "Transcript":
+              tsv.push(`${transcript_id}${is_canonical ? ` (Canonical)` : ``}`);
+              break;
+          }
+        });
+        return tsv.join("\t");
+      })
       .join("\n");
-    const tsv = [headers.join("\t"), body].join("\n");
+    const tsv = [vc.join("\t"), body].join("\n");
     const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
     saveAs(blob, fileName);
   };
