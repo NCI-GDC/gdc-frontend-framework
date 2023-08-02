@@ -100,7 +100,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
       </Tooltip>
       <Tooltip
         label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact || !siftScore}
+        disabled={!siftImpact || siftScore === null}
       >
         <div className="mx-0.5 align-middle text-xs">
           {siftImpact === "deleterious" ? (
@@ -128,7 +128,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
       </Tooltip>
       <Tooltip
         label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact || !polyphenScore}
+        disabled={!polyphenImpact || polyphenScore === null}
       >
         <div className="text-xs">
           {polyphenImpact === "benign" ? (
