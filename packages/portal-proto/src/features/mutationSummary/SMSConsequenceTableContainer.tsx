@@ -190,7 +190,7 @@ export const SMSConsequenceTableContainer: React.FC<
       },
     );
     const blob = new Blob([JSON.stringify(json, null, 2)], {
-      type: "text/json",
+      type: "application/json",
     });
     saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
     setConsequenceTableJSONDownloadActive(false);
