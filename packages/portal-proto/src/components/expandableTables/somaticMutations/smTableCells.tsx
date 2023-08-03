@@ -81,6 +81,36 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
     "w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center";
   const blankIconStyles = "w-7 h-6 font-bold flex justify-center items-center";
 
+  // It's theoretically possible to have SIFT impact without score.
+  const generateSiftTooltipLabel = () => {
+    const label = [];
+
+    if (siftImpact !== null) {
+      label.push(`SIFT Impact: ${siftImpact}`);
+    }
+
+    if (siftScore !== null) {
+      label.push(`SIFT Score: ${siftScore}`);
+    }
+
+    return label.join(" / ");
+  };
+
+  // It's theoretically possible to have a PolyPhen impact without score
+  const generatePolyphenTooltipLabel = () => {
+    const label = [];
+
+    if (polyphenImpact !== null) {
+      label.push(`PolyPhen Impact: ${polyphenImpact}`);
+    }
+
+    if (polyphenScore !== null) {
+      label.push(`PolyPhen Score: ${polyphenScore}`);
+    }
+
+    return label.join(" / ");
+  };
+
   return (
     <>
       <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact}>
@@ -98,10 +128,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
           )}
         </div>
       </Tooltip>
-      <Tooltip
-        label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact || siftScore === null}
-      >
+      <Tooltip label={generateSiftTooltipLabel()} disabled={!siftImpact}>
         <div className="mx-0.5 align-middle text-xs">
           {siftImpact === "deleterious" ? (
             <div className={`${twIconStyles} bg-impact-sift-deleterious`}>
@@ -127,8 +154,8 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
         </div>
       </Tooltip>
       <Tooltip
-        label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact || polyphenScore === null}
+        label={generatePolyphenTooltipLabel()}
+        disabled={!polyphenImpact}
       >
         <div className="text-xs">
           {polyphenImpact === "benign" ? (
