@@ -85,7 +85,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const generateSiftTooltipLabel = () => {
     const label = [];
 
-    if (siftImpact !== null) {
+    if (siftImpact) {
       label.push(`SIFT Impact: ${siftImpact}`);
     }
 
@@ -100,7 +100,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const generatePolyphenTooltipLabel = () => {
     const label = [];
 
-    if (polyphenImpact !== null) {
+    if (polyphenImpact) {
       label.push(`PolyPhen Impact: ${polyphenImpact}`);
     }
 
