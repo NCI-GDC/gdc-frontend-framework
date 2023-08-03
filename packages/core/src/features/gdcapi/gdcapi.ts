@@ -626,9 +626,16 @@ export const endpointSlice = coreCreateApi({
   refetchOnReconnect: true,
   endpoints: (builder) => ({
     getGenes: builder.query({
-      query: (request: GdcApiRequest) => ({
+      query: ({
+        request,
+        fetchAll,
+      }: {
+        request: GdcApiRequest;
+        fetchAll?: boolean;
+      }) => ({
         request,
         endpoint: "genes",
+        fetchAll,
       }),
       transformResponse: (response) => response.data.hits,
     }),
@@ -640,9 +647,16 @@ export const endpointSlice = coreCreateApi({
       transformResponse: (response) => response.data.hits,
     }),
     getSsms: builder.query({
-      query: (request: GdcApiRequest) => ({
+      query: ({
+        request,
+        fetchAll,
+      }: {
+        request: GdcApiRequest;
+        fetchAll?: boolean;
+      }) => ({
         request,
         endpoint: "ssms",
+        fetchAll,
       }),
       transformResponse: (response) => response.data.hits,
     }),

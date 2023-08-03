@@ -1,9 +1,20 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { Grid, Checkbox, Button } from "@mantine/core";
+import {
+  Grid,
+  Checkbox,
+  Button,
+  ActionIcon,
+  Badge,
+  Tooltip,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
-import { FaUndo as UndoIcon } from "react-icons/fa";
+import {
+  FaUndo as UndoIcon,
+  FaTrash as TrashIcon,
+  FaExclamationCircle as WarningIcon,
+} from "react-icons/fa";
 import {
   useCoreSelector,
   selectAllSets,
@@ -21,15 +32,12 @@ import {
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { WarningBanner } from "@/components/WarningBanner";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
-
-interface SelectedSets {
-  readonly setId: string;
-  readonly setName: string;
-  readonly setType: SetTypes;
-}
+import { SelectedSet } from "./types";
+import SetDetailPanel from "./SetDetailPanel";
+import CreateSetButton from "./CreateSetButton";
 
 interface DeleteSetsNotificationProps {
-  readonly sets: SelectedSets[];
+  readonly sets: SelectedSet[];
 }
 
 const DeleteSetsNotification: React.FC<DeleteSetsNotificationProps> = ({
@@ -69,8 +77,43 @@ const CreateSetInstructions = () => (
   </p>
 );
 
+interface CountBadgeProps {
+  readonly count?: number;
+  readonly openSetDetail: () => void;
+}
+
+const CountBadge: React.FC<CountBadgeProps> = ({
+  count,
+  openSetDetail,
+}: CountBadgeProps) => {
+  return (
+    <Tooltip
+      label="Set is either empty or deprecated."
+      disabled={count > 0}
+      withArrow
+    >
+      <Badge
+        variant="outline"
+        radius="xs"
+        className={`${
+          count === 0 ? "bg-nci-gray-lightest opacity-50" : "bg-white"
+        } cursor-pointer`}
+        color={count === 0 ? "gray" : "primary"}
+        leftSection={
+          count === 0 ? (
+            <WarningIcon className="text-warningColor" />
+          ) : undefined
+        }
+        onClick={openSetDetail}
+      >
+        {count?.toLocaleString() ?? "--"}
+      </Badge>
+    </Tooltip>
+  );
+};
+
 interface SelectedSetButtonProps {
-  readonly selection: SelectedSets[];
+  readonly selection: SelectedSet[];
   readonly text: string;
   readonly onClick: () => void;
 }
@@ -99,7 +142,8 @@ const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
 };
 
 const ManageSets: React.FC = () => {
-  const [selectedSets, setSelectedSets] = useState<SelectedSets[]>([]);
+  const [selectedSets, setSelectedSets] = useState<SelectedSet[]>([]);
+  const [detailSet, setDetailSet] = useState<SelectedSet>(undefined);
   const sets = useCoreSelector((state) => selectAllSets(state));
   const { data: geneCounts, isSuccess: geneCountsSuccess } =
     useGeneSetCountsQuery({ setIds: Object.keys(sets.genes) });
@@ -140,9 +184,34 @@ const ManageSets: React.FC = () => {
         columnName: "# Items",
         visible: true,
       },
+      {
+        id: "actions",
+        columnName: "Actions",
+        visible: true,
+      },
     ],
     [],
   );
+
+  const updateSelectedSets = useCallback(
+    ({
+      setId,
+      setName,
+      setType,
+    }: {
+      setId: string;
+      setName: string;
+      setType: SetTypes;
+    }) => {
+      if (selectedSetIds.includes(setId)) {
+        setSelectedSets(selectedSets.filter((set) => set.setId !== setId));
+      } else {
+        setSelectedSets([...selectedSets, { setId, setName, setType }]);
+      }
+    },
+    [selectedSetIds, selectedSets],
+  );
+
   const tableData = useMemo(() => {
     return [
       ...Object.entries(sets.ssms).map(([setId, setName]) => ({
@@ -151,14 +220,7 @@ const ManageSets: React.FC = () => {
             value={setId}
             checked={selectedSetIds.includes(setId)}
             onChange={() =>
-              selectedSetIds.includes(setId)
-                ? setSelectedSets(
-                    selectedSets.filter((set) => set.setId !== setId),
-                  )
-                : setSelectedSets([
-                    ...selectedSets,
-                    { setId, setName, setType: "ssms" },
-                  ])
+              updateSelectedSets({ setId, setName, setType: "ssms" })
             }
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -167,23 +229,36 @@ const ManageSets: React.FC = () => {
         ),
         entityType: "Mutations",
         name: setName,
-        count: ssmsCountsSuccess ? ssmsCounts[setId] : "--",
+        count: (
+          <CountBadge
+            count={ssmsCounts?.[setId]}
+            openSetDetail={() =>
+              setDetailSet({ setId, setName, setType: "ssms" })
+            }
+          />
+        ),
+        actions: (
+          <>
+            <ActionIcon
+              size={20}
+              title="Remove From Cart"
+              aria-label="Remove from cart"
+              className="text-primary"
+              onClick={() => dispatch(removeSets([{ setId, setType: "ssms" }]))}
+            >
+              <TrashIcon />
+            </ActionIcon>
+          </>
+        ),
       })),
       ...Object.entries(sets.genes).map(([setId, setName]) => ({
         select: (
           <Checkbox
             value={setId}
             checked={selectedSetIds.includes(setId)}
-            onChange={() => {
-              selectedSetIds.includes(setId)
-                ? setSelectedSets(
-                    selectedSets.filter((set) => set.setId !== setId),
-                  )
-                : setSelectedSets([
-                    ...selectedSets,
-                    { setId, setName, setType: "genes" },
-                  ]);
-            }}
+            onChange={() =>
+              updateSelectedSets({ setId, setName, setType: "genes" })
+            }
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -191,12 +266,33 @@ const ManageSets: React.FC = () => {
         ),
         entityType: "Genes",
         name: setName,
-        count: geneCountsSuccess ? geneCounts[setId] : "--",
+        count: (
+          <CountBadge
+            count={geneCounts?.[setId]}
+            openSetDetail={() =>
+              setDetailSet({ setId, setName, setType: "genes" })
+            }
+          />
+        ),
+        actions: (
+          <>
+            <ActionIcon
+              size={20}
+              title="Remove From Cart"
+              aria-label="Remove from cart"
+              className="text-primary"
+              onClick={() =>
+                dispatch(removeSets([{ setId, setType: "genes" }]))
+              }
+            >
+              <TrashIcon />
+            </ActionIcon>
+          </>
+        ),
       })),
     ];
   }, [
-    selectedSetIds,
-    selectedSets,
+    JSON.stringify(selectedSetIds),
     sets,
     geneCounts,
     geneCountsSuccess,
@@ -235,8 +331,8 @@ const ManageSets: React.FC = () => {
         <p className="uppercase text-primary-darkest text-2xl font-montserrat mt-4">
           No saved sets available
         </p>
+        <CreateSetInstructions />
       </Grid.Col>
-      <CreateSetInstructions />
     </Grid>
   ) : (
     <div className="p-4">
@@ -247,13 +343,7 @@ const ManageSets: React.FC = () => {
       />
       <CreateSetInstructions />
       <div className="flex flex-row gap-2 py-2">
-        {/*
-        <SelectedThingButton
-          selection={selectedSets}
-          text={"Export Selected"}
-          onClick={}
-        />
-      */}
+        <CreateSetButton />
         <SelectedSetButton
           selection={selectedSets}
           text={"Delete Selected"}
@@ -319,6 +409,10 @@ const ManageSets: React.FC = () => {
           columnSorting={"manual"}
         />
       </div>
+      <SetDetailPanel
+        set={detailSet}
+        closePanel={() => setDetailSet(undefined)}
+      />
     </div>
   );
 };
