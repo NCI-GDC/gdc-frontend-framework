@@ -18,6 +18,7 @@ import {
 import { convertDateToString } from "@/utils/date";
 import saveAs from "file-saver";
 import { humanify } from "src/utils";
+import { sortByNestedFieldWithPriority } from "./utils";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -152,7 +153,17 @@ export const SMSConsequenceTableContainer: React.FC<
     const vc = visibleColumns.map(({ columnName }) => columnName);
 
     const body = initialData?.consequence
-      ?.map((i) => {
+      .slice()
+      .sort((a, b) =>
+        sortByNestedFieldWithPriority(
+          a,
+          b,
+          "transcript",
+          "is_canonical",
+          "aa_change",
+        ),
+      )
+      .map((i) => {
         const {
           transcript: {
             gene: { symbol, gene_strand },
