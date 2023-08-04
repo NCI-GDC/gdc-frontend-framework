@@ -42,10 +42,6 @@ const ProjectsTable: React.FC = () => {
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // const [sortBy, setSortBy] = useState<SortBy[]>([
-  //   { field: "summary.case_count", direction: "desc" },
-  // ]);
-
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
@@ -73,30 +69,12 @@ const ProjectsTable: React.FC = () => {
     ],
     size: pageSize,
     from: (activePage - 1) * pageSize,
-    // sortBy: sortBy,
   });
 
   // is this needed?
   useEffect(() => setActivePage(1), [projectFilters]);
 
-  // is this needed?
-  // const sortByActions = (sortByObj) => {
-  //   const COLUMN_ID_TO_FIELD = {
-  //     project_id: "project_id",
-  //     files: "summary.file_count",
-  //     cases: "summary.case_count",
-  //     program: "program.name",
-  //   };
-  //   const tempSortBy = sortByObj.map((sortObj) => {
-  //     ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
-  //     // map sort ids to api ids
-  //     return {
-  //       field: COLUMN_ID_TO_FIELD[sortObj.id],
-  //       direction: sortObj.desc ? "desc" : "asc",
-  //     };
-  //   });
-  //   setSortBy(tempSortBy);
-  // };
+  const [expandedColumn, setExpandedColumn] = useState(null);
 
   type ProjectDataType = {
     project_id: string;
@@ -155,17 +133,7 @@ const ProjectsTable: React.FC = () => {
       ];
   }, [isSuccess, data]);
 
-  // use this to create a cohort
-  const [rowSelection, setRowSelection] = useState({});
-  const pickedProjects = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => formattedTableData[index].project_id);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
-  const [expandedColumn, setExpandedColumn] = useState(null);
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "cases", desc: true },
-  ]);
-
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
       projectsTableColumnHelper.display({
@@ -221,35 +189,39 @@ const ProjectsTable: React.FC = () => {
           // column id is not working for icons
           // both the columns of the same row cannot be expanded at once
           // if other row is expanded, last row is not hidden
-          return (
-            row.getCanExpand() && (
-              <div
-                onClick={() => {
-                  setExpandedColumn(column.id);
-                  row.toggleExpanded();
-                }}
-                onKeyDown={() =>
-                  createKeyboardAccessibleFunction(() => {
+
+          return getValue()?.length === 0
+            ? "--"
+            : getValue()?.length === 1
+            ? getValue()
+            : row.getCanExpand() && (
+                <div
+                  onClick={() => {
                     setExpandedColumn(column.id);
                     row.toggleExpanded();
-                  })
-                }
-                role="button"
-                tabIndex={0}
-                aria-label="Expand section"
-                className="flex items-center text-primary cursor-pointer gap-2"
-              >
-                {row.getIsExpanded() && expandedColumn === "disease_type" ? (
-                  <UpIcon size="1.25em" className="text-accent" />
-                ) : (
-                  <DownIcon size="1.25em" className="text-accent" />
-                )}
-                <span className="whitespace-nowrap">
-                  {getValue()?.length.toLocaleString().padStart(6)} Disease Type
-                </span>
-              </div>
-            )
-          );
+                  }}
+                  onKeyDown={() =>
+                    createKeyboardAccessibleFunction(() => {
+                      setExpandedColumn(column.id);
+                      row.toggleExpanded();
+                    })
+                  }
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Expand section"
+                  className="flex items-center text-primary cursor-pointer gap-2"
+                >
+                  {row.getIsExpanded() && expandedColumn === "disease_type" ? (
+                    <UpIcon size="1.25em" className="text-accent" />
+                  ) : (
+                    <DownIcon size="1.25em" className="text-accent" />
+                  )}
+                  <span className="whitespace-nowrap">
+                    {getValue()?.length.toLocaleString().padStart(6)} Disease
+                    Type
+                  </span>
+                </div>
+              );
         },
         enableSorting: false,
       }),
@@ -257,37 +229,39 @@ const ProjectsTable: React.FC = () => {
         id: "primary_site",
         header: "Primary Site",
         cell: ({ row, getValue, column }) => {
-          // console.log({ expandedColumn });
-          return (
-            row.getCanExpand() && (
-              <div
-                onClick={() => {
-                  setExpandedColumn(column.id);
-                  row.toggleExpanded();
-                }}
-                onKeyDown={() =>
-                  createKeyboardAccessibleFunction(() => {
+          return getValue()?.length === 0
+            ? "--"
+            : getValue()?.length === 1
+            ? getValue()
+            : row.getCanExpand() && (
+                <div
+                  onClick={() => {
                     setExpandedColumn(column.id);
                     row.toggleExpanded();
-                  })
-                }
-                role="button"
-                tabIndex={0}
-                aria-label="Expand section"
-                className="flex items-center text-primary cursor-pointer gap-2"
-              >
-                {row.getIsExpanded() && expandedColumn === "primary_site" ? (
-                  <UpIcon size="1.25em" className="text-accent" />
-                ) : (
-                  <DownIcon size="1.25em" className="text-accent" />
-                )}
+                  }}
+                  onKeyDown={() =>
+                    createKeyboardAccessibleFunction(() => {
+                      setExpandedColumn(column.id);
+                      row.toggleExpanded();
+                    })
+                  }
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Expand section"
+                  className="flex items-center text-primary cursor-pointer gap-2"
+                >
+                  {row.getIsExpanded() && expandedColumn === "primary_site" ? (
+                    <UpIcon size="1.25em" className="text-accent" />
+                  ) : (
+                    <DownIcon size="1.25em" className="text-accent" />
+                  )}
 
-                <span className="whitespace-nowrap">
-                  {getValue()?.length.toLocaleString().padStart(6)} Primary Site
-                </span>
-              </div>
-            )
-          );
+                  <span className="whitespace-nowrap">
+                    {getValue()?.length.toLocaleString().padStart(6)} Primary
+                    Site
+                  </span>
+                </div>
+              );
         },
         enableSorting: false,
       }),
@@ -324,20 +298,23 @@ const ProjectsTable: React.FC = () => {
     [projectsTableColumnHelper, expandedColumn, setEntityMetadata],
   );
 
+  const [rowSelection, setRowSelection] = useState({});
+  const pickedProjects = Object.entries(rowSelection)
+    .filter(([, isSelected]) => isSelected)
+    .map(([index]) => formattedTableData[index].project_id);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     files: false,
   });
-  // what for other tables with no initial sort?
   const [sortedRow, setSortedRow] = useState([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "cases", desc: true },
+  ]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
-      // case "sortBy":
-      //   sortByActions(obj.sortBy);
-      //   break;
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
         setActivePage(1);
