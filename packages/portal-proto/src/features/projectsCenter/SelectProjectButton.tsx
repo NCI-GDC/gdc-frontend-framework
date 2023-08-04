@@ -14,7 +14,7 @@ import {
 
 interface SelectAllProjectButtonProps {
   projectIds: ReadonlyArray<string>;
-}
+} //dont need it anymore
 
 interface SelectProjectButtonProps {
   readonly projectId: string;

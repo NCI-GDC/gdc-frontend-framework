@@ -1,55 +1,50 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import {
-  VerticalTable,
-  HandleChangeInput,
-  Columns,
-  filterColumnCells,
-} from "../shared/VerticalTable";
-import CollapsibleRow from "@/features/shared/CollapsibleRow";
-import { Row, TableInstance } from "react-table";
+import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
   buildCohortGqlOperator,
   ProjectDefaults,
   useCoreDispatch,
   joinFilters,
-  SortBy,
 } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import {
-  SelectProjectButton,
-  SelectAllProjectsButton,
-} from "@/features/projectsCenter/SelectProjectButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
-import { extractToArray } from "src/utils";
+import { createKeyboardAccessibleFunction, extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
-
-interface CellProps {
-  value: string[];
-  row: Row;
-}
-
-interface SelectColumnProps {
-  value: string;
-}
+import VerticalTable from "@/components/Table/VerticalTable";
+import {
+  ColumnDef,
+  ColumnOrderState,
+  createColumnHelper,
+  Row,
+  SortingState,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { Checkbox, Divider } from "@mantine/core";
+import {
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
+import { FaCircle as Circle } from "react-icons/fa";
+import { dowloadTSVNew } from "@/components/Table/utils";
 
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sortBy, setSortBy] = useState<SortBy[]>([
-    { field: "summary.case_count", direction: "desc" },
-  ]);
+
+  // const [sortBy, setSortBy] = useState<SortBy[]>([
+  //   { field: "summary.case_count", direction: "desc" },
+  // ]);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
@@ -78,101 +73,40 @@ const ProjectsTable: React.FC = () => {
     ],
     size: pageSize,
     from: (activePage - 1) * pageSize,
-    sortBy: sortBy,
+    // sortBy: sortBy,
   });
 
-  const columnListOrder: Columns[] = [
-    {
-      id: "selected",
-      visible: true,
-      columnName: ({ data }: TableInstance) => {
-        const projectIds = data.map((x) => x.selected);
-        return <SelectAllProjectsButton projectIds={projectIds} />;
-      },
-      Cell: ({ value }: SelectColumnProps) => {
-        return <SelectProjectButton projectId={value} />;
-      },
-      disableSortBy: true,
-    },
-    {
-      id: "project_id",
-      columnName: "Project",
-      visible: true,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-left">{value}</div>;
-      },
-    },
-    {
-      id: "disease_type",
-      columnName: "Disease Type",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
-        return <CollapsibleRow value={value} row={row} label="Disease Types" />;
-      },
-      disableSortBy: true,
-    },
-    {
-      id: "primary_site",
-      columnName: "Primary Site",
-      visible: true,
-      Cell: ({ value, row }: CellProps) => {
-        return <CollapsibleRow value={value} row={row} label="Primary Sites" />;
-      },
-      disableSortBy: true,
-    },
-    {
-      id: "program",
-      columnName: "Program",
-      visible: true,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-left w-24">{value} </div>;
-      },
-    },
-    {
-      id: "cases",
-      columnName: "Cases",
-      visible: true,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-right w-12">{value} </div>;
-      },
-    },
-    {
-      id: "experimental_strategies",
-      columnName: "Experimental Strategy",
-      visible: true,
-      Cell: ({ value }: CellProps) => <ArraySeparatedSpan data={value} />,
-      disableSortBy: true,
-    },
-    {
-      id: "files",
-      columnName: "Files",
-      visible: false,
-      Cell: ({ value }: CellProps) => {
-        return <div className="text-right w-12">{value} </div>;
-      },
-    },
-  ];
-  const [columns, setColumns] = useState(columnListOrder);
+  // is this needed?
   useEffect(() => setActivePage(1), [projectFilters]);
 
-  const sortByActions = (sortByObj) => {
-    const COLUMN_ID_TO_FIELD = {
-      project_id: "project_id",
-      files: "summary.file_count",
-      cases: "summary.case_count",
-      program: "program.name",
-    };
-    const tempSortBy = sortByObj.map((sortObj) => {
-      ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
-      // map sort ids to api ids
-      return {
-        field: COLUMN_ID_TO_FIELD[sortObj.id],
-        direction: sortObj.desc ? "desc" : "asc",
-      };
-    });
-    setSortBy(tempSortBy);
-  };
+  // is this needed?
+  // const sortByActions = (sortByObj) => {
+  //   const COLUMN_ID_TO_FIELD = {
+  //     project_id: "project_id",
+  //     files: "summary.file_count",
+  //     cases: "summary.case_count",
+  //     program: "program.name",
+  //   };
+  //   const tempSortBy = sortByObj.map((sortObj) => {
+  //     ///const tempSortId = COLUMN_ID_TO_FIELD[sortObj.id];
+  //     // map sort ids to api ids
+  //     return {
+  //       field: COLUMN_ID_TO_FIELD[sortObj.id],
+  //       direction: sortObj.desc ? "desc" : "asc",
+  //     };
+  //   });
+  //   setSortBy(tempSortBy);
+  // };
 
+  type ProjectDataType = {
+    project_id: string;
+    disease_type: string[];
+    primary_site: string[];
+    program: string;
+    cases: number;
+    experimental_strategies: (string | number)[];
+    files: string;
+  };
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (isSuccess) {
       return [
@@ -184,35 +118,23 @@ const ProjectsTable: React.FC = () => {
             program,
             summary,
           }: ProjectDefaults) => ({
-            selected: project_id,
-            project_id: (
-              <OverflowTooltippedLabel label={project_id}>
-                <PopupIconButton
-                  handleClick={() =>
-                    setEntityMetadata({
-                      entity_type: "project",
-                      entity_id: project_id,
-                    })
-                  }
-                  label={project_id}
-                />
-              </OverflowTooltippedLabel>
+            project_id: project_id,
+            disease_type: [...disease_type].sort((a, b) =>
+              a.toLowerCase().localeCompare(b.toLowerCase()),
             ),
-            disease_type: disease_type,
-            primary_site: primary_site,
-            program: (
-              <OverflowTooltippedLabel
-                label={program?.name}
-                className="font-content"
-              >
-                {program?.name}
-              </OverflowTooltippedLabel>
+            primary_site: [...primary_site].sort((a, b) =>
+              a.toLowerCase().localeCompare(b.toLowerCase()),
             ),
-            cases: summary?.case_count.toLocaleString().padStart(9),
-            experimental_strategies: extractToArray(
-              summary?.experimental_strategies,
-              "experimental_strategy",
-            ),
+            program: program?.name,
+            cases: summary?.case_count,
+            experimental_strategies: (
+              [
+                ...extractToArray(
+                  summary?.experimental_strategies,
+                  "experimental_strategy",
+                ),
+              ] as string[]
+            ).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
             files: summary?.file_count.toLocaleString(),
           }),
         ),
@@ -231,13 +153,191 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data, setEntityMetadata]);
+  }, [isSuccess, data]);
+
+  // use this to create a cohort
+  const [rowSelection, setRowSelection] = useState({});
+  const pickedProjects = Object.entries(rowSelection)
+    .filter(([, isSelected]) => isSelected)
+    .map(([index]) => formattedTableData[index].project_id);
+  const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
+  const [expandedColumn, setExpandedColumn] = useState(null);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "cases", desc: true },
+  ]);
+
+  const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
+    () => [
+      projectsTableColumnHelper.display({
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label="checkbox for selecting table row"
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        ),
+        enableHiding: false,
+      }),
+      projectsTableColumnHelper.accessor("project_id", {
+        id: "project_id",
+        header: "Project",
+        cell: ({ getValue }) => (
+          <OverflowTooltippedLabel label={getValue()}>
+            <PopupIconButton
+              handleClick={() =>
+                setEntityMetadata({
+                  entity_type: "project",
+                  entity_id: getValue(),
+                })
+              }
+              label={getValue()}
+            />
+          </OverflowTooltippedLabel>
+        ),
+        enableSorting: true,
+      }),
+      projectsTableColumnHelper.accessor("disease_type", {
+        id: "disease_type",
+        header: "Disease Type",
+        cell: ({ row, getValue, column }) => {
+          // this is not correct
+          // column id is not working for icons
+          // both the columns of the same row cannot be expanded at once
+          // if other row is expanded, last row is not hidden
+          return (
+            row.getCanExpand() && (
+              <div
+                onClick={() => {
+                  setExpandedColumn(column.id);
+                  row.toggleExpanded();
+                }}
+                onKeyDown={() =>
+                  createKeyboardAccessibleFunction(() => {
+                    setExpandedColumn(column.id);
+                    row.toggleExpanded();
+                  })
+                }
+                role="button"
+                tabIndex={0}
+                aria-label="Expand section"
+                className="flex items-center text-primary cursor-pointer gap-2"
+              >
+                {row.getIsExpanded() && expandedColumn === "disease_type" ? (
+                  <UpIcon size="1.25em" className="text-accent" />
+                ) : (
+                  <DownIcon size="1.25em" className="text-accent" />
+                )}
+                <span className="whitespace-nowrap">
+                  {getValue()?.length.toLocaleString().padStart(6)} Disease Type
+                </span>
+              </div>
+            )
+          );
+        },
+        enableSorting: false,
+      }),
+      projectsTableColumnHelper.accessor("primary_site", {
+        id: "primary_site",
+        header: "Primary Site",
+        cell: ({ row, getValue, column }) => {
+          // console.log({ expandedColumn });
+          return (
+            row.getCanExpand() && (
+              <div
+                onClick={() => {
+                  setExpandedColumn(column.id);
+                  row.toggleExpanded();
+                }}
+                onKeyDown={() =>
+                  createKeyboardAccessibleFunction(() => {
+                    setExpandedColumn(column.id);
+                    row.toggleExpanded();
+                  })
+                }
+                role="button"
+                tabIndex={0}
+                aria-label="Expand section"
+                className="flex items-center text-primary cursor-pointer gap-2"
+              >
+                {row.getIsExpanded() && expandedColumn === "primary_site" ? (
+                  <UpIcon size="1.25em" className="text-accent" />
+                ) : (
+                  <DownIcon size="1.25em" className="text-accent" />
+                )}
+
+                <span className="whitespace-nowrap">
+                  {getValue()?.length.toLocaleString().padStart(6)} Primary Site
+                </span>
+              </div>
+            )
+          );
+        },
+        enableSorting: false,
+      }),
+      projectsTableColumnHelper.accessor("program", {
+        id: "program",
+        header: "Program",
+        cell: ({ getValue }) => (
+          <OverflowTooltippedLabel label={getValue()} className="font-content">
+            {getValue()}
+          </OverflowTooltippedLabel>
+        ),
+        enableSorting: true,
+      }),
+      projectsTableColumnHelper.accessor("cases", {
+        id: "cases",
+        header: "Cases",
+        cell: ({ getValue }) => getValue().toLocaleString().padStart(9),
+        enableSorting: true,
+      }),
+      projectsTableColumnHelper.accessor("experimental_strategies", {
+        id: "experimental_strategies",
+        header: "Experimental Strategy",
+        cell: ({ getValue }) => (
+          <ArraySeparatedSpan data={getValue() as string[]} />
+        ),
+        enableSorting: false,
+      }),
+      projectsTableColumnHelper.accessor("files", {
+        id: "files",
+        header: "Files",
+        enableSorting: false,
+      }),
+    ],
+    [projectsTableColumnHelper, expandedColumn, setEntityMetadata],
+  );
+
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    files: false,
+  });
+  // what for other tables with no initial sort?
+  const [sortedRow, setSortedRow] = useState([]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
-      case "sortBy":
-        sortByActions(obj.sortBy);
-        break;
+      // case "sortBy":
+      //   sortByActions(obj.sortBy);
+      //   break;
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
         setActivePage(1);
@@ -248,9 +348,6 @@ const ProjectsTable: React.FC = () => {
       case "newSearch":
         setSearchTerm(obj.newSearch);
         setActivePage(1);
-        break;
-      case "newHeadings":
-        setColumns(obj.newHeadings);
         break;
     }
   };
@@ -287,48 +384,57 @@ const ProjectsTable: React.FC = () => {
   };
 
   const handleDownloadTSV = () => {
-    downloadTSV(
-      data.projectData,
-      filterColumnCells(columns),
-      `projects-table.${convertDateToString(new Date())}.tsv`,
-      {
-        blacklist: ["selected"],
-        overwrite: {
-          program: {
-            composer: "program.name",
-          },
-          cases: {
-            composer: "summary.case_count",
-          },
-          experimental_strategies: {
-            composer: (project) =>
-              (
-                project.summary.experimental_strategies.map(
-                  (strategy) => strategy.experimental_strategy,
-                ) || "--"
-              ).sort(Intl.Collator().compare),
-          },
-          disease_type: {
-            composer: (project) =>
-              [...project.disease_type]
-                .sort(Intl.Collator().compare)
-                .join(",") || "--",
-          },
-          primary_site: {
-            composer: (project) =>
-              [...project.primary_site]
-                .sort(Intl.Collator().compare)
-                .join(",") || "--",
-          },
-          files: {
-            composer: "summary.file_count",
-          },
-        },
-      },
+    dowloadTSVNew({
+      tableData: sortedRow.length === 0 ? formattedTableData : sortedRow,
+      columnOrder,
+      columnVisibility,
+      columns: projectsTableDefaultColumns,
+      fileName: `projects-table.${convertDateToString(new Date())}.tsv`,
+      option: { blacklist: ["select"] },
+    });
+  };
+
+  const CreateContent = ({
+    row,
+  }: {
+    row: Row<ProjectDataType>;
+  }): JSX.Element => {
+    // don't need this mess if there's a way to pass in column id
+    // this is not working properly
+    // is there a way to close the other expanded row?
+    // console.log("create: ", expandedColumn);
+    const value =
+      expandedColumn === "disease_type"
+        ? row.original?.disease_type
+        : row.original?.primary_site;
+    const key =
+      expandedColumn === "disease_type" ? "Disease Type" : "Primary Site";
+    const items = {
+      [key]: value,
+    };
+    return (
+      <div className="flex flex-col px-3">
+        {Object.entries(items).map(([x, values], index) => (
+          <div
+            className="flex flex-col p-2"
+            key={`${x}-${values.length}-${index}`}
+          >
+            {index > 0 ? <Divider /> : null}
+            <p className="text-[1rem] font-heading font-semibold mb-2">{x}</p>
+            <div className="columns-4 font-content text-sm">
+              {[...values].sort().map((y) => (
+                <div className="flex flex-row items-center" key={y}>
+                  <Circle size="0.65em" className="text-primary shrink-0" />
+                  <p className="pl-2">{y}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     );
   };
 
-  //update everything that uses table component
   return (
     <VerticalTable
       tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} ${
@@ -336,7 +442,10 @@ const ProjectsTable: React.FC = () => {
       }`}
       additionalControls={
         <div className="flex gap-2">
-          <ProjectsCohortButton />
+          <ProjectsCohortButton
+            pickedProjects={pickedProjects}
+            resetRowSelection={() => setRowSelection({})}
+          />
           <FunctionButton
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
@@ -351,10 +460,8 @@ const ProjectsTable: React.FC = () => {
           </FunctionButton>
         </div>
       }
-      tableData={formattedTableData}
-      columns={columns}
-      columnSorting={"manual"}
-      selectableRow={false}
+      data={formattedTableData as ProjectDataType[]}
+      columns={projectsTableDefaultColumns}
       showControls={true}
       pagination={{
         ...tempPagination,
@@ -363,9 +470,20 @@ const ProjectsTable: React.FC = () => {
       search={{
         enabled: true,
       }}
+      getRowCanExpand={() => true}
+      renderSubComponent={CreateContent}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
-      initialSort={[{ id: "cases", desc: true }]}
+      enableRowSelection={true}
+      setRowSelection={setRowSelection}
+      rowSelection={rowSelection}
+      setColumnVisibility={setColumnVisibility}
+      columnVisibility={columnVisibility}
+      columnOrder={columnOrder}
+      setColumnOrder={setColumnOrder}
+      setSortedRow={setSortedRow}
+      sorting={sorting}
+      setSorting={setSorting}
     />
   );
 };

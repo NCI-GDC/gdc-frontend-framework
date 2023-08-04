@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import { AppState } from "./appApi";
-
+//dont need it anymore
 interface ProjectsCart {
   readonly projectId: string;
 }

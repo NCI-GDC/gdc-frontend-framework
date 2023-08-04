@@ -133,7 +133,7 @@ interface VerticalTableProps {
   /**
    * optional callback to handle changes
    */
-  handleChange?: (HandleChangeInput) => void;
+  handleChange?: (obj: HandleChangeInput) => void;
   /**
    * optional shows different table content depending on state
    *
@@ -184,10 +184,7 @@ export interface HandleChangeInput {
   /**
    * column sort
    */
-  sortBy?: {
-    id: string;
-    desc: boolean;
-  }[];
+  sortBy?: SortingRule<any>[];
   /**
    * search term change
    */

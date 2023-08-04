@@ -8,11 +8,11 @@ import { SortingRule } from "react-table";
  * @param fullData
  * @returns
  */
-const useStandardPagination = (
-  fullData: Record<string, any>[],
+function useStandardPagination<TData>(
+  fullData: TData[],
   columnListOrder?: Columns[],
 ): PaginationOptions & {
-  displayedData: Record<string, any>[];
+  displayedData: TData[];
   /**
    * callback to handle page size change
    */
@@ -25,7 +25,7 @@ const useStandardPagination = (
    * callback to handle column sorting
    */
   handleSortByChange: (x: SortingRule<any>[]) => void;
-} => {
+} {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [activeSort, setActiveSort] = useState<SortingRule<any>[]>([]);
@@ -136,6 +136,6 @@ const useStandardPagination = (
     total: fullData.length,
     displayedData,
   };
-};
+}
 
 export default useStandardPagination;
