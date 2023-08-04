@@ -6,6 +6,7 @@ import { MantineProvider } from "@mantine/core";
 import tailwindConfig from "tailwind.config";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButton";
+import SaveSetButton from "./SaveSetButton";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());
@@ -50,7 +51,8 @@ describe("<InputEntityList />", () => {
               createSet: createSetHook,
               getExistingFilters: jest.fn(),
             }}
-            SubmitButton={UpdateCohortButton}
+            LeftButton={SaveSetButton}
+            RightButton={UpdateCohortButton}
           />
           ,
         </UserInputContext.Provider>

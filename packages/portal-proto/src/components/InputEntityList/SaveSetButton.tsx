@@ -14,20 +14,22 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 
 interface SaveSetButttonProps {
   readonly disabled: boolean;
-  readonly setValues: string[];
-  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
+  readonly ids: string[];
+  readonly hooks: {
+    createSet: UseMutation<MutationDefinition<any, any, any, any>>;
+  };
   readonly setType: SetTypes;
 }
 
 const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   disabled,
-  setValues,
-  createSetHook,
+  ids,
+  hooks,
   setType,
 }: SaveSetButttonProps) => {
   const dispatch = useCoreDispatch();
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [createSet, response] = createSetHook();
+  const [createSet, response] = hooks.createSet();
   const [setName, setSetName] = useState(null);
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
@@ -57,13 +59,12 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         onClose={() => setShowSaveModal(false)}
         onActionClick={(name: string) => {
           setSetName(name);
-          createSet({ values: setValues });
+          createSet({ values: ids });
         }}
         onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton
-        className={"mr-auto"}
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
       >

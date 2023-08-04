@@ -24,7 +24,6 @@ import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { getMatchedIdentifiers, MatchResults } from "./utils";
 import MatchTables from "./MatchTables";
-import SaveSetButton from "./SaveSetButton";
 import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
@@ -40,7 +39,8 @@ interface InputEntityListProps {
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters?: () => FilterSet;
   };
-  readonly SubmitButton: React.ElementType;
+  readonly RightButton: React.ElementType;
+  readonly LeftButton?: React.ElementType;
 }
 
 const InputEntityList: React.FC<InputEntityListProps> = ({
@@ -50,7 +50,8 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   entityType,
   entityLabel,
   hooks,
-  SubmitButton,
+  RightButton,
+  LeftButton,
 }: InputEntityListProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
@@ -265,13 +266,16 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
         )}
       </div>
       <ButtonContainer>
-        {hooks.createSet && (
-          <SaveSetButton
-            disabled={matched.length === 0}
-            setValues={outputIds}
-            setType={entityType}
-            createSetHook={hooks.createSet}
-          />
+        {LeftButton && (
+          <div className="mr-auto">
+            <LeftButton
+              disabled={matched.length === 0}
+              ids={outputIds}
+              hooks={hooks}
+              facetField={facetField}
+              setType={entityType}
+            />
+          </div>
         )}
         <DiscardChangesButton
           action={() => dispatch(hideModal())}
@@ -288,11 +292,12 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           }}
           label={"Clear"}
         />
-        <SubmitButton
-          ids={outputIds}
+        <RightButton
           disabled={matched.length === 0}
+          ids={outputIds}
           hooks={hooks}
           facetField={facetField}
+          setType={entityType}
         />
       </ButtonContainer>
     </>

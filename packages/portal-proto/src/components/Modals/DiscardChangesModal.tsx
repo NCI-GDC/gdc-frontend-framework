@@ -3,6 +3,7 @@ import { Modal } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { modalStyles } from "./styles";
 
 interface DiscardChangesModalProps {
   readonly action: () => void;
@@ -22,6 +23,7 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
     onClose={onClose}
     size="lg"
     withinPortal={false}
+    classNames={modalStyles}
   >
     <div className="p-4">
       <p>Are you sure you want to permanently discard the unsaved changes?</p>
