@@ -68,6 +68,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |facet_name                 |
   |---------------------------|
   |Tumor Grade                |
+  |Who Cns Grade              |
 
 * Validate presence of facet cards on the "Other Classification" tab on the Cohort Builder page
   |facet_name                     |
