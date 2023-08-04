@@ -53,7 +53,10 @@ export const HorizontalTable = ({
     : containerClassName;
 
   return (
-    <table className={updatedContainerClassName}>
+    <table
+      data-testid="table-image-details"
+      className={updatedContainerClassName}
+    >
       <tbody>
         {tableData.map((obj, rowIndex: number): JSX.Element => {
           return (
