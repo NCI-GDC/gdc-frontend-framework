@@ -15,6 +15,9 @@ import {
   PageStepper,
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
+import { Loader } from "@mantine/core";
+import saveAs from "file-saver";
+import { convertDateToString } from "@/utils/date";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -35,6 +38,10 @@ export const SMSConsequenceTableContainer: React.FC<
 
   const [showColumnMenu, setShowColumnMenu] = useState<boolean>(false);
   const [tableData, setTableData] = useState<ConsequenceTableData[]>([]);
+  const [
+    consequenceTableJSONDownloadActive,
+    setConsequenceTableJSONDownloadActive,
+  ] = useState(false);
 
   const {
     handlePageChange,
@@ -141,6 +148,54 @@ export const SMSConsequenceTableContainer: React.FC<
     }
   }, [status, initialData]);
 
+  const handleJSONDownload = () => {
+    setConsequenceTableJSONDownloadActive(true);
+    const json = initialData.consequence.map(
+      ({
+        transcript: {
+          aa_change,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          consequence_type,
+          gene: { gene_id, gene_strand, symbol },
+          transcript_id,
+          is_canonical,
+        },
+      }) => {
+        return {
+          transcript_id,
+          aa_change,
+          is_canonical,
+          consequence_type,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          gene: {
+            gene_id,
+            symbol,
+            gene_strand,
+          },
+        };
+      },
+    );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "application/json",
+    });
+    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
+    setConsequenceTableJSONDownloadActive(false);
+  };
+
   return (
     <>
       <div className="mt-12">
@@ -150,8 +205,10 @@ export const SMSConsequenceTableContainer: React.FC<
 
         <div className="flex mb-2 justify-between">
           <div className="flex gap-2">
-            <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
-              <FunctionButton>JSON</FunctionButton>
+            <ButtonTooltip label="Export All">
+              <FunctionButton onClick={handleJSONDownload}>
+                {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+              </FunctionButton>
             </ButtonTooltip>
             <ButtonTooltip label="Export current view" comingSoon={true}>
               <FunctionButton>TSV</FunctionButton>
