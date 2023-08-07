@@ -5,12 +5,14 @@ export interface SummaryCardProps {
   readonly title?: string;
   readonly message?: JSX.Element;
   readonly tableData: HorizontalTableProps["tableData"];
+  readonly customDataTestID?: string;
 }
 
 export const SummaryCard = ({
   title = "Summary",
   message,
   tableData,
+  customDataTestID,
 }: SummaryCardProps): JSX.Element => {
   return (
     <div>
@@ -24,7 +26,10 @@ export const SummaryCard = ({
       </div>
 
       <div className={message && "mt-2"}>
-        <HorizontalTable tableData={tableData} />
+        <HorizontalTable
+          customDataTestID={customDataTestID}
+          tableData={tableData}
+        />
       </div>
     </div>
   );
