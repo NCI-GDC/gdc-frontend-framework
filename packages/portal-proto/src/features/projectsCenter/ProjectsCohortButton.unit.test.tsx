@@ -1,7 +1,6 @@
 import { showNotification } from "@mantine/notifications";
 import { render } from "@testing-library/react";
 import ProjectsCohortButton from "./ProjectsCohortButton";
-import * as appApi from "./appApi";
 import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
 import { MantineProvider } from "@mantine/core";
@@ -16,40 +15,39 @@ const mockedShowNotification = showNotification as jest.Mock<
 beforeEach(() => mockedShowNotification.mockClear());
 
 describe("<ProjectCohortButton />", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(appApi, "useAppDispatch").mockReturnValue(jest.fn());
-  });
-
   it("should render a empty New Cohort button", () => {
-    jest.spyOn(appApi, "useAppSelector").mockReturnValue([]);
-
     jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
-
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
-    const { getByText } = render(<ProjectsCohortButton />);
+    const { getByText } = render(
+      <ProjectsCohortButton
+        pickedProjects={[]}
+        resetRowSelection={jest.fn()}
+      />,
+    );
 
     expect(getByText("Create New Cohort")).toBeInTheDocument();
   });
 
   it("should render 2 project  Create New Cohort button", () => {
-    jest.spyOn(appApi, "useAppSelector").mockReturnValue(["TCGA", "FM"]);
-
     jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
 
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
-    const { getByRole } = render(<ProjectsCohortButton />);
+    const { getByRole } = render(
+      <ProjectsCohortButton
+        pickedProjects={["TCGA", "FM"]}
+        resetRowSelection={jest.fn()}
+      />,
+    );
     expect(getByRole("button").textContent).toBe("2 Create New Cohort");
   });
 
   it("dispatch an add cohort action", async () => {
-    jest.spyOn(appApi, "useAppSelector").mockReturnValue(["TCGA", "FM"]);
-
     jest.spyOn(core, "useCoreSelector").mockReturnValue(["cohort1", "cohort2"]);
 
     const mockDispatch = jest.fn();
+    const mockResetSelection = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
     jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
 
@@ -62,7 +60,10 @@ describe("<ProjectCohortButton />", () => {
           },
         }}
       >
-        <ProjectsCohortButton />
+        <ProjectsCohortButton
+          pickedProjects={["TCGA", "FM"]}
+          resetRowSelection={mockResetSelection}
+        />
       </MantineProvider>,
     );
 
@@ -91,5 +92,6 @@ describe("<ProjectCohortButton />", () => {
       },
       type: "cohort/availableCohorts/addNewCohortWithFilterAndMessage",
     });
+    expect(mockResetSelection).toHaveBeenCalled();
   });
 });

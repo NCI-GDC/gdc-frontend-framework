@@ -6,7 +6,7 @@ import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
 import ToggleFacet from "../facets/ToggleFacet";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { GTableContainer } from "@/features/Genes/GTableContainer";
 import {
   useEnumFacet,
   useTotalCounts,

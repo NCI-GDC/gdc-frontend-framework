@@ -37,7 +37,7 @@ export function dowloadTSVNew<TData>({
       }
     >;
   };
-}) {
+}): void {
   // Filter columns based on blackList and columnVisibility
   const filteredColumns = columns.filter((column) => {
     const columnId = column.id;

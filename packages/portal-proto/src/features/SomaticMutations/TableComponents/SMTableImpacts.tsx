@@ -1,88 +1,45 @@
-import { Dispatch, SetStateAction } from "react";
 import { Tooltip } from "@mantine/core";
-import { truncate } from "lodash";
-import Link from "next/link";
-import { humanify } from "src/utils";
-import { entityMetadataType } from "src/utils/contexts";
-import { Impact } from "./types";
-import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
+import { Impact } from "../types";
 
-export const ProteinChange = ({
-  proteinChange,
-  shouldLink,
-  shouldOpenModal,
-  setEntityMetadata,
-}: {
-  proteinChange: {
-    symbol: string;
-    aaChange: string;
-    geneId: string;
-  };
-  shouldOpenModal: boolean;
-  shouldLink: boolean;
-  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
-}): JSX.Element => {
-  const { symbol = "", aaChange = "" } = proteinChange;
-  return (
-    <div className="font-content flex w-max flex-row justify-start">
-      {!symbol && !aaChange ? (
-        "--"
-      ) : (
-        <>
-          {shouldOpenModal ? (
-            <PopupIconButton
-              customStyle="text-utility-link underline mx-0.5 font-content self-center"
-              handleClick={() =>
-                setEntityMetadata({
-                  entity_type: "genes",
-                  entity_id: proteinChange.geneId,
-                })
-              }
-              label={symbol}
-            />
-          ) : shouldLink ? (
-            <Link href={`/genes/${proteinChange.geneId}`}>
-              <a className="text-utility-link underline">{symbol}</a>
-            </Link>
-          ) : (
-            <span className="mx-0.5">{symbol}</span>
-          )}
-          <Tooltip label={aaChange}>
-            <span className={`${aaChange !== "" && "mx-0.5"}`}>
-              {truncate(aaChange == "" ? "--" : aaChange, {
-                length: 12,
-              })}
-            </span>
-          </Tooltip>
-        </>
-      )}
-    </div>
-  );
-};
-
-export const Consequences = ({
-  consequences,
-}: {
-  consequences: string;
-}): JSX.Element => (
-  <span className="font-content text-left">
-    {!consequences
-      ? "--"
-      : humanify({
-          term: consequences?.replace("_variant", "").replace("_", " "),
-        })}
-  </span>
-);
-
-export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
+const SMTableImpacts = ({ impact }: { impact: Impact }): JSX.Element => {
   const { polyphenImpact, polyphenScore, siftImpact, siftScore, vepImpact } =
     impact;
   const twIconStyles =
     "w-7 h-6 text-base-max font-bold font-content border rounded-md flex justify-center items-center";
   const blankIconStyles = "w-7 h-6 font-bold flex justify-center items-center";
 
+  // It's theoretically possible to have SIFT impact without score.
+  const generateSiftTooltipLabel = () => {
+    const label = [];
+
+    if (siftImpact) {
+      label.push(`SIFT Impact: ${siftImpact}`);
+    }
+
+    if (siftScore !== null) {
+      label.push(`SIFT Score: ${siftScore}`);
+    }
+
+    return label.join(" / ");
+  };
+
+  // It's theoretically possible to have a PolyPhen impact without score
+  const generatePolyphenTooltipLabel = () => {
+    const label = [];
+
+    if (polyphenImpact) {
+      label.push(`PolyPhen Impact: ${polyphenImpact}`);
+    }
+
+    if (polyphenScore !== null) {
+      label.push(`PolyPhen Score: ${polyphenScore}`);
+    }
+
+    return label.join(" / ");
+  };
+
   return (
-    <>
+    <div className="flex">
       <Tooltip label={`VEP Impact: ${vepImpact}`} disabled={!vepImpact}>
         <div className="text-xs">
           {vepImpact === "HIGH" ? (
@@ -98,10 +55,7 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
           )}
         </div>
       </Tooltip>
-      <Tooltip
-        label={`SIFT Impact: ${siftImpact} / SIFT Score: ${siftScore}`}
-        disabled={!siftImpact || !siftScore}
-      >
+      <Tooltip label={generateSiftTooltipLabel()} disabled={!siftImpact}>
         <div className="mx-0.5 align-middle text-xs">
           {siftImpact === "deleterious" ? (
             <div className={`${twIconStyles} bg-impact-sift-deleterious`}>
@@ -127,8 +81,8 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
         </div>
       </Tooltip>
       <Tooltip
-        label={`PolyPhen Impact: ${polyphenImpact} / PolyPhen Score: ${polyphenScore}`}
-        disabled={!polyphenImpact || !polyphenScore}
+        label={generatePolyphenTooltipLabel()}
+        disabled={!polyphenImpact}
       >
         <div className="text-xs">
           {polyphenImpact === "benign" ? (
@@ -156,6 +110,8 @@ export const Impacts = ({ impact }: { impact: Impact }): JSX.Element => {
           )}
         </div>
       </Tooltip>
-    </>
+    </div>
   );
 };
+
+export default SMTableImpacts;

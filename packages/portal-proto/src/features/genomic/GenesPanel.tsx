@@ -1,7 +1,7 @@
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
+import { GTableContainer } from "@/features/Genes/GTableContainer";
 import partial from "lodash/partial";
 import React from "react";
 import { emptySurvivalPlot } from "@/features/genomic/types";

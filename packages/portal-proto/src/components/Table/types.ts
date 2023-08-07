@@ -81,6 +81,10 @@ export interface TableProps<TData> {
      * @defaultValue "Search"
      */
     placeholder?: string;
+    /**
+     * default search term if any
+     */
+    defaultSearchTerm?: string;
   };
   /**
    * shows column sorting controls and search bar
@@ -106,6 +110,10 @@ export interface TableProps<TData> {
   columnOrder?: ColumnOrderState;
   setColumnOrder?: Dispatch<SetStateAction<ColumnOrderState>>;
   setSortedRow?;
+  enableSorting?;
+  onExpandedChange?
+  expanded?
+  ariaTextOverwrite?
 }
 
 export interface HandleChangeInput {

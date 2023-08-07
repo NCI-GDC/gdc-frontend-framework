@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC, Fragment, ReactNode } from "react";
-import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
+import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -13,10 +13,10 @@ import {
   Pagination,
   LoadingOverlay,
   TextInput,
-  useMantineTheme,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { SortingState } from "@tanstack/react-table";
 
 export interface PaginationOptions {
   /**
@@ -161,7 +161,7 @@ interface VerticalTableProps {
   /**
    * Optional default table sort state
    */
-  initialSort?: Array<SortingRule<any>>;
+  initialSort?: SortingState;
   footer?: React.ReactNode;
 }
 
@@ -184,7 +184,7 @@ export interface HandleChangeInput {
   /**
    * column sort
    */
-  sortBy?: SortingRule<any>[];
+  sortBy?: SortingState;
   /**
    * search term change
    */
@@ -344,10 +344,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     useEffect(() => {
       //check if properties have changed
       if (!isEqual(sortBy, colSort)) {
-        setColSort(sortBy);
+        setColSort(sortBy as SortingState);
         if (columnSorting === "manual") {
           handleChange({
-            sortBy: sortBy,
+            sortBy: sortBy as SortingState,
           });
         }
       }
@@ -573,7 +573,6 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
-  const theme = useMantineTheme();
   const ref = useClickOutside(() => setShowColumnMenu(false));
 
   return (
@@ -591,7 +590,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             <div className="flex mb-2 gap-2">
               {search?.enabled && (
                 <TextInput
-                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  icon={<MdSearch size={24} />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"

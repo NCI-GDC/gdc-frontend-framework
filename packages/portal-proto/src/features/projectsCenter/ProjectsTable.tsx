@@ -6,6 +6,8 @@ import {
   ProjectDefaults,
   useCoreDispatch,
   joinFilters,
+  SortBy,
+  usePrevious,
 } from "@gff/core";
 import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
@@ -35,16 +37,21 @@ import {
 } from "react-icons/io";
 import { FaCircle as Circle } from "react-icons/fa";
 import { dowloadTSVNew } from "@/components/Table/utils";
+import { isEqual } from "lodash";
 
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortBy[]>([
+    { field: "summary.case_count", direction: "desc" },
+  ]);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
+
   const { data, isSuccess, isFetching, isError } = useGetProjectsQuery({
     filters:
       searchTerm.length > 0
@@ -69,20 +76,41 @@ const ProjectsTable: React.FC = () => {
     ],
     size: pageSize,
     from: (activePage - 1) * pageSize,
+    sortBy: sortBy,
   });
 
-  // is this needed?
-  useEffect(() => setActivePage(1), [projectFilters]);
+  const sortByActions = (sortByObj: SortingState) => {
+    const COLUMN_ID_TO_FIELD = {
+      project: "project_id",
+      files: "summary.file_count",
+      cases: "summary.case_count",
+      program: "program.name",
+    };
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
+      // map sort ids to api ids
+      return {
+        field: COLUMN_ID_TO_FIELD[sortObj.id],
+        direction: sortObj.desc ? "desc" : "asc",
+      };
+    });
+    setSortBy(tempSortBy);
+  };
+
+  const prevProjectFilters = usePrevious(projectFilters);
+  useEffect(
+    () => !isEqual(prevProjectFilters, projectFilters) && setActivePage(1),
+    [prevProjectFilters, projectFilters],
+  );
 
   const [expandedColumn, setExpandedColumn] = useState(null);
 
   type ProjectDataType = {
-    project_id: string;
+    project: string;
     disease_type: string[];
     primary_site: string[];
     program: string;
     cases: number;
-    experimental_strategies: (string | number)[];
+    experimental_strategy: (string | number)[];
     files: string;
   };
   const [formattedTableData, tempPagination] = useMemo(() => {
@@ -96,7 +124,7 @@ const ProjectsTable: React.FC = () => {
             program,
             summary,
           }: ProjectDefaults) => ({
-            project_id: project_id,
+            project: project_id,
             disease_type: [...disease_type].sort((a, b) =>
               a.toLowerCase().localeCompare(b.toLowerCase()),
             ),
@@ -105,7 +133,7 @@ const ProjectsTable: React.FC = () => {
             ),
             program: program?.name,
             cases: summary?.case_count,
-            experimental_strategies: (
+            experimental_strategy: (
               [
                 ...extractToArray(
                   summary?.experimental_strategies,
@@ -115,7 +143,7 @@ const ProjectsTable: React.FC = () => {
             ).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
             files: summary?.file_count.toLocaleString(),
           }),
-        ),
+        ) as ProjectDataType[],
         data.pagination,
       ];
     } else
@@ -131,7 +159,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data]);
+  }, [isSuccess, data?.projectData, data?.pagination]);
 
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
@@ -163,8 +191,8 @@ const ProjectsTable: React.FC = () => {
         ),
         enableHiding: false,
       }),
-      projectsTableColumnHelper.accessor("project_id", {
-        id: "project_id",
+      projectsTableColumnHelper.accessor("project", {
+        id: "project",
         header: "Project",
         cell: ({ getValue }) => (
           <OverflowTooltippedLabel label={getValue()}>
@@ -190,6 +218,7 @@ const ProjectsTable: React.FC = () => {
           // both the columns of the same row cannot be expanded at once
           // if other row is expanded, last row is not hidden
 
+          // make this a component
           return getValue()?.length === 0
             ? "--"
             : getValue()?.length === 1
@@ -218,7 +247,7 @@ const ProjectsTable: React.FC = () => {
                   )}
                   <span className="whitespace-nowrap">
                     {getValue()?.length.toLocaleString().padStart(6)} Disease
-                    Type
+                    Types
                   </span>
                 </div>
               );
@@ -258,7 +287,7 @@ const ProjectsTable: React.FC = () => {
 
                   <span className="whitespace-nowrap">
                     {getValue()?.length.toLocaleString().padStart(6)} Primary
-                    Site
+                    Sites
                   </span>
                 </div>
               );
@@ -281,8 +310,8 @@ const ProjectsTable: React.FC = () => {
         cell: ({ getValue }) => getValue().toLocaleString().padStart(9),
         enableSorting: true,
       }),
-      projectsTableColumnHelper.accessor("experimental_strategies", {
-        id: "experimental_strategies",
+      projectsTableColumnHelper.accessor("experimental_strategy", {
+        id: "experimental_strategy",
         header: "Experimental Strategy",
         cell: ({ getValue }) => (
           <ArraySeparatedSpan data={getValue() as string[]} />
@@ -301,7 +330,7 @@ const ProjectsTable: React.FC = () => {
   const [rowSelection, setRowSelection] = useState({});
   const pickedProjects = Object.entries(rowSelection)
     .filter(([, isSelected]) => isSelected)
-    .map(([index]) => formattedTableData[index].project_id);
+    .map(([index]) => formattedTableData[index].project);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -312,6 +341,10 @@ const ProjectsTable: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "cases", desc: true },
   ]);
+
+  useEffect(() => {
+    sortByActions(sorting);
+  }, [sorting]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -390,7 +423,7 @@ const ProjectsTable: React.FC = () => {
       [key]: value,
     };
     return (
-      <div className="flex flex-col px-3">
+      <div className="flex flex-col px-3 w-full">
         {Object.entries(items).map(([x, values], index) => (
           <div
             className="flex flex-col p-2"
@@ -461,6 +494,7 @@ const ProjectsTable: React.FC = () => {
       setSortedRow={setSortedRow}
       sorting={sorting}
       setSorting={setSorting}
+      enableSorting={true}
     />
   );
 };

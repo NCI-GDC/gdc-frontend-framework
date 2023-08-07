@@ -18,12 +18,11 @@ import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
+import { SMTableContainer } from "@/features/SomaticMutations/SMTableContainer";
 import { ContextSensitiveBanner } from "@/components/ContextSensitiveBanner";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
-import { DEFAULT_MUTATION_TABLE_ORDER } from "../shared/mutationTableConfig";
 import { CollapsibleList } from "@/components/CollapsibleList";
 
 interface GeneViewProps {
@@ -273,7 +272,6 @@ const GeneView = ({
 
               <div className="mt-14">
                 <SMTableContainer
-                  columnsList={DEFAULT_MUTATION_TABLE_ORDER}
                   geneSymbol={data.genes.symbol}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}

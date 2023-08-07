@@ -8,15 +8,14 @@ import {
 } from "@mantine/core";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
-import {
-  MdDragIndicator as DragIcon,
-  MdOutlineReplay as RevertIcon,
-} from "react-icons/md";
+import { MdDragIndicator as DragIcon } from "react-icons/md";
 import { BsList, BsX } from "react-icons/bs";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { isEqual } from "lodash";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { FaUndo as RevertIcon } from "react-icons/fa";
+import { humanify } from "@/utils/index";
 
 function ColumnOrdering<TData>({
   table,
@@ -54,6 +53,8 @@ function ColumnOrdering<TData>({
           dropdown: "p-2",
         }}
         position="bottom-end"
+        transition="scale"
+        withArrow
       >
         <Popover.Target>
           <Tooltip label="Customize Columns" disabled={showColumnMenu}>
@@ -64,6 +65,7 @@ function ColumnOrdering<TData>({
                 onClick={() => setShowColumnMenu((o) => !o)}
                 aria-label="show table menu"
                 color="primary"
+                data-testid="column-selector-box"
               >
                 {!showColumnMenu ? (
                   <BsList size="1.5rem" />
@@ -92,7 +94,7 @@ function ColumnOrdering<TData>({
                 </ActionIcon>
               </Tooltip>
             </div>
-            <Divider />
+            <Divider color="#c5c5c5" className="mt-1" />
             <TextInput
               value={searchValue}
               onChange={(event) =>
@@ -144,12 +146,12 @@ function List<TData>({
         .filter((column) => {
           // select has something else
           // better way to do it?
-          if (typeof column.columnDef.header === "string") {
-            return column.columnDef.header
+          if (column.id !== "select") {
+            return humanify({ term: column.id })
               .toLowerCase()
               .includes(searchValue.toLowerCase());
           } else {
-            return column.columnDef.header;
+            return column.id;
           }
         })
         .map((column, index) => {
@@ -199,7 +201,7 @@ function ColumnItem<TData>({
     },
   });
 
-  const o = isDragging ? 0.25 : 1;
+  const o = isDragging ? 0 : 1;
   return (
     <div
       ref={(node) => drag(drop(node))}
@@ -209,7 +211,7 @@ function ColumnItem<TData>({
     >
       <div className="flex gap-2 items-center">
         <DragIcon size="1rem" className="text-primary" />
-        <span className="text-xs">{column.columnDef.header}</span>
+        <span className="text-xs">{humanify({ term: column.id })}</span>
       </div>
 
       <Switch

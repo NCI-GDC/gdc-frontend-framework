@@ -7,7 +7,6 @@ import { TableSubrowData } from "@gff/core";
 
 interface ListSpringProps {
   subData: ReadonlyArray<TableSubrowData>;
-  horizontalSpring: any;
   subrowTitle;
 }
 
@@ -28,7 +27,6 @@ const itemRatio = (item: TableSubrowData): number | undefined => {
 
 const ListSpring: React.FC<ListSpringProps> = ({
   subData,
-  horizontalSpring,
   subrowTitle,
 }: ListSpringProps) => {
   const [subRef, { width, height }] = useMeasure();
@@ -80,7 +78,6 @@ const ListSpring: React.FC<ListSpringProps> = ({
       <animated.div
         ref={subRef}
         className="absolute mt-2 ml-2"
-        style={horizontalSpring}
       >
         <div className="font-semibold text-[1rem] mb-2">{subrowTitle}</div>
         <div className="columns-4 gap-4 font-content text-sm">

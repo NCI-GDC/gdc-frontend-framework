@@ -6,19 +6,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import { FC, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import {
-  LoadingOverlay,
-  Pagination,
-  Select,
-  TextInput,
-  useMantineTheme,
-} from "@mantine/core";
+import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
-import { usePrevious } from "@gff/core";
+import { DataStatus, usePrevious } from "@gff/core";
 import { isEqual } from "lodash";
+import { PaginationOptions } from "@/features/shared/VerticalTable";
 
 function VerticalTable<TData>({
   columns,
@@ -44,15 +39,20 @@ function VerticalTable<TData>({
   sorting,
   setSorting,
   setSortedRow,
-}: TableProps<TData>): JSX.Element {
+  enableSorting = false,
+  ariaTextOverwrite,
+}: // onExpandedChange,
+// expanded,
+TableProps<TData>): JSX.Element {
   // DECIDE WHERE TO KEEP sorting, setsorting, AND ALSO OTHERS???
 
   // probably need to move it up to the parent
 
   const [showLoading, setShowLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const theme = useMantineTheme();
+  const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
+  const [ariaText, setAriaText] = useState(
+    ariaTextOverwrite ?? "Table Search Input",
+  );
 
   useEffect(() => {
     setShowLoading(status === "pending" || status === "uninitialized");
@@ -71,8 +71,10 @@ function VerticalTable<TData>({
       rowSelection,
       columnVisibility,
       columnOrder,
+      //  expanded: expanded,
     },
-    sortDescFirst: false,
+    // onExpandedChange: onExpandedChange,
+    // sortDescFirst: false,
     autoResetExpanded: true,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
@@ -82,6 +84,7 @@ function VerticalTable<TData>({
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
+    enableSorting: enableSorting,
   });
 
   const prevSortedRowModelRow = usePrevious(table.getSortedRowModel().rows);
@@ -96,6 +99,14 @@ function VerticalTable<TData>({
   const [pageSize, setPageSize] = useState(10);
   const [pageOn, setPageOn] = useState(1);
   const [pageTotal, setPageTotal] = useState(1);
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (search?.defaultSearchTerm) {
+      inputRef?.current?.focus();
+    }
+  }, [search?.defaultSearchTerm]);
 
   useEffect(() => {
     if (pagination?.size !== undefined) {
@@ -124,37 +135,6 @@ function VerticalTable<TData>({
       });
   };
 
-  const ShowingCount: FC = () => {
-    let outputString: JSX.Element;
-    if (!isNaN(pagination.from) && status === "fulfilled") {
-      const paginationFrom =
-        // maybe need tabledata using useeffect
-        pagination.from >= 0 && data.length > 0 ? pagination.from + 1 : 0;
-
-      const defaultPaginationTo = pagination.from + pageSize;
-
-      const paginationTo =
-        defaultPaginationTo < pagination.total
-          ? defaultPaginationTo
-          : pagination.total;
-
-      const totalValue = pagination.total.toLocaleString();
-
-      outputString = (
-        <span>
-          <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
-          {pagination.label && ` ${pagination.label}`}
-        </span>
-      );
-    }
-
-    return (
-      <p data-testid="text-showing-count" className="text-heading text-sm">
-        Showing {outputString ?? "--"}
-      </p>
-    );
-  };
-
   useEffect(() => {
     //prevents unneeded api calls if user is typing something
     if (handleChange) {
@@ -179,17 +159,17 @@ function VerticalTable<TData>({
           <div className="flex-1">{additionalControls}</div>
         )}
         {(search?.enabled || showControls) && (
-          <div className="flex items-center">
+          <div className="flex items-center" data-testid="table-options-menu">
             <div className="flex mb-2 gap-2">
               {search?.enabled && (
                 <TextInput
-                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  icon={<MdSearch size={24} />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
-                  aria-label="Table Search Input"
+                  aria-label={ariaText}
                   classNames={{
                     input:
-                      "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                      "border-base-lighter focus:border-2 focus:drop-shadow-xl focus:border-primary",
                     wrapper: "w-72 h-8",
                   }}
                   size="sm"
@@ -206,7 +186,10 @@ function VerticalTable<TData>({
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
+                    if (ariaText !== "Table Search Input")
+                      setAriaText("Table Search Input");
                   }}
+                  ref={inputRef}
                 />
               )}
               {showControls && (
@@ -252,7 +235,10 @@ function VerticalTable<TData>({
                           : "px-2 py-3 font-heading bg-base-max"
                       } //need to combine this
                       onClick={() => {
-                        header.column.toggleSorting();
+                        // maybe pass in custom sorting logic for some tables if neccessary
+                        // if custom logic is provided use it otherwise call below
+                        header.column.getCanSort() &&
+                          header.column.toggleSorting();
                       }}
                     >
                       {flexRender(
@@ -346,7 +332,12 @@ function VerticalTable<TData>({
               </div>
             )}
 
-            <ShowingCount />
+            <ShowingCount
+              pagination={pagination}
+              status={status}
+              data={data}
+              pageSize={pageSize}
+            />
 
             <Pagination
               data-testid="pagination"
@@ -378,6 +369,47 @@ function VerticalTable<TData>({
         )}
       </>
     </div>
+  );
+}
+
+function ShowingCount<TData>({
+  pagination,
+  status,
+  data,
+  pageSize,
+}: {
+  pagination: PaginationOptions;
+  status: DataStatus;
+  data: TData[];
+  pageSize: number;
+}) {
+  let outputString: JSX.Element;
+  if (!isNaN(pagination.from) && status === "fulfilled") {
+    const paginationFrom =
+      // maybe need tabledata using useeffect
+      pagination.from >= 0 && data.length > 0 ? pagination.from + 1 : 0;
+
+    const defaultPaginationTo = pagination.from + pageSize;
+
+    const paginationTo =
+      defaultPaginationTo < pagination.total
+        ? defaultPaginationTo
+        : pagination.total;
+
+    const totalValue = pagination.total.toLocaleString();
+
+    outputString = (
+      <span>
+        <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
+        {pagination.label && ` ${pagination.label}`}
+      </span>
+    );
+  }
+
+  return (
+    <p data-testid="text-showing-count" className="text-heading text-sm">
+      Showing {outputString ?? "--"}
+    </p>
   );
 }
 

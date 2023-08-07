@@ -190,7 +190,7 @@ export const useGenesFacets = (
  */
 export const useSelectFilterContent = (
   field: string,
-): ReadonlyArray<string> => {
+): Array<string> => {
   const filter = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );
