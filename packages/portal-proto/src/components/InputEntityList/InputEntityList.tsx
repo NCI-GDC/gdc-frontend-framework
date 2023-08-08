@@ -192,7 +192,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               withArrow
             >
               <ActionIcon aria-label="accepted identifier info">
-                <InfoIcon size={16} className="text-primary-darkest" />
+                <InfoIcon size={16} className="text-accent" />
               </ActionIcon>
             </Tooltip>
           </div>
@@ -234,7 +234,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               processingFile ? (
                 <Loader size="xs" />
               ) : file !== null ? (
-                <FileIcon className="text-primary-darkest" />
+                <FileIcon className="text-accent" />
               ) : undefined
             }
             label={<b>Or choose a file to upload</b>}
