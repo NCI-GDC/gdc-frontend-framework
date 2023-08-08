@@ -7,12 +7,12 @@ import {
   VerticalTable,
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
-import { SelectedSet } from "./types";
+import { SetData } from "./types";
 
 const PAGE_SIZE = 100;
 
 interface SetDetailPanelProps {
-  readonly set: SelectedSet;
+  readonly set: SetData;
   readonly closePanel: () => void;
 }
 
@@ -78,15 +78,12 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     { skip: set === undefined || set.setType === "genes" },
   );
 
-  let responseData = [];
-
-  if (set?.setType !== undefined) {
-    if (set?.setType === "genes") {
-      responseData =
-        isGeneSuccess && !isGeneFetching ? [...geneDetailData] : [];
-    } else {
-      responseData =
-        isMutationSuccess && !isMutationFetching
+  const responseData = useMemo(() => {
+    if (set?.setType !== undefined) {
+      if (set?.setType === "genes") {
+        return isGeneSuccess && !isGeneFetching ? [...geneDetailData] : [];
+      } else {
+        return isMutationSuccess && !isMutationFetching
           ? ssmsDetailData.map((ssm) => ({
               ssm_id: ssm.ssm_id,
               consequence: `${ssm?.consequence?.[0].transcript?.gene?.symbol} ${
@@ -100,8 +97,19 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
               })}`,
             }))
           : [];
+      }
     }
-  }
+
+    return [];
+  }, [
+    JSON.stringify(geneDetailData),
+    isGeneFetching,
+    isGeneSuccess,
+    isMutationFetching,
+    isMutationSuccess,
+    set?.setType,
+    JSON.stringify(ssmsDetailData),
+  ]);
 
   useEffect(() => {
     setTableData([...tableData, ...responseData]);

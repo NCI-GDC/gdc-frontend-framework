@@ -1,20 +1,9 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
-import {
-  Grid,
-  Checkbox,
-  Button,
-  ActionIcon,
-  Badge,
-  Tooltip,
-} from "@mantine/core";
+import { Grid, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
-import {
-  FaUndo as UndoIcon,
-  FaTrash as TrashIcon,
-  FaExclamationCircle as WarningIcon,
-} from "react-icons/fa";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   useCoreSelector,
   selectAllSets,
@@ -23,28 +12,25 @@ import {
   addSets,
   useCoreDispatch,
   removeSets,
-  SetTypes,
 } from "@gff/core";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
-import useStandardPagination from "@/hooks/useStandardPagination";
+
 import { WarningBanner } from "@/components/WarningBanner";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
-import { SelectedSet } from "./types";
+import { convertDateToString } from "src/utils/date";
+import download from "@/utils/download";
+import { SetData } from "./types";
 import SetDetailPanel from "./SetDetailPanel";
 import CreateSetButton from "./CreateSetButton";
+import ManageSetsTable from "./ManageSetsTable";
 
 interface DeleteSetsNotificationProps {
-  readonly sets: SelectedSet[];
+  readonly sets: SetData[];
 }
 
 const DeleteSetsNotification: React.FC<DeleteSetsNotificationProps> = ({
   sets,
 }: DeleteSetsNotificationProps) => {
   const dispatch = useCoreDispatch();
-  console.log(sets);
   return (
     <>
       {sets.length === 1 ? (
@@ -77,43 +63,8 @@ const CreateSetInstructions = () => (
   </p>
 );
 
-interface CountBadgeProps {
-  readonly count?: number;
-  readonly openSetDetail: () => void;
-}
-
-const CountBadge: React.FC<CountBadgeProps> = ({
-  count,
-  openSetDetail,
-}: CountBadgeProps) => {
-  return (
-    <Tooltip
-      label="Set is either empty or deprecated."
-      disabled={count > 0}
-      withArrow
-    >
-      <Badge
-        variant="outline"
-        radius="xs"
-        className={`${
-          count === 0 ? "bg-nci-gray-lightest opacity-50" : "bg-white"
-        } cursor-pointer`}
-        color={count === 0 ? "gray" : "primary"}
-        leftSection={
-          count === 0 ? (
-            <WarningIcon className="text-warningColor" />
-          ) : undefined
-        }
-        onClick={openSetDetail}
-      >
-        {count?.toLocaleString() ?? "--"}
-      </Badge>
-    </Tooltip>
-  );
-};
-
 interface SelectedSetButtonProps {
-  readonly selection: SelectedSet[];
+  readonly selection: SetData[];
   readonly text: string;
   readonly onClick: () => void;
 }
@@ -142,185 +93,51 @@ const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
 };
 
 const ManageSets: React.FC = () => {
-  const [selectedSets, setSelectedSets] = useState<SelectedSet[]>([]);
-  const [detailSet, setDetailSet] = useState<SelectedSet>(undefined);
+  const [selectedSets, setSelectedSets] = useState<SetData[]>([]);
+  const [detailSet, setDetailSet] = useState<SetData>(undefined);
   const sets = useCoreSelector((state) => selectAllSets(state));
   const { data: geneCounts, isSuccess: geneCountsSuccess } =
     useGeneSetCountsQuery({ setIds: Object.keys(sets.genes) });
   const { data: ssmsCounts, isSuccess: ssmsCountsSuccess } =
     useSsmSetCountsQuery({ setIds: Object.keys(sets.ssms) });
 
+  const geneData: SetData[] = Object.entries(sets.genes).map(
+    ([setId, setName]) => ({
+      setId,
+      setName,
+      setType: "genes",
+      count: geneCountsSuccess ? geneCounts[setId] : undefined,
+    }),
+  );
+
+  const ssmData: SetData[] = Object.entries(sets.ssms).map(
+    ([setId, setName]) => ({
+      setId,
+      setName,
+      setType: "ssms",
+      count: ssmsCountsSuccess ? ssmsCounts[setId] : undefined,
+    }),
+  );
+
   const noSets =
     Object.keys(sets.genes).length === 0 && Object.keys(sets.ssms).length === 0;
   const deprecatedOrEmptySets =
-    (geneCountsSuccess &&
-      Object.values(geneCounts).some((count) => count === 0)) ||
-    (ssmsCountsSuccess &&
-      Object.values(ssmsCounts).some((count) => count === 0));
+    geneData.some(({ count }) => count !== undefined && count === 0) ||
+    ssmData.some(({ count }) => count !== undefined && count === 0);
   const selectedSetIds = selectedSets.map((set) => set.setId);
 
   const dispatch = useCoreDispatch();
 
-  const columns = useMemo(
-    () => [
-      {
-        id: "select",
-        columnName: "Select",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "entityType",
-        columnName: "Entity Type",
-        visible: true,
-      },
-      {
-        id: "name",
-        columnName: "Name",
-        visible: true,
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-      },
-      {
-        id: "actions",
-        columnName: "Actions",
-        visible: true,
-      },
-    ],
-    [],
-  );
-
   const updateSelectedSets = useCallback(
-    ({
-      setId,
-      setName,
-      setType,
-    }: {
-      setId: string;
-      setName: string;
-      setType: SetTypes;
-    }) => {
-      if (selectedSetIds.includes(setId)) {
-        setSelectedSets(selectedSets.filter((set) => set.setId !== setId));
+    (set: SetData) => {
+      if (selectedSetIds.includes(set.setId)) {
+        setSelectedSets(selectedSets.filter((set) => set.setId !== set.setId));
       } else {
-        setSelectedSets([...selectedSets, { setId, setName, setType }]);
+        setSelectedSets([...selectedSets, set]);
       }
     },
     [selectedSetIds, selectedSets],
   );
-
-  const tableData = useMemo(() => {
-    return [
-      ...Object.entries(sets.ssms).map(([setId, setName]) => ({
-        select: (
-          <Checkbox
-            value={setId}
-            checked={selectedSetIds.includes(setId)}
-            onChange={() =>
-              updateSelectedSets({ setId, setName, setType: "ssms" })
-            }
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        entityType: "Mutations",
-        name: setName,
-        count: (
-          <CountBadge
-            count={ssmsCounts?.[setId]}
-            openSetDetail={() =>
-              setDetailSet({ setId, setName, setType: "ssms" })
-            }
-          />
-        ),
-        actions: (
-          <>
-            <ActionIcon
-              size={20}
-              title="Remove From Cart"
-              aria-label="Remove from cart"
-              className="text-primary"
-              onClick={() => dispatch(removeSets([{ setId, setType: "ssms" }]))}
-            >
-              <TrashIcon />
-            </ActionIcon>
-          </>
-        ),
-      })),
-      ...Object.entries(sets.genes).map(([setId, setName]) => ({
-        select: (
-          <Checkbox
-            value={setId}
-            checked={selectedSetIds.includes(setId)}
-            onChange={() =>
-              updateSelectedSets({ setId, setName, setType: "genes" })
-            }
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        entityType: "Genes",
-        name: setName,
-        count: (
-          <CountBadge
-            count={geneCounts?.[setId]}
-            openSetDetail={() =>
-              setDetailSet({ setId, setName, setType: "genes" })
-            }
-          />
-        ),
-        actions: (
-          <>
-            <ActionIcon
-              size={20}
-              title="Remove From Cart"
-              aria-label="Remove from cart"
-              className="text-primary"
-              onClick={() =>
-                dispatch(removeSets([{ setId, setType: "genes" }]))
-              }
-            >
-              <TrashIcon />
-            </ActionIcon>
-          </>
-        ),
-      })),
-    ];
-  }, [
-    JSON.stringify(selectedSetIds),
-    sets,
-    geneCounts,
-    geneCountsSuccess,
-    ssmsCounts,
-    ssmsCountsSuccess,
-  ]);
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(tableData);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
 
   return noSets ? (
     <Grid justify="center" className="bg-base-lightest flex-grow">
@@ -332,6 +149,7 @@ const ManageSets: React.FC = () => {
           No saved sets available
         </p>
         <CreateSetInstructions />
+        <CreateSetButton />
       </Grid.Col>
     </Grid>
   ) : (
@@ -344,6 +162,36 @@ const ManageSets: React.FC = () => {
       <CreateSetInstructions />
       <div className="flex flex-row gap-2 py-2">
         <CreateSetButton />
+        <SelectedSetButton
+          selection={selectedSets}
+          text={"Export Selected"}
+          onClick={() => {
+            const today = new Date();
+            download({
+              endpoint: "tar_sets",
+              params: {
+                attachment: true,
+                filename: `gdc_sets.${convertDateToString(today)}.tar.gz`,
+                sets: selectedSets.map(({ setId, setType, setName }) => ({
+                  id: setId,
+                  type: setType === "genes" ? "gene" : "ssm",
+                  filename: `${setType === "genes" ? "gene" : "ssm"}${
+                    selectedSets.length === 1 ? "_set" : ""
+                  }_${setName.replace(/[^A-Za-z0-9_.]/g, "_")}.tsv`,
+                })),
+              },
+              options: {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+              method: "POST",
+              dispatch,
+              form: true,
+            });
+          }}
+        />
         <SelectedSetButton
           selection={selectedSets}
           text={"Delete Selected"}
@@ -361,28 +209,8 @@ const ManageSets: React.FC = () => {
             color="primary"
             className="border-primary"
             onClick={() => {
-              const emptyGeneSetIds = Object.entries(geneCounts)
-                .filter((set) => set[1] === 0)
-                .map((set) => set[0]);
-              const emptySsmSetIds = Object.entries(ssmsCounts)
-                .filter((set) => set[1] === 0)
-                .map((set) => set[0]);
-
-              const emptyGeneSets = Object.entries(sets.genes)
-                .map(([setId, setName]) => ({
-                  setId,
-                  setName,
-                  setType: "genes" as SetTypes,
-                }))
-                .filter((set) => emptyGeneSetIds.includes(set.setId));
-
-              const emptySsmSets = Object.entries(sets.ssms)
-                .map(([setId, setName]) => ({
-                  setId,
-                  setName,
-                  setType: "ssms" as SetTypes,
-                }))
-                .filter((set) => emptySsmSetIds.includes(set.setId));
+              const emptyGeneSets = geneData.filter((set) => set.count === 0);
+              const emptySsmSets = ssmData.filter((set) => set.count === 0);
 
               dispatch(removeSets([...emptyGeneSets, ...emptySsmSets]));
             }}
@@ -391,24 +219,13 @@ const ManageSets: React.FC = () => {
           </Button>
         )}
       </div>
-      <div className="w-3/4">
-        <VerticalTable
-          tableData={displayedData}
-          columns={columns}
-          selectableRow={false}
-          showControls={false}
-          pagination={{
-            page,
-            pages,
-            size,
-            from,
-            total,
-            label: "sets",
-          }}
-          handleChange={handleChange}
-          columnSorting={"manual"}
-        />
-      </div>
+      <ManageSetsTable
+        geneData={geneData}
+        ssmData={ssmData}
+        selectedSets={selectedSets}
+        updateSelectedSets={updateSelectedSets}
+        setDetailSet={setDetailSet}
+      />
       <SetDetailPanel
         set={detailSet}
         closePanel={() => setDetailSet(undefined)}
