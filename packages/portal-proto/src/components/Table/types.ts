@@ -3,6 +3,7 @@ import {
   ColumnDef,
   ColumnOrderState,
   ColumnSort,
+  ExpandedState,
   Row,
   SortingState,
   VisibilityState,
@@ -39,7 +40,13 @@ interface PaginationOptions {
 export interface TableProps<TData> {
   columns: ColumnDef<TData, any>[];
   data: TData[];
-  renderSubComponent?: ({ row }: { row: Row<TData> }) => React.ReactElement;
+  // ({
+  //   row,
+  // }: {
+  //   row: Row<TData>;
+  // }) => React.ReactElement
+  renderSubComponent?: React.ReactElement;
+  //renderSubComponent?: any;
   getRowCanExpand?: (row: Row<TData>) => boolean;
   isColumnCustomizable?: boolean;
   footer?: React.ReactNode;
@@ -87,6 +94,18 @@ export interface TableProps<TData> {
     defaultSearchTerm?: string;
   };
   /**
+   * Column sorting
+   *
+   * - `none` - no sorting
+   *
+   * - `enable` - sorts data in table
+   *
+   * - `manual` - uses handleChange callback to enable manual sorting
+   *
+   * @defaultValue 'none'
+   */
+  columnSorting?: "none" | "enable" | "manual";
+  /**
    * shows column sorting controls and search bar
    * @defaultValue false
    */
@@ -105,15 +124,16 @@ export interface TableProps<TData> {
   disablePageSize?: boolean;
   columnVisibility?: VisibilityState;
   setColumnVisibility?: Dispatch<SetStateAction<VisibilityState>>;
-  sorting?: SortingState;
-  setSorting?: Dispatch<SetStateAction<SortingState>>;
+  initialSorting?: SortingState;
   columnOrder?: ColumnOrderState;
   setColumnOrder?: Dispatch<SetStateAction<ColumnOrderState>>;
-  setSortedRow?;
   enableSorting?;
-  onExpandedChange?
-  expanded?
-  ariaTextOverwrite?
+
+  ariaTextOverwrite?;
+  sorting?;
+  setSorting?;
+  expanded?: ExpandedState;
+  setExpanded?: Dispatch<SetStateAction<ExpandedState>>;
 }
 
 export interface HandleChangeInput {

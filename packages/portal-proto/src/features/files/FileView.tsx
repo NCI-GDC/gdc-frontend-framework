@@ -228,25 +228,20 @@ const AssociatedCB = ({
       columnHelper.accessor("entity_id", {
         header: "Entity ID",
         cell: ({ getValue }) => getValue(),
-        enableSorting: false,
       }),
       columnHelper.accessor("entity_type", {
         header: "Entity Type",
-        enableSorting: false,
       }),
       columnHelper.accessor("sample_type", {
         header: "Sample Type",
-        enableSorting: false,
       }),
       columnHelper.accessor("case_id", {
         header: "Case ID",
-        enableSorting: false,
         cell: ({ getValue }) => getValue(),
       }),
       columnHelper.accessor("annotations", {
         header: "Annotations",
         cell: ({ getValue }) => getValue(),
-        enableSorting: false,
       }),
     ],
     [columnHelper],
@@ -474,13 +469,13 @@ export const FileView: React.FC<FileViewProps> = ({
   );
   type DataItem = {
     // probably send in data item
+    file: GdcCartFile;
     file_name: string;
     file_id: string;
     data_category: string;
     data_type: string;
     data_format: string;
     file_size: string;
-    action: JSX.Element;
   };
 
   const AnalysisInputFiles = ({
@@ -490,20 +485,13 @@ export const FileView: React.FC<FileViewProps> = ({
   }): JSX.Element => {
     const data: DataItem[] = useMemo(() => {
       return inputFiles.map((ipFile) => ({
+        file: ipFile,
         file_name: ipFile.file_name,
         file_id: ipFile.file_id,
         data_category: ipFile.data_category,
         data_type: ipFile.data_type,
         data_format: ipFile.data_format,
         file_size: fileSize(ipFile.file_size),
-        action: (
-          <TableActionButtons
-            isOutputFileInCart={fileInCart(currentCart, ipFile.file_id)}
-            file={mapGdcFileToCartFile([ipFile])}
-            downloadFile={ipFile}
-            setFileToDownload={setfileToDownload}
-          />
-        ),
       }));
     }, [inputFiles]);
 
@@ -519,29 +507,30 @@ export const FileView: React.FC<FileViewProps> = ({
               text={row.original.file_name}
             />
           ),
-          enableSorting: false,
         }),
         columnHelper.accessor("data_category", {
           header: "Data Category",
-          enableSorting: false,
         }),
         columnHelper.accessor("data_type", {
           header: "Data Type",
-          enableSorting: false,
         }),
         columnHelper.accessor("data_format", {
           header: "Data Format",
-          enableSorting: false,
         }),
         columnHelper.accessor("file_size", {
           header: "Size",
-          enableSorting: false,
         }),
-        // should be a display
-        columnHelper.accessor("action", {
+        columnHelper.display({
+          id: "action",
           header: "Action",
-          cell: (info) => info.getValue(),
-          enableSorting: false,
+          cell: ({ row }) => (
+            <TableActionButtons
+              isOutputFileInCart={fileInCart(currentCart, row.original.file_id)}
+              file={mapGdcFileToCartFile([row.original.file])}
+              downloadFile={row.original.file}
+              setFileToDownload={setfileToDownload}
+            />
+          ),
         }),
       ],
       [columnHelper],

@@ -2,22 +2,23 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Checkbox, Tooltip } from "@mantine/core";
-import { HeaderTooltip } from "../../components/Table/HeaderTooltip";
-import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
-import { PopupIconButton } from "../../components/PopupIconButton/PopupIconButton";
-import { CohortCreationButton } from "../../components/CohortCreationButton";
-import {
-  AnnotationsIcon,
-  NumeratorDenominator,
-  RatioSpring,
-} from "../../components/expandableTables/shared";
+
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import { CountButton } from "../../components/CountButton/CountButton";
 import { entityMetadataType } from "@/utils/contexts";
 import { FilterSet, GeneRowInfo } from "@gff/core";
+import { CountButton } from "@/components/CountButton/CountButton";
+import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
+import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
+import { CohortCreationButton } from "@/components/CohortCreationButton";
+import {
+  AnnotationsIcon,
+  NumeratorDenominator,
+  RatioSpring,
+} from "@/components/expandableTables/shared";
+import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -54,6 +55,7 @@ export const useGenerateGenesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -65,6 +67,7 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -107,7 +110,7 @@ export const useGenerateGenesTableColumns = ({
         cell: ({ row }) => (
           <GenesTableSurvival
             SSMSAffectedCasesInCohort={
-              row.original["#_SSM_Affected_Cases_In_Cohort"]
+              row.original["#_ssm_affected_cases_in_cohort"]
             }
             survival={row.original.survival}
             handleSurvivalPlotToggled={handleSurvivalPlotToggled}
@@ -174,15 +177,15 @@ export const useGenerateGenesTableColumns = ({
             label={
               <NumeratorDenominator
                 numerator={
-                  row.original["#_SSM_Affected_Cases_In_Cohort"].numerator
+                  row.original["#_ssm_affected_cases_in_cohort"].numerator
                 }
                 denominator={
-                  row.original["#_SSM_Affected_Cases_In_Cohort"].denominator
+                  row.original["#_ssm_affected_cases_in_cohort"].denominator
                 }
                 boldNumerator={true}
               />
             }
-            numCases={row.original["#_SSM_Affected_Cases_In_Cohort"].numerator}
+            numCases={row.original["#_ssm_affected_cases_in_cohort"].numerator}
             handleClick={() => {
               setColumnType("ssmaffected");
               setGeneID(row.original.gene_id);
@@ -192,7 +195,7 @@ export const useGenerateGenesTableColumns = ({
         ),
       }),
       genesTableColumnHelper.display({
-        id: "#_SSM_Affected_Cases_Across_The_GDC",
+        id: "#_ssm_affected_cases_across_the_gdc",
         header: () => (
           <HeaderTooltip
             title={`# SSM Affected Cases
@@ -203,7 +206,7 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => {
           const { numerator, denominator } = row?.original[
-            "#_SSM_Affected_Cases_Across_The_GDC"
+            "#_ssm_affected_cases_across_the_gdc"
           ] ?? { numerator: 0, denominator: 1 };
           return (
             <div className="flex items-center gap-2">
@@ -214,7 +217,7 @@ export const useGenerateGenesTableColumns = ({
                     aria-expanded={row.getCanExpand() ? "true" : "false"}
                     {...{
                       onClick: () => {
-                        // setGeneID(row.original[`geneID`]);
+                        setGeneID(row.original.gene_id);
                         row.toggleExpanded();
                       },
                       style: { cursor: "pointer" },
@@ -236,7 +239,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_CNV_Gain",
+        id: "#_cnv_gain",
         header: () => (
           <HeaderTooltip
             title="# CNV Gain"
@@ -246,7 +249,7 @@ export const useGenerateGenesTableColumns = ({
           />
         ),
         cell: ({ row }) => {
-          const { numerator, denominator } = row.original["#_CNV_Gain"] ?? {
+          const { numerator, denominator } = row.original["#_cnv_gain"] ?? {
             numerator: 0,
             denominator: 1,
           };
@@ -270,7 +273,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_CNV_Loss",
+        id: "#_cnv_loss",
         header: () => (
           <HeaderTooltip
             title="# CNV Loss"
@@ -280,7 +283,7 @@ export const useGenerateGenesTableColumns = ({
           />
         ),
         cell: ({ row }) => {
-          const { numerator, denominator } = row.original["#_CNV_Loss"] ?? {
+          const { numerator, denominator } = row.original["#_cnv_loss"] ?? {
             numerator: 0,
             denominator: 1,
           };

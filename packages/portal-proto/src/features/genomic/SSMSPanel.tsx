@@ -3,12 +3,12 @@ import dynamic from "next/dynamic";
 import partial from "lodash/partial";
 import { LoadingOverlay } from "@mantine/core";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { SMTableContainer } from "@/features/SomaticMutations/SMTableContainer";
 import { emptySurvivalPlot } from "@/features/genomic/types";
 import {
   useGeneAndSSMPanelData,
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
+import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
 });

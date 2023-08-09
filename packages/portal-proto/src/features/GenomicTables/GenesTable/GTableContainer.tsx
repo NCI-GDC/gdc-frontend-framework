@@ -15,6 +15,7 @@ import {
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromFiltersMutation,
   GDCGenesTable,
+  useGetGeneTableSubrowQuery,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
@@ -26,18 +27,22 @@ import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { filtersToName } from "src/utils";
 import download from "src/utils/download";
-import { ButtonTooltip } from "../../components/expandableTables/shared";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { ColumnOrderState, VisibilityState } from "@tanstack/react-table";
+import {
+  ColumnOrderState,
+  ExpandedState,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { DropdownWithIcon } from "../../components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
-import CreateCohortModal from "../../components/Modals/CreateCohortModal";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
-import GeneSubcomponent from "./GeneSubcomponent";
+import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import GenomicTableSubcomponent from "../GenomicTableSubcomponent";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -263,7 +268,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    gene_ID: false,
+    gene_id: false,
     cytoband: false,
     type: false,
   });
@@ -317,7 +322,17 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   // useEffect(() => {
   //   setPage(1);
   // }, [pageSize]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
 
+  const handleExpand = (exp) => {
+    if (isEqual(exp(), expanded)) {
+      setExpanded({});
+    } else {
+      setExpanded(exp());
+    }
+  };
+
+  console.log({ expanded });
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
@@ -465,11 +480,18 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setRowSelection={setRowSelection}
         rowSelection={rowSelection}
         getRowCanExpand={() => true}
-        renderSubComponent={GeneSubcomponent}
+        renderSubComponent={
+          <GenomicTableSubcomponent
+            query={useGetGeneTableSubrowQuery}
+            id={geneID}
+          />
+        }
         setColumnVisibility={setColumnVisibility}
         columnVisibility={columnVisibility}
         columnOrder={columnOrder}
         setColumnOrder={setColumnOrder}
+        expanded={expanded}
+        setExpanded={handleExpand}
       />
     </>
   );

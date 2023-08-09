@@ -45,7 +45,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
   const subDataSorted = useMemo(
     () =>
       subData
-        .map((x): TableSubrowDataWithRatio => ({ ...x, ratio: itemRatio(x) }))
+        ?.map((x): TableSubrowDataWithRatio => ({ ...x, ratio: itemRatio(x) }))
         .sort((a: TableSubrowDataWithRatio, b: TableSubrowDataWithRatio) => {
           if (itemRatio(a) > itemRatio(b)) return -1;
           if (itemRatio(a) < itemRatio(b)) return 1;
@@ -57,7 +57,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
   const renderItems = useCallback(
     (item: TableSubrowDataWithRatio, index: number) => {
       return (
-        <div className="flex items-center">
+        <div className="flex items-center" key={`item-${index}`}>
           <Circle size="0.65em" className="text-primary shrink-0 mr-2" />
           <RatioSpring
             item={{
@@ -75,10 +75,7 @@ const ListSpring: React.FC<ListSpringProps> = ({
 
   return (
     <>
-      <animated.div
-        ref={subRef}
-        className="absolute mt-2 ml-2"
-      >
+      <animated.div ref={subRef} className="absolute mt-2 ml-2">
         <div className="font-semibold text-[1rem] mb-2">{subrowTitle}</div>
         <div className="columns-4 gap-4 font-content text-sm">
           {subDataSorted.map((item, i) => renderItems({ ...item }, i))}

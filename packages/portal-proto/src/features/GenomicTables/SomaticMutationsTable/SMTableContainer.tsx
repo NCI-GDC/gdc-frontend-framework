@@ -15,6 +15,7 @@ import {
   useCreateCaseSetFromFiltersMutation,
   addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
+  useGetSomaticMutationTableSubrowQuery,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
@@ -32,14 +33,18 @@ import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { SummaryModalContext } from "@/utils/contexts";
 import { HandleChangeInput } from "@/components/Table/types";
-import { ColumnOrderState, VisibilityState } from "@tanstack/react-table";
+import {
+  ColumnOrderState,
+  ExpandedState,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { statusBooleansToDataStatus } from "../shared/utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import SMTableSubcomponent from "./SMTableSubcomponent";
+import GenomicTableSubcomponent from "../GenomicTableSubcomponent";
+import { statusBooleansToDataStatus } from "@/features/shared/utils";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -343,7 +348,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
-  console.log({ formattedTableData });
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const handleExpand = (exp) => {
+    if (isEqual(exp(), expanded)) {
+      setExpanded({});
+    } else {
+      setExpanded(exp());
+    }
+  };
 
   return (
     <>
@@ -491,7 +504,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 isError,
               )}
               getRowCanExpand={() => true}
-              renderSubComponent={SMTableSubcomponent}
+              renderSubComponent={
+                <GenomicTableSubcomponent
+                  query={useGetSomaticMutationTableSubrowQuery}
+                  id={mutationID}
+                />
+              }
               handleChange={handleChange}
               setColumnVisibility={setColumnVisibility}
               columnVisibility={columnVisibility}
@@ -501,6 +519,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 searchTermsForGene?.geneSymbol &&
                 `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
               }
+              expanded={expanded}
+              setExpanded={handleExpand}
             />
           </div>
         </>

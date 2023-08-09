@@ -527,6 +527,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         header: "Select",
         cell: ({ row }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -608,7 +609,11 @@ const SetOperations: React.FC<SetOperationsProps> = ({
       [clickedKey]: !selectedSets[clickedKey],
     });
   };
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [summaryTablesorting, setSummaryTableSorting] = useState<SortingState>(
+    [],
+  );
+  const [operationTablesorting, setOperationTableSorting] =
+    useState<SortingState>([]);
   return (
     <div className="flex flex-col p-2">
       <div>
@@ -630,8 +635,9 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             data={summaryTableData}
             columns={summaryTableColumns}
             showControls={false}
-            sorting={sorting}
-            setSorting={setSorting}
+            sorting={summaryTablesorting}
+            setSorting={setSummaryTableSorting}
+            columnSorting="enable"
           />
           <div className="m-8" />
           <VerticalTable
@@ -641,8 +647,9 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             setRowSelection={setRowSelection}
             rowSelection={rowSelection}
             showControls={false}
-            sorting={sorting}
-            setSorting={setSorting}
+            sorting={operationTablesorting}
+            setSorting={setOperationTableSorting}
+            columnSorting="enable"
             footer={
               <tr>
                 <td className="p-2 font-bold">Union of selected sets:</td>

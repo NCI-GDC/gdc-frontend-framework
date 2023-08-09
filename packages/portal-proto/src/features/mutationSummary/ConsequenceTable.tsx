@@ -13,14 +13,16 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
-import ImpactHeaderWithTooltip from "../SomaticMutations/TableComponents/ImpactHeaderWithTooltip";
+import { AnchorLink } from "@/components/AnchorLink";
+import { externalLinks } from "@/utils/index";
+import {
+  ButtonTooltip,
+  ImpactHeaderWithTooltip,
+} from "@/components/expandableTables/shared";
 import {
   SMTableConsequences,
   SMTableImpacts,
-} from "../SomaticMutations/TableComponents";
-import { AnchorLink } from "@/components/AnchorLink";
-import { externalLinks } from "@/utils/index";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+} from "../GenomicTables/SomaticMutationsTable/TableComponents";
 
 export const ConsequenceTable = ({
   ssmsId,

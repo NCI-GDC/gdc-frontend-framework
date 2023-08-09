@@ -144,9 +144,7 @@ function List<TData>({
     <ul>
       {columns
         .filter((column) => {
-          // select has something else
-          // better way to do it?
-          if (column.id !== "select") {
+          if (!["select", "remove", "cart"].includes(column.id)) {
             return humanify({ term: column.id })
               .toLowerCase()
               .includes(searchValue.toLowerCase());
@@ -155,8 +153,7 @@ function List<TData>({
           }
         })
         .map((column, index) => {
-          // need to standardize select for all select rows
-          return column.id !== "select" ? (
+          return !["select", "remove", "cart"].includes(column.id) ? (
             <ColumnItem
               key={column.id}
               column={column}

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import fileSize from "filesize";
 import { capitalize } from "lodash";
 import {
@@ -7,74 +7,63 @@ import {
   useGetFilesQuery,
   useCoreDispatch,
   CartFile,
+  SortBy,
 } from "@gff/core";
-import {
-  VerticalTable,
-  HandleChangeInput,
-  Columns,
-  filterColumnCells,
-} from "@/features/shared/VerticalTable";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { downloadTSV } from "../shared/TableUtils";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
+import {
+  getAnnotationsLinkParamsFromFiles,
+  statusBooleansToDataStatus,
+} from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 import Link from "next/link";
-
-const initialVisibleColumns: Columns[] = [
-  { id: "remove", columnName: "Remove", visible: true, arrangeable: false },
-  { id: "uuid", columnName: "File UUID", visible: false },
-  { id: "access", columnName: "Access", visible: true },
-  { id: "name", columnName: "File Name", visible: true },
-  { id: "cases", columnName: "Cases", visible: true },
-  { id: "project", columnName: "Project", visible: true },
-  { id: "data_category", columnName: "Data Category", visible: true },
-  { id: "data_type", columnName: "Data Type", visible: false },
-  { id: "data_format", columnName: "Data Format", visible: true },
-  {
-    id: "experimental_strategy",
-    columnName: "Experimental Strategy",
-    visible: false,
-  },
-  { id: "platform", columnName: "Platform", visible: false },
-  { id: "file_size", columnName: "File Size", visible: true },
-  { id: "annotations", columnName: "Annotations", visible: true },
-];
+import { FilesTableDataType } from "../repositoryApp/FilesTable";
+import {
+  ColumnDef,
+  ColumnOrderState,
+  SortingState,
+  VisibilityState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { HandleChangeInput } from "@/components/Table/types";
+import { dowloadTSVNew } from "@/components/Table/utils";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
 
 const FilesTable: React.FC<FilesTableProps> = () => {
-  const [tableData, setTableData] = useState([]);
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const cart = useCoreSelector((state) => selectCart(state));
+  const dispatch = useCoreDispatch();
+  const [tableData, setTableData] = useState<FilesTableDataType[]>([]);
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
-  const [visibleColumns, setVisibleColumns] = useState(
-    filterColumnCells(initialVisibleColumns),
-  );
-  const [columns, setColumns] = useState(initialVisibleColumns);
+  const [sortBy, setSortBy] = useState<SortBy[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        setPageSize(parseInt(obj.newPageSize));
-        break;
-      case "newPageNumber":
-        setActivePage(obj.newPageNumber);
-        break;
-      case "newHeadings":
-        setVisibleColumns(filterColumnCells(obj.newHeadings));
-        setColumns(obj.newHeadings);
-        break;
-    }
+  const sortByActions = (sortByObj: SortingState) => {
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
+      let tempSortId = sortObj.id;
+      // map sort ids to api ids
+      if (sortObj.id === "project") {
+        tempSortId = "cases.project.project_id";
+      } else if (sortObj.id === "file_uuid") {
+        tempSortId = "file_id";
+      }
+      return {
+        field: tempSortId,
+        direction: sortObj.desc ? "desc" : "asc",
+      };
+    });
+    setSortBy(tempSortBy);
   };
 
-  const dispatch = useCoreDispatch();
-  const cart = useCoreSelector((state) => selectCart(state));
   const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
@@ -88,101 +77,229 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             value: cart.map((f) => f.file_id),
           },
         },
+        {
+          op: "or",
+          content: [
+            {
+              op: "=",
+              content: {
+                field: "files.file_id",
+                value: `*${searchTerm}*`,
+              },
+            },
+            {
+              op: "=",
+              content: {
+                field: "files.file_name",
+                value: `*${searchTerm}*`,
+              },
+            },
+          ],
+        },
       ],
     },
     expand: ["annotations", "cases", "cases.project"],
+    sortBy: sortBy,
   });
-
-  const { setEntityMetadata } = useContext(SummaryModalContext);
 
   useEffect(() => {
     setTableData(
       isSuccess
-        ? data?.files.map((file) => ({
-            remove: <RemoveFromCartButton files={[file]} iconOnly />,
-            uuid: (
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "file",
-                    entity_id: file.file_id,
-                  })
-                }
-                label={file.file_id}
-                customStyle="text-utility-link underline font-content text-left"
-              />
-            ),
-            access: <FileAccessBadge access={file.access} />,
-            name: (
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "file",
-                    entity_id: file.file_id,
-                  })
-                }
-                label={file.file_name}
-                customStyle="text-utility-link underline font-content text-left"
-              />
-            ),
-            cases: (
-              <PopupIconButton
-                handleClick={() => {
-                  if (file.cases?.length === 0) return;
-                  setEntityMetadata({
-                    entity_type: file.cases?.length === 1 ? "case" : "file",
-                    entity_id:
-                      file.cases?.length === 1
-                        ? file.cases?.[0].case_id
-                        : file.file_id,
-                  });
-                }}
-                label={file.cases?.length.toLocaleString() || 0}
-                customAriaLabel={`Open ${
-                  file.cases?.length === 1 ? "case" : "file"
-                } information in modal`}
-                customStyle={`font-content ${
-                  file.cases?.length > 0
-                    ? "text-utility-link underline"
-                    : "cursor-default"
-                }`}
-              />
-            ),
-            project: (
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "project",
-                    entity_id: file.project_id,
-                  })
-                }
-                label={file.project_id}
-                customStyle="text-utility-link underline font-content"
-              />
-            ),
+        ? (data?.files.map((file) => ({
+            file: file,
+            file_uuid: file.file_id,
+            access: file.access,
+            file_name: file.file_name,
+            cases: file.cases,
+            project: file.project_id,
             data_category: file.data_category,
-            data_format: file.data_format,
-            file_size: fileSize(file.file_size),
-            annotations: (
-              <>
-                {getAnnotationsLinkParamsFromFiles(file) ? (
-                  <Link href={getAnnotationsLinkParamsFromFiles(file)} passHref>
-                    <a className="text-utility-link underline" target="_blank">
-                      {file.annotations.length}
-                    </a>
-                  </Link>
-                ) : (
-                  file?.annotations?.length ?? 0
-                )}
-              </>
-            ),
             data_type: file.data_type,
+            data_format: file.data_format,
             experimental_strategy: file.experimental_strategy || "--",
             platform: file.platform || "--",
-          }))
+            file_size: fileSize(file.file_size),
+            annotations: file.annotations,
+          })) as FilesTableDataType[])
         : [],
     );
-  }, [isSuccess, data, setEntityMetadata]);
+  }, [isSuccess, data?.files, setEntityMetadata]);
+
+  const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
+  const cartFilesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
+    () => [
+      cartFilesTableColumnHelper.display({
+        id: "remove",
+        header: "Remove",
+        cell: ({ row }) => (
+          <RemoveFromCartButton files={[row.original.file]} iconOnly />
+        ),
+      }),
+      cartFilesTableColumnHelper.accessor("file_uuid", {
+        id: "file_uuid",
+        header: "File UUID",
+        cell: ({ getValue }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "file",
+                entity_id: getValue(),
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content text-left"
+          />
+        ),
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("access", {
+        id: "access",
+        header: "Access",
+        cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("file_name", {
+        id: "file_name",
+        header: "File Name",
+        cell: ({ getValue, row }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "file",
+                entity_id: row.original.file_uuid,
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content text-left"
+          />
+        ),
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.display({
+        id: "cases",
+        header: "Cases",
+        cell: ({ row }) => (
+          <PopupIconButton
+            handleClick={() => {
+              if (row.original.cases?.length === 0) return;
+              setEntityMetadata({
+                entity_type: row.original.cases?.length === 1 ? "case" : "file",
+                entity_id:
+                  row.original.cases?.length === 1
+                    ? row.original.cases?.[0].case_id
+                    : row.original.file_uuid,
+              });
+            }}
+            label={row.original.cases?.length.toLocaleString() || 0}
+            customAriaLabel={`Open ${
+              row.original.cases?.length === 1 ? "case" : "file"
+            } information in modal`}
+            customStyle={`font-content ${
+              row.original.cases?.length > 0
+                ? "text-utility-link underline"
+                : "cursor-default"
+            }`}
+          />
+        ),
+      }),
+      cartFilesTableColumnHelper.accessor("project", {
+        id: "project",
+        header: "Project",
+        cell: ({ getValue }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "project",
+                entity_id: getValue(),
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content"
+          />
+        ),
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("data_category", {
+        id: "data_category",
+        header: "Data Category",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("data_type", {
+        id: "data_type",
+        header: "Data Type",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("data_format", {
+        id: "data_format",
+        header: "Data Format",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("experimental_strategy", {
+        id: "experimental_strategy",
+        header: "Experimental Strategy",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("platform", {
+        id: "platform",
+        header: "Platform",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.accessor("file_size", {
+        id: "file_size",
+        header: "File Size",
+        enableSorting: true,
+      }),
+      cartFilesTableColumnHelper.display({
+        id: "annotations",
+        header: "Annotations",
+        cell: ({ row }) => (
+          <span className="font-content">
+            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
+              <Link
+                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
+                passHref
+              >
+                <a
+                  className="text-utility-link underline font-content"
+                  target="_blank"
+                >
+                  {row.original.annotations.length}
+                </a>
+              </Link>
+            ) : (
+              row.original?.annotations?.length ?? 0
+            )}
+          </span>
+        ),
+      }),
+    ],
+    [cartFilesTableColumnHelper, setEntityMetadata],
+  );
+
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    cartFilesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    file_uuid: false,
+    data_type: false,
+    experimental_strategy: false,
+    platform: false,
+  });
+
+  const handleChange = useCallback((obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setActivePage(1);
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setActivePage(obj.newPageNumber);
+        break;
+      case "newSearch":
+        setActivePage(1);
+        setSearchTerm(obj.newSearch);
+        break;
+    }
+  }, []);
 
   const handleDownloadJSON = async () => {
     await download({
@@ -231,51 +348,40 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     });
   };
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  useEffect(() => {
+    sortByActions(sorting);
+  }, [sorting]);
+
   const handleDownloadTSV = () => {
-    downloadTSV(
-      data?.files,
-      visibleColumns,
-      `files-table.${convertDateToString(new Date())}.tsv`,
-      {
+    dowloadTSVNew({
+      tableData,
+      columnOrder,
+      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      columnVisibility,
+      columns: cartFilesTableDefaultColumns,
+      option: {
         blacklist: ["remove"],
         overwrite: {
-          uuid: {
-            composer: "file_id",
-          },
           access: {
             composer: (file) => capitalize(file.access),
-          },
-          name: {
-            composer: "file_name",
           },
           cases: {
             composer: (file) => file.cases?.length.toLocaleString() || 0,
           },
-          project: {
-            composer: "project_id",
-          },
-          file_size: {
-            composer: (file) => fileSize(file.file_size),
-          },
           annotations: {
             composer: (file) => file.annotations?.length || 0,
           },
-          experimental_strategy: {
-            composer: (file) => file.experimental_strategy || "--",
-          },
-          platform: {
-            composer: (file) => file.platform || "--",
-          },
         },
       },
-    );
+    });
   };
 
   return (
     <VerticalTable
-      tableData={tableData}
-      columns={columns}
-      selectableRow={false}
+      data={tableData}
+      columns={cartFilesTableDefaultColumns}
       additionalControls={
         <div className="flex gap-2 mb-2">
           <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
@@ -286,17 +392,20 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         ...data?.pagination,
         label: "files",
       }}
+      status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
-      status={
-        // convert to CoreSelector status
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
+      search={{
+        enabled: true,
+      }}
+      showControls={true}
+      setColumnVisibility={setColumnVisibility}
+      columnVisibility={columnVisibility}
+      columnOrder={columnOrder}
+      columnSorting="manual"
+      sorting={sorting}
+      setSorting={setSorting}
+      setColumnOrder={setColumnOrder}
+      enableSorting={true}
     />
   );
 };

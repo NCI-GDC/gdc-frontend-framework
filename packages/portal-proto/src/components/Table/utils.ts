@@ -1,17 +1,9 @@
 import {
   ColumnDef,
   ColumnOrderState,
-  Row,
   VisibilityState,
 } from "@tanstack/react-table";
 import saveAs from "file-saver";
-
-// type ColumnComposerFunction = (
-//     row: Record<string, any>,
-//     accessor: string,
-//     header: ColumnDefTemplate<HeaderContext<TData, unknown>>,
-//     rowIndex: number,
-//   ) => string;
 
 export function dowloadTSVNew<TData>({
   tableData,
@@ -21,7 +13,7 @@ export function dowloadTSVNew<TData>({
   fileName,
   option,
 }: {
-  tableData: Row<TData>[];
+  tableData: TData[];
   columns: ColumnDef<TData>[];
   columnOrder: ColumnOrderState;
   columnVisibility: VisibilityState;
@@ -33,7 +25,7 @@ export function dowloadTSVNew<TData>({
       string,
       {
         header?: string;
-        // composer?: string | ColumnComposerFunction;
+        composer?: (data: TData) => void;
       }
     >;
   };
@@ -65,10 +57,11 @@ export function dowloadTSVNew<TData>({
     .join("\t");
 
   const body = (tableData || [])
-    .map((obj) =>
+    .map((datum) =>
       sortedColumns
         .map((column) => {
-          return obj?.original[column.id];
+          const composer = option?.overwrite?.[column.id]?.composer;
+          return composer ? composer(datum) : datum?.[column.id];
         })
         .join("\t"),
     )

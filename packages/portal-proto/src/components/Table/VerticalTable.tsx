@@ -11,8 +11,7 @@ import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
-import { DataStatus, usePrevious } from "@gff/core";
-import { isEqual } from "lodash";
+import { DataStatus } from "@gff/core";
 import { PaginationOptions } from "@/features/shared/VerticalTable";
 
 function VerticalTable<TData>({
@@ -36,27 +35,31 @@ function VerticalTable<TData>({
   setColumnVisibility,
   columnOrder,
   setColumnOrder,
+  columnSorting = "none",
+  ariaTextOverwrite,
   sorting,
   setSorting,
-  setSortedRow,
-  enableSorting = false,
-  ariaTextOverwrite,
-}: // onExpandedChange,
-// expanded,
-TableProps<TData>): JSX.Element {
+  expanded,
+  setExpanded,
+}: TableProps<TData>): JSX.Element {
   // DECIDE WHERE TO KEEP sorting, setsorting, AND ALSO OTHERS???
-
-  // probably need to move it up to the parent
-
   const [showLoading, setShowLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const [ariaText, setAriaText] = useState(
     ariaTextOverwrite ?? "Table Search Input",
   );
-
+  // const [expandedRow, setExpandedRow] = useState(null);
   useEffect(() => {
     setShowLoading(status === "pending" || status === "uninitialized");
   }, [status]);
+
+  // const handleRowToggle = (rowIndex) => {
+  //   if (expandedRow === rowIndex) {
+  //     setExpandedRow(null);
+  //   } else {
+  //     setExpandedRow(rowIndex);
+  //   }
+  // };
 
   const table = useReactTable({
     columns,
@@ -71,28 +74,22 @@ TableProps<TData>): JSX.Element {
       rowSelection,
       columnVisibility,
       columnOrder,
-      //  expanded: expanded,
+      expanded,
     },
-    // onExpandedChange: onExpandedChange,
-    // sortDescFirst: false,
-    autoResetExpanded: true,
+    manualSorting: columnSorting === "manual",
+    sortDescFirst: false,
+    autoResetExpanded: false,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
     enableRowSelection: enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
-    enableSorting: enableSorting,
+    enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
-
-  const prevSortedRowModelRow = usePrevious(table.getSortedRowModel().rows);
-  const sortedRowModel = table.getSortedRowModel().rows;
-  useEffect(() => {
-    if (!isEqual(prevSortedRowModelRow, sortedRowModel))
-      setSortedRow && setSortedRow(table.getSortedRowModel().rows);
-  }, [prevSortedRowModelRow, sortedRowModel, table, setSortedRow]);
 
   // Probably make this a separate component
   // For smoother setting of pagination so the values don't bounce around when loading new data
@@ -145,8 +142,7 @@ TableProps<TData>): JSX.Element {
       }, 250);
       return () => clearTimeout(delayDebounceFn);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm]);
+  }, [searchTerm, handleChange]);
 
   return (
     <div className="grow overflow-hidden">
@@ -226,47 +222,71 @@ TableProps<TData>): JSX.Element {
                   key={headerGroup.id}
                   className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
                 >
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className={
-                        header.column.getCanSort()
-                          ? "cursor-pointer select-none px-2 py-3 font-heading bg-base-max"
-                          : "px-2 py-3 font-heading bg-base-max"
-                      } //need to combine this
-                      onClick={() => {
-                        // maybe pass in custom sorting logic for some tables if neccessary
-                        // if custom logic is provided use it otherwise call below
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                      {/* how to make sure that this is only seen for true
+                  {headerGroup.headers.map((header) => {
+                    return columnSorting === "none" ? (
+                      <th
+                        className="px-2 py-3 font-heading bg-base-max"
+                        key={header.id}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                      </th>
+                    ) : (
+                      <th
+                        key={header.id}
+                        className={
+                          header.column.getCanSort()
+                            ? "cursor-pointer select-none px-2 py-3 border-base-lighter font-heading text-base-contrast-max whitespace-nowrap hover:bg-primary-lightest"
+                            : "px-2 py-3 font-heading bg-base-max"
+                        } //need to combine this
+                        onClick={() => {
+                          // maybe pass in custom sorting logic for some tables if neccessary
+                          // if custom logic is provided use it otherwise call below
+                          console.log(header.column.getCanSort());
+                          header.column.getCanSort() &&
+                            header.column.toggleSorting();
+                        }}
+                        aria-sort={
+                          header.column.getIsSorted()
+                            ? header.column.getIsSorted() === "desc"
+                              ? "descending"
+                              : "ascending"
+                            : undefined
+                        }
+                        tabIndex={header.column.getCanSort() === false ? -1 : 0}
+                        role={
+                          header.column.getCanSort() ? "button" : "columnheader"
+                        }
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                        {/* how to make sure that this is only seen for true
                       having to set it to false for others is tedious */}
-                      {header.column.getCanSort() && (
-                        <div className="inline-block text-xs pl-3 align-middle text-base-light">
-                          <BsCaretUpFill
-                            className={
-                              header.column.getIsSorted() === "asc"
-                                ? "text-primary"
-                                : ""
-                            }
-                          />
-                          <BsCaretDownFill
-                            className={`${
-                              header.column.getIsSorted() === "desc"
-                                ? "text-primary"
-                                : ""
-                            } relative top-[-2px]`}
-                          />
-                        </div>
-                      )}
-                    </th>
-                  ))}
+                        {header.column.getCanSort() && (
+                          <div className="inline-block text-xs pl-3 align-middle text-base-light">
+                            <BsCaretUpFill
+                              className={
+                                header.column.getIsSorted() === "asc"
+                                  ? "text-primary"
+                                  : ""
+                              }
+                            />
+                            <BsCaretDownFill
+                              className={`${
+                                header.column.getIsSorted() === "desc"
+                                  ? "text-primary"
+                                  : ""
+                              } relative top-[-2px]`}
+                            />
+                          </div>
+                        )}
+                      </th>
+                    );
+                  })}
                 </tr>
               ))}
             </thead>
@@ -293,7 +313,9 @@ TableProps<TData>): JSX.Element {
                       <td colSpan={row.getVisibleCells().length}>
                         {/* Need to pass in the SubRow component to render here */}
                         {/* is there a way to pass in the column id??? */}
-                        {renderSubComponent({ row })}
+                        {renderSubComponent}
+                        {/* {renderSubComponent} */}
+                        {/* ({ row })()} */}
                       </td>
                     </tr>
                   )}

@@ -72,6 +72,7 @@ export const useGenerateSMTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -83,6 +84,7 @@ export const useGenerateSMTableColumns = ({
         ),
         cell: ({ row }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -246,7 +248,7 @@ export const useGenerateSMTableColumns = ({
                     aria-expanded={row.getCanExpand() ? "true" : "false"}
                     {...{
                       onClick: () => {
-                        // setMutationID(row.original.mutation_id);
+                        setMutationID(row.original.mutation_id);
                         row.toggleExpanded();
                       },
                       style: { cursor: "pointer" },

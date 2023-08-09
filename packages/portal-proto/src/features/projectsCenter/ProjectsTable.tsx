@@ -26,6 +26,7 @@ import {
   ColumnDef,
   ColumnOrderState,
   createColumnHelper,
+  ExpandedState,
   Row,
   SortingState,
   VisibilityState,
@@ -103,6 +104,8 @@ const ProjectsTable: React.FC = () => {
   );
 
   const [expandedColumn, setExpandedColumn] = useState(null);
+  const [expandedRow, setExpandedRow] =
+    useState<Row<ProjectDataType>>(undefined);
 
   type ProjectDataType = {
     project: string;
@@ -168,6 +171,7 @@ const ProjectsTable: React.FC = () => {
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -179,6 +183,7 @@ const ProjectsTable: React.FC = () => {
         ),
         cell: ({ row }) => (
           <Checkbox
+            size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -226,12 +231,16 @@ const ProjectsTable: React.FC = () => {
             : row.getCanExpand() && (
                 <div
                   onClick={() => {
+                    // row.getIsExpanded() && setExpanded({});
                     setExpandedColumn(column.id);
+                    setExpandedRow(row);
                     row.toggleExpanded();
                   }}
                   onKeyDown={() =>
                     createKeyboardAccessibleFunction(() => {
+                      // row.getIsExpanded() && setExpanded({});
                       setExpandedColumn(column.id);
+                      setExpandedRow(row);
                       row.toggleExpanded();
                     })
                   }
@@ -265,12 +274,16 @@ const ProjectsTable: React.FC = () => {
             : row.getCanExpand() && (
                 <div
                   onClick={() => {
+                    // row.getIsExpanded() && setExpanded({});
                     setExpandedColumn(column.id);
+                    setExpandedRow(row);
                     row.toggleExpanded();
                   }}
                   onKeyDown={() =>
                     createKeyboardAccessibleFunction(() => {
+                      //  row.getIsExpanded() && setExpanded({});
                       setExpandedColumn(column.id);
+                      setExpandedRow(row);
                       row.toggleExpanded();
                     })
                   }
@@ -337,7 +350,7 @@ const ProjectsTable: React.FC = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     files: false,
   });
-  const [sortedRow, setSortedRow] = useState([]);
+
   const [sorting, setSorting] = useState<SortingState>([
     { id: "cases", desc: true },
   ]);
@@ -395,7 +408,7 @@ const ProjectsTable: React.FC = () => {
 
   const handleDownloadTSV = () => {
     dowloadTSVNew({
-      tableData: sortedRow.length === 0 ? formattedTableData : sortedRow,
+      tableData: formattedTableData,
       columnOrder,
       columnVisibility,
       columns: projectsTableDefaultColumns,
@@ -404,19 +417,15 @@ const ProjectsTable: React.FC = () => {
     });
   };
 
-  const CreateContent = ({
-    row,
-  }: {
-    row: Row<ProjectDataType>;
-  }): JSX.Element => {
+  const CreateContent = (): JSX.Element => {
     // don't need this mess if there's a way to pass in column id
     // this is not working properly
     // is there a way to close the other expanded row?
     // console.log("create: ", expandedColumn);
     const value =
       expandedColumn === "disease_type"
-        ? row.original?.disease_type
-        : row.original?.primary_site;
+        ? expandedRow?.original?.disease_type
+        : expandedRow?.original?.primary_site;
     const key =
       expandedColumn === "disease_type" ? "Disease Type" : "Primary Site";
     const items = {
@@ -443,6 +452,18 @@ const ProjectsTable: React.FC = () => {
         ))}
       </div>
     );
+  };
+
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const prevColumnId = usePrevious(expandedColumn);
+
+  const handleExpand = (exp) => {
+    if (isEqual(expanded, exp()) && prevColumnId === expandedColumn) {
+      setExpanded({}); // Resetting expanded state
+    } else {
+      setExpanded(exp()); // Setting the new expanded state
+    }
   };
 
   return (
@@ -481,7 +502,7 @@ const ProjectsTable: React.FC = () => {
         enabled: true,
       }}
       getRowCanExpand={() => true}
-      renderSubComponent={CreateContent}
+      renderSubComponent={<CreateContent />}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
       enableRowSelection={true}
@@ -491,10 +512,13 @@ const ProjectsTable: React.FC = () => {
       columnVisibility={columnVisibility}
       columnOrder={columnOrder}
       setColumnOrder={setColumnOrder}
-      setSortedRow={setSortedRow}
+      initialSort={[{ id: "cases", desc: true }]}
+      columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}
       enableSorting={true}
+      expanded={expanded}
+      setExpanded={handleExpand}
     />
   );
 };

@@ -31,7 +31,7 @@ import type {
   WidthSpring,
   PageSizeProps,
 } from "./types";
-import ImpactHeaderWithTooltip from "@/features/SomaticMutations/TableComponents/ImpactHeaderWithTooltip";
+import ImpactHeaderWithTooltip from "@/features/GenomicTables/SomaticMutationsTable/TableComponents/ImpactHeaderWithTooltip";
 
 export {
   AnimatedRow,
