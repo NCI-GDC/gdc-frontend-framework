@@ -63,6 +63,11 @@ tags: gdc-data-portal-v2, end-to-end
   |Cases        |
   |Experimental Strategy  |
   |CPTAC-3      |
+* Perform the following actions on a filter card
+  |filter_name          |action               |
+  |---------------------|---------------------|
+  |Experimental Strategy|clear selection      |
+* Verify the page is showing "1 - 20"
 
 ## Repository Page
 When the filters are fixed add tests for them - PEAR-1350
