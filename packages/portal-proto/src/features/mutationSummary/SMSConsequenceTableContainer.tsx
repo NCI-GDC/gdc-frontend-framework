@@ -15,9 +15,11 @@ import {
   PageStepper,
   TablePlaceholder,
 } from "@/components/expandableTables/shared";
-import { Loader } from "@mantine/core";
-import saveAs from "file-saver";
 import { convertDateToString } from "@/utils/date";
+import saveAs from "file-saver";
+import { humanify } from "src/utils";
+import { sortByNestedFieldWithPriority } from "./utils";
+import { Loader } from "@mantine/core";
 
 export interface SMSConsequenceTableContainerProps {
   ssmsId: string;
@@ -148,6 +150,100 @@ export const SMSConsequenceTableContainer: React.FC<
     }
   }, [status, initialData]);
 
+  const handleTSVDownload = () => {
+    const fileName = `consequences-table.${convertDateToString(
+      new Date(),
+    )}.tsv`;
+
+    const vc = visibleColumns.map(({ columnName }) => columnName);
+
+    const body = initialData?.consequence
+      .slice()
+      .sort((a, b) =>
+        sortByNestedFieldWithPriority(
+          a,
+          b,
+          "transcript",
+          "is_canonical",
+          "aa_change",
+        ),
+      )
+      .map((i) => {
+        const {
+          transcript: {
+            gene: { symbol, gene_strand },
+            aa_change,
+            consequence_type,
+            annotation: {
+              hgvsc,
+              vep_impact,
+              sift_impact,
+              sift_score,
+              polyphen_impact,
+              polyphen_score,
+            },
+            transcript_id,
+            is_canonical,
+          },
+        } = i;
+        const tsv = [];
+        vc.forEach((col) => {
+          switch (col) {
+            case "Gene":
+              tsv.push(symbol);
+              break;
+            case "AA Change":
+              tsv.push(aa_change ?? "--");
+              break;
+            case "Consequences":
+              tsv.push(
+                consequence_type
+                  ? humanify({
+                      term: consequence_type
+                        .replace("_variant", "")
+                        .replace("_", " "),
+                    })
+                  : ``,
+              );
+              break;
+            case "Coding DNA Change":
+              tsv.push(hgvsc);
+              break;
+            case "Impact":
+              tsv.push(
+                `${[
+                  `${vep_impact ? `VEP: ${vep_impact}` : ``}`,
+                  `${
+                    sift_impact
+                      ? `SIFT: ${sift_impact} - score ${sift_score}`
+                      : ``
+                  }`,
+                  `${
+                    polyphen_impact
+                      ? `PolyPhen: ${polyphen_impact} - score ${polyphen_score}`
+                      : ``
+                  }`,
+                ]
+                  .filter(({ length }) => length)
+                  .join(", ")}`,
+              );
+              break;
+            case "Gene Strand":
+              tsv.push(gene_strand);
+              break;
+            case "Transcript":
+              tsv.push(`${transcript_id}${is_canonical ? ` (Canonical)` : ``}`);
+              break;
+          }
+        });
+        return tsv.join("\t");
+      })
+      .join("\n");
+    const tsv = [vc.join("\t"), body].join("\n");
+    const blob = new Blob([tsv as BlobPart], { type: "text/tsv" });
+    saveAs(blob, fileName);
+  };
+
   const handleJSONDownload = () => {
     setConsequenceTableJSONDownloadActive(true);
     const json = initialData.consequence.map(
@@ -210,8 +306,8 @@ export const SMSConsequenceTableContainer: React.FC<
                 {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
               </FunctionButton>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton>TSV</FunctionButton>
+            <ButtonTooltip label="Export current view">
+              <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
             </ButtonTooltip>
           </div>
 

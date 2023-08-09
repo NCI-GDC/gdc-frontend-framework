@@ -489,7 +489,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     : page * pageSize + 1
                   ).toLocaleString("en-US")} `}</span>
                   -
-                  <span className="font-bold">{`${((page + 1) * pageSize <
+                  <span className="font-bold">{` ${((page + 1) * pageSize <
                   smTotal
                     ? (page + 1) * pageSize
                     : smTotal
