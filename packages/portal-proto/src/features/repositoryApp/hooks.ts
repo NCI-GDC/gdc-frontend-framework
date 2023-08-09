@@ -163,6 +163,7 @@ export const useLocalFilters = (
           index: indexType,
           caseFilterSelector: selectCohortAndRepositoryFilters,
           localFilters: localFilters,
+          splitIntoCasePlusLocalFilters: true,
         }),
       );
     }
