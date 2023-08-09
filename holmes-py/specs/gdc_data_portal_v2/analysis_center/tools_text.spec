@@ -22,6 +22,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |
 * Wait for cohort bar case count loading spinner
+* Pause "2" seconds
 * Navigate to "Analysis" from "Header" "section"
 * Validate analysis tool tooltip
   |tool_name                |tooltip_description                                                        |

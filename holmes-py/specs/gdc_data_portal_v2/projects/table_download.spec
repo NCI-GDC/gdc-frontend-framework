@@ -39,7 +39,7 @@ tags: gdc-data-portal-v2, regression, projects, download
   |Lymph nodes  |
   |Skin         |
   |Heart        |
-  |WXS,RNA-Seq  |
+  |RNA-Seq,WXS  |
 * Verify that "TSV Projects Table from Projects" does not contain specified information
   |required_info|
   |-------------|
@@ -49,6 +49,12 @@ tags: gdc-data-portal-v2, regression, projects, download
   |TARGET       |
   |BEATAML      |
   |TCGA         |
+  |Data Category|
+  |data category|
+  |simple nucleotide variation  |
+  |copy number variation        |
+  |transcriptome profiling      |
+  |sequencing reads             |
 
 ## Download and Read JSON file
 * Download "JSON Projects Table" from "Projects"
@@ -60,8 +66,6 @@ tags: gdc-data-portal-v2, regression, projects, download
   |project_id                                           |
   |summary                                              |
   |summary.file_count                                   |
-  |summary.data_categories.case_count                   |
-  |summary.data_categories.data_category                |
   |summary.experimental_strategies.case_count           |
   |summary.experimental_strategies.experimental_strategy|
   |summary.case_count                                   |
@@ -123,6 +127,12 @@ tags: gdc-data-portal-v2, regression, projects, download
   |FM           |
   |HCMI         |
   |TCGA         |
+  |Data Category|
+  |data category|
+  |simple nucleotide variation  |
+  |copy number variation        |
+  |transcriptome profiling      |
+  |sequencing reads             |
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|

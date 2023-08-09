@@ -140,6 +140,7 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
         {showDetails && (
           <div className="absolute top-7 left-32">
             <HorizontalTable
+              customDataTestID="table-image-viewer-details"
               tableData={tableData}
               customContainerStyles="border-3 border-base"
               slideImageDetails
