@@ -51,11 +51,23 @@ tags: gdc-data-portal-v2, end-to-end
   |-----------------------|---------------------|
   |Experimental Strategy  |scRNA-Seq            |
 * Verify the page is showing "Showing 1 - 1 of 1 projects"
+* Download "TSV Projects Table" from "Projects"
+* Read from "TSV Projects Table from Projects"
+* Verify that "TSV Projects Table from Projects" has expected information
+  |required_info|
+  |-------------|
+  |Project      |
+  |Disease Type |
+  |Primary Site |
+  |Program      |
+  |Cases        |
+  |Experimental Strategy  |
+  |CPTAC-3      |
 
-
-## Validate Repository Page
-When the filters are fixed, add tests Header
+## Repository Page
+When the filters are fixed add tests for them - PEAR-1350
 * Navigate to "Downloads" from "Header" "section"
+* Verify cohort case count equals repository table case count
 * Select value from table by row and column
   |row|column|
   |------|---|
@@ -70,26 +82,45 @@ When the filters are fixed, add tests Header
   |0089d221-5807-47f1-a382-1e2e336df201   |
   |3024b4210d713fb1222fde805b9c94dc       |
   |validated                              |
+* Pause "5" seconds
 
-
-
-
-
-
-
-## Pause Test
-* Pause "10000" seconds
-
-## ADD back to projects test later
-* Download "TSV Projects Table" from "Projects"
-* Read from "TSV Projects Table from Projects"
-* Verify that "TSV Projects Table from Projects" has expected information
-  |required_info|
-  |-------------|
-  |Project      |
-  |Disease Type |
-  |Primary Site |
-  |Program      |
-  |Cases        |
-  |Experimental Strategy  |
-  |CPTAC-3      |
+## Clinical Data Analysis App
+* Navigate to "Analysis" from "Header" "section"
+* Navigate to "Clinical Data Analysis" from "Analysis" "app"
+* Wait for "Overall Survival Plot" to be present on the page
+* Expand clinical property sections
+* Is text "Not enough survival data" not present on the page
+* Validate all expected analysis cards are present on the Clinical Data Analysis page
+  |analysis_card        |
+  |---------------------|
+  |Gender               |
+  |Race                 |
+  |Ethnicity            |
+  |Age At Diagnosis     |
+  |Primary Diagnosis    |
+* Select the following fields on the Clinical Data Analysis page
+  |field_switch_selector                            |
+  |-------------------------------------------------|
+  |demographic.gender                               |
+  |demographic.year_of_death                        |
+  |demographic.race                                 |
+  |diagnoses.cog_renal_stage                        |
+  |diagnoses.site_of_resection_or_biopsy            |
+  |diagnoses.treatments.therapeutic_agents          |
+  |exposures.tobacco_smoking_quit_year              |
+* Validate all expected analysis cards are present on the Clinical Data Analysis page
+  |analysis_card            |
+  |-------------------------|
+  |Ethnicity                |
+  |Age At Diagnosis         |
+  |Primary Diagnosis        |
+  |Year Of Death            |
+  |COG Renal Stage          |
+  |Site Of Resection Or Biopsy|
+  |Therapeutic Agents       |
+  |Tobacco Smoking Quit Year|
+* Validate these analysis cards are not present on the Clinical Data Analysis page
+  |analysis_card            |
+  |-------------------------|
+  |Gender                   |
+  |Race                     |
