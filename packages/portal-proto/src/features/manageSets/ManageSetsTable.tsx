@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox, ActionIcon, TextInput, Badge, Tooltip } from "@mantine/core";
 import {
   FaTrash as TrashIcon,
@@ -61,6 +62,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 ) : undefined
               }
               maxLength={100}
+              aria-label="Enter set name"
             />
             <ActionIcon
               onClick={() => {
@@ -68,6 +70,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 setValue(setName);
               }}
               className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%] mt-1"
+              aria-label={"Close input"}
             >
               <CloseIcon className="text-nci-red-darkest" />
             </ActionIcon>
@@ -78,6 +81,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               }}
               className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
               disabled={value === ""}
+              aria-label={"Rename set"}
             >
               <CheckIcon className="text-nci-green-darkest" size={10} />
             </ActionIcon>
@@ -85,7 +89,11 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
         ) : (
           <>
             {setName}
-            <ActionIcon onClick={() => setEditing(true)} variant="transparent">
+            <ActionIcon
+              onClick={() => setEditing(true)}
+              variant="transparent"
+              aria-label="Edit set name"
+            >
               <EditIcon className="text-accent" />
             </ActionIcon>
           </>
@@ -232,6 +240,9 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
     ...geneData.map((set) => set.setId),
     ...ssmData.map((set) => set.setId),
   ];
+  const selectAllChecked = allSetIds.every((setId) =>
+    selectedSetIds.includes(setId),
+  );
 
   const columns = useMemo(
     () => [
@@ -239,8 +250,9 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         id: "select",
         columnName: (
           <Checkbox
-            checked={allSetIds.every((setId) => selectedSetIds.includes(setId))}
+            checked={selectAllChecked}
             onChange={updateSelectAllSets}
+            aria-label="Select/deselect all sets"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
@@ -292,16 +304,10 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         disableSortBy: true,
       },
     ],
-    [
-      detailSet?.setId,
-      setDetailSet,
-      allSetIds,
-      selectedSetIds,
-      updateSelectAllSets,
-    ],
+    [detailSet?.setId, setDetailSet, selectAllChecked, updateSelectAllSets],
   );
 
-  const tableData = useMemo(() => {
+  const tableData = useDeepCompareMemo(() => {
     return [
       ...ssmData.map((set) => {
         const { setName, count, setId, setType } = set;
@@ -311,6 +317,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               value={setId}
               checked={selectedSetIds.includes(setId)}
               onChange={() => updateSelectedSets(set)}
+              aria-label={`Select/deselect ${setName}`}
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
@@ -333,6 +340,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               value={setId}
               checked={selectedSetIds.includes(setId)}
               onChange={() => updateSelectedSets(set)}
+              aria-label={`Select/deselect ${setName}`}
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
@@ -347,12 +355,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         };
       }),
     ];
-  }, [
-    JSON.stringify(selectedSetIds),
-    JSON.stringify(ssmData),
-    JSON.stringify(geneData),
-    updateSelectedSets,
-  ]);
+  }, [selectedSetIds, ssmData, geneData, updateSelectedSets]);
 
   const {
     handlePageChange,

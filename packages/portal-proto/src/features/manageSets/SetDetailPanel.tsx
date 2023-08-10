@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { ActionIcon, Drawer, ScrollArea } from "@mantine/core";
 import { MdKeyboardBackspace as LeftArrowIcon } from "react-icons/md";
 import { SortBy, useGetGenesQuery, useGetSsmsQuery } from "@gff/core";
@@ -78,7 +79,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     { skip: set === undefined || set.setType === "genes" },
   );
 
-  const responseData = useMemo(() => {
+  const responseData = useDeepCompareMemo(() => {
     if (set?.setType !== undefined) {
       if (set?.setType === "genes") {
         return isGeneSuccess && !isGeneFetching ? [...geneDetailData] : [];
@@ -102,18 +103,21 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
 
     return [];
   }, [
-    JSON.stringify(geneDetailData),
+    geneDetailData,
     isGeneFetching,
     isGeneSuccess,
+    ssmsDetailData,
     isMutationFetching,
     isMutationSuccess,
     set?.setType,
-    JSON.stringify(ssmsDetailData),
   ]);
 
+  // Append new data to existing table data
   useEffect(() => {
     setTableData([...tableData, ...responseData]);
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [JSON.stringify(responseData)]);
+  /* eslint-enable */
 
   const columns = useMemo(
     () =>
@@ -162,7 +166,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     }
   };
 
-  const displayData = useMemo(() => tableData, [JSON.stringify(tableData)]);
+  const displayData = useDeepCompareMemo(() => tableData, [tableData]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -189,7 +193,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
       }}
       title={
         <div className="flex flex-row gap-2 items-center w-full text-primary-darker font-bold p-2 border-b border-base-lighter">
-          <ActionIcon onClick={closePanel}>
+          <ActionIcon onClick={closePanel} aria-label="Close set panel">
             <LeftArrowIcon size={30} className="text-primary-darker" />
           </ActionIcon>
           <>{set?.setName}</>

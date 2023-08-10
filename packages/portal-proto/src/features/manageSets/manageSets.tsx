@@ -142,13 +142,13 @@ const ManageSets: React.FC = () => {
     [selectedSetIds, selectedSets],
   );
 
-  const updateSelectAllSets = useCallback(() => {
+  const updateSelectAllSets = () => {
     if (allSetIds.every((setId) => selectedSetIds.includes(setId))) {
       setSelectedSets([]);
     } else {
       setSelectedSets([...geneData, ...ssmData]);
     }
-  }, [allSetIds, selectedSetIds]);
+  };
 
   return (
     <>
