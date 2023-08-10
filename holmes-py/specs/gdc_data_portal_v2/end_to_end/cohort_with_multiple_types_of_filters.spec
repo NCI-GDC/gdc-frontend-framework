@@ -1,11 +1,11 @@
-# End to End - Multiple Filter Cohort
+# End to End - Cohort with Multiple Filters
 Date Created    : 08/08/2023
 Version			    : 1.0
 Owner		        : GDC QA
-Description		  : End to end test with multiple types of cohorts
-Test-case       :
+Description		  : Cohort End to End Test with Multiple Types of Filters
+Test-case       : PEAR-1448
 
-tags: gdc-data-portal-v2, end-to-end
+tags: gdc-data-portal-v2, end-to-end, regression
 
 ## Save a cohort with multiple types of filters
 * On GDC Data Portal V2 app
