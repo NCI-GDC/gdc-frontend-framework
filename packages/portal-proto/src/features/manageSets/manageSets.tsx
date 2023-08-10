@@ -56,7 +56,6 @@ const CreateSetInstructions = () => (
     Create gene and mutation sets using the <b>Create Set</b> button or from the{" "}
     <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
       <a className="text-utility-link underline font-heading">
-        {" "}
         Mutation Frequency app.
       </a>
     </Link>
@@ -125,19 +124,31 @@ const ManageSets: React.FC = () => {
     geneData.some(({ count }) => count !== undefined && count === 0) ||
     ssmData.some(({ count }) => count !== undefined && count === 0);
   const selectedSetIds = selectedSets.map((set) => set.setId);
+  const allSetIds = [
+    ...geneData.map((set) => set.setId),
+    ...ssmData.map((set) => set.setId),
+  ];
 
   const dispatch = useCoreDispatch();
 
   const updateSelectedSets = useCallback(
     (set: SetData) => {
       if (selectedSetIds.includes(set.setId)) {
-        setSelectedSets(selectedSets.filter((set) => set.setId !== set.setId));
+        setSelectedSets(selectedSets.filter((s) => s.setId !== set.setId));
       } else {
         setSelectedSets([...selectedSets, set]);
       }
     },
     [selectedSetIds, selectedSets],
   );
+
+  const updateSelectAllSets = useCallback(() => {
+    if (allSetIds.every((setId) => selectedSetIds.includes(setId))) {
+      setSelectedSets([]);
+    } else {
+      setSelectedSets([...geneData, ...ssmData]);
+    }
+  }, [allSetIds, selectedSetIds]);
 
   return (
     <>
@@ -232,6 +243,7 @@ const ManageSets: React.FC = () => {
             ssmData={ssmData}
             selectedSets={selectedSets}
             updateSelectedSets={updateSelectedSets}
+            updateSelectAllSets={updateSelectAllSets}
             detailSet={detailSet}
             setDetailSet={setDetailSet}
           />

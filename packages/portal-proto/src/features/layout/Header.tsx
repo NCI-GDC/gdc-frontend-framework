@@ -30,6 +30,7 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import urlJoin from "url-join";
 import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { theme } from "tailwind.config";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import {
@@ -71,6 +72,8 @@ export const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
+  const router = useRouter();
+  console.log(router.pathname);
 
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -127,7 +130,15 @@ export const Header: React.FC<HeaderProps> = ({
             Browse Annotations
           </a>
           <Link href="manage-sets" passHref>
-            <Button unstyled>
+            <Button
+              unstyled
+              data-testid="manageSetsLink"
+              className={`p-2 rounded-md ${
+                router.pathname === "/manage-sets"
+                  ? "bg-secondary text-white"
+                  : ""
+              }`}
+            >
               <div className="flex items-center gap-1 font-heading">
                 <OptionsIcon size="22px" className="rotate-90" />
                 Manage Sets
@@ -135,13 +146,23 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </Link>
           <Link href="/cart" passHref>
-            <Button unstyled data-testid="cartLink">
+            <Button
+              unstyled
+              data-testid="cartLink"
+              className={`p-2 rounded-md ${
+                router.pathname === "/cart" ? "bg-secondary text-white" : ""
+              }`}
+            >
               <div className="flex items-center gap-1 font-heading">
-                <CartIcon size="22px" className="text-primary-darkest" />
+                <CartIcon size="22px" />
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-accent"
+                  className={`px-1 ml-1 ${
+                    router.pathname === "/cart"
+                      ? "bg-white text-secondary"
+                      : "bg-accent"
+                  }`}
                   radius="xs"
                 >
                   {currentCart?.length || 0}

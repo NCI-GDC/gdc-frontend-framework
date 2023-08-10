@@ -8,15 +8,17 @@ import {
 import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
 import { PiPencilSimpleLineBold as EditIcon } from "react-icons/pi";
 import { MdClose as CloseIcon } from "react-icons/md";
+import { Row } from "react-table";
 import { useCoreDispatch, removeSets, SetTypes, renameSet } from "@gff/core";
+import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
 import {
   VerticalTable,
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import ErrorMessage from "@/components/ErrorMessage";
 import { SetData } from "./types";
-import { createKeyboardAccessibleFunction } from "@/utils/index";
 
 interface SetNameInputProps {
   readonly setName: string;
@@ -42,7 +44,11 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
 
   return (
     <>
-      <div className="flex flex-row gap-2 items-center">
+      <div
+        className={`flex flex-row gap-2 ${
+          editing ? "items-start" : "items-center"
+        }`}
+      >
         {editing ? (
           <>
             <TextInput
@@ -50,7 +56,9 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               ref={inputRef}
               onChange={(e) => setValue(e.currentTarget.value)}
               error={
-                value === "" ? <>Please fill out this field.</> : undefined
+                value === "" ? (
+                  <ErrorMessage message="Please fill out this field." />
+                ) : undefined
               }
               maxLength={100}
             />
@@ -59,7 +67,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 setEditing(false);
                 setValue(setName);
               }}
-              className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%]"
+              className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%] mt-1"
             >
               <CloseIcon className="text-nci-red-darkest" />
             </ActionIcon>
@@ -68,7 +76,8 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 dispatch(renameSet({ setId, setType, newSetName: value }));
                 setEditing(false);
               }}
-              className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%]"
+              className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
+              disabled={value === ""}
             >
               <CheckIcon className="text-nci-green-darkest" size={10} />
             </ActionIcon>
@@ -101,31 +110,33 @@ const CountBadge: React.FC<CountBadgeProps> = ({
   active,
   openSetDetail,
 }: CountBadgeProps) => {
+  const disabled = count === 0;
   return (
     <Tooltip
       label="Set is either empty or deprecated."
-      disabled={count > 0}
+      disabled={!disabled}
       withArrow
     >
       <Badge
         variant={active ? "filled" : "outline"}
         radius="xs"
-        className={`${
+        className={`cursor-pointer ${
           active
             ? undefined
-            : count === 0
-            ? "bg-nci-gray-lightest opacity-50"
+            : disabled
+            ? "bg-nci-gray-lightest opacity-50 cursor-not-allowed"
             : "bg-white"
-        } cursor-pointer`}
-        color={count === 0 ? "gray" : "primary"}
+        }`}
+        color={disabled ? "gray" : "primary"}
         leftSection={
-          count === 0 ? (
-            <WarningIcon className="text-warningColor" />
-          ) : undefined
+          disabled ? <WarningIcon className="text-warningColor" /> : undefined
         }
-        onClick={openSetDetail}
+        onClick={disabled ? undefined : openSetDetail}
         tabIndex={0}
-        onKeyDown={createKeyboardAccessibleFunction(openSetDetail)}
+        onKeyDown={
+          disabled ? undefined : createKeyboardAccessibleFunction(openSetDetail)
+        }
+        aria-disabled={disabled}
       >
         {count?.toLocaleString() ?? "--"}
       </Badge>
@@ -202,6 +213,7 @@ interface MangeSetsTableProps {
   readonly ssmData: SetData[];
   readonly selectedSets: SetData[];
   readonly updateSelectedSets: (set: SetData) => void;
+  readonly updateSelectAllSets: () => void;
   readonly detailSet: SetData;
   readonly setDetailSet: (set: SetData) => void;
 }
@@ -211,17 +223,29 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   ssmData,
   selectedSets,
   updateSelectedSets,
+  updateSelectAllSets,
   detailSet,
   setDetailSet,
 }) => {
-  const dispatch = useCoreDispatch();
   const selectedSetIds = selectedSets.map((set) => set.setId);
+  const allSetIds = [
+    ...geneData.map((set) => set.setId),
+    ...ssmData.map((set) => set.setId),
+  ];
 
   const columns = useMemo(
     () => [
       {
         id: "select",
-        columnName: "Select",
+        columnName: (
+          <Checkbox
+            checked={allSetIds.every((setId) => selectedSetIds.includes(setId))}
+            onChange={updateSelectAllSets}
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+          />
+        ),
         visible: true,
         disableSortBy: true,
       },
@@ -231,90 +255,102 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         visible: true,
       },
       {
-        id: "name",
+        id: "setName",
         columnName: "Name",
         visible: true,
+        Cell: ({ value, row }: { value: string; row: Row<SetData> }) => (
+          <SetNameInput
+            setName={value}
+            setId={row.original.setId}
+            setType={row.original.setType}
+          />
+        ),
       },
       {
         id: "count",
         columnName: "# Items",
         visible: true,
+        Cell: ({ value, row }: { value: number; row: Row<SetData> }) => (
+          <CountBadge
+            count={value}
+            active={detailSet?.setId === row.original.setId}
+            openSetDetail={() => {
+              setDetailSet({
+                setId: row.original.setId,
+                setName: row.original.setName,
+                setType: row.original.setType,
+                count: value,
+              });
+            }}
+          />
+        ),
       },
       {
         id: "actions",
         columnName: "Actions",
         visible: true,
+        disableSortBy: true,
       },
     ],
-    [],
+    [
+      detailSet?.setId,
+      setDetailSet,
+      allSetIds,
+      selectedSetIds,
+      updateSelectAllSets,
+    ],
   );
 
   const tableData = useMemo(() => {
     return [
-      ...ssmData.map((set) => ({
-        select: (
-          <Checkbox
-            value={set.setId}
-            checked={selectedSetIds.includes(set.setId)}
-            onChange={() => updateSelectedSets(set)}
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        entityType: "Mutations",
-        name: (
-          <SetNameInput
-            setName={set.setName}
-            setId={set.setId}
-            setType={"ssms"}
-          />
-        ),
-        count: (
-          <CountBadge
-            count={set.count}
-            active={detailSet?.setId === set.setId}
-            openSetDetail={() => setDetailSet(set)}
-          />
-        ),
-        actions: <ManageSetActions set={set} downloadType="ssm" />,
-      })),
-      ...geneData.map((set) => ({
-        select: (
-          <Checkbox
-            value={set.setId}
-            checked={selectedSetIds.includes(set.setId)}
-            onChange={() => updateSelectedSets(set)}
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        entityType: "Genes",
-        name: (
-          <SetNameInput
-            setName={set.setName}
-            setId={set.setId}
-            setType={"genes"}
-          />
-        ),
-        count: (
-          <CountBadge
-            count={set.count}
-            active={detailSet?.setId === set.setId}
-            openSetDetail={() => setDetailSet(set)}
-          />
-        ),
-        actions: <ManageSetActions set={set} downloadType="gene" />,
-      })),
+      ...ssmData.map((set) => {
+        const { setName, count, setId, setType } = set;
+        return {
+          select: (
+            <Checkbox
+              value={setId}
+              checked={selectedSetIds.includes(setId)}
+              onChange={() => updateSelectedSets(set)}
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+            />
+          ),
+          entityType: "Mutations",
+          setName,
+          count,
+          actions: <ManageSetActions set={set} downloadType="ssm" />,
+          setId,
+          setType,
+        };
+      }),
+      ...geneData.map((set) => {
+        const { setName, count, setId, setType } = set;
+
+        return {
+          select: (
+            <Checkbox
+              value={setId}
+              checked={selectedSetIds.includes(setId)}
+              onChange={() => updateSelectedSets(set)}
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+            />
+          ),
+          entityType: "Genes",
+          setName,
+          count,
+          actions: <ManageSetActions set={set} downloadType="gene" />,
+          setId,
+          setType,
+        };
+      }),
     ];
   }, [
     JSON.stringify(selectedSetIds),
     JSON.stringify(ssmData),
     JSON.stringify(geneData),
-    dispatch,
-    detailSet,
-    setDetailSet,
     updateSelectedSets,
   ]);
 
@@ -356,7 +392,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           label: "sets",
         }}
         handleChange={handleChange}
-        columnSorting={"manual"}
+        columnSorting={"enable"}
       />
     </div>
   );
