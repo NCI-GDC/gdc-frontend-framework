@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useContext, useEffect, useMemo, useCallback } from "react";
 import { capitalize, isEqual } from "lodash";
 import fileSize from "filesize";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
@@ -139,14 +139,17 @@ const FilesTables: React.FC = () => {
 
   const updateFilter = useUpdateRepositoryFacetFilter();
   const removeFilter = useRemoveRepositoryFacetFilter();
-  const newSearchActions = (searchTerm: string) => {
-    //TODO if lots of calls fast last call might not be displayed
-    if (searchTerm.length > 0)
-      updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
-    else {
-      removeFilter("joinOrToAllfilesSearch");
-    }
-  };
+  const newSearchActions = useCallback(
+    (searchTerm: string) => {
+      //TODO if lots of calls fast last call might not be displayed
+      if (searchTerm.length > 0)
+        updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
+      else {
+        removeFilter("joinOrToAllfilesSearch");
+      }
+    },
+    [removeFilter, updateFilter],
+  );
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (!isFetching && isSuccess) {
@@ -340,21 +343,24 @@ const FilesTables: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        setOffset(0);
-        setPageSize(parseInt(obj.newPageSize));
-        break;
-      case "newPageNumber":
-        setOffset(obj.newPageNumber - 1);
-        break;
-      case "newSearch":
-        setOffset(0);
-        newSearchActions(obj.newSearch);
-        break;
-    }
-  };
+  const handleChange = useCallback(
+    (obj: HandleChangeInput) => {
+      switch (Object.keys(obj)?.[0]) {
+        case "newPageSize":
+          setOffset(0);
+          setPageSize(parseInt(obj.newPageSize));
+          break;
+        case "newPageNumber":
+          setOffset(obj.newPageNumber - 1);
+          break;
+        case "newSearch":
+          setOffset(0);
+          newSearchActions(obj.newSearch);
+          break;
+      }
+    },
+    [newSearchActions],
+  );
 
   const handleDownloadJSON = async () => {
     await download({
@@ -518,7 +524,6 @@ const FilesTables: React.FC = () => {
         sorting={sorting}
         setSorting={setSorting}
         setColumnOrder={setColumnOrder}
-        enableSorting={true}
       />
     </>
   );

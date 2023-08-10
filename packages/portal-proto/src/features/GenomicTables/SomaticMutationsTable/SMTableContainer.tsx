@@ -15,7 +15,6 @@ import {
   useCreateCaseSetFromFiltersMutation,
   addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
-  useGetSomaticMutationTableSubrowQuery,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
@@ -43,8 +42,8 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import GenomicTableSubcomponent from "../GenomicTableSubcomponent";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
+import SMTableSubcomponent from "./SMTableSubcomponent";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -195,7 +194,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   /* Scroll for gend id search */
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 300,
+    offset: 500,
     duration: 1000,
   });
 
@@ -332,7 +331,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
   };
 
-  const handleChange = (obj: HandleChangeInput) => {
+  const handleChange = useCallback((obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -346,7 +345,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         setPage(1);
         break;
     }
-  };
+  }, []);
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
@@ -504,12 +503,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 isError,
               )}
               getRowCanExpand={() => true}
-              renderSubComponent={
-                <GenomicTableSubcomponent
-                  query={useGetSomaticMutationTableSubrowQuery}
-                  id={mutationID}
-                />
-              }
+              renderSubComponent={({ row }) => (
+                <SMTableSubcomponent row={row} />
+              )}
               handleChange={handleChange}
               setColumnVisibility={setColumnVisibility}
               columnVisibility={columnVisibility}

@@ -5,6 +5,7 @@ import {
   ColumnSort,
   ExpandedState,
   Row,
+  RowSelectionState,
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -38,20 +39,46 @@ interface PaginationOptions {
 }
 
 export interface TableProps<TData> {
-  columns: ColumnDef<TData, any>[];
+  /**
+   * array of data to go in the table
+   */
   data: TData[];
-  // ({
-  //   row,
-  // }: {
-  //   row: Row<TData>;
-  // }) => React.ReactElement
-  renderSubComponent?: React.ReactElement;
-  //renderSubComponent?: any;
+  /**
+   * list of columns in default order they appear and a number of properties
+   */
+  columns: ColumnDef<TData, any>[];
+  /**
+   * Optional
+   * Component to generate expanded row element
+   */
+  renderSubComponent?: ({
+    row,
+    clickedColumnIndex,
+  }: {
+    row: Row<TData>;
+    clickedColumnIndex: number;
+  }) => React.ReactElement;
+  /**
+   * Optional
+   * If provided, allows you to override the default behavior of determining whether a row can be expanded.
+   * Default to make all rows expandable: getRowCanExpand={() => true}
+   */
   getRowCanExpand?: (row: Row<TData>) => boolean;
-  isColumnCustomizable?: boolean;
+  /*
+   * Option table footer element
+   */
   footer?: React.ReactNode;
-  setRowSelection?: any;
-  rowSelection?: any;
+  /*
+   * Optional handle for onRowSelectionChange
+   */
+  setRowSelection?: Dispatch<SetStateAction<RowSelectionState>>;
+  /*
+   * Optional state for rowSelection
+   */
+  rowSelection?: RowSelectionState;
+  /*
+   * Optional boolean to enable row selection
+   */
   enableRowSelection?: boolean;
   /**
    * optional shows different table content depending on state
@@ -122,18 +149,43 @@ export interface TableProps<TData> {
    * optional disable page size for pagination
    */
   disablePageSize?: boolean;
+  /*
+   * Optional state variable to denote visible columns
+   */
   columnVisibility?: VisibilityState;
+  /*
+   * Optional handle for onColumnVisibilityChange
+   */
   setColumnVisibility?: Dispatch<SetStateAction<VisibilityState>>;
-  initialSorting?: SortingState;
+  /*
+   * Optional state variable to denote column order
+   */
   columnOrder?: ColumnOrderState;
+  /*
+   * Optional handle for onColumnOrderChange
+   */
   setColumnOrder?: Dispatch<SetStateAction<ColumnOrderState>>;
-  enableSorting?;
-
-  ariaTextOverwrite?;
-  sorting?;
-  setSorting?;
+  /*
+   * Optional state variable to denote sorting
+   */
+  sorting?: SortingState;
+  /*
+   * Optional handle for onSortingChange
+   */
+  setSorting?: Dispatch<SetStateAction<SortingState>>;
+  /*
+   * Optional state variable to denote expand state of a row
+   */
   expanded?: ExpandedState;
+  /*
+   * Optional handle for onExpandedChange
+   */
   setExpanded?: Dispatch<SetStateAction<ExpandedState>>;
+  /*
+   * Optional
+   * Overwrite aria-label for Search Text Input
+   */
+  ariaTextOverwrite?: string;
 }
 
 export interface HandleChangeInput {

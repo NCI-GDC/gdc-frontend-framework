@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
@@ -31,7 +37,7 @@ import {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
-import { Checkbox, Divider } from "@mantine/core";
+import { Checkbox } from "@mantine/core";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -39,6 +45,8 @@ import {
 import { FaCircle as Circle } from "react-icons/fa";
 import { dowloadTSVNew } from "@/components/Table/utils";
 import { isEqual } from "lodash";
+import { animated, useSpring } from "@react-spring/web";
+import { useMeasure } from "react-use";
 
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -104,8 +112,6 @@ const ProjectsTable: React.FC = () => {
   );
 
   const [expandedColumn, setExpandedColumn] = useState(null);
-  const [expandedRow, setExpandedRow] =
-    useState<Row<ProjectDataType>>(undefined);
 
   type ProjectDataType = {
     project: string;
@@ -117,7 +123,7 @@ const ProjectsTable: React.FC = () => {
     files: string;
   };
   const [formattedTableData, tempPagination] = useMemo(() => {
-    if (isSuccess) {
+    if (!isFetching && isSuccess) {
       return [
         data?.projectData?.map(
           ({
@@ -162,7 +168,7 @@ const ProjectsTable: React.FC = () => {
           total: undefined,
         },
       ];
-  }, [isSuccess, data?.projectData, data?.pagination]);
+  }, [isSuccess, isFetching, data?.projectData, data?.pagination]);
 
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
@@ -217,12 +223,7 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("disease_type", {
         id: "disease_type",
         header: "Disease Type",
-        cell: ({ row, getValue, column }) => {
-          // this is not correct
-          // column id is not working for icons
-          // both the columns of the same row cannot be expanded at once
-          // if other row is expanded, last row is not hidden
-
+        cell: ({ row, getValue }) => {
           // make this a component
           return getValue()?.length === 0
             ? "--"
@@ -231,16 +232,10 @@ const ProjectsTable: React.FC = () => {
             : row.getCanExpand() && (
                 <div
                   onClick={() => {
-                    // row.getIsExpanded() && setExpanded({});
-                    setExpandedColumn(column.id);
-                    setExpandedRow(row);
                     row.toggleExpanded();
                   }}
                   onKeyDown={() =>
                     createKeyboardAccessibleFunction(() => {
-                      // row.getIsExpanded() && setExpanded({});
-                      setExpandedColumn(column.id);
-                      setExpandedRow(row);
                       row.toggleExpanded();
                     })
                   }
@@ -254,7 +249,13 @@ const ProjectsTable: React.FC = () => {
                   ) : (
                     <DownIcon size="1.25em" className="text-accent" />
                   )}
-                  <span className="whitespace-nowrap">
+                  <span
+                    className={`whitespace-nowrap ${
+                      row.getIsExpanded() &&
+                      expandedColumn === "disease_type" &&
+                      "font-bold"
+                    }`}
+                  >
                     {getValue()?.length.toLocaleString().padStart(6)} Disease
                     Types
                   </span>
@@ -266,7 +267,7 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("primary_site", {
         id: "primary_site",
         header: "Primary Site",
-        cell: ({ row, getValue, column }) => {
+        cell: ({ row, getValue }) => {
           return getValue()?.length === 0
             ? "--"
             : getValue()?.length === 1
@@ -274,16 +275,10 @@ const ProjectsTable: React.FC = () => {
             : row.getCanExpand() && (
                 <div
                   onClick={() => {
-                    // row.getIsExpanded() && setExpanded({});
-                    setExpandedColumn(column.id);
-                    setExpandedRow(row);
                     row.toggleExpanded();
                   }}
                   onKeyDown={() =>
                     createKeyboardAccessibleFunction(() => {
-                      //  row.getIsExpanded() && setExpanded({});
-                      setExpandedColumn(column.id);
-                      setExpandedRow(row);
                       row.toggleExpanded();
                     })
                   }
@@ -298,7 +293,13 @@ const ProjectsTable: React.FC = () => {
                     <DownIcon size="1.25em" className="text-accent" />
                   )}
 
-                  <span className="whitespace-nowrap">
+                  <span
+                    className={`whitespace-nowrap ${
+                      row.getIsExpanded() &&
+                      expandedColumn === "primary_site" &&
+                      "font-bold"
+                    }`}
+                  >
                     {getValue()?.length.toLocaleString().padStart(6)} Primary
                     Sites
                   </span>
@@ -359,7 +360,7 @@ const ProjectsTable: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = (obj: HandleChangeInput) => {
+  const handleChange = useCallback((obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -373,7 +374,7 @@ const ProjectsTable: React.FC = () => {
         setActivePage(1);
         break;
     }
-  };
+  }, []);
 
   const handleDownloadJSON = async () => {
     await download({
@@ -417,40 +418,55 @@ const ProjectsTable: React.FC = () => {
     });
   };
 
-  const CreateContent = (): JSX.Element => {
+  const CreateContent = ({
+    row,
+    columnIndex,
+  }: {
+    row: Row<ProjectDataType>;
+    columnIndex: number;
+  }): JSX.Element => {
     // don't need this mess if there's a way to pass in column id
-    // this is not working properly
-    // is there a way to close the other expanded row?
-    // console.log("create: ", expandedColumn);
-    const value =
-      expandedColumn === "disease_type"
-        ? expandedRow?.original?.disease_type
-        : expandedRow?.original?.primary_site;
-    const key =
-      expandedColumn === "disease_type" ? "Disease Type" : "Primary Site";
-    const items = {
-      [key]: value,
-    };
+    // this is not working properly when column id changes and the state doesn't
+    // update on time
+
+    setExpandedColumn(columnOrder[columnIndex]);
+    const values =
+      columnOrder[columnIndex] === "disease_type"
+        ? row?.original?.disease_type
+        : row?.original?.primary_site;
+    const title =
+      columnOrder[columnIndex] === "disease_type"
+        ? "Disease Type"
+        : "Primary Site";
+
+    const [subRef, { width, height }] = useMeasure();
+
+    const fudgeFactor = width / 60;
+
+    const verticalSpring = useSpring({
+      from: { opacity: 0.25, height: 50 },
+      to: {
+        opacity: 1,
+        height: height + fudgeFactor,
+      },
+      immediate: true,
+    });
+
     return (
-      <div className="flex flex-col px-3 w-full">
-        {Object.entries(items).map(([x, values], index) => (
-          <div
-            className="flex flex-col p-2"
-            key={`${x}-${values.length}-${index}`}
-          >
-            {index > 0 ? <Divider /> : null}
-            <p className="text-[1rem] font-heading font-semibold mb-2">{x}</p>
-            <div className="columns-4 font-content text-sm">
-              {[...values].sort().map((y) => (
-                <div className="flex flex-row items-center" key={y}>
-                  <Circle size="0.65em" className="text-primary shrink-0" />
-                  <p className="pl-2">{y}</p>
-                </div>
-              ))}
-            </div>
+      <>
+        <animated.div ref={subRef} className="absolute mt-2 ml-2">
+          <div className="font-semibold text-[1rem] mb-2">{title}</div>
+          <div className="columns-4 gap-4 font-content text-sm">
+            {values.sort().map((value) => (
+              <div className="flex flex-row items-center" key={value}>
+                <Circle size="0.65em" className="text-primary shrink-0" />
+                <p className="pl-2">{value}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </animated.div>
+        <animated.div style={verticalSpring}></animated.div>
+      </>
     );
   };
 
@@ -459,6 +475,7 @@ const ProjectsTable: React.FC = () => {
   const prevColumnId = usePrevious(expandedColumn);
 
   const handleExpand = (exp) => {
+    console.log({ prevColumnId, expandedColumn, expanded, current: exp() });
     if (isEqual(expanded, exp()) && prevColumnId === expandedColumn) {
       setExpanded({}); // Resetting expanded state
     } else {
@@ -468,8 +485,8 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${tempPagination?.total?.toLocaleString()} ${
-        tempPagination?.total > 1 ? "Projects" : "Project"
+      tableTitle={`Total of ${data?.pagination?.total?.toLocaleString()} ${
+        data?.pagination?.total > 1 ? "Projects" : "Project"
       }`}
       additionalControls={
         <div className="flex gap-2">
@@ -491,7 +508,7 @@ const ProjectsTable: React.FC = () => {
           </FunctionButton>
         </div>
       }
-      data={formattedTableData as ProjectDataType[]}
+      data={formattedTableData}
       columns={projectsTableDefaultColumns}
       showControls={true}
       pagination={{
@@ -502,7 +519,9 @@ const ProjectsTable: React.FC = () => {
         enabled: true,
       }}
       getRowCanExpand={() => true}
-      renderSubComponent={<CreateContent />}
+      renderSubComponent={({ row, clickedColumnIndex }) => (
+        <CreateContent row={row} columnIndex={clickedColumnIndex} />
+      )}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
       enableRowSelection={true}
@@ -516,7 +535,6 @@ const ProjectsTable: React.FC = () => {
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}
-      enableSorting={true}
       expanded={expanded}
       setExpanded={handleExpand}
     />

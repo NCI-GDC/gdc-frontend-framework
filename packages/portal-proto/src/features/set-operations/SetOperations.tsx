@@ -597,7 +597,6 @@ const SetOperations: React.FC<SetOperationsProps> = ({
     },
   });
 
-  console.log({ totalSelectedSets });
   const totalCount =
     Object.keys(pickBy(selectedSets, (v) => v)).length > 0
       ? totalSelectedSets

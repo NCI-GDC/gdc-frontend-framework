@@ -248,7 +248,6 @@ export const useGenerateSMTableColumns = ({
                     aria-expanded={row.getCanExpand() ? "true" : "false"}
                     {...{
                       onClick: () => {
-                        setMutationID(row.original.mutation_id);
                         row.toggleExpanded();
                       },
                       style: { cursor: "pointer" },

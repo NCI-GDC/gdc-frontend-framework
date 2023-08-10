@@ -95,7 +95,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
       {title ? (
         <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
       ) : null}
-      <div className="w-100 h-100">
+      <div className="w-100 h-100 relative">
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={!isSuccess}

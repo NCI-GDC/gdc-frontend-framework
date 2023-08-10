@@ -155,6 +155,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );
 
+  const handleMutationCountClick = useCallback(
+    (geneId: string, geneSymbol: string) => {
+      setSearchTermsForGeneId({ geneId, geneSymbol });
+      setAppMode("ssms");
+    },
+    [],
+  );
+
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
     appDispatch(clearGeneAndSSMFilters());
@@ -228,13 +236,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               comparativeSurvival={comparativeSurvival}
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneAndSSmToggled={handleGeneAndSSmToggled}
-              handleMutationCountClick={(
-                geneId: string,
-                geneSymbol: string,
-              ) => {
-                setSearchTermsForGeneId({ geneId, geneSymbol });
-                setAppMode("ssms");
-              }}
+              handleMutationCountClick={handleMutationCountClick}
             />
           </Tabs.Panel>
           <Tabs.Panel value="ssms" pt="xs">

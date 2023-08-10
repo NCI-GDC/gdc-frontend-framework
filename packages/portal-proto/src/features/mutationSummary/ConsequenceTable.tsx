@@ -227,7 +227,6 @@ export const ConsequenceTable = ({
       columnOrder={columnOrder}
       setColumnOrder={setColumnOrder}
       handleChange={handleChange}
-      enableSorting={false}
       showControls={true}
       pagination={{
         page,

@@ -217,7 +217,6 @@ export const useGenerateGenesTableColumns = ({
                     aria-expanded={row.getCanExpand() ? "true" : "false"}
                     {...{
                       onClick: () => {
-                        setGeneID(row.original.gene_id);
                         row.toggleExpanded();
                       },
                       style: { cursor: "pointer" },

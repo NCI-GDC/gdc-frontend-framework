@@ -15,7 +15,6 @@ import {
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromFiltersMutation,
   GDCGenesTable,
-  useGetGeneTableSubrowQuery,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
@@ -42,7 +41,7 @@ import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import GenomicTableSubcomponent from "../GenomicTableSubcomponent";
+import GenesTableSubcomponent from "./GenesTableSubcomponent";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -319,9 +318,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     });
   };
 
-  // useEffect(() => {
-  //   setPage(1);
-  // }, [pageSize]);
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const handleExpand = (exp) => {
@@ -332,8 +328,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   };
 
-  console.log({ expanded });
-  const handleChange = (obj: HandleChangeInput) => {
+  const handleChange = useCallback((obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -347,7 +342,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setPage(1);
         break;
     }
-  };
+  }, []);
 
   return (
     <>
@@ -480,12 +475,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setRowSelection={setRowSelection}
         rowSelection={rowSelection}
         getRowCanExpand={() => true}
-        renderSubComponent={
-          <GenomicTableSubcomponent
-            query={useGetGeneTableSubrowQuery}
-            id={geneID}
-          />
-        }
+        renderSubComponent={({ row }) => <GenesTableSubcomponent row={row} />}
         setColumnVisibility={setColumnVisibility}
         columnVisibility={columnVisibility}
         columnOrder={columnOrder}

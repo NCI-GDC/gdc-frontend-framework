@@ -405,7 +405,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       sorting={sorting}
       setSorting={setSorting}
       setColumnOrder={setColumnOrder}
-      enableSorting={true}
     />
   );
 };

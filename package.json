@@ -24,8 +24,7 @@
   },
   "lint-staged": {
     "**/*": [
-      "prettier --write --ignore-unknown",
-      "eslint --fix"
+
     ]
   },
   "repository": {
