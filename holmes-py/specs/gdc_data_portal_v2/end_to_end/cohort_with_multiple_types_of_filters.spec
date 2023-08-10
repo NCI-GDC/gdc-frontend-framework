@@ -87,7 +87,7 @@ When the filters are fixed add tests for them - PEAR-1350
   |0089d221-5807-47f1-a382-1e2e336df201   |
   |3024b4210d713fb1222fde805b9c94dc       |
   |validated                              |
-* Pause "5" seconds
+* Close the modal
 
 ## Clinical Data Analysis App
 * Navigate to "Analysis" from "Header" "section"
