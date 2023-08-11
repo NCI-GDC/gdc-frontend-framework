@@ -188,9 +188,7 @@ export const useGenesFacets = (
  * of type Includes.
  * @param field to get values of
  */
-export const useSelectFilterContent = (
-  field: string,
-): Array<string> => {
+export const useSelectFilterContent = (field: string): Array<string> => {
   const filter = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );
