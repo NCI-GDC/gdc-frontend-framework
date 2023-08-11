@@ -180,6 +180,13 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                       "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
                   },
+                  withinPortal: true,
+                  position: "bottom",
+                },
+              },
+              Portal: {
+                defaultProps: {
+                  target: "#__next",
                 },
               },
               Menu: {

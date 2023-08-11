@@ -562,12 +562,14 @@ export const FileView: React.FC<FileViewProps> = ({
         <div className="flex gap-8">
           <div className="flex-1">
             <SummaryCard
+              customDataTestID="table-file-properties"
               title="File Properties"
               tableData={formatDataForFileProperties()}
             />
           </div>
           <div className="flex-1">
             <SummaryCard
+              customDataTestID="table-data-information"
               tableData={formatDataForDataInformation()}
               title="Data Information"
             />
