@@ -46,16 +46,10 @@ describe("setsSlice", () => {
       addSets([
         { setType: "genes", setName: "my gene set", setId: "xZaB" },
         { setType: "genes", setName: "my next gene set", setId: "aaZM" },
-        { setType: "ssms", setName: "my ssm set", setId: "pLAr" },
       ]),
     );
 
-    coreStore.dispatch(
-      removeSets([
-        { setType: "genes", setId: "xZaB" },
-        { setType: "ssms", setId: "pLAr" },
-      ]),
-    );
+    coreStore.dispatch(removeSets([{ setType: "genes", setId: "xZaB" }]));
 
     expect(coreStore.getState().sets).toEqual({
       cases: {},
@@ -83,8 +77,8 @@ describe("setsSlice", () => {
 
     expect(coreStore.getState().sets).toEqual({
       cases: {},
-      genes: { pLAr: "my ssm set", aaZM: "my next gene set" },
-      ssms: {},
+      genes: {},
+      ssms: { pLAr: "my ssm set", aaZM: "my new ssm set" },
     });
   });
 
