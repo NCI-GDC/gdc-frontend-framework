@@ -468,7 +468,6 @@ export const FileView: React.FC<FileViewProps> = ({
     </div>
   );
   type DataItem = {
-    // probably send in data item
     file: GdcCartFile;
     file_name: string;
     file_id: string;

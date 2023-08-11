@@ -270,10 +270,7 @@ export const useGenerateSMTableColumns = ({
       }),
       SMTableColumnHelper.display({
         id: "impact",
-        header: () => (
-          // <ImpactHeaderWithTooltip geneSymbol={geneSymbol} isModal={isModal} />
-          <ImpactHeaderWithTooltip />
-        ),
+        header: () => <ImpactHeaderWithTooltip />,
         cell: ({ row }) => <SMTableImpacts impact={row.original.impact} />,
       }),
     ],
@@ -365,8 +362,6 @@ export const getMutation = (
       siftScore: sift_score,
       vepImpact: vep_impact,
     },
-    //   // do not remove subRows key, it's needed for row.getCanExpand() to be true
-    //   subRows: " ",
     ssmsTotal,
   };
 };

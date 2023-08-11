@@ -226,8 +226,6 @@ const ProjectsTable: React.FC = () => {
         id: "disease_type",
         header: "Disease Type",
         cell: ({ row, getValue }) => {
-          // make this a component
-
           return getValue()?.length === 0
             ? "--"
             : getValue()?.length === 1
