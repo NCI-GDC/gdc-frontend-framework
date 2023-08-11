@@ -52,6 +52,7 @@ export const capitalize = (original: string): string => {
     bmi: "BMI",
     gdc: "GDC",
     cnv: "CNV",
+    ssm: "SSM",
   };
 
   return original
