@@ -14,27 +14,6 @@ const slice = createSlice({
   name: "sets",
   initialState,
   reducers: {
-    addSet: (
-      state,
-      action: PayloadAction<{
-        setType: SetTypes;
-        setName: string;
-        setId: string;
-      }>,
-    ) => {
-      state = produce(state, (draft) => {
-        const existingSet = Object.entries(state[action.payload.setType]).find(
-          ([, name]) => name === action.payload.setName,
-        );
-        // Replace existing set with the same name
-        if (existingSet) {
-          delete draft[action.payload.setType][existingSet[0]];
-        }
-        draft[action.payload.setType][action.payload.setId] =
-          action.payload.setName;
-      });
-      return state;
-    },
     addSets: (
       state,
       action: PayloadAction<
@@ -95,7 +74,7 @@ const slice = createSlice({
 });
 
 export const setsReducer = slice.reducer;
-export const { addSet, addSets, removeSets, renameSet } = slice.actions;
+export const { addSets, removeSets, renameSet } = slice.actions;
 
 export const selectSetsByType = (
   state: CoreState,

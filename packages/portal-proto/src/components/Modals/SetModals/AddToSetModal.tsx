@@ -13,7 +13,7 @@ import {
   FilterSet,
   SetTypes,
   buildCohortGqlOperator,
-  addSet,
+  addSets,
   useCoreDispatch,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -85,7 +85,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
         });
       } else {
         dispatch(
-          addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
+          addSets([{ setType, setName: selectedSets[0][1], setId: newSetId }]),
         );
         showNotification({ message: "Set has been modified." });
 

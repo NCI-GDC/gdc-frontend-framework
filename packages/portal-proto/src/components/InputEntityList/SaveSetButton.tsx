@@ -5,7 +5,7 @@ import {
   selectSetsByType,
   useCoreDispatch,
   useCoreSelector,
-  addSet,
+  addSets,
   SetTypes,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
@@ -35,7 +35,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
   useEffect(() => {
     if (response.isSuccess && setName) {
-      dispatch(addSet({ setType, setName, setId: response.data }));
+      dispatch(addSets([{ setType, setName, setId: response.data }]));
       showNotification({ message: "Set has been saved." });
       setSetName(null);
     } else if (response.isError) {

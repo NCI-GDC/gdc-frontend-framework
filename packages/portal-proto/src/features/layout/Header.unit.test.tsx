@@ -33,6 +33,12 @@ describe("<Header />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
+
+    jest.mock("next/router", () => ({
+      useRouter: jest.fn().mockReturnValue({
+        pathname: "",
+      }),
+    }));
   });
 
   test("should show login button when the username is null initially", () => {

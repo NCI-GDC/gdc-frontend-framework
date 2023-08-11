@@ -73,7 +73,6 @@ export const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
-  console.log(router.pathname);
 
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
