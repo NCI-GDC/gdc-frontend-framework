@@ -49,7 +49,7 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { dowloadTSVNew } from "@/components/Table/utils";
+import { downloadTSV } from "@/components/Table/utils";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -414,7 +414,7 @@ const FilesTables: React.FC = () => {
   });
 
   const handleDownloadTSV = () => {
-    dowloadTSVNew<FilesTableDataType>({
+    downloadTSV<FilesTableDataType>({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,

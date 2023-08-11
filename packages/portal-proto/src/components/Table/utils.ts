@@ -1,3 +1,4 @@
+import { humanify } from "@/utils/index";
 import {
   ColumnDef,
   ColumnOrderState,
@@ -5,7 +6,7 @@ import {
 } from "@tanstack/react-table";
 import saveAs from "file-saver";
 
-export function dowloadTSVNew<TData>({
+export function downloadTSV<TData>({
   tableData,
   columns,
   columnOrder,
@@ -22,7 +23,7 @@ export function dowloadTSVNew<TData>({
     // should be ids of the column
     blacklist?: string[];
     overwrite?: Record<
-      string,
+      string, // should be id of the column
       {
         header?: string;
         composer?: (data: TData) => void;
@@ -34,7 +35,7 @@ export function dowloadTSVNew<TData>({
   const filteredColumns = columns.filter((column) => {
     const columnId = column.id;
     return (
-      !option.blacklist.includes(columnId) &&
+      !option?.blacklist?.includes(columnId) &&
       !(columnVisibility[columnId] === false)
     );
   });
@@ -49,11 +50,8 @@ export function dowloadTSVNew<TData>({
     })
     .filter((column) => column !== null);
 
-  const getOverwriteHeader = (column: ColumnDef<TData>) =>
-    option?.overwrite?.[column.id]?.header;
-
   const header = sortedColumns
-    .map((column) => getOverwriteHeader(column) ?? column.header)
+    .map((column) => humanify({ term: column.id }))
     .join("\t");
 
   const body = (tableData || [])

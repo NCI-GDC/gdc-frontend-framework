@@ -43,7 +43,7 @@ import {
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
 import { FaCircle as Circle } from "react-icons/fa";
-import { dowloadTSVNew } from "@/components/Table/utils";
+import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
@@ -413,7 +413,7 @@ const ProjectsTable: React.FC = () => {
   };
 
   const handleDownloadTSV = () => {
-    dowloadTSVNew({
+    downloadTSV({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,

@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { AnchorLink } from "@/components/AnchorLink";
-import { externalLinks } from "@/utils/index";
+import { externalLinks, humanify } from "@/utils/index";
 import {
   ButtonTooltip,
   ImpactHeaderWithTooltip,
@@ -23,12 +23,21 @@ import {
   SMTableConsequences,
   SMTableImpacts,
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
+import saveAs from "file-saver";
+import { Loader } from "@mantine/core";
+import { convertDateToString } from "@/utils/date";
+import { downloadTSV } from "@/components/Table/utils";
 
 export const ConsequenceTable = ({
   ssmsId,
 }: {
   ssmsId: string;
 }): JSX.Element => {
+  const [
+    consequenceTableJSONDownloadActive,
+    setConsequenceTableJSONDownloadActive,
+  ] = useState(false);
+
   const {
     data: { status, ssmsConsequence: initialData },
   } = useSsmsConsequenceTable({
@@ -218,6 +227,119 @@ export const ConsequenceTable = ({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const handleTSVDownload = () => {
+    const fileName = `consequences-table.${convertDateToString(
+      new Date(),
+    )}.tsv`;
+    downloadTSV({
+      tableData,
+      columns: consequenceTableDefaultColumns,
+      columnOrder,
+      columnVisibility,
+      fileName,
+      option: {
+        overwrite: {
+          consequences: {
+            composer: (consequenceData) =>
+              consequenceData.consequences
+                ? humanify({
+                    term: consequenceData.consequences
+                      .replace("_variant", "")
+                      .replace("_", " "),
+                  })
+                : "",
+          },
+          impact: {
+            composer: (consequenceData) => {
+              const {
+                impact: {
+                  polyphen_impact,
+                  polyphen_score,
+                  sift_impact,
+                  sift_score,
+                  vep_impact,
+                },
+              } = consequenceData;
+
+              const impactString = `${[
+                `${vep_impact ? `VEP: ${vep_impact}` : ``}`,
+                `${
+                  sift_impact
+                    ? `SIFT: ${sift_impact} - score ${sift_score}`
+                    : ``
+                }`,
+                `${
+                  polyphen_impact
+                    ? `PolyPhen: ${polyphen_impact} - score ${polyphen_score}`
+                    : ``
+                }`,
+              ]
+                .filter(({ length }) => length)
+                .join(", ")}`;
+              return impactString;
+            },
+          },
+          transcript: {
+            composer: (consequenceData) => {
+              const transcriptString = `${consequenceData.transcript}${
+                consequenceData.is_canonical ? ` (Canonical)` : ""
+              }`;
+              return transcriptString;
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const handleJSONDownload = () => {
+    setConsequenceTableJSONDownloadActive(true);
+    const json = initialData.consequence.map(
+      ({
+        transcript: {
+          aa_change,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          consequence_type,
+          gene: { gene_id, gene_strand, symbol },
+          transcript_id,
+          is_canonical,
+        },
+      }) => {
+        return {
+          transcript_id,
+          aa_change,
+          is_canonical,
+          consequence_type,
+          annotation: {
+            hgvsc,
+            polyphen_impact,
+            polyphen_score,
+            sift_score,
+            sift_impact,
+            vep_impact,
+          },
+          gene: {
+            gene_id,
+            symbol,
+            gene_strand,
+          },
+        };
+      },
+    );
+    const blob = new Blob([JSON.stringify(json, null, 2)], {
+      type: "application/json",
+    });
+    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
+    setConsequenceTableJSONDownloadActive(false);
+  };
+
   return (
     <VerticalTable
       data={displayedData}
@@ -237,11 +359,13 @@ export const ConsequenceTable = ({
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <ButtonTooltip label="Export All Except #Cases" comingSoon={true}>
-            <FunctionButton>JSON</FunctionButton>
+          <ButtonTooltip label="Export All">
+            <FunctionButton onClick={handleJSONDownload}>
+              {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+            </FunctionButton>
           </ButtonTooltip>
-          <ButtonTooltip label="Export current view" comingSoon={true}>
-            <FunctionButton>TSV</FunctionButton>
+          <ButtonTooltip label="Export current view">
+            <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
           </ButtonTooltip>
         </div>
       }

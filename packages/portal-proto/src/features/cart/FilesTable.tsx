@@ -31,7 +31,7 @@ import {
 } from "@tanstack/react-table";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
-import { dowloadTSVNew } from "@/components/Table/utils";
+import { downloadTSV } from "@/components/Table/utils";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
@@ -355,7 +355,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   }, [sorting]);
 
   const handleDownloadTSV = () => {
-    dowloadTSVNew({
+    downloadTSV({
       tableData,
       columnOrder,
       fileName: `files-table.${convertDateToString(new Date())}.tsv`,
