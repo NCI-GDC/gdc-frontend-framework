@@ -232,6 +232,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
 
   const combinedFilters = joinFilters(genomicFilters, cohortFilters);
+
+  const geneFilter: FilterSet = {
+    mode: "and",
+    root: {
+      "genes.symbol": {
+        field: "genes.symbol",
+        operator: "includes",
+        operands: [geneSymbol],
+      },
+    },
+  };
+
   const setFilters =
     Object.keys(selectedMutations).length > 0
       ? ({
@@ -245,16 +257,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           mode: "and",
         } as FilterSet)
       : geneSymbol
-      ? joinFilters(combinedFilters, {
-          mode: "and",
-          root: {
-            "genes.symbol": {
-              field: "genes.symbol",
-              operator: "includes",
-              operands: [geneSymbol],
-            },
-          },
-        })
+      ? joinFilters(combinedFilters, geneFilter)
       : caseFilter
       ? caseFilter
       : combinedFilters;
@@ -271,7 +274,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         method: "POST",
       },
       params: {
-        filters: buildCohortGqlOperator(combinedFilters) ?? {},
+        filters:
+          buildCohortGqlOperator(geneSymbol ? geneFilter : combinedFilters) ??
+          {},
         filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
