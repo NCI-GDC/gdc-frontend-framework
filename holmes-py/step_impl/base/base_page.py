@@ -37,7 +37,7 @@ class GenericLocators:
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
-    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="button-bottom-switchSpring"]'
+    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="switch-toggle"]'
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
@@ -87,6 +87,10 @@ class BasePage:
     def normalize_button_identifier(self, button_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return button_name.lower().replace(" ", "-")
+
+    def normalize_identifier_underscore(self, identifier_name: str) -> str:
+        """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
+        return identifier_name.lower().replace(" ", "_")
 
     def normalize_applied_filter_name(self, filter_name: str) -> List[str]:
         periods = [char for char in filter_name if char == "."]
@@ -312,6 +316,7 @@ class BasePage:
 
     def click_switch_for_column_selector(self, switch_name):
         """In the column selector pop-up modal, clicks specified switch"""
+        locator = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
 
