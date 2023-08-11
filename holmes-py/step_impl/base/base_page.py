@@ -37,7 +37,7 @@ class GenericLocators:
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
-    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="switch-toggle"]'
+    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
@@ -316,7 +316,7 @@ class BasePage:
 
     def click_switch_for_column_selector(self, switch_name):
         """In the column selector pop-up modal, clicks specified switch"""
-        locator = self.normalize_identifier_underscore(switch_name)
+        switch_name = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
 
