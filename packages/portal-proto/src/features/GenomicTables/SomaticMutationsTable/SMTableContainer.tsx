@@ -35,6 +35,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import {
   ColumnOrderState,
   ExpandedState,
+  Row,
   VisibilityState,
 } from "@tanstack/react-table";
 import { getMutation, useGenerateSMTableColumns } from "./utils";
@@ -260,7 +261,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [rowSelection, setRowSelection] = useState({});
   const selectedMutations = Object.entries(rowSelection)
     .filter(([, isSelected]) => isSelected)
-    .map(([index]) => formattedTableData[index].mutation_id);
+    .map(
+      ([index]) => (formattedTableData[index] as SomaticMutation).mutation_id,
+    );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     SMTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -269,12 +272,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   });
 
   const setFilters =
-    Object.keys(selectedMutations).length > 0
+    selectedMutations.length > 0
       ? ({
           root: {
             "ssms.ssm_id": {
               field: "ssms.ssm_id",
-              operands: Object.keys(selectedMutations),
+              operands: selectedMutations,
               operator: "includes",
             },
           },
@@ -348,12 +351,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, []);
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const handleExpand = (exp) => {
-    if (isEqual(exp(), expanded)) {
+  const [rowId, setRowId] = useState(-1);
+  const handleExpand = (row: Row<SomaticMutation>) => {
+    if (Object.keys(expanded).length > 0 && row.index === rowId) {
       setExpanded({});
     } else {
-      setExpanded(exp());
+      setExpanded({ [row.index]: true });
+      setRowId(row.index);
     }
   };
 
@@ -369,16 +373,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               filters={buildCohortGqlOperator(setFilters)}
               sort="occurrence.case.project.project_id"
               initialSetName={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? filtersToName(setFilters)
                   : "Custom Mutation Selection"
               }
               saveCount={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? data?.ssmsTotal
-                  : Object.keys(selectedMutations).length
+                  : selectedMutations.length
               }
-              setType={"ssms"}
+              setType="ssms"
               setTypeLabel="mutation"
               createSetHook={useCreateSsmsSetFromFiltersMutation}
               closeModal={() => setShowSaveModal(false)}
@@ -388,11 +392,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <AddToSetModal
               filters={setFilters}
               addToCount={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? data?.ssmsTotal
-                  : Object.keys(selectedMutations).length
+                  : selectedMutations.length
               }
-              setType={"ssms"}
+              setType="ssms"
               setTypeLabel="mutation"
               singleCountHook={useSsmSetCountQuery}
               countHook={useSsmSetCountsQuery}
@@ -406,11 +410,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <RemoveFromSetModal
               filters={setFilters}
               removeFromCount={
-                Object.keys(selectedMutations).length === 0
+                selectedMutations.length === 0
                   ? data?.ssmsTotal
-                  : Object.keys(selectedMutations).length
+                  : selectedMutations.length
               }
-              setType={"ssms"}
+              setType="ssms"
               setTypeLabel="mutation"
               countHook={useSsmSetCountsQuery}
               closeModal={() => setShowRemoveModal(false)}
@@ -461,6 +465,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     }
                     menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
                     customPosition="bottom-start"
+                    zIndex={10}
+                    customDataTestId="button-save-edit-mutation-set"
                   />
                   <ButtonTooltip label="Export All Except #Cases">
                     <FunctionButton
@@ -503,6 +509,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 isError,
               )}
               getRowCanExpand={() => true}
+              expandableColumnIds={["#_affected_cases_across_the_gdc"]}
               renderSubComponent={({ row }) => (
                 <SMTableSubcomponent row={row} />
               )}

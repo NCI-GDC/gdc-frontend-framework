@@ -31,6 +31,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import {
   ColumnOrderState,
   ExpandedState,
+  Row,
   VisibilityState,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
@@ -262,7 +263,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [rowSelection, setRowSelection] = useState({});
   const selectedGenes = Object.entries(rowSelection)
     .filter(([, isSelected]) => isSelected)
-    .map(([index]) => formattedTableData[index].gene_ID);
+    .map(([index]) => (formattedTableData[index] as Gene).gene_id);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     genesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -273,12 +274,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   });
 
   const setFilters =
-    Object.keys(selectedGenes).length > 0
+    selectedGenes.length > 0
       ? ({
           root: {
             "genes.gene_id": {
               field: "genes.gene_id",
-              operands: Object.keys(selectedGenes),
+              operands: selectedGenes,
               operator: "includes",
             },
           },
@@ -319,12 +320,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const handleExpand = (exp) => {
-    if (isEqual(exp(), expanded)) {
+  const [rowId, setRowId] = useState(-1);
+  const handleExpand = (row: Row<Gene>) => {
+    if (Object.keys(expanded).length > 0 && row.index === rowId) {
       setExpanded({});
     } else {
-      setExpanded(exp());
+      setExpanded({ [row.index]: true });
+      setRowId(row.index);
     }
   };
 
@@ -351,17 +353,17 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <SaveSelectionAsSetModal
           filters={buildCohortGqlOperator(setFilters)}
           initialSetName={
-            Object.keys(selectedGenes).length === 0
+            selectedGenes.length === 0
               ? filtersToName(setFilters)
               : "Custom Gene Selection"
           }
           sort="case.project.project_id"
           saveCount={
-            Object.keys(selectedGenes).length === 0
+            selectedGenes.length === 0
               ? data?.genes?.genes_total
-              : Object.keys(selectedGenes).length
+              : selectedGenes.length
           }
-          setType={"genes"}
+          setType="genes"
           setTypeLabel="gene"
           createSetHook={useCreateGeneSetFromFiltersMutation}
           closeModal={() => setShowSaveModal(false)}
@@ -371,11 +373,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <AddToSetModal
           filters={setFilters}
           addToCount={
-            Object.keys(selectedGenes).length === 0
+            selectedGenes.length === 0
               ? data?.genes?.genes_total
-              : Object.keys(selectedGenes).length
+              : selectedGenes.length
           }
-          setType={"genes"}
+          setType="genes"
           setTypeLabel="gene"
           singleCountHook={useGeneSetCountQuery}
           countHook={useGeneSetCountsQuery}
@@ -389,11 +391,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         <RemoveFromSetModal
           filters={setFilters}
           removeFromCount={
-            Object.keys(selectedGenes).length === 0
+            selectedGenes.length === 0
               ? data?.genes?.genes_total
-              : Object.keys(selectedGenes).length
+              : selectedGenes.length
           }
-          setType={"genes"}
+          setType="genes"
           setTypeLabel="gene"
           countHook={useGeneSetCountsQuery}
           closeModal={() => setShowRemoveModal(false)}
@@ -442,6 +444,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               }
               menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
               customPosition="bottom-start"
+              zIndex={10}
+              customDataTestId="button-save-edit-gene-set"
             />
             <ButtonTooltip label="Export All Except #Cases and #Mutations">
               <FunctionButton
@@ -452,7 +456,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               </FunctionButton>
             </ButtonTooltip>
             <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton>TSV</FunctionButton>
+              <FunctionButton data-testid="button-tsv-mutation-frequency">
+                TSV
+              </FunctionButton>
             </ButtonTooltip>
 
             <Text className="font-heading font-bold text-md">
@@ -475,6 +481,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setRowSelection={setRowSelection}
         rowSelection={rowSelection}
         getRowCanExpand={() => true}
+        expandableColumnIds={["#_ssm_affected_cases_across_the_gdc"]}
         renderSubComponent={({ row }) => <GenesTableSubcomponent row={row} />}
         setColumnVisibility={setColumnVisibility}
         columnVisibility={columnVisibility}

@@ -12,12 +12,14 @@ import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
+import { createKeyboardAccessibleFunction } from "@/utils/index";
 
 function VerticalTable<TData>({
   columns,
   data = [],
   footer,
   getRowCanExpand,
+  expandableColumnIds,
   setRowSelection,
   rowSelection,
   enableRowSelection = false,
@@ -61,6 +63,7 @@ function VerticalTable<TData>({
     }
   }, [search?.defaultSearchTerm]);
 
+  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
   const table = useReactTable({
     columns,
     data: tableData,
@@ -84,7 +87,7 @@ function VerticalTable<TData>({
     enableRowSelection: enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    onExpandedChange: setExpanded,
+    // onExpandedChange: (expand) => setExpanded(expand, clickedColumnIndex),
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
@@ -137,10 +140,8 @@ function VerticalTable<TData>({
     }
   }, [searchTerm, handleChange]);
 
-  const [clickedColumnIndex, setClickedColumnIndex] = useState(-1);
-
-  const handleColumnClick = (columnIndex) => {
-    setClickedColumnIndex(columnIndex);
+  const handleColumnClick = (columnId: string) => {
+    setClickedColumnId(columnId);
   };
 
   return (
@@ -294,15 +295,36 @@ function VerticalTable<TData>({
                     index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                   }`}
                 >
-                  {row.getVisibleCells().map((cell, columnIndex) => {
+                  {row.getVisibleCells().map((cell) => {
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
+                    const columnId = cell.column.columnDef.id;
                     return (
                       <td
+                        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                        role="button"
+                        tabIndex={0}
                         key={cell.id}
-                        className="px-2 py-2.5"
-                        onClick={() =>
-                          row.getCanExpand() && handleColumnClick(columnIndex)
-                        }
+                        className="px-2 py-2.5 cursor-default"
+                        onClick={() => {
+                          if (
+                            row.getCanExpand() &&
+                            expandableColumnIds.includes(columnId)
+                          ) {
+                            console.log("here");
+                            handleColumnClick(columnId);
+                            setExpanded(row, columnId);
+                          }
+                        }}
+                        onKeyDown={createKeyboardAccessibleFunction(() => {
+                          if (
+                            row.getCanExpand() &&
+                            expandableColumnIds.includes(columnId)
+                          ) {
+                            console.log("here");
+                            handleColumnClick(columnId);
+                            setExpanded(row, columnId);
+                          }
+                        })}
                       >
                         {flexRender(columnDefCell, cell.getContext())}
                       </td>
@@ -314,8 +336,7 @@ function VerticalTable<TData>({
                     {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
                       {/* Need to pass in the SubRow component to render here */}
-                      {/* TODO: Is there a way to pass in the column id??? */}
-                      {renderSubComponent({ row, clickedColumnIndex })}
+                      {renderSubComponent({ row, clickedColumnId })}
                     </td>
                   </tr>
                 )}

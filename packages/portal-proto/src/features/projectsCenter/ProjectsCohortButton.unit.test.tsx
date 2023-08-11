@@ -19,12 +19,7 @@ describe("<ProjectCohortButton />", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
-    const { getByText } = render(
-      <ProjectsCohortButton
-        pickedProjects={[]}
-        resetRowSelection={jest.fn()}
-      />,
-    );
+    const { getByText } = render(<ProjectsCohortButton pickedProjects={[]} />);
 
     expect(getByText("Create New Cohort")).toBeInTheDocument();
   });
@@ -35,10 +30,7 @@ describe("<ProjectCohortButton />", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 
     const { getByRole } = render(
-      <ProjectsCohortButton
-        pickedProjects={["TCGA", "FM"]}
-        resetRowSelection={jest.fn()}
-      />,
+      <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />,
     );
     expect(getByRole("button").textContent).toBe("2 Create New Cohort");
   });
@@ -47,7 +39,6 @@ describe("<ProjectCohortButton />", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue(["cohort1", "cohort2"]);
 
     const mockDispatch = jest.fn();
-    const mockResetSelection = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
     jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
 
@@ -60,10 +51,7 @@ describe("<ProjectCohortButton />", () => {
           },
         }}
       >
-        <ProjectsCohortButton
-          pickedProjects={["TCGA", "FM"]}
-          resetRowSelection={mockResetSelection}
-        />
+        <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />
       </MantineProvider>,
     );
 
@@ -92,6 +80,5 @@ describe("<ProjectCohortButton />", () => {
       },
       type: "cohort/availableCohorts/addNewCohortWithFilterAndMessage",
     });
-    expect(mockResetSelection).toHaveBeenCalled();
   });
 });

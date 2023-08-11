@@ -53,10 +53,10 @@ export interface TableProps<TData> {
    */
   renderSubComponent?: ({
     row,
-    clickedColumnIndex,
+    clickedColumnId,
   }: {
     row: Row<TData>;
-    clickedColumnIndex: number;
+    clickedColumnId: string;
   }) => React.ReactElement;
   /**
    * Optional
@@ -64,6 +64,10 @@ export interface TableProps<TData> {
    * Default to make all rows expandable: getRowCanExpand={() => true}
    */
   getRowCanExpand?: (row: Row<TData>) => boolean;
+  /*
+   * Optional ids of column that can make row expand
+   */
+  expandableColumnIds?: string[];
   /*
    * Option table footer element
    */
@@ -180,7 +184,7 @@ export interface TableProps<TData> {
   /*
    * Optional handle for onExpandedChange
    */
-  setExpanded?: Dispatch<SetStateAction<ExpandedState>>;
+  setExpanded?: (row: Row<TData>, columnId: string) => void;
   /*
    * Optional
    * Overwrite aria-label for Search Text Input

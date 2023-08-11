@@ -48,6 +48,16 @@ import { isEqual } from "lodash";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
 
+type ProjectDataType = {
+  project: string;
+  disease_type: string[];
+  primary_site: string[];
+  program: string;
+  cases: number;
+  experimental_strategy: (string | number)[];
+  files: string;
+};
+
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
@@ -111,17 +121,6 @@ const ProjectsTable: React.FC = () => {
     [prevProjectFilters, projectFilters],
   );
 
-  const [expandedColumn, setExpandedColumn] = useState(null);
-
-  type ProjectDataType = {
-    project: string;
-    disease_type: string[];
-    primary_site: string[];
-    program: string;
-    cases: number;
-    experimental_strategy: (string | number)[];
-    files: string;
-  };
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (!isFetching && isSuccess) {
       return [
@@ -170,6 +169,9 @@ const ProjectsTable: React.FC = () => {
       ];
   }, [isSuccess, isFetching, data?.projectData, data?.pagination]);
 
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [expandedColumnId, setExpandedColumnId] = useState(null);
+  const [expandedRowId, setExpandedRowId] = useState(-1);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -225,6 +227,7 @@ const ProjectsTable: React.FC = () => {
         header: "Disease Type",
         cell: ({ row, getValue }) => {
           // make this a component
+
           return getValue()?.length === 0
             ? "--"
             : getValue()?.length === 1
@@ -244,7 +247,8 @@ const ProjectsTable: React.FC = () => {
                   aria-label="Expand section"
                   className="flex items-center text-primary cursor-pointer gap-2"
                 >
-                  {row.getIsExpanded() && expandedColumn === "disease_type" ? (
+                  {row.getIsExpanded() &&
+                  expandedColumnId === "disease_type" ? (
                     <UpIcon size="1.25em" className="text-accent" />
                   ) : (
                     <DownIcon size="1.25em" className="text-accent" />
@@ -252,7 +256,7 @@ const ProjectsTable: React.FC = () => {
                   <span
                     className={`whitespace-nowrap ${
                       row.getIsExpanded() &&
-                      expandedColumn === "disease_type" &&
+                      expandedColumnId === "disease_type" &&
                       "font-bold"
                     }`}
                   >
@@ -287,7 +291,8 @@ const ProjectsTable: React.FC = () => {
                   aria-label="Expand section"
                   className="flex items-center text-primary cursor-pointer gap-2"
                 >
-                  {row.getIsExpanded() && expandedColumn === "primary_site" ? (
+                  {row.getIsExpanded() &&
+                  expandedColumnId === "primary_site" ? (
                     <UpIcon size="1.25em" className="text-accent" />
                   ) : (
                     <DownIcon size="1.25em" className="text-accent" />
@@ -296,7 +301,7 @@ const ProjectsTable: React.FC = () => {
                   <span
                     className={`whitespace-nowrap ${
                       row.getIsExpanded() &&
-                      expandedColumn === "primary_site" &&
+                      expandedColumnId === "primary_site" &&
                       "font-bold"
                     }`}
                   >
@@ -338,13 +343,13 @@ const ProjectsTable: React.FC = () => {
         enableSorting: false,
       }),
     ],
-    [projectsTableColumnHelper, expandedColumn, setEntityMetadata],
+    [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
   );
 
   const [rowSelection, setRowSelection] = useState({});
   const pickedProjects = Object.entries(rowSelection)
     .filter(([, isSelected]) => isSelected)
-    .map(([index]) => formattedTableData[index].project);
+    .map(([index]) => (formattedTableData[index] as ProjectDataType).project);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -418,68 +423,17 @@ const ProjectsTable: React.FC = () => {
     });
   };
 
-  const CreateContent = ({
-    row,
-    columnIndex,
-  }: {
-    row: Row<ProjectDataType>;
-    columnIndex: number;
-  }): JSX.Element => {
-    // don't need this mess if there's a way to pass in column id
-    // this is not working properly when column id changes and the state doesn't
-    // update on time
-
-    setExpandedColumn(columnOrder[columnIndex]);
-    const values =
-      columnOrder[columnIndex] === "disease_type"
-        ? row?.original?.disease_type
-        : row?.original?.primary_site;
-    const title =
-      columnOrder[columnIndex] === "disease_type"
-        ? "Disease Type"
-        : "Primary Site";
-
-    const [subRef, { width, height }] = useMeasure();
-
-    const fudgeFactor = width / 60;
-
-    const verticalSpring = useSpring({
-      from: { opacity: 0.25, height: 50 },
-      to: {
-        opacity: 1,
-        height: height + fudgeFactor,
-      },
-      immediate: true,
-    });
-
-    return (
-      <>
-        <animated.div ref={subRef} className="absolute mt-2 ml-2">
-          <div className="font-semibold text-[1rem] mb-2">{title}</div>
-          <div className="columns-4 gap-4 font-content text-sm">
-            {values.sort().map((value) => (
-              <div className="flex flex-row items-center" key={value}>
-                <Circle size="0.65em" className="text-primary shrink-0" />
-                <p className="pl-2">{value}</p>
-              </div>
-            ))}
-          </div>
-        </animated.div>
-        <animated.div style={verticalSpring}></animated.div>
-      </>
-    );
-  };
-
-  const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const prevColumnId = usePrevious(expandedColumn);
-
-  const handleExpand = (exp) => {
-    console.log({ prevColumnId, expandedColumn, expanded, current: exp() });
-    if (isEqual(expanded, exp()) && prevColumnId === expandedColumn) {
-      setExpanded({}); // Resetting expanded state
+  const handleExpand = (row: Row<ProjectDataType>, columnId: string) => {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.index === expandedRowId &&
+      columnId === expandedColumnId
+    ) {
+      setExpanded({});
     } else {
-      setExpanded(exp()); // Setting the new expanded state
+      setExpanded({ [row.index]: true });
+      setExpandedColumnId(columnId);
+      setExpandedRowId(row.index);
     }
   };
 
@@ -490,10 +444,7 @@ const ProjectsTable: React.FC = () => {
       }`}
       additionalControls={
         <div className="flex gap-2">
-          <ProjectsCohortButton
-            pickedProjects={pickedProjects}
-            resetRowSelection={() => setRowSelection({})}
-          />
+          <ProjectsCohortButton pickedProjects={pickedProjects} />
           <FunctionButton
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
@@ -519,8 +470,9 @@ const ProjectsTable: React.FC = () => {
         enabled: true,
       }}
       getRowCanExpand={() => true}
-      renderSubComponent={({ row, clickedColumnIndex }) => (
-        <CreateContent row={row} columnIndex={clickedColumnIndex} />
+      expandableColumnIds={["disease_type", "primary_site"]}
+      renderSubComponent={({ row, clickedColumnId }) => (
+        <CreateContent row={row} columnId={clickedColumnId} />
       )}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
@@ -541,4 +493,47 @@ const ProjectsTable: React.FC = () => {
   );
 };
 
+const CreateContent = ({
+  row,
+  columnId,
+}: {
+  row: Row<ProjectDataType>;
+  columnId: string;
+}): JSX.Element => {
+  const values =
+    columnId === "disease_type"
+      ? row?.original?.disease_type
+      : row?.original?.primary_site;
+  const title = columnId === "disease_type" ? "Disease Type" : "Primary Site";
+
+  const [subRef, { width, height }] = useMeasure();
+
+  const fudgeFactor = width / 60;
+
+  const verticalSpring = useSpring({
+    from: { opacity: 0.25, height: 50 },
+    to: {
+      opacity: 1,
+      height: height + fudgeFactor,
+    },
+    immediate: true,
+  });
+
+  return (
+    <>
+      <animated.div ref={subRef} className="absolute mt-2 ml-2">
+        <div className="font-semibold text-[1rem] mb-2">{title}</div>
+        <div className="columns-4 gap-4 font-content text-sm">
+          {values.sort().map((value) => (
+            <div className="flex flex-row items-center" key={value}>
+              <Circle size="0.65em" className="text-primary shrink-0" />
+              <p className="pl-2">{value}</p>
+            </div>
+          ))}
+        </div>
+      </animated.div>
+      <animated.div style={verticalSpring}></animated.div>
+    </>
+  );
+};
 export default ProjectsTable;

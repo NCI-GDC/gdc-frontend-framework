@@ -10,10 +10,8 @@ import { CountsIcon } from "../shared/tailwindComponents";
 
 const ProjectsCohortButton = ({
   pickedProjects,
-  resetRowSelection,
 }: {
   pickedProjects: string[];
-  resetRowSelection: () => void;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showCreateCohort, setShowCreateCohort] = useState(false);
@@ -29,7 +27,6 @@ const ProjectsCohortButton = ({
         },
       },
     };
-    resetRowSelection();
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: filters,

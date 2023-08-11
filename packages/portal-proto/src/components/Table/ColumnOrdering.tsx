@@ -47,7 +47,6 @@ function ColumnOrdering<TData>({
       <Popover
         opened={showColumnMenu}
         onChange={setShowColumnMenu}
-        data-testid="button-column-selector-box"
         zIndex={10}
         classNames={{
           dropdown: "p-2",
@@ -65,7 +64,7 @@ function ColumnOrdering<TData>({
                 onClick={() => setShowColumnMenu((o) => !o)}
                 aria-label="show table menu"
                 color="primary"
-                data-testid="column-selector-box"
+                data-testid="button-column-selector-box"
               >
                 {!showColumnMenu ? (
                   <BsList size="1.5rem" />
@@ -76,7 +75,7 @@ function ColumnOrdering<TData>({
             </span>
           </Tooltip>
         </Popover.Target>
-        <Popover.Dropdown>
+        <Popover.Dropdown data-testid="column-selector-popover-modal">
           <div>
             <div className="flex justify-between">
               <span className="font-bold text-primary-darkest tracking-normal">
@@ -104,6 +103,7 @@ function ColumnOrdering<TData>({
               aria-label="Search input for columns"
               icon={<SearchIcon />}
               className="mb-2 mt-4"
+              data-testid="textbox-column-selector"
             />
 
             <List
@@ -205,6 +205,7 @@ function ColumnItem<TData>({
       className={`flex justify-between bg-nci-violet-lightest ${
         isNotLast ? "mb-2" : ""
       } p-1 gap-3 h-6 opacity-${o} cursor-move`}
+      data-testid={`column-selector-row-${column.id}`}
     >
       <div className="flex gap-2 items-center">
         <DragIcon size="1rem" className="text-primary" />
@@ -217,7 +218,8 @@ function ColumnItem<TData>({
           checked: column.getIsVisible(),
           onChange: column.getToggleVisibilityHandler(),
         }}
-        aria-label=""
+        aria-label="toggle column visibility switch button"
+        data-testid="switch-toggle"
       />
     </div>
   );
