@@ -10,7 +10,10 @@ import { buildCohortGqlOperator, joinFilters } from "./filters";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { selectCurrentCohortFilterSet } from "./availableCohortsSlice";
+import {
+  selectCohortFilterSetById,
+  selectCurrentCohortFilterSet,
+} from "./availableCohortsSlice";
 
 export interface CountsData {
   readonly caseCount: number;
@@ -92,53 +95,59 @@ const CountsGraphQLQuery = `
 
 export const fetchCohortCaseCounts = createAsyncThunk<
   GraphQLApiResponse,
-  void,
+  string | undefined,
   { dispatch: CoreDispatch; state: CoreState }
->("cohort/CohortCounts", async (_, thunkAPI): Promise<GraphQLApiResponse> => {
-  const cohortFilters = selectCurrentCohortFilterSet(thunkAPI.getState());
-  const caseSSMFilter = buildCohortGqlOperator(
-    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
-      mode: "and",
-      root: {
-        "cases.available_variation_data": {
-          operator: "includes",
-          field: "cases.available_variation_data",
-          operands: ["ssm"],
+>(
+  "cohort/CohortCounts",
+  async (cohortId, thunkAPI): Promise<GraphQLApiResponse> => {
+    console.log("fetchCohortCaseCounts", cohortId);
+    const cohortFilters = cohortId
+      ? selectCohortFilterSetById(thunkAPI.getState(), cohortId)
+      : selectCurrentCohortFilterSet(thunkAPI.getState());
+    const caseSSMFilter = buildCohortGqlOperator(
+      joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+        mode: "and",
+        root: {
+          "cases.available_variation_data": {
+            operator: "includes",
+            field: "cases.available_variation_data",
+            operands: ["ssm"],
+          },
         },
-      },
-    }),
-  );
-  const sequenceReadsFilters = buildCohortGqlOperator(
-    joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
-      mode: "and",
-      root: {
-        "files.index_files.data_format": {
-          operator: "=",
-          field: "files.index_files.data_format",
-          operand: "bai",
+      }),
+    );
+    const sequenceReadsFilters = buildCohortGqlOperator(
+      joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+        mode: "and",
+        root: {
+          "files.index_files.data_format": {
+            operator: "=",
+            field: "files.index_files.data_format",
+            operand: "bai",
+          },
+          "files.data_type": {
+            operator: "=",
+            field: "files.data_type",
+            operand: "Aligned Reads",
+          },
+          "files.data_format": {
+            operator: "=",
+            field: "files.data_format",
+            operand: "bam",
+          },
         },
-        "files.data_type": {
-          operator: "=",
-          field: "files.data_type",
-          operand: "Aligned Reads",
-        },
-        "files.data_format": {
-          operator: "=",
-          field: "files.data_format",
-          operand: "bam",
-        },
-      },
-    }),
-  );
+      }),
+    );
 
-  const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
-  const graphQlFilters = {
-    filters: cohortFiltersGQL ?? {},
-    ssmCaseFilter: caseSSMFilter,
-    sequenceReadsCaseFilter: sequenceReadsFilters,
-  };
-  return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
-});
+    const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
+    const graphQlFilters = {
+      filters: cohortFiltersGQL ?? {},
+      ssmCaseFilter: caseSSMFilter,
+      sequenceReadsCaseFilter: sequenceReadsFilters,
+    };
+    return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
+  },
+);
 
 const slice = createSlice({
   name: "cohort/counts",
@@ -200,10 +209,7 @@ export const selectCohortCounts = (state: CoreState): CountsData =>
 export const selectCohortCountsByName = (
   state: CoreState,
   name: keyof CountsData,
-): number => {
-  const counts = state.cohort.cohortCounts.counts;
-  return counts[name];
-};
+): number => state.cohort.cohortCounts.counts[name];
 
 export const useCohortCounts = createUseCoreDataHook(
   fetchCohortCaseCounts,
