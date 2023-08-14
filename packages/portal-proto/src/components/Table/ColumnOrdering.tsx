@@ -31,7 +31,7 @@ function ColumnOrdering<TData>({
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const disabled =
+  const isBackToDefaults =
     isEqual(table.initialState.columnOrder, columnOrder) &&
     isEqual(
       table.initialState.columnVisibility,
@@ -81,17 +81,15 @@ function ColumnOrdering<TData>({
               <span className="font-bold text-primary-darkest tracking-normal">
                 Customize Columns
               </span>
-              <Tooltip label="Restore defaults" disabled={disabled}>
-                <ActionIcon
-                  onClick={handleColumnOrderingReset}
-                  disabled={disabled}
-                >
-                  <RevertIcon
-                    className={disabled ? "text-base" : "text-primary"}
-                    size="1rem"
-                  />
-                </ActionIcon>
-              </Tooltip>
+              {!isBackToDefaults && (
+                <Tooltip label="Restore defaults">
+                  <span>
+                    <ActionIcon onClick={handleColumnOrderingReset}>
+                      <RevertIcon className="text-primary" size="1rem" />
+                    </ActionIcon>
+                  </span>
+                </Tooltip>
+              )}
             </div>
             <Divider color="#c5c5c5" className="mt-1" />
             <TextInput

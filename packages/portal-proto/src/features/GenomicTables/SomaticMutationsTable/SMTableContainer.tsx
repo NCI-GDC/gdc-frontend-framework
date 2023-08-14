@@ -17,7 +17,7 @@ import {
   GDCSsmsTable,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
-import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { Loader, LoadingOverlay, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -192,19 +192,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     )
       setPage(1);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
-
-  /* Scroll for gend id search */
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
-    offset: 500,
-    duration: 1000,
-  });
-
-  useEffect(() => {
-    // should happen only on mount
-    if (searchTerm) scrollIntoView();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  /* Scroll for gend id search end */
 
   const useSomaticMutationsTableFormat = (
     initialData: Omit<GDCSsmsTable, "pageSize" | "offset">,
@@ -431,101 +418,93 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
-          <div ref={targetRef}>
-            <VerticalTable
-              data={formattedTableData ?? []}
-              columns={SMTableDefaultColumns}
-              additionalControls={
-                <div className="flex gap-2 items-center">
-                  <DropdownWithIcon
-                    dropdownElements={[
-                      {
-                        title: "Save as new mutation set",
-                        onClick: () => setShowSaveModal(true),
-                      },
-                      {
-                        title: "Add to existing mutation set",
-                        disabled: Object.keys(sets).length === 0,
-                        onClick: () => setShowAddModal(true),
-                      },
-                      {
-                        title: "Remove from existing mutation set",
-                        disabled: Object.keys(sets).length === 0,
-                        onClick: () => setShowRemoveModal(true),
-                      },
-                    ]}
-                    TargetButtonChildren="Save/Edit Mutation Set"
-                    disableTargetWidth={true}
-                    LeftIcon={
-                      selectedMutations.length ? (
-                        <CountsIcon $count={selectedMutations.length}>
-                          {selectedMutations.length}
-                        </CountsIcon>
-                      ) : null
-                    }
-                    menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
-                    customPosition="bottom-start"
-                    zIndex={10}
-                    customDataTestId="button-save-edit-mutation-set"
-                  />
-                  <ButtonTooltip label="Export All Except #Cases">
-                    <FunctionButton
-                      onClick={handleJSONDownload}
-                      data-testid="button-json-mutation-frequency"
-                    >
-                      {downloadMutationsFrequencyActive ? (
-                        <Loader size="sm" />
-                      ) : (
-                        "JSON"
-                      )}
-                    </FunctionButton>
-                  </ButtonTooltip>
-                  <ButtonTooltip label="Export current view">
-                    <FunctionButton data-testid="button-tsv-mutation-frequency">
-                      TSV
-                    </FunctionButton>
-                  </ButtonTooltip>
+          <VerticalTable
+            data={formattedTableData ?? []}
+            columns={SMTableDefaultColumns}
+            additionalControls={
+              <div className="flex gap-2 items-center">
+                <DropdownWithIcon
+                  dropdownElements={[
+                    {
+                      title: "Save as new mutation set",
+                      onClick: () => setShowSaveModal(true),
+                    },
+                    {
+                      title: "Add to existing mutation set",
+                      disabled: Object.keys(sets).length === 0,
+                      onClick: () => setShowAddModal(true),
+                    },
+                    {
+                      title: "Remove from existing mutation set",
+                      disabled: Object.keys(sets).length === 0,
+                      onClick: () => setShowRemoveModal(true),
+                    },
+                  ]}
+                  TargetButtonChildren="Save/Edit Mutation Set"
+                  disableTargetWidth={true}
+                  LeftIcon={
+                    selectedMutations.length ? (
+                      <CountsIcon $count={selectedMutations.length}>
+                        {selectedMutations.length}
+                      </CountsIcon>
+                    ) : null
+                  }
+                  menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+                  customPosition="bottom-start"
+                  zIndex={10}
+                  customDataTestId="button-save-edit-mutation-set"
+                />
+                <ButtonTooltip label="Export All Except #Cases">
+                  <FunctionButton
+                    onClick={handleJSONDownload}
+                    data-testid="button-json-mutation-frequency"
+                  >
+                    {downloadMutationsFrequencyActive ? (
+                      <Loader size="sm" />
+                    ) : (
+                      "JSON"
+                    )}
+                  </FunctionButton>
+                </ButtonTooltip>
+                <ButtonTooltip label="Export current view" comingSoon={true}>
+                  <FunctionButton data-testid="button-tsv-mutation-frequency">
+                    TSV
+                  </FunctionButton>
+                </ButtonTooltip>
 
-                  <Text className="font-heading font-bold text-md">
-                    TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
-                    {data?.ssmsTotal == 1
-                      ? "Somatic Mutation".toUpperCase()
-                      : `${"Somatic Mutation".toUpperCase()}S`}
-                  </Text>
-                </div>
-              }
-              search={{
-                enabled: true,
-                defaultSearchTerm: debouncedSearchTerm,
-              }}
-              pagination={pagination}
-              showControls={true}
-              enableRowSelection={true}
-              setRowSelection={setRowSelection}
-              rowSelection={rowSelection}
-              status={statusBooleansToDataStatus(
-                isFetching,
-                isSuccess,
-                isError,
-              )}
-              getRowCanExpand={() => true}
-              expandableColumnIds={["#_affected_cases_across_the_gdc"]}
-              renderSubComponent={({ row }) => (
-                <SMTableSubcomponent row={row} />
-              )}
-              handleChange={handleChange}
-              setColumnVisibility={setColumnVisibility}
-              columnVisibility={columnVisibility}
-              columnOrder={columnOrder}
-              setColumnOrder={setColumnOrder}
-              ariaTextOverwrite={
-                searchTermsForGene?.geneSymbol &&
-                `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
-              }
-              expanded={expanded}
-              setExpanded={handleExpand}
-            />
-          </div>
+                <Text className="font-heading font-bold text-md">
+                  TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
+                  {data?.ssmsTotal == 1
+                    ? "Somatic Mutation".toUpperCase()
+                    : `${"Somatic Mutation".toUpperCase()}S`}
+                </Text>
+              </div>
+            }
+            search={{
+              enabled: true,
+              defaultSearchTerm: debouncedSearchTerm,
+            }}
+            pagination={pagination}
+            showControls={true}
+            enableRowSelection={true}
+            setRowSelection={setRowSelection}
+            rowSelection={rowSelection}
+            status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+            getRowCanExpand={() => true}
+            expandableColumnIds={["#_affected_cases_across_the_gdc"]}
+            renderSubComponent={({ row }) => <SMTableSubcomponent row={row} />}
+            handleChange={handleChange}
+            setColumnVisibility={setColumnVisibility}
+            columnVisibility={columnVisibility}
+            columnOrder={columnOrder}
+            setColumnOrder={setColumnOrder}
+            ariaTextOverwrite={
+              searchTermsForGene?.geneSymbol &&
+              `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
+            }
+            expanded={expanded}
+            setExpanded={handleExpand}
+          />
         </>
       )}
     </>

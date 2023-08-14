@@ -160,7 +160,7 @@ export const ConsequenceTable = ({
       }),
       consequenceTableColumnHelper.accessor("aa_change", {
         id: "aa_change",
-        header: "AA Gene",
+        header: "AA Change",
       }),
       consequenceTableColumnHelper.accessor("consequences", {
         id: "consequences",

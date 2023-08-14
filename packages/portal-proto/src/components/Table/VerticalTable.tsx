@@ -113,7 +113,7 @@ function VerticalTable<TData>({
   }, [pagination]);
 
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
+    setPageSize(parseInt(newPageSize));
     handleChange &&
       handleChange({
         newPageSize: newPageSize,
@@ -223,7 +223,7 @@ function VerticalTable<TData>({
                 {headerGroup.headers.map((header) => {
                   return columnSorting === "none" ? (
                     <th
-                      className="px-2 py-3 font-heading bg-base-max"
+                      className="px-2.5 py-3 font-heading bg-base-max"
                       key={header.id}
                     >
                       {flexRender(
@@ -234,17 +234,18 @@ function VerticalTable<TData>({
                   ) : (
                     <th
                       key={header.id}
-                      className={
-                        header.column.getCanSort()
-                          ? "cursor-pointer select-none px-2 py-3 border-base-lighter font-heading text-base-contrast-max whitespace-nowrap hover:bg-primary-lightest"
-                          : "px-2 py-3 font-heading bg-base-max"
-                      } //need to combine this
+                      className={`px-2.5 py-3 font-heading ${
+                        header.column.getCanSort() &&
+                        "hover:bg-primary-lightest"
+                      }`}
                       onClick={() => {
-                        // maybe pass in custom sorting logic for some tables if neccessary
-                        // if custom logic is provided use it otherwise call below
                         header.column.getCanSort() &&
                           header.column.toggleSorting();
                       }}
+                      onKeyDown={createKeyboardAccessibleFunction(() => {
+                        header.column.getCanSort() &&
+                          header.column.toggleSorting();
+                      })}
                       aria-sort={
                         header.column.getIsSorted()
                           ? header.column.getIsSorted() === "desc"
@@ -257,30 +258,31 @@ function VerticalTable<TData>({
                         header.column.getCanSort() ? "button" : "columnheader"
                       }
                     >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                      {/* how to make sure that this is only seen for true
-                      having to set it to false for others is tedious */}
-                      {header.column.getCanSort() && (
-                        <div className="inline-block text-xs pl-3 align-middle text-base-light">
-                          <BsCaretUpFill
-                            className={
-                              header.column.getIsSorted() === "asc"
-                                ? "text-primary"
-                                : ""
-                            }
-                          />
-                          <BsCaretDownFill
-                            className={`${
-                              header.column.getIsSorted() === "desc"
-                                ? "text-primary"
-                                : ""
-                            } relative top-[-2px]`}
-                          />
-                        </div>
-                      )}
+                      <div className="flex items-center">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+
+                        {header.column.getCanSort() && (
+                          <div className="inline-block text-xs pl-3 align-middle text-base-light">
+                            <BsCaretUpFill
+                              className={
+                                header.column.getIsSorted() === "asc"
+                                  ? "text-primary"
+                                  : ""
+                              }
+                            />
+                            <BsCaretDownFill
+                              className={`${
+                                header.column.getIsSorted() === "desc"
+                                  ? "text-primary"
+                                  : ""
+                              } relative top-[-2px]`}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </th>
                   );
                 })}
@@ -304,13 +306,12 @@ function VerticalTable<TData>({
                         role="button"
                         tabIndex={0}
                         key={cell.id}
-                        className="px-2 py-2.5 cursor-default"
+                        className="px-2.5 py-2.5 cursor-default"
                         onClick={() => {
                           if (
                             row.getCanExpand() &&
                             expandableColumnIds.includes(columnId)
                           ) {
-                            console.log("here");
                             handleColumnClick(columnId);
                             setExpanded(row, columnId);
                           }
@@ -320,7 +321,6 @@ function VerticalTable<TData>({
                             row.getCanExpand() &&
                             expandableColumnIds.includes(columnId)
                           ) {
-                            console.log("here");
                             handleColumnClick(columnId);
                             setExpanded(row, columnId);
                           }

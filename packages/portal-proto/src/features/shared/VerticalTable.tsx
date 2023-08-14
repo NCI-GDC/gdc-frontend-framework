@@ -519,7 +519,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [pagination]);
 
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
+    setPageSize(parseInt(newPageSize));
     handleChange({
       newPageSize: newPageSize,
     });
