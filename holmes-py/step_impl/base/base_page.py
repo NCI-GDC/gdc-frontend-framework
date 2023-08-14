@@ -21,8 +21,9 @@ class GenericLocators:
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
-    QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
-    QUICK_SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
+    QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
+    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
+    QUICK_SEARCH_BAR_FIRST_RESULT_ABBREVIATION = lambda abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth=0 >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -344,14 +345,28 @@ class BasePage:
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
-    def quick_search_and_click(self,text):
+    def quick_search_and_click(self, text):
         """
         Sends text into the quick search bar in the upper-right corner of the data portal.
-        Then clicks the result in the search result area. Best used with a UUID.
+        Then clicks the first result in the search result area. Best used with a UUID.
         """
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
-        text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
-        self.click(text_locator)
+        first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
+        self.click(first_result_locator)
+
+    def quick_search_validate_abbreviation_and_click(self, text, abbreviation):
+        """
+        Sends text into the quick search bar in the upper-right corner of the data portal.
+        Validates the result abbreviation is the one we expect. Then, clicks the first result
+        in the search result area. Best used with a UUID.
+        """
+        self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+
+        first_result_abbreviation = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT_ABBREVIATION(abbreviation)
+        self.wait_until_locator_is_visible(first_result_abbreviation)
+
+        first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
+        self.click(first_result_locator)
 
     # This section of functions is for handling new tabs
     def perform_action_handle_new_tab(self, source:str, button:str):

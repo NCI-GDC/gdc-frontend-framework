@@ -418,9 +418,18 @@ def send_text_into_search_bar(text: str, aria_label: str):
 def quick_search_and_click(text: str):
     """
     Sends text into the quick search bar in the upper-right corner of the data portal.
-    Then clicks the result in the search result area. Best used with a UUID.
+    Then clicks the first result in the search result area. Best used with a UUID.
     """
     APP.shared.quick_search_and_click(text)
+
+@step("Quick search for <text>, validate the result abbreviation is <abbreviation>, and go to its page")
+def quick_search_and_click(text: str, abbreviation:str):
+    """
+    Sends text into the quick search bar in the upper-right corner of the data portal.
+    Validates the result abbreviation is the one we expect. Then, clicks the first result
+    in the search result area. Best used with a UUID.
+    """
+    APP.shared.quick_search_validate_abbreviation_and_click(text,abbreviation)
 
 @step("Name the cohort <cohort_name>")
 def name_cohort(cohort_name: str):
