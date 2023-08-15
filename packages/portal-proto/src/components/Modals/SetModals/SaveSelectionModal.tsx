@@ -4,7 +4,7 @@ import { TextInput, NumberInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import {
-  addSets,
+  addSet,
   useCoreDispatch,
   SetTypes,
   useCoreSelector,
@@ -65,13 +65,11 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   useEffect(() => {
     if (response.isSuccess) {
       dispatch(
-        addSets([
-          {
-            setType,
-            setName: form.values.name.trim(),
-            setId: response.data as string,
-          },
-        ]),
+        addSet({
+          setType,
+          setName: form.values.name.trim(),
+          setId: response.data as string,
+        }),
       );
       showNotification({ message: "Set has been saved." });
       closeModal();

@@ -3,17 +3,14 @@ import Link from "next/link";
 import { Grid, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import {
   useCoreSelector,
   selectAllSets,
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
-  addSets,
   useCoreDispatch,
   removeSets,
 } from "@gff/core";
-
 import { WarningBanner } from "@/components/WarningBanner";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 import { convertDateToString } from "src/utils/date";
@@ -22,34 +19,7 @@ import { SetData } from "./types";
 import SetDetailPanel from "./SetDetailPanel";
 import CreateSetButton from "./CreateSetButton";
 import ManageSetsTable from "./ManageSetsTable";
-
-interface DeleteSetsNotificationProps {
-  readonly sets: SetData[];
-}
-
-const DeleteSetsNotification: React.FC<DeleteSetsNotificationProps> = ({
-  sets,
-}: DeleteSetsNotificationProps) => {
-  const dispatch = useCoreDispatch();
-  return (
-    <>
-      {sets.length === 1 ? (
-        <p>
-          <b>{sets[0].setName}</b> has been deleted
-        </p>
-      ) : (
-        <p>{sets.length} sets have been deleted</p>
-      )}
-      <Button
-        variant={"white"}
-        onClick={() => dispatch(addSets(sets))}
-        leftIcon={<UndoIcon />}
-      >
-        <span className="underline">Undo</span>
-      </Button>
-    </>
-  );
-};
+import DeleteSetsNotification from "./DeleteSetsNotification";
 
 const CreateSetInstructions = () => (
   <p className="py-2 text-sm">

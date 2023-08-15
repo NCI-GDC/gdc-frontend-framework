@@ -14,7 +14,7 @@ import {
   FilterSet,
   SetTypes,
   useCoreDispatch,
-  addSets,
+  addSet,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -56,7 +56,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
         showNotification({ message: "Problem modifiying set.", color: "red" });
       } else {
         dispatch(
-          addSets([{ setType, setName: selectedSets[0][1], setId: newSetId }]),
+          addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
         );
         showNotification({ message: "Set has been modified." });
         closeModal();

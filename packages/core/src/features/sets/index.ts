@@ -8,7 +8,7 @@ import {
 } from "./createSetSlice";
 import {
   setsReducer,
-  addSets,
+  addSet,
   removeSets,
   renameSet,
   selectSetsByType,
@@ -38,7 +38,7 @@ export {
   useCreateSsmsSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
   setsReducer,
-  addSets,
+  addSet,
   removeSets,
   renameSet,
   selectSetsByType,

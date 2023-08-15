@@ -1,16 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { reducers } from "src/reducers";
 import { getInitialCoreState } from "../../store.unit.test";
-import { addSets, removeSets, renameSet, selectSetsByType } from "./setsSlice";
+import { addSet, removeSets, renameSet, selectSetsByType } from "./setsSlice";
 
 describe("setsSlice", () => {
   it("add new sets", () => {
     const coreStore = configureStore({ reducer: reducers });
     coreStore.dispatch(
-      addSets([
-        { setType: "genes", setName: "my gene set", setId: "xZaB" },
-        { setType: "genes", setName: "my next gene set", setId: "aaZM" },
-      ]),
+      addSet({ setType: "genes", setName: "my gene set", setId: "xZaB" }),
+    );
+
+    expect(coreStore.getState().sets).toEqual({
+      genes: { xZaB: "my gene set" },
+      cases: {},
+      ssms: {},
+    });
+
+    coreStore.dispatch(
+      addSet({ setType: "genes", setName: "my next gene set", setId: "aaZM" }),
     );
 
     expect(coreStore.getState().sets).toEqual({
@@ -23,7 +30,7 @@ describe("setsSlice", () => {
   it("replace set with same name", () => {
     const coreStore = configureStore({ reducer: reducers });
     coreStore.dispatch(
-      addSets([{ setType: "cases", setName: "my case set", setId: "xZaB" }]),
+      addSet({ setType: "cases", setName: "my case set", setId: "xZaB" }),
     );
     expect(coreStore.getState().sets).toEqual({
       cases: { xZaB: "my case set" },
@@ -31,7 +38,7 @@ describe("setsSlice", () => {
       ssms: {},
     });
     coreStore.dispatch(
-      addSets([{ setType: "cases", setName: "my case set", setId: "pLaR" }]),
+      addSet({ setType: "cases", setName: "my case set", setId: "pLaR" }),
     );
     expect(coreStore.getState().sets).toEqual({
       cases: { pLaR: "my case set" },
@@ -43,10 +50,10 @@ describe("setsSlice", () => {
   it("remove sets", () => {
     const coreStore = configureStore({ reducer: reducers });
     coreStore.dispatch(
-      addSets([
-        { setType: "genes", setName: "my gene set", setId: "xZaB" },
-        { setType: "genes", setName: "my next gene set", setId: "aaZM" },
-      ]),
+      addSet({ setType: "genes", setName: "my gene set", setId: "xZaB" }),
+    );
+    coreStore.dispatch(
+      addSet({ setType: "genes", setName: "my next gene set", setId: "aaZM" }),
     );
 
     coreStore.dispatch(removeSets([{ setType: "genes", setId: "xZaB" }]));
@@ -61,10 +68,11 @@ describe("setsSlice", () => {
   it("rename set", () => {
     const coreStore = configureStore({ reducer: reducers });
     coreStore.dispatch(
-      addSets([
-        { setType: "ssms", setName: "my ssm set", setId: "pLAr" },
-        { setType: "ssms", setName: "my next ssm set", setId: "aaZM" },
-      ]),
+      addSet({ setType: "ssms", setName: "my ssm set", setId: "pLAr" }),
+    );
+
+    coreStore.dispatch(
+      addSet({ setType: "ssms", setName: "my next ssm set", setId: "aaZM" }),
     );
 
     coreStore.dispatch(

@@ -12,7 +12,7 @@ import SavedSets from "./SavedSets";
 import UserInputModal from "../UserInputModal";
 import { SavedSetModalProps } from "./types";
 import UpdateCohortButton from "./UpdateFiltersButton";
-import SaveSetButton from "@/components/InputEntityList/SaveSetButton";
+import SaveSetButton from "@/components/SaveSetButton";
 
 const GeneSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,

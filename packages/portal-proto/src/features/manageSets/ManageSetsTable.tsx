@@ -1,16 +1,14 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useMemo } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { Checkbox, ActionIcon, TextInput, Badge, Tooltip } from "@mantine/core";
+import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import {
   FaTrash as TrashIcon,
-  FaCheck as CheckIcon,
   FaExclamationCircle as WarningIcon,
 } from "react-icons/fa";
 import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
-import { PiPencilSimpleLineBold as EditIcon } from "react-icons/pi";
-import { MdClose as CloseIcon } from "react-icons/md";
 import { Row } from "react-table";
-import { useCoreDispatch, removeSets, SetTypes, renameSet } from "@gff/core";
+import { useCoreDispatch, removeSets } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
 import {
@@ -18,94 +16,9 @@ import {
   HandleChangeInput,
 } from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import ErrorMessage from "@/components/ErrorMessage";
 import { SetData } from "./types";
-
-interface SetNameInputProps {
-  readonly setName: string;
-  readonly setId: string;
-  readonly setType: SetTypes;
-}
-
-const SetNameInput: React.FC<SetNameInputProps> = ({
-  setName,
-  setId,
-  setType,
-}: SetNameInputProps) => {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(setName);
-  const inputRef = useRef<HTMLInputElement>();
-  const dispatch = useCoreDispatch();
-
-  useEffect(() => {
-    if (editing) {
-      inputRef?.current.focus();
-    }
-  }, [editing]);
-
-  return (
-    <>
-      <div
-        className={`flex flex-row gap-2 ${
-          editing ? "items-start" : "items-center"
-        }`}
-      >
-        {editing ? (
-          <>
-            <TextInput
-              value={value}
-              ref={inputRef}
-              onChange={(e) => setValue(e.currentTarget.value)}
-              error={
-                value === "" ? (
-                  <ErrorMessage message="Please fill out this field." />
-                ) : undefined
-              }
-              maxLength={100}
-              aria-label="Enter set name"
-            />
-            <ActionIcon
-              onClick={() => {
-                setEditing(false);
-                setValue(setName);
-              }}
-              className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%] mt-1"
-              aria-label={"Close input"}
-            >
-              <CloseIcon className="text-nci-red-darkest" />
-            </ActionIcon>
-            <ActionIcon
-              onClick={() => {
-                dispatch(renameSet({ setId, setType, newSetName: value }));
-                setEditing(false);
-              }}
-              className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
-              disabled={value === ""}
-              aria-label={"Rename set"}
-            >
-              <CheckIcon className="text-nci-green-darkest" size={10} />
-            </ActionIcon>
-          </>
-        ) : (
-          <>
-            {setName}
-            <ActionIcon
-              onClick={() => setEditing(true)}
-              variant="transparent"
-              aria-label="Edit set name"
-            >
-              <EditIcon className="text-accent" />
-            </ActionIcon>
-          </>
-        )}
-      </div>
-
-      {value.length === 100 && (
-        <p className="text-sm pt-1">Maximum 100 characters</p>
-      )}
-    </>
-  );
-};
+import SetNameInput from "./SetNameInput";
+import DeleteSetsNotification from "./DeleteSetsNotification";
 
 interface CountBadgeProps {
   readonly count: number;
@@ -128,7 +41,7 @@ const CountBadge: React.FC<CountBadgeProps> = ({
       <Badge
         variant={active ? "filled" : "outline"}
         radius="xs"
-        className={`cursor-pointer ${
+        className={`cursor-pointer w-full ${
           active
             ? undefined
             : disabled
@@ -162,7 +75,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
   downloadType,
 }: ManageSetActionsProps) => {
   const dispatch = useCoreDispatch();
-  const { setId, setName, setType } = set;
+  const { setId, setName, setType, count } = set;
 
   return (
     <div className="flex flex-row items-center gap-1">
@@ -171,7 +84,12 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         title="Delete set"
         aria-label="Delete set"
         className="text-primary"
-        onClick={() => dispatch(removeSets([{ setId, setType }]))}
+        onClick={() => {
+          dispatch(removeSets([{ setId, setType }]));
+          showNotification({
+            message: <DeleteSetsNotification sets={[set]} />,
+          });
+        }}
         variant="transparent"
       >
         <TrashIcon />
@@ -180,8 +98,9 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         size={20}
         title="Download set"
         aria-label="Download set"
-        className="text-primary"
+        className={count === 0 ? "text-base-lighter" : "text-primary"}
         variant="transparent"
+        disabled={count === 0}
         onClick={() => {
           download({
             endpoint: "tar_sets",

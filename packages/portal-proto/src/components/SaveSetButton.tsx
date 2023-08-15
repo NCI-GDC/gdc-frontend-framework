@@ -5,8 +5,9 @@ import {
   selectSetsByType,
   useCoreDispatch,
   useCoreSelector,
-  addSets,
+  addSet,
   SetTypes,
+  hideModal,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
@@ -19,6 +20,8 @@ interface SaveSetButttonProps {
     createSet: UseMutation<MutationDefinition<any, any, any, any>>;
   };
   readonly setType: SetTypes;
+  readonly buttonText?: string;
+  readonly dismissModal?: boolean;
 }
 
 const SaveSetButton: React.FC<SaveSetButttonProps> = ({
@@ -26,6 +29,8 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   ids,
   hooks,
   setType,
+  buttonText = "Save Set",
+  dismissModal = false,
 }: SaveSetButttonProps) => {
   const dispatch = useCoreDispatch();
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -35,8 +40,11 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
   useEffect(() => {
     if (response.isSuccess && setName) {
-      dispatch(addSets([{ setType, setName, setId: response.data }]));
+      dispatch(addSet({ setType, setName, setId: response.data }));
       showNotification({ message: "Set has been saved." });
+      if (dismissModal) {
+        dispatch(hideModal());
+      }
       setSetName(null);
     } else if (response.isError) {
       showNotification({ message: "Problem saving set.", color: "red" });
@@ -48,6 +56,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
     setName,
     dispatch,
     setType,
+    dismissModal,
   ]);
 
   return (
@@ -68,10 +77,14 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
       >
-        Save Set
+        {buttonText}
       </DarkFunctionButton>
     </>
   );
 };
+
+export const SubmitSaveSetButton: React.FC<SaveSetButttonProps> = (
+  props: SaveSetButttonProps,
+) => <SaveSetButton {...props} buttonText="Submit" dismissModal />;
 
 export default SaveSetButton;

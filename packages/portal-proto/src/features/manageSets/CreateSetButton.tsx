@@ -10,11 +10,11 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
-import SaveSetButton from "@/components/InputEntityList/SaveSetButton";
+import { SubmitSaveSetButton } from "@/components/SaveSetButton";
 
 const CreateGeneModal = () => {
   return (
-    <UserInputModal modalTitle="Create Gene Sets">
+    <UserInputModal modalTitle="Create Gene Set">
       <InputEntityList
         inputInstructions={
           "Enter one or more gene identifiers in the field below or upload a file to create a gene set."
@@ -38,7 +38,7 @@ const CreateGeneModal = () => {
         hooks={{
           createSet: useCreateGeneSetFromValuesMutation,
         }}
-        RightButton={SaveSetButton}
+        RightButton={SubmitSaveSetButton}
       />
     </UserInputModal>
   );
@@ -46,7 +46,7 @@ const CreateGeneModal = () => {
 
 const CreateMutationModal = () => {
   return (
-    <UserInputModal modalTitle="Create Mutation Sets">
+    <UserInputModal modalTitle="Create Mutation Set">
       <InputEntityList
         inputInstructions={
           "Enter one or more mutation identifiers in the field below or upload a file to create a mutation set."
@@ -67,7 +67,7 @@ const CreateMutationModal = () => {
         hooks={{
           createSet: useCreateSsmsSetFromValuesMutation,
         }}
-        RightButton={SaveSetButton}
+        RightButton={SubmitSaveSetButton}
       />
     </UserInputModal>
   );
