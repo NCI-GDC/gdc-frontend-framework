@@ -194,6 +194,7 @@ const ContextBar = ({
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
+      form: true,
     });
   };
 

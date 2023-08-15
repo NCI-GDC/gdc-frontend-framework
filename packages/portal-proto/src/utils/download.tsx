@@ -1,10 +1,14 @@
+import Cookies from "universal-cookie";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
-import { includes, isPlainObject, reduce } from "lodash";
+import { includes, isPlainObject, reduce, uniqueId } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
+
+const hashString = (s: string) =>
+  s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
 const getBody = (iframe: HTMLIFrameElement) => {
   const document = iframe.contentWindow || iframe.contentDocument;
@@ -119,6 +123,18 @@ const download = async ({
   let canceled = false;
   const controller = new AbortController();
 
+  const cookies = new Cookies();
+
+  const downloadToken = uniqueId(`${+new Date()}-`);
+  // a cookie value that the server will remove as a download-ready indicator
+  const cookieKey = navigator.cookieEnabled
+    ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
+    : null;
+
+  if (cookieKey) {
+    cookies.set(cookieKey, downloadToken);
+  }
+
   // place notification in timeout to avoid flicker on fast calls
   const showNotificationTimeout = setTimeout(
     () =>
@@ -151,7 +167,7 @@ const download = async ({
   ); // set to 100 as that is perceived as instant
 
   const fields = reduce(
-    params,
+    { ...params, downloadCookieKey: cookieKey, downloadCookiePath: "/" },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);
       return (
@@ -171,49 +187,32 @@ const download = async ({
   document.body.appendChild(iFrame);
 
   // TODO - handle slow download notification PEAR-624
-  /*
-  const slowDownloadNotificationPoll = async () => {
-    let attempts = 0;
+  const pollForDownloadResult = async () => {
+    //let attempts = 0;
 
     const executePoll = async (resolve: (value?: unknown) => void) => {
-      attempts++;
-      if (!downloadResolved && !controller.signal.aborted) {
-        if (attempts === 6) {
-          showNotification({
-            message: (
-              <SlowDownloadNotification
-                onClick={() => {
-                  cleanNotifications();
-                  cancel = true;
-                  if (done) {
-                    done();
-                  }
-                }}
-              />
-            ),
-            styles: () => ({
-              root: {
-                textAlign: "center",
-              },
-              closeButton: {
-                color: "black",
-                "&:hover": {
-                  backgroundColor: theme.extend.colors["gdc-grey"].lighter,
-                },
-              },
-            }),
-          });
+      console.log(cookies);
+      const body = iFrame.contentWindow.document.body.textContent;
+      console.log("iframe", body);
+      if (cookies.get(cookieKey)) {
+        const requestError =
+          iFrame.contentWindow.document.getElementsByTagName("form").length ===
+            0 && body !== "";
+        if (requestError) {
+          const message = /{"message":"(.*)"}/g.exec(body)[1];
+          dispatch(showModal({ modal: Modal400, message }));
+
           resolve();
         } else {
-          setTimeout(executePoll, 1000, resolve);
+          resolve();
         }
       } else {
-        resolve();
+        setTimeout(executePoll, 1000, resolve);
       }
     };
 
     return new Promise(executePoll);
-  };*/
+  };
   const addFormAndSubmit = () => {
     //do all of this together for FireFox support
     const form = document.createElement("form");
@@ -227,10 +226,12 @@ const download = async ({
   };
 
   const handleDownloadResponse = async (res: Response) => {
+    console.log(cookies);
     clearTimeout(showNotificationTimeout);
     cleanNotifications();
     if (!canceled && res.ok) {
       addFormAndSubmit();
+      pollForDownloadResult();
       setTimeout(() => {
         if (done) {
           done();
@@ -279,6 +280,7 @@ const download = async ({
   const signal = controller.signal;
   if (form) {
     addFormAndSubmit();
+    pollForDownloadResult();
     setTimeout(() => {
       if (done) {
         done();
