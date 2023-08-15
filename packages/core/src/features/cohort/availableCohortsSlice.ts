@@ -19,7 +19,12 @@ import {
   isIncludes,
   Includes,
 } from "../gdcapi/filters";
-import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+  createUseFiltersCoreDataHook,
+  DataStatus,
+} from "../../dataAccess";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
@@ -27,14 +32,17 @@ import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
 import { createSetMutationFactory } from "../sets/createSetSlice";
 import { setCountQueryFactory } from "../sets/setCountSlice";
+import {
+  CountsData,
+  CountsDataAndStatus,
+  fetchCohortCaseCounts,
+} from "./cohortCountsQuery";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
   readonly caseSetIds?: Record<string, string>; // prefix mapped caseSetIds
   readonly filters?: FilterSet; // FilterSet that contains combination of CaseSets + filters
-  // TODO this could also hold the cohort
-  //  id for query by cohort
 }
 
 export interface CohortStoredSets {
@@ -54,6 +62,7 @@ export interface Cohort {
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly caseCount?: number; // track case count of a cohort
+  readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
 }
 
 /**
@@ -496,6 +505,16 @@ const newCohort = ({
     modified: modified,
     saved: false,
     modified_datetime: ts.toISOString(),
+    counts: {
+      status: "uninitialized" as DataStatus,
+      caseCount: -1,
+      fileCount: -1,
+      genesCount: -1,
+      mutationCount: -1,
+      ssmCaseCount: -1,
+      sequenceReadCaseCount: -1,
+      repositoryCaseCount: -1,
+    },
   };
 };
 
@@ -948,6 +967,80 @@ const slice = createSlice({
             },
           },
         });
+      })
+      .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
+        const response = action.payload;
+
+        if (response.errors && Object.keys(response.errors).length > 0) {
+          cohortsAdapter.updateOne(state, {
+            id: action.meta.arg ?? getCurrentCohort(state),
+            changes: {
+              counts: {
+                caseCount: -1,
+                fileCount: -1,
+                genesCount: -1,
+                mutationCount: -1,
+                ssmCaseCount: -1,
+                sequenceReadCaseCount: -1,
+                repositoryCaseCount: -1,
+                status: "pending",
+              },
+            },
+          });
+        } else {
+          // copy the counts for explore and repository
+          cohortsAdapter.updateOne(state, {
+            id: action.meta.arg ?? getCurrentCohort(state),
+            changes: {
+              counts: {
+                caseCount: response.data.viewer.explore.cases.hits.total,
+                genesCount: response.data.viewer.explore.genes.hits.total,
+                mutationCount: response.data.viewer.explore.ssms.hits.total,
+                fileCount: response.data.viewer.repository.files.hits.total,
+                ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+                sequenceReadCaseCount:
+                  response.data.viewer.repository.sequenceReads.hits.total,
+                repositoryCaseCount:
+                  response.data.viewer.repository.cases.hits.total,
+                status: "fulfilled",
+              },
+            },
+          });
+        }
+      })
+      .addCase(fetchCohortCaseCounts.pending, (state, action) => {
+        cohortsAdapter.updateOne(state, {
+          id: action.meta.arg ?? getCurrentCohort(state),
+          changes: {
+            counts: {
+              caseCount: -1,
+              fileCount: -1,
+              genesCount: -1,
+              mutationCount: -1,
+              ssmCaseCount: -1,
+              sequenceReadCaseCount: -1,
+              repositoryCaseCount: -1,
+              status: "pending",
+            },
+          },
+        });
+      })
+      .addCase(fetchCohortCaseCounts.rejected, (state, action) => {
+        cohortsAdapter.updateOne(state, {
+          id: action.meta.arg ?? getCurrentCohort(state),
+          changes: {
+            counts: {
+              caseCount: -1,
+              fileCount: -1,
+              genesCount: -1,
+              mutationCount: -1,
+              ssmCaseCount: -1,
+              sequenceReadCaseCount: -1,
+              repositoryCaseCount: -1,
+              status: "rejected",
+            },
+          },
+        });
       });
   },
 });
@@ -1156,6 +1249,12 @@ export const selectCurrentCohortGeneAndSSMCaseSet = (
 };
 
 /**
+ * --------------------------------------------------------------------------
+ *  Cohort Selectors
+ *  -------------------------------------------------------------------------
+ **/
+
+/**
  * Main selector of the current Cohort Filters.
  * @param state
  */
@@ -1185,6 +1284,13 @@ export const selectCurrentCohortFiltersByName = (
   return cohort?.filters?.root[name];
 };
 
+// TODO refactor to use counts object
+export const selectCurrentCohortCaseCount = (
+  state: CoreState,
+): number | undefined =>
+  cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
+    ?.caseCount;
+
 export const selectCurrentCohortFiltersByNames = (
   state: CoreState,
   names: ReadonlyArray<string>,
@@ -1194,6 +1300,7 @@ export const selectCurrentCohortFiltersByNames = (
     getCurrentCohortFromCoreState(state),
   );
 
+  // TODO replace with memoized selector
   return names.reduce((obj, name) => {
     if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
     return obj;
@@ -1212,6 +1319,7 @@ export const selectCurrentCohortCaseSet = (
     state,
     getCurrentCohortFromCoreState(state),
   );
+  // TODO replace with memoized selector
   if (cohort === undefined || cohort?.caseSet === undefined)
     return {
       data: { mode: "and", root: {} },
@@ -1228,6 +1336,40 @@ export const selectCohortById = (
 export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
   cohortSelectors.selectEntities(state);
 
+/**
+ * Constant representing Null Counts
+ */
+const NullCountsData: CountsDataAndStatus = {
+  caseCount: -1,
+  fileCount: -1,
+  genesCount: -1,
+  mutationCount: -1,
+  ssmCaseCount: -1,
+  sequenceReadCaseCount: -1,
+  repositoryCaseCount: -1,
+  status: "uninitialized",
+};
+
+export const selectCohortCounts = (
+  state: CoreState,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): CoreDataSelectorResponse<CountsDataAndStatus> =>
+  cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
+
+export const selectCohortCountsByName = (
+  state: CoreState,
+  name: keyof CountsData,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): number =>
+  cohortSelectors.selectById(state, cohortId)?.counts[name] ??
+  NullCountsData[name];
+
+/**
+ * --------------------------------------------------------------------------
+ *  Cohort Hooks
+ *  -------------------------------------------------------------------------
+ **/
+
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
@@ -1239,6 +1381,17 @@ export const useCurrentCohortWithGeneAndSsmCaseSet = ():
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 };
+
+export const useCohortCounts = createUseCoreDataHook(
+  fetchCohortCaseCounts,
+  selectCohortCounts,
+);
+
+export const useFilteredCohortCounts = createUseFiltersCoreDataHook(
+  fetchCohortCaseCounts,
+  selectCohortCounts,
+  selectCurrentCohortFilterSet,
+);
 
 /**
  * A thunk to create a case set when adding filter that require them

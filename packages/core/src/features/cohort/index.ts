@@ -28,6 +28,7 @@ import {
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  selectCurrentCohortCaseCount,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
@@ -53,7 +54,11 @@ import {
   selectCohortFilterSetById,
   selectCohortNameById,
   selectCurrentCohortFiltersByNames,
+  selectCohortCounts,
+  selectCohortCountsByName,
   useCurrentCohortWithGeneAndSsmCaseSet,
+  useCohortCounts,
+  useFilteredCohortCounts,
   getCohortFilterForAPI,
   selectAllCohorts,
 } from "./availableCohortsSlice";
@@ -68,14 +73,7 @@ import {
   selectCohortBuilderConfigCategory,
 } from "./cohortBuilderConfigSlice";
 
-import {
-  selectCohortCountsData,
-  selectCohortCounts,
-  selectCohortCountsByName,
-  useCohortCounts,
-  useFilteredCohortCounts,
-  CountsData,
-} from "./countSlice";
+import { CountsData } from "./cohortCountsQuery";
 
 import { defaultCohortNameGenerator } from "./utils";
 
@@ -105,7 +103,6 @@ export {
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
-  selectCohortCountsData,
   selectCohortCounts,
   selectCohortCountsByName,
   useCohortCounts,
@@ -116,6 +113,7 @@ export {
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  selectCurrentCohortCaseCount,
   selectCohortById,
   selectCohortNameById,
   selectAvailableCohortByName,
