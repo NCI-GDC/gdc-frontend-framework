@@ -1,11 +1,5 @@
-import {
-  Switch,
-  Popover,
-  ActionIcon,
-  Tooltip,
-  TextInput,
-  Divider,
-} from "@mantine/core";
+import { Switch, ActionIcon, Tooltip, TextInput, Divider } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
 import { MdDragIndicator as DragIcon } from "react-icons/md";
@@ -16,6 +10,7 @@ import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { FaUndo as RevertIcon } from "react-icons/fa";
 import { humanify } from "@/utils/index";
+import { NO_COLUMN_ORDERING_IDS } from "./utils";
 
 function ColumnOrdering<TData>({
   table,
@@ -30,6 +25,7 @@ function ColumnOrdering<TData>({
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const ref = useClickOutside(() => setShowColumnMenu(false));
 
   const isBackToDefaults =
     isEqual(table.initialState.columnOrder, columnOrder) &&
@@ -44,39 +40,28 @@ function ColumnOrdering<TData>({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Popover
-        opened={showColumnMenu}
-        onChange={setShowColumnMenu}
-        zIndex={10}
-        classNames={{
-          dropdown: "p-2",
-        }}
-        position="bottom-end"
-        transition="scale"
-        withArrow
-      >
-        <Popover.Target>
-          <Tooltip label="Customize Columns" disabled={showColumnMenu}>
-            <span>
-              <ActionIcon
-                variant="outline"
-                size="lg"
-                onClick={() => setShowColumnMenu((o) => !o)}
-                aria-label="show table menu"
-                color="primary"
-                data-testid="button-column-selector-box"
-              >
-                {!showColumnMenu ? (
-                  <BsList size="1.5rem" />
-                ) : (
-                  <BsX size="2rem" />
-                )}
-              </ActionIcon>
-            </span>
-          </Tooltip>
-        </Popover.Target>
-        <Popover.Dropdown data-testid="column-selector-popover-modal">
-          <div>
+      <div className="flex relative" ref={ref}>
+        <Tooltip label="Customize Columns" disabled={showColumnMenu}>
+          <span>
+            <ActionIcon
+              variant="outline"
+              size="lg"
+              onClick={() => setShowColumnMenu((o) => !o)}
+              aria-label="show column change menu button"
+              color="primary"
+              data-testid="button-column-selector-box"
+              className={showColumnMenu && "border-2 border-primary"}
+            >
+              {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
+            </ActionIcon>
+          </span>
+        </Tooltip>
+
+        {showColumnMenu && (
+          <div
+            className="absolute z-10 right-0 top-10 bg-base-max border-2 border-primary p-2 w-80 rounded-md"
+            data-testid="column-selector-popover-modal"
+          >
             <div className="flex justify-between">
               <span className="font-bold text-primary-darkest tracking-normal">
                 Customize Columns
@@ -111,8 +96,8 @@ function ColumnOrdering<TData>({
               setColumnOrder={setColumnOrder}
             />
           </div>
-        </Popover.Dropdown>
-      </Popover>
+        )}
+      </div>
     </DndProvider>
   );
 }
@@ -142,7 +127,7 @@ function List<TData>({
     <ul>
       {columns
         .filter((column) => {
-          if (!["select", "remove", "cart"].includes(column.id)) {
+          if (!NO_COLUMN_ORDERING_IDS.includes(column.id)) {
             return humanify({ term: column.id })
               .toLowerCase()
               .includes(searchValue.toLowerCase());
@@ -151,7 +136,7 @@ function List<TData>({
           }
         })
         .map((column, index) => {
-          return !["select", "remove", "cart"].includes(column.id) ? (
+          return !NO_COLUMN_ORDERING_IDS.includes(column.id) ? (
             <ColumnItem
               key={column.id}
               column={column}
@@ -200,14 +185,16 @@ function ColumnItem<TData>({
   return (
     <div
       ref={(node) => drag(drop(node))}
-      className={`flex justify-between bg-nci-violet-lightest ${
+      className={`flex justify-between items-center bg-nci-violet-lightest ${
         isNotLast ? "mb-2" : ""
-      } p-1 gap-3 h-6 opacity-${o} cursor-move`}
+      } px-1 py-1.5 gap-1 h-6 opacity-${o} cursor-move`}
       data-testid={`column-selector-row-${column.id}`}
     >
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-1 items-center">
         <DragIcon size="1rem" className="text-primary" />
-        <span className="text-xs">{humanify({ term: column.id })}</span>
+        <span className="text-xs text-secondary-contrast-lighter font-medium tracking-normal">
+          {humanify({ term: column.id })}
+        </span>
       </div>
 
       <Switch
@@ -216,6 +203,7 @@ function ColumnItem<TData>({
           checked: column.getIsVisible(),
           onChange: column.getToggleVisibilityHandler(),
         }}
+        size="xs"
         aria-label="toggle column visibility switch button"
         data-testid="switch-toggle"
       />

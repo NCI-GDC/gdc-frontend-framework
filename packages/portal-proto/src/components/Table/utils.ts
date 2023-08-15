@@ -70,3 +70,6 @@ export function downloadTSV<TData>({
 
   saveAs(blob, fileName);
 }
+
+// these are a few standard column ids that will not be part of column ordering
+export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart"];
