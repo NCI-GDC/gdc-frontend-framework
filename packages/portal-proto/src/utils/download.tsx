@@ -194,7 +194,9 @@ const download = async ({
       console.log(cookies);
       const body = iFrame.contentWindow.document.body.textContent;
       console.log("iframe", body);
-      if (cookies.get(cookieKey)) {
+      if (!cookies.get(cookieKey)) {
+        resolve();
+      } else {
         const requestError =
           iFrame.contentWindow.document.getElementsByTagName("form").length ===
             0 && body !== "";
@@ -204,10 +206,8 @@ const download = async ({
 
           resolve();
         } else {
-          resolve();
+          setTimeout(executePoll, 1000, resolve);
         }
-      } else {
-        setTimeout(executePoll, 1000, resolve);
       }
     };
 
