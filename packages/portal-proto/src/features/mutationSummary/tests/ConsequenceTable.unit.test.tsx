@@ -1,5 +1,6 @@
 import { render } from "test-utils";
 import ConsequenceTable, { ConsequenceTableProps } from "../ConsequenceTable";
+import { sortByNestedFieldWithPriority } from "../utils";
 
 const mockData: ConsequenceTableProps = {
   status: "fulfilled",
@@ -142,5 +143,85 @@ describe("<ConsequenceTable />", () => {
     expect(getByText("c.1919T>A")).toBeInTheDocument();
     expect(getByText("c.1919T>A")).not.toHaveAttribute("href");
     expect(getByText("c.1919T>A")).not.toHaveAttribute("onClick");
+  });
+});
+
+describe("sortByNestedFieldWithPriority", () => {
+  it("should objects where `nestField.boolean` is true", () => {
+    const a = { nestField: { boolean: true } };
+    const b = { nestField: { boolean: false } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBe(-1);
+  });
+
+  it("should deprioritize objects where `nestField.boolean` is false", () => {
+    const a = { nestField: { boolean: false } };
+    const b = { nestField: { boolean: true } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBe(1);
+  });
+
+  it("should prioritize objects with null `nestField.string` over non-null", () => {
+    const a = { nestField: { boolean: true, string: null } };
+    const b = { nestField: { boolean: true, string: "someValue" } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBe(1);
+  });
+
+  it("should prioritize non-null `nestField.string` over null", () => {
+    const a = { nestField: { boolean: true, string: "someValue" } };
+    const b = { nestField: { boolean: true, string: null } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBe(-1);
+  });
+
+  it("should sort objects by `nestField.string` in ascending order", () => {
+    const a = { nestField: { boolean: true, string: "abc" } };
+    const b = { nestField: { boolean: true, string: "def" } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBeLessThan(0);
+  });
+
+  it("should handle case-insensitive sorting of `nestField.string`", () => {
+    const a = { nestField: { boolean: true, string: "AbC" } };
+    const b = { nestField: { boolean: true, string: "aBc" } };
+    const result = sortByNestedFieldWithPriority(
+      a,
+      b,
+      "nestField",
+      "boolean",
+      "string",
+    );
+    expect(result).toBe(0);
   });
 });

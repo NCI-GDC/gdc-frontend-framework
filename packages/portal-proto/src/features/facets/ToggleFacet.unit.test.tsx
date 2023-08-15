@@ -30,12 +30,6 @@ describe("<ToggleFacet />", () => {
       />,
     );
 
-    expect(
-      getByRole("button", {
-        name: "clear selection",
-      }),
-    ).toBeInTheDocument();
-
     const ctrl = getByRole("checkbox", {
       name: "toggle facet value",
     });

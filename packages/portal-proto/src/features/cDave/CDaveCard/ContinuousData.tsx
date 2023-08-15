@@ -1,6 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { mapKeys } from "lodash";
-import { Statistics, GqlOperation } from "@gff/core";
+import {
+  useGetContinuousDataStatsQuery,
+  Statistics,
+  GqlOperation,
+} from "@gff/core";
 import { useRangeFacet } from "../../facets/hooks";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
@@ -9,6 +13,7 @@ import CardControls from "./CardControls";
 import { CustomInterval, NamedFromTo, ChartTypes } from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { isInterval, createBuckets, parseContinuousBucket } from "../utils";
+import BoxQQSection from "./BoxQQSection";
 
 const processContinuousResultData = (
   data: Record<string, number>,
@@ -40,7 +45,6 @@ interface ContinuousDataProps {
   readonly fieldName: string;
   readonly chartType: ChartTypes;
   readonly noData: boolean;
-
   readonly cohortFilters: GqlOperation;
 }
 
@@ -77,6 +81,18 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     ranges,
     cohortFilters,
   );
+  const { data: statsData } = useGetContinuousDataStatsQuery({
+    field: field.replaceAll(".", "__"),
+    queryFilters: cohortFilters,
+    rangeFilters: {
+      op: "range",
+      content: [
+        {
+          ranges,
+        },
+      ],
+    },
+  });
 
   const resultData = useMemo(
     () => processContinuousResultData(isSuccess ? data : {}, customBinnedData),
@@ -102,42 +118,48 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
 
   return (
     <>
-      {chartType === "histogram" ? (
-        <CDaveHistogram
-          field={field}
-          fieldName={fieldName}
-          data={resultData}
-          yTotal={yTotal}
-          isFetching={isFetching}
-          continuous={true}
-          noData={noData}
-        />
+      {chartType === "boxqq" ? (
+        <BoxQQSection field={field} data={statsData} />
       ) : (
-        <ClinicalSurvivalPlot
-          field={field}
-          selectedSurvivalPlots={selectedSurvivalPlots}
-          continuous={true}
-          customBinnedData={customBinnedData}
-        />
+        <>
+          {chartType === "histogram" ? (
+            <CDaveHistogram
+              field={field}
+              fieldName={fieldName}
+              data={resultData}
+              yTotal={yTotal}
+              isFetching={isFetching}
+              continuous={true}
+              noData={noData}
+            />
+          ) : (
+            <ClinicalSurvivalPlot
+              field={field}
+              selectedSurvivalPlots={selectedSurvivalPlots}
+              continuous={true}
+              customBinnedData={customBinnedData}
+            />
+          )}
+          <CardControls
+            continuous={true}
+            field={fieldName}
+            results={resultData}
+            customBinnedData={customBinnedData}
+            setCustomBinnedData={setCustomBinnedData}
+            stats={initialData}
+          />
+          <CDaveTable
+            fieldName={fieldName}
+            data={resultData}
+            yTotal={yTotal}
+            customBinnedData={customBinnedData}
+            survival={chartType === "survival"}
+            selectedSurvivalPlots={selectedSurvivalPlots}
+            setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+            continuous={true}
+          />
+        </>
       )}
-      <CardControls
-        continuous={true}
-        field={fieldName}
-        results={resultData}
-        customBinnedData={customBinnedData}
-        setCustomBinnedData={setCustomBinnedData}
-        stats={initialData}
-      />
-      <CDaveTable
-        fieldName={fieldName}
-        data={resultData}
-        yTotal={yTotal}
-        customBinnedData={customBinnedData}
-        survival={chartType === "survival"}
-        selectedSurvivalPlots={selectedSurvivalPlots}
-        setSelectedSurvivalPlots={setSelectedSurvivalPlots}
-        continuous={true}
-      />
     </>
   );
 };

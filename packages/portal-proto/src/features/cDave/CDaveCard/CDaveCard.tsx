@@ -6,6 +6,7 @@ import {
   MdTrendingDown as SurvivalChartIcon,
   MdOutlineClose as CloseIcon,
 } from "react-icons/md";
+import { AiTwotoneBoxPlot as BoxPlotIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectFacetDefinitionByName,
@@ -16,7 +17,7 @@ import {
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes } from "../types";
-import { CONTINUOUS_FACET_TYPES } from "../constants";
+import { CONTINUOUS_FACET_TYPES, HIDE_QQ_BOX_FIELDS } from "../constants";
 import { toDisplayName } from "../utils";
 
 interface CDaveCardProps {
@@ -117,6 +118,30 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               />
             </ActionIcon>
           </Tooltip>
+          {continuous && !HIDE_QQ_BOX_FIELDS.includes(field) && (
+            <Tooltip label={"Box/QQ Plot"} withArrow arrowSize={7}>
+              <ActionIcon
+                data-testid="button-box-qq-plot"
+                variant="outline"
+                className={
+                  chartType === "boxqq"
+                    ? "bg-primary text-primary"
+                    : "border-primary text-primary-content"
+                }
+                onClick={() => setChartType("boxqq")}
+                aria-label={`Select ${fieldName} Box/QQ Plot`}
+                disabled={noData}
+              >
+                <BoxPlotIcon
+                  className={
+                    chartType === "boxqq"
+                      ? "text-primary-contrast rotate-90"
+                      : "text-primary rotate-90"
+                  }
+                />
+              </ActionIcon>
+            </Tooltip>
+          )}
           <Tooltip
             label={"Remove Card"}
             position="bottom-end"

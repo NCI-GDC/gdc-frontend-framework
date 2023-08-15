@@ -188,6 +188,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       `${fieldLabel}-comparison.tsv`,
     );
   };
+
   return (
     <Paper p="md" shadow="xs">
       <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
@@ -215,11 +216,15 @@ export const FacetCard: React.FC<FacetCardProps> = ({
             <th>
               # Cases S<sub>1</sub>
             </th>
-            <th>%</th>
+            <th>
+              % Cases S<sub>1</sub>
+            </th>
             <th>
               # Cases S<sub>2</sub>
             </th>
-            <th>%</th>
+            <th>
+              % Cases S<sub>2</sub>
+            </th>
           </tr>
         </thead>
         <tbody className="font-content text-sm text-semibold">
@@ -237,7 +242,8 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     numCases={cohort1Value}
                     label={cohort1Value?.toLocaleString() || "--"}
                     caseFilters={
-                      cohort1Value === undefined
+                      formattedData[0][idx].filter === undefined ||
+                      cohorts.primary_cohort.filter === undefined
                         ? undefined
                         : joinFilters(
                             cohorts.primary_cohort.filter,
@@ -254,7 +260,8 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     numCases={cohort2Value}
                     label={cohort2Value?.toLocaleString() || "--"}
                     caseFilters={
-                      cohort2Value === undefined
+                      formattedData[1][idx].filter === undefined ||
+                      cohorts.comparison_cohort.filter === undefined
                         ? undefined
                         : joinFilters(
                             cohorts.comparison_cohort.filter,

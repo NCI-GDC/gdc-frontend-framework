@@ -40,11 +40,13 @@ export interface HorizontalTableProps {
   }[];
   customContainerStyles?: string;
   slideImageDetails?: boolean;
+  customDataTestID?: string;
 }
 export const HorizontalTable = ({
   tableData,
   customContainerStyles,
   slideImageDetails = false,
+  customDataTestID,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
     "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm";
@@ -53,7 +55,7 @@ export const HorizontalTable = ({
     : containerClassName;
 
   return (
-    <table className={updatedContainerClassName}>
+    <table data-testid={customDataTestID} className={updatedContainerClassName}>
       <tbody>
         {tableData.map((obj, rowIndex: number): JSX.Element => {
           return (

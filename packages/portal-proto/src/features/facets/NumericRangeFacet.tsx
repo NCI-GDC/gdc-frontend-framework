@@ -335,10 +335,9 @@ const FromTo: React.FC<FromToProps> = ({
             value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
               setFromValue(
-                clamp(
-                  adjustYearsToDays(value, units),
-                  lowerUnitRange,
-                  upperUnitRange,
+                adjustYearsToDays(
+                  clamp(value, lowerUnitRange, upperUnitRange),
+                  units,
                 ),
               );
               changedCallback();
@@ -370,10 +369,9 @@ const FromTo: React.FC<FromToProps> = ({
             max={upperUnitRange}
             onChange={(value) => {
               setToValue(
-                clamp(
-                  adjustYearsToDays(value, units),
-                  lowerUnitRange,
-                  upperUnitRange,
+                adjustYearsToDays(
+                  clamp(value, lowerUnitRange, upperUnitRange),
+                  units,
                 ),
               );
               changedCallback();

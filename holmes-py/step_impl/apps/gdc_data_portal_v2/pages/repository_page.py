@@ -22,8 +22,8 @@ class RepositoryPageLocators:
     IMAGE_VIEWER_SHOWING_NUMBER_OF_CASES = "[data-testid='showing-image-viewer']"
     IMAGE_VIEWER_SEARCH_FILTER = lambda search_filter: f'text="{search_filter}"'
 
-    IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="details-image-viewer"] >> text={field_name}'
-    IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="details-image-viewer"] >> text={field_name}{value} >> td'
+    IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="table-image-viewer-details"] >> text={field_name}'
+    IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="table-image-viewer-details"] >> text={field_name}{value} >> td'
 
 class RepositoryPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
