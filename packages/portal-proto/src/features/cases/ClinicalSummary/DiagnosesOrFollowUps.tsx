@@ -1,8 +1,9 @@
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { BasicTable } from "@/components/Tables/BasicTable";
+import VerticalTable from "@/components/Table/VerticalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
 import type { Diagnoses, FollowUps } from "@gff/core";
 import { Tabs, Tooltip, Text } from "@mantine/core";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 import { ageDisplay, humanify } from "src/utils";
 
@@ -98,34 +99,56 @@ const TableElement = ({
   };
 
   const formatTreatmentData = (diagnoses: Diagnoses) => {
-    const rows = diagnoses.treatments
+    const treatmentTableData = diagnoses.treatments
       .slice()
       .sort((a, b) => a.days_to_treatment_start - b.days_to_treatment_start)
       .map((diagnosis) => ({
-        id: diagnosis.submitter_id,
-        uuid: diagnosis.treatment_id,
-        therapeutic_agents: diagnosis.therapeutic_agents,
-        treatment_intent_type: diagnosis.treatment_intent_type,
-        treatment_or_therapy: diagnosis.treatment_or_therapy,
+        id: diagnosis.submitter_id ?? "--",
+        uuid: diagnosis.treatment_id ?? "--",
+        therapeutic_agents: diagnosis.therapeutic_agents ?? "--",
+        treatment_intent_type: diagnosis.treatment_intent_type ?? "--",
+        treatment_or_therapy: diagnosis.treatment_or_therapy ?? "--",
         days_to_treatment_start:
-          diagnosis.days_to_treatment_start?.toLocaleString(),
+          diagnosis.days_to_treatment_start?.toLocaleString() ?? "--",
       }));
 
+    const treatmentTableColumnHelper =
+      createColumnHelper<typeof treatmentTableData[0]>();
+
+    const treatmentTableColumns = [
+      treatmentTableColumnHelper.accessor("id", {
+        id: "id",
+        header: "ID",
+      }),
+      treatmentTableColumnHelper.accessor("uuid", {
+        id: "uuid",
+        header: "UUID",
+      }),
+      treatmentTableColumnHelper.accessor("therapeutic_agents", {
+        id: "therapeutic_agents",
+        header: "Therapeutic Agents",
+      }),
+      treatmentTableColumnHelper.accessor("treatment_intent_type", {
+        id: "treatment_intent_type",
+        header: "Treatment Intent Type",
+      }),
+      treatmentTableColumnHelper.accessor("treatment_or_therapy", {
+        id: "treatment_or_therapy",
+        header: "Treatment or Therapy",
+      }),
+      treatmentTableColumnHelper.accessor("days_to_treatment_start", {
+        id: "days_to_treatment_start",
+        header: "Days to Treatment Start",
+      }),
+    ];
     return {
-      headers: [
-        "ID",
-        "UUID",
-        "Therapeutic Agents",
-        "Treatment Intent Type",
-        "Treatment or Therapy",
-        "Days to Treatment Start",
-      ],
-      tableRows: rows,
+      data: treatmentTableData,
+      columns: treatmentTableColumns,
     };
   };
 
   const formatMolecularTestsData = (followups: FollowUps) => {
-    const rows = followups.molecular_tests.map((followup) => ({
+    const molecularTableData = followups.molecular_tests.map((followup) => ({
       id: followup.submitter_id,
       uuid: followup.molecular_test_id,
       gene_symbol: followup.gene_symbol,
@@ -143,25 +166,75 @@ const TableElement = ({
       mismatch_repair_mutation: followup.mismatch_repair_mutation,
     }));
 
+    const molecularTableColumnHelper =
+      createColumnHelper<typeof molecularTableData[0]>();
+
+    const molecularTableColumns = [
+      molecularTableColumnHelper.accessor("id", {
+        id: "id",
+        header: "ID",
+      }),
+      molecularTableColumnHelper.accessor("uuid", {
+        id: "uuid",
+        header: "UUID",
+      }),
+      molecularTableColumnHelper.accessor("gene_symbol", {
+        id: "gene_symbol",
+        header: "Gene Symbol",
+      }),
+      molecularTableColumnHelper.accessor("second_gene_symbol", {
+        id: "second_gene_symbol",
+        header: "Second Gene Symbol",
+      }),
+      molecularTableColumnHelper.accessor("molecular_analysis_method", {
+        id: "molecular_analysis_method",
+        header: "Molecular Analysis Method",
+      }),
+      molecularTableColumnHelper.accessor("laboratory_test", {
+        id: "laboratory_test",
+        header: "Laboratory Test",
+      }),
+      molecularTableColumnHelper.accessor("test_value", {
+        id: "test_value",
+        header: "Test Value",
+      }),
+      molecularTableColumnHelper.accessor("test_result", {
+        id: "test_result",
+        header: "Test Result",
+      }),
+      molecularTableColumnHelper.accessor("test_units", {
+        id: "test_units",
+        header: "Test Units",
+      }),
+      molecularTableColumnHelper.accessor("biospecimen_type", {
+        id: "biospecimen_type",
+        header: "Biospecimen Type",
+      }),
+      molecularTableColumnHelper.accessor("variant_type", {
+        id: "variant_type",
+        header: "Variant Type",
+      }),
+      molecularTableColumnHelper.accessor("chromosome", {
+        id: "chromosome",
+        header: "Chromosome",
+      }),
+      molecularTableColumnHelper.accessor("aa_change", {
+        id: "aa_change",
+        header: "AA Change",
+      }),
+      molecularTableColumnHelper.accessor("antigen", {
+        id: "antigen",
+        header: "Antigen",
+      }),
+      molecularTableColumnHelper.accessor("mismatch_repair_mutation", {
+        id: "mismatch_repair_mutation",
+        header: "Mismatch Repair Mutation",
+      }),
+    ];
+
     return {
-      headers: [
-        "ID",
-        "UUID",
-        "Gene Symbol",
-        "Second Gene Symbol",
-        "Molecular Analysis Method",
-        "Laboratory Test",
-        "Test Value",
-        "Test Result",
-        "Test Units",
-        "Biospecimen Type",
-        "Variant Type",
-        "Chromosome",
-        "AA Change",
-        "Antigen",
-        "Mismatch Repair Mutation",
-      ],
-      tableRows: rows,
+      data: molecularTableData,
+      columns: molecularTableColumns,
     };
   };
 
@@ -170,13 +243,13 @@ const TableElement = ({
       if (!data.treatments) {
         return <Text>No Treatments Found.</Text>;
       } else {
-        return <BasicTable tableData={formatTreatmentData(data)} />;
+        return <VerticalTable {...formatTreatmentData(data)} />;
       }
     } else {
       if (!data.molecular_tests) {
         return <Text>No Molecular Tests Found.</Text>;
       } else {
-        return <BasicTable tableData={formatMolecularTestsData(data)} />;
+        return <VerticalTable {...formatMolecularTestsData(data)} />;
       }
     }
   };
