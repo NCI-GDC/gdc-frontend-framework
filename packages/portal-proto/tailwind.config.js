@@ -829,7 +829,6 @@ module.exports = {
       backgroundImage: {
         "hero-pattern": "url(/v2/homepage/hero-background.svg)",
         "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
-        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
