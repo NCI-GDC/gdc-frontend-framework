@@ -87,7 +87,6 @@ function VerticalTable<TData>({
     enableRowSelection: enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    // onExpandedChange: (expand) => setExpanded(expand, clickedColumnIndex),
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
