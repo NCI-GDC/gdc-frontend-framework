@@ -97,10 +97,10 @@ const FileVersions = ({
         ),
       }),
       fileVersionsColumnHelper.accessor("release_date", {
-        header: "Read Length",
+        header: "Release Date",
       }),
       fileVersionsColumnHelper.accessor("data_release", {
-        header: "Library Name",
+        header: "Release Number",
       }),
     ],
     [fileVersionsColumnHelper],

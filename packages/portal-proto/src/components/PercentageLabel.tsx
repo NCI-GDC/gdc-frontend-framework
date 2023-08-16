@@ -15,8 +15,8 @@ export const PercentageLabel = ({
     <div className="basis-1/3 text-right">{count.toLocaleString()}</div>
     <div className="basis-2/3 pl-1">
       <PercentBar>
-        <PercentBarLabel>{`${countPercentage.toFixed(2)}%`}</PercentBarLabel>
         <PercentBarComplete style={{ width: `${countPercentage}%` }} />
+        <PercentBarLabel>{`${countPercentage.toFixed(2)}%`}</PercentBarLabel>
       </PercentBar>
     </div>
   </div>

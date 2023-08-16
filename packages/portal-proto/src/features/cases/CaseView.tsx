@@ -255,8 +255,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
         header: "File Size",
       }),
       supplementFilesTableColumnHelper.display({
-        id: "file_name",
-        header: "File Name",
+        id: "action",
+        header: "Action",
         cell: ({ row }) => {
           const isOutputFileInCart = fileInCart(
             currentCart,

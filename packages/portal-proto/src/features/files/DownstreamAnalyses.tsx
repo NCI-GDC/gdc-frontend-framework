@@ -24,7 +24,6 @@ const DownstreamAnalyses = ({
   currentCart: CartFile[];
   setFileToDownload: Dispatch<SetStateAction<GdcFile>>;
 }): JSX.Element => {
-  console.log({ downstream_analyses });
   type DownstreamAnalysesType = {
     file_name: string;
     file_id: string;
@@ -36,21 +35,25 @@ const DownstreamAnalyses = ({
     outputFile: GdcCartFile;
   };
 
-  const downstreamTableData: DownstreamAnalysesType[][] =
-    downstream_analyses?.map((byWorkflowType) => {
-      const workflowType = byWorkflowType?.workflow_type;
-      const arr = byWorkflowType?.output_files?.map((outputFile) => ({
-        file_name: outputFile.file_name,
-        file_id: outputFile.file_id,
-        data_category: outputFile.data_category,
-        data_type: outputFile.data_type,
-        data_format: outputFile.data_format,
-        analysis_workflow: workflowType,
-        size: fileSize(outputFile.file_size),
-        outputFile: outputFile,
-      }));
-      return arr;
-    });
+  const downstreamTableData: DownstreamAnalysesType[] = [];
+
+  downstream_analyses?.forEach((byWorkflowType) => {
+    if (byWorkflowType?.output_files) {
+      byWorkflowType?.output_files?.forEach((outputFile) => {
+        const transformedFile = {
+          file_name: outputFile.file_name,
+          file_id: outputFile.file_id,
+          data_category: outputFile.data_category,
+          data_type: outputFile.data_type,
+          data_format: outputFile.data_format,
+          analysis_workflow: byWorkflowType?.workflow_type,
+          size: fileSize(outputFile.file_size),
+          outputFile: outputFile,
+        };
+        downstreamTableData.push(transformedFile);
+      });
+    }
+  });
 
   const downstreamAnalysesColumnHelper =
     createColumnHelper<DownstreamAnalysesType>();
@@ -114,7 +117,7 @@ const DownstreamAnalyses = ({
 
   return (
     <VerticalTable
-      data={downstreamTableData[0]}
+      data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
     />
   );

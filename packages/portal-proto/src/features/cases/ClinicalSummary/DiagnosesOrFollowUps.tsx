@@ -149,21 +149,21 @@ const TableElement = ({
 
   const formatMolecularTestsData = (followups: FollowUps) => {
     const molecularTableData = followups.molecular_tests.map((followup) => ({
-      id: followup.submitter_id,
-      uuid: followup.molecular_test_id,
-      gene_symbol: followup.gene_symbol,
-      second_gene_symbol: followup.second_gene_symbol,
-      molecular_analysis_method: followup.molecular_analysis_method,
-      laboratory_test: followup.laboratory_test,
-      test_value: followup.test_value,
-      test_result: followup.test_result,
-      test_units: followup.test_units,
-      biospecimen_type: followup.biospecimen_type,
-      variant_type: followup.variant_type,
-      chromosome: followup.chromosome,
-      aa_change: followup.aa_change,
-      antigen: followup.antigen,
-      mismatch_repair_mutation: followup.mismatch_repair_mutation,
+      id: followup.submitter_id ?? "--",
+      uuid: followup.molecular_test_id ?? "--",
+      gene_symbol: followup.gene_symbol ?? "--",
+      second_gene_symbol: followup.second_gene_symbol ?? "--",
+      molecular_analysis_method: followup.molecular_analysis_method ?? "--",
+      laboratory_test: followup.laboratory_test ?? "--",
+      test_value: followup.test_value ?? "--",
+      test_result: followup.test_result ?? "--",
+      test_units: followup.test_units ?? "--",
+      biospecimen_type: followup.biospecimen_type ?? "--",
+      variant_type: followup.variant_type ?? "--",
+      chromosome: followup.chromosome ?? "--",
+      aa_change: followup.aa_change ?? "--",
+      antigen: followup.antigen ?? "--",
+      mismatch_repair_mutation: followup.mismatch_repair_mutation ?? "--",
     }));
 
     const molecularTableColumnHelper =
