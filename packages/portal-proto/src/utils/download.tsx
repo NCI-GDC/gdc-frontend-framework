@@ -167,7 +167,12 @@ const download = async ({
   ); // set to 100 as that is perceived as instant
 
   const fields = reduce(
-    { ...params, downloadCookieKey: cookieKey, downloadCookiePath: "/" },
+    {
+      ...params,
+      downloadCookieKey: cookieKey,
+      downloadCookiePath: "/",
+      attachment: true,
+    },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);
       return (
