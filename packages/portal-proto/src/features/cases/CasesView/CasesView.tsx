@@ -9,7 +9,7 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   GqlOperation,
-  useFilteredCohortCounts,
+  useCurrentCohortCounts,
 } from "@gff/core";
 import { Button, createStyles, Divider, Loader, Menu } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
@@ -90,7 +90,7 @@ export const ContextualCasesView: React.FC = () => {
     useState(false);
   /* download active end */
 
-  const cohortCounts = useFilteredCohortCounts();
+  const cohortCounts = useCurrentCohortCounts();
   const caseCounts =
     pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
 
