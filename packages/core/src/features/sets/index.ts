@@ -9,6 +9,8 @@ import {
 import {
   setsReducer,
   addSet,
+  removeSets,
+  renameSet,
   selectSetsByType,
   selectAllSets,
   SetTypes,
@@ -37,6 +39,8 @@ export {
   useCreateCaseSetFromFiltersMutation,
   setsReducer,
   addSet,
+  removeSets,
+  renameSet,
   selectSetsByType,
   selectAllSets,
   SetTypes,

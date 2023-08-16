@@ -56,7 +56,8 @@
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
     "tinycolor2": "^1.4.2",
-    "url-join": "^5.0.0"
+    "url-join": "^5.0.0",
+    "use-deep-compare": "^1.1.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
