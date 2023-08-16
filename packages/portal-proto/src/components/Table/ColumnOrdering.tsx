@@ -39,7 +39,7 @@ function ColumnOrdering<TData>({
     );
 
   return (
-    <div className="relative" ref={ref}>
+    <div ref={ref}>
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
         <span>
           <ActionIcon
@@ -60,7 +60,7 @@ function ColumnOrdering<TData>({
 
       {showColumnMenu && (
         <div
-          className="absolute z-10 right-0 top-10 bg-base-max border-2 border-primary p-2 w-max rounded-md"
+          className="w-max absolute bg-base-max z-10 right-3 border-2 border-primary p-2 rounded-md"
           data-testid="column-selector-popover-modal"
         >
           <div className="flex justify-between items-center">
