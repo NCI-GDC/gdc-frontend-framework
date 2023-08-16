@@ -131,7 +131,10 @@ const useCasesSets = () => {
       (acc, cohort) => {
         return {
           caseSets: { [cohort.id]: cohort.name, ...acc.caseSets },
-          caseCounts: { [cohort.id]: cohort.caseCount, ...acc.caseCounts },
+          caseCounts: {
+            [cohort.id]: cohort.counts.caseCount,
+            ...acc.caseCounts,
+          },
         };
       },
       {

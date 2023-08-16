@@ -24,6 +24,20 @@ export interface CountsDataAndStatus extends CountsData {
   readonly status: DataStatus;
 }
 
+/**
+ * Constant representing Null Counts
+ */
+export const NullCountsData: CountsDataAndStatus = {
+  caseCount: -1,
+  fileCount: -1,
+  genesCount: -1,
+  mutationCount: -1,
+  ssmCaseCount: -1,
+  sequenceReadCaseCount: -1,
+  repositoryCaseCount: -1,
+  status: "uninitialized",
+};
+
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument,
   $ssmCaseFilter: FiltersArgument,

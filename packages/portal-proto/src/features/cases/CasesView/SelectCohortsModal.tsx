@@ -85,7 +85,7 @@ export const SelectCohortsModal = ({
         .map((cohort) => ({
           selected: cohort.id,
           name: cohort.name,
-          num_cases: cohort.caseCount?.toLocaleString(),
+          num_cases: cohort.counts.caseCount?.toLocaleString(),
         })),
     [cohorts],
   );

@@ -1,5 +1,5 @@
 import { Loader } from "@mantine/core";
-import { useFilteredCohortCounts, CountsData } from "@gff/core";
+import { CountsData, useCurrentCohortCounts } from "@gff/core";
 
 export interface CountButtonProp {
   readonly countName: keyof CountsData;
@@ -14,7 +14,7 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
   className = "",
   bold = false,
 }: CountButtonProp) => {
-  const cohortCounts = useFilteredCohortCounts();
+  const cohortCounts = useCurrentCohortCounts();
   console.log("CohortCountButton", cohortCounts);
   const adjustedLabel =
     cohortCounts.data !== undefined && cohortCounts.data[countName] !== 1
@@ -23,7 +23,7 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
   return (
     <div className={className}>
       <div className="flex flex-row flex-nowrap items-center font-heading">
-        {cohortCounts.isSuccess ? (
+        {cohortCounts.status === "fulfilled" ? (
           <>
             <span className={`pr-1 ${bold && "font-bold"}`}>
               {cohortCounts.data[countName]?.toLocaleString()}

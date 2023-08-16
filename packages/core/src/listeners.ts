@@ -43,24 +43,18 @@ startCoreListening({
   },
 });
 
-// /**
-//  * Once the request for the case count is fulfilled, we need to add it to the cohort
-//  * Optionally if a cohortID is passed in, we can add the case count to that cohort
-//  * This is used when creating a new cohort from a link, as it is not the current cohort
-//  */
-// startCoreListening({
-//   matcher: isFulfilled(fetchCohortCaseCounts),
-//   effect: async (action, listenerApi) => {
-//     const cohortsCount = selectCohortCountsByName(
-//       listenerApi.getState(),
-//       "caseCount",
-//     );
-//     listenerApi.dispatch(
-//       addCaseCount({ cohortId: action.meta?.arg, caseCount: cohortsCount }),
-//     );
-//   },
-// });
+startCoreListening({
+  matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
+  effect: async (_, listenerApi) => {
+    listenerApi.dispatch(fetchCohortCaseCounts());
+  },
+});
 
+/**
+ * Once the request for the case count is fulfilled, we need to add it to the cohort
+ * Optionally if a cohortID is passed in, we can add the case count to that cohort
+ * This is used when creating a new cohort from a link, as it is not the current cohort
+ */
 startCoreListening({
   matcher: isAnyOf(addNewCohortWithFilterAndMessage, addNewCohort),
   effect: async (_, listenerApi) => {
@@ -69,14 +63,8 @@ startCoreListening({
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
     );
 
-    //  const latestCohortFilter = cohorts[0]?.filters;
     const latestCohortId = cohorts[0]?.id;
     listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
-
-    //  await fetchGdcCases({
-    //   filters: buildCohortGqlOperator(latestCohortFilter),
-    //   size: 0,
-    // });
   },
 });
 
