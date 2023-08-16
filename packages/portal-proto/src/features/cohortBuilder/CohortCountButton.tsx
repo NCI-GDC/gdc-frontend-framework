@@ -15,8 +15,11 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
   bold = false,
 }: CountButtonProp) => {
   const cohortCounts = useFilteredCohortCounts();
+  console.log("CohortCountButton", cohortCounts);
   const adjustedLabel =
-    cohortCounts.data[countName] !== 1 ? label : label.slice(0, -1);
+    cohortCounts.data !== undefined && cohortCounts.data[countName] !== 1
+      ? label
+      : label.slice(0, -1);
   return (
     <div className={className}>
       <div className="flex flex-row flex-nowrap items-center font-heading">

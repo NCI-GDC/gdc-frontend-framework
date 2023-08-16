@@ -61,7 +61,6 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
-  readonly caseCount?: number; // track case count of a cohort
   readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
 }
 
@@ -626,15 +625,15 @@ const slice = createSlice({
         cohortsAdapter.addOne(state, destCohort);
       }
     },
-    addCaseCount: (
-      state,
-      action: PayloadAction<{ cohortId?: string; caseCount: number }>,
-    ) => {
-      cohortsAdapter.updateOne(state, {
-        id: action.payload.cohortId ?? getCurrentCohort(state),
-        changes: { caseCount: action.payload.caseCount },
-      });
-    },
+    // addCaseCount: (
+    //   state,
+    //   action: PayloadAction<{ cohortId?: string; caseCount: number }>,
+    // ) => {
+    //   cohortsAdapter.updateOne(state, {
+    //     id: action.payload.cohortId ?? getCurrentCohort(state),
+    //     changes: { caseCount: action.payload.caseCount },
+    //   });
+    // },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
@@ -1063,7 +1062,6 @@ export const {
   copyCohort,
   discardCohortChanges,
   setCohortMessage,
-  addCaseCount,
   addNewCohortSet,
   removeCohortSet,
 } = slice.actions;
@@ -1284,12 +1282,11 @@ export const selectCurrentCohortFiltersByName = (
   return cohort?.filters?.root[name];
 };
 
-// TODO refactor to use counts object
 export const selectCurrentCohortCaseCount = (
   state: CoreState,
 ): number | undefined =>
   cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
-    ?.caseCount;
+    ?.counts.caseCount;
 
 export const selectCurrentCohortFiltersByNames = (
   state: CoreState,
@@ -1350,6 +1347,17 @@ const NullCountsData: CountsDataAndStatus = {
   status: "uninitialized",
 };
 
+export const selectCohortCountsResults = (
+  state: CoreState,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): CoreDataSelectorResponse<CountsData> => {
+  return {
+    data: cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData,
+    status:
+      cohortSelectors.selectById(state, cohortId)?.counts.status ?? "fulfilled",
+  };
+};
+
 export const selectCohortCounts = (
   state: CoreState,
   cohortId: EntityId = getCurrentCohortFromCoreState(state),
@@ -1384,12 +1392,12 @@ export const useCurrentCohortWithGeneAndSsmCaseSet = ():
 
 export const useCohortCounts = createUseCoreDataHook(
   fetchCohortCaseCounts,
-  selectCohortCounts,
+  selectCohortCountsResults,
 );
 
 export const useFilteredCohortCounts = createUseFiltersCoreDataHook(
   fetchCohortCaseCounts,
-  selectCohortCounts,
+  selectCohortCountsResults,
   selectCurrentCohortFilterSet,
 );
 

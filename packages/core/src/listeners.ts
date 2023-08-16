@@ -10,20 +10,14 @@ import {
   updateCohortFilter,
   removeCohortFilter,
   setCurrentCohortId,
-  addCaseCount,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
   addNewCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
 } from "./features/cohort/availableCohortsSlice";
-import {
-  fetchCohortCaseCounts,
-  selectCohortCountsByName,
-} from "./features/cohort/countSlice";
+import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
-import { fetchGdcCases } from "./features/gdcapi/gdcapi";
-import { buildCohortGqlOperator } from "./features/cohort";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -49,23 +43,23 @@ startCoreListening({
   },
 });
 
-/**
- * Once the request for the case count is fulfilled, we need to add it to the cohort
- * Optionally if a cohortID is passed in, we can add the case count to that cohort
- * This is used when creating a new cohort from a link, as it is not the current cohort
- */
-startCoreListening({
-  matcher: isFulfilled(fetchCohortCaseCounts),
-  effect: async (action, listenerApi) => {
-    const cohortsCount = selectCohortCountsByName(
-      listenerApi.getState(),
-      "caseCount",
-    );
-    listenerApi.dispatch(
-      addCaseCount({ cohortId: action.meta?.arg, caseCount: cohortsCount }),
-    );
-  },
-});
+// /**
+//  * Once the request for the case count is fulfilled, we need to add it to the cohort
+//  * Optionally if a cohortID is passed in, we can add the case count to that cohort
+//  * This is used when creating a new cohort from a link, as it is not the current cohort
+//  */
+// startCoreListening({
+//   matcher: isFulfilled(fetchCohortCaseCounts),
+//   effect: async (action, listenerApi) => {
+//     const cohortsCount = selectCohortCountsByName(
+//       listenerApi.getState(),
+//       "caseCount",
+//     );
+//     listenerApi.dispatch(
+//       addCaseCount({ cohortId: action.meta?.arg, caseCount: cohortsCount }),
+//     );
+//   },
+// });
 
 startCoreListening({
   matcher: isAnyOf(addNewCohortWithFilterAndMessage, addNewCohort),
@@ -75,18 +69,14 @@ startCoreListening({
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
     );
 
-    const latestCohortFilter = cohorts[0]?.filters;
+    //  const latestCohortFilter = cohorts[0]?.filters;
     const latestCohortId = cohorts[0]?.id;
+    listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
 
-    const res = await fetchGdcCases({
-      filters: buildCohortGqlOperator(latestCohortFilter),
-      size: 0,
-    });
-    const caseCount = res?.data?.pagination?.total;
-
-    listenerApi.dispatch(
-      addCaseCount({ cohortId: latestCohortId, caseCount: caseCount }),
-    );
+    //  await fetchGdcCases({
+    //   filters: buildCohortGqlOperator(latestCohortFilter),
+    //   size: 0,
+    // });
   },
 });
 

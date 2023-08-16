@@ -283,7 +283,9 @@ const ContextBar = ({
           : "Collapse additional cases details and features"
       }
       tooltipPosition="left"
-      TargetElement={<CohortCountButton label="CASES" bold />}
+      TargetElement={
+        <CohortCountButton countName="caseCount" label="CASES" bold />
+      }
       ExtraControl={
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
