@@ -72,7 +72,7 @@ import {
   selectCohortBuilderConfigCategory,
 } from "./cohortBuilderConfigSlice";
 
-import { CountsData } from "./cohortCountsQuery";
+import { CountsData, NullCountsData } from "./cohortCountsQuery";
 
 import { defaultCohortNameGenerator } from "./utils";
 
@@ -141,6 +141,7 @@ export {
   selectCurrentCohortFiltersByNames,
   selectCurrentCohortGeneAndSSMCaseSet,
   CountsData,
+  NullCountsData,
   defaultCohortNameGenerator,
   getCohortFilterForAPI,
   selectAllCohorts,

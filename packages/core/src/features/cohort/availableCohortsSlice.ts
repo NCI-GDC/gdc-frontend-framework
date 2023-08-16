@@ -1452,6 +1452,7 @@ export const setActiveCohortList =
           modified: false,
         }),
       );
+      dispatch(fetchCohortCaseCounts(cohortId));
     }
   };
 

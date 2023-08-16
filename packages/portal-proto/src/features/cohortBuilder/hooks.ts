@@ -9,6 +9,7 @@ import {
   Cohort,
   removeCohort,
   addNewCohort,
+  NullCountsData,
 } from "@gff/core";
 
 export const useSetupInitialCohorts = (): void => {
@@ -45,10 +46,12 @@ export const useSetupInitialCohorts = (): void => {
                 caseSet: {
                   ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
                 },
+                counts: {
+                  ...NullCountsData,
+                },
                 modified_datetime: data.modified_datetime,
                 saved: true,
                 modified: false,
-                caseCount: data?.case_ids.length,
               };
         });
         // TODO determine if setActiveCohortList is really needed
