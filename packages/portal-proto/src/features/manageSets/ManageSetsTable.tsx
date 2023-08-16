@@ -81,7 +81,6 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
     <div className="flex flex-row items-center gap-1">
       <ActionIcon
         size={20}
-        title="Delete set"
         aria-label="Delete set"
         className="text-primary"
         onClick={() => {
@@ -97,7 +96,6 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
       {count > 0 && (
         <ActionIcon
           size={20}
-          title="Download set"
           aria-label="Download set"
           className={"text-primary"}
           variant="transparent"
