@@ -9,17 +9,14 @@ describe("setsSlice", () => {
     coreStore.dispatch(
       addSet({ setType: "genes", setName: "my gene set", setId: "xZaB" }),
     );
-
     expect(coreStore.getState().sets).toEqual({
       genes: { xZaB: "my gene set" },
       cases: {},
       ssms: {},
     });
-
     coreStore.dispatch(
       addSet({ setType: "genes", setName: "my next gene set", setId: "aaZM" }),
     );
-
     expect(coreStore.getState().sets).toEqual({
       genes: { xZaB: "my gene set", aaZM: "my next gene set" },
       cases: {},
