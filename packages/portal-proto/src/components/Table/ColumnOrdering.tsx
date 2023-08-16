@@ -39,66 +39,67 @@ function ColumnOrdering<TData>({
     );
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="flex relative" ref={ref}>
-        <Tooltip label="Customize Columns" disabled={showColumnMenu}>
-          <span>
-            <ActionIcon
-              variant="outline"
-              size="lg"
-              onClick={() => setShowColumnMenu((o) => !o)}
-              aria-label="show column change menu button"
-              color="primary"
-              data-testid="button-column-selector-box"
-              className={showColumnMenu && "border-2 border-primary"}
-            >
-              {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
-            </ActionIcon>
-          </span>
-        </Tooltip>
-
-        {showColumnMenu && (
-          <div
-            className="absolute z-10 right-0 top-10 bg-base-max border-2 border-primary p-2 w-80 rounded-md"
-            data-testid="column-selector-popover-modal"
+    <div className="relative" ref={ref}>
+      <Tooltip label="Customize Columns" disabled={showColumnMenu}>
+        <span>
+          <ActionIcon
+            variant="outline"
+            size="lg"
+            onClick={() => setShowColumnMenu((o) => !o)}
+            aria-label="show column change menu button"
+            color="primary"
+            data-testid="button-column-selector-box"
+            className={`${
+              showColumnMenu && "border-2 border-primary"
+            } hover:bg-primary hover:text-base-max`}
           >
-            <div className="flex justify-between">
-              <span className="font-bold text-primary-darkest tracking-normal">
-                Customize Columns
-              </span>
-              {!isBackToDefaults && (
-                <Tooltip label="Restore defaults">
-                  <span>
-                    <ActionIcon onClick={handleColumnOrderingReset}>
-                      <RevertIcon className="text-primary" size="1rem" />
-                    </ActionIcon>
-                  </span>
-                </Tooltip>
-              )}
-            </div>
-            <Divider color="#c5c5c5" className="mt-1" />
-            <TextInput
-              value={searchValue}
-              onChange={(event) =>
-                setSearchValue(event.currentTarget.value.trim())
-              }
-              placeholder="Filter Columns"
-              aria-label="Search input for columns"
-              icon={<SearchIcon />}
-              className="mb-2 mt-4"
-              data-testid="textbox-column-selector"
-            />
+            {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
+          </ActionIcon>
+        </span>
+      </Tooltip>
 
+      {showColumnMenu && (
+        <div
+          className="absolute z-10 right-0 top-10 bg-base-max border-2 border-primary p-2 w-max rounded-md"
+          data-testid="column-selector-popover-modal"
+        >
+          <div className="flex justify-between">
+            <span className="font-bold text-primary-darkest tracking-normal">
+              Customize Columns
+            </span>
+            {!isBackToDefaults && (
+              <Tooltip label="Restore defaults">
+                <span>
+                  <ActionIcon onClick={handleColumnOrderingReset}>
+                    <RevertIcon className="text-primary" size="1rem" />
+                  </ActionIcon>
+                </span>
+              </Tooltip>
+            )}
+          </div>
+          <Divider color="#c5c5c5" className="mt-1" />
+          <TextInput
+            value={searchValue}
+            onChange={(event) =>
+              setSearchValue(event.currentTarget.value.trim())
+            }
+            placeholder="Filter Columns"
+            aria-label="Search input for columns"
+            icon={<SearchIcon />}
+            className="mb-2 mt-4"
+            data-testid="textbox-column-selector"
+          />
+          <DndProvider backend={HTML5Backend}>
             <List
               columns={table.getAllLeafColumns()}
               searchValue={searchValue}
               columnOrder={columnOrder}
               setColumnOrder={setColumnOrder}
             />
-          </div>
-        )}
-      </div>
-    </DndProvider>
+          </DndProvider>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -187,10 +188,10 @@ function ColumnItem<TData>({
       ref={(node) => drag(drop(node))}
       className={`flex justify-between items-center bg-nci-violet-lightest ${
         isNotLast ? "mb-2" : ""
-      } px-1 py-1.5 gap-1 h-6 opacity-${o} cursor-move`}
+      } px-1 py-1.5 gap-4 h-6 opacity-${o} cursor-move`}
       data-testid={`column-selector-row-${column.id}`}
     >
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-2 items-center">
         <DragIcon size="1rem" className="text-primary" />
         <span className="text-xs text-secondary-contrast-lighter font-medium tracking-normal">
           {humanify({ term: column.id })}
