@@ -63,19 +63,21 @@ function ColumnOrdering<TData>({
           className="absolute z-10 right-0 top-10 bg-base-max border-2 border-primary p-2 w-max rounded-md"
           data-testid="column-selector-popover-modal"
         >
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <span className="font-bold text-primary-darkest tracking-normal">
               Customize Columns
             </span>
-            {!isBackToDefaults && (
-              <Tooltip label="Restore defaults">
-                <span>
-                  <ActionIcon onClick={handleColumnOrderingReset}>
-                    <RevertIcon className="text-primary" size="1rem" />
-                  </ActionIcon>
-                </span>
-              </Tooltip>
-            )}
+
+            <Tooltip label="Restore defaults" disabled={isBackToDefaults}>
+              <span>
+                <ActionIcon
+                  onClick={handleColumnOrderingReset}
+                  className={isBackToDefaults && "invisible"}
+                >
+                  <RevertIcon className="text-primary" size="1rem" />
+                </ActionIcon>
+              </span>
+            </Tooltip>
           </div>
           <Divider color="#c5c5c5" className="mt-1" />
           <TextInput
