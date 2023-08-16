@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import React from "react";
+import { useDeepCompareMemo, useDeepCompareCallback } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -41,7 +41,7 @@ const CountBadge: React.FC<CountBadgeProps> = ({
       <Badge
         variant={active ? "filled" : "outline"}
         radius="xs"
-        className={`cursor-pointer w-full ${
+        className={`cursor-pointer w-16 ${
           active
             ? undefined
             : disabled
@@ -94,43 +94,44 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
       >
         <TrashIcon />
       </ActionIcon>
-      <ActionIcon
-        size={20}
-        title="Download set"
-        aria-label="Download set"
-        className={count === 0 ? "text-base-lighter" : "text-primary"}
-        variant="transparent"
-        disabled={count === 0}
-        onClick={() => {
-          download({
-            endpoint: "tar_sets",
-            params: {
-              attachment: true,
-              sets: [
-                {
-                  id: setId,
-                  type: downloadType,
-                  filename: `${downloadType}_set_${setName.replace(
-                    /[^A-Za-z0-9_.]/g,
-                    "_",
-                  )}.tsv`,
-                },
-              ],
-            },
-            options: {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
+      {count > 0 && (
+        <ActionIcon
+          size={20}
+          title="Download set"
+          aria-label="Download set"
+          className={"text-primary"}
+          variant="transparent"
+          onClick={() => {
+            download({
+              endpoint: "tar_sets",
+              params: {
+                attachment: true,
+                sets: [
+                  {
+                    id: setId,
+                    type: downloadType,
+                    filename: `${downloadType}_set_${setName.replace(
+                      /[^A-Za-z0-9_.]/g,
+                      "_",
+                    )}.tsv`,
+                  },
+                ],
               },
-            },
-            method: "POST",
-            dispatch,
-            form: true,
-          });
-        }}
-      >
-        <DownloadIcon />
-      </ActionIcon>
+              options: {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+              method: "POST",
+              dispatch,
+              form: true,
+            });
+          }}
+        >
+          <DownloadIcon />
+        </ActionIcon>
+      )}
     </div>
   );
 };
@@ -139,8 +140,7 @@ interface MangeSetsTableProps {
   readonly geneData: SetData[];
   readonly ssmData: SetData[];
   readonly selectedSets: SetData[];
-  readonly updateSelectedSets: (set: SetData) => void;
-  readonly updateSelectAllSets: () => void;
+  readonly setSelectedSets: (sets: SetData[]) => void;
   readonly detailSet: SetData;
   readonly setDetailSet: (set: SetData) => void;
 }
@@ -149,81 +149,21 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   geneData,
   ssmData,
   selectedSets,
-  updateSelectedSets,
-  updateSelectAllSets,
+  setSelectedSets,
   detailSet,
   setDetailSet,
 }) => {
   const selectedSetIds = selectedSets.map((set) => set.setId);
-  const allSetIds = [
-    ...geneData.map((set) => set.setId),
-    ...ssmData.map((set) => set.setId),
-  ];
-  const selectAllChecked = allSetIds.every((setId) =>
-    selectedSetIds.includes(setId),
-  );
 
-  const columns = useMemo(
-    () => [
-      {
-        id: "select",
-        columnName: (
-          <Checkbox
-            checked={selectAllChecked}
-            onChange={updateSelectAllSets}
-            aria-label="Select/deselect all sets"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "entityType",
-        columnName: "Entity Type",
-        visible: true,
-      },
-      {
-        id: "setName",
-        columnName: "Name",
-        visible: true,
-        Cell: ({ value, row }: { value: string; row: Row<SetData> }) => (
-          <SetNameInput
-            setName={value}
-            setId={row.original.setId}
-            setType={row.original.setType}
-          />
-        ),
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-        Cell: ({ value, row }: { value: number; row: Row<SetData> }) => (
-          <CountBadge
-            count={value}
-            active={detailSet?.setId === row.original.setId}
-            openSetDetail={() => {
-              setDetailSet({
-                setId: row.original.setId,
-                setName: row.original.setName,
-                setType: row.original.setType,
-                count: value,
-              });
-            }}
-          />
-        ),
-      },
-      {
-        id: "actions",
-        columnName: "Actions",
-        visible: true,
-        disableSortBy: true,
-      },
-    ],
-    [detailSet?.setId, setDetailSet, selectAllChecked, updateSelectAllSets],
+  const updateSelectedSets = useDeepCompareCallback(
+    (set: SetData) => {
+      if (selectedSetIds.includes(set.setId)) {
+        setSelectedSets(selectedSets.filter((s) => s.setId !== set.setId));
+      } else {
+        setSelectedSets([...selectedSets, set]);
+      }
+    },
+    [selectedSetIds, selectedSets, setSelectedSets],
   );
 
   const tableData = useDeepCompareMemo(() => {
@@ -297,6 +237,92 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         break;
     }
   };
+
+  const allSetIds = useDeepCompareMemo(
+    () => displayedData.map((set) => set.setId),
+    [displayedData],
+  );
+  const selectAllChecked = allSetIds.every((setId) =>
+    selectedSetIds.includes(setId),
+  );
+
+  const updateSelectAllSets = useDeepCompareCallback(() => {
+    if (allSetIds.every((setId) => selectedSetIds.includes(setId))) {
+      setSelectedSets([]);
+    } else {
+      setSelectedSets(
+        displayedData.map((data) => ({
+          setId: data.setId,
+          setType: data.setType,
+          count: data.count,
+          setName: data.setName,
+        })),
+      );
+    }
+  }, [allSetIds, selectedSetIds, setSelectedSets, displayedData]);
+
+  const columns = useDeepCompareMemo(
+    () => [
+      {
+        id: "select",
+        columnName: (
+          <Checkbox
+            checked={selectAllChecked}
+            onChange={updateSelectAllSets}
+            aria-label="Select/deselect all sets"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+          />
+        ),
+        visible: true,
+        disableSortBy: true,
+      },
+      {
+        id: "entityType",
+        columnName: "Entity Type",
+        visible: true,
+      },
+      {
+        id: "setName",
+        columnName: "Name",
+        visible: true,
+        Cell: ({ value, row }: { value: string; row: Row<SetData> }) => (
+          <SetNameInput
+            setName={value}
+            setId={row.original.setId}
+            setType={row.original.setType}
+          />
+        ),
+      },
+      {
+        id: "count",
+        columnName: "# Items",
+        visible: true,
+        Cell: ({ value, row }: { value: number; row: Row<SetData> }) => (
+          <CountBadge
+            count={value}
+            active={detailSet?.setId === row.original.setId}
+            openSetDetail={() => {
+              setDetailSet({
+                setId: row.original.setId,
+                setName: row.original.setName,
+                setType: row.original.setType,
+                count: value,
+              });
+            }}
+          />
+        ),
+      },
+      {
+        id: "actions",
+        columnName: "Actions",
+        visible: true,
+        disableSortBy: true,
+      },
+    ],
+    [detailSet?.setId, setDetailSet, selectAllChecked, updateSelectAllSets],
+  );
 
   return (
     <div className="w-3/4 pb-6">

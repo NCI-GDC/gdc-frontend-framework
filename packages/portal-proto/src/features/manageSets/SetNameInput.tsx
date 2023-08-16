@@ -67,7 +67,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 setEditing(false);
               }}
               className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
-              disabled={value === ""}
+              disabled={value.trim() === ""}
               aria-label={"Rename set"}
             >
               <CheckIcon className="text-nci-green-darkest" size={10} />

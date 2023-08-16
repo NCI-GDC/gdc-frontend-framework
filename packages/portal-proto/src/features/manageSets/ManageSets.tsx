@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Grid, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
@@ -94,32 +94,8 @@ const ManageSets: React.FC = () => {
   const deprecatedOrEmptySets =
     geneData.some(({ count }) => count !== undefined && count === 0) ||
     ssmData.some(({ count }) => count !== undefined && count === 0);
-  const selectedSetIds = selectedSets.map((set) => set.setId);
-  const allSetIds = [
-    ...geneData.map((set) => set.setId),
-    ...ssmData.map((set) => set.setId),
-  ];
 
   const dispatch = useCoreDispatch();
-
-  const updateSelectedSets = useCallback(
-    (set: SetData) => {
-      if (selectedSetIds.includes(set.setId)) {
-        setSelectedSets(selectedSets.filter((s) => s.setId !== set.setId));
-      } else {
-        setSelectedSets([...selectedSets, set]);
-      }
-    },
-    [selectedSetIds, selectedSets],
-  );
-
-  const updateSelectAllSets = () => {
-    if (allSetIds.every((setId) => selectedSetIds.includes(setId))) {
-      setSelectedSets([]);
-    } else {
-      setSelectedSets([...geneData, ...ssmData]);
-    }
-  };
 
   return (
     <>
@@ -213,8 +189,7 @@ const ManageSets: React.FC = () => {
             geneData={geneData}
             ssmData={ssmData}
             selectedSets={selectedSets}
-            updateSelectedSets={updateSelectedSets}
-            updateSelectAllSets={updateSelectAllSets}
+            setSelectedSets={setSelectedSets}
             detailSet={detailSet}
             setDetailSet={setDetailSet}
           />

@@ -190,6 +190,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               label={identifierToolTip}
               events={{ hover: true, focus: true, touch: false }}
               withArrow
+              withinPortal={false}
             >
               <ActionIcon aria-label="accepted identifier info">
                 <InfoIcon size={16} className="text-accent" />

@@ -24,6 +24,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [tableData, setTableData] = useState([]);
   const [sortBy, setSortBy] = useState<SortBy[]>();
+  const tableWrapperRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
     setCurrentPage(0);
@@ -190,6 +191,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
       position="right"
       classNames={{
         title: "w-full m-0",
+        body: "h-full",
       }}
       title={
         <div className="flex flex-row gap-2 items-center w-full text-primary-darker font-bold p-2 border-b border-base-lighter">
@@ -199,30 +201,30 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
           <>{set?.setName}</>
         </div>
       }
-      target={"#__next"}
-      zIndex={1000}
       size={"lg"}
       withCloseButton={false}
     >
-      <ScrollArea
-        h={700}
-        viewportRef={scrollRef}
-        offsetScrollbars
-        onScrollPositionChange={() => {
-          fetchMoreOnBottomReached();
-        }}
-        className="pl-4"
-      >
-        <VerticalTable
-          tableData={displayData}
-          columns={columns}
-          selectableRow={false}
-          showControls={false}
-          columnSorting={"manual"}
-          handleChange={handleChange}
-          stickyHeader
-        />
-      </ScrollArea>
+      <div className="h-full" ref={tableWrapperRef}>
+        <ScrollArea
+          h={tableWrapperRef?.current?.clientHeight || 0}
+          viewportRef={scrollRef}
+          offsetScrollbars
+          onScrollPositionChange={() => {
+            fetchMoreOnBottomReached();
+          }}
+          className="pl-4"
+        >
+          <VerticalTable
+            tableData={displayData}
+            columns={columns}
+            selectableRow={false}
+            showControls={false}
+            columnSorting={"manual"}
+            handleChange={handleChange}
+            stickyHeader
+          />
+        </ScrollArea>
+      </div>
     </Drawer>
   );
 };

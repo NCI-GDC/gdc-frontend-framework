@@ -1,6 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import { modalStyles } from "@/components/Modals/styles";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   Columns,
@@ -200,9 +199,8 @@ export const SelectCohortsModal = ({
           onClose={onClose}
           withCloseButton
           title={title}
-          withinPortal={false}
           classNames={{
-            ...modalStyles,
+            modal: "p-0 drop-shadow-lg",
             body: "flex flex-col justify-between min-h-[300px]",
           }}
           size="xl"
