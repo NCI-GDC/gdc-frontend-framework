@@ -255,7 +255,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           />
         </div>
         {isUnintialized ? null : isFetching ? (
-          <div className="flex items-center pl-4 gap-1 text-sm">
+          <div className="flex h-32 items-center pl-4 gap-1 text-sm">
             <Loader size={12} />
             <p>validating {entityLabel}s</p>
           </div>
