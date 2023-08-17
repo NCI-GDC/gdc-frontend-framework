@@ -1,6 +1,7 @@
 import { fireEvent } from "@testing-library/react";
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
+import * as router from "next/router";
 import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
 import { render } from "test-utils";
@@ -33,6 +34,13 @@ describe("<Header />", () => {
       isSuccess: true,
       isUninitialized: false,
     });
+
+    jest.spyOn(router, "useRouter").mockImplementation(
+      () =>
+        ({
+          pathname: "",
+        } as any),
+    );
   });
 
   test("should show login button when the username is null initially", () => {

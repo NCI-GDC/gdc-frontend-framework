@@ -225,6 +225,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                         defaultTailwindColorTheme["primary-content"].darkest,
                     },
                   },
+                  classNames: {
+                    modal: "drop-shadow-lg",
+                  },
+                },
+              },
+              Drawer: {
+                defaultProps: {
+                  target: "#__next",
+                  zIndex: 1000,
                 },
               },
             },

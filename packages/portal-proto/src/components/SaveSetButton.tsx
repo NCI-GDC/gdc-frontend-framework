@@ -7,6 +7,7 @@ import {
   useCoreSelector,
   addSet,
   SetTypes,
+  hideModal,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
@@ -14,20 +15,26 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 
 interface SaveSetButttonProps {
   readonly disabled: boolean;
-  readonly setValues: string[];
-  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
+  readonly ids: string[];
+  readonly hooks: {
+    createSet: UseMutation<MutationDefinition<any, any, any, any>>;
+  };
   readonly setType: SetTypes;
+  readonly buttonText?: string;
+  readonly dismissModal?: boolean;
 }
 
 const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   disabled,
-  setValues,
-  createSetHook,
+  ids,
+  hooks,
   setType,
+  buttonText = "Save Set",
+  dismissModal = false,
 }: SaveSetButttonProps) => {
   const dispatch = useCoreDispatch();
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [createSet, response] = createSetHook();
+  const [createSet, response] = hooks.createSet();
   const [setName, setSetName] = useState(null);
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
 
@@ -35,6 +42,9 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
     if (response.isSuccess && setName) {
       dispatch(addSet({ setType, setName, setId: response.data }));
       showNotification({ message: "Set has been saved." });
+      if (dismissModal) {
+        dispatch(hideModal());
+      }
       setSetName(null);
     } else if (response.isError) {
       showNotification({ message: "Problem saving set.", color: "red" });
@@ -46,6 +56,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
     setName,
     dispatch,
     setType,
+    dismissModal,
   ]);
 
   return (
@@ -57,20 +68,23 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         onClose={() => setShowSaveModal(false)}
         onActionClick={(name: string) => {
           setSetName(name);
-          createSet({ values: setValues });
+          createSet({ values: ids });
         }}
         onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage={"This will overwrite it."}
       />
       <DarkFunctionButton
-        className={"mr-auto"}
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
       >
-        Save Set
+        {buttonText}
       </DarkFunctionButton>
     </>
   );
 };
+
+export const SubmitSaveSetButton: React.FC<SaveSetButttonProps> = (
+  props: SaveSetButttonProps,
+) => <SaveSetButton {...props} buttonText="Submit" dismissModal />;
 
 export default SaveSetButton;

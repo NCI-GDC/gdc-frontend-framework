@@ -786,7 +786,7 @@ module.exports = {
         cartDarkerOrange: "#C7501A",
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
-        emptyCartLighterColor: "#e0e9f0",
+        emptyIconLighterColor: "#e0e9f0",
       },
       minHeight: {
         "screen-60vh": "60vh",
@@ -829,7 +829,6 @@ module.exports = {
       backgroundImage: {
         "hero-pattern": "url(/v2/homepage/hero-background.svg)",
         "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
-        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
