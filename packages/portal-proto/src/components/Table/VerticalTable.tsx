@@ -306,7 +306,7 @@ function VerticalTable<TData>({
                         role="button"
                         tabIndex={0}
                         key={cell.id}
-                        className="px-2.5 py-2.5 cursor-default"
+                        className="px-2.5 py-2 cursor-default"
                         onClick={() => {
                           if (
                             row.getCanExpand() &&
