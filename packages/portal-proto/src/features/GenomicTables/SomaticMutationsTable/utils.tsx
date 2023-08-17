@@ -375,7 +375,6 @@ export const DNA_CHANGE_MARKERS = ["del", "ins", ">"];
 
 export const truncateAfterMarker = (
   term: string,
-  length: number,
   markers: string[] = DNA_CHANGE_MARKERS,
   omission = "…",
 ): string => {
