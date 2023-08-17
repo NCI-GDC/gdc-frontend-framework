@@ -8,11 +8,16 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
+    BUTTON_CLOSE_MODAL = 'button[aria-label="button-close-modal"]'
+
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
     LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
+    # This locator allows you to send in a specific case count and check if it is there
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
+    # This locator allows you to grab the case count text for further testing
+    TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     CART_IDENT = '[data-testid="cartLink"]'
 
     BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = '[data-testid="button-clear-all-cohort-filters"]'
@@ -277,6 +282,11 @@ class BasePage:
     def click_radio_button(self, radio_name):
         """Clicks a radio button in a filter card"""
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
+    def click_close_modal_button(self):
+        """Clicks 'X' to close a modal"""
+        locator = GenericLocators.BUTTON_CLOSE_MODAL
         self.click(locator)
 
     def click_undo_in_message(self):

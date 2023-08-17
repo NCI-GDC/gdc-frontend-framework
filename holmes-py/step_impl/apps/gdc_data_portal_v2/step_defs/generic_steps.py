@@ -96,6 +96,9 @@ def close_modal(modal_name: str):
         not APP.repository_page.get_file_filter_list_count()
     ), f"Modal is still open.\nModal name: {modal_name}"
 
+@step("Close the modal")
+def close_the_modal():
+    APP.shared.click_close_modal_button()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file:str, source:str):

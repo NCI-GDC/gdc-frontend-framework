@@ -78,6 +78,7 @@ export const SummaryModal = ({
       }}
       padding={0}
       overlayOpacity={0.5}
+      closeButtonLabel="button-close-modal"
     >
       {SummaryPage}
     </Modal>
