@@ -18,36 +18,34 @@ const SMTableDNAChange = ({
   geneSymbol: string;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
 }): JSX.Element => {
-  const originalLabel = DNAChange;
-  const label = originalLabel
-    ? truncateAfterMarker(originalLabel, 8)
-    : originalLabel;
-  const ssmsId = mutationID;
+  const truncatedLabel = truncateAfterMarker(DNAChange);
 
   return (
-    <div className="font-content">
-      {label !== "" ? (
-        <Tooltip label={originalLabel} disabled={!originalLabel?.length}>
-          {isModal && !geneSymbol ? (
-            <PopupIconButton
-              handleClick={() =>
-                setEntityMetadata({
-                  entity_type: "ssms",
-                  entity_id: ssmsId,
-                })
-              }
-              label={label}
-            />
-          ) : (
-            <Link href={`/ssms/${ssmsId}`}>
-              <a className="underline text-utility-link">{label}</a>
-            </Link>
-          )}
+    <>
+      {DNAChange ? (
+        <Tooltip label={DNAChange} disabled={!DNAChange}>
+          <span>
+            {isModal && !geneSymbol ? (
+              <PopupIconButton
+                handleClick={() =>
+                  setEntityMetadata({
+                    entity_type: "ssms",
+                    entity_id: mutationID,
+                  })
+                }
+                label={truncatedLabel}
+              />
+            ) : (
+              <Link href={`/ssms/${mutationID}`}>
+                <a className="underline text-utility-link">{truncatedLabel}</a>
+              </Link>
+            )}
+          </span>
         </Tooltip>
       ) : (
-        <div className="text-lg ml-3">--</div>
+        "--"
       )}
-    </div>
+    </>
   );
 };
 
