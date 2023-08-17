@@ -12,6 +12,7 @@ import SavedSets from "./SavedSets";
 import UserInputModal from "../UserInputModal";
 import { SavedSetModalProps } from "./types";
 import UpdateCohortButton from "./UpdateFiltersButton";
+import SaveSetButton from "@/components/SaveSetButton";
 
 const GeneSetModal: React.FC<SavedSetModalProps> = ({
   modalTitle,
@@ -53,7 +54,8 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
             updateFilters: updateFilters,
             getExistingFilters: existingFiltersHook,
           }}
-          SubmitButton={UpdateCohortButton}
+          LeftButton={SaveSetButton}
+          RightButton={UpdateCohortButton}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">

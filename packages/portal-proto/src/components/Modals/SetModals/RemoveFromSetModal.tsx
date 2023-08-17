@@ -20,7 +20,6 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import SetTable from "./SetTable";
-import { modalStyles } from "../styles";
 
 interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
@@ -83,8 +82,9 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        modal: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <SetTable

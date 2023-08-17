@@ -22,7 +22,6 @@ import FunctionButton from "@/components/FunctionButton";
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import SetTable from "./SetTable";
-import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface AddToSetModalProps {
@@ -113,8 +112,9 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        modal: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <SetTable

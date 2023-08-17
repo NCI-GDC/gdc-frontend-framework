@@ -98,7 +98,7 @@ const ImportCohortModal: React.FC = () => {
         }
         entityType="cases"
         entityLabel="case"
-        SubmitButton={SubmitButton}
+        RightButton={SubmitButton}
         hooks={{}}
       />
     </UserInputModal>

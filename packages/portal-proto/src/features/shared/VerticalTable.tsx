@@ -163,6 +163,7 @@ interface VerticalTableProps {
    */
   initialSort?: SortingState;
   footer?: React.ReactNode;
+  stickyHeader?: boolean;
 }
 
 /**
@@ -273,6 +274,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   search,
   initialSort = [],
   footer = undefined,
+  stickyHeader = false,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
@@ -374,7 +376,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
-        <thead className="h-14">
+        <thead className={`h-14 ${stickyHeader ? "sticky top-[-5px]" : ""}`}>
           {headerGroups.map((headerGroup, key) => (
             <tr
               className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
@@ -576,7 +578,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   const ref = useClickOutside(() => setShowColumnMenu(false));
 
   return (
-    <div className="grow overflow-hidden">
+    <div className={stickyHeader ? undefined : "grow overflow-hidden"}>
       <div
         className={`flex ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -658,7 +660,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         )}
       </div>
       <>
-        <div className="overflow-y-auto w-full relative">
+        <div
+          className={`${stickyHeader ? "" : "overflow-y-auto"} w-full relative`}
+        >
           <LoadingOverlay
             data-testid="loading-spinner-table"
             visible={showLoading}

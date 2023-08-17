@@ -40,7 +40,7 @@ const CaseSetModal: React.FC<InputModalProps> = ({
           updateFilters: updateFilters,
           getExistingFilters: existingFiltersHook,
         }}
-        SubmitButton={UpdateCohortButton}
+        RightButton={UpdateCohortButton}
       />
     </UserInputModal>
   );
