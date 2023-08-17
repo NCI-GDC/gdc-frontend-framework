@@ -11,7 +11,6 @@ import {
   useCoreSelector,
   selectAvailableCohorts,
   FilterSet,
-  resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   useCoreDispatch,
   selectCohortFilterSetById,
@@ -168,7 +167,6 @@ export const SelectCohortsModal = ({
         },
       },
     };
-    coreDispatch(resetSelectedCases());
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,

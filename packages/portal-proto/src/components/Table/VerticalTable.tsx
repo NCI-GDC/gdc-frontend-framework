@@ -211,7 +211,9 @@ function VerticalTable<TData>({
         />
         <table className="w-full text-left font-content shadow-xs text-sm">
           {tableTitle && (
-            <caption className="font-semibold text-left">{tableTitle}</caption>
+            <caption className="font-semibold text-left mt-1">
+              {tableTitle}
+            </caption>
           )}
           <thead className="h-14">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -233,7 +235,7 @@ function VerticalTable<TData>({
                   ) : (
                     <th
                       key={header.id}
-                      className={`px-2.5 py-3 font-heading ${
+                      className={`px-2.5 py-3 font-heading bg-base-max ${
                         header.column.getCanSort() &&
                         "hover:bg-primary-lightest"
                       }`}

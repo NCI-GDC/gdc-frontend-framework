@@ -7,9 +7,6 @@ import type { TypedStartListening } from "@reduxjs/toolkit";
 import { CoreDispatch } from "./store";
 import { CoreState } from "./reducers";
 import {
-  updateCohortFilter,
-  removeCohortFilter,
-  setCurrentCohortId,
   addCaseCount,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
@@ -20,7 +17,7 @@ import {
   fetchCohortCaseCounts,
   selectCohortCountsByName,
 } from "./features/cohort/countSlice";
-import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
+
 import { fetchGdcCases } from "./features/gdcapi/gdcapi";
 import { buildCohortGqlOperator } from "./features/cohort";
 
@@ -37,12 +34,6 @@ export const startCoreListening =
   caseSetListenerMiddleware.startListening as CoreStartListening;
 
 // TODO add clearCaseSet handler to remove caseSet from BE
-startCoreListening({
-  matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
-  effect: async (_, listenerApi) => {
-    listenerApi.dispatch(resetSelectedCases());
-  },
-});
 
 startCoreListening({
   matcher: isFulfilled(fetchCohortCaseCounts),

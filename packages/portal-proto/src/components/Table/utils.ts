@@ -72,4 +72,4 @@ export function downloadTSV<TData>({
 }
 
 // these are a few standard column ids that will not be part of column ordering
-export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart"];
+export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart", "slides"];
