@@ -43,7 +43,6 @@ function VerticalTable<TData>({
   expanded,
   setExpanded,
 }: TableProps<TData>): JSX.Element {
-  // DECIDE WHERE TO KEEP sorting, setsorting, AND ALSO OTHERS???
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const [ariaText, setAriaText] = useState(
@@ -52,7 +51,7 @@ function VerticalTable<TData>({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data) {
       setTableData(data);
     }
   }, [data]);

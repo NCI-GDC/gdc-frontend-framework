@@ -299,8 +299,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       },
       params: {
         filters:
-          buildCohortGqlOperator(geneSymbol ? geneFilter : combinedFilters) ??
-          {},
+          buildCohortGqlOperator(
+            geneSymbol
+              ? joinFilters(combinedFilters, geneFilter)
+              : combinedFilters,
+          ) ?? {},
         filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
@@ -331,9 +334,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         setPage(1);
         break;
       case "newPageNumber":
+        setExpanded({});
         setPage(obj.newPageNumber);
         break;
       case "newSearch":
+        setExpanded({});
         setSearchTerm(obj.newSearch);
         setPage(1);
         break;
@@ -345,7 +350,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const handleExpand = (row: Row<SomaticMutation>) => {
     if (Object.keys(expanded).length > 0 && row.index === rowId) {
       setExpanded({});
-    } else {
+    } else if (
+      row.original["#_affected_cases_across_the_gdc"].numerator !== 0
+    ) {
       setExpanded({ [row.index]: true });
       setRowId(row.index);
     }
