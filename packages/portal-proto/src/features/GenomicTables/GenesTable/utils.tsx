@@ -209,25 +209,18 @@ export const useGenerateGenesTableColumns = ({
             "#_ssm_affected_cases_across_the_gdc"
           ] ?? { numerator: 0, denominator: 1 };
           return (
-            <div className="flex items-center gap-2">
+            <div
+              className={`flex items-center gap-2 ${
+                numerator !== 0 && "cursor-pointer"
+              }`}
+            >
               {numerator !== 0 && row.getCanExpand() && (
                 <div className="flex items-center">
-                  <button
-                    aria-label="expand or collapse subrow"
-                    aria-expanded={row.getCanExpand() ? "true" : "false"}
-                    {...{
-                      onClick: () => {
-                        row.toggleExpanded();
-                      },
-                      style: { cursor: "pointer" },
-                    }}
-                  >
-                    {!row.getIsExpanded() ? (
-                      <DownIcon size="1.25em" className="text-accent" />
-                    ) : (
-                      <UpIcon size="1.25em" className="text-accent" />
-                    )}
-                  </button>
+                  {!row.getIsExpanded() ? (
+                    <DownIcon size="1.25em" className="text-accent" />
+                  ) : (
+                    <UpIcon size="1.25em" className="text-accent" />
+                  )}
                 </div>
               )}
               {row.getCanExpand() && (
