@@ -79,7 +79,7 @@ function ColumnOrdering<TData>({
               </span>
             </Tooltip>
           </div>
-          <Divider color="#c5c5c5" className="mt-1" />
+          <Divider color="base.2" className="mt-1" />
           <TextInput
             value={searchValue}
             onChange={(event) =>

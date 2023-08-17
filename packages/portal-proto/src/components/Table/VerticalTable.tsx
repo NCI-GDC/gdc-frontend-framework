@@ -125,7 +125,7 @@ function VerticalTable<TData>({
       });
   };
 
-  // have to change this
+  // TODO: Researching in phase 5/6 on how to make this logic better.
   useEffect(() => {
     //prevents unneeded api calls if user is typing something
     if (handleChange) {
@@ -299,32 +299,25 @@ function VerticalTable<TData>({
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
                     const columnId = cell.column.columnDef.id;
                     return (
-                      <td
-                        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
-                        role="button"
-                        tabIndex={0}
-                        key={cell.id}
-                        className="px-2.5 py-2 cursor-default"
-                        onClick={() => {
-                          if (
-                            row.getCanExpand() &&
-                            expandableColumnIds.includes(columnId)
-                          ) {
-                            handleColumnClick(columnId);
-                            setExpanded(row, columnId);
-                          }
-                        }}
-                        onKeyDown={createKeyboardAccessibleFunction(() => {
-                          if (
-                            row.getCanExpand() &&
-                            expandableColumnIds.includes(columnId)
-                          ) {
-                            handleColumnClick(columnId);
-                            setExpanded(row, columnId);
-                          }
-                        })}
-                      >
-                        {flexRender(columnDefCell, cell.getContext())}
+                      <td key={cell.id} className="px-2.5 py-2 cursor-default">
+                        {row.getCanExpand() &&
+                        expandableColumnIds.includes(columnId) ? (
+                          <button
+                            onClick={() => {
+                              handleColumnClick(columnId);
+                              setExpanded(row, columnId);
+                            }}
+                            onKeyDown={createKeyboardAccessibleFunction(() => {
+                              handleColumnClick(columnId);
+                              setExpanded(row, columnId);
+                            })}
+                            className="cursor-auto"
+                          >
+                            {flexRender(columnDefCell, cell.getContext())}
+                          </button>
+                        ) : (
+                          <> {flexRender(columnDefCell, cell.getContext())}</>
+                        )}
                       </td>
                     );
                   })}
