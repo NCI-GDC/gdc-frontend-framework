@@ -52,7 +52,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   return (
     <div className="flex flex-col font-heading mb-4">
       <div data-tour="analysis_tool_management" className="flex items-center">
-        <div data-tour="most_common_tools" className="mx-4 my-6">
+        <div data-tour="most_common_tools" className="m-4">
           <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
             Core Tools
           </h2>
@@ -72,7 +72,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </div>
         </div>
       </div>
-      <div className="mx-4 my-2">
+      <div className="m-4">
         <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
           Analysis Tools
         </h2>

@@ -149,7 +149,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   const cardStyle = isGroupExpanded
     ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : `overflow-hidden pr-3.5 h-auto`;
+    : `overflow-hidden h-auto`;
   const numberOfLines =
     total - maxValuesToDisplay < 0
       ? total
@@ -177,8 +177,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-1"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+        width ? width : "mx-0"
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <div>
@@ -257,12 +257,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           className={
             isFacetView
               ? `flip-card h-full `
-              : `flip-card flip-card-flipped h-full`
+              : `flip-card flip-card-flipped h-full `
           }
           ref={cardRef}
         >
           <div
-            className={`card-face bg-base-max ${
+            className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
               !isFacetView ? "invisible" : ""
             }`}
           >

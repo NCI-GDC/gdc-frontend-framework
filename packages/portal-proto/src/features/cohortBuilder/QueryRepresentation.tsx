@@ -57,6 +57,7 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 
 const QueryFieldLabel = tw.div`
 bg-accent-cool-content-lightest
+rounded-l-md
 text-base-darkest
 uppercase
 px-2
@@ -71,9 +72,9 @@ flex
 flex-row
 items-center
 font-heading
-shadow-md
 font-medium
 text-sm
+rounded-md
 border-[1.5px]
 mr-1
 mb-2
@@ -87,6 +88,7 @@ flex-row
 items-stretch
 h-full
 bg-white
+rounded-md
 `;
 
 type RangeOperation =
@@ -379,7 +381,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg text-white"
+        className="bg-accent p-0 m-0 h-full rounded-r-md text-white"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >

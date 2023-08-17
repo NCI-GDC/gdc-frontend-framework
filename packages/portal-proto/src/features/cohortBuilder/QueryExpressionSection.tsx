@@ -16,7 +16,6 @@ const QueryExpressionContainer = tw.div`
   flex
   items-center
   bg-white
-  shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
   border-secondary-darkest
   border-1
   border-l-4
@@ -239,7 +238,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
           <div
             data-testid="text-cohort-filters"
-            className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
+            className={`flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden ${
               filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
             }`}
             style={
@@ -252,7 +251,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             {noFilters ? (
               <p
                 data-testid="text-no-active-cohort-filter"
-                className="pb-2 font-content"
+                className="font-content"
               >
                 No filters currently applied.
               </p>

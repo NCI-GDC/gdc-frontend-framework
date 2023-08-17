@@ -51,7 +51,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   );
 
   return (
-    <div className="grid grid-cols-5 gap-1">
+    <div className="grid grid-cols-5 gap-4">
       {fields.map((entry, index) => {
         return (
           <EnumFacet

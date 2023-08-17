@@ -38,7 +38,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   return (
     <Card
       data-testid={`${entry.name}-tool`}
-      shadow="sm"
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"

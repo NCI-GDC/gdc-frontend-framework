@@ -122,7 +122,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2"
+      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4 my-4 ml-4"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
@@ -312,16 +312,16 @@ export const FacetTabs = (): JSX.Element => {
     }
   }, [router?.query?.tab, activeTab, setActiveTab]);
   return (
-    <div className="w-100 mt-2">
+    <div className="w-100">
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}
         onTabChange={setActiveTab}
         keepMounted={false}
         classNames={{
-          tab: "first:mt-2 last:mb-2 ml-2 sm:w-44 md:w-60 lg:w-80 data-active:text-primary-content-darkest data-active:border-primary-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-t-2 data-active:border-l-2 data-active:border-b-2 data-active:bg-base-max hover:bg-primary-darker active:shadow-lg",
+          tab: "data-active:ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:ml-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1",
           tabsList:
-            "flex flex-col bg-primary-dark text-primary-contrast-dark w-64 border-r-2 border-primary-darkest",
+            "flex flex-col bg-primary-lightest text-primary-contrast-dark w-72 py-4",
           tabLabel: "text-left",
           root: "bg-base-max",
         }}

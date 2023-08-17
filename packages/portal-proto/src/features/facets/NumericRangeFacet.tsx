@@ -758,7 +758,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+    <div className="flex flex-col w-100 space-y-2 px-2  mt-2">
       <RangeInputWithPrefixedRanges
         valueLabel={valueLabel}
         hooks={hooks}
@@ -805,7 +805,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-1"
-        } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
+        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition `}
       >
         <FacetHeader>
           <Tooltip
