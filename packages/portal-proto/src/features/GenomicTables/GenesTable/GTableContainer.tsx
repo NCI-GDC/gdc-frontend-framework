@@ -324,7 +324,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleExpand = (row: Row<Gene>) => {
     if (Object.keys(expanded).length > 0 && row.index === rowId) {
       setExpanded({});
-    } else {
+    } else if (
+      row.original["#_ssm_affected_cases_across_the_gdc"].numerator !== 0
+    ) {
       setExpanded({ [row.index]: true });
       setRowId(row.index);
     }
@@ -338,10 +340,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         break;
       case "newPageNumber":
         setPage(obj.newPageNumber);
+        setExpanded({});
         break;
       case "newSearch":
         setSearchTerm(obj.newSearch);
         setPage(1);
+        setExpanded({});
         break;
     }
   }, []);

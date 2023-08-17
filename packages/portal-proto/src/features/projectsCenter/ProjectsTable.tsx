@@ -24,7 +24,7 @@ import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertDateToString } from "src/utils/date";
-import { createKeyboardAccessibleFunction, extractToArray } from "src/utils";
+import { extractToArray } from "src/utils";
 import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -232,16 +232,6 @@ const ProjectsTable: React.FC = () => {
             ? getValue()
             : row.getCanExpand() && (
                 <div
-                  onClick={() => {
-                    row.toggleExpanded();
-                  }}
-                  onKeyDown={() =>
-                    createKeyboardAccessibleFunction(() => {
-                      row.toggleExpanded();
-                    })
-                  }
-                  role="button"
-                  tabIndex={0}
                   aria-label="Expand section"
                   className="flex items-center text-primary cursor-pointer gap-2"
                 >
@@ -276,16 +266,6 @@ const ProjectsTable: React.FC = () => {
             ? getValue()
             : row.getCanExpand() && (
                 <div
-                  onClick={() => {
-                    row.toggleExpanded();
-                  }}
-                  onKeyDown={() =>
-                    createKeyboardAccessibleFunction(() => {
-                      row.toggleExpanded();
-                    })
-                  }
-                  role="button"
-                  tabIndex={0}
                   aria-label="Expand section"
                   className="flex items-center text-primary cursor-pointer gap-2"
                 >
@@ -371,10 +351,12 @@ const ProjectsTable: React.FC = () => {
         break;
       case "newPageNumber":
         setActivePage(obj.newPageNumber);
+        setExpanded({});
         break;
       case "newSearch":
         setSearchTerm(obj.newSearch);
         setActivePage(1);
+        setExpanded({});
         break;
     }
   }, []);
@@ -428,7 +410,7 @@ const ProjectsTable: React.FC = () => {
       columnId === expandedColumnId
     ) {
       setExpanded({});
-    } else {
+    } else if ((row.original[columnId] as string[]).length > 1) {
       setExpanded({ [row.index]: true });
       setExpandedColumnId(columnId);
       setExpandedRowId(row.index);
