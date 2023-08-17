@@ -23,7 +23,8 @@ class GenericLocators:
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
-    QUICK_SEARCH_BAR_FIRST_RESULT_ABBREVIATION = lambda abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth=0 >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list}'
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list} >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -97,6 +98,13 @@ class BasePage:
             filter_name = filter_name[2:]
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
+
+    def make_input_0_index(self, bdd_input):
+        """Takes BDD spec file input and converts it to index 0"""
+        bdd_input_int = int(bdd_input)
+        bdd_input_int -= 1
+        bdd_input_string = str(bdd_input_int)
+        return bdd_input_string
 
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
@@ -354,19 +362,21 @@ class BasePage:
         first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
         self.click(first_result_locator)
 
-    def quick_search_validate_abbreviation_and_click(self, text, abbreviation):
-        """
-        Sends text into the quick search bar in the upper-right corner of the data portal.
-        Validates the result abbreviation is the one we expect. Then, clicks the first result
-        in the search result area. Best used with a UUID.
-        """
+    def global_quick_search(self, text):
+        """Sends text into the quick search bar in the upper-right corner of the data portal."""
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
 
-        first_result_abbreviation = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT_ABBREVIATION(abbreviation)
-        self.wait_until_locator_is_visible(first_result_abbreviation)
+    def validate_global_quick_search_result_abbreviation(self, result_in_list, abbreviation):
+        """Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect."""
+        result_in_list = self.make_input_0_index(result_in_list)
+        locator_result_abbreviation = GenericLocators.QUICK_SEARCH_BAR_RESULT_ABBREVIATION(result_in_list, abbreviation)
+        self.wait_until_locator_is_visible(locator_result_abbreviation)
 
-        first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
-        self.click(first_result_locator)
+    def click_global_quick_search_result(self, result_in_list):
+        """Specifies a result from the quick search bar result list. Clicks that result."""
+        result_in_list = self.make_input_0_index(result_in_list)
+        locator_result_in_list = GenericLocators.QUICK_SEARCH_BAR_NUMBERED_RESULT(result_in_list)
+        self.click(locator_result_in_list)
 
     # This section of functions is for handling new tabs
     def perform_action_handle_new_tab(self, source:str, button:str):
