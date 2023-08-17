@@ -299,8 +299,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       },
       params: {
         filters:
-          buildCohortGqlOperator(geneSymbol ? geneFilter : combinedFilters) ??
-          {},
+          buildCohortGqlOperator(
+            geneSymbol
+              ? joinFilters(combinedFilters, geneFilter)
+              : combinedFilters,
+          ) ?? {},
         filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
