@@ -7,19 +7,16 @@ import {
   OperandValue,
   Operation,
   useCoreSelector,
-  fetchFacetByNameGQL,
   selectCurrentCohortFilters,
-  selectFacetByDocTypeAndField,
-  useCoreDispatch,
   usePrevious,
   joinFilters,
   NumericFromTo,
   selectRangeFacetByField,
-  fetchFacetContinuousAggregation,
   selectCurrentCohortId,
   FetchDataActionCreator,
   UseAppDataHook,
   UseAppDataResponse,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import { useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
@@ -32,7 +29,12 @@ import {
 } from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
 import { extractValue } from "@/features/facets/hooks";
-import { AppDataSelector } from "@/features/repositoryApp/appApi";
+import { AppDataSelector, AppState } from "@/features/repositoryApp/appApi";
+import { fetchRepositoryFacetContinuousAggregation } from "@/features/repositoryApp/repositoryRangeFacet";
+import {
+  fetchRepositoryFacetsGQL,
+  selectRepositoryFacets,
+} from "@/features/repositoryApp/repositoryFacetSlice";
 
 import {
   useAppSelector,
@@ -126,15 +128,13 @@ export const updateEnumerationFilters: updateEnumFiltersFunc = (
 // TODO: this is can be used for all Enum Filters as its data hook and needs be moved to facets/hooks
 export const useLocalFilters = (
   field: string,
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   selectFieldEnumValues: (field: string) => OperandValue,
   selectLocalFilters: () => FilterSet,
 ): EnumFacetResponse => {
-  const coreDispatch = useCoreDispatch();
+  const appDispatch = useAppDispatch();
 
-  const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFacetByDocTypeAndField(state, docType, field),
+  const facet: FacetBuckets = useAppSelector((state: AppState) =>
+    selectRepositoryFacets(state, field),
   ); // Facet data is always cached in the coreState
 
   const enumValues = selectFieldEnumValues(field);
@@ -147,33 +147,27 @@ export const useLocalFilters = (
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
-    const selectCohortAndRepositoryFilters = () => cohortFilters;
     if (
       !facet ||
       !isEqual(prevAllFilters, allFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
-      coreDispatch(
+      appDispatch(
         // pass selectCohortAndRepositoryFilters to fetchFacetByNameGQL to
         // include both the cohort and local Repository filters.
         // This is an example of cohort centric + local filters
-        fetchFacetByNameGQL({
+        fetchRepositoryFacetsGQL({
           field: field,
-          docType: docType,
-          index: indexType,
-          caseFilterSelector: selectCohortAndRepositoryFilters,
+          caseFilters: cohortFilters,
           localFilters: localFilters,
-          splitIntoCasePlusLocalFilters: true,
         }),
       );
     }
   }, [
-    coreDispatch,
+    appDispatch,
     facet,
     field,
     allFilters,
-    docType,
-    indexType,
     prevAllFilters,
     prevEnumValues,
     enumValues,
@@ -218,11 +212,11 @@ export const useRepositoryRangeFacet = (
       !isEqual(ranges, prevRanges)
     ) {
       appDispatch(
-        fetchFacetContinuousAggregation({
+        fetchRepositoryFacetContinuousAggregation({
           field: field,
           ranges: ranges,
-          docType: docType,
-          indexType: indexType,
+          caseFilters: buildCohortGqlOperator(cohortFilters),
+          localFilters: buildCohortGqlOperator(localFilters),
         }),
       );
     }
@@ -237,6 +231,7 @@ export const useRepositoryRangeFacet = (
     docType,
     indexType,
     allFilters,
+    localFilters,
   ]);
 
   return {

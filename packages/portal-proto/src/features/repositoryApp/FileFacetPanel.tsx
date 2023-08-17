@@ -47,14 +47,7 @@ const useRepositoryEnumData = (
   docType: GQLDocType,
   indexType: GQLIndexType,
   field: string,
-) =>
-  useLocalFilters(
-    field,
-    docType,
-    indexType,
-    useRepositoryEnumValues,
-    useRepositoryFilters,
-  );
+) => useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
 
 export const FileFacetPanel = (): JSX.Element => {
   const config = useAppSelector(selectRepositoryConfig);
