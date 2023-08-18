@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
   FacetDefinition,
-  GQLDocType,
-  GQLIndexType,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
@@ -43,11 +41,8 @@ import {
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { FacetRequiredHooks } from "@/features/facets/types";
 
-const useRepositoryEnumData = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-) => useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
+const useRepositoryEnumData = (field: string) =>
+  useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
 
 export const FileFacetPanel = (): JSX.Element => {
   const config = useAppSelector(selectRepositoryConfig);
@@ -94,12 +89,8 @@ export const FileFacetPanel = (): JSX.Element => {
   );
 
   const FileFacetHooks: FacetRequiredHooks = {
-    useGetEnumFacetData: partial(useRepositoryEnumData, "files", "repository"),
-    useGetRangeFacetData: partial(
-      useRepositoryRangeFacet,
-      "files",
-      "repository",
-    ),
+    useGetEnumFacetData: useRepositoryEnumData,
+    useGetRangeFacetData: useRepositoryRangeFacet,
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearRepositoryFilters,

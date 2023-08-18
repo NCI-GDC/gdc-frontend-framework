@@ -2,8 +2,6 @@ import {
   EnumOperandValue,
   FacetBuckets,
   FilterSet,
-  GQLDocType,
-  GQLIndexType,
   OperandValue,
   Operation,
   useCoreSelector,
@@ -125,7 +123,7 @@ export const updateEnumerationFilters: updateEnumFiltersFunc = (
 /**
  *  Facet Selector which will refresh when filters/enum values changes.
  */
-// TODO: this is can be used for all Enum Filters as its data hook and needs be moved to facets/hooks
+
 export const useLocalFilters = (
   field: string,
   selectFieldEnumValues: (field: string) => OperandValue,
@@ -142,14 +140,15 @@ export const useLocalFilters = (
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const allFilters = joinFilters(cohortFilters, localFilters);
-  const prevAllFilters = usePrevious(allFilters);
+  const prevCohortFilters = usePrevious(cohortFilters);
+  const prevLocalFilters = usePrevious(localFilters);
   const prevEnumValues = usePrevious(enumValues);
 
   useEffect(() => {
     if (
       !facet ||
-      !isEqual(prevAllFilters, allFilters) ||
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      !isEqual(prevLocalFilters, localFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
       appDispatch(
@@ -167,12 +166,12 @@ export const useLocalFilters = (
     appDispatch,
     facet,
     field,
-    allFilters,
-    prevAllFilters,
+    cohortFilters,
+    prevCohortFilters,
     prevEnumValues,
     enumValues,
-    cohortFilters,
     localFilters,
+    prevLocalFilters,
   ]);
 
   return {
@@ -187,8 +186,6 @@ export const useLocalFilters = (
 };
 
 export const useRepositoryRangeFacet = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
 ): FacetResponse => {
@@ -228,8 +225,6 @@ export const useRepositoryRangeFacet = (
     prevAllFilters,
     ranges,
     prevRanges,
-    docType,
-    indexType,
     allFilters,
     localFilters,
   ]);

@@ -38,16 +38,13 @@ import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 
 const FilesTables: React.FC = () => {
-  //This if for hanadling pagination changes
+  //This if for handling pagination changes
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
-
   const prevAllFilters = usePrevious(allFilters);
-
-  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
 
   const [sortBy, setSortBy] = useState([]);
   const [pageSize, setPageSize] = useState(20);
@@ -360,7 +357,11 @@ const FilesTables: React.FC = () => {
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  const fileSizeSliceData = useFilesSize({
+    cohortFilters: buildCohortGqlOperator(cohortFilters),
+    localFilters: buildCohortGqlOperator(repositoryFilters),
+    allFilters: buildCohortGqlOperator(allFilters),
+  });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
       output: "object",
