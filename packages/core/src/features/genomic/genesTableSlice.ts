@@ -108,7 +108,7 @@ export interface GeneRowInfo {
   readonly case_cnv_gain: number;
   readonly case_cnv_loss: number;
   readonly cnv_case: number;
-  readonly cytoband: ReadonlyArray<string>;
+  readonly cytoband: Array<string>;
   readonly gene_id: string;
   readonly id: string;
   readonly is_cancer_gene_census: boolean;

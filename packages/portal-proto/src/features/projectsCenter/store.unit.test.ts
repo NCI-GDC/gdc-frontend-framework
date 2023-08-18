@@ -10,9 +10,5 @@ test("initial state", () => {
         root: {},
       },
     },
-    selected: {
-      entities: {},
-      ids: [],
-    },
   });
 });

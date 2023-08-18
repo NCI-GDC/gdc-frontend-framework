@@ -4,18 +4,22 @@ import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { pickBy, upperFirst } from "lodash";
 import { Checkbox } from "@mantine/core";
-import { Row } from "react-table";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
   GqlOperation,
 } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
+import VerticalTable from "@/components/Table/VerticalTable";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SelectedEntities, SetOperationEntityType } from "./types";
 import DownloadButton from "./DownloadButton";
 import CountButtonWrapperForSetsAndCases from "@/features/set-operations/CountButtonWrapperForSetsAndCases";
+import {
+  ColumnDef,
+  SortingState,
+  createColumnHelper,
+} from "@tanstack/react-table";
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
 });
@@ -443,78 +447,17 @@ const SetOperations: React.FC<SetOperationsProps> = ({
     highlighted: selectedSets[set.key],
   }));
 
-  const summaryTableColumns = useMemo(
-    () => [
-      {
-        id: "alias",
-        columnName: "Alias",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "entityType",
-        columnName: "Entity Type",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "name",
-        columnName: "Name",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-        Cell: ({ value }) =>
-          value !== undefined ? value.toLocaleString() : "...",
-      },
-    ],
-    [],
-  );
+  const [rowSelection, setRowSelection] = useState({});
 
-  const setOperationTableColumns = useMemo(
-    () => [
-      {
-        id: "select",
-        columnName: "Select",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "setOperation",
-        columnName: "Set Operation",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-        Cell: ({ value, row }: { value: number; row: Row }) => (
-          <CountButtonWrapperForSetsAndCases
-            count={value}
-            filters={createSetFiltersByKey(
-              (row.original as Record<string, any>).operationKey,
-              entityType,
-              sets,
-            )}
-            entityType={entityType}
-          />
-        ),
-      },
-      {
-        id: "download",
-        columnName: "Download",
-        visible: true,
-        disableSortBy: true,
-      },
-    ],
-    [entityType, sets],
-  );
+  // Summary Table
+  type SummaryTableDataType = {
+    alias: JSX.Element;
+    entityType: string;
+    name: string;
+    count: string | number;
+  };
 
-  const summaryTableData = useMemo(
+  const summaryTableData: SummaryTableDataType[] = useMemo(
     () =>
       sets.map((set, idx) => ({
         alias: (
@@ -529,39 +472,117 @@ const SetOperations: React.FC<SetOperationsProps> = ({
     [entityType, isFetching, sets, summaryCounts],
   );
 
-  const tableData = useMemo(
+  const summaryTableColumnsHelper = createColumnHelper<SummaryTableDataType>();
+  const summaryTableColumns = useMemo(
+    () => [
+      summaryTableColumnsHelper.accessor("alias", {
+        header: "Alias",
+        cell: (info) => info.getValue(),
+        enableSorting: false,
+      }),
+      summaryTableColumnsHelper.accessor("entityType", {
+        header: "Entity Type",
+        enableSorting: false,
+      }),
+      summaryTableColumnsHelper.accessor("name", {
+        header: "Name",
+        enableSorting: false,
+      }),
+      summaryTableColumnsHelper.accessor("count", {
+        header: "# Items",
+        enableSorting: true,
+        cell: ({ getValue }) =>
+          getValue() !== undefined ? getValue().toLocaleString() : "...",
+      }),
+    ],
+    [summaryTableColumnsHelper],
+  );
+
+  // Set operation table
+  type SetOperationtableDataType = {
+    setOperation: string;
+    count: number;
+    operationKey: string;
+  };
+
+  const setOperationtableData: SetOperationtableDataType[] = useMemo(
     () =>
       data.map((r) => ({
-        select: (
-          <Checkbox
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            checked={selectedSets[r.key]}
-            value={r.key}
-            onChange={(e) =>
-              setSelectedSets({
-                ...selectedSets,
-                [e.target.value]: !selectedSets[e.target.value],
-              })
-            }
-            aria-label="checkbox for selecting table row"
-          />
-        ),
         setOperation: r.label,
         count: r.value,
         operationKey: r.key,
-        download: (
-          <DownloadButton
-            filters={createSetFiltersByKey(r.key, entityType, sets)}
-            entityType={entityType}
-            setKey={r.label}
-            createSetHook={ENTITY_TYPE_TO_CREATE_SET_HOOK[entityType]}
-            disabled={r.value === 0}
+      })),
+    [data],
+  );
+
+  const setOperationTableColumnsHelper =
+    createColumnHelper<SetOperationtableDataType>();
+
+  const setOperationTableColumns = useMemo<
+    ColumnDef<SetOperationtableDataType>[]
+  >(
+    () => [
+      {
+        id: "select",
+        header: "Select",
+        cell: ({ row }) => (
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            value={row.original.operationKey}
+            aria-label="checkbox for selecting table row"
+            {...{
+              checked: selectedSets[row.original.operationKey],
+              onChange: (e) => {
+                setSelectedSets({
+                  ...selectedSets,
+                  [e.target.value]: !selectedSets[e.target.value],
+                });
+              },
+            }}
           />
         ),
-      })),
-    [selectedSets, data, entityType, sets],
+      },
+      setOperationTableColumnsHelper.accessor("setOperation", {
+        header: "Set Operation",
+        enableSorting: false,
+      }),
+      setOperationTableColumnsHelper.accessor("count", {
+        header: "# Items",
+        cell: ({ row, getValue }) => (
+          <CountButtonWrapperForSetsAndCases
+            count={getValue()}
+            filters={createSetFiltersByKey(
+              row.original.operationKey,
+              entityType,
+              sets,
+            )}
+            entityType={entityType}
+          />
+        ),
+        enableSorting: true,
+      }),
+      setOperationTableColumnsHelper.display({
+        id: "download",
+        header: "Download",
+        cell: ({ row }) => (
+          <DownloadButton
+            filters={createSetFiltersByKey(
+              row.original.operationKey,
+              entityType,
+              sets,
+            )}
+            entityType={entityType}
+            setKey={row.original.setOperation}
+            createSetHook={ENTITY_TYPE_TO_CREATE_SET_HOOK[entityType]}
+            disabled={row.original.count === 0}
+          />
+        ),
+      }),
+    ],
+    [setOperationTableColumnsHelper, selectedSets, entityType, sets],
   );
 
   const unionFilter = {
@@ -575,6 +596,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
       filters: unionFilter,
     },
   });
+
   const totalCount =
     Object.keys(pickBy(selectedSets, (v) => v)).length > 0
       ? totalSelectedSets
@@ -586,7 +608,11 @@ const SetOperations: React.FC<SetOperationsProps> = ({
       [clickedKey]: !selectedSets[clickedKey],
     });
   };
-
+  const [summaryTablesorting, setSummaryTableSorting] = useState<SortingState>(
+    [],
+  );
+  const [operationTablesorting, setOperationTableSorting] =
+    useState<SortingState>([]);
   return (
     <div className="flex flex-col p-2">
       <div>
@@ -605,24 +631,29 @@ const SetOperations: React.FC<SetOperationsProps> = ({
         />
         <div className="w-full ml-2 mt-2 mb-4">
           <VerticalTable
-            tableData={summaryTableData}
+            data={summaryTableData}
             columns={summaryTableColumns}
-            selectableRow={false}
             showControls={false}
-            columnSorting={"enable"}
+            sorting={summaryTablesorting}
+            setSorting={setSummaryTableSorting}
+            columnSorting="enable"
           />
           <div className="m-8" />
           <VerticalTable
-            tableData={tableData}
+            data={setOperationtableData}
             columns={setOperationTableColumns}
-            selectableRow={false}
+            enableRowSelection={true}
+            setRowSelection={setRowSelection}
+            rowSelection={rowSelection}
             showControls={false}
-            columnSorting={"enable"}
+            sorting={operationTablesorting}
+            setSorting={setOperationTableSorting}
+            columnSorting="enable"
             footer={
               <tr>
                 <td className="p-2 font-bold">Union of selected sets:</td>
                 <td />
-                <td>
+                <td className="w-52">
                   <CountButtonWrapperForSetsAndCases
                     count={totalCount}
                     filters={unionFilter}

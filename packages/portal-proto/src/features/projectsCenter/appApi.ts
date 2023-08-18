@@ -3,7 +3,6 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { createAppStore } from "@gff/core";
 import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
-import { pickedProjectsReducer } from "./pickedProjectsSlice";
 
 const PROJECT_APP_NAME = "ProjectCenter";
 
@@ -20,7 +19,6 @@ const persistConfig = {
 
 const reducers = combineReducers({
   projectApp: projectCenterFiltersReducer,
-  selected: pickedProjectsReducer,
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
