@@ -17,7 +17,6 @@ import {
   GDCSsmsTable,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
-import { useDebouncedValue } from "@mantine/hooks";
 import { Loader, LoadingOverlay, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -101,7 +100,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState(
     searchTermsForGene?.geneId ?? "",
   );
-  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
+
   const [
     downloadMutationsFrequencyActive,
     setDownloadMutationsFrequencyActive,
@@ -131,8 +130,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * (page - 1),
-    searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
@@ -360,10 +358,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   return (
     <>
-      {caseFilter &&
-      debouncedSearchTerm.length === 0 &&
-      data?.ssmsTotal === 0 ? null : (
+      {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
         <>
+          {searchTermsForGene.geneSymbol && (
+            <div id="announce" aria-live="polite">
+              <p>
+                You are now viewing the Mutations table filtered by{" "}
+                {searchTermsForGene.geneSymbol}
+              </p>
+            </div>
+          )}
           {loading && <LoadingOverlay visible />}
           {showSaveModal && (
             <SaveSelectionAsSetModal
@@ -492,7 +496,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             }
             search={{
               enabled: true,
-              defaultSearchTerm: debouncedSearchTerm,
+              defaultSearchTerm: searchTerm,
             }}
             pagination={pagination}
             showControls={true}
@@ -508,10 +512,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             columnVisibility={columnVisibility}
             columnOrder={columnOrder}
             setColumnOrder={setColumnOrder}
-            ariaTextOverwrite={
-              searchTermsForGene?.geneSymbol &&
-              `You are now viewing the Mutations table filtered by ${searchTermsForGene.geneSymbol}.`
-            }
             expanded={expanded}
             setExpanded={handleExpand}
           />

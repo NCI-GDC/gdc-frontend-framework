@@ -37,7 +37,6 @@ function VerticalTable<TData>({
   columnOrder,
   setColumnOrder,
   columnSorting = "none",
-  ariaTextOverwrite,
   sorting,
   setSorting,
   expanded,
@@ -45,9 +44,6 @@ function VerticalTable<TData>({
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
-  const [ariaText, setAriaText] = useState(
-    ariaTextOverwrite ?? "Table Search Input",
-  );
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -160,7 +156,7 @@ function VerticalTable<TData>({
                   icon={<MdSearch size={24} />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
-                  aria-label={ariaText}
+                  aria-label="Table Search Input"
                   classNames={{
                     input:
                       "border-base-lighter focus:border-2 focus:drop-shadow-xl focus:border-primary",
@@ -180,8 +176,6 @@ function VerticalTable<TData>({
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
-                    if (ariaText !== "Table Search Input")
-                      setAriaText("Table Search Input");
                   }}
                   ref={inputRef}
                 />
