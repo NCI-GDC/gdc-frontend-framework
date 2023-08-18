@@ -104,12 +104,6 @@ const ContextBar = ({
     download({
       endpoint: "files",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         filters: downloadFilter,
@@ -131,12 +125,6 @@ const ContextBar = ({
     download({
       endpoint: "files",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         filters: downloadFilter,
@@ -152,12 +140,6 @@ const ContextBar = ({
     download({
       endpoint: "files",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         filters: downloadFilter,
@@ -179,12 +161,6 @@ const ContextBar = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         filename: `clinical.cohort.${new Date()
@@ -194,7 +170,6 @@ const ContextBar = ({
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
-      form: true,
     });
   };
 
@@ -203,12 +178,6 @@ const ContextBar = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         format: "JSON",
@@ -220,7 +189,6 @@ const ContextBar = ({
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
-      form: true,
     });
   };
 
@@ -229,12 +197,6 @@ const ContextBar = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         filename: `biospecimen.cohort.${new Date()
@@ -252,12 +214,6 @@ const ContextBar = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch: coreDispatch,
       params: {
         format: "JSON",

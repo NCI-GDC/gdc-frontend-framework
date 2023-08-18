@@ -53,12 +53,6 @@ const downloadCart = (
     download({
       endpoint: "data",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       dispatch,
       params: {
         ids: filesByCanAccess.true.map((file) => file.file_id),
@@ -78,12 +72,6 @@ const downloadManifest = (
   download({
     endpoint: "files",
     method: "POST",
-    options: {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
     dispatch,
     params: {
       filters: {

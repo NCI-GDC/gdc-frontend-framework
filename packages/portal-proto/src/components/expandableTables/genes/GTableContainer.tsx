@@ -207,12 +207,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     await download({
       endpoint: "genes",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: tableFilters,
         attachment: true,

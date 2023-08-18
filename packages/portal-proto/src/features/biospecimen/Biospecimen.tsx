@@ -122,12 +122,6 @@ export const Biospecimen = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
@@ -150,12 +144,6 @@ export const Biospecimen = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",

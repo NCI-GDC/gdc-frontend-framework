@@ -288,12 +288,6 @@ const FilesTables: React.FC = () => {
     await download({
       endpoint: "files",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(allFilters) ?? {},
         size: 10000,
@@ -318,10 +312,6 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
-      queryParams: `?${new URLSearchParams({
-        annotations: "true",
-        related_files: "true",
-      }).toString()}`,
     });
   };
 

@@ -264,12 +264,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     await download({
       endpoint: "ssms",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(combinedFilters) ?? {},
         filename: `mutations.${convertDateToString(new Date())}.json`,

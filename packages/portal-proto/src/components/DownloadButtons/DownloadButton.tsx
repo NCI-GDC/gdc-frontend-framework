@@ -105,12 +105,10 @@ export const DownloadButton = forwardRef<
               params,
               endpoint,
               method,
-              queryParams,
               done: () => setActive && setActive(false),
               dispatch,
               Modal400,
               Modal403,
-              options,
             });
           }}
           {...buttonProps}

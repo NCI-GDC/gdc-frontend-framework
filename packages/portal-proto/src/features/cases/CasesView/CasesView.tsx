@@ -351,12 +351,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "cases",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
@@ -392,12 +386,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.${
@@ -415,12 +403,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -440,12 +422,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.${
@@ -463,12 +439,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",

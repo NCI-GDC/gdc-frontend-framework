@@ -138,12 +138,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.project-${projectData.project_id}.${new Date()
@@ -167,12 +161,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -198,12 +186,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.project-${projectData.project_id}.${new Date()
@@ -227,12 +209,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -258,12 +234,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "files",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filters: {
