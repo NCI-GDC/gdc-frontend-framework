@@ -146,7 +146,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header
-        className="flex-none bg-base-max sticky top-0 z-[300] drop-shadow-lg"
+        className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
         ref={headerRef}
       >
         {banners.map((banner) => (
