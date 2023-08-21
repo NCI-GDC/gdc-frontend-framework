@@ -143,6 +143,10 @@ export interface TableProps<TData> {
   showControls?: boolean;
   /**
    * optional callback to handle changes
+<<<<<<< HEAD
+=======
+   *  remember to wrap handleChange in useCallback hook
+>>>>>>> origin
    */
   handleChange?: (obj: HandleChangeInput) => void;
   /**
@@ -185,11 +189,6 @@ export interface TableProps<TData> {
    * Optional handle for onExpandedChange
    */
   setExpanded?: (row: Row<TData>, columnId: string) => void;
-  /*
-   * Optional
-   * Overwrite aria-label for Search Text Input
-   */
-  ariaTextOverwrite?: string;
 }
 
 export interface HandleChangeInput {

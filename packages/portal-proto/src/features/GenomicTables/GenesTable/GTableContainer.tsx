@@ -18,7 +18,6 @@ import {
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
-import { useDebouncedValue } from "@mantine/hooks";
 import { Loader, Text, LoadingOverlay } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -73,7 +72,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 400);
   const [downloadMutatedGenesActive, setDownloadMutatedGenesActive] =
     useState(false);
   const dispatch = useCoreDispatch();
@@ -91,8 +89,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGenesTable({
     pageSize: pageSize,
     offset: (page - 1) * pageSize,
-    searchTerm:
-      debouncedSearchTerm.length > 0 ? debouncedSearchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
   });
@@ -477,7 +474,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         showControls={true}
         search={{
           enabled: true,
-          defaultSearchTerm: debouncedSearchTerm,
+          defaultSearchTerm: searchTerm,
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
