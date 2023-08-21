@@ -194,6 +194,12 @@ const download = async ({
       // Download has started
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
+        cleanNotifications();
+        setTimeout(() => {
+          if (done) {
+            done();
+          }
+        }, 1000);
         resolve();
       } else {
         const requestError =
@@ -201,6 +207,8 @@ const download = async ({
             0 && body !== "";
         if (requestError) {
           console.log(body);
+          clearTimeout(showNotificationTimeout);
+          cleanNotifications();
           const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
             body,
           )?.[1];
@@ -223,6 +231,11 @@ const download = async ({
             );
           }
 
+          setTimeout(() => {
+            if (done) {
+              done();
+            }
+          }, 1000);
           resolve();
         } else {
           setTimeout(executePoll, 1000, resolve);
