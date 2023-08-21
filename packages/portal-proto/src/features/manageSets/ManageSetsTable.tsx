@@ -115,15 +115,8 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
                   },
                 ],
               },
-              options: {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              },
               method: "POST",
               dispatch,
-              form: true,
             });
           }}
         >
