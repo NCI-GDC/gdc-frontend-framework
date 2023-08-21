@@ -30,10 +30,6 @@ import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import saveAs from "file-saver";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { BasicTable } from "@/components/Tables/BasicTable";
@@ -41,6 +37,9 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { createColumnHelper } from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
 
 export const StyledButton = tw.button`
 bg-base-lightest
@@ -110,7 +109,14 @@ const AssociatedCB = ({
 }): JSX.Element => {
   const [associatedCBSearchTerm, setAssociatedCBSearchTerm] = useState("");
 
-  const data = useMemo(() => {
+  type AssociatedCBType = {
+    entity_id: JSX.Element;
+    entity_type: string;
+    sample_type: string;
+    case_id: string;
+    annotations: JSX.Element | 0;
+  };
+  const data: AssociatedCBType[] = useMemo(() => {
     const tableRows = [];
 
     associated_entities?.forEach((entity) => {
@@ -215,21 +221,36 @@ const AssociatedCB = ({
         break;
     }
   };
+  const columnHelper = createColumnHelper<AssociatedCBType>();
 
-  const columnListOrder = [
-    { id: "entity_id", columnName: "Entity ID", visible: true },
-    { id: "entity_type", columnName: "Entity Type", visible: true },
-    { id: "sample_type", columnName: "Sample Type", visible: true },
-    { id: "case_id", columnName: "Case ID", visible: true },
-    { id: "annotations", columnName: "Annotations", visible: true },
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("entity_id", {
+        header: "Entity ID",
+        cell: ({ getValue }) => getValue(),
+      }),
+      columnHelper.accessor("entity_type", {
+        header: "Entity Type",
+      }),
+      columnHelper.accessor("sample_type", {
+        header: "Sample Type",
+      }),
+      columnHelper.accessor("case_id", {
+        header: "Case ID",
+        cell: ({ getValue }) => getValue(),
+      }),
+      columnHelper.accessor("annotations", {
+        header: "Annotations",
+        cell: ({ getValue }) => getValue(),
+      }),
+    ],
+    [columnHelper],
+  );
 
   return (
     <VerticalTable
-      tableData={displayedData}
-      columns={columnListOrder}
-      selectableRow={false}
-      showControls={false}
+      data={displayedData}
+      columns={columns}
       pagination={{
         page,
         pages,
@@ -340,6 +361,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ],
       tableRows: tableRows,
     };
+
     return <BasicTable tableData={formattedTableData} />;
   };
 
@@ -445,50 +467,78 @@ export const FileView: React.FC<FileViewProps> = ({
       />
     </div>
   );
+  type DataItem = {
+    file: GdcCartFile;
+    file_name: string;
+    file_id: string;
+    data_category: string;
+    data_type: string;
+    data_format: string;
+    file_size: string;
+  };
 
   const AnalysisInputFiles = ({
     inputFiles,
   }: {
     inputFiles: GdcCartFile[];
   }): JSX.Element => {
-    const data = useMemo(() => {
+    const data: DataItem[] = useMemo(() => {
       return inputFiles.map((ipFile) => ({
-        file_name: (
-          <GenericLink
-            path={`/files/${ipFile.file_id}`}
-            text={ipFile.file_name}
-          />
-        ),
+        file: ipFile,
+        file_name: ipFile.file_name,
+        file_id: ipFile.file_id,
         data_category: ipFile.data_category,
         data_type: ipFile.data_type,
         data_format: ipFile.data_format,
         file_size: fileSize(ipFile.file_size),
-        action: (
-          <TableActionButtons
-            isOutputFileInCart={fileInCart(currentCart, ipFile.file_id)}
-            file={mapGdcFileToCartFile([ipFile])}
-            downloadFile={ipFile}
-            setFileToDownload={setfileToDownload}
-          />
-        ),
       }));
     }, [inputFiles]);
 
-    const columnListOrder = [
-      { id: "file_name", columnName: "File Name", visible: true },
-      { id: "data_category", columnName: "Data Category", visible: true },
-      { id: "data_type", columnName: "Data Type", visible: true },
-      { id: "data_format", columnName: "Data Format", visible: true },
-      { id: "file_size", columnName: "Size", visible: true },
-      { id: "action", columnName: "Action", visible: true },
-    ];
+    const columnHelper = createColumnHelper<DataItem>();
+
+    const columns = useMemo(
+      () => [
+        columnHelper.accessor("file_name", {
+          header: "File Name",
+          cell: ({ row }) => (
+            <GenericLink
+              path={`/files/${row.original.file_id}`}
+              text={row.original.file_name}
+            />
+          ),
+        }),
+        columnHelper.accessor("data_category", {
+          header: "Data Category",
+        }),
+        columnHelper.accessor("data_type", {
+          header: "Data Type",
+        }),
+        columnHelper.accessor("data_format", {
+          header: "Data Format",
+        }),
+        columnHelper.accessor("file_size", {
+          header: "Size",
+        }),
+        columnHelper.display({
+          id: "action",
+          header: "Action",
+          cell: ({ row }) => (
+            <TableActionButtons
+              isOutputFileInCart={fileInCart(currentCart, row.original.file_id)}
+              file={mapGdcFileToCartFile([row.original.file])}
+              downloadFile={row.original.file}
+              setFileToDownload={setfileToDownload}
+            />
+          ),
+        }),
+      ],
+      [columnHelper],
+    );
 
     return (
       <VerticalTable
-        tableData={data}
-        columns={columnListOrder}
-        selectableRow={false}
-        showControls={false}
+        data={data}
+        columns={columns}
         additionalControls={
           <div className="mt-3.5">
             <HeaderTitle>Source Files</HeaderTitle>

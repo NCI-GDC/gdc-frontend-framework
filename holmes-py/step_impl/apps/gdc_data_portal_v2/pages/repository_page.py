@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
-
+from ....base.base_page import GenericLocators
 
 class RepositoryPageLocators:
     TITLE = lambda title_name: f'div[data-testid="{title_name}-title"]'
@@ -24,6 +24,8 @@ class RepositoryPageLocators:
 
     IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="table-image-viewer-details"] >> text={field_name}'
     IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="table-image-viewer-details"] >> text={field_name}{value} >> td'
+
+    TEXT_REPO_TABLE_CASE_COUNT = lambda case_count: f'div[class="flex justify-between"] >> text="{case_count}"'
 
 class RepositoryPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -79,6 +81,13 @@ class RepositoryPage(BasePage):
                 self.normalize_button_identifier(data_testid)
             )
         )
+
+    def compare_cohort_case_count_and_repo_table_case_count(self):
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        cohort_bar_case_count = self.get_text(GenericLocators.TEXT_COHORT_BAR_CASE_COUNT)
+        repo_table_case_count_locator = RepositoryPageLocators.TEXT_REPO_TABLE_CASE_COUNT(cohort_bar_case_count)
+        return self.is_visible(repo_table_case_count_locator)
 
     def get_text_on_modal(self, text):
         modal_name = "Add a File Filter"

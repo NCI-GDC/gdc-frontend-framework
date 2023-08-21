@@ -6,7 +6,6 @@ import NumericRangeFacet from "../facets/NumericRangeFacet";
 import DateRangeFacet from "../facets/DateRangeFacet";
 import ExactValueFacet from "../facets/ExactValueFacet";
 import ToggleFacet from "../facets/ToggleFacet";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import {
   useEnumFacet,
   useTotalCounts,
@@ -16,6 +15,7 @@ import {
   useRangeFacet,
 } from "../facets/hooks";
 import partial from "lodash/partial";
+import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
 
 const Components: ReactNode = () => {
   return (

@@ -149,7 +149,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
   return (
     <>
       <span
-        className="flex items-center font-header font-bold cursor-pointer w-full bg-primary-lightest py-2 px-3 gap-2 mt-4"
+        className="flex items-center font-header font-bold cursor-pointer w-full py-2 px-3 gap-2 mt-4"
         role="button"
         tabIndex={0}
         onClick={() => setShowTable(!showTable)}
@@ -159,9 +159,9 @@ const MatchTables: React.FC<MatchTablesProps> = ({
         aria-expanded={showTable}
       >
         {showTable ? (
-          <CollapseIcon size={18} className="text-primary-darkest" />
+          <CollapseIcon size={18} className="text-secondary" />
         ) : (
-          <ExpandIcon size={18} className="text-primary-darkest" />
+          <ExpandIcon size={18} className="text-secondary" />
         )}
         Summary Table
       </span>
@@ -172,7 +172,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
               Matched
               <Badge
                 variant="filled"
-                color={activeTab === "matched" ? "primary.9" : "gray"}
+                color={activeTab === "matched" ? "accent" : "gray"}
                 radius="xs"
                 size="xs"
                 className="ml-1"
@@ -184,7 +184,7 @@ const MatchTables: React.FC<MatchTablesProps> = ({
               Unmatched
               <Badge
                 variant="filled"
-                color={activeTab === "unmatched" ? "primary.9" : "gray"}
+                color={activeTab === "unmatched" ? "accent" : "gray"}
                 radius="xs"
                 size="xs"
                 className="ml-1"

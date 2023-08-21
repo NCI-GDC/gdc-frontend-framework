@@ -28,6 +28,11 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
     except:
         repository.select_nth_file_filters_result(int(nth) - 1)
 
+@step("Verify cohort case count equals repository table case count")
+def compare_cohort_case_count_and_repo_table_case_count():
+    are_case_counts_equal = APP.repository_page.compare_cohort_case_count_and_repo_table_case_count()
+    assert are_case_counts_equal, f"The cohort bar case count is not equal to the repository table case count"
+
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
     repository = APP.repository_page

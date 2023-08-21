@@ -6,7 +6,7 @@ import tw from "tailwind-styled-components";
 export const CohortCreationStyledButton = tw.button`
   flex
   items-stretch
-  w-full
+  w-52
   h-full
   ${(p) => !p.$fullWidth && "max-w-[125px]"}
   gap-2

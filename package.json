@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,6 @@
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
     "@reactour/tour": "^2.9.0",
-    "@tanstack/react-table": "8.5.13",
     "classnames": "^2.3.1",
     "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
@@ -56,7 +55,8 @@
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
     "tinycolor2": "^1.4.2",
-    "url-join": "^5.0.0"
+    "url-join": "^5.0.0",
+    "use-deep-compare": "^1.1.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",

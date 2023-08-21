@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mantine/core";
 import {
-  useAppSelector,
-  useAppDispatch,
-} from "@/features/projectsCenter/appApi";
-import {
-  resetPickedProjects,
-  selectPickedProjects,
-} from "@/features/projectsCenter/pickedProjectsSlice";
-import {
   FilterSet,
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
@@ -16,12 +8,12 @@ import {
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { CountsIcon } from "../shared/tailwindComponents";
 
-const ProjectsCohortButton = (): JSX.Element => {
-  const pickedProjects: ReadonlyArray<string> = useAppSelector((state) =>
-    selectPickedProjects(state),
-  );
+const ProjectsCohortButton = ({
+  pickedProjects,
+}: {
+  pickedProjects: string[];
+}): JSX.Element => {
   const coreDispatch = useCoreDispatch();
-  const appDispatch = useAppDispatch();
   const [showCreateCohort, setShowCreateCohort] = useState(false);
 
   const createCohortFromProjects = (name: string) => {
@@ -35,7 +27,6 @@ const ProjectsCohortButton = (): JSX.Element => {
         },
       },
     };
-    appDispatch(resetPickedProjects());
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: filters,

@@ -21,7 +21,10 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
     closeButtonLabel="close"
     onClose={onClose}
     size="lg"
-    withinPortal={false}
+    centered
+    classNames={{
+      modal: "p-0 drop-shadow-lg",
+    }}
   >
     <div className="p-4">
       <p>Are you sure you want to permanently discard the unsaved changes?</p>

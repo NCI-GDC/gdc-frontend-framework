@@ -119,7 +119,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       <div className="p-4">
         {Object.keys(sets).length === 0 ? (
           <div className="flex flex-col items-center">
-            <div className="h-[100px] w-[100px] rounded-[50%] bg-[#e0e9f0] flex justify-center items-center">
+            <div className="h-[100px] w-[100px] rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon className="text-primary-darkest" size={40} />
             </div>
             <p className="uppercase mt-2 mb-4 text-primary-darkest">

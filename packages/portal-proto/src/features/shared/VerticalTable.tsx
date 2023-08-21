@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC, Fragment, ReactNode } from "react";
-import { useTable, useRowState, useSortBy, SortingRule } from "react-table";
+import { useTable, useRowState, useSortBy } from "react-table";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "./DragDrop";
@@ -13,10 +13,10 @@ import {
   Pagination,
   LoadingOverlay,
   TextInput,
-  useMantineTheme,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { SortingState } from "@tanstack/react-table";
 
 export interface PaginationOptions {
   /**
@@ -133,7 +133,7 @@ interface VerticalTableProps {
   /**
    * optional callback to handle changes
    */
-  handleChange?: (HandleChangeInput) => void;
+  handleChange?: (obj: HandleChangeInput) => void;
   /**
    * optional shows different table content depending on state
    *
@@ -161,8 +161,9 @@ interface VerticalTableProps {
   /**
    * Optional default table sort state
    */
-  initialSort?: Array<SortingRule<any>>;
+  initialSort?: SortingState;
   footer?: React.ReactNode;
+  stickyHeader?: boolean;
 }
 
 /**
@@ -184,10 +185,7 @@ export interface HandleChangeInput {
   /**
    * column sort
    */
-  sortBy?: {
-    id: string;
-    desc: boolean;
-  }[];
+  sortBy?: SortingState;
   /**
    * search term change
    */
@@ -276,6 +274,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   search,
   initialSort = [],
   footer = undefined,
+  stickyHeader = false,
 }: VerticalTableProps) => {
   const [table, setTable] = useState([]);
   const [headings, setHeadings] = useState(filterColumnCells(columns));
@@ -347,10 +346,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     useEffect(() => {
       //check if properties have changed
       if (!isEqual(sortBy, colSort)) {
-        setColSort(sortBy);
+        setColSort(sortBy as SortingState);
         if (columnSorting === "manual") {
           handleChange({
-            sortBy: sortBy,
+            sortBy: sortBy as SortingState,
           });
         }
       }
@@ -377,7 +376,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
-        <thead className="h-14">
+        <thead className={`h-14 ${stickyHeader ? "sticky top-[-5px]" : ""}`}>
           {headerGroups.map((headerGroup, key) => (
             <tr
               className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
@@ -522,7 +521,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
   }, [pagination]);
 
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
+    setPageSize(parseInt(newPageSize));
     handleChange({
       newPageSize: newPageSize,
     });
@@ -576,11 +575,10 @@ export const VerticalTable: FC<VerticalTableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
-  const theme = useMantineTheme();
   const ref = useClickOutside(() => setShowColumnMenu(false));
 
   return (
-    <div className="grow overflow-hidden">
+    <div className={stickyHeader ? undefined : "grow overflow-hidden"}>
       <div
         className={`flex ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -594,7 +592,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
             <div className="flex mb-2 gap-2">
               {search?.enabled && (
                 <TextInput
-                  icon={<MdSearch size={24} color={theme.colors.primary[5]} />}
+                  icon={<MdSearch size={24} />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
@@ -662,7 +660,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         )}
       </div>
       <>
-        <div className="overflow-y-auto w-full relative">
+        <div
+          className={`${stickyHeader ? "" : "overflow-y-auto"} w-full relative`}
+        >
           <LoadingOverlay
             data-testid="loading-spinner-table"
             visible={showLoading}
