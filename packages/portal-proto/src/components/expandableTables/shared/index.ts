@@ -19,7 +19,6 @@ import { TableHeader } from "./sharedTableCells";
 import { TableCell } from "./sharedTableCells";
 import { SurvivalIcon } from "./sharedTableUtils";
 import { AnnotationsIcon } from "./sharedTableUtils";
-import ImpactHeaderWithTooltip from "./ImpactHeaderWithTooltip";
 import type {
   Column,
   TableType,
@@ -32,6 +31,7 @@ import type {
   WidthSpring,
   PageSizeProps,
 } from "./types";
+import ImpactHeaderWithTooltip from "@/features/GenomicTables/SomaticMutationsTable/TableComponents/ImpactHeaderWithTooltip";
 
 export {
   AnimatedRow,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PaginationOptions, Columns } from "@/features/shared/VerticalTable";
-import { SortingRule } from "react-table";
+import { SortingState } from "@tanstack/react-table";
 
 /**
  * For use with the VerticalTable component or other paginated tables,
@@ -8,11 +8,11 @@ import { SortingRule } from "react-table";
  * @param fullData
  * @returns
  */
-const useStandardPagination = (
-  fullData: Record<string, any>[],
+function useStandardPagination<TData>(
+  fullData: TData[],
   columnListOrder?: Columns[],
 ): PaginationOptions & {
-  displayedData: Record<string, any>[];
+  displayedData: TData[];
   /**
    * callback to handle page size change
    */
@@ -24,11 +24,11 @@ const useStandardPagination = (
   /**
    * callback to handle column sorting
    */
-  handleSortByChange: (x: SortingRule<any>[]) => void;
-} => {
+  handleSortByChange: (x: SortingState) => void;
+} {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
-  const [activeSort, setActiveSort] = useState<SortingRule<any>[]>([]);
+  const [activeSort, setActiveSort] = useState<SortingState>([]);
   const [displayedData, setDisplayedData] = useState([]);
   const [columnSortingFns, setColumnSortingFns] = useState({});
 
@@ -41,7 +41,7 @@ const useStandardPagination = (
     setActivePage(x);
   };
 
-  const handleSortByChange = (x: SortingRule<any>[]) => {
+  const handleSortByChange = (x: SortingState) => {
     setActiveSort(x);
   };
 
@@ -136,6 +136,6 @@ const useStandardPagination = (
     total: fullData.length,
     displayedData,
   };
-};
+}
 
 export default useStandardPagination;
