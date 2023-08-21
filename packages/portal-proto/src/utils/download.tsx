@@ -48,6 +48,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
 };
 
 /*
+TODO - handle slow download notification PEAR-624
 const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
   <>
     <div>
@@ -180,11 +181,9 @@ const download = async ({
   // page and downloads in the background
   document.body.appendChild(iFrame);
 
-  // TODO - handle slow download notification PEAR-624
   const pollForDownloadResult = async () => {
     const executePoll = async (resolve: (value?: unknown) => void) => {
       // Request has been canceled
-      console.log(iFrame);
       if (iFrame === undefined) {
         resolve();
         return;
@@ -195,18 +194,12 @@ const download = async ({
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
-        setTimeout(() => {
-          if (done) {
-            done();
-          }
-        }, 1000);
         resolve();
       } else {
         const requestError =
           iFrame.contentWindow.document.getElementsByTagName("form").length ===
             0 && body !== "";
         if (requestError) {
-          console.log(body);
           clearTimeout(showNotificationTimeout);
           cleanNotifications();
           const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
@@ -231,11 +224,6 @@ const download = async ({
             );
           }
 
-          setTimeout(() => {
-            if (done) {
-              done();
-            }
-          }, 1000);
           resolve();
         } else {
           setTimeout(executePoll, 1000, resolve);
@@ -258,64 +246,8 @@ const download = async ({
     form.submit();
   };
 
-  /*
-  const handleDownloadResponse = async (res: Response) => {
-    console.log(cookies);
-    clearTimeout(showNotificationTimeout);
-    cleanNotifications();
-    if (!canceled && res.ok) {
-      addFormAndSubmit();
-      pollForDownloadResult();
-      setTimeout(() => {
-        if (done) {
-          done();
-        }
-      }, 1000);
-      return;
-    }
-    if (done) {
-      done();
-    }
-    let errorMessage;
-    try {
-      const body = await res.json();
-      errorMessage = body.message;
-    } catch (error) {
-      errorMessage = undefined;
-    }
-
-    if (res.status === 404 || res.status === 500) {
-      dispatch(showModal({ modal: Modal400, message: errorMessage }));
-      return;
-    }
-
-    if (res.status === 403) {
-      dispatch(showModal({ modal: Modal403, message: errorMessage }));
-      return;
-    }
-    if (res.status === 400) {
-      dispatch(
-        showModal({
-          modal: Modal400,
-          message: customErrorMessage || errorMessage,
-        }),
-      );
-      return;
-    }
-  };
-
-  const replacer = (_: string, value: any) => {
-    if (typeof value === "boolean") {
-      return value ? "True" : "False";
-    }
-    return value;
-  };
-
-  const signal = controller.signal;
-  */
-  //if (form) {
   addFormAndSubmit();
-  pollForDownloadResult();
+  await pollForDownloadResult();
   setTimeout(() => {
     if (done) {
       done();
