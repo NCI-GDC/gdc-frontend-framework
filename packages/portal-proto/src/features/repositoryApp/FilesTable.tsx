@@ -80,7 +80,6 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const prevAllFilters = usePrevious(allFilters);
-  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
 
   useEffect(() => {
     if (!isEqual(prevAllFilters, allFilters)) {
@@ -441,7 +440,11 @@ const FilesTables: React.FC = () => {
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  const fileSizeSliceData = useFilesSize({
+    cohortFilters: buildCohortGqlOperator(cohortFilters),
+    localFilters: buildCohortGqlOperator(repositoryFilters),
+    allFilters: buildCohortGqlOperator(allFilters),
+  });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
       output: "object",
