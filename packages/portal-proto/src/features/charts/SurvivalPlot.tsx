@@ -378,7 +378,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           2,
         ),
       ],
-      { type: "text/json" },
+      { type: "application/json" },
     );
 
     saveAs(blob, "survival-plot.json");
