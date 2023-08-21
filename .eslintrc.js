@@ -43,6 +43,13 @@ module.exports = {
         aspects: ["invalidHref", "preferButton"],
       },
     ],
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        additionalHooks:
+          "(useDeepCompareEffect|useDeepCompareCallback|useDeepCompareMemo)",
+      },
+    ],
   },
   settings: {
     react: {

@@ -50,6 +50,10 @@ interface DropdownWithIconProps {
    *   custom z-index for Menu, defaults to undefined
    */
   zIndex?: number;
+  /**
+   * custom test id
+   */
+  customDataTestId?: string;
 }
 
 export const DropdownWithIcon = ({
@@ -63,12 +67,13 @@ export const DropdownWithIcon = ({
   menuLabelCustomClass,
   customPosition,
   zIndex = undefined,
+  customDataTestId = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
-      data-testid="menu-elem"
+      data-testid={customDataTestId ?? "menu-elem"}
       zIndex={zIndex}
     >
       <Menu.Target>

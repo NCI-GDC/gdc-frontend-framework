@@ -222,7 +222,7 @@ const OncoGridWrapper: React.FC = () => {
     };
 
     const blob = new Blob([JSON.stringify(json, null, 2)], {
-      type: "text/json",
+      type: "application/json",
     });
 
     saveAs(blob, "oncogrid.json");

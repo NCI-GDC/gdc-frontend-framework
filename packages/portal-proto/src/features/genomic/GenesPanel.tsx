@@ -1,7 +1,6 @@
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { GTableContainer } from "@/components/expandableTables/genes/GTableContainer";
 import partial from "lodash/partial";
 import React from "react";
 import { emptySurvivalPlot } from "@/features/genomic/types";
@@ -10,6 +9,7 @@ import {
   useGeneAndSSMPanelData,
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
+import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
 
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,

@@ -50,6 +50,10 @@ export const capitalize = (original: string): string => {
     dbgap: "dbGaP",
     ecog: "ECOG",
     bmi: "BMI",
+    gdc: "GDC",
+    cnv: "CNV",
+    ssm: "SSM",
+    aa: "AA",
   };
 
   return original
