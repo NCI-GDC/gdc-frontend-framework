@@ -9,7 +9,7 @@ import {
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
-import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
+import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
 });
@@ -53,7 +53,7 @@ export const SSMSPanel = ({
    */
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
 
-  /* Scroll for gend id search */
+  /* Scroll for gene search */
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
     offset: 500,
     duration: 1000,
@@ -65,7 +65,7 @@ export const SSMSPanel = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  /* Scroll for gend id search end */
+  /* Scroll for gene search end */
 
   return (
     <div className="flex flex-col w-100 mx-6 mb-8">

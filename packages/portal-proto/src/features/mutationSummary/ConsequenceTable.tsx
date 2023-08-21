@@ -27,6 +27,7 @@ import saveAs from "file-saver";
 import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
+import { statusBooleansToDataStatus } from "../shared/utils";
 
 export const ConsequenceTable = ({
   ssmsId,
@@ -39,7 +40,10 @@ export const ConsequenceTable = ({
   ] = useState(false);
 
   const {
-    data: { status, ssmsConsequence: initialData },
+    data: { ssmsConsequence: initialData },
+    isFetching,
+    isSuccess,
+    isError,
   } = useSsmsConsequenceTable({
     pageSize: 99, // get max 100 entries
     offset: 0,
@@ -71,7 +75,7 @@ export const ConsequenceTable = ({
   };
 
   useEffect(() => {
-    if (status === "fulfilled") {
+    if (isSuccess) {
       // need to sort the table data and then store all entries in tableData
       const sortedData: ConsequenceTableData[] = [
         ...initialData.consequence.filter(
@@ -138,7 +142,7 @@ export const ConsequenceTable = ({
       );
       setTableData(sortedData);
     }
-  }, [status, initialData.consequence]);
+  }, [isSuccess, initialData.consequence]);
 
   const consequenceTableColumnHelper =
     createColumnHelper<ConsequenceTableData>();
@@ -369,15 +373,7 @@ export const ConsequenceTable = ({
           </ButtonTooltip>
         </div>
       }
-      status={
-        status === "pending"
-          ? "pending"
-          : status === "fulfilled"
-          ? "fulfilled"
-          : status === "rejected"
-          ? "rejected"
-          : "uninitialized"
-      }
+      status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
     />
   );
 };

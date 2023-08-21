@@ -95,6 +95,7 @@ export const useGenerateSMTableColumns = ({
             }}
           />
         ),
+        enableHiding: false,
       }),
 
       ...(!geneSymbol && !projectId

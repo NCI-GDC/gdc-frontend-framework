@@ -425,6 +425,27 @@ def quick_search_and_click(text: str):
     """
     APP.shared.quick_search_and_click(text)
 
+@step("Quick search for <text>")
+def global_quick_search(text: str):
+    """
+    Sends text into the quick search bar in the upper-right corner of the data portal.
+    """
+    APP.shared.global_quick_search(text)
+
+@step("Validate the quick search bar result in position <result_in_list> of the result list has the abbreviation <abbreviation>")
+def validate_global_quick_search_result_abbreviation(result_in_list: str, abbreviation:str):
+    """
+    Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect.
+    """
+    APP.shared.validate_global_quick_search_result_abbreviation(result_in_list,abbreviation)
+
+@step("Select the quick search bar result in position <result_in_list>")
+def quick_search(result_in_list: str):
+    """
+    Specifies a result from the quick search bar result list. Clicks that result.
+    """
+    APP.shared.click_global_quick_search_result(result_in_list)
+
 @step("Name the cohort <cohort_name>")
 def name_cohort(cohort_name: str):
     APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
