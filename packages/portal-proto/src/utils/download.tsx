@@ -82,6 +82,7 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 */
 
 /**
+ * Trigger a download by attaching an iFrame to the document with the parameters of the request as fields in a form
  * @param endpoint endpoint to be attached with  GDC AUTH API
  * @param params body to be attached with post request
  * @param method Request Method: GET, PUT, POST
@@ -114,8 +115,11 @@ const download = async ({
 }): Promise<void> => {
   const cookies = new Cookies();
 
+  /* Create a cookie with a unique identifer to attach to request. Response from server will use the set-cookie header
+    to remove the cookie when the response is received (aka the download starts). This will only work on when the FE and BE
+    are on the same domain.
+  */
   const downloadToken = uniqueId(`${+new Date()}-`);
-  // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled
     ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
     : null;
@@ -189,7 +193,6 @@ const download = async ({
 
       const content = getBody(iFrame).textContent;
       // Download has started
-      console.log("still polling", cookieKey);
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
@@ -204,6 +207,7 @@ const download = async ({
         if (requestError) {
           clearTimeout(showNotificationTimeout);
           cleanNotifications();
+
           const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
             content,
           )?.[1];
@@ -252,7 +256,8 @@ const download = async ({
   };
 
   addFormAndSubmit();
-  pollForDownloadResult();
+  await pollForDownloadResult();
+  iFrame.remove();
 };
 
 export default download;
