@@ -447,6 +447,8 @@ const SetOperations: React.FC<SetOperationsProps> = ({
     highlighted: selectedSets[set.key],
   }));
 
+  const [rowSelection, setRowSelection] = useState({});
+
   // Summary Table
   type SummaryTableDataType = {
     alias: JSX.Element;
@@ -631,6 +633,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
           <VerticalTable
             data={summaryTableData}
             columns={summaryTableColumns}
+            showControls={false}
             sorting={summaryTablesorting}
             setSorting={setSummaryTableSorting}
             columnSorting="enable"
@@ -639,6 +642,11 @@ const SetOperations: React.FC<SetOperationsProps> = ({
           <VerticalTable
             data={setOperationtableData}
             columns={setOperationTableColumns}
+            enableRowSelection={true}
+            setRowSelection={setRowSelection}
+            rowSelection={rowSelection}
+            showControls={false}
+            status="fulfilled"
             sorting={operationTablesorting}
             setSorting={setOperationTableSorting}
             columnSorting="enable"
