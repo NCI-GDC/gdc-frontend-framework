@@ -86,8 +86,6 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
  * @param params body to be attached with post request
  * @param method Request Method: GET, PUT, POST
  * @param dispatch dispatch send from the parent component to dispatch Modals
- * @param options options object provided to fetch, see here for possible values: https://developer.mozilla.org/en-US/docs/Web/API/fetch
- * @param queryParams body to be attached with POST request or url params with GET request
  * @param done callback function to be called after the download has been initiated
  * @param Modal400 Modal for 400 error
  * @param Modal403 Modal for 403 error
@@ -194,6 +192,7 @@ const download = async ({
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
+        console.log("still polling");
         if (done) {
           done();
         }
