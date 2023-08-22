@@ -86,7 +86,7 @@ const ContextBar = ({
     useGetAllFilesMutation();
 
   const getAllCohortFiles = (callback, filters) => {
-    getFileSizeSliceData(filters)
+    getFileSizeSliceData({ caseFilters: filters })
       .unwrap()
       .then((data: GdcFile[]) => {
         return mapGdcFileToCartFile(data);
@@ -139,7 +139,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
       },
@@ -160,7 +160,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         tsv_format: "sample-sheet",
         fields: SAMPLE_SHEET_FIELDS.join(","),
         format: "tsv",
@@ -190,7 +190,7 @@ const ContextBar = ({
         filename: `clinical.cohort.${new Date()
           .toISOString()
           .slice(0, 10)}.tar.gz`,
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
