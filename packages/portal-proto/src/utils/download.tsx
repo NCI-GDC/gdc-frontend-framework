@@ -187,7 +187,7 @@ const download = async ({
         return;
       }
 
-      const body = iFrame.contentWindow.document.body.textContent;
+      const content = getBody(iFrame).textContent;
       // Download has started
       console.log("still polling", cookieKey);
       if (!cookies.get(cookieKey)) {
@@ -200,12 +200,12 @@ const download = async ({
       } else {
         const requestError =
           iFrame.contentWindow.document.getElementsByTagName("form").length ===
-            0 && body !== "";
+            0 && content !== "";
         if (requestError) {
           clearTimeout(showNotificationTimeout);
           cleanNotifications();
           const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
-            body,
+            content,
           )?.[1];
           if (
             errorMessage === "internal server error" ||
@@ -226,6 +226,9 @@ const download = async ({
             );
           }
 
+          if (done) {
+            done();
+          }
           resolve();
         } else {
           setTimeout(executePoll, 1000, resolve);
@@ -249,10 +252,7 @@ const download = async ({
   };
 
   addFormAndSubmit();
-  await pollForDownloadResult();
-  if (done) {
-    done();
-  }
+  pollForDownloadResult();
 };
 
 export default download;
