@@ -194,6 +194,9 @@ const download = async ({
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
+        if (done) {
+          done();
+        }
         resolve();
       } else {
         const requestError =
