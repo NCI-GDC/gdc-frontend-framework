@@ -189,10 +189,10 @@ const download = async ({
 
       const body = iFrame.contentWindow.document.body.textContent;
       // Download has started
+      console.log("still polling", cookieKey);
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
-        console.log("still polling");
         if (done) {
           done();
         }
