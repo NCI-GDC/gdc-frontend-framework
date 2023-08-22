@@ -185,7 +185,6 @@ const download = async ({
     const executePoll = async (resolve: (value?: unknown) => void) => {
       // Request has been canceled
       if (iFrame === undefined) {
-        console.log("1");
         resolve();
         return;
       }
@@ -195,7 +194,6 @@ const download = async ({
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
-        console.log("2");
         resolve();
       } else {
         const requestError =
@@ -226,7 +224,6 @@ const download = async ({
             );
           }
 
-          console.log("3");
           resolve();
         } else {
           setTimeout(executePoll, 1000, resolve);
@@ -251,11 +248,9 @@ const download = async ({
 
   addFormAndSubmit();
   await pollForDownloadResult();
-  setTimeout(() => {
-    if (done) {
-      done();
-    }
-  }, 1000);
+  if (done) {
+    done();
+  }
 };
 
 export default download;

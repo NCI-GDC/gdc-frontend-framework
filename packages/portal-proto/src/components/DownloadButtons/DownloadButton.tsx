@@ -16,8 +16,6 @@ interface DownloadButtonProps {
   filters?: Record<string, any>;
   extraParams?: Record<string, any>;
   method?: string;
-  queryParams?: string;
-  options?: Record<string, any>;
   customStyle?: string;
   showLoading?: boolean;
   showIcon?: boolean;
@@ -47,8 +45,6 @@ export const DownloadButton = forwardRef<
       activeText,
       extraParams,
       method = "POST",
-      queryParams,
-      options,
       customStyle,
       setActive,
       onClick,
