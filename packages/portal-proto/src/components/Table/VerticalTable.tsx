@@ -79,7 +79,7 @@ function VerticalTable<TData>({
       expanded,
     },
     manualSorting: columnSorting === "manual",
-    sortDescFirst: false,
+    sortDescFirst: true,
     autoResetExpanded: false,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
@@ -262,14 +262,14 @@ function VerticalTable<TData>({
                           <div className="inline-block text-xs pl-3 align-middle text-base-light">
                             <BsCaretUpFill
                               className={
-                                header.column.getIsSorted() === "asc"
+                                header.column.getIsSorted() === "desc"
                                   ? "text-primary"
                                   : ""
                               }
                             />
                             <BsCaretDownFill
                               className={`${
-                                header.column.getIsSorted() === "desc"
+                                header.column.getIsSorted() === "asc"
                                   ? "text-primary"
                                   : ""
                               } relative top-[-2px]`}

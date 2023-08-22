@@ -457,7 +457,6 @@ const ProjectsTable: React.FC = () => {
       columnVisibility={columnVisibility}
       columnOrder={columnOrder}
       setColumnOrder={setColumnOrder}
-      initialSort={[{ id: "cases", desc: true }]}
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}
