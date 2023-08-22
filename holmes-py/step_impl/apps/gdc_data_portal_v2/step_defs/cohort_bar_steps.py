@@ -73,7 +73,7 @@ def validate_cohort_is_not_present_in_dropdown(cohort_name: str):
     assert not is_cohort_visible, f"The cohort '{cohort_name}' is visible in the dropdown when it should not be"
 
 @step("The cohort <cohort_name> should appear in the cohort dropdown list")
-def validate_cohort_is_not_present_in_dropdown(cohort_name: str):
+def validate_cohort_is_present_in_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
     is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
     click_button_on_cohort_bar("Switch")
