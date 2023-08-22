@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
@@ -343,7 +337,7 @@ const ProjectsTable: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -359,7 +353,7 @@ const ProjectsTable: React.FC = () => {
         setExpanded({});
         break;
     }
-  }, []);
+  };
 
   const handleDownloadJSON = async () => {
     await download({

@@ -6,7 +6,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
@@ -45,6 +45,7 @@ function VerticalTable<TData>({
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const inputRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     if (data) {
@@ -121,21 +122,23 @@ function VerticalTable<TData>({
       });
   };
 
-  // TODO: Researching in phase 5/6 on how to make this logic better.
-  useEffect(() => {
-    //prevents unneeded api calls if user is typing something
-    if (handleChange) {
-      const delayDebounceFn = setTimeout(() => {
-        handleChange({
-          newSearch: searchTerm.trim(),
-        });
-      }, 250);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [searchTerm, handleChange]);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value.trim();
+    setSearchTerm(newSearchTerm);
 
-  const handleColumnClick = (columnId: string) => {
-    setClickedColumnId(columnId);
+    // Clear the previous timeout
+    clearTimeout(timeoutRef.current);
+
+    // Set a new timeout to perform the search after 400ms
+    timeoutRef.current = setTimeout(() => {
+      handleChange({ newSearch: newSearchTerm });
+    }, 400);
+  };
+
+  const handleClearClick = () => {
+    setSearchTerm("");
+    clearTimeout(timeoutRef.current);
+    handleChange({ newSearch: "" });
   };
 
   return (
@@ -166,17 +169,13 @@ function VerticalTable<TData>({
                   rightSection={
                     searchTerm.length > 0 && (
                       <MdClose
-                        onClick={() => {
-                          setSearchTerm("");
-                        }}
+                        onClick={handleClearClick}
                         className="cursor-pointer"
                       />
                     )
                   }
                   value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                   ref={inputRef}
                 />
               )}
@@ -298,11 +297,11 @@ function VerticalTable<TData>({
                         expandableColumnIds.includes(columnId) ? (
                           <button
                             onClick={() => {
-                              handleColumnClick(columnId);
+                              setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             }}
                             onKeyDown={createKeyboardAccessibleFunction(() => {
-                              handleColumnClick(columnId);
+                              setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             })}
                             className="cursor-auto"
