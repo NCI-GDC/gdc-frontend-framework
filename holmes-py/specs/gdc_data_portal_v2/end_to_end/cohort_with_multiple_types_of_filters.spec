@@ -19,6 +19,9 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Wait for loading spinner
 * Wait for cohort bar case count loading spinner
 * Navigate to "Cohort" from "Header" "section"
+* Select "Add" from the Cohort Bar
+* Name the cohort "Multiple Filters Cohort" in the Cohort Bar section
+* "Create" "Multiple Filters Cohort has been created" and "remove modal" in the Cohort Bar section
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection              |
   |-----------------|-----------------------|
