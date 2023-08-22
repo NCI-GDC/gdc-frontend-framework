@@ -633,7 +633,6 @@ const SetOperations: React.FC<SetOperationsProps> = ({
           <VerticalTable
             data={summaryTableData}
             columns={summaryTableColumns}
-            showControls={false}
             sorting={summaryTablesorting}
             setSorting={setSummaryTableSorting}
             columnSorting="enable"

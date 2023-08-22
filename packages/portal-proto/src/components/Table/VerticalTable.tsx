@@ -13,6 +13,7 @@ import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
+import { isEqual } from "lodash";
 
 function VerticalTable<TData>({
   columns,
@@ -47,11 +48,13 @@ function VerticalTable<TData>({
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
 
+  // TODO: status fufilled is to be sent for all the tables (even without api calls) when pagination is used
+  // do sth else
   useEffect(() => {
-    if (data) {
+    if (status === "fulfilled" && !isEqual(data, tableData)) {
       setTableData(data);
     }
-  }, [data]);
+  }, [tableData, data, status]);
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {

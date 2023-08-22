@@ -179,7 +179,7 @@ const AssociatedCB = ({
         total,
         label: "associated cases/biospecimen",
       }}
-      status={"fulfilled"}
+      status="fulfilled"
       search={{
         enabled: true,
       }}
