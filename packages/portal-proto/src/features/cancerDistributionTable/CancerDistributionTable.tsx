@@ -732,7 +732,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
       );
     const blob = new Blob([JSON.stringify(json, null, 2)], {
-      type: "text/json",
+      type: "application/json",
     });
     saveAs(blob, "cancer-distribution-data.json");
   };
