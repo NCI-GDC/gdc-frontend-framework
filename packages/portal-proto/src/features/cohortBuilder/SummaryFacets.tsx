@@ -24,7 +24,7 @@ interface SummaryFacetProps {
 }
 
 export const SummaryFacetHeader = tw.div`
-flex items-start justify-between flex-nowrap shadow-md px-1.5 border-base- border-b-1`;
+flex items-start justify-between flex-nowrap px-1.5 border-base- border-b-1`;
 
 export const SummaryFacetHeaderLabel = tw.div`
 text-primary-darkest font-heading font-semibold text-[1.25em] break-words py-2

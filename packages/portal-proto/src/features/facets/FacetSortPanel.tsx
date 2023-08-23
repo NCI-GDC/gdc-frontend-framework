@@ -28,14 +28,14 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   isNumberSort = false,
 }: FacetSortPanelProps) => {
   return (
-    <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
+    <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
       <ActionIcon
         size="xs"
-        className={`ml-1 border rounded-sm border-accent-darkest ${
+        className={`border rounded-sm border-accent-darkest ${
           !isSortedByValue
             ? "bg-accent text-accent-contrast"
             : "bg-accent-lightest text-accent-contrast-lightest"
-        }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
+        }  hover:bg-accent-darker hover:text-accent-contrast-darker`}
         aria-label="Sort alphabetically"
       >
         {isNumberSort ? (
@@ -64,7 +64,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         >
           <SortIcon scale="1.5em" />
         </ActionIcon>
-        <p className="px-2 mr-3">{valueLabel}</p>
+        <p className="px-2 font-bold">{valueLabel}</p>
       </div>
     </div>
   );

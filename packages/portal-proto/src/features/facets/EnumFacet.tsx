@@ -237,6 +237,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label={"search values"}
+            className={"p-2"}
+            placeholder="Search"
             ref={searchInputRef}
             rightSection={
               searchTerm.length > 0 ? (
@@ -254,11 +256,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           />
         )}
         <div
-          className={
-            isFacetView
-              ? `flip-card h-full `
-              : `flip-card flip-card-flipped h-full `
-          }
+          className={isFacetView ? `flip-card ` : `flip-card flip-card-flipped`}
           ref={cardRef}
         >
           <div
