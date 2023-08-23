@@ -80,7 +80,6 @@ const slice = createSlice({
         if (response.errors) {
           state.status = "rejected";
         } else {
-          console.log("fetchFilesSize.fulfilled", response);
           state.data = {
             total_file_size:
               response?.data?.viewer?.cart_summary?.aggregations.fs?.value,
