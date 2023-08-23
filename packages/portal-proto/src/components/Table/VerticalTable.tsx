@@ -6,13 +6,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
+import { isEqual } from "lodash";
 
 function VerticalTable<TData>({
   columns,
@@ -45,12 +46,15 @@ function VerticalTable<TData>({
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const inputRef = useRef(null);
+  const timeoutRef = useRef(null);
 
+  // TODO: status fufilled is to be sent for all the tables (even without api calls) when pagination is used
+  // do sth else
   useEffect(() => {
-    if (data) {
+    if (status === "fulfilled" && !isEqual(data, tableData)) {
       setTableData(data);
     }
-  }, [data]);
+  }, [tableData, data, status]);
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
@@ -75,7 +79,7 @@ function VerticalTable<TData>({
       expanded,
     },
     manualSorting: columnSorting === "manual",
-    sortDescFirst: false,
+    sortDescFirst: true,
     autoResetExpanded: false,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
@@ -121,21 +125,23 @@ function VerticalTable<TData>({
       });
   };
 
-  // TODO: Researching in phase 5/6 on how to make this logic better.
-  useEffect(() => {
-    //prevents unneeded api calls if user is typing something
-    if (handleChange) {
-      const delayDebounceFn = setTimeout(() => {
-        handleChange({
-          newSearch: searchTerm.trim(),
-        });
-      }, 250);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [searchTerm, handleChange]);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value.trim();
+    setSearchTerm(newSearchTerm);
 
-  const handleColumnClick = (columnId: string) => {
-    setClickedColumnId(columnId);
+    // Clear the previous timeout
+    clearTimeout(timeoutRef.current);
+
+    // Set a new timeout to perform the search after 400ms
+    timeoutRef.current = setTimeout(() => {
+      handleChange({ newSearch: newSearchTerm });
+    }, 400);
+  };
+
+  const handleClearClick = () => {
+    setSearchTerm("");
+    clearTimeout(timeoutRef.current);
+    handleChange({ newSearch: "" });
   };
 
   return (
@@ -166,17 +172,13 @@ function VerticalTable<TData>({
                   rightSection={
                     searchTerm.length > 0 && (
                       <MdClose
-                        onClick={() => {
-                          setSearchTerm("");
-                        }}
+                        onClick={handleClearClick}
                         className="cursor-pointer"
                       />
                     )
                   }
                   value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                   ref={inputRef}
                 />
               )}
@@ -206,11 +208,11 @@ function VerticalTable<TData>({
           {tableTitle && (
             <caption className="font-semibold text-left">{tableTitle}</caption>
           )}
-          <thead className="h-14">
+          <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
                 key={headerGroup.id}
-                className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
+                className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
                   return columnSorting === "none" ? (
@@ -260,14 +262,14 @@ function VerticalTable<TData>({
                           <div className="inline-block text-xs pl-3 align-middle text-base-light">
                             <BsCaretUpFill
                               className={
-                                header.column.getIsSorted() === "asc"
+                                header.column.getIsSorted() === "desc"
                                   ? "text-primary"
                                   : ""
                               }
                             />
                             <BsCaretDownFill
                               className={`${
-                                header.column.getIsSorted() === "desc"
+                                header.column.getIsSorted() === "asc"
                                   ? "text-primary"
                                   : ""
                               } relative top-[-2px]`}
@@ -285,7 +287,7 @@ function VerticalTable<TData>({
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={row.id}>
                 <tr
-                  className={`border border-base-lighter ${
+                  className={`border border-base-lighter max-h-10 ${
                     index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                   }`}
                 >
@@ -298,11 +300,11 @@ function VerticalTable<TData>({
                         expandableColumnIds.includes(columnId) ? (
                           <button
                             onClick={() => {
-                              handleColumnClick(columnId);
+                              setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             }}
                             onKeyDown={createKeyboardAccessibleFunction(() => {
-                              handleColumnClick(columnId);
+                              setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             })}
                             className="cursor-auto"

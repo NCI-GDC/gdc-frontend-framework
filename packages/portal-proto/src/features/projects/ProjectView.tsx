@@ -11,7 +11,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, Loader, Tooltip } from "@mantine/core";
 import Link from "next/link";
-import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
+import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
@@ -428,15 +428,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               {projectData?.summary?.data_categories && (
                 <CategoryTableSummary
                   title="Cases and File Counts by Data Category"
-                  dataObject={projectData?.summary?.data_categories}
-                  tableData={formatDataForDataCategoryTable(projectData)}
+                  {...formatDataForDataCategoryTable(projectData)}
                 />
               )}
               {projectData?.summary?.experimental_strategies && (
                 <CategoryTableSummary
                   title="Cases and File Counts by Experimental Strategy"
-                  dataObject={projectData?.summary?.experimental_strategies}
-                  tableData={formatDataForExpCategoryTable(projectData)}
+                  {...formatDataForExpCategoryTable(projectData)}
                 />
               )}
             </div>

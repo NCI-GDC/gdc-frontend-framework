@@ -646,6 +646,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             setRowSelection={setRowSelection}
             rowSelection={rowSelection}
             showControls={false}
+            status="fulfilled"
             sorting={operationTablesorting}
             setSorting={setOperationTableSorting}
             columnSorting="enable"

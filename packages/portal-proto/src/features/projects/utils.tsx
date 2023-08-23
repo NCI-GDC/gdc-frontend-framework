@@ -6,12 +6,9 @@ import {
   humanify,
   sortByPropertyAsc,
 } from "@/utils/index";
-import {
-  PercentBar,
-  PercentBarComplete,
-  PercentBarLabel,
-} from "../shared/tailwindComponents";
 import { formatDataForHorizontalTable } from "../files/utils";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { PercentageLabel } from "@/components/PercentageLabel";
 
 interface TableSummaryReturnType {
   readonly headerName: string;
@@ -87,88 +84,88 @@ export const formatDataForSummary = (
 export const formatDataForDataCategoryTable = (
   projectData: ProjectViewProps,
 ): {
-  headers: JSX.Element[];
-  tableRows: {
-    data_category: string;
-    case_count: JSX.Element;
-    file_count: JSX.Element;
+  data: {
+    readonly case_count: number;
+    readonly data_category: string;
+    readonly file_count: number;
   }[];
+  columns: ColumnDef<
+    {
+      readonly case_count: number;
+      readonly data_category: string;
+      readonly file_count: number;
+    },
+    unknown
+  >[];
 } => {
   const sortedDataCategories = sortByPropertyAsc(
     projectData.summary.data_categories,
     "data_category",
   );
 
-  const rows = sortedDataCategories.map((data_c) => {
-    const caseCountPercentage = calculatePercentageAsNumber(
-      data_c.case_count,
-      projectData.summary.case_count,
-    );
+  const dataCategoryTableColumnHelper =
+    createColumnHelper<typeof sortedDataCategories[0]>();
 
-    const fileCountPercentage = calculatePercentageAsNumber(
-      data_c.file_count,
-      projectData.summary.file_count,
-    );
-
-    return {
-      data_category: data_c.data_category,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: (
+  const dataCategoryTableColumns = [
+    dataCategoryTableColumnHelper.display({
+      id: "data_category",
+      header: () => <div className="text-sm leading-[18px]">Data Category</div>,
+      cell: ({ row }) => row.original.data_category,
+    }),
+    dataCategoryTableColumnHelper.display({
+      id: "case_count",
+      header: () => (
         <div className="flex">
-          <div className="basis-1/3 text-right">
-            {data_c.case_count.toLocaleString()}
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Cases
           </div>
-          <div className="basis-2/3 pl-1">
-            <PercentBar>
-              <PercentBarLabel>{`${caseCountPercentage.toFixed(
-                2,
-              )}%`}</PercentBarLabel>
-              <PercentBarComplete
-                style={{ width: `${caseCountPercentage}%` }}
-              />
-            </PercentBar>
+          <div className="basis-2/3 pl-1 font-normal">
+            (n={projectData.summary.case_count.toLocaleString()})
           </div>
         </div>
       ),
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: (
+      cell: ({ row }) => {
+        const caseCountPercentage = calculatePercentageAsNumber(
+          row.original.case_count,
+          projectData.summary.case_count,
+        );
+
+        return (
+          <PercentageLabel
+            count={row.original.case_count}
+            countPercentage={caseCountPercentage}
+          />
+        );
+      },
+    }),
+    dataCategoryTableColumnHelper.display({
+      id: "file_count",
+      header: () => (
         <div className="flex">
-          <div className="basis-1/3 text-right">
-            {data_c.file_count.toLocaleString()}
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Files
           </div>
-          <div className="basis-2/3 pl-1">
-            <PercentBar>
-              <PercentBarLabel>{`${fileCountPercentage.toFixed(
-                2,
-              )}%`}</PercentBarLabel>
-              <PercentBarComplete
-                style={{ width: `${fileCountPercentage}%` }}
-              />
-            </PercentBar>
+          <div className="basis-2/3 pl-1 font-normal">
+            (n={projectData.summary.file_count.toLocaleString()})
           </div>
         </div>
       ),
-    };
-  });
+      cell: ({ row }) => {
+        const fileCountPercentage = calculatePercentageAsNumber(
+          row.original.file_count,
+          projectData.summary.file_count,
+        );
+        return (
+          <PercentageLabel
+            count={row.original.file_count}
+            countPercentage={fileCountPercentage}
+          />
+        );
+      },
+    }),
+  ];
 
-  return {
-    headers: [
-      <div key="project_summary_data_table_data_category">Data Category</div>,
-      <div key="project_summary_data_table_cases_header" className="flex">
-        <div className="basis-1/3 text-right">Cases</div>
-        <div className="basis-2/3 pl-1">
-          (n={projectData.summary.case_count.toLocaleString()})
-        </div>
-      </div>,
-      <div key="project_summary_data_table_files_header" className="flex">
-        <div className="basis-1/3 text-right">Files</div>
-        <div className="basis-2/3 pl-1">
-          (n={projectData.summary.file_count.toLocaleString()})
-        </div>
-      </div>,
-    ],
-    tableRows: rows,
-  };
+  return { data: sortedDataCategories, columns: dataCategoryTableColumns };
 };
 
 export const getAnnotationsLinkParams = (
@@ -185,88 +182,88 @@ export const getAnnotationsLinkParams = (
 export const formatDataForExpCategoryTable = (
   projectData: ProjectViewProps,
 ): {
-  headers: JSX.Element[];
-  tableRows: {
-    experimental_strategy: string;
-    case_count: JSX.Element;
-    file_count: JSX.Element;
+  data: {
+    readonly case_count: number;
+    readonly experimental_strategy: string;
+    readonly file_count: number;
   }[];
+  columns: ColumnDef<
+    {
+      readonly case_count: number;
+      readonly experimental_strategy: string;
+      readonly file_count: number;
+    },
+    unknown
+  >[];
 } => {
-  const sortedExpCategories = sortByPropertyAsc(
+  const sortedExpStrategies = sortByPropertyAsc(
     projectData.summary.experimental_strategies,
     "experimental_strategy",
   );
 
-  const rows = sortedExpCategories.map((exp_c) => {
-    const caseCountPercentage = calculatePercentageAsNumber(
-      exp_c.case_count,
-      projectData.summary.case_count,
-    );
+  const expStrategiesTableColumnHelper =
+    createColumnHelper<typeof sortedExpStrategies[0]>();
 
-    const fileCountPercentage = calculatePercentageAsNumber(
-      exp_c.file_count,
-      projectData.summary.file_count,
-    );
-
-    return {
-      experimental_strategy: exp_c.experimental_strategy,
-      // TODO: Need to change it to Link after the href has been finalized
-      case_count: (
+  const expCategoryTableColumns = [
+    expStrategiesTableColumnHelper.display({
+      id: "data_category",
+      header: () => (
+        <div className="text-sm leading-[18px]">Experimental Strategy</div>
+      ),
+      cell: ({ row }) => row.original.experimental_strategy,
+    }),
+    expStrategiesTableColumnHelper.display({
+      id: "case_count",
+      header: () => (
         <div className="flex">
-          <div className="basis-1/3 text-right">
-            {exp_c.case_count.toLocaleString()}
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Cases
           </div>
-          <div className="basis-2/3 pl-1">
-            <PercentBar>
-              <PercentBarLabel>{`${caseCountPercentage.toFixed(
-                2,
-              )}%`}</PercentBarLabel>
-              <PercentBarComplete
-                style={{ width: `${caseCountPercentage}%` }}
-              />
-            </PercentBar>
+          <div className="basis-2/3 pl-1 font-normal">
+            (n={projectData.summary.case_count.toLocaleString()})
           </div>
         </div>
       ),
-      // TODO: Need to change it to Link after the href has been finalized
-      file_count: (
+      cell: ({ row }) => {
+        const caseCountPercentage = calculatePercentageAsNumber(
+          row.original.case_count,
+          projectData.summary.case_count,
+        );
+
+        return (
+          <PercentageLabel
+            count={row.original.case_count}
+            countPercentage={caseCountPercentage}
+          />
+        );
+      },
+    }),
+    expStrategiesTableColumnHelper.display({
+      id: "file_count",
+      header: () => (
         <div className="flex">
-          <div className="basis-1/3 text-right">
-            {exp_c.file_count.toLocaleString()}
+          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
+            Files
           </div>
-          <div className="basis-2/3 pl-1">
-            <PercentBar>
-              <PercentBarLabel>{`${fileCountPercentage.toFixed(
-                2,
-              )}%`}</PercentBarLabel>
-              <PercentBarComplete
-                style={{ width: `${fileCountPercentage}%` }}
-              />
-            </PercentBar>
+          <div className="basis-2/3 pl-1 font-normal">
+            (n={projectData.summary.file_count.toLocaleString()})
           </div>
         </div>
       ),
-    };
-  });
+      cell: ({ row }) => {
+        const fileCountPercentage = calculatePercentageAsNumber(
+          row.original.file_count,
+          projectData.summary.file_count,
+        );
+        return (
+          <PercentageLabel
+            count={row.original.file_count}
+            countPercentage={fileCountPercentage}
+          />
+        );
+      },
+    }),
+  ];
 
-  return {
-    headers: [
-      <div key="project_summary_exp_table_data_category">
-        Experimental Strategy
-      </div>,
-      <div key="project_summary_exp_table_cases_header" className="flex">
-        <div className="basis-1/3 text-right">Cases</div>
-        <div className="basis-2/3 pl-1">
-          (n={projectData.summary.case_count.toLocaleString()})
-        </div>
-      </div>,
-      <div key="project_summary_exp_table_files_header" className="flex">
-        <div className="basis-1/3 text-right">Files</div>
-        <div className="basis-2/3 pl-1">
-          (n={projectData.summary.file_count.toLocaleString()})
-        </div>
-      </div>,
-    ],
-    tableRows: rows,
-  };
+  return { data: sortedExpStrategies, columns: expCategoryTableColumns };
 };
