@@ -100,7 +100,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState(
     searchTermsForGene?.geneId ?? "",
   );
-
   const [
     downloadMutationsFrequencyActive,
     setDownloadMutationsFrequencyActive,
@@ -325,7 +324,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
   };
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -341,7 +340,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         setPage(1);
         break;
     }
-  }, []);
+  };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [rowId, setRowId] = useState(-1);

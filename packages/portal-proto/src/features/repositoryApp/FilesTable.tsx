@@ -343,24 +343,21 @@ const FilesTables: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = useCallback(
-    (obj: HandleChangeInput) => {
-      switch (Object.keys(obj)?.[0]) {
-        case "newPageSize":
-          setOffset(0);
-          setPageSize(parseInt(obj.newPageSize));
-          break;
-        case "newPageNumber":
-          setOffset(obj.newPageNumber - 1);
-          break;
-        case "newSearch":
-          setOffset(0);
-          newSearchActions(obj.newSearch);
-          break;
-      }
-    },
-    [newSearchActions],
-  );
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        newSearchActions(obj.newSearch);
+        break;
+    }
+  };
 
   const handleDownloadJSON = async () => {
     await download({
