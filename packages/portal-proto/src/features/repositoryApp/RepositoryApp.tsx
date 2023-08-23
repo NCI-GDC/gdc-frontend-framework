@@ -112,7 +112,7 @@ export const RepositoryApp = (): JSX.Element => {
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex mt-4 mx-3">
+        <div className="flex mt-4 mx-4">
           <div className="w-1/4">
             <FileFacetPanel />
           </div>
@@ -121,7 +121,7 @@ export const RepositoryApp = (): JSX.Element => {
             data-testid="repository-table"
           >
             <div className="flex justify-end align-center">
-              <div className="flex justify-end gap-2 mb-6">
+              <div className="flex justify-end gap-2 mt-9 mb-4">
                 <DownloadButton
                   data-testid="button-manifest-files-table"
                   customStyle={`

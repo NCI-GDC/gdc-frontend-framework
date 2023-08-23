@@ -117,7 +117,7 @@ export const FileFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 mr-3">
+    <div className="flex flex-col gap-y-2 mr-3 mb-4">
       <Group position="apart">
         <Text
           size="lg"
@@ -144,7 +144,7 @@ export const FileFacetPanel = (): JSX.Element => {
         variant="outline"
         aria-label="Add a file filter"
         data-testid="button-add-a-file-filter"
-        className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
+        className="bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2 mb-2"
         onClick={() => setOpened(true)}
       >
         <AddAdditionalIcon className="text-primary-content" size="2em" />
