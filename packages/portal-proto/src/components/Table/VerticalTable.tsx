@@ -208,11 +208,11 @@ function VerticalTable<TData>({
           {tableTitle && (
             <caption className="font-semibold text-left">{tableTitle}</caption>
           )}
-          <thead className="h-14">
+          <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
                 key={headerGroup.id}
-                className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full"
+                className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
                   return columnSorting === "none" ? (
@@ -287,7 +287,7 @@ function VerticalTable<TData>({
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={row.id}>
                 <tr
-                  className={`border border-base-lighter ${
+                  className={`border border-base-lighter max-h-10 ${
                     index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                   }`}
                 >

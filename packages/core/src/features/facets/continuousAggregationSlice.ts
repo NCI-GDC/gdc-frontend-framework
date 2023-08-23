@@ -139,7 +139,4 @@ export const selectRangeFacets = (
 export const selectRangeFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const ranges = state.facetsGQL.ranges;
-  return ranges[field];
-};
+): FacetBuckets => state.facetsGQL.ranges[field];

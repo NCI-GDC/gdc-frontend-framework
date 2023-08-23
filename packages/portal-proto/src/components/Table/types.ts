@@ -138,7 +138,6 @@ export interface TableProps<TData> {
   showControls?: boolean;
   /**
    * optional callback to handle changes
-   *  remember to wrap handleChange in useCallback hook
    */
   handleChange?: (obj: HandleChangeInput) => void;
   /**
