@@ -177,7 +177,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         Configure your bins, then click <b>Save Bins</b> to update the analysis
         plots.
       </p>
-      <div className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content">
+      <div
+        data-testid="text-available-bin-values"
+        className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content"
+      >
         <p>
           Available values from <b>{stats.min}</b> to{" "}
           <b>
@@ -200,6 +203,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               onClick={() => setBinMethod("interval")}
             >
               <Radio
+                data-testid="button-select-set-interval"
                 className="px-2"
                 value="interval"
                 name="binMethod"
@@ -224,6 +228,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   input:
                     binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
+                data-testid="textbox-set-interval-size"
               />
               <label
                 htmlFor="continuous-bin-modal-interval-min"
@@ -239,6 +244,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   input:
                     binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
+                data-testid="textbox-set-interval-min"
               />
               <label
                 htmlFor="continuous-bin-modal-interval-max"
@@ -254,10 +260,12 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   input:
                     binMethod === "ranges" ? "bg-base-lightest" : undefined,
                 }}
+                data-testid="textbox-set-interval-max"
               />
             </div>
           </div>
           <FunctionButton
+            data-testid="button-reset-bins"
             aria-label="reset bins"
             className="p-2"
             onClick={() => {
@@ -293,6 +301,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         >
           <div className="flex mb-4">
             <Radio
+              data-testid="button-select-custom-interval"
               value="ranges"
               name="binMethod"
               aria-label="select range"
@@ -324,6 +333,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   <td>
                     <TextInput
                       {...rangeForm.getInputProps(`ranges.${idx}.name`)}
+                      data-testid="textbox-range-name"
                       aria-label="range name"
                       classNames={{
                         wrapper: "w-11/12",
@@ -342,6 +352,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   <td>
                     <TextInput
                       {...rangeForm.getInputProps(`ranges.${idx}.from`)}
+                      data-testid="textbox-range-from"
                       aria-label="range from"
                       classNames={{
                         wrapper: "w-11/12",
@@ -360,6 +371,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   <td>
                     <TextInput
                       {...rangeForm.getInputProps(`ranges.${idx}.to`)}
+                      data-testid="textbox-range-to"
                       aria-label="range to"
                       classNames={{
                         wrapper: "w-11/12",
@@ -378,6 +390,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                   <td className="float-right">
                     {idx === rangeForm.values.ranges.length - 1 ? (
                       <FunctionButton
+                        data-testid="button-range-add"
                         leftIcon={<PlusIcon />}
                         onClick={() => {
                           const result = rangeForm.validate();
@@ -405,6 +418,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       </FunctionButton>
                     ) : (
                       <FunctionButton
+                        data-testid="button-range-delete"
                         onClick={() => {
                           rangeForm.removeListItem("ranges", idx);
                           setSavedRangeRows(
@@ -425,6 +439,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       </div>
       <div className="mt-2 flex gap-2 justify-end">
         <Button
+          data-testid="button-cancel"
           variant="outline"
           color="primary.5"
           onClick={() => setModalOpen(false)}
@@ -432,6 +447,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           Cancel
         </Button>
         <Button
+          data-testid="button-save-bins"
           className="bg-primary-darkest text-primary-contrast-darkest disabled:bg-opacity-60 disabled:text-opacity-60"
           onClick={saveBins}
           disabled={
