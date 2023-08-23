@@ -61,7 +61,8 @@ const useCohortCentricFiles = () => {
   const { data: imagesCount } = useImageCounts(allFilters);
 
   return {
-    allFilters,
+    caseFilters: cohortFilters,
+    localFilters: repositoryFilters,
     pagination: fileData?.pagination,
     repositoryFilters,
     imagesCount,
@@ -72,15 +73,20 @@ export const RepositoryApp = (): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const router = useRouter();
-  const { allFilters, pagination, repositoryFilters, imagesCount } =
-    useCohortCentricFiles();
+  const {
+    caseFilters,
+    localFilters,
+    pagination,
+    repositoryFilters,
+    imagesCount,
+  } = useCohortCentricFiles();
   const [
     getFileSizeSliceData, // This is the mutation trigger
     { isLoading: allFilesLoading }, // This is the destructured mutation result
   ] = useGetAllFilesMutation();
 
-  const getAllSelectedFiles = (callback, filters) => {
-    getFileSizeSliceData(filters)
+  const getAllSelectedFiles = (callback, caseFilters, localFilters) => {
+    getFileSizeSliceData({ caseFilters: caseFilters, filters: localFilters })
       .unwrap()
       .then((data: GdcFile[]) => {
         return mapGdcFileToCartFile(data);
@@ -101,7 +107,7 @@ export const RepositoryApp = (): JSX.Element => {
       },
       mode: "and",
     };
-    return buildCohortGqlOperator(joinFilters(allFilters, cartFilterSet));
+    return buildCohortGqlOperator(joinFilters(localFilters, cartFilterSet));
   };
   const [active, setActive] = useState(false);
 
@@ -154,7 +160,8 @@ export const RepositoryApp = (): JSX.Element => {
                   extraParams={{
                     return_type: "manifest",
                   }}
-                  filters={buildCohortGqlOperator(allFilters)}
+                  caseFilters={buildCohortGqlOperator(caseFilters)}
+                  filters={buildCohortGqlOperator(localFilters)}
                   setActive={setActive}
                   active={active}
                 />
@@ -193,7 +200,8 @@ export const RepositoryApp = (): JSX.Element => {
                     } else {
                       getAllSelectedFiles(
                         addToCart,
-                        buildCohortGqlOperator(allFilters),
+                        buildCohortGqlOperator(caseFilters),
+                        buildCohortGqlOperator(localFilters),
                       );
                     }
                   }}
@@ -207,6 +215,7 @@ export const RepositoryApp = (): JSX.Element => {
                   onClick={() => {
                     getAllSelectedFiles(
                       removeFromCart,
+                      buildCohortGqlOperator(caseFilters),
                       buildCohortGqlOperatorWithCart(),
                     );
                   }}

@@ -13,6 +13,7 @@ interface DownloadButtonProps {
   size?: number;
   format?: string;
   fields?: Array<string>;
+  caseFilters?: Record<string, any>;
   filters?: Record<string, any>;
   extraParams?: Record<string, any>;
   method?: string;
@@ -42,6 +43,7 @@ export const DownloadButton = forwardRef<
       size = 10000,
       format = "JSON",
       fields = [],
+      caseFilters = {},
       filters = {},
       inactiveText,
       activeText,
@@ -95,6 +97,7 @@ export const DownloadButton = forwardRef<
               attachment: true,
               format,
               fields: fields.join(),
+              case_filters: caseFilters,
               filters,
               pretty: true,
               ...(filename ? { filename } : {}),

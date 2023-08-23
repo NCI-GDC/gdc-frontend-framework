@@ -292,6 +292,9 @@ const download = async ({
           ...(params.filters
             ? { filters: JSON.stringify(params.filters) }
             : {}),
+          ...(params.case_filters
+            ? { case_filters: JSON.stringify(params.case_filters) }
+            : {}),
         },
         replacer,
       );
