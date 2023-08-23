@@ -381,7 +381,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full rounded-r-md text-white"
+        className="bg-accent p-0 m-0 h-full rounded-r-sm text-white"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >
