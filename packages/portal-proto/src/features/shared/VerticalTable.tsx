@@ -600,7 +600,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
                   aria-label="Table Search Input"
                   classNames={{
                     input:
-                      "border-base-lighter focus:border-2 focus:drop-shadow-xl",
+                      "border-base-lighter focus:border-2 focus:border-primary",
                     wrapper: "w-72",
                   }}
                   size="sm"

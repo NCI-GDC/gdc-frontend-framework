@@ -139,7 +139,7 @@ export const QuickSearch = (): JSX.Element => {
           onFocus={onInputFocus}
           onBlur={onInputBlur}
           classNames={{
-            input: "focus:border-2 focus:drop-shadow-xl text-sm",
+            input: "focus:border-2 focus:border-primary text-sm",
           }}
           size="sm"
           rightSection={

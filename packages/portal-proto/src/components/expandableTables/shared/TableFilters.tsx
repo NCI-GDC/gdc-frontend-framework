@@ -47,7 +47,7 @@ const TableFilters: React.FC<TableFiltersProps> = ({
         aria-label={ariaText}
         classNames={{
           input:
-            "focus:border-primary focus:border-2 focus:drop-shadow-xl border-base-lighter",
+            "focus:border-primary focus:border-2 focus:border-primary border-base-lighter",
           wrapper: "w-72",
         }}
         size="sm"
