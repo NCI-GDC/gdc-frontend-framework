@@ -325,7 +325,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData = Object.keys(SurvivalPlotTypes).includes(plotType)
+  const hasEnoughData = [
+    "gene",
+    "mutation",
+    "categorical",
+    "continuous",
+  ].includes(plotType)
     ? enoughDataOnSomeCurves(plotData)
     : enoughData(plotData);
 
