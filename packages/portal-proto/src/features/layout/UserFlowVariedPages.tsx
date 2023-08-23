@@ -155,9 +155,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <div
-        className={`${
-          isContextBarSticky ? `sticky z-[299] drop-shadow-lg` : ""
-        }`}
+        className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
         style={{
           top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
         }}
