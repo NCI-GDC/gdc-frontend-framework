@@ -51,7 +51,7 @@ export const useGenerateCasesTableColumns = ({
   casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
-}) => {
+}): ColumnDef<casesTableDataType>[] => {
   const dispatch = useCoreDispatch();
   const CasesTableDefaultColumns = useMemo<ColumnDef<casesTableDataType>[]>(
     () => [
@@ -192,8 +192,6 @@ export const useGenerateCasesTableColumns = ({
             />
           </OverflowTooltippedLabel>
         ),
-
-        // enableSorting: true,
       }),
       casesDataColumnHelper.accessor("case_uuid", {
         id: "case_uuid",

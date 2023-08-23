@@ -1,12 +1,8 @@
 import fileSize from "filesize";
 import { CartFile } from "@gff/core";
-import { VerticalTable } from "@/features/shared/VerticalTable";
-
-const columnListOrder = [
-  { id: "level", columnName: "Level", visible: true },
-  { id: "files", columnName: "Files", visible: true },
-  { id: "file_size", columnName: "File Size", visible: true },
-];
+import { createColumnHelper } from "@tanstack/react-table";
+import { useMemo } from "react";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 interface AuthorizationTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
@@ -15,7 +11,7 @@ interface AuthorizationTableProps {
 const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
   filesByCanAccess,
 }: AuthorizationTableProps) => {
-  const tableData = [
+  const authorizationTableData = [
     {
       level: "Authorized",
       files: filesByCanAccess?.true?.length || 0,
@@ -36,12 +32,31 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
     },
   ];
 
+  const authorizationTableColumnHelper =
+    createColumnHelper<typeof authorizationTableData[0]>();
+
+  const authorizationTableColumns = useMemo(
+    () => [
+      authorizationTableColumnHelper.accessor("level", {
+        id: "level",
+        header: "Level",
+      }),
+      authorizationTableColumnHelper.accessor("files", {
+        id: "files",
+        header: "Files",
+      }),
+      authorizationTableColumnHelper.accessor("file_size", {
+        id: "file_size",
+        header: "File Size",
+      }),
+    ],
+    [authorizationTableColumnHelper],
+  );
+
   return (
     <VerticalTable
-      tableData={tableData}
-      columns={columnListOrder}
-      showControls={false}
-      selectableRow={false}
+      data={authorizationTableData}
+      columns={authorizationTableColumns}
     />
   );
 };

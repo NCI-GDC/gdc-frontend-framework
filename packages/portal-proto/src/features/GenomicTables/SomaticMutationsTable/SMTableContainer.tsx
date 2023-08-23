@@ -25,7 +25,6 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
-
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
@@ -324,7 +323,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
   };
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -340,7 +339,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         setPage(1);
         break;
     }
-  }, []);
+  };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [rowId, setRowId] = useState(-1);
@@ -359,7 +358,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     <>
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
         <>
-          {searchTermsForGene.geneSymbol && (
+          {searchTermsForGene?.geneSymbol && (
             <div id="announce" aria-live="polite">
               <p>
                 You are now viewing the Mutations table filtered by{" "}

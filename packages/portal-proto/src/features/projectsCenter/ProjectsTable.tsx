@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
@@ -42,11 +36,9 @@ import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
-import { FaCircle as Circle } from "react-icons/fa";
 import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
-import { animated, useSpring } from "@react-spring/web";
-import { useMeasure } from "react-use";
+import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 
 type ProjectDataType = {
   project: string;
@@ -343,7 +335,7 @@ const ProjectsTable: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -359,7 +351,7 @@ const ProjectsTable: React.FC = () => {
         setExpanded({});
         break;
     }
-  }, []);
+  };
 
   const handleDownloadJSON = async () => {
     await download({
@@ -452,7 +444,7 @@ const ProjectsTable: React.FC = () => {
       getRowCanExpand={() => true}
       expandableColumnIds={["disease_type", "primary_site"]}
       renderSubComponent={({ row, clickedColumnId }) => (
-        <CreateContent row={row} columnId={clickedColumnId} />
+        <SubrowPrimarySiteDiseaseType row={row} columnId={clickedColumnId} />
       )}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
@@ -463,7 +455,6 @@ const ProjectsTable: React.FC = () => {
       columnVisibility={columnVisibility}
       columnOrder={columnOrder}
       setColumnOrder={setColumnOrder}
-      initialSort={[{ id: "cases", desc: true }]}
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}
@@ -473,47 +464,4 @@ const ProjectsTable: React.FC = () => {
   );
 };
 
-const CreateContent = ({
-  row,
-  columnId,
-}: {
-  row: Row<ProjectDataType>;
-  columnId: string;
-}): JSX.Element => {
-  const values =
-    columnId === "disease_type"
-      ? row?.original?.disease_type
-      : row?.original?.primary_site;
-  const title = columnId === "disease_type" ? "Disease Type" : "Primary Site";
-
-  const [subRef, { width, height }] = useMeasure();
-
-  const fudgeFactor = width / 60;
-
-  const verticalSpring = useSpring({
-    from: { opacity: 0.25, height: 50 },
-    to: {
-      opacity: 1,
-      height: height + fudgeFactor,
-    },
-    immediate: true,
-  });
-
-  return (
-    <>
-      <animated.div ref={subRef} className="absolute mt-2 ml-2">
-        <div className="font-semibold text-[1rem] mb-2">{title}</div>
-        <div className="columns-4 gap-4 font-content text-sm">
-          {values.sort().map((value) => (
-            <div className="flex flex-row items-center" key={value}>
-              <Circle size="0.65em" className="text-primary shrink-0" />
-              <p className="pl-2">{value}</p>
-            </div>
-          ))}
-        </div>
-      </animated.div>
-      <animated.div style={verticalSpring}></animated.div>
-    </>
-  );
-};
 export default ProjectsTable;

@@ -329,7 +329,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   };
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setPageSize(parseInt(obj.newPageSize));
@@ -345,7 +345,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setExpanded({});
         break;
     }
-  }, []);
+  };
 
   return (
     <>

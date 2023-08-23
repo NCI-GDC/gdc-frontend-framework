@@ -103,7 +103,6 @@ export const ContextualCasesView: React.FC = () => {
     searchTerm,
   });
 
-  // TODO: comeback to this
   useEffect(() => {
     setRowSelection({});
     setOffset(0);
@@ -371,7 +370,7 @@ export const ContextualCasesView: React.FC = () => {
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
 
       <VerticalTable
-        data={casesData || []}
+        data={casesData}
         columns={casesTableDefaultColumns}
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
