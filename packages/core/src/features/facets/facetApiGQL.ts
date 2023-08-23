@@ -78,11 +78,13 @@ export interface AliasedFieldQuery {
  * @param facetNames - array of { facetNames, and optionally an alias}
  * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
  * @param index - which GraphQL index to query
+ * @param useCaseFilters - whether to use case filters or not
  */
 export const buildGraphGLBucketsQuery = (
   facetNames: ReadonlyArray<AliasedFieldQuery>,
   docType: GQLDocType,
   index: GQLIndexType = "explore",
+  useCaseFilters = false,
 ): string => {
   const queriedFacets = facetNames.map((facet: AliasedFieldQuery) => {
     return facet.alias !== undefined
@@ -112,11 +114,14 @@ export const buildGraphGLBucketsQuery = (
         }
      }`;
   else
-    return `query QueryBucketCounts($filters: FiltersArgument) {
+    return `query QueryBucketCounts(${
+      useCaseFilters ? "$case_filters: FiltersArgument, " : ""
+    }$filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
+                ${useCaseFilters ? "case_filters: $case_filters," : ""}
                 filters:$filters,
                 aggregations_filter_themselves: false
               ) {
