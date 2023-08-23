@@ -377,6 +377,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
         {tableTitle && (
           <caption className="font-semibold text-left">{tableTitle}</caption>
         )}
+
         <thead className="h-14">
           {headerGroups.map((headerGroup, key) => (
             <tr
