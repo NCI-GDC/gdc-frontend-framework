@@ -15,7 +15,6 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
   bold = false,
 }: CountButtonProp) => {
   const cohortCounts = useCurrentCohortCounts();
-  console.log("CohortCountButton", cohortCounts);
   const adjustedLabel =
     cohortCounts.data !== undefined && cohortCounts.data[countName] !== 1
       ? label

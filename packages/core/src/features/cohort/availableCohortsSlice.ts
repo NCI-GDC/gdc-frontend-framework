@@ -954,16 +954,7 @@ const slice = createSlice({
           cohortsAdapter.updateOne(state, {
             id: action.meta.arg ?? getCurrentCohort(state),
             changes: {
-              counts: {
-                caseCount: -1,
-                fileCount: -1,
-                genesCount: -1,
-                mutationCount: -1,
-                ssmCaseCount: -1,
-                sequenceReadCaseCount: -1,
-                repositoryCaseCount: -1,
-                status: "pending",
-              },
+              counts: { ...NullCountsData, status: "pending" },
             },
           });
         } else {

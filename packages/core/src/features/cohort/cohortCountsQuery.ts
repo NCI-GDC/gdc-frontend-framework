@@ -92,7 +92,6 @@ export const fetchCohortCaseCounts = createAsyncThunk<
 >(
   "cohort/CohortCounts",
   async (cohortId, thunkAPI): Promise<GraphQLApiResponse> => {
-    console.log("fetchCohortCaseCounts", cohortId);
     const cohortFilters = cohortId
       ? selectCohortFilterSetById(thunkAPI.getState(), cohortId)
       : selectCurrentCohortFilterSet(thunkAPI.getState());
