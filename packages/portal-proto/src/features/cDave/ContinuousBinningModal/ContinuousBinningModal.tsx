@@ -439,7 +439,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       </div>
       <div className="mt-2 flex gap-2 justify-end">
         <Button
-          data-testid="button-cancel"
+          data-testid="button-custom-bins-cancel"
           variant="outline"
           color="primary.5"
           onClick={() => setModalOpen(false)}
@@ -447,7 +447,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           Cancel
         </Button>
         <Button
-          data-testid="button-save-bins"
+          data-testid="button-custom-bins-save"
           className="bg-primary-darkest text-primary-contrast-darkest disabled:bg-opacity-60 disabled:text-opacity-60"
           onClick={saveBins}
           disabled={
