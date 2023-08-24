@@ -1,55 +1,22 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useGetProjectPrimarySitesQuery } from "@gff/core";
-import { Row } from "react-table";
-import {
-  VerticalTable,
-  HandleChangeInput,
-  Columns,
-} from "@/features/shared/VerticalTable";
 import { HeaderTitle } from "../shared/tailwindComponents";
-import CollapsibleRow from "@/features/shared/CollapsibleRow";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
-
-interface CellProps {
-  value: string[];
-  row: Row;
-}
-const columnListOrderStart: Columns[] = [
-  {
-    id: "primary_site",
-    columnName: "Primary Site",
-    visible: true,
-  },
-  {
-    id: "disease_type",
-    columnName: "Disease Type",
-    visible: true,
-    disableSortBy: true,
-    Cell: ({ value, row }: CellProps) => {
-      return <CollapsibleRow value={value} row={row} label="Disease Types" />;
-    },
-  },
-  {
-    id: "cases",
-    columnName: "Cases",
-    visible: true,
-    sortingFn: (rowA, rowB) => rowA.caseNum - rowB.caseNum,
-  },
-  {
-    id: "experimental_strategy",
-    columnName: "Experimental Strategy",
-    visible: true,
-    disableSortBy: true,
-  },
-  {
-    id: "files",
-    columnName: "Files",
-    visible: true,
-    Cell: ({ value }: CellProps) => <>{value?.toLocaleString()}</>,
-  },
-];
+import { useDeepCompareMemo } from "use-deep-compare";
+import {
+  ColumnOrderState,
+  ExpandedState,
+  Row,
+  SortingState,
+  VisibilityState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { HandleChangeInput } from "@/components/Table/types";
+import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
+import { generateSortingFn } from "@/utils/index";
+import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;
@@ -60,11 +27,12 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   projectId,
   primarySites,
 }: PrimarySiteTableProps) => {
-  const [tableData, setTableData] = useState([]);
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [columnListOrder, setColumnListOrder] = useState(columnListOrderStart);
-  const projectData = primarySites.map((primary_site) => {
+  const primarySiteData = primarySites.map((primary_site) => {
+    // TODO: will come back to this when we have more time
+    // this can be made better by looping inside rtk query instead of here
+    // eslint-disable-next-line
     const { isError, isLoading, data } = useGetProjectPrimarySitesQuery({
       projectId,
       primary_site,
@@ -78,83 +46,122 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     };
   });
 
-  const allQueriesLoaded = projectData.every((query) => !query.isLoading);
+  const allQueriesLoaded = primarySiteData.every((query) => !query.isLoading);
 
-  console.log({ allQueriesLoaded, projectData });
+  const formattedData = useDeepCompareMemo(
+    () =>
+      allQueriesLoaded
+        ? primarySiteData?.map((datum) => ({
+            primary_site: datum.primary_site,
+            disease_type: datum.data.disease_types,
+            cases: datum.data.casesTotal,
+            experimental_strategy: datum.data.files__experimental_strategy,
+            files: datum.data.filesTotal,
+          }))
+        : [],
+    [allQueriesLoaded, primarySiteData],
+  );
 
-  // useEffect(() => {
-  //   //Check if all data is loaded before showing
-  //   setTableData(
-  //     primarySiteDetailsPromises.map((obj) => {
-  //       if (obj.data) {
-  //         return {
-  //           primary_site: obj.originalArgs.primary_site,
-  //           disease_type: obj.data.disease_types,
-  //           cases: (
-  //             <CohortCreationButtonWrapper
-  //               label={obj.data.casesTotal?.toLocaleString()}
-  //               numCases={obj.data.casesTotal}
-  //               caseFilters={{
-  //                 mode: "and",
-  //                 root: {
-  //                   "cases.project.project_id": {
-  //                     field: "cases.project.project_id",
-  //                     operator: "includes",
-  //                     operands: [projectId],
-  //                   },
-  //                   "cases.primary_site": {
-  //                     field: "cases.primary_site",
-  //                     operator: "includes",
-  //                     operands: [obj.originalArgs.primary_site.toLowerCase()],
-  //                   },
-  //                 },
-  //               }}
-  //             />
-  //           ),
-  //           caseNum: obj.data.casesTotal,
-  //           experimental_strategy:
-  //             obj.data.files__experimental_strategy.join(", "),
-  //           files: obj.data.filesTotal,
-  //         };
-  //       } else {
-  //         return {
-  //           primary_site: obj?.originalArgs?.primary_site,
-  //         };
-  //       }
-  //     }),
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [loadingData]);
+  const primarySitesTableColumnHelper =
+    createColumnHelper<typeof formattedData[0]>();
+
+  const primarySitesTableColumns = useMemo(
+    () => [
+      primarySitesTableColumnHelper.accessor("primary_site", {
+        id: "primary_site",
+        header: "Primary Site",
+      }),
+      primarySitesTableColumnHelper.accessor("disease_type", {
+        id: "disease_type",
+        header: "Disease Type",
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Disease Types"
+            isRowExpanded={row.getIsExpanded()}
+          />
+        ),
+      }),
+      primarySitesTableColumnHelper.accessor("cases", {
+        id: "cases",
+        header: "Cases",
+        cell: ({ row }) => (
+          <CohortCreationButtonWrapper
+            label={row.original.cases?.toLocaleString()}
+            numCases={row.original.cases}
+            caseFilters={{
+              mode: "and",
+              root: {
+                "cases.project.project_id": {
+                  field: "cases.project.project_id",
+                  operator: "includes",
+                  operands: [projectId],
+                },
+                "cases.primary_site": {
+                  field: "cases.primary_site",
+                  operator: "includes",
+                  operands: [row.original.primary_site.toLowerCase()],
+                },
+              },
+            }}
+          />
+        ),
+      }),
+      primarySitesTableColumnHelper.accessor("experimental_strategy", {
+        id: "experimental_strategy",
+        header: "Experimental Strategy",
+        enableSorting: false,
+      }),
+      primarySitesTableColumnHelper.accessor("files", {
+        id: "files",
+        header: "Files",
+      }),
+    ],
+    [primarySitesTableColumnHelper, projectId],
+  );
 
   useEffect(() => {
-    if (searchTerm?.trim()) {
+    if (searchTerm) {
       setFilteredTableData(
-        tableData.filter((obj) => {
+        formattedData.filter((obj) => {
           return obj.primary_site?.toLowerCase().indexOf(searchTerm) > -1;
         }),
       );
     } else {
-      setFilteredTableData(tableData);
+      setFilteredTableData(formattedData);
     }
-  }, [searchTerm, tableData]);
+  }, [searchTerm, formattedData]);
+
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    primarySitesTableColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "primary_site",
+      desc: true,
+    },
+  ]);
+
+  const customSortingFns = useMemo(
+    () => ({
+      cases: generateSortingFn("cases"),
+    }),
+    [],
+  );
 
   const {
     handlePageChange,
     handlePageSizeChange,
+    handleSortByChange,
     displayedData,
     ...paginationProps
-  } = useStandardPagination(filteredTableData);
+  } = useStandardPagination(filteredTableData, customSortingFns);
 
-  // useEffect(() => {
-  //   // set default on load to be sorted by primary site
-  //   handleSortByChange([
-  //     {
-  //       id: "primary_site",
-  //       desc: true,
-  //     },
-  //   ]);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [loadingData]);
+  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -170,18 +177,42 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     }
   };
 
+  const handleExpand = (
+    row: Row<typeof formattedData[0]>,
+    columnId: string,
+  ) => {
+    if (Object.keys(expanded).length > 0 && row.index === expandedRowId) {
+      setExpanded({});
+    } else if ((row.original[columnId] as string[]).length > 1) {
+      setExpanded({ [row.index]: true });
+      setExpandedRowId(row.index);
+    }
+  };
+
   return (
     <VerticalTable
       tableTitle={`Total of ${paginationProps?.total?.toLocaleString()} Primary Sites`}
-      tableData={displayedData}
-      columns={columnListOrder}
-      selectableRow={false}
+      data={displayedData}
+      columns={primarySitesTableColumns}
       additionalControls={
         <div className="self-end">
           <HeaderTitle>Primary Sites</HeaderTitle>
         </div>
       }
       columnSorting="manual"
+      sorting={sorting}
+      setSorting={setSorting}
+      expanded={expanded}
+      getRowCanExpand={() => true}
+      setExpanded={handleExpand}
+      expandableColumnIds={["disease_type"]}
+      renderSubComponent={({ row, clickedColumnId }) => (
+        <SubrowPrimarySiteDiseaseType row={row} columnId={clickedColumnId} />
+      )}
+      setColumnVisibility={setColumnVisibility}
+      columnVisibility={columnVisibility}
+      columnOrder={columnOrder}
+      setColumnOrder={setColumnOrder}
       pagination={{
         ...paginationProps,
         label: "Primary Sites",
@@ -190,13 +221,8 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       search={{
         enabled: true,
       }}
+      showControls={true}
       handleChange={handleChange}
-      initialSort={[
-        {
-          id: "primary_site",
-          desc: true,
-        },
-      ]}
     />
   );
 };

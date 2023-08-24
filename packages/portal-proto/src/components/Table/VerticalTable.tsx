@@ -13,7 +13,7 @@ import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
-import { isEqual } from "lodash";
+import { isEqual, debounce } from "lodash";
 
 function VerticalTable<TData>({
   columns,
@@ -46,7 +46,6 @@ function VerticalTable<TData>({
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const inputRef = useRef(null);
-  const timeoutRef = useRef(null);
 
   // TODO: status fufilled is to be sent for all the tables (even without api calls)
   // also need in pagination (do sth about it)
@@ -125,22 +124,20 @@ function VerticalTable<TData>({
       });
   };
 
+  const debouncedSearch = debounce(
+    (newSearchTerm) => handleChange({ newSearch: newSearchTerm }),
+    400,
+  );
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value.trim();
     setSearchTerm(newSearchTerm);
 
-    // Clear the previous timeout
-    clearTimeout(timeoutRef.current);
-
-    // Set a new timeout to perform the search after 400ms
-    timeoutRef.current = setTimeout(() => {
-      handleChange({ newSearch: newSearchTerm });
-    }, 400);
+    debouncedSearch(newSearchTerm);
   };
 
   const handleClearClick = () => {
     setSearchTerm("");
-    clearTimeout(timeoutRef.current);
     handleChange({ newSearch: "" });
   };
 
@@ -312,7 +309,7 @@ function VerticalTable<TData>({
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>
                         ) : (
-                          <> {flexRender(columnDefCell, cell.getContext())}</>
+                          <>{flexRender(columnDefCell, cell.getContext())}</>
                         )}
                       </td>
                     );

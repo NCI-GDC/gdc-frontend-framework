@@ -57,10 +57,8 @@ function useStandardPagination<TData>(
         // check if special instructions
         if (customSortingFns[obj.id]) {
           // sort by sortingFn
-          console.log("here: ", customSortingFns[obj.id], obj);
           tempData.sort(customSortingFns[obj.id]);
           if (obj.desc) {
-            console.log("reversing");
             tempData.reverse();
           }
         } else {
@@ -83,10 +81,10 @@ function useStandardPagination<TData>(
               if (Array.isArray(tempData[0][obj.id])) {
                 //if array sort by length
                 tempData.sort((a, b) => {
-                  if (a[obj.id].length < b[obj.id].length) {
+                  if (a[obj.id].length > b[obj.id].length) {
                     return obj.desc ? -1 : 1;
                   }
-                  if (a[obj.id].length > b[obj.id].length) {
+                  if (a[obj.id].length < b[obj.id].length) {
                     return obj.desc ? 1 : -1;
                   }
                   //If same length sort by first item

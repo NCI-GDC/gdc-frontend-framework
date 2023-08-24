@@ -637,6 +637,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             sorting={summaryTablesorting}
             setSorting={setSummaryTableSorting}
             columnSorting="enable"
+            status={isFetching ? "pending" : "fulfilled"}
           />
           <div className="m-8" />
           <VerticalTable

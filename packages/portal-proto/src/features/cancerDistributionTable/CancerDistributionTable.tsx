@@ -11,11 +11,8 @@ import {
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { calculatePercentageAsNumber } from "src/utils";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
+import { calculatePercentageAsNumber, generateSortingFn } from "src/utils";
+
 import { NumeratorDenominator } from "@/components/expandableTables/shared";
 import { CohortCreationButton } from "@/components/CohortCreationButton/";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
@@ -37,6 +34,7 @@ import {
   handleTSVDownload,
 } from "./utils";
 import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
+import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,
@@ -151,18 +149,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     },
   ]);
 
-  const generateSortingFn =
-    (property: string) =>
-    (rowA: CancerDistributionDataType, rowB: CancerDistributionDataType) => {
-      if (rowA[property] > rowB[property]) {
-        return 1;
-      }
-      if (rowA[property] < rowB[property]) {
-        return -1;
-      }
-      return 0;
-    };
-
   const customSortingFns = useMemo(
     () => ({
       "#_ssm_affected_cases": generateSortingFn("ssm_percent"),
@@ -234,69 +220,26 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       cancerDistributionTableColumnHelper.accessor("disease_type", {
         id: "disease_type",
         header: "Disease Type",
-        cell: ({ row, getValue }) => {
-          return getValue()?.length === 0
-            ? "--"
-            : getValue()?.length === 1
-            ? getValue()
-            : row.getCanExpand() && (
-                <div
-                  aria-label="Expand section"
-                  className="flex items-center text-primary cursor-pointer gap-2"
-                >
-                  {row.getIsExpanded() &&
-                  expandedColumnId === "disease_type" ? (
-                    <UpIcon size="1.25em" className="text-accent" />
-                  ) : (
-                    <DownIcon size="1.25em" className="text-accent" />
-                  )}
-                  <span
-                    className={`whitespace-nowrap ${
-                      row.getIsExpanded() &&
-                      expandedColumnId === "disease_type" &&
-                      "font-bold"
-                    }`}
-                  >
-                    {getValue()?.length.toLocaleString().padStart(6)} Disease
-                    Types
-                  </span>
-                </div>
-              );
-        },
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Disease Types"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "disease_type"}
+          />
+        ),
       }),
       cancerDistributionTableColumnHelper.accessor("primary_site", {
         id: "primary_site",
         header: "Primary Site",
-        cell: ({ row, getValue }) => {
-          return getValue()?.length === 0
-            ? "--"
-            : getValue()?.length === 1
-            ? getValue()
-            : row.getCanExpand() && (
-                <div
-                  aria-label="Expand section"
-                  className="flex items-center text-primary cursor-pointer gap-2"
-                >
-                  {row.getIsExpanded() &&
-                  expandedColumnId === "primary_site" ? (
-                    <UpIcon size="1.25em" className="text-accent" />
-                  ) : (
-                    <DownIcon size="1.25em" className="text-accent" />
-                  )}
-
-                  <span
-                    className={`whitespace-nowrap ${
-                      row.getIsExpanded() &&
-                      expandedColumnId === "primary_site" &&
-                      "font-bold"
-                    }`}
-                  >
-                    {getValue()?.length.toLocaleString().padStart(6)} Primary
-                    Sites
-                  </span>
-                </div>
-              );
-        },
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Primary Sites"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "primary_site"}
+          />
+        ),
       }),
       cancerDistributionTableColumnHelper.accessor("ssm_percent", {
         id: "#_ssm_affected_cases",

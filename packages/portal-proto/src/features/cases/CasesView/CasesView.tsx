@@ -149,7 +149,6 @@ export const ContextualCasesView: React.FC = () => {
           .map(([index]) => (casesData[index] as casesTableDataType)?.case_uuid)
       : [];
 
-  console.log({ rowSelection, pickedCases });
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     casesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
