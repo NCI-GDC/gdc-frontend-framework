@@ -53,7 +53,7 @@ const CardControls: React.FC<CardControlsProps> = ({
           />
           <ButtonTooltip label=" " comingSoon={true}>
             <Button
-              data-testid="button-tsv"
+              data-testid="button-tsv-cdave-card"
               className="bg-base-max text-primary border-primary"
             >
               TSV
