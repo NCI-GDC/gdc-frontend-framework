@@ -130,7 +130,13 @@ export const QuickSearch = (): JSX.Element => {
     <>
       <div ref={ref} className="relative">
         <TextInput
-          icon={isFetching ? <Loader size={24} /> : <SearchIcon size={24} />}
+          icon={
+            isFetching ? (
+              <Loader size={24} />
+            ) : (
+              <SearchIcon size={24} className="text-primary" />
+            )
+          }
           placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
           data-testid="textbox-quick-search-bar"
           aria-label="Quick Search Input"

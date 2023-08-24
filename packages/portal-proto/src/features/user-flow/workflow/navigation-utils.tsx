@@ -14,16 +14,20 @@ font-heading
 text-sm
 font-medium
 text-base-darker
-pr-4
+p-1
+mr-2
+hover:rounded-md 
+hover:bg-primary-lightest
 `;
 
 export const headerElements = [
   <Tooltip
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
-    position="bottom-start"
+    position="bottom"
     multiline
     width={220}
+    withArrow
   >
     <NavLink
       href={{
@@ -34,7 +38,7 @@ export const headerElements = [
       aria-label="analysis center button"
     >
       <AnalysisCenterIcon
-        aria-label="Analysis logo"
+        aria-label="Analysis Center logo"
         width={24}
         height={24}
         viewBox="0 0 500 500"
@@ -46,9 +50,10 @@ export const headerElements = [
   <Tooltip
     key="Studies"
     label="View the projects available within the GDC and select them for further exploration and analysis."
-    position="bottom-start"
+    position="bottom"
     multiline
     width={220}
+    withArrow
   >
     <NavLink
       href={{
@@ -59,7 +64,7 @@ export const headerElements = [
       aria-label="project/studies center button"
     >
       <ProjectsIcon
-        aria-label="Studies logo"
+        aria-label="Projects logo"
         width={24}
         height={24}
         viewBox="0 -15 100 100"
@@ -71,9 +76,10 @@ export const headerElements = [
   <Tooltip
     key="Cohort"
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
-    position="bottom-start"
+    position="bottom"
     multiline
     width={220}
+    withArrow
   >
     <NavLink
       href={{
@@ -81,10 +87,10 @@ export const headerElements = [
         query: { app: "CohortBuilder" },
       }}
       data-testid="button-header-cohort"
-      aria-label="cohort builder button"
+      aria-label="Cohort Builder button"
     >
       <CohortBuilderIcon
-        aria-label="Cohort logo"
+        aria-label="Cohort Builder logo"
         width={24}
         height={24}
         viewBox="0 0 50 50"
@@ -96,9 +102,10 @@ export const headerElements = [
   <Tooltip
     key="Download"
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
-    position="bottom-start"
+    position="bottom"
     multiline
     width={220}
+    withArrow
   >
     <NavLink
       href={{
@@ -106,10 +113,10 @@ export const headerElements = [
         query: { app: "Downloads" },
       }}
       data-testid="button-header-downloads"
-      aria-label="download center button"
+      aria-label="Repository button"
     >
       <DownloadIcon
-        aria-label="Downloads logo"
+        aria-label="Repository logo"
         width={24}
         height={24}
         viewBox="0 0 50 50"

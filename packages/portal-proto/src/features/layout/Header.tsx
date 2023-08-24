@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
+    <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
         href="#main"
         className="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
@@ -116,19 +116,19 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Tooltip label="Coming soon">
+          <Tooltip label="Coming soon" position="bottom" withArrow>
             <Button unstyled>
-              <div className="flex items-center gap-1 font-heading">
+              <div className="flex items-center gap-1 font-heading p-1 hover:rounded-md hover:bg-primary-lightest">
                 <OptionsIcon size="22px" className="rotate-90" />
                 Manage Sets
               </div>
@@ -136,12 +136,12 @@ export const Header: React.FC<HeaderProps> = ({
           </Tooltip>
           <Link href="/cart" passHref>
             <Button unstyled data-testid="cartLink">
-              <div className="flex items-center gap-1 font-heading">
+              <div className="flex items-center gap-1 font-heading p-1 hover:rounded-md hover:bg-primary-lightest">
                 <CartIcon size="22px" className="text-primary-darkest" />
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-accent"
+                  className="px-1 ml-1 bg-accent-vivid"
                   radius="xs"
                 >
                   {currentCart?.length || 0}
@@ -264,7 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 data-testid="extraButton"
                 aria-label="GDC apps button"
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
                 <p className="font-heading">GDC Apps</p>
