@@ -18,7 +18,7 @@ const PageStepper: React.FC<PageStepperProps> = ({
 
   return (
     <Pagination
-      color="accent"
+      color="accent.5"
       boundaries={0}
       total={totalPages}
       page={page + 1}

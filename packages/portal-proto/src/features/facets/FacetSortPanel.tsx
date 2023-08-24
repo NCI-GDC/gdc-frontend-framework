@@ -33,7 +33,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="xs"
         className={`border rounded-sm border-accent-darkest ${
           !isSortedByValue
-            ? "bg-accent text-accent-contrast"
+            ? "bg-accent-vivid text-accent-contrast"
             : "bg-accent-lightest text-accent-contrast-lightest"
         }  hover:bg-accent-darker hover:text-accent-contrast-darker`}
         aria-label="Sort alphabetically"

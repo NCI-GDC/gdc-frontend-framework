@@ -700,7 +700,7 @@ export const VerticalTable: FC<VerticalTableProps> = ({
 
             <Pagination
               data-testid="pagination"
-              color="accent"
+              color="accent.5"
               className="ml-auto"
               page={pageOn}
               onChange={handlePageChange}
@@ -708,7 +708,9 @@ export const VerticalTable: FC<VerticalTableProps> = ({
               size="sm"
               radius="xs"
               withEdges
-              classNames={{ item: "border-0" }}
+              classNames={{
+                item: "border-0 hover:bg-accent-darker hover:text-accent-contrast",
+              }}
               getItemAriaLabel={(page) => {
                 switch (page) {
                   case "prev":
