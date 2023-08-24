@@ -511,7 +511,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
         >
           {groupName}{" "}
           <PencilIcon
-            data-testid="button-edit-group-name"
+            data-testid="button-custom-bins-edit-group-name"
             className="ml-2 shrink-0"
             onClick={(e) => {
               e.stopPropagation();
