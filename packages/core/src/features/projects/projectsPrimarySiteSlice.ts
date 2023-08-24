@@ -1,5 +1,4 @@
 import { Reducer } from "@reduxjs/toolkit";
-import Queue from "queue";
 import { graphqlAPISlice, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 export interface ProjectPrimarySites {
   readonly primary_site: string;
@@ -70,22 +69,19 @@ const transformResponse = ({
 }: {
   primary_site: string;
   response: GraphQLApiResponse<ProjectPrimarySitesApiResponse>;
-}): ProjectPrimarySites => {
-  // console.log({ response });
-  return {
-    primary_site: primary_site,
-    disease_types:
-      response.data.repository.cases.aggregations.disease_type.buckets.map(
-        (obj) => obj.key,
-      ),
-    files__experimental_strategy:
-      response.data.repository.cases.aggregations.files__experimental_strategy.buckets
-        .map((obj) => obj.key)
-        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
-    casesTotal: response.data.repository.cases.hits.total,
-    filesTotal: response.data.repository.files.hits.total,
-  };
-};
+}): ProjectPrimarySites => ({
+  primary_site: primary_site,
+  disease_types:
+    response.data.repository.cases.aggregations.disease_type.buckets.map(
+      (obj) => obj.key,
+    ),
+  files__experimental_strategy:
+    response.data.repository.cases.aggregations.files__experimental_strategy.buckets
+      .map((obj) => obj.key)
+      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+  casesTotal: response.data.repository.cases.hits.total,
+  filesTotal: response.data.repository.files.hits.total,
+});
 
 export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -94,12 +90,12 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
       { projectId: string; primary_sites: string[] }
     >({
       queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const queue = Queue({ concurrency: 15 });
-        let result = [] as any;
+        const result = [] as any;
+        const concurrencyLimit = 10;
 
-        for (const primary_site of _arg.primary_sites) {
-          queue.push(() => {
-            fetchWithBQ({
+        const fetchPromises = _arg.primary_sites.map(async (primary_site) => {
+          try {
+            const data = await fetchWithBQ({
               graphQLQuery: primaryQuery,
               graphQLFilters: {
                 filters: {
@@ -122,107 +118,31 @@ export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
                   op: "and",
                 },
               },
-            }).then((data) => {
-              console.log("data check :", data);
-              result = [
-                ...result,
-                transformResponse({
-                  primary_site,
-                  response: data.data as any,
-                }),
-              ];
-              console.log("result:", result);
             });
-          });
+
+            return transformResponse({
+              primary_site,
+              response: data.data as any,
+            });
+          } catch (error) {
+            console.error("Error fetching data:", error);
+            return null;
+          }
+        });
+
+        for (let i = 0; i < fetchPromises.length; i += concurrencyLimit) {
+          const chunk = fetchPromises.slice(i, i + concurrencyLimit);
+          const results = await Promise.all(chunk);
+          result.push(...results.filter((r) => r !== null));
         }
 
-        // const callAll = async () => {
-        queue.start();
-        // };
-
-        // await callAll();
-
-        console.log("outside result: ", result);
         return { data: result };
-      },
-    }),
-    getProjectPrimarySites: builder.query({
-      query: (request: { projectId: string; primary_site: string }) => ({
-        graphQLQuery: `query PrimarySiteSummary_relayQuery(
-          $filters: FiltersArgument
-        ) {
-          repository {
-            files {
-              hits(case_filters: $filters) {
-                total
-              }
-            }
-            cases {
-              hits(case_filters: $filters) {
-                total
-              }
-              aggregations(case_filters: $filters) {
-                files__experimental_strategy {
-                  buckets {
-                    key
-                  }
-                }
-                disease_type {
-                  buckets {
-                    key
-                  }
-                }
-              }
-            }
-          }
-        }`,
-        graphQLFilters: {
-          filters: {
-            content: [
-              {
-                content: {
-                  field: "cases.primary_site",
-                  value: [request.primary_site],
-                },
-                op: "in",
-              },
-              {
-                content: {
-                  field: "cases.project.project_id",
-                  value: [request.projectId],
-                },
-                op: "in",
-              },
-            ],
-            op: "and",
-          },
-        },
-      }),
-      transformResponse: (
-        response: GraphQLApiResponse<ProjectPrimarySitesApiResponse>,
-      ): ProjectPrimarySites => {
-        return {
-          primary_site: "asfad",
-          disease_types:
-            response.data.repository.cases.aggregations.disease_type.buckets.map(
-              (obj) => obj.key,
-            ),
-          files__experimental_strategy:
-            response.data.repository.cases.aggregations.files__experimental_strategy.buckets
-              .map((obj) => obj.key)
-              .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
-          casesTotal: response.data.repository.cases.hits.total,
-          filesTotal: response.data.repository.files.hits.total,
-        };
       },
     }),
   }),
 });
 
-export const {
-  useGetProjectPrimarySitesQuery,
-  useGetProjectsPrimarySitesAllQuery,
-} = projectsPrimarySiteSlice;
+export const { useGetProjectsPrimarySitesAllQuery } = projectsPrimarySiteSlice;
 
 export const projectPrimarySiteApiSliceReducerPath: string =
   projectsPrimarySiteSlice.reducerPath;

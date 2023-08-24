@@ -33,43 +33,23 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const { data, isLoading } = useGetProjectsPrimarySitesAllQuery({
+  const { data, isFetching } = useGetProjectsPrimarySitesAllQuery({
     projectId,
     primary_sites: primarySites,
   });
 
-  // console.log({ data, isLoading, isFetching });
-  // const primarySiteData = primarySites.map((primary_site) => {
-  //   // TODO: will come back to this when we have more time
-  //   // this can be made better by looping inside rtk query instead of here
-  //   // eslint-disable-next-line
-  //   const { isError, isLoading, data } = useGetProjectPrimarySitesQuery({
-  //     projectId,
-  //     primary_site,
-  //   });
-
-  //   return {
-  //     primary_site,
-  //     data,
-  //     isError,
-  //     isLoading,
-  //   };
-  // });
-
-  // const allQueriesLoaded = primarySiteData.every((query) => !query.isLoading);
-
   const formattedData = useDeepCompareMemo(
     () =>
-      !isLoading
+      !isFetching
         ? data?.map((datum) => ({
             primary_site: datum.primary_site,
-            disease_type: datum.data.disease_types,
-            cases: datum.data.casesTotal,
-            experimental_strategy: datum.data.files__experimental_strategy,
-            files: datum.data.filesTotal,
+            disease_type: datum.disease_types,
+            cases: datum.casesTotal,
+            experimental_strategy: datum.files__experimental_strategy,
+            files: datum.filesTotal,
           }))
         : [],
-    [isLoading, data],
+    [isFetching, data],
   );
 
   const primarySitesTableColumnHelper =
@@ -227,7 +207,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
         ...paginationProps,
         label: "Primary Sites",
       }}
-      status={isLoading ? "pending" : "fulfilled"}
+      status={isFetching ? "pending" : "fulfilled"}
       search={{
         enabled: true,
       }}

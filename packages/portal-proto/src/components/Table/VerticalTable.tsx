@@ -371,7 +371,7 @@ function VerticalTable<TData>({
 
           <Pagination
             data-testid="pagination"
-            color="accent"
+            color="accent.5"
             className="ml-auto"
             page={pageOn}
             onChange={handlePageChange}
