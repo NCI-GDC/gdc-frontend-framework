@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useGetProjectPrimarySitesQuery } from "@gff/core";
+import {
+  // useGetProjectPrimarySitesQuery,
+  useGetProjectsPrimarySitesAllQuery,
+} from "@gff/core";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
@@ -29,29 +32,36 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
 }: PrimarySiteTableProps) => {
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const primarySiteData = primarySites.map((primary_site) => {
-    // TODO: will come back to this when we have more time
-    // this can be made better by looping inside rtk query instead of here
-    // eslint-disable-next-line
-    const { isError, isLoading, data } = useGetProjectPrimarySitesQuery({
-      projectId,
-      primary_site,
-    });
 
-    return {
-      primary_site,
-      data,
-      isError,
-      isLoading,
-    };
+  const { data, isLoading } = useGetProjectsPrimarySitesAllQuery({
+    projectId,
+    primary_sites: primarySites,
   });
 
-  const allQueriesLoaded = primarySiteData.every((query) => !query.isLoading);
+  // console.log({ data, isLoading, isFetching });
+  // const primarySiteData = primarySites.map((primary_site) => {
+  //   // TODO: will come back to this when we have more time
+  //   // this can be made better by looping inside rtk query instead of here
+  //   // eslint-disable-next-line
+  //   const { isError, isLoading, data } = useGetProjectPrimarySitesQuery({
+  //     projectId,
+  //     primary_site,
+  //   });
+
+  //   return {
+  //     primary_site,
+  //     data,
+  //     isError,
+  //     isLoading,
+  //   };
+  // });
+
+  // const allQueriesLoaded = primarySiteData.every((query) => !query.isLoading);
 
   const formattedData = useDeepCompareMemo(
     () =>
-      allQueriesLoaded
-        ? primarySiteData?.map((datum) => ({
+      !isLoading
+        ? data?.map((datum) => ({
             primary_site: datum.primary_site,
             disease_type: datum.data.disease_types,
             cases: datum.data.casesTotal,
@@ -59,7 +69,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             files: datum.data.filesTotal,
           }))
         : [],
-    [allQueriesLoaded, primarySiteData],
+    [isLoading, data],
   );
 
   const primarySitesTableColumnHelper =
@@ -217,7 +227,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
         ...paginationProps,
         label: "Primary Sites",
       }}
-      status={!allQueriesLoaded ? "pending" : "fulfilled"}
+      status={isLoading ? "pending" : "fulfilled"}
       search={{
         enabled: true,
       }}

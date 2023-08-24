@@ -38,6 +38,7 @@ function ColumnOrdering<TData>({
       ),
     );
 
+  // console.log({ showColumnMenu });
   return (
     <div ref={ref}>
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
@@ -73,6 +74,7 @@ function ColumnOrdering<TData>({
                 <ActionIcon
                   onClick={handleColumnOrderingReset}
                   className={isBackToDefaults && "invisible"}
+                  data-testid="restore-default-icon"
                 >
                   <RevertIcon className="text-primary" size="1rem" />
                 </ActionIcon>

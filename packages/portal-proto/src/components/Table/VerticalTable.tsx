@@ -291,6 +291,7 @@ function VerticalTable<TData>({
                   {row.getVisibleCells().map((cell) => {
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
                     const columnId = cell.column.columnDef.id;
+
                     return (
                       <td key={cell.id} className="px-2.5 py-2 cursor-default">
                         {row.getCanExpand() &&
