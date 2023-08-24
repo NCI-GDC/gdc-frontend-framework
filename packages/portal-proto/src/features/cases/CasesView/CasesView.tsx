@@ -484,8 +484,8 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col mx-1" data-testid="cases-table">
-      <Divider color="#C5C5C5" className="mb-3 mr-4" />
+    <div className="flex flex-col" data-testid="cases-table">
+      <Divider color="#C5C5C5" className="mb-3" />
 
       <VerticalTable
         tableData={cases || []}

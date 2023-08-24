@@ -78,7 +78,7 @@ interface CohortGroupButtonProps {
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
 ${(p: CohortGroupButtonProps) =>
   p.disabled
-    ? "text-primary bg-base-light"
+    ? "opacity-50 bg-base-max text-primary"
     : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest bg-base-max"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 h-12
