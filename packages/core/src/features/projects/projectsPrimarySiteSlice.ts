@@ -1,4 +1,5 @@
 import { Reducer } from "@reduxjs/toolkit";
+import Queue from "queue";
 import { graphqlAPISlice, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 export interface ProjectPrimarySites {
   readonly primary_site: string;
@@ -86,55 +87,67 @@ const transformResponse = ({
 export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
     getProjectsPrimarySitesAll: builder.query<
-      any,
+      ProjectPrimarySites[],
       { projectId: string; primary_sites: string[] }
     >({
       queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const result = [] as any;
-        const concurrencyLimit = 10;
-
-        const fetchPromises = _arg.primary_sites.map(async (primary_site) => {
-          try {
-            const data = await fetchWithBQ({
-              graphQLQuery: primaryQuery,
-              graphQLFilters: {
-                filters: {
-                  content: [
-                    {
-                      content: {
-                        field: "cases.primary_site",
-                        value: [primary_site],
+        const queryMutiple = async (): Promise<ProjectPrimarySites[]> => {
+          let result = [] as ProjectPrimarySites[];
+          const queue = Queue({ concurrency: 15 });
+          for (const primary_site of _arg.primary_sites) {
+            queue.push((callback) => {
+              fetchWithBQ({
+                graphQLQuery: primaryQuery,
+                graphQLFilters: {
+                  filters: {
+                    content: [
+                      {
+                        content: {
+                          field: "cases.primary_site",
+                          value: [primary_site],
+                        },
+                        op: "in",
                       },
-                      op: "in",
-                    },
-                    {
-                      content: {
-                        field: "cases.project.project_id",
-                        value: [_arg.projectId],
+                      {
+                        content: {
+                          field: "cases.project.project_id",
+                          value: [_arg.projectId],
+                        },
+                        op: "in",
                       },
-                      op: "in",
-                    },
-                  ],
-                  op: "and",
+                    ],
+                    op: "and",
+                  },
                 },
-              },
-            });
+              }).then((data) => {
+                result = [
+                  ...result,
+                  transformResponse({
+                    primary_site,
+                    response:
+                      data.data as GraphQLApiResponse<ProjectPrimarySitesApiResponse>,
+                  }),
+                ];
 
-            return transformResponse({
-              primary_site,
-              response: data.data as any,
+                if (callback) {
+                  callback();
+                }
+              });
             });
-          } catch (error) {
-            console.error("Error fetching data:", error);
-            return null;
           }
-        });
 
-        for (let i = 0; i < fetchPromises.length; i += concurrencyLimit) {
-          const chunk = fetchPromises.slice(i, i + concurrencyLimit);
-          const results = await Promise.all(chunk);
-          result.push(...results.filter((r) => r !== null));
-        }
+          return new Promise((resolve, reject) => {
+            queue.start((err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            });
+          });
+        };
+
+        const result = await queryMutiple();
 
         return { data: result };
       },
