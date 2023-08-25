@@ -34,6 +34,7 @@ const CardControls: React.FC<CardControlsProps> = ({
       <div className="flex justify-between py-2">
         <div className="flex flex-wrap gap-2">
           <DropdownWithIcon
+            customDataTestId="button-create-new-cohort"
             RightIcon={<DownIcon size={20} />}
             TargetButtonChildren={"Create New Cohort"}
             disableTargetWidth={true}
@@ -51,12 +52,16 @@ const CardControls: React.FC<CardControlsProps> = ({
             zIndex={100}
           />
           <ButtonTooltip label=" " comingSoon={true}>
-            <Button className="bg-base-max text-primary border-primary">
+            <Button
+              data-testid="button-tsv-cdave-card"
+              className="bg-base-max text-primary border-primary"
+            >
               TSV
             </Button>
           </ButtonTooltip>
         </div>
         <DropdownWithIcon
+          customDataTestId="button-customize-bins"
           RightIcon={<DownIcon size={20} />}
           TargetButtonChildren={"Customize Bins"}
           disableTargetWidth={true}
