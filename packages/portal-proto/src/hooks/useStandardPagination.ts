@@ -14,7 +14,7 @@ function useStandardPagination<TData>(
 ): PaginationOptions & {
   displayedData: TData[];
   /**
-   * callback to handle page size change
+   * full data that is sorted or filtered without the slice
    */
   updatedFullData?: TData[];
   /**

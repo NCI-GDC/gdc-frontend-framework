@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  // useGetProjectPrimarySitesQuery,
-  useGetProjectsPrimarySitesAllQuery,
-} from "@gff/core";
+import { useGetProjectsPrimarySitesAllQuery } from "@gff/core";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
