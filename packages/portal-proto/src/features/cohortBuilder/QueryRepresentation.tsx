@@ -167,7 +167,7 @@ const IncludeExcludeQueryElement: React.FC<
             field,
           });
         }}
-        className="ml-1 my-auto"
+        className="ml-1 my-auto hover:bg-accent-darker hover:text-white"
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
         aria-expanded={expanded}
       >
@@ -195,7 +195,7 @@ const IncludeExcludeQueryElement: React.FC<
                   variant="filled"
                   color="accent-cool"
                   size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operands.filter((o) => o !== x);
@@ -381,7 +381,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full rounded-r-sm text-white"
+        className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >
