@@ -72,14 +72,14 @@ export const handleTSVDownload = (
       overwrite: {
         "#_ssm_affected_cases": {
           composer: (cancerDistributionData: CancerDistributionDataType) =>
-            `${cancerDistributionData.ssm_affected_cases.numerator || 0} /  ${
+            `${cancerDistributionData.ssm_affected_cases.numerator || 0} / ${
               cancerDistributionData.ssm_affected_cases.denominator || 0
             } (${cancerDistributionData.ssm_percent.toFixed(2)} %)`,
         },
         ...(isGene && {
           "#_cnv_gains": {
             composer: (cancerDistributionData: CancerDistributionDataType) =>
-              `${cancerDistributionData.cnv_gains.numerator || 0} /  ${
+              `${cancerDistributionData.cnv_gains.numerator || 0} / ${
                 cancerDistributionData.cnv_gains.denominator || 0
               } (${cancerDistributionData.cnv_gains_percent.toFixed(2)} %)`,
           },
@@ -87,7 +87,7 @@ export const handleTSVDownload = (
         ...(isGene && {
           "#_cnv_loss": {
             composer: (cancerDistributionData: CancerDistributionDataType) =>
-              `${cancerDistributionData.cnv_loss.numerator || 0} /  ${
+              `${cancerDistributionData.cnv_loss.numerator || 0} / ${
                 cancerDistributionData.cnv_loss.denominator || 0
               } (${cancerDistributionData.cnv_loss_percent.toFixed(2)} %)`,
           },
