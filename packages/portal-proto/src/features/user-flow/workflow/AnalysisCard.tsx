@@ -133,7 +133,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             data-testid="text-case-count-tool"
             className="flex items-center text-secondary-darkest"
           >
-            <span>{`${caseCounts.toLocaleString()} Cases`}</span>
+            {cohortCounts.status === "fulfilled" ? (
+              <span>{`${caseCounts.toLocaleString()} Cases`}</span>
+            ) : (
+              <span className="flex mr-2 items-center">
+                <Loader color="gray" size="xs" className="mr-2" /> Cases
+              </span>
+            )}
             {caseCounts === 0 && (
               <Tooltip
                 label={entry?.noDataTooltip}

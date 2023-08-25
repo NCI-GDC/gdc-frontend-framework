@@ -18,7 +18,7 @@ import {
   GdcFile,
   selectCart,
   GqlOperation,
-  useFilteredCohortCounts,
+  useCurrentCohortCounts,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -78,7 +78,7 @@ const ContextBar = ({
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const cohortCounts = useFilteredCohortCounts();
+  const cohortCounts = useCurrentCohortCounts();
   const caseCounts = cohortCounts?.data?.caseCount;
 
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -284,7 +284,7 @@ const ContextBar = ({
       }
       tooltipPosition="left"
       TargetElement={
-        <CohortCountButton countName="casesMax" label="CASES" bold />
+        <CohortCountButton countName="caseCount" label="CASES" bold />
       }
       ExtraControl={
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
