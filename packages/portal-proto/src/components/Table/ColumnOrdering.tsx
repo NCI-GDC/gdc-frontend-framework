@@ -38,7 +38,6 @@ function ColumnOrdering<TData>({
       ),
     );
 
-  // console.log({ showColumnMenu });
   return (
     <div ref={ref}>
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
