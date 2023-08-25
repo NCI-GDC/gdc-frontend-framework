@@ -176,7 +176,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
             <div className="text-gdc-survival-0 font-content">
               S<sub>1</sub>
               {` (N = ${getCaseCount(results2.length > 0)})`}
-              {plotType === "mutation" && (
+              {["mutation", "gene"].includes(plotType) && (
                 <span>
                   {" - "}
                   {name}
@@ -192,11 +192,11 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
             <div className="text-gdc-survival-1 font-content">
               S<sub>2</sub>
               {` (N = ${getCaseCount(results2.length === 0)})`}
-              {plotType === "mutation" && (
+              {["mutation", "gene"].includes(plotType) && (
                 <span>
                   {" - "}
                   {name}
-                  {" Mutated Cases"}
+                  {` Mutated ${plotType === "gene" ? `(SSM/CNV)` : ``} Cases`}
                 </span>
               )}
             </div>
@@ -289,6 +289,7 @@ const buildManyLegend = (
 };
 
 export enum SurvivalPlotTypes {
+  gene = "gene",
   mutation = "mutation",
   categorical = "categorical",
   continuous = "continuous",
@@ -324,12 +325,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData =
-    plotType === SurvivalPlotTypes.mutation ||
-    plotType == SurvivalPlotTypes.categorical ||
-    plotType === SurvivalPlotTypes.continuous
-      ? enoughDataOnSomeCurves(plotData)
-      : enoughData(plotData);
+  const hasEnoughData = [
+    "gene",
+    "mutation",
+    "categorical",
+    "continuous",
+  ].includes(plotType)
+    ? enoughDataOnSomeCurves(plotData)
+    : enoughData(plotData);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
   // hook to call renderSurvivalPlot
@@ -354,6 +357,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   switch (plotType) {
     case SurvivalPlotTypes.overall:
       legend = buildOnePlotLegend(plotData, "Explorer");
+      break;
+    case SurvivalPlotTypes.gene:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
     case SurvivalPlotTypes.mutation:
       legend = buildTwoPlotLegend(plotData, names[0], plotType);

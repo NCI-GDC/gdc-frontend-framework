@@ -71,7 +71,7 @@ export const GenesPanel = ({
             }
           />
           <SurvivalPlot
-            plotType={SurvivalPlotTypes.mutation}
+            plotType={SurvivalPlotTypes.gene}
             data={
               survivalPlotReady && survivalPlotData.survivalData.length > 1
                 ? survivalPlotData
