@@ -12,7 +12,15 @@ class ClinicalDataAnalysisLocators:
     )
     PROPERTY_ROW = lambda property: f"label:text('{property}')"
     FIELD_SELECT_SWITCH_IDENT = lambda field_switch: f'label[for="switch-{field_switch}"] >> nth=1'
+
     ANALYSIS_CARD = lambda card_name: f"[data-testid='{card_name}-card']"
+    BUTTON_ON_ANALYSIS_CARD = lambda card_name, button_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-{button_name}']"
+
+    BUTTON_CATEGORICAL_MODAL = lambda button_name: f"[data-testid='button-custom-bins-{button_name}']"
+    VALUES_CATEGORICAL_MODAL = lambda value: f"[data-testid='cat-bin-modal-values'] >> div:has-text('{value}') >> nth=0"
+    HIDDEN_VALUES_CATEGORICAL_MODAL = lambda value: f"[data-testid='cat-bin-modal-hidden-values'] >> div:has-text('{value}') >> nth=0"
+    TEXTBOX_NAME_GROUP_CATEGORICAL_MODAL = "[data-testid='textbox-custom-bin-name']"
+
 
 class ClinicalDataAnalysisPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -72,3 +80,32 @@ class ClinicalDataAnalysisPage(BasePage):
                 return f"The table '{group}' is missing the property '{property}'"
         # If we find all values in the table, it passes the test
         return True
+
+    def click_button_on_analysis_card(self, analysis_card_name, button_name):
+        button_name = self.normalize_button_identifier(button_name)
+        button_locator = ClinicalDataAnalysisLocators.BUTTON_ON_ANALYSIS_CARD(analysis_card_name, button_name)
+        self.click(button_locator)
+
+    def click_button_categorical_modal(self, button_name):
+        button_name = self.normalize_button_identifier(button_name)
+        button_locator = ClinicalDataAnalysisLocators.BUTTON_CATEGORICAL_MODAL(button_name)
+        self.click(button_locator)
+
+    def click_value_categorical_modal(self, value):
+        value_locator = ClinicalDataAnalysisLocators.VALUES_CATEGORICAL_MODAL(value)
+        self.click(value_locator)
+
+    def click_hidden_value_categorical_modal(self, hidden_value):
+        hidden_value_locator = ClinicalDataAnalysisLocators.HIDDEN_VALUES_CATEGORICAL_MODAL(hidden_value)
+        self.click(hidden_value_locator)
+
+    def name_group_of_values_categorical_modal(self, custom_group_name):
+        self.send_keys(ClinicalDataAnalysisLocators.TEXTBOX_NAME_GROUP_CATEGORICAL_MODAL,custom_group_name)
+
+    def is_value_present_categorical_modal(self, value):
+        value_locator = ClinicalDataAnalysisLocators.VALUES_CATEGORICAL_MODAL(value)
+        return self.is_visible(value_locator)
+
+    def is_hidden_value_present_categorical_modal(self, hidden_value):
+        hidden_value_locator = ClinicalDataAnalysisLocators.HIDDEN_VALUES_CATEGORICAL_MODAL(hidden_value)
+        return self.is_visible(hidden_value_locator)
