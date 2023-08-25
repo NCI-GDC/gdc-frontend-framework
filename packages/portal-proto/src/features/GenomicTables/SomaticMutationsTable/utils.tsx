@@ -105,7 +105,7 @@ export const useGenerateSMTableColumns = ({
               header: () => (
                 <HeaderTooltip
                   title="Cohort"
-                  tooltip="test Add/remove mutations to/from your cohort filters"
+                  tooltip="Add/remove mutations to/from your cohort filters"
                 />
               ),
               cell: ({ row }) => (
