@@ -54,7 +54,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         cell: ({ row }) => (
           <Tooltip
             label="Cohort is empty"
-            disabled={row.original.caseCount !== 0}
+            disabled={row.original?.counts.caseCount !== 0}
           >
             <span>
               <input
@@ -64,7 +64,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                 onChange={() => setSelectedCohort(row.original)}
                 checked={selectedCohort?.id === row.original.id}
                 aria-label={`Select ${row.original.name}`}
-                disabled={!row.original?.caseCount}
+                disabled={!row.original?.counts.caseCount}
               />
             </span>
           </Tooltip>
@@ -77,7 +77,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <label
             htmlFor={row.original.id}
             className={
-              !row.original.caseCount ? "text-base-lighter" : undefined
+              !row.original.counts.caseCount ? "text-base-lighter" : undefined
             }
           >
             {row.original.name}
@@ -90,10 +90,10 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         cell: ({ row }) => (
           <span
             className={
-              !row.original.caseCount ? "text-base-lighter" : undefined
+              !row.original.counts.caseCount ? "text-base-lighter" : undefined
             }
           >
-            {row.original.caseCount?.toLocaleString()}
+            {row.original.counts.caseCount?.toLocaleString()}
           </span>
         ),
       }),

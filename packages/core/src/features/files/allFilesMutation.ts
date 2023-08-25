@@ -11,20 +11,26 @@ export interface GdcFileIds {
   readonly file_id?: string;
 }
 
+interface AllFilesQueryProps {
+  readonly caseFilters?: GqlOperation;
+  readonly filters?: GqlOperation;
+}
+
 export const allFilesApiSlice = coreCreateApi({
   reducerPath: "filesApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${GDC_API}`,
   }),
   endpoints: (builder) => ({
-    getAllFiles: builder.mutation<GdcFileIds[], GqlOperation>({
-      query: (filters?: GqlOperation) => ({
+    getAllFiles: builder.mutation<GdcFileIds[], AllFilesQueryProps>({
+      query: ({ caseFilters, filters }: AllFilesQueryProps) => ({
         url: "/files",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: {
+          case_filters: caseFilters,
           filters: filters,
           fields: "access,acl,file_id,file_size,state,file_name",
           size: 10001, // set one over max add to cart function allows

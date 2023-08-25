@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   GqlOperation,
-  useFilteredCohortCounts,
+  useCurrentCohortCounts,
 } from "@gff/core";
 import { Button, Divider, Loader } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
@@ -57,6 +57,7 @@ export const ContextualCasesView: React.FC = () => {
     selectCurrentCohortFilters(state),
   );
   const currentCart = useCoreSelector((state) => selectCart(state));
+  const cohortCounts = useCurrentCohortCounts();
 
   /* download active */
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
@@ -65,8 +66,6 @@ export const ContextualCasesView: React.FC = () => {
   const [cohortTableDownloadActive, setCohortTableDownloadActive] =
     useState(false);
   /* download active end */
-
-  const cohortCounts = useFilteredCohortCounts();
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [

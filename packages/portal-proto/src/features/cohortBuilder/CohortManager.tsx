@@ -42,6 +42,7 @@ import {
   DataStatus,
   setCohort,
   setActiveCohort,
+  useCurrentCohortCounts,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -136,7 +137,7 @@ const CohortManager: React.FC = () => {
   );
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
-
+  const counts = useCurrentCohortCounts();
   // Cohort specific actions
   const newCohort = useCallback(
     (customName: string) => {
@@ -351,10 +352,13 @@ const CohortManager: React.FC = () => {
                     caseSetId: buildGqlOperationToFilterSet(response.filters),
                     status: "fulfilled" as DataStatus,
                   },
+                  counts: {
+                    ...counts.data,
+                    status: counts.status,
+                  },
                   modified_datetime: response.modified_datetime,
                   saved: true,
                   modified: false,
-                  caseCount: response?.case_ids.length,
                 };
                 coreDispatch(setCohort(cohort));
               })
