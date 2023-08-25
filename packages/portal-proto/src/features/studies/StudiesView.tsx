@@ -578,7 +578,7 @@ const Study: React.FC<StudyProps> = (props: StudyProps) => {
             <Button>33,766 Files</Button>
           </div>
         </div>
-        <div className="card-face card-back bg-base-lightest">
+        <div className="card-face card-back rounded-b-md bg-base-lightest">
           <FacetChart
             field={"test"}
             marginBottom={40}

@@ -88,7 +88,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-1"
+        width ? width : "mx-0"
       } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>

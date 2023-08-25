@@ -370,7 +370,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-base-max h-full overflow-y-auto pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full overflow-y-auto pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >

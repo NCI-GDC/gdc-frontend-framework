@@ -590,7 +590,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             }
           </div>
           <div
-            className={`card-face card-back bg-base-max h-full pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
@@ -804,7 +804,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
     <div id={field}>
       <div
         className={`flex flex-col ${
-          width ? width : "mx-1"
+          width ? width : "mx-0"
         } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition `}
       >
         <FacetHeader>
