@@ -35,6 +35,12 @@ def validate_default_analysis_cards_are_present(table):
         is_analysis_card_not_present = APP.clinical_data_analysis.wait_until_analysis_card_is_detached(v[0])
         assert is_analysis_card_not_present, f"The analysis card '{v[0]}' is present when it should NOT be"
 
+@step("Validate the <card_name> analysis card's table contains these values <table>")
+def validate_table_value_on_analysis_card_is_present(card_name, table):
+    for k, v in enumerate(table):
+        is_table_value_on_analysis_card_present = APP.clinical_data_analysis.is_table_value_on_analysis_card_is_present(card_name, v[0])
+        assert is_table_value_on_analysis_card_present, f"On analysis card '{card_name}', the table does not contain the value '{v[0]}'"
+
 @step("On the <card_name> card, select <button_name> button on the Clinical Data Analysis page")
 def click_button_on_analysis_card(card_name:str, button_name:str):
     APP.clinical_data_analysis.click_button_on_analysis_card(card_name,button_name)

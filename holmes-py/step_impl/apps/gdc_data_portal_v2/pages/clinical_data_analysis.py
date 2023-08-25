@@ -15,6 +15,7 @@ class ClinicalDataAnalysisLocators:
 
     ANALYSIS_CARD = lambda card_name: f"[data-testid='{card_name}-card']"
     BUTTON_ON_ANALYSIS_CARD = lambda card_name, button_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-{button_name}']"
+    TEXT_IN_TABLE_ON_ANALYSIS_CARD = lambda card_name, table_value: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> text='{table_value}'"
 
     BUTTON_CATEGORICAL_MODAL = lambda button_name: f"[data-testid='button-custom-bins-{button_name}']"
     VALUES_CATEGORICAL_MODAL = lambda value: f"[data-testid='cat-bin-modal-values'] >> div:has-text('{value}') >> nth=0"
@@ -80,6 +81,10 @@ class ClinicalDataAnalysisPage(BasePage):
                 return f"The table '{group}' is missing the property '{property}'"
         # If we find all values in the table, it passes the test
         return True
+
+    def is_table_value_on_analysis_card_is_present(self, analysis_card_name, table_value):
+        text_table_locator = ClinicalDataAnalysisLocators.TEXT_IN_TABLE_ON_ANALYSIS_CARD(analysis_card_name,table_value)
+        return self.is_visible(text_table_locator)
 
     def click_button_on_analysis_card(self, analysis_card_name, button_name):
         button_name = self.normalize_button_identifier(button_name)

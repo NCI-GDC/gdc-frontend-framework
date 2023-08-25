@@ -90,7 +90,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |american indian or alaska native        |
    |native hawaiian or other pacific islander|
 
-## Test Grouping Values
+## Test Group and Ungroup Values
 * Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
@@ -104,8 +104,57 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Custom Bin Group 1                      |
    |missing                                 |
 * Select "Group Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |Custom Bin Group 1                      |
+* Select "Edit Group Name" in a categorical custom bin modal on the Clinical Data Analysis page
+* Name the group of values "Edited Group Name" in a categorical custom bin modal on the Clinical Data Analysis page
+* Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
+   |value                                   |
+   |----------------------------------------|
+   |Edited Group Name                       |
 * Select "Ungroup Values" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate values are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
+   |value                                   |
+   |----------------------------------------|
+   |Custom Bin Group 1                      |
+   |Edited Group Name                       |
+* Select "Cancel" in a categorical custom bin modal on the Clinical Data Analysis page
+
+## Test Saving a Group
+* Validate the "Race" analysis card's table contains these values
+   |value                                   |
+   |----------------------------------------|
+   |white                                   |
+   |not reported                            |
+   |black or african american               |
+   |unknown                                 |
+   |asian                                   |
+   |not allowed to collect                  |
+   |other                                   |
+   |missing                                 |
+   |american indian or alaska native        |
+   |native hawaiian or other pacific islander|
+* On the "Race" card, select "Customize Bins" button on the Clinical Data Analysis page
+* Select "Edit Bins"
+* Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
+   |value                                   |
+   |----------------------------------------|
+   |white                                   |
+   |not allowed to collect                  |
+* Select "Group Values" in a categorical custom bin modal on the Clinical Data Analysis page
+* Name the group of values "Custom Bin Group in Table" in a categorical custom bin modal on the Clinical Data Analysis page
+* Select "Save" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate the "Race" analysis card's table contains these values
+   |value                                   |
+   |----------------------------------------|
+   |Custom Bin Group in Table               |
+* On the "Race" card, select "Customize Bins" button on the Clinical Data Analysis page
+* Select "Edit Bins"
+* Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
+   |value                                   |
+   |----------------------------------------|
+   |Custom Bin Group in Table               |
+* Select "Ungroup Values" in a categorical custom bin modal on the Clinical Data Analysis page
+* Select "Save" in a categorical custom bin modal on the Clinical Data Analysis page
