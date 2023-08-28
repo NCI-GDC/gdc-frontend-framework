@@ -7,10 +7,6 @@ import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
 
-interface HTMLIFrameWithLoadingProp extends HTMLIFrameElement {
-  __frame__loaded?: boolean;
-}
-
 const hashString = (s: string) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
@@ -179,13 +175,9 @@ const download = async ({
     "",
   );
 
-  const iFrame: HTMLIFrameWithLoadingProp = document.createElement("iframe");
+  const iFrame = document.createElement("iframe");
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
-  iFrame.__frame__loaded = false;
-  iFrame.onload = () => {
-    iFrame.__frame__loaded = true;
-  };
 
   // Appending to document body to allow navigation away from the current
   // page and downloads in the background
@@ -199,8 +191,6 @@ const download = async ({
         return;
       }
 
-      console.log(iFrame);
-      console.log(iFrame.__frame__loaded);
       const content = getBody(iFrame).textContent;
       // Download has started
       if (!cookies.get(cookieKey)) {
