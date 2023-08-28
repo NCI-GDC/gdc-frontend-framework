@@ -184,7 +184,9 @@ const download = async ({
   iFrame.src = "about:blank";
   iFrame.__frame__loaded = false;
   iFrame.addEventListener("load", () => {
-    iFrame.__frame__loaded = true;
+    if (iFrame) {
+      iFrame.__frame__loaded = true;
+    }
   });
 
   // Appending to document body to allow navigation away from the current
@@ -199,7 +201,7 @@ const download = async ({
         return;
       }
 
-      if (iFrame.__frame__loaded) {
+      if (iFrame?.__frame__loaded) {
         const content = getBody(iFrame).textContent;
         // Download has started
         if (!cookies.get(cookieKey)) {
