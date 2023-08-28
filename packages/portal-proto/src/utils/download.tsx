@@ -7,6 +7,10 @@ import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
 
+interface HTMLIFrameWithLoadingProp extends HTMLIFrameElement {
+  __frame__loaded?: boolean;
+}
+
 const hashString = (s: string) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
@@ -175,9 +179,13 @@ const download = async ({
     "",
   );
 
-  const iFrame = document.createElement("iframe");
+  const iFrame: HTMLIFrameWithLoadingProp = document.createElement("iframe");
   iFrame.style.display = "none";
   iFrame.src = "about:blank";
+  iFrame.__frame__loaded = false;
+  iFrame.addEventListener("load", () => {
+    (this as HTMLIFrameWithLoadingProp).__frame__loaded = true;
+  });
 
   // Appending to document body to allow navigation away from the current
   // page and downloads in the background
@@ -191,52 +199,62 @@ const download = async ({
         return;
       }
 
-      const content = getBody(iFrame).textContent;
-      // Download has started
-      if (!cookies.get(cookieKey)) {
+      if (iFrame.__frame__loaded) {
+        const content = getBody(iFrame).textContent;
+        // Download has started
+        if (!cookies.get(cookieKey)) {
+          clearTimeout(showNotificationTimeout);
+          cleanNotifications();
+          if (done) {
+            done();
+          }
+          resolve();
+        } else {
+          const requestError =
+            iFrame.contentWindow.document.getElementsByTagName("form")
+              .length === 0 && content !== "";
+          if (requestError) {
+            clearTimeout(showNotificationTimeout);
+            cleanNotifications();
+
+            const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
+              content,
+            )?.[1];
+            if (
+              errorMessage === "internal server error" ||
+              errorMessage === undefined
+            ) {
+              dispatch(showModal({ modal: Modal400, message: errorMessage }));
+            } else if (
+              errorMessage ===
+              "Your token is invalid or expired. Please get a new token from GDC Data Portal."
+            ) {
+              dispatch(showModal({ modal: Modal403, message: errorMessage }));
+            } else {
+              dispatch(
+                showModal({
+                  modal: Modal400,
+                  message: customErrorMessage || errorMessage,
+                }),
+              );
+            }
+
+            if (done) {
+              done();
+            }
+            resolve();
+          } else {
+            setTimeout(executePoll, 1000, resolve);
+          }
+        }
+        // In case the download is initiated without triggering the iFrame to reload
+      } else {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
         if (done) {
           done();
         }
         resolve();
-      } else {
-        const requestError =
-          iFrame.contentWindow.document.getElementsByTagName("form").length ===
-            0 && content !== "";
-        if (requestError) {
-          clearTimeout(showNotificationTimeout);
-          cleanNotifications();
-
-          const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
-            content,
-          )?.[1];
-          if (
-            errorMessage === "internal server error" ||
-            errorMessage === undefined
-          ) {
-            dispatch(showModal({ modal: Modal400, message: errorMessage }));
-          } else if (
-            errorMessage ===
-            "Your token is invalid or expired. Please get a new token from GDC Data Portal."
-          ) {
-            dispatch(showModal({ modal: Modal403, message: errorMessage }));
-          } else {
-            dispatch(
-              showModal({
-                modal: Modal400,
-                message: customErrorMessage || errorMessage,
-              }),
-            );
-          }
-
-          if (done) {
-            done();
-          }
-          resolve();
-        } else {
-          setTimeout(executePoll, 1000, resolve);
-        }
       }
     };
 
