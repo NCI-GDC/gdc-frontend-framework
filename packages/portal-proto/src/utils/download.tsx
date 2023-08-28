@@ -201,62 +201,54 @@ const download = async ({
         return;
       }
 
-      if (iFrame?.__frame__loaded) {
-        const content = getBody(iFrame).textContent;
-        // Download has started
-        if (!cookies.get(cookieKey)) {
-          clearTimeout(showNotificationTimeout);
-          cleanNotifications();
-          if (done) {
-            done();
-          }
-          resolve();
-        } else {
-          const requestError =
-            iFrame.contentWindow.document.getElementsByTagName("form")
-              .length === 0 && content !== "";
-          if (requestError) {
-            clearTimeout(showNotificationTimeout);
-            cleanNotifications();
-
-            const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
-              content,
-            )?.[1];
-            if (
-              errorMessage === "internal server error" ||
-              errorMessage === undefined
-            ) {
-              dispatch(showModal({ modal: Modal400, message: errorMessage }));
-            } else if (
-              errorMessage ===
-              "Your token is invalid or expired. Please get a new token from GDC Data Portal."
-            ) {
-              dispatch(showModal({ modal: Modal403, message: errorMessage }));
-            } else {
-              dispatch(
-                showModal({
-                  modal: Modal400,
-                  message: customErrorMessage || errorMessage,
-                }),
-              );
-            }
-
-            if (done) {
-              done();
-            }
-            resolve();
-          } else {
-            setTimeout(executePoll, 1000, resolve);
-          }
-        }
-        // In case the download is initiated without triggering the iFrame to reload
-      } else {
+      console.log(iFrame);
+      console.log(iFrame.__frame__loaded);
+      const content = getBody(iFrame).textContent;
+      // Download has started
+      if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
         cleanNotifications();
         if (done) {
           done();
         }
         resolve();
+      } else {
+        const requestError =
+          iFrame.contentWindow.document.getElementsByTagName("form").length ===
+            0 && content !== "";
+        if (requestError) {
+          clearTimeout(showNotificationTimeout);
+          cleanNotifications();
+
+          const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
+            content,
+          )?.[1];
+          if (
+            errorMessage === "internal server error" ||
+            errorMessage === undefined
+          ) {
+            dispatch(showModal({ modal: Modal400, message: errorMessage }));
+          } else if (
+            errorMessage ===
+            "Your token is invalid or expired. Please get a new token from GDC Data Portal."
+          ) {
+            dispatch(showModal({ modal: Modal403, message: errorMessage }));
+          } else {
+            dispatch(
+              showModal({
+                modal: Modal400,
+                message: customErrorMessage || errorMessage,
+              }),
+            );
+          }
+
+          if (done) {
+            done();
+          }
+          resolve();
+        } else {
+          setTimeout(executePoll, 1000, resolve);
+        }
       }
     };
 
