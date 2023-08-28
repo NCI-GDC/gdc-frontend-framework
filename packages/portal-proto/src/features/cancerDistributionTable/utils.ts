@@ -33,11 +33,11 @@ export type CancerDistributionDataType = {
     denominator: number;
   };
   cnv_gains_percent?: number;
-  cnv_loss?: {
+  cnv_losses?: {
     numerator: number;
     denominator: number;
   };
-  cnv_loss_percent?: number;
+  cnv_losses_percent?: number;
   num_mutations?: number;
   project: string;
   disease_type: string[];
@@ -87,9 +87,9 @@ export const handleTSVDownload = (
         ...(isGene && {
           "#_cnv_loss": {
             composer: (cancerDistributionData: CancerDistributionDataType) =>
-              `${cancerDistributionData.cnv_loss.numerator || 0} / ${
-                cancerDistributionData.cnv_loss.denominator || 0
-              } (${cancerDistributionData.cnv_loss_percent.toFixed(2)} %)`,
+              `${cancerDistributionData.cnv_losses.numerator || 0} / ${
+                cancerDistributionData.cnv_losses.denominator || 0
+              } (${cancerDistributionData.cnv_losses_percent.toFixed(2)} %)`,
           },
         }),
         ...(isGene && {
@@ -117,8 +117,8 @@ export const handleJSONDownload = (
         ssm_affected_cases,
         cnv_gains,
         cnv_gains_percent,
-        cnv_loss,
-        cnv_loss_percent,
+        cnv_losses,
+        cnv_losses_percent,
         num_mutations,
       }) => {
         return {
@@ -131,9 +131,10 @@ export const handleJSONDownload = (
           ...(isGene && {
             num_cnv_gain: cnv_gains.numerator,
             num_cnv_gain_percent: cnv_gains_percent,
-            num_cnv_loss: cnv_loss.numerator,
-            num_cnv_loss_percent: cnv_loss_percent,
-            num_cnv_cases_total: cnv_gains.denominator || cnv_loss.denominator,
+            num_cnv_loss: cnv_losses.numerator,
+            num_cnv_loss_percent: cnv_losses_percent,
+            num_cnv_cases_total:
+              cnv_gains.denominator || cnv_losses.denominator,
             mutations_counts: num_mutations,
           }),
         };

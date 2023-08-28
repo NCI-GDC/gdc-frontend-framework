@@ -44,6 +44,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
       authorizationTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
+        cell: ({ getValue }) => getValue()?.toLocaleString(),
       }),
       authorizationTableColumnHelper.accessor("file_size", {
         id: "file_size",

@@ -260,7 +260,7 @@ export const useGenerateCasesTableColumns = ({
         cell: ({ getValue }) => getValue().toLocaleString(),
       }),
       casesDataColumnHelper.accessor("experimental_strategies", {
-        id: "experimental_strategies",
+        id: "experimental_strategy",
         header: "Experimental Strategy",
         cell: ({ getValue }) => getValue().toLocaleString(),
       }),

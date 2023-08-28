@@ -121,11 +121,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                       data.cnvGain[d.key] || 0,
                       data.cnvTotal[d.key] || 0,
                     ),
-                    cnv_loss: {
+                    cnv_losses: {
                       numerator: data.cnvLoss[d.key] || 0,
-                      denominator: data.cnvLoss[d.key] || 0,
+                      denominator: data.cnvTotal[d.key] || 0,
                     },
-                    cnv_loss_percent: calculatePercentageAsNumber(
+                    cnv_losses_percent: calculatePercentageAsNumber(
                       data.cnvLoss[d.key] || 0,
                       data.cnvTotal[d.key] || 0,
                     ),
@@ -153,7 +153,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     () => ({
       "#_ssm_affected_cases": generateSortingFn("ssm_percent"),
       "#_cnv_gains": generateSortingFn("cnv_gains_percent"),
-      "#_cnv_loss": generateSortingFn("cnv_loss_percent"),
+      "#_cnv_losses": generateSortingFn("cnv_losses_percent"),
       "#_mutations": generateSortingFn("num_mutations"),
     }),
     [],
@@ -310,11 +310,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               enableSorting: true,
             }),
-            cancerDistributionTableColumnHelper.accessor("cnv_loss_percent", {
-              id: "#_cnv_loss",
+            cancerDistributionTableColumnHelper.accessor("cnv_losses_percent", {
+              id: "#_cnv_losses",
               header: () => (
                 <HeaderTooltip
-                  title="# CNV Loss"
+                  title="# CNV Losses"
                   tooltip={`# Cases tested for CNV in the Project affected by CNV loss event in ${symbol}
                   / # Cases tested for Copy Number Variation in the Project
                   `}
@@ -322,7 +322,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               cell: ({ row }) => (
                 <CohortCreationButton
-                  numCases={row.original.cnv_loss.numerator || 0}
+                  numCases={row.original.cnv_losses.numerator || 0}
                   handleClick={() => {
                     setCreateCohortParams({
                       project: row.original.project,
@@ -335,8 +335,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   }}
                   label={
                     <NumeratorDenominator
-                      numerator={row.original.cnv_loss.numerator || 0}
-                      denominator={row.original.cnv_loss.denominator || 0}
+                      numerator={row.original.cnv_losses.numerator || 0}
+                      denominator={row.original.cnv_losses.denominator || 0}
                       boldNumerator
                     />
                   }
