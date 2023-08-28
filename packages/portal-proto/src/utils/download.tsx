@@ -184,7 +184,7 @@ const download = async ({
   iFrame.src = "about:blank";
   iFrame.__frame__loaded = false;
   iFrame.addEventListener("load", () => {
-    (this as HTMLIFrameWithLoadingProp).__frame__loaded = true;
+    iFrame.__frame__loaded = true;
   });
 
   // Appending to document body to allow navigation away from the current
