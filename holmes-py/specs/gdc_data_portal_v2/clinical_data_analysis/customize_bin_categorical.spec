@@ -3,7 +3,7 @@ Date Created    : 08/25/2023
 Version		      : 1.0
 Owner		        : GDC QA
 Description     : cDAVE customize bin categorical values
-Test-Case       : PEAR-610
+Test-Case       : PEAR-606
 
 tags: gdc-data-portal-v2, clinical-data-analysis, regression
 
@@ -150,6 +150,11 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |value                                   |
    |----------------------------------------|
    |Custom Bin Group in Table               |
+* Validate the "Race" analysis card's table do not contain these values
+   |value                                   |
+   |----------------------------------------|
+   |white                                   |
+   |not allowed to collect                  |
 * On the "Race" card, select "Customize Bins" button on the Clinical Data Analysis page
 * Select "Edit Bins"
 * Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
@@ -158,3 +163,12 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Custom Bin Group in Table               |
 * Select "Ungroup Values" in a categorical custom bin modal on the Clinical Data Analysis page
 * Select "Save" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate the "Race" analysis card's table do not contain these values
+   |value                                   |
+   |----------------------------------------|
+   |Custom Bin Group in Table               |
+* Validate the "Race" analysis card's table contains these values
+   |value                                   |
+   |----------------------------------------|
+   |white                                   |
+   |not allowed to collect                  |
