@@ -48,7 +48,10 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     () =>
       cohorts.map((cohort) => ({
         select: (
-          <Tooltip label="Cohort is empty" disabled={cohort?.caseCount !== 0}>
+          <Tooltip
+            label="Cohort is empty"
+            disabled={cohort?.counts.caseCount !== 0}
+          >
             <span>
               <input
                 type="radio"
@@ -57,7 +60,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
                 onChange={() => setSelectedCohort(cohort)}
                 checked={selectedCohort?.id === cohort.id}
                 aria-label={`Select ${cohort.name}`}
-                disabled={!cohort?.caseCount}
+                disabled={!cohort?.counts.caseCount}
               />
             </span>
           </Tooltip>
@@ -65,16 +68,20 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         name: (
           <label
             htmlFor={cohort.id}
-            className={!cohort?.caseCount ? "text-base-lighter" : undefined}
+            className={
+              !cohort?.counts.caseCount ? "text-base-lighter" : undefined
+            }
           >
             {cohort.name}
           </label>
         ),
         count: (
           <span
-            className={!cohort?.caseCount ? "text-base-lighter" : undefined}
+            className={
+              !cohort?.counts.caseCount ? "text-base-lighter" : undefined
+            }
           >
-            {cohort?.caseCount?.toLocaleString()}
+            {cohort?.counts.caseCount.toLocaleString()}
           </span>
         ),
       })),

@@ -35,6 +35,7 @@ def click_named_button_wait_for_message_text(button_name: str, message_text: str
     # Need to let the page load after our actions here.
     # Automation moves too quickly in the cohort bar section.
     time.sleep(1)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
@@ -63,3 +64,17 @@ def set_as_current_cohort_from_temp_message():
 def is_secondary_cohort_bar_save_screen_present():
     is_second_save_modal_present = APP.cohort_bar.is_secondary_cohort_bar_save_screen_present()
     assert is_second_save_modal_present, f"The secondary save modal is NOT present"
+
+@step("The cohort <cohort_name> should not appear in the cohort dropdown list")
+def validate_cohort_is_not_present_in_dropdown(cohort_name: str):
+    click_button_on_cohort_bar("Switch")
+    is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
+    click_button_on_cohort_bar("Switch")
+    assert not is_cohort_visible, f"The cohort '{cohort_name}' is visible in the dropdown when it should not be"
+
+@step("The cohort <cohort_name> should appear in the cohort dropdown list")
+def validate_cohort_is_present_in_dropdown(cohort_name: str):
+    click_button_on_cohort_bar("Switch")
+    is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
+    click_button_on_cohort_bar("Switch")
+    assert is_cohort_visible, f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"

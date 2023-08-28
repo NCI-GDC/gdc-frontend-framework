@@ -80,7 +80,6 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const prevAllFilters = usePrevious(allFilters);
-  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
 
   useEffect(() => {
     if (!isEqual(prevAllFilters, allFilters)) {
@@ -343,24 +342,21 @@ const FilesTables: React.FC = () => {
     sortByActions(sorting);
   }, [sorting]);
 
-  const handleChange = useCallback(
-    (obj: HandleChangeInput) => {
-      switch (Object.keys(obj)?.[0]) {
-        case "newPageSize":
-          setOffset(0);
-          setPageSize(parseInt(obj.newPageSize));
-          break;
-        case "newPageNumber":
-          setOffset(obj.newPageNumber - 1);
-          break;
-        case "newSearch":
-          setOffset(0);
-          newSearchActions(obj.newSearch);
-          break;
-      }
-    },
-    [newSearchActions],
-  );
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        setOffset(0);
+        setPageSize(parseInt(obj.newPageSize));
+        break;
+      case "newPageNumber":
+        setOffset(obj.newPageNumber - 1);
+        break;
+      case "newSearch":
+        setOffset(0);
+        newSearchActions(obj.newSearch);
+        break;
+    }
+  };
 
   const handleDownloadJSON = async () => {
     await download({
@@ -431,7 +427,11 @@ const FilesTables: React.FC = () => {
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  const fileSizeSliceData = useFilesSize({
+    cohortFilters: buildCohortGqlOperator(cohortFilters),
+    localFilters: buildCohortGqlOperator(repositoryFilters),
+    allFilters: buildCohortGqlOperator(allFilters),
+  });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
       output: "object",

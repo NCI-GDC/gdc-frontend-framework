@@ -27,14 +27,18 @@ import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
 import { createSetMutationFactory } from "../sets/createSetSlice";
 import { setCountQueryFactory } from "../sets/setCountSlice";
+import {
+  CountsData,
+  CountsDataAndStatus,
+  fetchCohortCaseCounts,
+  NullCountsData,
+} from "./cohortCountsQuery";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
   readonly caseSetIds?: Record<string, string>; // prefix mapped caseSetIds
   readonly filters?: FilterSet; // FilterSet that contains combination of CaseSets + filters
-  // TODO this could also hold the cohort
-  //  id for query by cohort
 }
 
 export interface CohortStoredSets {
@@ -53,7 +57,7 @@ export interface Cohort {
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
-  readonly caseCount?: number; // track case count of a cohort
+  readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
 }
 
 /**
@@ -496,6 +500,9 @@ const newCohort = ({
     modified: modified,
     saved: false,
     modified_datetime: ts.toISOString(),
+    counts: {
+      ...NullCountsData,
+    },
   };
 };
 
@@ -606,15 +613,6 @@ const slice = createSlice({
         };
         cohortsAdapter.addOne(state, destCohort);
       }
-    },
-    addCaseCount: (
-      state,
-      action: PayloadAction<{ cohortId?: string; caseCount: number }>,
-    ) => {
-      cohortsAdapter.updateOne(state, {
-        id: action.payload.cohortId ?? getCurrentCohort(state),
-        changes: { caseCount: action.payload.caseCount },
-      });
     },
     updateCohortName: (state, action: PayloadAction<string>) => {
       cohortsAdapter.updateOne(state, {
@@ -948,6 +946,71 @@ const slice = createSlice({
             },
           },
         });
+      })
+      .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
+        const response = action.payload;
+
+        if (response.errors && Object.keys(response.errors).length > 0) {
+          cohortsAdapter.updateOne(state, {
+            id: action.meta.arg ?? getCurrentCohort(state),
+            changes: {
+              counts: { ...NullCountsData, status: "pending" },
+            },
+          });
+        } else {
+          // copy the counts for explore and repository
+          cohortsAdapter.updateOne(state, {
+            id: action.meta.arg ?? getCurrentCohort(state),
+            changes: {
+              counts: {
+                caseCount: response.data.viewer.explore.cases.hits.total,
+                genesCount: response.data.viewer.explore.genes.hits.total,
+                mutationCount: response.data.viewer.explore.ssms.hits.total,
+                fileCount: response.data.viewer.repository.files.hits.total,
+                ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+                sequenceReadCaseCount:
+                  response.data.viewer.repository.sequenceReads.hits.total,
+                repositoryCaseCount:
+                  response.data.viewer.repository.cases.hits.total,
+                status: "fulfilled",
+              },
+            },
+          });
+        }
+      })
+      .addCase(fetchCohortCaseCounts.pending, (state, action) => {
+        cohortsAdapter.updateOne(state, {
+          id: action.meta.arg ?? getCurrentCohort(state),
+          changes: {
+            counts: {
+              caseCount: -1,
+              fileCount: -1,
+              genesCount: -1,
+              mutationCount: -1,
+              ssmCaseCount: -1,
+              sequenceReadCaseCount: -1,
+              repositoryCaseCount: -1,
+              status: "pending",
+            },
+          },
+        });
+      })
+      .addCase(fetchCohortCaseCounts.rejected, (state, action) => {
+        cohortsAdapter.updateOne(state, {
+          id: action.meta.arg ?? getCurrentCohort(state),
+          changes: {
+            counts: {
+              caseCount: -1,
+              fileCount: -1,
+              genesCount: -1,
+              mutationCount: -1,
+              ssmCaseCount: -1,
+              sequenceReadCaseCount: -1,
+              repositoryCaseCount: -1,
+              status: "rejected",
+            },
+          },
+        });
       });
   },
 });
@@ -970,10 +1033,15 @@ export const {
   copyCohort,
   discardCohortChanges,
   setCohortMessage,
-  addCaseCount,
   addNewCohortSet,
   removeCohortSet,
 } = slice.actions;
+
+/**
+ * --------------------------------------------------------------------------
+ *  Cohort Selectors
+ *  -------------------------------------------------------------------------
+ **/
 
 export const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohort.availableCohorts,
@@ -1069,60 +1137,6 @@ export const selectCohortFilterSetById = (
   return cohort?.filters;
 };
 
-interface SplitFilterSet {
-  withPrefix: FilterSet;
-  withoutPrefix: FilterSet;
-}
-
-export const divideFilterSetByPrefix = (
-  filters: FilterSet,
-  prefixes: string[],
-): SplitFilterSet => {
-  const results = Object.entries(filters.root).reduce(
-    (
-      newObj: {
-        withPrefix: Record<string, Operation>;
-        withoutPrefix: Record<string, Operation>;
-      },
-      [key, val],
-    ) => {
-      if (prefixes.some((prefix) => key.startsWith(prefix)))
-        newObj.withPrefix[key] = val;
-      else newObj.withoutPrefix[key] = val;
-      return newObj;
-    },
-    { withPrefix: {}, withoutPrefix: {} },
-  );
-
-  return {
-    withPrefix: { mode: "and", root: results.withPrefix },
-    withoutPrefix: { mode: "and", root: results.withoutPrefix },
-  };
-};
-
-/**
- * Divides the current cohort into prefix and not prefix. This is
- * used to create caseSets for files and cases
- * @param state
- * @param prefixes - and array of filter prefix to separate on (typically ["genes."])
- */
-export const divideCurrentCohortFilterSetFilterByPrefix = (
-  state: CoreState,
-  prefixes: string[],
-): SplitFilterSet => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    getCurrentCohortFromCoreState(state),
-  );
-  if (cohort === undefined)
-    return {
-      withPrefix: { mode: "and", root: {} },
-      withoutPrefix: { mode: "and", root: {} },
-    };
-
-  return divideFilterSetByPrefix(cohort?.filters, prefixes);
-};
-
 /**
  * Returns the currentCohortFilters as a GqlOperation
  * @param state
@@ -1185,6 +1199,16 @@ export const selectCurrentCohortFiltersByName = (
   return cohort?.filters?.root[name];
 };
 
+/**
+ * Returns the current cohort case count
+ * @param state
+ */
+export const selectCurrentCohortCaseCount = (
+  state: CoreState,
+): number | undefined =>
+  cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
+    ?.counts.caseCount;
+
 export const selectCurrentCohortFiltersByNames = (
   state: CoreState,
   names: ReadonlyArray<string>,
@@ -1194,6 +1218,7 @@ export const selectCurrentCohortFiltersByNames = (
     getCurrentCohortFromCoreState(state),
   );
 
+  // TODO replace with memoized selector
   return names.reduce((obj, name) => {
     if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
     return obj;
@@ -1212,6 +1237,7 @@ export const selectCurrentCohortCaseSet = (
     state,
     getCurrentCohortFromCoreState(state),
   );
+  // TODO replace with memoized selector
   if (cohort === undefined || cohort?.caseSet === undefined)
     return {
       data: { mode: "and", root: {} },
@@ -1228,6 +1254,38 @@ export const selectCohortById = (
 export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
   cohortSelectors.selectEntities(state);
 
+export const selectCohortCountsResults = (
+  state: CoreState,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): CoreDataSelectorResponse<CountsData> => {
+  return {
+    data: cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData,
+    status:
+      cohortSelectors.selectById(state, cohortId)?.counts.status ??
+      NullCountsData.status,
+  };
+};
+
+export const selectCohortCounts = (
+  state: CoreState,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): CoreDataSelectorResponse<CountsDataAndStatus> =>
+  cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
+
+export const selectCohortCountsByName = (
+  state: CoreState,
+  name: keyof CountsData,
+  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+): number =>
+  cohortSelectors.selectById(state, cohortId)?.counts[name] ??
+  NullCountsData[name];
+
+/**
+ * --------------------------------------------------------------------------
+ *  Cohort Hooks
+ *  -------------------------------------------------------------------------
+ **/
+
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
 };
@@ -1239,6 +1297,17 @@ export const useCurrentCohortWithGeneAndSsmCaseSet = ():
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 };
+
+export const useCurrentCohortCounts =
+  (): CoreDataSelectorResponse<CountsData> => {
+    return useCoreSelector((state) => selectCohortCountsResults(state));
+  };
+
+/**
+ * --------------------------------------------------------------------------
+ *  Helper Functions
+ *  -------------------------------------------------------------------------
+ **/
 
 /**
  * A thunk to create a case set when adding filter that require them
@@ -1374,6 +1443,7 @@ export const setActiveCohortList =
           modified: false,
         }),
       );
+      dispatch(fetchCohortCaseCounts(cohortId));
     }
   };
 
@@ -1395,4 +1465,58 @@ export const createCaseSetsIfNeeded =
 
 export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
   return cohort?.caseSet.filters ?? cohort.filters;
+};
+
+export const divideFilterSetByPrefix = (
+  filters: FilterSet,
+  prefixes: string[],
+): SplitFilterSet => {
+  const results = Object.entries(filters.root).reduce(
+    (
+      newObj: {
+        withPrefix: Record<string, Operation>;
+        withoutPrefix: Record<string, Operation>;
+      },
+      [key, val],
+    ) => {
+      if (prefixes.some((prefix) => key.startsWith(prefix)))
+        newObj.withPrefix[key] = val;
+      else newObj.withoutPrefix[key] = val;
+      return newObj;
+    },
+    { withPrefix: {}, withoutPrefix: {} },
+  );
+
+  return {
+    withPrefix: { mode: "and", root: results.withPrefix },
+    withoutPrefix: { mode: "and", root: results.withoutPrefix },
+  };
+};
+
+interface SplitFilterSet {
+  withPrefix: FilterSet;
+  withoutPrefix: FilterSet;
+}
+
+/**
+ * Divides the current cohort into prefix and not prefix. This is
+ * used to create caseSets for files and cases
+ * @param state
+ * @param prefixes - and array of filter prefix to separate on (typically ["genes."])
+ */
+export const divideCurrentCohortFilterSetFilterByPrefix = (
+  state: CoreState,
+  prefixes: string[],
+): SplitFilterSet => {
+  const cohort = cohortSelectors.selectById(
+    state,
+    getCurrentCohortFromCoreState(state),
+  );
+  if (cohort === undefined)
+    return {
+      withPrefix: { mode: "and", root: {} },
+      withoutPrefix: { mode: "and", root: {} },
+    };
+
+  return divideFilterSetByPrefix(cohort?.filters, prefixes);
 };

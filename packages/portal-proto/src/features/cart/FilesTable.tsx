@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import fileSize from "filesize";
 import { capitalize } from "lodash";
 import {
@@ -285,7 +285,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     platform: false,
   });
 
-  const handleChange = useCallback((obj: HandleChangeInput) => {
+  const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
         setActivePage(1);
@@ -299,7 +299,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         setSearchTerm(obj.newSearch);
         break;
     }
-  }, []);
+  };
 
   const handleDownloadJSON = async () => {
     await download({

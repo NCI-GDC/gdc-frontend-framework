@@ -6,7 +6,7 @@ from ....base.base_page import GenericLocators
 class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
 
-    COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> span:text("{cohort_name}")'
+    COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> text="{cohort_name}"'
     ACTIVE_COHORT = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
 
     IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
@@ -35,6 +35,11 @@ class CohortBar(BasePage):
     def select_cohort_from_dropdown(self, cohort_name:str):
         locator = CohortBarLocators.COHORT_FROM_DROPDOWN_LIST(cohort_name)
         self.click(locator)
+
+    def is_cohort_visible_in_dropdown_list(self, cohort_name:str):
+        locator = CohortBarLocators.COHORT_FROM_DROPDOWN_LIST(cohort_name)
+        is_cohort_visible = self.is_visible(locator)
+        return is_cohort_visible
 
     # Clicks "Set this as your current cohort." in the temp message
     def click_set_as_current_cohort_from_temp_message(self):
