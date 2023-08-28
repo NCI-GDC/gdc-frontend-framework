@@ -208,7 +208,9 @@ function ColumnItem<TData>({
           onChange: column.getToggleVisibilityHandler(),
         }}
         size="xs"
-        aria-label="toggle column visibility switch button"
+        aria-label={`toggle column visibility switch button for ${humanify({
+          term: column.id,
+        })} column`}
         data-testid="switch-toggle"
       />
     </div>

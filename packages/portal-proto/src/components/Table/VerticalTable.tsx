@@ -78,7 +78,7 @@ function VerticalTable<TData>({
       expanded,
     },
     manualSorting: columnSorting === "manual",
-    sortDescFirst: true,
+    sortDescFirst: false,
     autoResetExpanded: false,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
@@ -216,6 +216,7 @@ function VerticalTable<TData>({
                     <th
                       className="px-2.5 py-3 font-heading bg-base-max"
                       key={header.id}
+                      tabIndex={0}
                     >
                       {flexRender(
                         header.column.columnDef.header,
@@ -244,7 +245,7 @@ function VerticalTable<TData>({
                             : "ascending"
                           : undefined
                       }
-                      tabIndex={header.column.getCanSort() === false ? -1 : 0}
+                      tabIndex={0}
                       role={
                         header.column.getCanSort() ? "button" : "columnheader"
                       }

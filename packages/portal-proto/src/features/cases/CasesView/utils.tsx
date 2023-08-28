@@ -39,7 +39,7 @@ export type casesTableDataType = {
     file_name: string;
     data_type: string;
   }[];
-  experimental_strategies: (string | number)[];
+  experimental_strategies: (string | number)[] | string;
   annotations: AnnotationDefaults[];
 };
 
@@ -229,10 +229,12 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.accessor("primary_diagnosis", {
         id: "primary_diagnosis",
         header: "Primary Diagnosis",
+        enableSorting: false,
       }),
       casesDataColumnHelper.accessor("age_at_diagnosis", {
         id: "age_at_diagnosis",
         header: "Age At Diagnosis",
+        enableSorting: false,
       }),
       casesDataColumnHelper.accessor("vital_status", {
         id: "vital_status",
@@ -263,6 +265,7 @@ export const useGenerateCasesTableColumns = ({
         id: "experimental_strategy",
         header: "Experimental Strategy",
         cell: ({ getValue }) => getValue().toLocaleString(),
+        enableSorting: false,
       }),
       casesDataColumnHelper.display({
         id: "annotations",

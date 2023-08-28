@@ -125,10 +125,15 @@ export const ContextualCasesView: React.FC = () => {
       slide_count: getSlideCountFromCaseSummary(datum.experimental_strategies),
       files_count: datum?.filesCount,
       files: datum.files,
-      experimental_strategies: extractToArray(
-        datum?.experimental_strategies,
-        "experimental_strategy",
-      ),
+      experimental_strategies: datum?.experimental_strategies
+        ? [
+            ...((extractToArray(
+              datum?.experimental_strategies,
+              "experimental_strategy",
+            ) as string[]) ?? []),
+          ].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        : "--",
+
       annotations: datum.annotations,
     })) ?? [];
 
@@ -162,7 +167,7 @@ export const ContextualCasesView: React.FC = () => {
     race: false,
     ethnicity: false,
     age_at_diagnosis: false,
-    experimental_strategies: false,
+    experimental_strategy: false,
   });
 
   const sortByActions = (sortByObj: SortingState) => {
