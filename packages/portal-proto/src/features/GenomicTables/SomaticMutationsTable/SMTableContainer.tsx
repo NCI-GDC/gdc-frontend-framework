@@ -360,7 +360,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
         <>
           {searchTermsForGene?.geneSymbol && (
-            <div id="announce" aria-live="polite">
+            <div id="announce" aria-live="polite" className="sr-only">
               <p>
                 You are now viewing the Mutations table filtered by{" "}
                 {searchTermsForGene.geneSymbol}
