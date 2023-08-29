@@ -1452,6 +1452,7 @@ export const createCaseSetsIfNeeded =
   async (dispatch: CoreDispatch) => {
     if (!cohort) return;
     if (willRequireCaseSet(cohort.filters)) {
+      console.log("creating cohort case sets, for cohort: ", cohort);
       dispatch(
         createCaseSet({
           caseSetId: cohort.id,
