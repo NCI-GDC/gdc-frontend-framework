@@ -141,7 +141,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
 }`;
 
 export interface CreateCaseSetProps {
-  readonly caseSetId: string; // pass a caseSetId to use
+  readonly caseSetId?: string; // pass a caseSetId to use instead of cohort id
   readonly pendingFilters?: FilterSet;
   readonly modified?: boolean; // to control cohort modification flag
   readonly cohortId?: string; // if set update this cohort instead of the current cohort
@@ -159,7 +159,7 @@ export const createCaseSet = createAsyncThunk<
     // select a cohort by id if passed in, otherwise use the current cohort
     const cohort = cohortId
       ? cohortSelectors.selectById(thunkAPI.getState(), cohortId)
-      : thunkAPI.getState().cohort.availableCohorts.currentCohort;
+      : selectCurrentCohort(thunkAPI.getState());
     if (cohort === undefined || pendingFilters === undefined)
       return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
 
@@ -175,7 +175,7 @@ export const createCaseSet = createAsyncThunk<
     return graphqlAPI(graphQL, {
       inputFilters: {
         filters: buildCohortGqlOperator(dividedFilters.withPrefix),
-        set_id: `genes-ssms-${caseSetId}`,
+        set_id: `genes-ssms-${caseSetId ?? cohort.id}`, // use case set id if passed in, otherwise use cohort id
       },
     });
   },
@@ -380,6 +380,7 @@ const handleFiltersForSet = createAsyncThunk<
     if (requiresCaseSet) {
       thunkAPI.dispatch(
         createCaseSet({
+          // NOTE: this will use the current cohort
           caseSetId: currentCohort?.id,
           pendingFilters: updatedFilters,
           modified: true,
@@ -1367,7 +1368,6 @@ export const updateActiveCohortFilter =
         };
         dispatch(
           createCaseSet({
-            caseSetId: cohortId,
             pendingFilters: updatedFilters,
             modified: true,
             cohortId: cohortId,
@@ -1396,7 +1396,6 @@ export const setActiveCohort =
         // switched to a cohort without a case set
         await dispatch(
           createCaseSet({
-            caseSetId: cohortId,
             pendingFilters: cohort.filters,
             modified: cohort.modified,
             cohortId: cohortId,
@@ -1413,7 +1412,6 @@ export const discardActiveCohortChanges =
     const cohortId = selectCurrentCohortId(getState());
     if (cohortId && willRequireCaseSet(filters)) {
       createCaseSet({
-        caseSetId: cohortId,
         pendingFilters: filters,
         modified: false,
         cohortId: cohortId,
@@ -1437,7 +1435,6 @@ export const setActiveCohortList =
     ) {
       dispatch(
         createCaseSet({
-          caseSetId: cohortId,
           pendingFilters: cohort.filters,
           modified: false,
           cohortId: cohortId,
@@ -1454,7 +1451,6 @@ export const createCaseSetsIfNeeded =
     if (willRequireCaseSet(cohort.filters)) {
       dispatch(
         createCaseSet({
-          caseSetId: cohort.id,
           pendingFilters: cohort.filters,
           modified: true,
           cohortId: cohort.id,
