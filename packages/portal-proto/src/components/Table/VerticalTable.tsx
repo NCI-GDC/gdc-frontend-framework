@@ -306,7 +306,7 @@ function VerticalTable<TData>({
                               setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             })}
-                            className="cursor-auto"
+                            className="cursor-auto align-bottom"
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>

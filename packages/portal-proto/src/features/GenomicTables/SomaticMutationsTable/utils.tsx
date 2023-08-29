@@ -14,16 +14,14 @@ import {
   SMTableSurvival,
 } from "./TableComponents";
 import { CohortCreationButton } from "@/components/CohortCreationButton";
-import {
-  ImpactHeaderWithTooltip,
-  NumeratorDenominator,
-  RatioSpring,
-} from "@/components/expandableTables/shared";
+import { RatioSpring } from "@/components/expandableTables/shared";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
 } from "react-icons/io";
 import { entityMetadataType } from "@/utils/contexts";
+import NumeratorDenominator from "@/components/NumeratorDenominator";
+import ImpactHeaderWithTooltip from "../SharedComponent/ImpactHeaderWithTooltip";
 
 export const filterMutationType = (mutationSubType: string): string => {
   if (

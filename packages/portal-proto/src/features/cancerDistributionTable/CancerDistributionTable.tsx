@@ -12,8 +12,6 @@ import {
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { calculatePercentageAsNumber, generateSortingFn } from "src/utils";
-
-import { NumeratorDenominator } from "@/components/expandableTables/shared";
 import { CohortCreationButton } from "@/components/CohortCreationButton/";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import {
@@ -35,6 +33,7 @@ import {
 } from "./utils";
 import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import NumeratorDenominator from "@/components/NumeratorDenominator";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,

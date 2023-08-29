@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
-import RatioSpring from "./RatioSpring";
+import RatioSpring from "../../../components/expandableTables/shared/RatioSpring";
 import { FaCircle as Circle } from "react-icons/fa";
 import { TableSubrowData } from "@gff/core";
 
-interface ListSpringProps {
+interface ListAffectedCasesProps {
   subData: ReadonlyArray<TableSubrowData>;
-  subrowTitle;
+  subrowTitle: string;
 }
 
 interface TableSubrowDataWithRatio extends TableSubrowData {
@@ -25,16 +25,16 @@ const itemRatio = (item: TableSubrowData): number | undefined => {
   return n / d;
 };
 
-const ListSpring: React.FC<ListSpringProps> = ({
+const ListAffectedCases: React.FC<ListAffectedCasesProps> = ({
   subData,
   subrowTitle,
-}: ListSpringProps) => {
+}: ListAffectedCasesProps) => {
   const [subRef, { width, height }] = useMeasure();
 
   const fudgeFactor = width / 60;
 
   const verticalSpring = useSpring({
-    from: { opacity: 0, height: 50 },
+    from: { opacity: 0, height: 0 },
     to: {
       opacity: 1,
       height: height + fudgeFactor,
@@ -75,9 +75,9 @@ const ListSpring: React.FC<ListSpringProps> = ({
 
   return (
     <>
-      <animated.div ref={subRef} className="absolute mt-2 ml-2">
+      <animated.div ref={subRef} className="absolute mt-2 ml-2 w-full">
         <div className="font-semibold text-[1rem] mb-2">{subrowTitle}</div>
-        <div className="relative columns-4 gap-12 font-content text-sm">
+        <div className="columns-4 font-content text-sm">
           {subDataSorted.map((item, i) => renderItems({ ...item }, i))}
         </div>
       </animated.div>
@@ -86,4 +86,4 @@ const ListSpring: React.FC<ListSpringProps> = ({
   );
 };
 
-export default ListSpring;
+export default ListAffectedCases;

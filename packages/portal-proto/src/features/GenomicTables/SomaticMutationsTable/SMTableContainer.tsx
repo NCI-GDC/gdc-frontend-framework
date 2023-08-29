@@ -39,7 +39,7 @@ import {
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import SMTableSubcomponent from "./SMTableSubcomponent";

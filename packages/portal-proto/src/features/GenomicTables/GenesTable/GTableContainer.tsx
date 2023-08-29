@@ -38,7 +38,7 @@ import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";

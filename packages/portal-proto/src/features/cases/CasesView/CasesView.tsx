@@ -17,7 +17,6 @@ import { CasesCohortButton } from "./CasesCohortButton";
 import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
 import {
@@ -29,6 +28,7 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
