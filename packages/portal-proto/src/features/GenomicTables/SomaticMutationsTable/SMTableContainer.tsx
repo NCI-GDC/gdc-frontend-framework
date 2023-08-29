@@ -264,6 +264,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     mutation_id: false,
   });
 
+  const contextSensitiveFilters = geneSymbol
+    ? joinFilters(combinedFilters, geneFilter)
+    : caseFilter
+    ? caseFilter
+    : combinedFilters;
+
   const setFilters =
     selectedMutations.length > 0
       ? ({
@@ -276,11 +282,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : geneSymbol
-      ? joinFilters(combinedFilters, geneFilter)
-      : caseFilter
-      ? caseFilter
-      : combinedFilters;
+      : contextSensitiveFilters;
 
   const handleJSONDownload = async () => {
     setDownloadMutationsFrequencyActive(true);
@@ -294,12 +296,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         method: "POST",
       },
       params: {
-        filters:
-          buildCohortGqlOperator(
-            geneSymbol
-              ? joinFilters(combinedFilters, geneFilter)
-              : combinedFilters,
-          ) ?? {},
+        filters: buildCohortGqlOperator(contextSensitiveFilters) ?? {},
         filename: `mutations.${convertDateToString(new Date())}.json`,
         attachment: true,
         format: "JSON",
