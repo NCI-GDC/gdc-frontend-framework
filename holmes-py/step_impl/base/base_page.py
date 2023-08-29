@@ -88,6 +88,9 @@ class BasePage:
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
+    def keyboard_press(self, action):
+        return self.driver.keyboard.press(action)
+
     def scroll_into_view_if_needed(self, locator):
         self.driver.locator(locator).scroll_into_view_if_needed()
 
