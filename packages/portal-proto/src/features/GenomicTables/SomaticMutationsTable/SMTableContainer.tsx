@@ -129,7 +129,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * (page - 1),
-    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
