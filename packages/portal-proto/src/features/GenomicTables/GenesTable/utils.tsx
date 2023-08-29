@@ -290,7 +290,7 @@ export const useGenerateGenesTableColumns = ({
               }
               numCases={numerator}
               handleClick={() => {
-                setColumnType("cnvgain");
+                setColumnType("cnvloss");
                 setGeneID(row.original.gene_id);
                 setShowCreateCohort(true);
               }}
