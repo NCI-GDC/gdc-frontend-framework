@@ -336,8 +336,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
   // hook to call renderSurvivalPlot
+  const shouldPlot =
+    hasEnoughData &&
+    plotData
+      .map(({ donors }) => {
+        return donors;
+      })
+      .every(({ length }) => length > MINIMUM_CASES);
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    plotData,
     xDomain,
     setXDomain,
     height,
@@ -354,22 +361,26 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
 
   let legend;
-  switch (plotType) {
-    case SurvivalPlotTypes.overall:
-      legend = buildOnePlotLegend(plotData, "Explorer");
-      break;
-    case SurvivalPlotTypes.gene:
-      legend = buildTwoPlotLegend(plotData, names[0], plotType);
-      break;
-    case SurvivalPlotTypes.mutation:
-      legend = buildTwoPlotLegend(plotData, names[0], plotType);
-      break;
-    case SurvivalPlotTypes.categorical:
-      legend = buildManyLegend(plotData, names, field, plotType);
-      break;
-    case SurvivalPlotTypes.continuous:
-      legend = buildManyLegend(plotData, names, field, plotType);
-      break;
+  if (shouldPlot) {
+    switch (plotType) {
+      case SurvivalPlotTypes.overall:
+        legend = buildOnePlotLegend(plotData, "Explorer");
+        break;
+      case SurvivalPlotTypes.gene:
+        legend = buildTwoPlotLegend(plotData, names[0], plotType);
+        break;
+      case SurvivalPlotTypes.mutation:
+        legend = buildTwoPlotLegend(plotData, names[0], plotType);
+        break;
+      case SurvivalPlotTypes.categorical:
+        legend = buildManyLegend(plotData, names, field, plotType);
+        break;
+      case SurvivalPlotTypes.continuous:
+        legend = buildManyLegend(plotData, names, field, plotType);
+        break;
+    }
+  } else {
+    legend = [];
   }
 
   const handleDownloadJSON = async () => {
@@ -439,118 +450,60 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex w-100 items-center justify-center flex-wrap">
-        <div className="flex ml-auto text-montserrat text-lg">{title}</div>
-        <div className="flex items-center ml-auto gap-1">
-          <Menu position="bottom-start" offset={1} transitionDuration={0}>
-            <Menu.Target>
-              <Tooltip label="Download Survival Plot data or image">
+    <>
+      {names && legend.length == 0 && container && (
+        <div className="flex ml-auto text-montserrat text-lg py-2">{`Not enough survival data for ${names[0]}`}</div>
+      )}
+      <div className="flex flex-col">
+        <div className="flex w-100 items-center justify-center flex-wrap">
+          {legend.length > 0 && names.length && (
+            <div className="flex ml-auto text-montserrat text-lg">{title}</div>
+          )}
+          {legend.length > 0 && names.length && (
+            <div className="flex items-center ml-auto gap-1">
+              <Menu position="bottom-start" offset={1} transitionDuration={0}>
+                <Menu.Target>
+                  <Tooltip label="Download Survival Plot data or image">
+                    <DownloadButton
+                      data-testid="button-download-survival-plot"
+                      aria-label="Download button with an icon"
+                    >
+                      <DownloadIcon size="1.25em" />
+                    </DownloadButton>
+                  </Tooltip>
+                </Menu.Target>
+                <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
+                  <Menu.Item
+                    onClick={() =>
+                      handleDownloadSVG(downloadRef, "survival-plot.svg")
+                    }
+                  >
+                    SVG
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      handleDownloadPNG(downloadRef, "survival-plot.png")
+                    }
+                  >
+                    PNG
+                  </Menu.Item>
+                  <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
+                  <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+              <Tooltip label="Reset Survival Plot Zoom">
                 <DownloadButton
-                  data-testid="button-download-survival-plot"
-                  aria-label="Download button with an icon"
+                  onClick={() => setXDomain(undefined)}
+                  data-testid="button-reset-survival-plot"
+                  aria-label="reset button with an icon"
                 >
-                  <DownloadIcon size="1.25em" />
+                  <ResetIcon size="1.15rem"></ResetIcon>
                 </DownloadButton>
               </Tooltip>
-            </Menu.Target>
-            <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
-              <Menu.Item
-                onClick={() =>
-                  handleDownloadSVG(downloadRef, "survival-plot.svg")
-                }
-              >
-                SVG
-              </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  handleDownloadPNG(downloadRef, "survival-plot.png")
-                }
-              >
-                PNG
-              </Menu.Item>
-              <Menu.Item onClick={handleDownloadJSON}>JSON</Menu.Item>
-              <Menu.Item onClick={handleDownloadTSV}>TSV</Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          <Tooltip label="Reset Survival Plot Zoom">
-            <DownloadButton
-              onClick={() => setXDomain(undefined)}
-              data-testid="button-reset-survival-plot"
-              aria-label="reset button with an icon"
-            >
-              <ResetIcon size="1.15rem"></ResetIcon>
-            </DownloadButton>
-          </Tooltip>
-        </div>
-      </div>
-      <div className="flex flex-col items-center ">
-        <div
-          className={
-            [
-              SurvivalPlotTypes.categorical,
-              SurvivalPlotTypes.continuous,
-            ].includes(plotType)
-              ? "flex flex-row flex-wrap justify-center"
-              : undefined
-          }
-        >
-          {!hideLegend &&
-            legend?.map((x, idx) => {
-              return (
-                <div
-                  data-testid="text-cases-with-survival-data"
-                  key={`${x.key}-${idx}`}
-                  className="px-2"
-                >
-                  {x.value}
-                </div>
-              );
-            })}
-        </div>
-        <div>
-          <Tooltip
-            label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
-                </div>
-              )
-            }
-          >
-            <div className="text-xs font-content">
-              {isNumber(pValue) &&
-                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
-          </Tooltip>
+          )}
         </div>
-        <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
-          drag to zoom
-        </div>
-      </div>
-      <div ref={mouseRef} className="relative">
-        <Box
-          className="w-36"
-          sx={{
-            top: y + 20,
-            left: x < 150 ? x - 20 : x - 100,
-            position: "absolute",
-            zIndex: 200,
-          }}
-        >
-          {survivalPlotLineTooltipContent}
-        </Box>
-        <div className="survival-plot" ref={container} />
-      </div>
-      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
-        <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
-            {title}
-          </h2>
+        {legend.length && names.length ? (
           <div className="flex flex-col items-center ">
             <div
               className={
@@ -565,21 +518,94 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               {!hideLegend &&
                 legend?.map((x, idx) => {
                   return (
-                    <div key={`${x.key}-${idx}`} className="px-2">
+                    <div
+                      data-testid="text-cases-with-survival-data"
+                      key={`${x.key}-${idx}`}
+                      className="px-2"
+                    >
                       {x.value}
                     </div>
                   );
                 })}
             </div>
-            <div className="text-xs">
-              {isNumber(pValue) &&
-                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+            <div>
+              <Tooltip
+                label={
+                  pValue === 0 && (
+                    <div>
+                      Value shows 0.00e+0 because the
+                      <br />
+                      P-Value is extremely low and goes beyond
+                      <br />
+                      the precision inherent in the code
+                    </div>
+                  )
+                }
+              >
+                <div className="text-xs font-content">
+                  {isNumber(pValue) &&
+                    `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+                </div>
+              </Tooltip>
+            </div>
+            <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
+              drag to zoom
             </div>
           </div>
-          <div className="survival-plot" ref={containerForDownload} />
+        ) : undefined}
+        <div ref={mouseRef} className="relative">
+          <Box
+            className="w-36"
+            sx={{
+              top: y + 20,
+              left: x < 150 ? x - 20 : x - 100,
+              position: "absolute",
+              zIndex: 200,
+            }}
+          >
+            {survivalPlotLineTooltipContent}
+          </Box>
+          {shouldPlot && plotData.length ? (
+            <div className="survival-plot" ref={container} />
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
+          <div ref={downloadRef}>
+            <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+              {title}
+            </h2>
+            <div className="flex flex-col items-center ">
+              <div
+                className={
+                  [
+                    SurvivalPlotTypes.categorical,
+                    SurvivalPlotTypes.continuous,
+                  ].includes(plotType)
+                    ? "flex flex-row flex-wrap justify-center"
+                    : undefined
+                }
+              >
+                {!hideLegend &&
+                  legend?.map((x, idx) => {
+                    return (
+                      <div key={`${x.key}-${idx}`} className="px-2">
+                        {x.value}
+                      </div>
+                    );
+                  })}
+              </div>
+              <div className="text-xs">
+                {isNumber(pValue) &&
+                  `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+              </div>
+            </div>
+            <div className="survival-plot" ref={containerForDownload} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
