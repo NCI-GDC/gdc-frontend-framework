@@ -85,7 +85,7 @@ export const useGenerateGenesTableColumns = ({
         header: () => (
           <HeaderTooltip
             title="Cohort"
-            tooltip="Click to add/remove genes to/from your cohort filters"
+            tooltip="Add/remove mutated (SSM/CNV) genes to/from your cohort filters"
           />
         ),
         cell: ({ row }) => (
@@ -104,7 +104,7 @@ export const useGenerateGenesTableColumns = ({
         header: () => (
           <HeaderTooltip
             title="Survival"
-            tooltip="Click to change the survival plot display"
+            tooltip="Change the survival plot display"
           />
         ),
         cell: ({ row }) => (

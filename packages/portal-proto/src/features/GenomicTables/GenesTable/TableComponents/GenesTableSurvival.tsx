@@ -28,8 +28,8 @@ const GenesTableSurvival = ({
   const tooltip = disabled
     ? `Not enough data`
     : isActive
-    ? `Click to remove ${selected.symbol} from plot`
-    : `Click to plot ${selected.symbol}`;
+    ? `Remove ${selected.symbol} from plot`
+    : `Plot ${selected.symbol}`;
   // NOTE: If button is disabled then tooltips will not show up
   // https://floating-ui.com/docs/react#disabled-elements
   return (
