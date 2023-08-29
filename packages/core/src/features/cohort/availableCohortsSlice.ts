@@ -156,14 +156,10 @@ export const createCaseSet = createAsyncThunk<
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ caseSetId, pendingFilters = undefined, cohortId }, thunkAPI) => {
-    const entityId = thunkAPI.getState().cohort.availableCohorts.currentCohort;
-    if (entityId === undefined)
-      return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
-
-    const cohort = cohortSelectors.selectById(
-      thunkAPI.getState(),
-      cohortId ?? entityId,
-    );
+    // select a cohort by id if passed in, otherwise use the current cohort
+    const cohort = cohortId
+      ? cohortSelectors.selectById(thunkAPI.getState(), cohortId)
+      : thunkAPI.getState().cohort.availableCohorts.currentCohort;
     if (cohort === undefined || pendingFilters === undefined)
       return thunkAPI.rejectWithValue({ error: "No cohort or filters" });
 
@@ -1374,6 +1370,7 @@ export const updateActiveCohortFilter =
             caseSetId: cohortId,
             pendingFilters: updatedFilters,
             modified: true,
+            cohortId: cohortId,
           }),
         );
       }
@@ -1402,6 +1399,7 @@ export const setActiveCohort =
             caseSetId: cohortId,
             pendingFilters: cohort.filters,
             modified: cohort.modified,
+            cohortId: cohortId,
           }),
         );
       }
@@ -1418,6 +1416,7 @@ export const discardActiveCohortChanges =
         caseSetId: cohortId,
         pendingFilters: filters,
         modified: false,
+        cohortId: cohortId,
       });
     } else dispatch(discardCohortChanges(filters));
   };
@@ -1441,6 +1440,7 @@ export const setActiveCohortList =
           caseSetId: cohortId,
           pendingFilters: cohort.filters,
           modified: false,
+          cohortId: cohortId,
         }),
       );
       dispatch(fetchCohortCaseCounts(cohortId));
@@ -1452,7 +1452,6 @@ export const createCaseSetsIfNeeded =
   async (dispatch: CoreDispatch) => {
     if (!cohort) return;
     if (willRequireCaseSet(cohort.filters)) {
-      console.log("creating cohort case sets, for cohort: ", cohort);
       dispatch(
         createCaseSet({
           caseSetId: cohort.id,
