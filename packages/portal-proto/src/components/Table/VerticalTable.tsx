@@ -126,7 +126,7 @@ function VerticalTable<TData>({
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = e.target.value.trim();
+    const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
 
     // Clear the previous timeout
@@ -134,7 +134,7 @@ function VerticalTable<TData>({
 
     // Set a new timeout to perform the search after 400ms
     timeoutRef.current = setTimeout(() => {
-      handleChange({ newSearch: newSearchTerm });
+      handleChange({ newSearch: newSearchTerm.trim() });
     }, 400);
   };
 

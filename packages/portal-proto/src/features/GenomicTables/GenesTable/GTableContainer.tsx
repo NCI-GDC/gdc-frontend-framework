@@ -89,7 +89,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGenesTable({
     pageSize: pageSize,
     offset: (page - 1) * pageSize,
-    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
   });
