@@ -959,9 +959,8 @@ mutation mutationsCreateRepositoryCaseSetMutation(
     jest.useFakeTimers("modern");
     jest.setSystemTime(new Date("2020-11-01"));
 
+    Date.now = jest.fn(() => 1604256000000);
     test("should create a caseSet query", () => {
-      const origNow = Date.now;
-      Date.now = jest.fn(() => 1604256000000);
       const spyFetch = jest
         .spyOn(global, "fetch")
         .mockImplementation(
@@ -1002,7 +1001,6 @@ mutation mutationsCreateRepositoryCaseSetMutation(
         },
         method: "POST",
       });
-      Date.now = origNow;
     });
   });
 });
