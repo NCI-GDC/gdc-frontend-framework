@@ -43,6 +43,12 @@ const SVG_MARGINS = {
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
 
+interface SurvivalPlotLegend {
+  key: string;
+  style?: Record<string, string | number>;
+  value: string | JSX.Element;
+}
+
 type survival = (
   data: any,
   xDomain: any,
@@ -339,9 +345,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const shouldPlot =
     hasEnoughData &&
     plotData
-      .map(({ donors }) => {
-        return donors;
-      })
+      .map(({ donors }) => donors)
       .every(({ length }) => length > MINIMUM_CASES);
   const container = useSurvival(
     plotData,
@@ -360,7 +364,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     setSurvivalPlotLineTooltipContent,
   );
 
-  let legend;
+  let legend: SurvivalPlotLegend[];
   if (shouldPlot) {
     switch (plotType) {
       case SurvivalPlotTypes.overall:
@@ -452,7 +456,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   return (
     <>
       {names && legend.length == 0 && container && (
-        <div className="flex ml-auto text-montserrat text-lg py-2">{`Not enough survival data for ${names[0]}`}</div>
+        <div className="flex ml-auto text-montserrat text-lg py-2">
+          Not enough survival data for {names[0]}
+        </div>
       )}
       <div className="flex flex-col">
         <div className="flex w-100 items-center justify-center flex-wrap">

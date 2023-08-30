@@ -91,7 +91,7 @@ export const SSMSPanel = ({
               ? [comparativeSurvival.name]
               : []
           }
-          field={"gene.ssm.ssm_id"}
+          field="gene.ssm.ssm_id"
         />
       </div>
       <div ref={targetRef}>

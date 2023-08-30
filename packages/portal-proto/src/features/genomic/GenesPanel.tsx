@@ -82,7 +82,7 @@ export const GenesPanel = ({
                 ? [comparativeSurvival.symbol]
                 : []
             }
-            field={"gene.symbol"}
+            field="gene.symbol"
           />
         </Grid.Col>
       </Grid>
