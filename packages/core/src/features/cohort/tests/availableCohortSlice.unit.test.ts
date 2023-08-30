@@ -960,6 +960,8 @@ mutation mutationsCreateRepositoryCaseSetMutation(
     jest.setSystemTime(new Date("2020-11-01"));
 
     test("should create a caseSet query", () => {
+      const origNow = Date.now;
+      Date.now = jest.fn(() => 1604256000000);
       const spyFetch = jest
         .spyOn(global, "fetch")
         .mockImplementation(
@@ -985,8 +987,6 @@ mutation mutationsCreateRepositoryCaseSetMutation(
         };
       });
 
-      const _now = Date.now; // save
-      Date.now = jest.fn(() => 0);
       coreStore.dispatch(
         createCaseSet({
           pendingFilters: populatedFilters,
@@ -994,7 +994,6 @@ mutation mutationsCreateRepositoryCaseSetMutation(
           cohortId: "cohortId-1000",
         }),
       );
-      Date.now = _now;
       expect(spyFetch).toBeCalledWith(`${GDC_APP_API_AUTH}/graphql`, {
         body: '{"query":"\\nmutation mutationsCreateRepositoryCaseSetMutation(\\n  $inputFilters: CreateSetInput\\n) {\\n  sets {\\n    create {\\n      explore {\\n       case (input: $inputFilters) { set_id size }\\n    }\\n  }\\n }\\n}","variables":{"inputFilters":{"set_id":"genes-ssms-000-000-000-1"}}}',
         headers: {
@@ -1003,6 +1002,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
         },
         method: "POST",
       });
+      Date.now = origNow;
     });
   });
 });
