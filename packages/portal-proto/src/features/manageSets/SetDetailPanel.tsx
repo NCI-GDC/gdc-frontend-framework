@@ -25,11 +25,19 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const [tableData, setTableData] = useState([]);
   const [sortBy, setSortBy] = useState<SortBy[]>();
   const tableWrapperRef = useRef<HTMLDivElement>();
+  const [scrollHeight, setScrollHeight] = useState(0);
 
   useEffect(() => {
-    setCurrentPage(0);
-    setTableData([]);
-  }, [set?.setId]);
+    if (set === undefined) {
+      setCurrentPage(0);
+    }
+  }, [set]);
+
+  useEffect(() => {
+    if (tableWrapperRef?.current?.clientHeight !== undefined) {
+      setScrollHeight(tableWrapperRef?.current?.clientHeight);
+    }
+  }, [tableWrapperRef?.current?.clientHeight]);
 
   const {
     data: geneDetailData,
@@ -115,7 +123,11 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
 
   // Append new data to existing table data
   useEffect(() => {
-    setTableData([...tableData, ...responseData]);
+    if (set === undefined) {
+      setTableData([]);
+    } else {
+      setTableData([...tableData, ...responseData]);
+    }
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [JSON.stringify(responseData)]);
   /* eslint-enable */
@@ -206,7 +218,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     >
       <div className="h-full" ref={tableWrapperRef}>
         <ScrollArea
-          h={tableWrapperRef?.current?.clientHeight || 0}
+          h={scrollHeight}
           viewportRef={scrollRef}
           offsetScrollbars
           onScrollPositionChange={() => {

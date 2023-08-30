@@ -14,6 +14,7 @@ import {
   addNewCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
+  clearCohortFilters,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 
@@ -32,7 +33,7 @@ export const startCoreListening =
 // TODO add clearCaseSet handler to remove caseSet from the Cohort Persistence GDC API
 
 startCoreListening({
-  matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
+  matcher: isAnyOf(updateCohortFilter, removeCohortFilter, clearCohortFilters),
   effect: async (_, listenerApi) => {
     listenerApi.dispatch(fetchCohortCaseCounts());
   },
