@@ -963,11 +963,10 @@ mutation mutationsCreateRepositoryCaseSetMutation(
     test("should create a caseSet query", () => {
       const spyFetch = jest
         .spyOn(global, "fetch")
-        .mockImplementation(
-          jest.fn(() =>
-            Promise.resolve({ json: () => Promise.resolve({ ok: true }) }),
-          ) as jest.Mock,
+        .mockResolvedValue(
+          Promise.resolve({ json: () => Promise.resolve({ ok: true }) }) as any,
         );
+
       jest.spyOn(cohortSelectors, "selectById").mockImplementation(() => {
         return {
           name: "New Cohort",
