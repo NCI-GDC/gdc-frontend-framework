@@ -17,8 +17,8 @@ import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import escapeStringRegexp from "escape-string-regexp";
 import download from "@/utils/download";
+import { escapeStringRegexp } from "./utils";
 
 interface BiospecimenProps {
   readonly caseId: string;

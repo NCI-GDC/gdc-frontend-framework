@@ -21,6 +21,22 @@ import { humanify, fileInCart } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { GiMicroscope } from "react-icons/gi";
 
+// NOTE: Copied from https://github.com/sindresorhus/escape-string-regexp
+// MIT License
+// Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+export const escapeStringRegexp = (stringToTest: string): string => {
+  if (typeof stringToTest !== "string") {
+    throw new TypeError("Expected a string");
+  }
+
+  // Escape characters with special meaning either inside or outside character sets.
+  // Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
+  return stringToTest
+    .replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
+    .replace(/-/g, "\\x2d");
+};
+// end of copied code
+
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
     return (
