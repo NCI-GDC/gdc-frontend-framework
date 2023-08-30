@@ -14,6 +14,7 @@ import {
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { fetchCohortCaseCounts } from "@gff/core/dist/dts/features/cohort/cohortCountsQuery";
 
 const SaveCohortModal = ({
   initialName = "",
@@ -61,6 +62,7 @@ const SaveCohortModal = ({
         );
         coreDispatch(setCurrentCohortId(payload.id));
         coreDispatch(updateCohortName(newName));
+        coreDispatch(fetchCohortCaseCounts(payload.id));
         onClose();
       })
       .catch((e: FetchBaseQueryError) => {
