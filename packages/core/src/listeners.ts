@@ -15,6 +15,7 @@ import {
   addNewCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
+  clearCohortFilters,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
@@ -44,7 +45,7 @@ startCoreListening({
 });
 
 startCoreListening({
-  matcher: isAnyOf(updateCohortFilter, removeCohortFilter),
+  matcher: isAnyOf(updateCohortFilter, removeCohortFilter, clearCohortFilters),
   effect: async (_, listenerApi) => {
     listenerApi.dispatch(fetchCohortCaseCounts());
   },
