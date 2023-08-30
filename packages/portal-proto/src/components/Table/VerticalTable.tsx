@@ -142,7 +142,7 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div className="grow overflow-hidden">
+    <div className="grow overflow-hidden pt-1">
       <div
         className={`flex ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -216,7 +216,6 @@ function VerticalTable<TData>({
                     <th
                       className="px-2.5 py-3 font-heading bg-base-max"
                       key={header.id}
-                      tabIndex={0}
                     >
                       {flexRender(
                         header.column.columnDef.header,
@@ -245,19 +244,18 @@ function VerticalTable<TData>({
                             : "ascending"
                           : undefined
                       }
-                      tabIndex={0}
-                      role={
-                        header.column.getCanSort() ? "button" : "columnheader"
-                      }
                     >
-                      <div className="flex items-center">
+                      <button className="flex items-center">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
 
                         {header.column.getCanSort() && (
-                          <div className="inline-block text-xs pl-3 align-middle text-base-light">
+                          <div
+                            className="inline-block text-xs pl-3 align-middle text-base-light"
+                            aria-hidden="true"
+                          >
                             <BsCaretUpFill
                               className={
                                 header.column.getIsSorted() === "desc"
@@ -274,7 +272,7 @@ function VerticalTable<TData>({
                             />
                           </div>
                         )}
-                      </div>
+                      </button>
                     </th>
                   );
                 })}

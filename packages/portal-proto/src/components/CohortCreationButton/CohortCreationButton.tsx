@@ -73,7 +73,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         onClick={handleClick}
         $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
       >
-        <IconWrapper $disabled={disabled}>
+        <IconWrapper $disabled={disabled} aria-hidden="true">
           <PlusIcon color="white" size={12} />
         </IconWrapper>
         <span className="pr-2 self-center">{label}</span>

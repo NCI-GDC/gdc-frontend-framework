@@ -78,6 +78,7 @@ export const useGenerateSMTableColumns = ({
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
+            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (

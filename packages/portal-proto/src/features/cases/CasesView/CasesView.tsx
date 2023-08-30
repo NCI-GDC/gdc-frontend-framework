@@ -195,6 +195,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   useEffect(() => {
+    setRowSelection({});
     sortByActions(sorting);
   }, [sorting]);
 

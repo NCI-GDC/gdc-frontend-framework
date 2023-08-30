@@ -176,6 +176,7 @@ const ProjectsTable: React.FC = () => {
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
+            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -264,7 +265,7 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
-        enableSorting: false,
+        enableSorting: true,
       }),
     ],
     [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
@@ -286,6 +287,7 @@ const ProjectsTable: React.FC = () => {
   ]);
 
   useEffect(() => {
+    setRowSelection({});
     sortByActions(sorting);
   }, [sorting]);
 
