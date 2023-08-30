@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
@@ -7,6 +7,9 @@ import VictoryBarChart from "../../charts/VictoryBarChart";
 import { CategoricalBins } from "../types";
 import { COLOR_MAP } from "../constants";
 import { flattenBinnedData } from "../utils";
+import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
+import { convertDateToString } from "@/utils/date";
+import { toDisplayName } from "../utils";
 
 const formatBarChartData = (
   data: Record<string, number>,
@@ -34,7 +37,6 @@ interface HistogramProps {
   readonly isFetching: boolean;
   readonly noData: boolean;
   readonly field: string;
-  readonly fieldName: string;
   readonly continuous: boolean;
   readonly customBinnedData?: CategoricalBins;
 }
@@ -49,6 +51,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   customBinnedData = null,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
+  const downloadChartRef = useRef<HTMLElement>();
   const barChartData = formatBarChartData(
     customBinnedData !== null ? flattenBinnedData(customBinnedData) : data,
     yTotal,
@@ -61,6 +64,11 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
   const hideYTicks = continuous && barChartData.every((d) => d.yCount === 0);
+  const fieldName = toDisplayName(field);
+  const downloadFileName = `${field
+    .split(".")
+    .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
+  const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
 
   return (
     <>
@@ -114,9 +122,35 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item>SVG (Coming soon)</Menu.Item>
-                <Menu.Item>PNG (Coming soon)</Menu.Item>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    handleDownloadSVG(
+                      downloadChartRef,
+                      `${downloadFileName}.svg`,
+                    )
+                  }
+                >
+                  SVG
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    handleDownloadPNG(
+                      downloadChartRef,
+                      `${downloadFileName}.png`,
+                    )
+                  }
+                >
+                  PNG
+                </Menu.Item>
+                <Menu.Item
+                  component="a"
+                  href={`data:text/json;charset=utf-8, ${encodeURIComponent(
+                    JSON.stringify(jsonData, null, 2), // prettify JSON
+                  )}`}
+                  download={`${downloadFileName}.json`}
+                >
+                  JSON
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>
@@ -134,6 +168,32 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   ? "Mouse over the histogram to see x-axis labels"
                   : undefined
               }
+            />
+          </div>
+          {/* The chart for downloads is slightly different so render another chart offscreen */}
+
+          <div
+            className="h-64 absolute left-[-1000px]"
+            aria-hidden="true"
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
+            inert=""
+          >
+            <VictoryBarChart
+              data={barChartData}
+              color={color}
+              yLabel={displayPercent ? "% of Cases" : "# of Cases"}
+              chartLabel={fieldName}
+              width={900}
+              height={500}
+              hideXTicks={hideXTicks}
+              hideYTicks={hideYTicks}
+              xLabel={
+                hideXTicks
+                  ? "For the list of histogram values, download the seperate TSV file"
+                  : undefined
+              }
+              chartRef={downloadChartRef}
             />
           </div>
         </>

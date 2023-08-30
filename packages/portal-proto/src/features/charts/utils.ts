@@ -34,7 +34,7 @@ const DownloadFile = async (url: string, filename: string) => {
  * @param filename name of file to save to, extension should be included e.g. chart1.svg
  */
 export const handleDownloadSVG = (
-  ref: MutableRefObject<HTMLDivElement>,
+  ref: MutableRefObject<HTMLElement>,
   filename: string,
 ): void => {
   if (ref.current) {
@@ -50,7 +50,7 @@ export const handleDownloadSVG = (
  * @param filename name of file to save to, extension should be included e.g. chart1.png
  */
 export const handleDownloadPNG = (
-  ref: MutableRefObject<HTMLDivElement>,
+  ref: MutableRefObject<HTMLElement>,
   filename: string,
 ): void => {
   if (ref.current) {

@@ -8,6 +8,7 @@ import {
   VictoryLabelProps,
   VictoryTooltip,
   Bar,
+  VictoryContainer,
 } from "victory";
 
 interface BarChartTooltipProps {
@@ -82,10 +83,12 @@ interface VictoryBarChartProps {
   readonly color: string;
   readonly yLabel?: string;
   readonly xLabel?: string;
+  readonly chartLabel?: string;
   readonly width?: number;
   readonly height?: number;
   readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
+  readonly chartRef?: React.MutableRefObject<HTMLElement>;
 }
 
 const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
@@ -93,10 +96,12 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   color,
   yLabel,
   xLabel,
+  chartLabel,
   width = 400,
   height = 400,
   hideYTicks = false,
   hideXTicks = false,
+  chartRef = undefined,
 }: VictoryBarChartProps) => {
   return (
     <VictoryChart
@@ -104,7 +109,20 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       height={height}
       domainPadding={60}
       padding={{ left: 80, right: 80, bottom: 80, top: 10 }}
+      containerComponent={
+        chartRef ? (
+          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
+        ) : undefined
+      }
     >
+      {chartLabel && (
+        <VictoryLabel
+          dy={20}
+          dx={width / 2}
+          text={chartLabel}
+          style={{ fontSize: 28, fontFamily: "Noto Sans" }}
+        />
+      )}
       <VictoryAxis
         dependentAxis
         label={yLabel}
