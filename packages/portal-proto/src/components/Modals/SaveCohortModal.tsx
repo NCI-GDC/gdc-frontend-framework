@@ -10,11 +10,11 @@ import {
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
+  fetchCohortCaseCounts,
   FilterSet,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import { fetchCohortCaseCounts } from "@gff/core/dist/dts/features/cohort/cohortCountsQuery";
 
 const SaveCohortModal = ({
   initialName = "",
