@@ -1427,6 +1427,11 @@ export const setActiveCohortList =
     const cohortId = selectCurrentCohortId(getState());
     const cohort = selectCurrentCohort(getState());
 
+    // have to request counts for all cohorts loaded from the backend
+    cohorts.forEach((cohort) => {
+      dispatch(fetchCohortCaseCounts(cohort.id));
+    });
+
     if (!cohort) return;
     if (
       cohortId &&
@@ -1440,7 +1445,6 @@ export const setActiveCohortList =
           cohortId: cohortId,
         }),
       );
-      dispatch(fetchCohortCaseCounts(cohortId));
     }
   };
 
