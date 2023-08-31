@@ -44,6 +44,7 @@ import {
   setCohort,
   setActiveCohort,
   useCurrentCohortCounts,
+  fetchCohortCaseCounts,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -158,6 +159,7 @@ const CohortManager: React.FC = () => {
   const deleteCohort = () => {
     coreDispatch(resetSelectedCases());
     coreDispatch(removeCohort({ shouldShowMessage: true }));
+    coreDispatch(fetchCohortCaseCounts());
   };
 
   const {
