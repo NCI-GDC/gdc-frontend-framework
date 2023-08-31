@@ -451,7 +451,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
 
   // Summary Table
   type SummaryTableDataType = {
-    alias: JSX.Element;
+    idx: number;
     entityType: string;
     name: string;
     count: string | number;
@@ -460,11 +460,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   const summaryTableData: SummaryTableDataType[] = useMemo(
     () =>
       sets.map((set, idx) => ({
-        alias: (
-          <span>
-            S<sub>{idx + 1}</sub>
-          </span>
-        ),
+        idx,
         entityType: upperFirst(entityType),
         name: set.name,
         count: isFetching ? "..." : summaryCounts?.[set.id],
@@ -475,16 +471,22 @@ const SetOperations: React.FC<SetOperationsProps> = ({
   const summaryTableColumnsHelper = createColumnHelper<SummaryTableDataType>();
   const summaryTableColumns = useMemo(
     () => [
-      summaryTableColumnsHelper.accessor("alias", {
+      summaryTableColumnsHelper.display({
+        id: "alias",
         header: "Alias",
-        cell: (info) => info.getValue(),
-        enableSorting: false,
+        cell: ({ row }) => (
+          <span>
+            S<sub>{row.original.idx + 1}</sub>
+          </span>
+        ),
       }),
       summaryTableColumnsHelper.accessor("entityType", {
+        id: "entityType",
         header: "Entity Type",
         enableSorting: false,
       }),
       summaryTableColumnsHelper.accessor("name", {
+        id: "name",
         header: "Name",
         enableSorting: false,
       }),
@@ -637,6 +639,7 @@ const SetOperations: React.FC<SetOperationsProps> = ({
             sorting={summaryTablesorting}
             setSorting={setSummaryTableSorting}
             columnSorting="enable"
+            status={isFetching ? "pending" : "fulfilled"}
           />
           <div className="m-8" />
           <VerticalTable
