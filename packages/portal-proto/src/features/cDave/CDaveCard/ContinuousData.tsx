@@ -125,7 +125,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           {chartType === "histogram" ? (
             <CDaveHistogram
               field={field}
-              fieldName={fieldName}
               data={resultData}
               yTotal={yTotal}
               isFetching={isFetching}

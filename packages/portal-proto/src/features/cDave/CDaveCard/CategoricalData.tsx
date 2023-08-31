@@ -67,7 +67,6 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       {chartType === "histogram" ? (
         <CDaveHistogram
           field={field}
-          fieldName={fieldName}
           data={resultData}
           yTotal={yTotal}
           isFetching={false}

@@ -304,6 +304,7 @@ export interface SurvivalPlotProps {
   readonly hideLegend?: boolean;
   readonly height?: number;
   readonly field?: string;
+  readonly downloadFileName?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
@@ -314,6 +315,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   hideLegend = false,
   height = 380,
   field,
+  downloadFileName = "survival-plot",
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -387,7 +389,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       { type: "application/json" },
     );
 
-    saveAs(blob, "survival-plot.json");
+    saveAs(blob, `${downloadFileName}.json`);
   };
 
   const handleDownloadTSV = async () => {
@@ -435,7 +437,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    saveAs(blob, "survival-plot.tsv");
+    saveAs(blob, `${downloadFileName}.tsv`);
   };
 
   return (
@@ -457,14 +459,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
                 onClick={() =>
-                  handleDownloadSVG(downloadRef, "survival-plot.svg")
+                  handleDownloadSVG(downloadRef, `${downloadFileName}.svg`)
                 }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={() =>
-                  handleDownloadPNG(downloadRef, "survival-plot.png")
+                  handleDownloadPNG(downloadRef, `${downloadFileName}.png`)
                 }
               >
                 PNG

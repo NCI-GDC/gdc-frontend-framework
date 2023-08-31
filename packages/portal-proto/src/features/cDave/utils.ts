@@ -1,4 +1,4 @@
-import { omitBy, some, capitalize } from "lodash";
+import { omitBy, some, capitalize, isNumber } from "lodash";
 import { NumericFromTo, Buckets, Stats } from "@gff/core";
 import { CAPITALIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
 import { CustomInterval, NamedFromTo } from "./types";
@@ -150,4 +150,47 @@ export const qnorm = (p: number): number => {
   }
 
   return ppnd;
+};
+
+/**
+ * Parses response data that either be or simple object or can be nested in arrays up to two levels deep depending on the field
+ * @param data response data from request
+ * @param field
+ * @returns flattened list of ids and values
+ */
+export const parseNestedQQResponseData = (
+  data: readonly Record<string, any>[],
+  field: string,
+): { id: string; value: number }[] => {
+  // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
+  const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
+  let parsedValues = [];
+
+  data.forEach((caseEntry) => {
+    if (Array.isArray(caseEntry[clinicalType])) {
+      caseEntry[clinicalType].forEach((nestedVal) => {
+        Array.isArray(nestedVal[clinicalField])
+          ? (parsedValues = [
+              ...parsedValues,
+              ...nestedVal[clinicalField].map((valArr) => ({
+                id: caseEntry.id,
+                value: valArr[clinicalNestedField],
+              })),
+            ])
+          : parsedValues.push({
+              id: caseEntry.id,
+              value: nestedVal[clinicalField],
+            });
+      });
+    } else {
+      parsedValues.push({
+        id: caseEntry.id,
+        value: caseEntry[clinicalType][clinicalField],
+      });
+    }
+  });
+
+  return parsedValues
+    .filter((c) => isNumber(c.value))
+    .sort((a, b) => a.value - b.value);
 };

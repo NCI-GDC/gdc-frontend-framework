@@ -1,5 +1,4 @@
 import React from "react";
-import { isNumber } from "lodash";
 import { Loader } from "@mantine/core";
 import {
   VictoryAxis,
@@ -7,17 +6,8 @@ import {
   VictoryLine,
   VictoryScatter,
   VictoryLabel,
+  VictoryContainer,
 } from "victory";
-import {
-  useGetCaseSsmsQuery,
-  joinFilters,
-  FilterSet,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-  buildCohortGqlOperator,
-} from "@gff/core";
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DEMO_COHORT_FILTERS } from "../constants";
 import { qnorm } from "../utils";
 
 const getQuantile = (count: number, quantile: number) =>
@@ -60,93 +50,29 @@ export const getQ1Q3Line = (
   ];
 };
 
-/**
- * Parses response data that either be or simple object or can be nested in arrays up to two levels deep depending on the field
- * @param data response data from request
- * @param field
- * @returns flattened list of ids and values
- */
-export const parseNestedResponseData = (
-  data: readonly Record<string, any>[],
-  field: string,
-): { id: string; value: number }[] => {
-  // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
-  const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
-  let parsedValues = [];
-
-  data.forEach((caseEntry) => {
-    if (Array.isArray(caseEntry[clinicalType])) {
-      caseEntry[clinicalType].forEach((nestedVal) => {
-        Array.isArray(nestedVal[clinicalField])
-          ? (parsedValues = [
-              ...parsedValues,
-              ...nestedVal[clinicalField].map((valArr) => ({
-                id: caseEntry.id,
-                value: valArr[clinicalNestedField],
-              })),
-            ])
-          : parsedValues.push({
-              id: caseEntry.id,
-              value: nestedVal[clinicalField],
-            });
-      });
-    } else {
-      parsedValues.push({
-        id: caseEntry.id,
-        value: caseEntry[clinicalType][clinicalField],
-      });
-    }
-  });
-
-  return parsedValues;
-};
-
 interface QQPlotProps {
   readonly field: string;
+  readonly data: { id: string; value: number }[];
+  readonly isLoading: boolean;
   readonly color: string;
   readonly height: number;
   readonly width: number;
+  readonly chartRef?: React.MutableRefObject<HTMLElement>;
 }
 
 const QQPlot: React.FC<QQPlotProps> = ({
-  field,
+  data,
+  isLoading,
   height,
   width,
   color,
+  chartRef,
 }: QQPlotProps) => {
-  const isDemoMode = useIsDemoApp();
+  const emptyChart = data.every((val) => val.value === 0);
 
-  const missingFilter: FilterSet = {
-    root: {
-      [`cases.${field}`]: {
-        field: `cases.${field}`,
-        operator: "exists",
-      },
-    },
-    mode: "and",
-  };
-
-  const cohortFilters = useCoreSelector((state) =>
-    isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
-  );
-
-  const { data, isLoading, isSuccess } = useGetCaseSsmsQuery({
-    fields: [field],
-    filters: buildCohortGqlOperator(joinFilters(missingFilter, cohortFilters)),
-    size: 10000,
-  });
-
-  const parsedValues = isSuccess ? parseNestedResponseData(data, field) : [];
-
-  const emptyChart = parsedValues.every((val) => val.value === 0);
-
-  const sortedValues = parsedValues
-    .filter((c) => isNumber(c.value))
-    .sort((a, b) => a.value - b.value);
-
-  const chartValues = sortedValues.map((caseEntry, i) => ({
+  const chartValues = data.map((caseEntry, i) => ({
     id: caseEntry.id,
-    x: qnorm((i + 1 - 0.5) / sortedValues.length),
+    x: qnorm((i + 1 - 0.5) / data.length),
     y: caseEntry.value,
   }));
 
@@ -166,6 +92,11 @@ const QQPlot: React.FC<QQPlotProps> = ({
       padding={{ left: 80, right: 20, bottom: 60, top: 50 }}
       minDomain={{ x: xMin, y: yMin < 0 ? yMin : 0 }}
       maxDomain={{ x: xMax, y: yMax }}
+      containerComponent={
+        chartRef ? (
+          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
+        ) : undefined
+      }
     >
       <VictoryLabel
         dy={20}

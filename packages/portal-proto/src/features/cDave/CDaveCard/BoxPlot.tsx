@@ -10,6 +10,7 @@ import {
   VictoryScatter,
   Box as VictoryBox,
   BoxProps,
+  VictoryContainer,
 } from "victory";
 import tailwindConfig from "tailwind.config";
 
@@ -79,6 +80,7 @@ interface BoxPlotProps {
   readonly color: string;
   readonly height: number;
   readonly width: number;
+  readonly chartRef?: React.MutableRefObject<HTMLElement>;
 }
 
 const BoxPlot: React.FC<BoxPlotProps> = ({
@@ -86,6 +88,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
   color,
   height,
   width,
+  chartRef,
 }: BoxPlotProps) => {
   const [tooltipProps, setShowTooltipProps] = useState<{
     visible: boolean;
@@ -105,6 +108,11 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       padding={{ left: 60, right: 20, bottom: 40, top: 50 }}
       minDomain={{ x: 1, y: data.min }}
       maxDomain={{ x: 1, y: data.max }}
+      containerComponent={
+        chartRef ? (
+          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
+        ) : undefined
+      }
     >
       <VictoryLabel
         dy={20}

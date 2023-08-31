@@ -171,7 +171,6 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             />
           </div>
           {/* The chart for downloads is slightly different so render another chart offscreen */}
-
           <div
             className="h-64 absolute left-[-1000px]"
             aria-hidden="true"

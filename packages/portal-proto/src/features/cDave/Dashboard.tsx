@@ -8,6 +8,7 @@ import {
   useGetSurvivalPlotQuery,
 } from "@gff/core";
 import { Grid, Alert, Loader } from "@mantine/core";
+import { convertDateToString } from "@/utils/date";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 
@@ -71,6 +72,9 @@ const Dashboard: React.FC<DashboardProps> = ({
               data={survivalData}
               title=""
               plotType={SurvivalPlotTypes.overall}
+              downloadFileName={`overall-survival-plot.${convertDateToString(
+                new Date(),
+              )}`}
             />
           )}
         </div>
