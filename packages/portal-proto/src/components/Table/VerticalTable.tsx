@@ -257,14 +257,14 @@ function VerticalTable<TData>({
                           >
                             <BsCaretUpFill
                               className={
-                                header.column.getIsSorted() === "desc"
+                                header.column.getIsSorted() === "asc"
                                   ? "text-primary"
                                   : ""
                               }
                             />
                             <BsCaretDownFill
                               className={`${
-                                header.column.getIsSorted() === "asc"
+                                header.column.getIsSorted() === "desc"
                                   ? "text-primary"
                                   : ""
                               } relative top-[-2px]`}
