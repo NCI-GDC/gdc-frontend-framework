@@ -530,26 +530,30 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               );
             })}
         </div>
-        <div>
-          <Tooltip
-            label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
+        {shouldPlot ? (
+          <>
+            <div>
+              <Tooltip
+                label={
+                  pValue === 0 && (
+                    <div>
+                      Value shows 0.00e+0 because the
+                      <br />
+                      P-Value is extremely low and goes beyond
+                      <br />
+                      the precision inherent in the code
+                    </div>
+                  )
+                }
+              >
+                <div className="text-xs font-content">
+                  {isNumber(pValue) &&
+                    `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
                 </div>
-              )
-            }
-          >
-            <div className="text-xs font-content">
-              {isNumber(pValue) &&
-                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+              </Tooltip>
             </div>
-          </Tooltip>
-        </div>
+          </>
+        ) : undefined}
         <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
