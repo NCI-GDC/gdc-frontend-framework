@@ -157,9 +157,13 @@ const CohortManager: React.FC = () => {
   );
 
   const deleteCohort = () => {
+    const lastCohort = cohorts.length === 1; // check to see if deleting the last cohort
     coreDispatch(resetSelectedCases());
     coreDispatch(removeCohort({ shouldShowMessage: true }));
-    coreDispatch(fetchCohortCaseCounts());
+    if (lastCohort) {
+      // deleted the last cohort., so a new one is created and requires needs counts
+      coreDispatch(fetchCohortCaseCounts());
+    }
   };
 
   const {
