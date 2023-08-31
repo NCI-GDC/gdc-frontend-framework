@@ -215,7 +215,8 @@ function VerticalTable<TData>({
                 className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
-                  return columnSorting === "none" ? (
+                  return columnSorting === "none" ||
+                    !header.column.getCanSort() ? (
                     <th
                       className="px-2.5 py-3 font-heading bg-base-max"
                       key={header.id}
@@ -228,17 +229,12 @@ function VerticalTable<TData>({
                   ) : (
                     <th
                       key={header.id}
-                      className={`px-2.5 py-3 font-heading bg-base-max ${
-                        header.column.getCanSort() &&
-                        "hover:bg-primary-lightest"
-                      }`}
+                      className="px-2.5 py-3 font-heading bg-base-max hover:bg-primary-lightest"
                       onClick={() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
+                        header.column.toggleSorting();
                       }}
                       onKeyDown={createKeyboardAccessibleFunction(() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
+                        header.column.toggleSorting();
                       })}
                       aria-sort={
                         header.column.getIsSorted()
@@ -254,7 +250,7 @@ function VerticalTable<TData>({
                           header.getContext(),
                         )}
 
-                        {header.column.getCanSort() && (
+                        {
                           <div
                             className="inline-block text-xs pl-3 align-middle text-base-light"
                             aria-hidden="true"
@@ -274,7 +270,7 @@ function VerticalTable<TData>({
                               } relative top-[-2px]`}
                             />
                           </div>
-                        )}
+                        }
                       </button>
                     </th>
                   );
