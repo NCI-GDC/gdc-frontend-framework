@@ -253,9 +253,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const [rowSelection, setRowSelection] = useState({});
   const selectedMutations = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(
-      ([index]) => (formattedTableData[index] as SomaticMutation).mutation_id,
+    ?.filter(([, isSelected]) => isSelected)
+    ?.map(
+      ([index]) => (formattedTableData[index] as SomaticMutation)?.mutation_id,
     );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     SMTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice

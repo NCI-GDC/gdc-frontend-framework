@@ -188,7 +188,6 @@ const ManageSets: React.FC = () => {
           <ManageSetsTable
             geneData={geneData}
             ssmData={ssmData}
-            selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}
             detailSet={detailSet}
             setDetailSet={setDetailSet}

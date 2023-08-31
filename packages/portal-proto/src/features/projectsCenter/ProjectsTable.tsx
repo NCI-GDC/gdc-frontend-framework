@@ -273,8 +273,8 @@ const ProjectsTable: React.FC = () => {
 
   const [rowSelection, setRowSelection] = useState({});
   const pickedProjects = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => (formattedTableData[index] as ProjectDataType).project);
+    ?.filter(([, isSelected]) => isSelected)
+    ?.map(([index]) => (formattedTableData[index] as ProjectDataType)?.project);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );

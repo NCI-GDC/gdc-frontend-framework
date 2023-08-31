@@ -149,8 +149,10 @@ export const ContextualCasesView: React.FC = () => {
   const pickedCases =
     Object.entries(rowSelection).length > 0
       ? Object.entries(rowSelection)
-          .filter(([, isSelected]) => isSelected)
-          .map(([index]) => (casesData[index] as casesTableDataType)?.case_uuid)
+          ?.filter(([, isSelected]) => isSelected)
+          ?.map(
+            ([index]) => (casesData[index] as casesTableDataType)?.case_uuid,
+          )
       : [];
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
