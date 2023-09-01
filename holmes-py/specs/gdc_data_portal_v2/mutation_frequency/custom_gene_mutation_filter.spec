@@ -22,7 +22,7 @@ We are not guaranteed to get a loading spinner here to wait for,
 but it usually requires a wait. So I've put 3 seconds.
 * Pause "3" seconds
 * Is text "- MUC16 Not Mutated Cases" present on the page
-* Is text "- MUC16 Mutated Cases" present on the page
+* Is text "- MUC16 Mutated (SSM/CNV) Cases" present on the page
 * Verify the table body text is correct
   |expected_text                        |row  |column |
   |-------------------------------------|-----|-------|

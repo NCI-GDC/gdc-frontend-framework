@@ -1,3 +1,5 @@
+import time
+
 from typing import List
 from step_impl.base.webdriver import WebDriver
 class GenericLocators:
@@ -178,9 +180,13 @@ class BasePage:
         try:
             self.wait_until_locator_is_visible(text_locator)
             if action.lower() == "remove modal":
-                # Remove the message after locating it.
-                # Automation moves fast, and the messages can pile up. That can cause problems for subsequent scenarios
+                # On occasion, the automation will move so fast and click the close 'x' button
+                # it changes what the active cohort is. I cannot reproduce it manually, and it stops
+                # when I put this sleep here.
+                time.sleep(2)
                 x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
+                # Remove the message after locating it.
+                # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
                 self.click(x_button_locator)
         except:
             return False
