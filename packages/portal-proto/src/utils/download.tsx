@@ -11,8 +11,8 @@ const hashString = (s: string) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
 const getBody = (iframe: HTMLIFrameElement) => {
-  const document = iframe.contentWindow || iframe.contentDocument;
-  return (document as Window).document.body || (document as Document).body;
+  const document = iframe?.contentWindow || iframe?.contentDocument;
+  return (document as Window)?.document?.body || (document as Document)?.body;
 };
 
 const toHtml = (key: string, value: any) =>
@@ -186,12 +186,13 @@ const download = async ({
   const pollForDownloadResult = async () => {
     const executePoll = async (resolve: (value?: unknown) => void) => {
       // Request has been canceled
-      if (iFrame === undefined) {
+      const body = getBody(iFrame);
+      if (body === undefined) {
         resolve();
         return;
       }
 
-      const content = getBody(iFrame).textContent;
+      const content = body?.textContent;
       // Download has started
       if (!cookies.get(cookieKey)) {
         clearTimeout(showNotificationTimeout);
