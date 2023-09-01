@@ -18,7 +18,7 @@ import {
   GdcFile,
   selectCart,
   GqlOperation,
-  useFilteredCohortCounts,
+  useCurrentCohortCounts,
 } from "@gff/core";
 import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
 import {
@@ -78,7 +78,7 @@ const ContextBar = ({
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const cohortCounts = useFilteredCohortCounts();
+  const cohortCounts = useCurrentCohortCounts();
   const caseCounts = cohortCounts?.data?.caseCount;
 
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -86,7 +86,7 @@ const ContextBar = ({
     useGetAllFilesMutation();
 
   const getAllCohortFiles = (callback, filters) => {
-    getFileSizeSliceData(filters)
+    getFileSizeSliceData({ caseFilters: filters })
       .unwrap()
       .then((data: GdcFile[]) => {
         return mapGdcFileToCartFile(data);
@@ -139,7 +139,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
       },
@@ -160,7 +160,7 @@ const ContextBar = ({
       },
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         tsv_format: "sample-sheet",
         fields: SAMPLE_SHEET_FIELDS.join(","),
         format: "tsv",
@@ -190,7 +190,7 @@ const ContextBar = ({
         filename: `clinical.cohort.${new Date()
           .toISOString()
           .slice(0, 10)}.tar.gz`,
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
@@ -284,7 +284,7 @@ const ContextBar = ({
       }
       tooltipPosition="left"
       TargetElement={
-        <CohortCountButton countName="casesMax" label="CASES" bold />
+        <CohortCountButton countName="caseCount" label="CASES" bold />
       }
       ExtraControl={
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />

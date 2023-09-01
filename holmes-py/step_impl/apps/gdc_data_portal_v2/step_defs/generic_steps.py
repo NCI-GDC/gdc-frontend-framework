@@ -96,6 +96,9 @@ def close_modal(modal_name: str):
         not APP.repository_page.get_file_filter_list_count()
     ), f"Modal is still open.\nModal name: {modal_name}"
 
+@step("Close the modal")
+def close_the_modal():
+    APP.shared.click_close_modal_button()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file:str, source:str):
@@ -421,6 +424,27 @@ def quick_search_and_click(text: str):
     Then clicks the result in the search result area. Best used with a UUID.
     """
     APP.shared.quick_search_and_click(text)
+
+@step("Quick search for <text>")
+def global_quick_search(text: str):
+    """
+    Sends text into the quick search bar in the upper-right corner of the data portal.
+    """
+    APP.shared.global_quick_search(text)
+
+@step("Validate the quick search bar result in position <result_in_list> of the result list has the abbreviation <abbreviation>")
+def validate_global_quick_search_result_abbreviation(result_in_list: str, abbreviation:str):
+    """
+    Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect.
+    """
+    APP.shared.validate_global_quick_search_result_abbreviation(result_in_list,abbreviation)
+
+@step("Select the quick search bar result in position <result_in_list>")
+def quick_search(result_in_list: str):
+    """
+    Specifies a result from the quick search bar result list. Clicks that result.
+    """
+    APP.shared.click_global_quick_search_result(result_in_list)
 
 @step("Name the cohort <cohort_name>")
 def name_cohort(cohort_name: str):

@@ -8,11 +8,16 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
+    BUTTON_CLOSE_MODAL = 'button[aria-label="button-close-modal"]'
+
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
     LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
+    # This locator allows you to send in a specific case count and check if it is there
     COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
+    # This locator allows you to grab the case count text for further testing
+    TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     CART_IDENT = '[data-testid="cartLink"]'
 
     BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = '[data-testid="button-clear-all-cohort-filters"]'
@@ -21,8 +26,10 @@ class GenericLocators:
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
-    QUICK_SEARCH_BAR_IDENT = '//input[@aria-label="Quick Search Input"]'
-    QUICK_SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
+    QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
+    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list}'
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list} >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -37,7 +44,7 @@ class GenericLocators:
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
-    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] >> [data-testid="button-bottom-switchSpring"]'
+    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
 
     FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
     FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
@@ -81,12 +88,19 @@ class BasePage:
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
+    def keyboard_press(self, action):
+        return self.driver.keyboard.press(action)
+
     def scroll_into_view_if_needed(self, locator):
         self.driver.locator(locator).scroll_into_view_if_needed()
 
     def normalize_button_identifier(self, button_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return button_name.lower().replace(" ", "-")
+
+    def normalize_identifier_underscore(self, identifier_name: str) -> str:
+        """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
+        return identifier_name.lower().replace(" ", "_")
 
     def normalize_applied_filter_name(self, filter_name: str) -> List[str]:
         periods = [char for char in filter_name if char == "."]
@@ -96,6 +110,13 @@ class BasePage:
             filter_name = filter_name[2:]
         filter_name = " ".join(word[0].upper() + word[1:] for word in filter_name)
         return filter_name
+
+    def make_input_0_index(self, bdd_input):
+        """Takes BDD spec file input and converts it to index 0"""
+        bdd_input_int = int(bdd_input)
+        bdd_input_int -= 1
+        bdd_input_string = str(bdd_input_int)
+        return bdd_input_string
 
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
@@ -279,6 +300,11 @@ class BasePage:
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
+    def click_close_modal_button(self):
+        """Clicks 'X' to close a modal"""
+        locator = GenericLocators.BUTTON_CLOSE_MODAL
+        self.click(locator)
+
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
@@ -312,6 +338,7 @@ class BasePage:
 
     def click_switch_for_column_selector(self, switch_name):
         """In the column selector pop-up modal, clicks specified switch"""
+        switch_name = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
 
@@ -344,14 +371,30 @@ class BasePage:
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
-    def quick_search_and_click(self,text):
+    def quick_search_and_click(self, text):
         """
         Sends text into the quick search bar in the upper-right corner of the data portal.
-        Then clicks the result in the search result area. Best used with a UUID.
+        Then clicks the first result in the search result area. Best used with a UUID.
         """
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
-        text_locator = GenericLocators.QUICK_SEARCH_BAR_RESULT_AREA_SPAN(text)
-        self.click(text_locator)
+        first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
+        self.click(first_result_locator)
+
+    def global_quick_search(self, text):
+        """Sends text into the quick search bar in the upper-right corner of the data portal."""
+        self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+
+    def validate_global_quick_search_result_abbreviation(self, result_in_list, abbreviation):
+        """Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect."""
+        result_in_list = self.make_input_0_index(result_in_list)
+        locator_result_abbreviation = GenericLocators.QUICK_SEARCH_BAR_RESULT_ABBREVIATION(result_in_list, abbreviation)
+        self.wait_until_locator_is_visible(locator_result_abbreviation)
+
+    def click_global_quick_search_result(self, result_in_list):
+        """Specifies a result from the quick search bar result list. Clicks that result."""
+        result_in_list = self.make_input_0_index(result_in_list)
+        locator_result_in_list = GenericLocators.QUICK_SEARCH_BAR_NUMBERED_RESULT(result_in_list)
+        self.click(locator_result_in_list)
 
     # This section of functions is for handling new tabs
     def perform_action_handle_new_tab(self, source:str, button:str):

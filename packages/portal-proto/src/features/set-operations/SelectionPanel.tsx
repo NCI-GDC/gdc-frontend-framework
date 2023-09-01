@@ -23,6 +23,7 @@ import {
   SelectedEntity,
   SetOperationEntityType,
 } from "./types";
+import { SortingState } from "@tanstack/react-table";
 
 const shouldDisableInput = (
   entityType: string,
@@ -131,7 +132,10 @@ const useCasesSets = () => {
       (acc, cohort) => {
         return {
           caseSets: { [cohort.id]: cohort.name, ...acc.caseSets },
-          caseCounts: { [cohort.id]: cohort.caseCount, ...acc.caseCounts },
+          caseCounts: {
+            [cohort.id]: cohort.counts.caseCount,
+            ...acc.caseCounts,
+          },
         };
       },
       {
@@ -163,7 +167,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   selectedEntityType,
   setSelectedEntityType,
 }: SelectionPanelProps) => {
-  const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([]);
+  const [sortBy, setSortBy] = useState<SortingState>([]);
   const geneSets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const mutationSets = useCoreSelector((state) =>
     selectSetsByType(state, "ssms"),

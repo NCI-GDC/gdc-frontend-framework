@@ -16,7 +16,6 @@ font-medium
 
 export const PercentBar = tw.div`
 relative
-
 border border-accent-cool-lighter
 rounded-sm
 px-1
@@ -25,7 +24,6 @@ h-full`;
 
 export const PercentBarLabel = tw.div`
 absolute
-z-10
 left-0
 top-0
 w-full

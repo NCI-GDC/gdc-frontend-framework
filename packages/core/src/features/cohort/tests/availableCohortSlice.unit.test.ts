@@ -17,13 +17,18 @@ import {
   buildCaseSetMutationQuery,
   REQUIRES_CASE_SET_FILTERS,
   processCaseSetResponse,
+  createCaseSet,
+  cohortSelectors,
 } from "../availableCohortsSlice";
+import { NullCountsData } from "../cohortCountsQuery";
 import * as cohortSlice from "../availableCohortsSlice";
 import { Dictionary, EntityState } from "@reduxjs/toolkit";
 import { MOCK_COHORTS } from "./mockData";
 import { FilterSet } from "../filters";
 import { getInitialCoreState } from "src/store.unit.test";
 import { DataStatus } from "src/dataAccess";
+import { GDC_APP_API_AUTH } from "../../../constants";
+import { coreStore } from "../../../store";
 
 const state = getInitialCoreState();
 
@@ -84,7 +89,7 @@ const populatedFilters = {
       operands: ["bronchus and lung"],
     },
   },
-};
+} as FilterSet;
 
 const TwoPopulatedFilters = {
   mode: "and",
@@ -128,18 +133,8 @@ describe("test setting/getting currentCohortId", () => {
       currentCohort: "asdf",
       message: undefined,
     },
-    cohortCounts: {
-      counts: {
-        caseCount: -1,
-        fileCount: -1,
-        genesCount: -1,
-        mutationCount: -1,
-        ssmCaseCount: -1,
-        sequenceReadCaseCount: -1,
-        repositoryCaseCount: -1,
-        casesMax: -1,
-      },
-      status: "uninitialized" as DataStatus,
+    counts: {
+      ...NullCountsData,
     },
     comparisonCohorts: [],
     builderConfig: {},
@@ -337,6 +332,9 @@ describe("filter by prefix", () => {
                 },
                 status: "uninitialized",
               },
+              counts: {
+                ...NullCountsData,
+              },
               modified_datetime: "2020-11-01T00:00:00.000Z",
               modified: false,
               saved: false,
@@ -420,6 +418,9 @@ describe("add, update, and remove cohort", () => {
             caseSetIds: undefined,
             filters: undefined,
           },
+          counts: {
+            ...NullCountsData,
+          },
           modified_datetime: "2020-11-01T00:00:00.000Z",
           modified: true,
           saved: false,
@@ -443,6 +444,9 @@ describe("add, update, and remove cohort", () => {
               status: "uninitialized",
               caseSetIds: undefined,
               filters: undefined,
+            },
+            counts: {
+              ...NullCountsData,
             },
             modified: true,
             modified_datetime: new Date().toISOString(),
@@ -478,6 +482,9 @@ describe("add, update, and remove cohort", () => {
             caseSetIds: undefined,
             filters: undefined,
           },
+          counts: {
+            ...NullCountsData,
+          },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
@@ -497,6 +504,9 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
             caseSetIds: undefined,
             filters: undefined,
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -523,6 +533,9 @@ describe("add, update, and remove cohort", () => {
               caseSetIds: undefined,
               filters: undefined,
             },
+            counts: {
+              ...NullCountsData,
+            },
             modified: false,
             modified_datetime: "2020-11-01T00:00:00.000Z",
           },
@@ -542,6 +555,9 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
           },
+          counts: {
+            ...NullCountsData,
+          },
           modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
@@ -552,6 +568,9 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
             caseSetIds: undefined,
             filters: undefined,
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -576,6 +595,9 @@ describe("add, update, and remove cohort", () => {
             caseSet: {
               status: "uninitialized",
             },
+            counts: {
+              ...NullCountsData,
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -593,6 +615,9 @@ describe("add, update, and remove cohort", () => {
           id: "000-000-000-1",
           caseSet: {
             status: "uninitialized",
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -616,6 +641,9 @@ describe("add, update, and remove cohort", () => {
             caseSet: {
               status: "uninitialized",
             },
+            counts: {
+              ...NullCountsData,
+            },
             modified: false,
             modified_datetime: new Date().toISOString(),
           },
@@ -625,6 +653,9 @@ describe("add, update, and remove cohort", () => {
             id: "000-000-000-2",
             caseSet: {
               status: "uninitialized",
+            },
+            counts: {
+              ...NullCountsData,
             },
             modified: false,
             modified_datetime: new Date().toISOString(),
@@ -644,6 +675,9 @@ describe("add, update, and remove cohort", () => {
           id: "000-000-000-1",
           caseSet: {
             status: "uninitialized",
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -668,6 +702,9 @@ describe("add, update, and remove cohort", () => {
               root: {},
             },
             status: "uninitialized" as DataStatus,
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: false,
           modified_datetime: new Date().toISOString(),
@@ -699,6 +736,9 @@ describe("add, update, and remove cohort", () => {
               status: "uninitialized",
               caseSetIds: undefined,
               filters: undefined,
+            },
+            counts: {
+              ...NullCountsData,
             },
             modified: true,
             modified_datetime: new Date().toISOString(),
@@ -735,6 +775,9 @@ describe("add, update, and remove cohort", () => {
             caseSetIds: undefined,
             filters: undefined,
           },
+          counts: {
+            ...NullCountsData,
+          },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
@@ -754,6 +797,9 @@ describe("add, update, and remove cohort", () => {
             status: "uninitialized",
             caseSetIds: undefined,
             filters: undefined,
+          },
+          counts: {
+            ...NullCountsData,
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
@@ -902,6 +948,58 @@ mutation mutationsCreateRepositoryCaseSetMutation(
     expect(results).toEqual({
       genes: "genes-4kaetNCo-HlpwBloLEcRy}",
       ssms: "ssms-4kaetNCo-HlpwBloLEcRy}",
+    });
+  });
+
+  describe("createCaseSet", () => {
+    afterAll(() => {
+      jest.clearAllMocks();
+    });
+
+    jest.useFakeTimers("modern");
+    jest.setSystemTime(new Date("2020-11-01"));
+
+    Date.now = jest.fn(() => 1604256000000);
+    test("should create a caseSet query", () => {
+      const spyFetch = jest
+        .spyOn(global, "fetch")
+        .mockResolvedValue(
+          Promise.resolve({ json: () => Promise.resolve({ ok: true }) }) as any,
+        );
+
+      jest.spyOn(cohortSelectors, "selectById").mockImplementation(() => {
+        return {
+          name: "New Cohort",
+          filters: { mode: "and", root: {} },
+          id: "000-000-000-1",
+          caseSet: {
+            status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
+          },
+          counts: {
+            ...NullCountsData,
+          },
+          modified: true,
+          modified_datetime: new Date().toISOString(),
+        };
+      });
+
+      coreStore.dispatch(
+        createCaseSet({
+          pendingFilters: populatedFilters,
+          modified: true,
+          cohortId: "cohortId-1000",
+        }),
+      );
+      expect(spyFetch).toBeCalledWith(`${GDC_APP_API_AUTH}/graphql`, {
+        body: '{"query":"\\nmutation mutationsCreateRepositoryCaseSetMutation(\\n  $inputFilters: CreateSetInput\\n) {\\n  sets {\\n    create {\\n      explore {\\n       case (input: $inputFilters) { set_id size }\\n    }\\n  }\\n }\\n}","variables":{"inputFilters":{"set_id":"genes-ssms-000-000-000-1"}}}',
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
     });
   });
 });

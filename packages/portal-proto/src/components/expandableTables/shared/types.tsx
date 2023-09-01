@@ -1,7 +1,7 @@
+import { Gene } from "@/features/GenomicTables/GenesTable/types";
+import { SomaticMutation } from "@/features/GenomicTables/SomaticMutationsTable/types";
 import { SpringValue } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
-import { SomaticMutations } from "../somaticMutations/types";
-import { Genes } from "../genes/types";
 
 export interface Column {
   visible: boolean;
@@ -9,7 +9,7 @@ export interface Column {
   id: string;
 }
 
-export type TableType = SomaticMutations | Genes;
+export type TableType = SomaticMutation | Gene;
 
 export type SelectedReducer<T extends TableType> = {
   selected?: Record<string, Row<T>[]>;

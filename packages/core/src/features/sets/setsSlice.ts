@@ -35,12 +35,43 @@ const slice = createSlice({
       });
       return state;
     },
+    removeSets: (
+      state,
+      action: PayloadAction<
+        {
+          setType: SetTypes;
+          setId: string;
+        }[]
+      >,
+    ) => {
+      state = produce(state, (draft) => {
+        action.payload.forEach((set) => {
+          delete draft[set.setType][set.setId];
+        });
+      });
+      return state;
+    },
+    renameSet: (
+      state,
+      action: PayloadAction<{
+        setType: SetTypes;
+        setId: string;
+        newSetName: string;
+      }>,
+    ) => {
+      state = produce(state, (draft) => {
+        draft[action.payload.setType][action.payload.setId] =
+          action.payload.newSetName;
+      });
+
+      return state;
+    },
   },
   extraReducers: {},
 });
 
 export const setsReducer = slice.reducer;
-export const { addSet } = slice.actions;
+export const { addSet, removeSets, renameSet } = slice.actions;
 
 export const selectSetsByType = (
   state: CoreState,

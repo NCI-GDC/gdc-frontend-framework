@@ -140,7 +140,6 @@ export const useGenesFacets = (
   );
 
   const cohortFilters = useCohortFacetFilter();
-
   const genomicFilters = useGenomicFacetFilter();
   const prevCohortFilters = usePrevious(cohortFilters);
   const prevGenomicFilters = usePrevious(genomicFilters);
@@ -162,6 +161,7 @@ export const useGenesFacets = (
           index: indexType,
           caseFilterSelector: selectCohortFilters,
           localFilters: genomicFilters,
+          splitIntoCasePlusLocalFilters: true,
         }),
       );
     }
@@ -188,9 +188,7 @@ export const useGenesFacets = (
  * of type Includes.
  * @param field to get values of
  */
-export const useSelectFilterContent = (
-  field: string,
-): ReadonlyArray<string> => {
+export const useSelectFilterContent = (field: string): Array<string> => {
   const filter = useCoreSelector((state) =>
     selectCurrentCohortFiltersByName(state, field),
   );

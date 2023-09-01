@@ -49,7 +49,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
             {survival && (
               <th className="text-right pr-2">
                 <Tooltip
-                  label="Click to change the survival plot display"
+                  label="Change the survival plot display"
                   withArrow
                   withinPortal={true}
                 >
@@ -116,10 +116,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                             : !enoughCasesForSurvival
                             ? "Not enough data"
                             : survivalSelected
-                            ? `Click to remove ${key} from plot`
+                            ? `Remove ${key} from plot`
                             : selectedSurvivalPlots.length === 5
                             ? `A maximum of 5 plots can be displayed at a time`
-                            : `Click to plot ${key}`
+                            : `Plot ${key}`
                         }
                         withArrow
                         withinPortal={true}

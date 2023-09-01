@@ -15,7 +15,6 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
-import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
@@ -95,8 +94,9 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        modal: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <NumberInput
