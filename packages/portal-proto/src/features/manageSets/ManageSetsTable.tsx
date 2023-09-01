@@ -10,7 +10,6 @@ import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
 import { useCoreDispatch, removeSets, SetTypes } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
-
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { SetData } from "./types";
 import SetNameInput from "./SetNameInput";
@@ -18,7 +17,6 @@ import DeleteSetsNotification from "./DeleteSetsNotification";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
-import { isEqual } from "lodash";
 
 interface CountBadgeProps {
   readonly count: number;
@@ -168,7 +166,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           setName,
           count,
           set,
-
           setType,
         };
       }),
@@ -187,31 +184,19 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
     ];
   }, [ssmData, geneData]);
 
+  // not working for deletion
+
   const [rowSelection, setRowSelection] = useState({});
 
   const pickedSets = Object.entries(rowSelection)
     ?.filter(([, isSelected]) => isSelected)
     ?.map(([index]) => (tableData[index] as ManageSetsTableDataType)?.set);
   const [sorting, setSorting] = useState<SortingState>([]);
+  console.log({ tableData, rowSelection, pickedSets });
 
   useDeepCompareEffect(() => {
-    // This is needed because this table has a row deletion feature which will mess up the row selection
-    const remainingRowSelection = [];
-    const remainingPickedSets = pickedSets.filter((pickedSet, index) => {
-      const match = tableData[index]?.setId === pickedSet?.setId;
-      if (match) {
-        remainingRowSelection.push([index, true]);
-      }
-      return match;
-    });
-
-    const newRowSelection = Object.fromEntries(remainingRowSelection);
-    if (!isEqual(rowSelection, newRowSelection)) {
-      setRowSelection(newRowSelection);
-    }
-
-    setSelectedSets(remainingPickedSets);
-  }, [tableData, pickedSets, setSelectedSets, rowSelection]);
+    setSelectedSets(pickedSets);
+  }, [pickedSets, setSelectedSets]);
 
   const manageSetsTableColumnHelper =
     createColumnHelper<ManageSetsTableDataType>();
