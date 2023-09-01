@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
+import { SortType } from "./types";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
@@ -140,7 +141,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   const updateFilters = useUpdateFacetFilters();
 
   // toggle to handle sorting by value vs. label
-  const [isSortedByValue, setIsSortedByValue] = useState(false);
+  const [sortType, setSortType] = useState<SortType>({
+    type: "alpha",
+    direction: "dsc",
+  });
 
   // process when range is selected
   const handleSelection = (rangeKey) => {
@@ -163,10 +167,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
         <>
           <FacetSortPanel
-            isSortedByValue={isSortedByValue}
+            sortType={sortType}
             valueLabel={valueLabel}
-            setIsSortedByValue={setIsSortedByValue}
-            isNumberSort={true}
+            setSort={setSortType}
           />
         </>
       ) : null}
@@ -174,11 +177,19 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
         {Object.keys(rangeLabelsAndValues)
           .slice(0, itemsToShow)
           .sort(
-            isSortedByValue
+            sortType.type === "value"
               ? (a, b) =>
-                  rangeLabelsAndValues[b].value - rangeLabelsAndValues[a].value
+                  sortType.direction === "dsc"
+                    ? rangeLabelsAndValues[b].value -
+                      rangeLabelsAndValues[a].value
+                    : rangeLabelsAndValues[a].value -
+                      rangeLabelsAndValues[b].value
               : (a, b) =>
-                  rangeLabelsAndValues[a].from - rangeLabelsAndValues[b].from,
+                  sortType.direction === "dsc"
+                    ? rangeLabelsAndValues[a].from -
+                      rangeLabelsAndValues[b].from
+                    : rangeLabelsAndValues[b].from -
+                      rangeLabelsAndValues[a].from,
           )
           .map((rangeKey, i) => {
             return (

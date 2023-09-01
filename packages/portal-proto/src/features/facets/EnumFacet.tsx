@@ -26,6 +26,7 @@ import {
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { SortType } from "./types";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -66,7 +67,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSortedByValue, setIsSortedByValue] = useState(false);
+  const [sortType, setSortType] = useState<SortType>({
+    type: "alpha",
+    direction: "dsc",
+  });
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -166,9 +170,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     ? Object.fromEntries(
         filteredData
           .sort(
-            isSortedByValue
-              ? ([, a], [, b]) => b - a
-              : ([a], [b]) => a.localeCompare(b),
+            sortType.type === "value"
+              ? ([, a], [, b]) => (sortType.direction === "dsc" ? a - b : b - a)
+              : ([a], [b]) =>
+                  sortType.direction === "dsc"
+                    ? a.localeCompare(b)
+                    : b.localeCompare(a),
           )
           .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
       )
@@ -266,9 +273,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           >
             <div>
               <FacetSortPanel
-                isSortedByValue={isSortedByValue}
+                sortType={sortType}
                 valueLabel={valueLabel}
-                setIsSortedByValue={setIsSortedByValue}
+                setSort={setSortType}
               />
 
               <div className={cardStyle}>
