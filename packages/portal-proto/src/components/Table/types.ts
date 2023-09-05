@@ -19,7 +19,7 @@ declare module "@tanstack/table-core" {
   }
 }
 
-interface PaginationOptions {
+export interface PaginationOptions {
   /**
    * page on
    */

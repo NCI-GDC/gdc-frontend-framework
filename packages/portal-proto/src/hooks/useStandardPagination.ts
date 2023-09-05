@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { PaginationOptions } from "@/features/shared/VerticalTable";
+
 import { SortingState } from "@tanstack/react-table";
+import { PaginationOptions } from "@/components/Table/types";
 
 /**
  * For use with the VerticalTable component or other paginated tables,

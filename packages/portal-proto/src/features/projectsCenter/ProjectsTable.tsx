@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
   buildCohortGqlOperator,
@@ -36,6 +35,7 @@ import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
 import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { HandleChangeInput } from "@/components/Table/types";
 
 type ProjectDataType = {
   project: string;
