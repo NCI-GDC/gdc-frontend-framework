@@ -13,6 +13,7 @@ import { ImageSlideCount } from "@/components/ImageSlideCount";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { entityMetadataType } from "@/utils/contexts";
+import { ArraySeparatedSpan } from "@/features/shared/ArraySeparatedSpan";
 
 export type casesTableDataType = {
   case_uuid: string;
@@ -265,7 +266,9 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.accessor("experimental_strategies", {
         id: "experimental_strategy",
         header: "Experimental Strategy",
-        cell: ({ getValue }) => getValue().toLocaleString(),
+        cell: ({ getValue }) => (
+          <ArraySeparatedSpan data={getValue() as string[]} />
+        ),
         enableSorting: false,
       }),
       casesDataColumnHelper.display({
