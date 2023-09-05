@@ -20,7 +20,7 @@ const ExpandRowComponent = ({
     ) : value?.length === 1 ? (
       value
     ) : (
-      <button
+      <div
         className="flex items-center text-primary cursor-pointer gap-2"
         aria-label={`${value.length} ${title}`}
       >
@@ -47,7 +47,7 @@ const ExpandRowComponent = ({
         >
           {value.length.toLocaleString().padStart(6)} {title}
         </span>
-      </button>
+      </div>
     )}
   </>
 );

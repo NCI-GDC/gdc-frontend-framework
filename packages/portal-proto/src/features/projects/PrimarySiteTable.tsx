@@ -15,7 +15,6 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
-import { generateSortingFn } from "@/utils/index";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 
 interface PrimarySiteTableProps {
@@ -49,8 +48,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     [isFetching, data],
   );
 
-  const primarySitesTableColumnHelper =
-    createColumnHelper<typeof formattedData[0]>();
+  const primarySitesTableColumnHelper = useMemo(
+    () => createColumnHelper<typeof formattedData[0]>(),
+    [],
+  );
 
   const primarySitesTableColumns = useMemo(
     () => [
@@ -93,6 +94,17 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             }}
           />
         ),
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            if (rowA.cases > rowB.cases) {
+              return 1;
+            }
+            if (rowA.cases < rowB.cases) {
+              return -1;
+            }
+            return 0;
+          },
+        },
       }),
       primarySitesTableColumnHelper.accessor("experimental_strategy", {
         id: "experimental_strategy",
@@ -133,20 +145,13 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     },
   ]);
 
-  const customSortingFns = useMemo(
-    () => ({
-      cases: generateSortingFn("cases"),
-    }),
-    [],
-  );
-
   const {
     handlePageChange,
     handlePageSizeChange,
     handleSortByChange,
     displayedData,
     ...paginationProps
-  } = useStandardPagination(filteredTableData, customSortingFns);
+  } = useStandardPagination(filteredTableData, primarySitesTableColumns);
 
   useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
 

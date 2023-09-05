@@ -1,10 +1,10 @@
-import useStandardPagination from "@/hooks/useStandardPagination";
-import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import React, { useEffect, useMemo, useState } from "react";
 import { flatten, uniq, upperFirst } from "lodash";
-import { useMemo, useState } from "react";
+import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { HandleChangeInput } from "../Table/types";
+import useStandardPagination from "@/hooks/useStandardPagination";
 import VerticalTable from "../Table/VerticalTable";
+import { HandleChangeInput } from "../Table/types";
 import { MatchResults } from "./utils";
 
 const MatchedTable = ({
@@ -30,15 +30,85 @@ const MatchedTable = ({
 
   const [matchTableSorting, setMatchTableSorting] = useState<SortingState>([]);
 
-  const {
-    displayedData: displayedMatchData,
-    handlePageChange: handleMatchedPageChange,
-    handlePageSizeChange: handleMatchedPageSizeChange,
-    ...matchPaginationProps
-  } = useStandardPagination(matched);
+  const matchedTableColumnHelper = useMemo(
+    () => createColumnHelper<typeof formattedMatchData[0]>(),
+    [],
+  );
+
+  const matchedTableColumns = useDeepCompareMemo(
+    () => [
+      matchedTableColumnHelper.group({
+        id: "mapped_to",
+        header: "Mapped To",
+        meta: {
+          highlighted: true,
+        },
+        enableSorting: false,
+        columns: uniqueMappedToFields.map((id) => {
+          return matchedTableColumnHelper.accessor(
+            `mapped_${id.replaceAll(".", "_")}`,
+            {
+              id: `mapped_${id.replaceAll(".", "_")}`,
+              header: fieldDisplay[id],
+              cell: ({ row }) =>
+                row.original[`mapped_${id.replaceAll(".", "_")}`],
+              meta: {
+                highlighted: true,
+                sortingFn: (rowA, rowB) => {
+                  const property = `mapped_${id.replaceAll(".", "_")}`;
+                  if (rowA[property] > rowB[property]) {
+                    return 1;
+                  }
+                  if (rowA[property] < rowB[property]) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
+            },
+          );
+        }),
+      }),
+      matchedTableColumnHelper.group({
+        id: "submitted_id",
+        header: `Submitted ${upperFirst(entityLabel)} Identifier`,
+        enableSorting: false,
+        columns: uniqueGivenIdentifierFields.map((id) => {
+          return matchedTableColumnHelper.accessor(
+            `given_${id.replaceAll(".", "_")}`,
+            {
+              id: `given_${id.replaceAll(".", "_")}`,
+              header: fieldDisplay[id],
+              cell: ({ row }) =>
+                row.original[`given_${id.replaceAll(".", "_")}`],
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  const property = `given_${id.replaceAll(".", "_")}`;
+                  if (rowA[property] > rowB[property]) {
+                    return 1;
+                  }
+                  if (rowA[property] < rowB[property]) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
+            },
+          );
+        }),
+      }),
+    ],
+    [
+      matchedTableColumnHelper,
+      fieldDisplay,
+      uniqueGivenIdentifierFields,
+      uniqueMappedToFields,
+      entityLabel,
+    ],
+  );
 
   const formattedMatchData = useMemo(() => {
-    return displayedMatchData.map((d) => ({
+    return matched.map((d) => ({
       ...Object.fromEntries(
         uniqueMappedToFields.map((id) => [
           `mapped_${id.replaceAll(".", "_")}`,
@@ -64,59 +134,19 @@ const MatchedTable = ({
         ]),
       ),
     }));
-  }, [displayedMatchData, uniqueMappedToFields, uniqueGivenIdentifierFields]);
+  }, [matched, uniqueMappedToFields, uniqueGivenIdentifierFields]);
 
-  const matchedTableColumnHelper =
-    createColumnHelper<typeof formattedMatchData[0]>();
+  const {
+    displayedData: displayedMatchData,
+    handlePageChange: handleMatchedPageChange,
+    handlePageSizeChange: handleMatchedPageSizeChange,
+    handleSortByChange,
+    ...matchPaginationProps
+  } = useStandardPagination(formattedMatchData, matchedTableColumns);
 
-  const matchedTableColumns = useDeepCompareMemo(
-    () => [
-      matchedTableColumnHelper.group({
-        id: "mapped_to",
-        header: "Mapped To",
-        meta: {
-          highlighted: true,
-        },
-        enableSorting: false,
-        columns: uniqueMappedToFields.map((id) => {
-          return matchedTableColumnHelper.accessor(
-            `mapped_${id.replaceAll(".", "_")}`,
-            {
-              id: `mapped_${id.replaceAll(".", "_")}`,
-              header: fieldDisplay[id],
-              cell: ({ row }) =>
-                row.original[`mapped_${id.replaceAll(".", "_")}`],
-              meta: {
-                highlighted: true,
-              },
-            },
-          );
-        }),
-      }),
-      matchedTableColumnHelper.group({
-        id: "submitted_id",
-        header: `Submitted ${upperFirst(entityLabel)} Identifier`,
-        enableSorting: false,
-        columns: uniqueGivenIdentifierFields.map((id) => {
-          return matchedTableColumnHelper.accessor(
-            `given_${id.replaceAll(".", "_")}`,
-            {
-              id: `given_${id.replaceAll(".", "_")}`,
-              header: fieldDisplay[id],
-              cell: ({ row }) =>
-                row.original[`given_${id.replaceAll(".", "_")}`],
-            },
-          );
-        }),
-      }),
-    ],
-    [
-      matchedTableColumnHelper,
-      fieldDisplay,
-      uniqueGivenIdentifierFields,
-      uniqueMappedToFields,
-      entityLabel,
-    ],
+  useEffect(
+    () => handleSortByChange(matchTableSorting),
+    [matchTableSorting, handleSortByChange],
   );
 
   const handleMatchedTableChange = (obj: HandleChangeInput) => {
@@ -140,7 +170,7 @@ const MatchedTable = ({
       </p>
       {matched.length > 0 && (
         <VerticalTable
-          data={formattedMatchData}
+          data={displayedMatchData}
           columns={matchedTableColumns}
           status="fulfilled"
           pagination={{
