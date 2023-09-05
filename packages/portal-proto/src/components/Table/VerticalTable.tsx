@@ -215,69 +215,84 @@ function VerticalTable<TData>({
                 className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
-                  return columnSorting === "none" ? (
-                    <th
-                      className="px-2.5 py-3 font-heading bg-base-max"
-                      key={header.id}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </th>
-                  ) : (
-                    <th
-                      key={header.id}
-                      className={`px-2.5 py-3 font-heading bg-base-max ${
-                        header.column.getCanSort() &&
-                        "hover:bg-primary-lightest"
-                      }`}
-                      onClick={() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
-                      }}
-                      onKeyDown={createKeyboardAccessibleFunction(() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
-                      })}
-                      aria-sort={
-                        header.column.getIsSorted()
-                          ? header.column.getIsSorted() === "desc"
-                            ? "descending"
-                            : "ascending"
-                          : undefined
-                      }
-                    >
-                      <button className="flex items-center">
+                  const isColumnSortable = header.column.getCanSort();
+                  const isColumnSorted = header.column.getIsSorted();
+                  const isColumnHighlighted =
+                    header.column.columnDef.meta?.highlighted;
+                  const commonHeaderClass = `px-2.5 py-3 font-heading ${
+                    isColumnHighlighted
+                      ? "bg-nci-purple-lightest"
+                      : "bg-base-max"
+                  }`;
+
+                  if (columnSorting === "none") {
+                    return (
+                      <th
+                        className={commonHeaderClass}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+                      </th>
+                    );
+                  } else {
+                    return (
+                      <th
+                        key={header.id}
+                        className={`${commonHeaderClass} ${
+                          isColumnSortable
+                            ? isColumnHighlighted
+                              ? "hover:bg-nci-purple-lighter"
+                              : "hover:bg-primary-lightest"
+                            : undefined
+                        }`}
+                        onClick={() => {
+                          isColumnSortable && header.column.toggleSorting();
+                        }}
+                        onKeyDown={createKeyboardAccessibleFunction(() => {
+                          isColumnSortable && header.column.toggleSorting();
+                        })}
+                        aria-sort={
+                          isColumnSorted
+                            ? isColumnSorted === "desc"
+                              ? "descending"
+                              : "ascending"
+                            : undefined
+                        }
+                        colSpan={header.colSpan}
+                      >
+                        <button className="flex items-center">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
 
-                        {header.column.getCanSort() && (
-                          <div
-                            className="inline-block text-xs pl-3 align-middle text-base-light"
-                            aria-hidden="true"
-                          >
-                            <BsCaretUpFill
-                              className={
-                                header.column.getIsSorted() === "desc"
-                                  ? "text-primary"
-                                  : ""
-                              }
-                            />
-                            <BsCaretDownFill
-                              className={`${
-                                header.column.getIsSorted() === "asc"
-                                  ? "text-primary"
-                                  : ""
-                              } relative top-[-2px]`}
-                            />
-                          </div>
-                        )}
-                      </button>
-                    </th>
-                  );
+                          {isColumnSortable && (
+                            <div
+                              className="inline-block text-xs pl-3 align-middle text-base-light"
+                              aria-hidden="true"
+                            >
+                              <BsCaretUpFill
+                                className={
+                                  isColumnSorted === "desc"
+                                    ? "text-primary"
+                                    : ""
+                                }
+                              />
+                              <BsCaretDownFill
+                                className={`${
+                                  isColumnSorted === "asc" ? "text-primary" : ""
+                                } relative top-[-2px]`}
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </th>
+                    );
+                  }
                 })}
               </tr>
             ))}

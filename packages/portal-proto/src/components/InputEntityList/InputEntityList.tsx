@@ -23,7 +23,7 @@ import { UserInputContext } from "@/components/Modals/UserInputModal";
 import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { getMatchedIdentifiers, MatchResults } from "./utils";
-import MatchTables from "./MatchTables";
+import MatchTables from "./MatchTablesWrapper";
 import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;

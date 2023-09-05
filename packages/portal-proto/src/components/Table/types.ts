@@ -4,11 +4,20 @@ import {
   ColumnOrderState,
   ExpandedState,
   Row,
+  RowData,
   RowSelectionState,
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
 import { ReactNode, Dispatch, SetStateAction } from "react";
+import "@tanstack/react-table";
+
+declare module "@tanstack/table-core" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    highlighted?: boolean;
+  }
+}
 
 interface PaginationOptions {
   /**
