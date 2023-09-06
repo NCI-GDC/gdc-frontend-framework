@@ -14,7 +14,6 @@ import {
   SMTableSurvival,
 } from "./TableComponents";
 import { CohortCreationButton } from "@/components/CohortCreationButton";
-import { RatioSpring } from "@/components/expandableTables/shared";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -22,6 +21,7 @@ import {
 import { entityMetadataType } from "@/utils/contexts";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import ImpactHeaderWithTooltip from "../SharedComponent/ImpactHeaderWithTooltip";
+import RatioWithSpring from "@/components/RatioWithSpring";
 
 export const filterMutationType = (mutationSubType: string): string => {
   if (
@@ -266,7 +266,7 @@ export const useGenerateSMTableColumns = ({
                 </div>
               )}
               {row.getCanExpand() && (
-                <RatioSpring index={0} item={{ numerator, denominator }} />
+                <RatioWithSpring index={0} item={{ numerator, denominator }} />
               )}
             </div>
           );

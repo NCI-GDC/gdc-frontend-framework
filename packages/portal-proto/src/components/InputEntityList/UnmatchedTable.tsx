@@ -67,7 +67,7 @@ const UnmatchedTable = ({
             label: `${entityLabel}s`,
           }}
           handleChange={handleUnmatchedTableChange}
-          columnSorting="enable" //TODO Fix this will not work with multiple pages
+          columnSorting="enable"
           sorting={unmatchedTablesorting}
           setSorting={setUnmatchedTableSorting}
         />

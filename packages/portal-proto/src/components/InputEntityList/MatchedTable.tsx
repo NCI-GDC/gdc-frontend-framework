@@ -178,7 +178,7 @@ const MatchedTable = ({
             label: `${entityLabel}s`,
           }}
           handleChange={handleMatchedTableChange}
-          columnSorting="enable" //TODO Fix this will not work with multiple pages
+          columnSorting="enable"
           sorting={matchTableSorting}
           setSorting={setMatchTableSorting}
         />
