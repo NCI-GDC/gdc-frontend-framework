@@ -14,10 +14,10 @@ import { formatEntityInfo, search } from "./utils";
 import { trimEnd, find, flatten } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
-import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 interface BiospecimenProps {
   readonly caseId: string;

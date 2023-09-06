@@ -18,7 +18,7 @@ import { FileAccessBadge } from "@/components/FileAccessBadge";
 import {
   getAnnotationsLinkParamsFromFiles,
   statusBooleansToDataStatus,
-} from "../shared/utils";
+} from "src/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 import Link from "next/link";
 import { FilesTableDataType } from "../repositoryApp/FilesTable";

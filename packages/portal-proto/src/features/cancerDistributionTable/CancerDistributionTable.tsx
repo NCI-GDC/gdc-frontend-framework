@@ -23,7 +23,7 @@ import {
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { statusBooleansToDataStatus } from "../shared/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import {
   CancerDistributionDataType,
   CancerDistributionTableProps,
@@ -31,10 +31,10 @@ import {
   handleJSONDownload,
   handleTSVDownload,
 } from "./utils";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import { useDeepCompareMemo } from "use-deep-compare";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,

@@ -1,4 +1,4 @@
-import { SummaryHeaderTitle } from "@/features/shared/tailwindComponents";
+import { SummaryHeaderTitle } from "@/components/tailwindComponents";
 import { Divider } from "@mantine/core";
 import { ReactNode } from "react";
 

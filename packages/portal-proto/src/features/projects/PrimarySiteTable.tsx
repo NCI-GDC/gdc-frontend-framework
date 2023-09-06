@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useGetProjectsPrimarySitesAllQuery } from "@gff/core";
-import { HeaderTitle } from "../shared/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -14,8 +13,9 @@ import {
 } from "@tanstack/react-table";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { HeaderTitle } from "@/components/tailwindComponents";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;

@@ -4,7 +4,7 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
 import Link from "next/link";
 

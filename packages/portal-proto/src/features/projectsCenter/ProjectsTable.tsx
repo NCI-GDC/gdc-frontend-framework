@@ -12,13 +12,12 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertDateToString } from "src/utils/date";
-import { extractToArray } from "src/utils";
-import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
+import { extractToArray, statusBooleansToDataStatus } from "src/utils";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
 import {
@@ -33,9 +32,9 @@ import {
 import { Checkbox } from "@mantine/core";
 import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HandleChangeInput } from "@/components/Table/types";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 type ProjectDataType = {
   project: string;

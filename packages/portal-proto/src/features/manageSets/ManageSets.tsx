@@ -12,7 +12,7 @@ import {
   removeSets,
 } from "@gff/core";
 import { WarningBanner } from "@/components/WarningBanner";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { convertDateToString } from "src/utils/date";
 import download from "@/utils/download";
 import { SetData } from "./types";

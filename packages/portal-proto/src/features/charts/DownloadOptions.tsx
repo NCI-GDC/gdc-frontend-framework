@@ -1,7 +1,7 @@
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
-import { DownloadButton } from "@/features/shared/tailwindComponents";
+import { DownloadButton } from "@/components/tailwindComponents";
 import { JSONArray } from "@/features/types";
 
 interface ChartDownloadProps {

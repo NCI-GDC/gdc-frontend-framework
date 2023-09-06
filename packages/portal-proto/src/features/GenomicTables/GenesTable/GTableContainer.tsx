@@ -23,7 +23,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import download from "src/utils/download";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -34,8 +34,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";

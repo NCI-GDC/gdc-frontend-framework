@@ -22,9 +22,9 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
-import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
+import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
@@ -41,7 +41,6 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 
 export interface SMTableContainerProps {

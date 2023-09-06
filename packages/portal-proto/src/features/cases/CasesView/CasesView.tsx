@@ -12,11 +12,15 @@ import {
 } from "@gff/core";
 import { Button, Divider, Loader } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
-import { ageDisplay, extractToArray } from "src/utils";
+import {
+  ageDisplay,
+  extractToArray,
+  statusBooleansToDataStatus,
+} from "src/utils";
 import { CasesCohortButton } from "./CasesCohortButton";
 import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
 import {
@@ -27,7 +31,6 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 const getSlideCountFromCaseSummary = (
