@@ -60,7 +60,6 @@ export * from "./features/quickSearch/quickSearch";
 export * from "./features/versionInfo/versionInfoSlice";
 export * from "./features/api/cohortApiTypes";
 export * from "./features/sets";
-export * from "./features/cases/selectedCasesSlice";
 export * from "./features/bodyplot";
 export * from "./features/setOperations";
 export { CoreState } from "./reducers";
