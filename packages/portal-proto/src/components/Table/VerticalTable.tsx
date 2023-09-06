@@ -225,7 +225,7 @@ function VerticalTable<TData>({
                       : "bg-base-max"
                   }`;
 
-                  if (columnSorting === "none") {
+                  if (columnSorting === "none" || !isColumnSortable) {
                     return (
                       <th
                         className={commonHeaderClass}
@@ -243,17 +243,15 @@ function VerticalTable<TData>({
                       <th
                         key={header.id}
                         className={`${commonHeaderClass} ${
-                          isColumnSortable
-                            ? isColumnHighlighted
-                              ? "hover:bg-nci-purple-lighter"
-                              : "hover:bg-primary-lightest"
-                            : undefined
+                          isColumnHighlighted
+                            ? "hover:bg-nci-purple-lighter"
+                            : "hover:bg-primary-lightest"
                         }`}
                         onClick={() => {
-                          isColumnSortable && header.column.toggleSorting();
+                          header.column.toggleSorting();
                         }}
                         onKeyDown={createKeyboardAccessibleFunction(() => {
-                          isColumnSortable && header.column.toggleSorting();
+                          header.column.toggleSorting();
                         })}
                         aria-sort={
                           isColumnSorted
