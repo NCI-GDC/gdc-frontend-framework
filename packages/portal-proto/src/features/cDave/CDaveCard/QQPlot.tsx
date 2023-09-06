@@ -1,4 +1,5 @@
 import React from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
 import {
   VictoryAxis,
@@ -70,16 +71,25 @@ const QQPlot: React.FC<QQPlotProps> = ({
 }: QQPlotProps) => {
   const emptyChart = data.every((val) => val.value === 0);
 
-  const chartValues = data.map((caseEntry, i) => ({
-    id: caseEntry.id,
-    x: qnorm((i + 1 - 0.5) / data.length),
-    y: caseEntry.value,
-  }));
+  const chartValues = useDeepCompareMemo(
+    () =>
+      data.map((caseEntry, i) => ({
+        id: caseEntry.id,
+        x: qnorm((i + 1 - 0.5) / data.length),
+        y: caseEntry.value,
+      })),
+    [data],
+  );
 
   const xMin = Math.floor(Math.min(...chartValues.map((v) => v.x)));
   const yMin = Math.floor(Math.min(...chartValues.map((v) => v.y)));
   const xMax = Math.ceil(Math.max(...chartValues.map((v) => v.x)));
   const yMax = Math.ceil(Math.max(...chartValues.map((v) => v.y)));
+
+  const lineValues = useDeepCompareMemo(
+    () => (chartValues.length > 0 ? getQ1Q3Line(chartValues) : []),
+    [chartValues],
+  );
 
   return isLoading ? (
     <Loader />
@@ -125,8 +135,9 @@ const QQPlot: React.FC<QQPlotProps> = ({
       <VictoryScatter
         data={chartValues}
         style={{ data: { stroke: color, strokeWidth: 2, fill: "none" } }}
+        groupComponent={<g />}
       />
-      <VictoryLine data={getQ1Q3Line(chartValues)} />
+      <VictoryLine data={lineValues} />
     </VictoryChart>
   );
 };

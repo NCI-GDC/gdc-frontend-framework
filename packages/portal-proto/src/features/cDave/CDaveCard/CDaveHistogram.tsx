@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
@@ -9,6 +9,7 @@ import { COLOR_MAP } from "../constants";
 import { flattenBinnedData } from "../utils";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { convertDateToString } from "@/utils/date";
+import { DashboardDownloadContext } from "../Dashboard";
 import { toDisplayName } from "../utils";
 
 const formatBarChartData = (
@@ -69,6 +70,14 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     .split(".")
     .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
   const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
+
+  const dispatch = useContext(DashboardDownloadContext);
+  useEffect(() => {
+    const charts = [{ filename: downloadFileName, chartRef: downloadChartRef }];
+
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [dispatch, downloadFileName]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useContext } from "react";
 import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon } from "@mantine/core";
@@ -26,6 +26,7 @@ import {
 import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
+import { DashboardDownloadContext } from "../Dashboard";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -112,17 +113,35 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
       new Blob([tsv], {
         type: "text/tsv",
       }),
-      `${fieldName}-qq-plot-${date}.tsv`,
+      `${qqPlotDownloadName}.tsv`,
     );
   };
 
   const [boxPlotRef, boundingRectBox] = useResizeObserver();
   const [qqPlotRef, boundingRectQQ] = useResizeObserver();
 
+  const dispatch = useContext(DashboardDownloadContext);
   const boxDownloadChartRef = useRef<HTMLElement>();
   const qqDownloadChartRef = useRef<HTMLElement>();
   const fieldName = clinicalNestedField ?? clinicalField;
   const date = convertDateToString(new Date());
+  const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
+  const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
+
+  useEffect(() => {
+    const charts = [
+      { filename: boxPlotDownloadName, chartRef: boxPlotRef },
+      { filename: qqPlotDownloadName, chartRef: qqPlotRef },
+    ];
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [
+    boxPlotRef,
+    qqPlotRef,
+    boxPlotDownloadName,
+    qqPlotDownloadName,
+    dispatch,
+  ]);
 
   return (
     <>
@@ -151,11 +170,11 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               onClick={() => {
                 handleDownloadSVG(
                   boxDownloadChartRef,
-                  `${fieldName}-box-plot-${date}.svg`,
+                  `${boxPlotDownloadName}.svg`,
                 );
                 handleDownloadSVG(
                   qqDownloadChartRef,
-                  `${fieldName}-qq-plot-${date}.svg`,
+                  `${qqPlotDownloadName}.svg`,
                 );
               }}
             >
@@ -165,11 +184,11 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               onClick={() => {
                 handleDownloadPNG(
                   boxDownloadChartRef,
-                  `${fieldName}-box-plot-${date}.png`,
+                  `${boxPlotDownloadName}.png`,
                 );
                 handleDownloadPNG(
                   qqDownloadChartRef,
-                  `${fieldName}-qq-plot-${date}.png`,
+                  `${qqPlotDownloadName}.png`,
                 );
               }}
             >
@@ -180,7 +199,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               href={`data:text/json;charset=utf-8, ${encodeURIComponent(
                 JSON.stringify(downloadData, null, 2), // prettify JSON
               )}`}
-              download={`${fieldName}-qq-plot-${date}.json`}
+              download={`${qqPlotDownloadName}}.json`}
             >
               QQ JSON
             </Menu.Item>

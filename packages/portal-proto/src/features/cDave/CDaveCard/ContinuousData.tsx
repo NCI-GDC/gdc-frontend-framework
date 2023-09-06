@@ -143,6 +143,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
             continuous={true}
             field={fieldName}
             results={resultData}
+            yTotal={yTotal}
             customBinnedData={customBinnedData}
             setCustomBinnedData={setCustomBinnedData}
             stats={initialData}
