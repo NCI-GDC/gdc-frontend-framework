@@ -35,7 +35,7 @@ export interface ProjectPrimarySitesApiResponse {
   };
 }
 
-const primaryQuery = `query PrimarySiteSummary_relayQuery(
+const primaryQuery = `query PrimarySiteSummaryQuery(
   $filters: FiltersArgument
 ) {
   repository {

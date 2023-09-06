@@ -11,7 +11,10 @@ import {
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { calculatePercentageAsNumber } from "src/utils";
+import {
+  calculatePercentageAsNumber,
+  statusBooleansToDataStatus,
+} from "src/utils";
 import { CohortCreationButton } from "@/components/CohortCreationButton/";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import {
@@ -23,7 +26,6 @@ import {
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { statusBooleansToDataStatus } from "src/utils";
 import {
   CancerDistributionDataType,
   CancerDistributionTableProps,

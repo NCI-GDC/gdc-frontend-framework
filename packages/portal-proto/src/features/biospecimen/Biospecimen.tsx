@@ -18,6 +18,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { escapeStringRegexp } from "./utils";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -65,9 +66,10 @@ export const Biospecimen = ({
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
-      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) =>
-        search(searchText, e),
-      );
+      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
+        const escapedSearchText = escapeStringRegexp(searchText);
+        return search(escapedSearchText, e);
+      });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
 
