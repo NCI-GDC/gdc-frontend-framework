@@ -178,8 +178,6 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const displayData = useDeepCompareMemo(() => tableData, [tableData]);
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  console.log({ tableData });
-
   useDeepCompareEffect(() => {
     setTableData([]);
     setCurrentPage(0);

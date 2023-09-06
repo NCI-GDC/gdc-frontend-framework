@@ -76,7 +76,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         <IconWrapper $disabled={disabled} aria-hidden="true">
           <PlusIcon color="white" size={12} />
         </IconWrapper>
-        <span className="pr-2 self-center">{label}</span>
+        <span className="pr-2 self-center">{label ?? "--"}</span>
       </CohortCreationStyledButton>
     </Tooltip>
   );

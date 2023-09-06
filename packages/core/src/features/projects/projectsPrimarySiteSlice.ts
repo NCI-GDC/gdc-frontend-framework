@@ -73,15 +73,15 @@ const transformResponse = ({
 }): ProjectPrimarySites => ({
   primary_site: primary_site,
   disease_types:
-    response.data.repository.cases.aggregations.disease_type.buckets.map(
+    response?.data?.repository.cases.aggregations.disease_type.buckets.map(
       (obj) => obj.key,
-    ),
+    ) || [],
   files__experimental_strategy:
-    response.data.repository.cases.aggregations.files__experimental_strategy.buckets
+    response?.data?.repository.cases.aggregations.files__experimental_strategy.buckets
       .map((obj) => obj.key)
-      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
-  casesTotal: response.data.repository.cases.hits.total,
-  filesTotal: response.data.repository.files.hits.total,
+      .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())) || [],
+  casesTotal: response?.data?.repository.cases.hits.total,
+  filesTotal: response?.data?.repository.files.hits.total ?? "--",
 });
 
 export const projectsPrimarySiteSlice = graphqlAPISlice.injectEndpoints({

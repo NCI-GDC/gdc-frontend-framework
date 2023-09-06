@@ -108,19 +108,19 @@ function useStandardPagination<TData>(
               if (Array.isArray(tempData[0][obj.id])) {
                 //if array sort by length
                 tempData.sort((a, b) => {
-                  if (a[obj.id].length > b[obj.id].length) {
-                    return obj.desc ? -1 : 1;
-                  }
                   if (a[obj.id].length < b[obj.id].length) {
                     return obj.desc ? 1 : -1;
                   }
+                  if (a[obj.id].length > b[obj.id].length) {
+                    return obj.desc ? -1 : 1;
+                  }
                   //If same length sort by first item
                   try {
-                    if (a[obj.id][0] > b[obj.id][0]) {
-                      return obj.desc ? -1 : 1;
-                    }
                     if (a[obj.id][0] < b[obj.id][0]) {
                       return obj.desc ? 1 : -1;
+                    }
+                    if (a[obj.id][0] > b[obj.id][0]) {
+                      return obj.desc ? -1 : 1;
                     }
                   } catch {
                     return 0;

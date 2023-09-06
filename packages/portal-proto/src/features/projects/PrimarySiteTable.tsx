@@ -16,6 +16,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;
@@ -109,6 +110,9 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       primarySitesTableColumnHelper.accessor("experimental_strategy", {
         id: "experimental_strategy",
         header: "Experimental Strategy",
+        cell: ({ getValue }) => (
+          <ArraySeparatedSpan data={getValue() as string[]} />
+        ),
         enableSorting: false,
       }),
       primarySitesTableColumnHelper.accessor("files", {
