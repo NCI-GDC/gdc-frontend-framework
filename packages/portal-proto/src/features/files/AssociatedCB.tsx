@@ -53,11 +53,11 @@ const AssociatedCB = ({
           // get submitter_id from diferent paths
           const portion = sample.portions?.[0];
           let entity_id = sample.submitter_id;
-          if (portion.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
+          if (portion?.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
             entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
-          } else if (portion.slides?.[0]?.submitter_id) {
+          } else if (portion?.slides?.[0]?.submitter_id) {
             entity_id = portion.slides?.[0]?.submitter_id;
-          } else if (portion.submitter_id) {
+          } else if (portion?.submitter_id) {
             entity_id = portion.submitter_id;
           }
           return entity_id === entity.entity_submitter_id;
