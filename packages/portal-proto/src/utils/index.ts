@@ -248,3 +248,17 @@ export const filtersToName = (filters: FilterSet): string => {
 
   return filterValues.join(", ");
 };
+
+export function generateSortingFn<TData>(
+  property: keyof TData,
+): (rowA: TData, rowB: TData) => 1 | -1 | 0 {
+  return (rowA: TData, rowB: TData) => {
+    if (rowA[property] > rowB[property]) {
+      return 1;
+    }
+    if (rowA[property] < rowB[property]) {
+      return -1;
+    }
+    return 0;
+  };
+}

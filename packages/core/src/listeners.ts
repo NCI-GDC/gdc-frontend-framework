@@ -9,7 +9,6 @@ import { CoreState } from "./reducers";
 import {
   updateCohortFilter,
   removeCohortFilter,
-  setCurrentCohortId,
   addNewCohortWithFilterAndMessage,
   selectAvailableCohorts,
   addNewCohort,
@@ -19,7 +18,6 @@ import {
   discardCohortChanges,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
-import { resetSelectedCases } from "./features/cases/selectedCasesSlice";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -34,16 +32,6 @@ export const startCoreListening =
   caseSetListenerMiddleware.startListening as CoreStartListening;
 
 // TODO add clearCaseSet handler to remove caseSet from the Cohort Persistence GDC API
-
-/**
- * If the cohort is changed, we need to reset the selected cases.
- */
-startCoreListening({
-  matcher: isAnyOf(updateCohortFilter, removeCohortFilter, setCurrentCohortId),
-  effect: async (_, listenerApi) => {
-    listenerApi.dispatch(resetSelectedCases());
-  },
-});
 
 startCoreListening({
   matcher: isAnyOf(

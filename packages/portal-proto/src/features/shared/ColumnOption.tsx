@@ -1,6 +1,5 @@
 import { FC, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
 import type { XYCoord, Identifier } from "dnd-core";
 import { startCase } from "lodash";
 import { MdDragIndicator } from "react-icons/md";
@@ -17,6 +16,10 @@ export interface ColumnProps {
   toggleColumn: (update: any) => void;
   arrangeable: boolean;
 }
+
+const ItemTypes = {
+  COLUMN: "column",
+};
 
 interface DragItem {
   index: number;
