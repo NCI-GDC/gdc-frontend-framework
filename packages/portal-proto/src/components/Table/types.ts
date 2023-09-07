@@ -191,7 +191,7 @@ export interface TableProps<TData> {
    */
   setExpanded?: (row: Row<TData>, columnId: string) => void;
   /**
-   *
+   * optional function is used to derive a unique ID for any given row
    */
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
