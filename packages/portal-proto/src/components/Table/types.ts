@@ -2,6 +2,7 @@ import { DataStatus } from "@gff/core";
 import {
   ColumnDef,
   ColumnOrderState,
+  ColumnSort,
   ExpandedState,
   Row,
   RowSelectionState,
@@ -97,6 +98,10 @@ export interface TableProps<TData> {
    * caption to display at top of table
    */
   tableTitle?: ReactNode;
+  /**
+   * Optional default table sort state
+   */
+  initialSort?: ColumnSort[];
   /**
    * html block left of column sorting controls
    */

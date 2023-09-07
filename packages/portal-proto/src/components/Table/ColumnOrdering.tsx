@@ -73,7 +73,6 @@ function ColumnOrdering<TData>({
                 <ActionIcon
                   onClick={handleColumnOrderingReset}
                   className={isBackToDefaults && "invisible"}
-                  data-testid="restore-default-icon"
                 >
                   <RevertIcon className="text-primary" size="1rem" />
                 </ActionIcon>
@@ -208,9 +207,7 @@ function ColumnItem<TData>({
           onChange: column.getToggleVisibilityHandler(),
         }}
         size="xs"
-        aria-label={`toggle column visibility switch button for ${humanify({
-          term: column.id,
-        })} column`}
+        aria-label="toggle column visibility switch button"
         data-testid="switch-toggle"
       />
     </div>

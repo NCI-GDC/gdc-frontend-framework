@@ -27,15 +27,11 @@ const StickyControl = ({
         aria-label="Toggle to pin or unpin cohort bar to top of Analysis Center"
       >
         <>
-          {/* Using CSS to hide/unhide is making the tooltip behave correctly */}
-          <StickyOnIcon
-            size="24px"
-            className={isSticky ? "visible" : "hidden"}
-          />
-          <StickyOffIcon
-            size="24px"
-            className={!isSticky ? "visible" : "hidden"}
-          />
+          {isSticky ? (
+            <StickyOnIcon size="24px" />
+          ) : (
+            <StickyOffIcon size="24px" />
+          )}
         </>
       </ActionIcon>
     </span>

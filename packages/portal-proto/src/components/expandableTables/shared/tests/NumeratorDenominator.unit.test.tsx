@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import NumeratorDenominator from "./NumeratorDenominator";
+import NumeratorDenominator from "../NumeratorDenominator";
 
 describe("<NumeratorDenominator />", () => {
   it("should return correct for non zero numerator and denominator", () => {

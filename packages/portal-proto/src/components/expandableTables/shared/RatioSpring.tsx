@@ -1,6 +1,6 @@
 import React from "react";
 import { animated, useSpring } from "@react-spring/web";
-import NumeratorDenominator from "@/components/NumeratorDenominator";
+import NumeratorDenominator from "./NumeratorDenominator";
 
 interface Item {
   project?: string | undefined;

@@ -6,13 +6,13 @@ import {
   selectAvailableCohorts,
   Cohort,
 } from "@gff/core";
+import {
+  VerticalTable,
+  HandleChangeInput,
+} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import { createColumnHelper } from "@tanstack/react-table";
-import { HandleChangeInput } from "@/components/Table/types";
-import VerticalTable from "@/components/Table/VerticalTable";
-import { useDeepCompareMemo } from "use-deep-compare";
 
 interface AdditionalCohortSelectionProps {
   readonly app: string;
@@ -32,7 +32,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     selectAvailableCohorts(state),
   );
 
-  const cohorts = useDeepCompareMemo(
+  const cohorts = useMemo(
     () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort.id),
     [primaryCohort, availableCohorts],
   );
@@ -44,61 +44,49 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     setSelectedCohort(null);
   };
 
-  const cohortListTableColumnHelper = createColumnHelper<typeof cohorts[0]>();
-
-  const cohortListTableColumns = useMemo(
-    () => [
-      cohortListTableColumnHelper.display({
-        id: "select",
-        header: "Select",
-        cell: ({ row }) => (
+  const tableData = useMemo(
+    () =>
+      cohorts.map((cohort) => ({
+        select: (
           <Tooltip
             label="Cohort is empty"
-            disabled={row.original?.counts.caseCount !== 0}
+            disabled={cohort?.counts.caseCount !== 0}
           >
             <span>
               <input
                 type="radio"
                 name="additional-cohort-selection"
-                id={row.original.id}
-                onChange={() => setSelectedCohort(row.original)}
-                checked={selectedCohort?.id === row.original.id}
-                aria-label={`Select ${row.original.name}`}
-                disabled={!row.original?.counts.caseCount}
+                id={cohort.id}
+                onChange={() => setSelectedCohort(cohort)}
+                checked={selectedCohort?.id === cohort.id}
+                aria-label={`Select ${cohort.name}`}
+                disabled={!cohort?.counts.caseCount}
               />
             </span>
           </Tooltip>
         ),
-      }),
-      cohortListTableColumnHelper.display({
-        id: "name",
-        header: "Name",
-        cell: ({ row }) => (
+        name: (
           <label
-            htmlFor={row.original.id}
+            htmlFor={cohort.id}
             className={
-              !row.original.counts.caseCount ? "text-base-lighter" : undefined
+              !cohort?.counts.caseCount ? "text-base-lighter" : undefined
             }
           >
-            {row.original.name}
+            {cohort.name}
           </label>
         ),
-      }),
-      cohortListTableColumnHelper.display({
-        id: "count",
-        header: "# Cases",
-        cell: ({ row }) => (
+        count: (
           <span
             className={
-              !row.original.counts.caseCount ? "text-base-lighter" : undefined
+              !cohort?.counts.caseCount ? "text-base-lighter" : undefined
             }
           >
-            {row.original.counts.caseCount?.toLocaleString()}
+            {cohort?.counts.caseCount.toLocaleString()}
           </span>
         ),
-      }),
-    ],
-    [cohortListTableColumnHelper, selectedCohort?.id],
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(cohorts), selectedCohort?.id],
   );
 
   const {
@@ -110,7 +98,21 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
     from,
     total,
     displayedData,
-  } = useStandardPagination(cohorts);
+  } = useStandardPagination(tableData);
+
+  const columns = [
+    {
+      id: "select",
+      columnName: "Select",
+      visible: true,
+    },
+    {
+      id: "name",
+      columnName: "Name",
+      visible: true,
+    },
+    { id: "count", columnName: "# Cases", visible: true },
+  ];
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -136,8 +138,10 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         </p>
         <div className="w-3/4">
           <VerticalTable
-            data={displayedData}
-            columns={cohortListTableColumns}
+            tableData={displayedData}
+            columns={columns}
+            selectableRow={false}
+            showControls={false}
             pagination={{
               page,
               pages,
@@ -146,7 +150,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               total,
               label: "cohorts",
             }}
-            status="fulfilled"
             handleChange={handleChange}
           />
         </div>

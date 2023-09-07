@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
+  useCoreSelector,
+  selectSelectedCases,
   useCoreDispatch,
   FilterSet,
+  resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
@@ -13,11 +16,10 @@ import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 
-export const CasesCohortButton = ({
-  pickedCases,
-}: {
-  pickedCases: string[];
-}): JSX.Element => {
+export const CasesCohortButton = (): JSX.Element => {
+  const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
+    selectSelectedCases(state),
+  );
   const [name, setName] = useState(undefined);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
@@ -35,6 +37,7 @@ export const CasesCohortButton = ({
           },
         },
       };
+      coreDispatch(resetSelectedCases());
       coreDispatch(
         addNewCohortWithFilterAndMessage({
           filters: filters,

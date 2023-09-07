@@ -33,7 +33,6 @@ export const PopupIconButton = forwardRef<
             width={10}
             height={18}
             layout="fixed"
-            aria-hidden="true"
           />
         }
         ref={ref}

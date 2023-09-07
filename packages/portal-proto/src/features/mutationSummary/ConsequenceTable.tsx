@@ -16,6 +16,10 @@ import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { AnchorLink } from "@/components/AnchorLink";
 import { externalLinks, humanify } from "@/utils/index";
 import {
+  ButtonTooltip,
+  ImpactHeaderWithTooltip,
+} from "@/components/expandableTables/shared";
+import {
   SMTableConsequences,
   SMTableImpacts,
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
@@ -24,8 +28,6 @@ import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import { statusBooleansToDataStatus } from "../shared/utils";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
-import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 
 export const ConsequenceTable = ({
   ssmsId,

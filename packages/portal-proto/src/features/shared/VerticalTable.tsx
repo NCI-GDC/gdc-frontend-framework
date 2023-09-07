@@ -15,8 +15,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
+import { ButtonTooltip } from "@/components/expandableTables/shared";
 import { SortingState } from "@tanstack/react-table";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 export interface PaginationOptions {
   /**

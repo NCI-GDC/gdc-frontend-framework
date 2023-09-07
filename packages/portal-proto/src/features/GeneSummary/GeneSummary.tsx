@@ -17,13 +17,13 @@ import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
+import { GeneCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { WarningBanner } from "@/components/WarningBanner";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
-import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDistributionTable";
 
 interface GeneViewProps {
   data: {

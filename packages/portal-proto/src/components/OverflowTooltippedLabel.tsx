@@ -29,7 +29,7 @@ const OverflowTooltippedLabel = ({
         arrow: "bg-base-min bg-opacity-90",
       }}
     >
-      <span
+      <div
         className={`${className} truncate ... `}
         ref={(el) => {
           if (el) {
@@ -42,7 +42,7 @@ const OverflowTooltippedLabel = ({
         }}
       >
         {children}
-      </span>
+      </div>
     </Tooltip>
   );
 };

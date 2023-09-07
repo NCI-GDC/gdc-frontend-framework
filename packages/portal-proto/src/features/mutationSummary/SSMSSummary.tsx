@@ -9,9 +9,9 @@ import { externalLinks, humanify } from "src/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
+import { SSMSCancerDistributionTable } from "../cancerDistributionTable/CancerDistributionTable";
 import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
 import { HeaderTitle } from "../shared/tailwindComponents";
-import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
 
 export const SSMSSummary = ({
   ssm_id,

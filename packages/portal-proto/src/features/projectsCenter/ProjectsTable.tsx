@@ -32,10 +32,15 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { Checkbox } from "@mantine/core";
+import {
+  IoIosArrowDropdownCircle as DownIcon,
+  IoIosArrowDropupCircle as UpIcon,
+} from "react-icons/io";
+import { FaCircle as Circle } from "react-icons/fa";
 import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
-import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { animated, useSpring } from "@react-spring/web";
+import { useMeasure } from "react-use";
 
 type ProjectDataType = {
   project: string;
@@ -176,7 +181,6 @@ const ProjectsTable: React.FC = () => {
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -215,27 +219,70 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("disease_type", {
         id: "disease_type",
         header: "Disease Type",
-        cell: ({ row, getValue }) => (
-          <ExpandRowComponent
-            value={getValue()}
-            title="Disease Types"
-            isRowExpanded={row.getIsExpanded()}
-            isColumnExpanded={expandedColumnId === "disease_type"}
-          />
-        ),
+        cell: ({ row, getValue }) => {
+          return getValue()?.length === 0
+            ? "--"
+            : getValue()?.length === 1
+            ? getValue()
+            : row.getCanExpand() && (
+                <div
+                  aria-label="Expand section"
+                  className="flex items-center text-primary cursor-pointer gap-2"
+                >
+                  {row.getIsExpanded() &&
+                  expandedColumnId === "disease_type" ? (
+                    <UpIcon size="1.25em" className="text-accent" />
+                  ) : (
+                    <DownIcon size="1.25em" className="text-accent" />
+                  )}
+                  <span
+                    className={`whitespace-nowrap ${
+                      row.getIsExpanded() &&
+                      expandedColumnId === "disease_type" &&
+                      "font-bold"
+                    }`}
+                  >
+                    {getValue()?.length.toLocaleString().padStart(6)} Disease
+                    Types
+                  </span>
+                </div>
+              );
+        },
         enableSorting: false,
       }),
       projectsTableColumnHelper.accessor("primary_site", {
         id: "primary_site",
         header: "Primary Site",
-        cell: ({ row, getValue }) => (
-          <ExpandRowComponent
-            value={getValue()}
-            title="Primary Sites"
-            isRowExpanded={row.getIsExpanded()}
-            isColumnExpanded={expandedColumnId === "primary_site"}
-          />
-        ),
+        cell: ({ row, getValue }) => {
+          return getValue()?.length === 0
+            ? "--"
+            : getValue()?.length === 1
+            ? getValue()
+            : row.getCanExpand() && (
+                <div
+                  aria-label="Expand section"
+                  className="flex items-center text-primary cursor-pointer gap-2"
+                >
+                  {row.getIsExpanded() &&
+                  expandedColumnId === "primary_site" ? (
+                    <UpIcon size="1.25em" className="text-accent" />
+                  ) : (
+                    <DownIcon size="1.25em" className="text-accent" />
+                  )}
+
+                  <span
+                    className={`whitespace-nowrap ${
+                      row.getIsExpanded() &&
+                      expandedColumnId === "primary_site" &&
+                      "font-bold"
+                    }`}
+                  >
+                    {getValue()?.length.toLocaleString().padStart(6)} Primary
+                    Sites
+                  </span>
+                </div>
+              );
+        },
         enableSorting: false,
       }),
       projectsTableColumnHelper.accessor("program", {
@@ -265,7 +312,7 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
-        enableSorting: true,
+        enableSorting: false,
       }),
     ],
     [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
@@ -287,7 +334,6 @@ const ProjectsTable: React.FC = () => {
   ]);
 
   useEffect(() => {
-    setRowSelection({});
     sortByActions(sorting);
   }, [sorting]);
 
@@ -400,7 +446,7 @@ const ProjectsTable: React.FC = () => {
       getRowCanExpand={() => true}
       expandableColumnIds={["disease_type", "primary_site"]}
       renderSubComponent={({ row, clickedColumnId }) => (
-        <SubrowPrimarySiteDiseaseType row={row} columnId={clickedColumnId} />
+        <CreateContent row={row} columnId={clickedColumnId} />
       )}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
@@ -420,4 +466,47 @@ const ProjectsTable: React.FC = () => {
   );
 };
 
+const CreateContent = ({
+  row,
+  columnId,
+}: {
+  row: Row<ProjectDataType>;
+  columnId: string;
+}): JSX.Element => {
+  const values =
+    columnId === "disease_type"
+      ? row?.original?.disease_type
+      : row?.original?.primary_site;
+  const title = columnId === "disease_type" ? "Disease Type" : "Primary Site";
+
+  const [subRef, { width, height }] = useMeasure();
+
+  const fudgeFactor = width / 60;
+
+  const verticalSpring = useSpring({
+    from: { opacity: 0.25, height: 50 },
+    to: {
+      opacity: 1,
+      height: height + fudgeFactor,
+    },
+    immediate: true,
+  });
+
+  return (
+    <>
+      <animated.div ref={subRef} className="absolute mt-2 ml-2">
+        <div className="font-semibold text-[1rem] mb-2">{title}</div>
+        <div className="columns-4 gap-4 font-content text-sm">
+          {values.sort().map((value) => (
+            <div className="flex flex-row items-center" key={value}>
+              <Circle size="0.65em" className="text-primary shrink-0" />
+              <p className="pl-2">{value}</p>
+            </div>
+          ))}
+        </div>
+      </animated.div>
+      <animated.div style={verticalSpring}></animated.div>
+    </>
+  );
+};
 export default ProjectsTable;

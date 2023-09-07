@@ -6,9 +6,8 @@ import { MdSearch as SearchIcon } from "react-icons/md";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DragDrop } from "@/features/shared/DragDrop";
-
-import { ButtonTooltip } from "@/components/ButtonTooltip";
-import { Column } from "react-table";
+import { ButtonTooltip } from ".";
+import { Column } from "./types";
 
 interface DNDProps {
   showColumnMenu: any;

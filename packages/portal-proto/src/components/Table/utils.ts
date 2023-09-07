@@ -16,8 +16,8 @@ export function downloadTSV<TData>({
 }: {
   tableData: TData[];
   columns: ColumnDef<TData>[];
-  columnOrder?: ColumnOrderState;
-  columnVisibility?: VisibilityState;
+  columnOrder: ColumnOrderState;
+  columnVisibility: VisibilityState;
   fileName: string;
   option?: {
     // should be ids of the column
@@ -36,13 +36,13 @@ export function downloadTSV<TData>({
     const columnId = column.id;
     return (
       !option?.blacklist?.includes(columnId) &&
-      !(columnVisibility?.[columnId] === false)
+      !(columnVisibility[columnId] === false)
     );
   });
 
   // Sort columns based on columnOrder
-  const sortedColumns = (columnOrder || columns.map((column) => column.id))
-    ?.map((columnId) => {
+  const sortedColumns = columnOrder
+    .map((columnId) => {
       const foundColumn = filteredColumns.find(
         (column) => column.id === columnId,
       );
@@ -72,4 +72,4 @@ export function downloadTSV<TData>({
 }
 
 // these are a few standard column ids that will not be part of column ordering
-export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart", "slides"];
+export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart"];

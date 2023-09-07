@@ -1,6 +1,6 @@
 import { Loader } from "@mantine/core";
+import { ListSpring } from "@/components/expandableTables/shared";
 import { TableSubrowData } from "@gff/core";
-import ListAffectedCases from "./ListAffectedCases";
 
 interface CommonSubcomponentProps {
   subData: ReadonlyArray<TableSubrowData>;
@@ -25,9 +25,7 @@ function CommonSubcomponent({
         </div>
       )}
       {isError && <span>Error: Failed to fetch </span>}
-      {isSuccess && (
-        <ListAffectedCases subData={subData} subrowTitle={subrowTitle} />
-      )}
+      {isSuccess && <ListSpring subData={subData} subrowTitle={subrowTitle} />}
     </div>
   );
 }

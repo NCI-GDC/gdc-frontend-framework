@@ -1,11 +1,17 @@
 import FunctionButton from "@/components/FunctionButton";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import {
+  Columns,
+  HandleChangeInput,
+  VerticalTable,
+} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
   useCoreSelector,
   selectAvailableCohorts,
   FilterSet,
+  resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   useCoreDispatch,
   selectCohortFilterSetById,
@@ -16,9 +22,6 @@ import {
 import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
-import { createColumnHelper } from "@tanstack/react-table";
-import { HandleChangeInput } from "@/components/Table/types";
-import VerticalTable from "@/components/Table/VerticalTable";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -42,50 +45,52 @@ export const SelectCohortsModal = ({
 
   const isWithCohort = withOrWithoutCohort === "with";
 
-  const cohortListData = useMemo(
+  const columnListOrder: Columns[] = [
+    {
+      id: "selected",
+      visible: true,
+      columnName: "Select",
+      Cell: ({ value }: { value: string }): JSX.Element => {
+        return (
+          <Radio
+            value={value}
+            checked={checkedValue === value}
+            onChange={(event) => {
+              setCheckedValue(event.currentTarget.value);
+            }}
+          />
+        );
+      },
+      disableSortBy: true,
+    },
+    {
+      id: "name",
+      columnName: "Name",
+      visible: true,
+      disableSortBy: true,
+    },
+    {
+      id: "num_cases",
+      columnName: "# Cases",
+      visible: true,
+      disableSortBy: true,
+    },
+  ];
+
+  const info = useMemo(
     () =>
       cohorts
         ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((cohort) => ({
-          cohort_id: cohort.id,
+          selected: cohort.id,
           name: cohort.name,
           num_cases: cohort.counts.caseCount?.toLocaleString(),
         })),
     [cohorts],
   );
 
-  const cohortListTableColumnHelper =
-    createColumnHelper<typeof cohortListData[0]>();
-
-  const cohortListTableColumn = useMemo(
-    () => [
-      cohortListTableColumnHelper.display({
-        id: "select",
-        header: "Select",
-        cell: ({ row }) => (
-          <Radio
-            value={row.original.cohort_id}
-            checked={checkedValue === row.original.cohort_id}
-            onChange={(event) => {
-              setCheckedValue(event.currentTarget.value);
-            }}
-          />
-        ),
-      }),
-      cohortListTableColumnHelper.accessor("name", {
-        id: "name",
-        header: "Name",
-      }),
-      cohortListTableColumnHelper.accessor("num_cases", {
-        id: "num_cases",
-        header: "# Cases",
-      }),
-    ],
-    [cohortListTableColumnHelper, checkedValue],
-  );
-
   const { handlePageChange, page, pages, size, from, total, displayedData } =
-    useStandardPagination(cohortListData);
+    useStandardPagination(info);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -163,6 +168,7 @@ export const SelectCohortsModal = ({
         },
       },
     };
+    coreDispatch(resetSelectedCases());
     coreDispatch(
       addNewCohortWithFilterAndMessage({
         filters: pickedCasesfilters,
@@ -214,8 +220,10 @@ export const SelectCohortsModal = ({
             <Text className="text-xs mb-4 block">{description}</Text>
 
             <VerticalTable
-              data={displayedData}
-              columns={cohortListTableColumn}
+              tableData={displayedData}
+              selectableRow={false}
+              columns={columnListOrder}
+              showControls={false}
               status="fulfilled"
               pagination={{
                 page,

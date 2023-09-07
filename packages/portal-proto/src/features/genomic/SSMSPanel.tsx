@@ -9,7 +9,7 @@ import {
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
-import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
+import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
 });

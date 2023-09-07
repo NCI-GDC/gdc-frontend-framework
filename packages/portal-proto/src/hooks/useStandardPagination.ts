@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PaginationOptions } from "@/features/shared/VerticalTable";
+import { PaginationOptions, Columns } from "@/features/shared/VerticalTable";
 import { SortingState } from "@tanstack/react-table";
 
 /**
@@ -10,13 +10,9 @@ import { SortingState } from "@tanstack/react-table";
  */
 function useStandardPagination<TData>(
   fullData: TData[],
-  customSortingFns?: Record<string, any>,
+  columnListOrder?: Columns[],
 ): PaginationOptions & {
   displayedData: TData[];
-  /**
-   * full data that is sorted or filtered without the slice
-   */
-  updatedFullData?: TData[];
   /**
    * callback to handle page size change
    */
@@ -32,9 +28,9 @@ function useStandardPagination<TData>(
 } {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
-  const [displayedData, setDisplayedData] = useState([]);
-  const [updatedFullData, setUpdatedFullData] = useState([]);
   const [activeSort, setActiveSort] = useState<SortingState>([]);
+  const [displayedData, setDisplayedData] = useState([]);
+  const [columnSortingFns, setColumnSortingFns] = useState({});
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -50,14 +46,29 @@ function useStandardPagination<TData>(
   };
 
   useEffect(() => {
+    if (!columnListOrder) {
+      return;
+    }
+    // looks through columnListOrder for columns that have sortingFn and add them to an easily retrievable object
+    setColumnSortingFns(
+      columnListOrder.reduce((output, column) => {
+        if (column.sortingFn) {
+          output[column.id] = column.sortingFn;
+        }
+        return output;
+      }, {}),
+    );
+  }, [columnListOrder]);
+
+  useEffect(() => {
     const tempData = [...fullData];
     if (activeSort.length > 0) {
       // If multiple filters
       activeSort.forEach((obj) => {
         // check if special instructions
-        if (customSortingFns[obj.id]) {
+        if (columnSortingFns[obj.id]) {
           // sort by sortingFn
-          tempData.sort(customSortingFns[obj.id]);
+          tempData.sort(columnSortingFns[obj.id]);
           if (obj.desc) {
             tempData.reverse();
           }
@@ -81,10 +92,10 @@ function useStandardPagination<TData>(
               if (Array.isArray(tempData[0][obj.id])) {
                 //if array sort by length
                 tempData.sort((a, b) => {
-                  if (a[obj.id].length > b[obj.id].length) {
+                  if (a[obj.id].length < b[obj.id].length) {
                     return obj.desc ? -1 : 1;
                   }
-                  if (a[obj.id].length < b[obj.id].length) {
+                  if (a[obj.id].length > b[obj.id].length) {
                     return obj.desc ? 1 : -1;
                   }
                   //If same length sort by first item
@@ -109,11 +120,10 @@ function useStandardPagination<TData>(
         }
       });
     }
-    setUpdatedFullData(tempData);
     setDisplayedData(
       tempData.slice((activePage - 1) * pageSize, activePage * pageSize),
     );
-  }, [fullData, activePage, pageSize, customSortingFns, activeSort]);
+  }, [fullData, activePage, pageSize, activeSort, columnSortingFns]);
 
   return {
     handlePageSizeChange,
@@ -125,7 +135,6 @@ function useStandardPagination<TData>(
     from: (activePage - 1) * pageSize,
     total: fullData.length,
     displayedData,
-    updatedFullData,
   };
 }
 

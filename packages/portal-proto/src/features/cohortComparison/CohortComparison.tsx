@@ -113,7 +113,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
               <LoadingOverlay
                 vdata-testid="loading-spinner"
                 visible={isFetching}
-                zIndex={0}
               />
             </div>
           ) : (

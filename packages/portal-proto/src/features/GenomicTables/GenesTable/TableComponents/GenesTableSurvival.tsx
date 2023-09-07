@@ -1,6 +1,5 @@
+import { Survival, ToggledCheck } from "@/components/expandableTables/shared";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
-import ToggledCheck from "../../SharedComponent/ToggledCheck";
-import { Survival } from "../types";
 
 const GenesTableSurvival = ({
   SSMSAffectedCasesInCohort,
