@@ -30,6 +30,7 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
 
 @step("Verify cohort case count equals repository table case count")
 def compare_cohort_case_count_and_repo_table_case_count():
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     are_case_counts_equal = APP.repository_page.compare_cohort_case_count_and_repo_table_case_count()
     assert are_case_counts_equal, f"The cohort bar case count is not equal to the repository table case count"
 
