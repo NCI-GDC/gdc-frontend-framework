@@ -148,16 +148,13 @@ export const ContextualCasesView: React.FC = () => {
     setEntityMetadata,
   });
 
+  const getRowId = (originalRow: casesTableDataType) => {
+    return originalRow.case_uuid;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const pickedCases =
-    Object.entries(rowSelection).length > 0
-      ? Object.entries(rowSelection)
-          ?.filter(([, isSelected]) => isSelected)
-          ?.map(
-            ([index]) => (casesData[index] as casesTableDataType)?.case_uuid,
-          )
-      : [];
-
+  const pickedCases = Object.entries(rowSelection)?.map(
+    ([case_uuid]) => case_uuid,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     casesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -457,6 +454,7 @@ export const ContextualCasesView: React.FC = () => {
         columnVisibility={columnVisibility}
         columnOrder={columnOrder}
         setColumnOrder={setColumnOrder}
+        getRowId={getRowId}
       />
     </div>
   );

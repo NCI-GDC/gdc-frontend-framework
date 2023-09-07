@@ -270,10 +270,14 @@ const ProjectsTable: React.FC = () => {
     [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
   );
 
+  const getRowId = (originalRow: ProjectDataType) => {
+    return originalRow.project;
+  };
+
   const [rowSelection, setRowSelection] = useState({});
-  const pickedProjects = Object.entries(rowSelection)
-    ?.filter(([, isSelected]) => isSelected)
-    ?.map(([index]) => (formattedTableData[index] as ProjectDataType)?.project);
+  const pickedProjects = Object.entries(rowSelection)?.map(
+    ([project]) => project,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -415,6 +419,7 @@ const ProjectsTable: React.FC = () => {
       setSorting={setSorting}
       expanded={expanded}
       setExpanded={handleExpand}
+      getRowId={getRowId}
     />
   );
 };

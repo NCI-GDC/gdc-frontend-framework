@@ -66,10 +66,11 @@ const SavedSets: React.FC<SavedSetsProps> = ({
 
   const savedSetsTableColumnHelper = createColumnHelper<typeof tableData[0]>();
 
+  const getRowId = (originalRow: typeof tableData[0]) => {
+    return originalRow.setId;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedSets = Object.entries(rowSelection)
-    ?.filter(([, isSelected]) => isSelected)
-    ?.map(([index]) => (tableData[index] as typeof tableData[0])?.setId);
+  const selectedSets = Object.entries(rowSelection)?.map(([setId]) => setId);
 
   const savedSetsColumns = useMemo(
     () => [
@@ -153,6 +154,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
               pagination={{ ...paginationProps, label: `${setTypeLabel} sets` }}
               setRowSelection={setRowSelection}
               rowSelection={rowSelection}
+              getRowId={getRowId}
             />
           </>
         )}

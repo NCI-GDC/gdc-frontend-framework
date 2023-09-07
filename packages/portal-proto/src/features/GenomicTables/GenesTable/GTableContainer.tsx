@@ -256,10 +256,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     handleMutationCountClick,
   });
 
+  const getRowId = (originalRow: Gene) => {
+    return originalRow.gene_id;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedGenes = Object.entries(rowSelection)
-    ?.filter(([, isSelected]) => isSelected)
-    ?.map(([index]) => (formattedTableData[index] as Gene)?.gene_id);
+  const selectedGenes = Object.entries(rowSelection)?.map(
+    ([gene_id]) => gene_id,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     genesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -489,6 +492,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setColumnOrder={setColumnOrder}
         expanded={expanded}
         setExpanded={handleExpand}
+        getRowId={getRowId}
       />
     </>
   );

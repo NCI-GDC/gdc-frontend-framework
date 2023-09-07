@@ -185,13 +185,26 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   }, [ssmData, geneData]);
 
   // TODO: not working for deletion / fix it
+  const getRowId = (originalRow: ManageSetsTableDataType) => {
+    return originalRow.setId;
+  };
   const [rowSelection, setRowSelection] = useState({});
 
-  const pickedSets = Object.entries(rowSelection)
-    ?.filter(([, isSelected]) => isSelected)
-    ?.map(([index]) => (tableData[index] as ManageSetsTableDataType)?.set);
+  const pickedSets: SetData[] = Object.entries(rowSelection).reduce(
+    (result, [id, isSelected]) => {
+      if (isSelected) {
+        const matchingItems = tableData.filter(
+          (tableDatum) => tableDatum.setId === id,
+        );
+        result.push(...matchingItems);
+      }
+      return result;
+    },
+    [],
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  console.log({ pickedSets });
   useDeepCompareEffect(() => {
     setSelectedSets(pickedSets);
   }, [pickedSets, setSelectedSets]);
@@ -321,6 +334,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         enableRowSelection={true}
         setRowSelection={setRowSelection}
         rowSelection={rowSelection}
+        getRowId={getRowId}
       />
     </div>
   );

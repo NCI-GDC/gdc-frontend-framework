@@ -190,6 +190,10 @@ export interface TableProps<TData> {
    * Optional handle for onExpandedChange
    */
   setExpanded?: (row: Row<TData>, columnId: string) => void;
+  /**
+   *
+   */
+  getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
 
 export interface HandleChangeInput {

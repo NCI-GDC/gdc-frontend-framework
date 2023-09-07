@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
@@ -14,6 +15,7 @@ import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
 import { isEqual } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 function VerticalTable<TData>({
   columns,
@@ -42,6 +44,8 @@ function VerticalTable<TData>({
   setSorting,
   expanded,
   setExpanded,
+  getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
+    uuidv4(),
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -89,6 +93,7 @@ function VerticalTable<TData>({
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
+    getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
 

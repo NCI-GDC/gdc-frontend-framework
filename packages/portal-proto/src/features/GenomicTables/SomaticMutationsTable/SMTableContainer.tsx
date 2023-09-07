@@ -250,12 +250,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setShowCreateCohort,
   });
 
+  const getRowId = (originalRow: SomaticMutation) => {
+    return originalRow.mutation_id;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedMutations = Object.entries(rowSelection)
-    ?.filter(([, isSelected]) => isSelected)
-    ?.map(
-      ([index]) => (formattedTableData[index] as SomaticMutation)?.mutation_id,
-    );
+  const selectedMutations = Object.entries(rowSelection)?.map(
+    ([mutation_id]) => mutation_id,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     SMTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -511,6 +512,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             setColumnOrder={setColumnOrder}
             expanded={expanded}
             setExpanded={handleExpand}
+            getRowId={getRowId}
           />
         </>
       )}
