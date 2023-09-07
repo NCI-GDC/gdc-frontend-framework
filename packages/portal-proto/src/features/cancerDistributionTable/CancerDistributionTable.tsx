@@ -141,9 +141,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [data, projectsById, isGene, isSuccess, projectsFetching],
   );
 
+  const getRowId = (originalRow: CancerDistributionDataType) => {
+    return originalRow.project;
+  };
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "#_ssm_affected_cases",
@@ -388,14 +391,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   ) => {
     if (
       Object.keys(expanded).length > 0 &&
-      row.index === expandedRowId &&
+      row.original.project === expandedRowId &&
       columnId === expandedColumnId
     ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
+      setExpanded({ [row.original.project]: true });
       setExpandedColumnId(columnId);
-      setExpandedRowId(row.index);
+      setExpandedRowId(row.original.project);
     }
   };
 
@@ -596,6 +599,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
+        getRowId={getRowId}
       />
     </>
   );

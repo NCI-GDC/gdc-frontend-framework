@@ -159,7 +159,7 @@ const ProjectsTable: React.FC = () => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -357,14 +357,14 @@ const ProjectsTable: React.FC = () => {
   const handleExpand = (row: Row<ProjectDataType>, columnId: string) => {
     if (
       Object.keys(expanded).length > 0 &&
-      row.index === expandedRowId &&
+      row.original.project === expandedRowId &&
       columnId === expandedColumnId
     ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
+      setExpanded({ [row.original.project]: true });
       setExpandedColumnId(columnId);
-      setExpandedRowId(row.index);
+      setExpandedRowId(row.original.project);
     }
   };
 

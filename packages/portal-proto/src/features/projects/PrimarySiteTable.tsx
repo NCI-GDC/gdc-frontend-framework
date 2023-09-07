@@ -140,8 +140,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const getRowId = (originalRow: typeof formattedData[0]) => {
+    return originalRow.primary_site;
+  };
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "primary_site",
@@ -177,11 +179,14 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     row: Row<typeof formattedData[0]>,
     columnId: string,
   ) => {
-    if (Object.keys(expanded).length > 0 && row.index === expandedRowId) {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.primary_site === expandedRowId
+    ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
-      setExpandedRowId(row.index);
+      setExpanded({ [row.original.primary_site]: true });
+      setExpandedRowId(row.original.primary_site);
     }
   };
 
@@ -219,6 +224,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       }}
       showControls={true}
       handleChange={handleChange}
+      getRowId={getRowId}
     />
   );
 };

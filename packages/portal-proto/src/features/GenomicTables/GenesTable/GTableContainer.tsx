@@ -319,15 +319,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [rowId, setRowId] = useState(-1);
+  const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<Gene>) => {
-    if (Object.keys(expanded).length > 0 && row.index === rowId) {
+    if (Object.keys(expanded).length > 0 && row.original.gene_id === rowId) {
       setExpanded({});
     } else if (
       row.original["#_ssm_affected_cases_across_the_gdc"].numerator !== 0
     ) {
-      setExpanded({ [row.index]: true });
-      setRowId(row.index);
+      setExpanded({ [row.original.gene_id]: true });
+      setRowId(row.original.gene_id);
     }
   };
 

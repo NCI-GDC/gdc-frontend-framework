@@ -342,15 +342,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [rowId, setRowId] = useState(-1);
+  const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<SomaticMutation>) => {
-    if (Object.keys(expanded).length > 0 && row.index === rowId) {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.mutation_id === rowId
+    ) {
       setExpanded({});
     } else if (
       row.original["#_affected_cases_across_the_gdc"].numerator !== 0
     ) {
-      setExpanded({ [row.index]: true });
-      setRowId(row.index);
+      setExpanded({ [row.original.mutation_id]: true });
+      setRowId(row.original.mutation_id);
     }
   };
 

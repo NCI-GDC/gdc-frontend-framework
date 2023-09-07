@@ -204,7 +204,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   );
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  console.log({ pickedSets });
   useDeepCompareEffect(() => {
     setSelectedSets(pickedSets);
   }, [pickedSets, setSelectedSets]);
