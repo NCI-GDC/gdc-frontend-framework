@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useContext } from "react";
 import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
-import { Menu, Tooltip, ActionIcon } from "@mantine/core";
+import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
 import { useResizeObserver } from "@mantine/hooks";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import {
@@ -117,6 +117,26 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     );
   };
 
+  const downloadTableTSVFile = () => {
+    const header = ["Statistics", dataDimension?.unit || "Quantities"];
+    const body = [
+      ["Minimum", formattedData.min].join("\t"),
+      ["Maximum", formattedData.max].join("\t"),
+      ["Mean", formattedData.mean].join("\t"),
+      ["Median", formattedData.median].join("\t"),
+      ["Standard Deviation", data.std_dev].join("\t"),
+      ["IQR", data.iqr].join("\t"),
+    ];
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
+
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `${fieldName}-statistics-${date}.tsv`,
+    );
+  };
+
   const [boxPlotRef, boundingRectBox] = useResizeObserver();
   const [qqPlotRef, boundingRectQQ] = useResizeObserver();
 
@@ -229,6 +249,13 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           />
         </div>
       </div>
+      <Button
+        data-testid="button-stats-tsv-cdave-card"
+        className="bg-base-max text-primary border-primary"
+        onClick={downloadTableTSVFile}
+      >
+        TSV
+      </Button>
       <div className="min-h-44 block overflow-auto w-full relative border-base-light border-1">
         <table
           data-testid="table-card"
