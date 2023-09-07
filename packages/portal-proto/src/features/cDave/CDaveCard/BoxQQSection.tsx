@@ -26,7 +26,7 @@ import {
 import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
-import { DashboardDownloadContext } from "../Dashboard";
+import { DashboardDownloadContext } from "../chartDownloadContext";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -120,7 +120,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const [boxPlotRef, boundingRectBox] = useResizeObserver();
   const [qqPlotRef, boundingRectQQ] = useResizeObserver();
 
-  const dispatch = useContext(DashboardDownloadContext);
+  const { dispatch } = useContext(DashboardDownloadContext);
   const boxDownloadChartRef = useRef<HTMLElement>();
   const qqDownloadChartRef = useRef<HTMLElement>();
   const fieldName = clinicalNestedField ?? clinicalField;

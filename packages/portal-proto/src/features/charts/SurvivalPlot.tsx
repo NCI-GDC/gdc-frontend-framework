@@ -19,7 +19,7 @@ import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
 import { DownloadButton } from "@/features/shared/tailwindComponents";
-import { DashboardDownloadContext } from "../cDave/Dashboard";
+import { DashboardDownloadContext } from "../cDave/chartDownloadContext";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -443,7 +443,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     saveAs(blob, `${downloadFileName}.tsv`);
   };
 
-  const dispatch = useContext(DashboardDownloadContext);
+  const { dispatch } = useContext(DashboardDownloadContext);
   useEffect(() => {
     const charts = [{ filename: downloadFileName, chartRef: downloadRef }];
 

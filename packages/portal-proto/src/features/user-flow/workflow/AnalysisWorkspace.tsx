@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState, createContext, useReducer } from "react";
 import { useRouter } from "next/router";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
@@ -7,10 +7,15 @@ import {
 } from "@/features/user-flow/workflow/registeredApps";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
 import SearchInput from "@/components/SearchInput";
+import DownloadAllButton from "@/features/cDave/DownloadAllButton";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import {
+  chartDownloadReducer,
+  DashboardDownloadContext,
+} from "@/features/cDave/chartDownloadContext";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -134,6 +139,8 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
 
+  const [chartDownloadState, dispatch] = useReducer(chartDownloadReducer, []);
+
   return (
     <div>
       {app && (
@@ -145,14 +152,22 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp: handleAppSelected,
           }}
         >
-          <AnalysisBreadcrumbs
-            onDemoApp={isDemoMode}
-            skipSelectionScreen={skipSelectionScreen}
-            rightComponent={
-              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
-            }
-          />
-          <ActiveAnalysisToolNoSSR appId={app} />
+          <DashboardDownloadContext.Provider
+            value={{ state: chartDownloadState, dispatch }}
+          >
+            <AnalysisBreadcrumbs
+              onDemoApp={isDemoMode}
+              skipSelectionScreen={skipSelectionScreen}
+              rightComponent={
+                app === "CDave" ? (
+                  <DownloadAllButton />
+                ) : app === "CohortBuilder" && !isDemoMode ? (
+                  <SearchInput />
+                ) : null
+              }
+            />
+            <ActiveAnalysisToolNoSSR appId={app} />
+          </DashboardDownloadContext.Provider>
         </SelectionScreenContext.Provider>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}

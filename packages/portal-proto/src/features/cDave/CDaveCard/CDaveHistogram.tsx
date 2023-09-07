@@ -9,7 +9,7 @@ import { COLOR_MAP } from "../constants";
 import { flattenBinnedData } from "../utils";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { convertDateToString } from "@/utils/date";
-import { DashboardDownloadContext } from "../Dashboard";
+import { DashboardDownloadContext } from "../chartDownloadContext";
 import { toDisplayName } from "../utils";
 
 const formatBarChartData = (
@@ -71,7 +71,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
   const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
 
-  const dispatch = useContext(DashboardDownloadContext);
+  const { dispatch } = useContext(DashboardDownloadContext);
   useEffect(() => {
     const charts = [{ filename: downloadFileName, chartRef: downloadChartRef }];
 
