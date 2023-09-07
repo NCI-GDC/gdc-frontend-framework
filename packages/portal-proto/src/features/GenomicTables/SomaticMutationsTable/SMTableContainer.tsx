@@ -25,7 +25,6 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
-
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
@@ -40,7 +39,7 @@ import {
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import SMTableSubcomponent from "./SMTableSubcomponent";
