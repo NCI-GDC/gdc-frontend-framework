@@ -106,12 +106,6 @@ const CartDownloadModal = ({
             related_files: true,
           }}
           method="POST"
-          options={{
-            headers: {
-              "Content-Type": "application/json",
-            },
-            method: "POST",
-          }}
           setActive={setActive}
         />
         {!user.username && <LoginButton />}

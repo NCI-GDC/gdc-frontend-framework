@@ -51,14 +51,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         endpoint={`data/${file.file_id}`}
         activeText={activeText}
         inactiveText={inactiveText}
-        queryParams={""}
         method="GET"
-        options={{
-          method: "GET",
-          headers: {
-            Range: "bytes=0-0",
-          },
-        }}
         setActive={setActive}
         active={active}
         customStyle={customStyle || customStyleFile}

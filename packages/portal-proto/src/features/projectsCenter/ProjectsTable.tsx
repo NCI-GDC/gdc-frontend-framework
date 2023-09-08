@@ -313,12 +313,6 @@ const ProjectsTable: React.FC = () => {
     await download({
       endpoint: "projects",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(projectFilters) ?? {},
         size: 10000,

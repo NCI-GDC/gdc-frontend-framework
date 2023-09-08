@@ -305,12 +305,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     await download({
       endpoint: "files",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: {
           op: "in",
@@ -341,10 +335,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         ].join(","),
       },
       dispatch,
-      queryParams: `?${new URLSearchParams({
-        annotations: "true",
-        related_files: "true",
-      }).toString()}`,
     });
   };
 

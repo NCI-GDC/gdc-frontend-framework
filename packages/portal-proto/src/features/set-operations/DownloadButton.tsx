@@ -60,13 +60,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         endpoint: "tar_sets",
         method: "POST",
         dispatch,
-        options: {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        },
-        form: true,
         done: () => setLoading(false),
       });
     }
