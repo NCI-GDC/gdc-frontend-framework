@@ -93,12 +93,6 @@ export const ClinicalSummary = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.case-${submitter_id}-${project_id}.${new Date()
@@ -121,12 +115,6 @@ export const ClinicalSummary = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",

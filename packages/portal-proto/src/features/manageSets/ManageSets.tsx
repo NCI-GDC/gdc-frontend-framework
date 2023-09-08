@@ -144,15 +144,8 @@ const ManageSets: React.FC = () => {
                       }_${setName.replace(/[^A-Za-z0-9_.]/g, "_")}.tsv`,
                     })),
                   },
-                  options: {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  },
                   method: "POST",
                   dispatch,
-                  form: true,
                 });
               }}
             />

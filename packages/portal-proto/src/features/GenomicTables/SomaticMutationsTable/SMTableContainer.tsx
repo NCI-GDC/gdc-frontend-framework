@@ -287,12 +287,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     await download({
       endpoint: "ssms",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters:
           buildCohortGqlOperator(
