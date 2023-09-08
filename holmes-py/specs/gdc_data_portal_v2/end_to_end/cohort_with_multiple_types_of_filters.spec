@@ -76,12 +76,9 @@ tags: gdc-data-portal-v2, end-to-end, regression
 When the filters are fixed add tests for them - PEAR-1350
 * Navigate to "Downloads" from "Header" "section"
 * Verify cohort case count equals repository table case count
-* Select value from table by row and column
-  |row|column|
-  |------|---|
-  |1     |3  |
 
 ## File Summary Page
+* Quick search for "0089d221-5807-47f1-a382-1e2e336df201" and go to its page
 * Download "File" from "File Summary"
 * Read metadata from compressed "File from File Summary"
 * Verify that "File from File Summary" has expected information
@@ -90,7 +87,6 @@ When the filters are fixed add tests for them - PEAR-1350
   |0089d221-5807-47f1-a382-1e2e336df201   |
   |3024b4210d713fb1222fde805b9c94dc       |
   |validated                              |
-* Close the modal
 
 ## Clinical Data Analysis App
 * Navigate to "Analysis" from "Header" "section"
