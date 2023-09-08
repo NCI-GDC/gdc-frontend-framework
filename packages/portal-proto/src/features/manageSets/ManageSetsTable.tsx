@@ -177,7 +177,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
     ];
   }, [ssmData, geneData]);
 
-  // TODO: not working for deletion / fix it
   const getRowId = (originalRow: ManageSetsTableDataType) => {
     return originalRow.setId;
   };
