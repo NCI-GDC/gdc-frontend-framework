@@ -10,7 +10,7 @@ import {
   selectCart,
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo, search } from "./utils";
+import { formatEntityInfo, searchForStringInNode } from "./utils";
 import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
@@ -67,7 +67,7 @@ export const Biospecimen = ({
     ) {
       const escapedSearchText = escapeRegExp(searchText);
       const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
-        return search(escapedSearchText, e);
+        return searchForStringInNode(escapedSearchText, e);
       });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
@@ -275,7 +275,7 @@ export const Biospecimen = ({
                     setTotalNodeCount={setTotalNodeCount}
                     setExpandedCount={setExpandedCount}
                     query={searchText.toLocaleLowerCase().trim()}
-                    search={search}
+                    search={searchForStringInNode}
                   />
                 )}
             </div>
