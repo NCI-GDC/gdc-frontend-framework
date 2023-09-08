@@ -65,8 +65,9 @@ export const Biospecimen = ({
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
+      const escapedSearchText = escapeRegExp(searchText);
       const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
-        return search(searchText, e);
+        return search(escapedSearchText, e);
       });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
@@ -221,7 +222,7 @@ export const Biospecimen = ({
                       });
                     }
                     setEntityClicked && setEntityClicked(false);
-                    setSearchText(escapeRegExp(e.target.value));
+                    setSearchText(e.target.value);
                   }}
                   value={searchText}
                   rightSection={
