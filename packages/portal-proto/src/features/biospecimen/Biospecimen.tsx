@@ -11,14 +11,13 @@ import {
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatEntityInfo, search } from "./utils";
-import { trimEnd, find, flatten } from "lodash";
+import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
-import { escapeStringRegexp } from "./utils";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -67,8 +66,7 @@ export const Biospecimen = ({
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
       const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
-        const escapedSearchText = escapeStringRegexp(searchText);
-        return search(escapedSearchText, e);
+        return search(searchText, e);
       });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
@@ -223,7 +221,7 @@ export const Biospecimen = ({
                       });
                     }
                     setEntityClicked && setEntityClicked(false);
-                    setSearchText(e.target.value);
+                    setSearchText(escapeRegExp(e.target.value));
                   }}
                   value={searchText}
                   rightSection={
