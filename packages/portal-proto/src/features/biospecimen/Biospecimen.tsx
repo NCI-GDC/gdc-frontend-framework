@@ -10,15 +10,14 @@ import {
   selectCart,
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo, search } from "./utils";
-import { trimEnd, find, flatten } from "lodash";
+import { formatEntityInfo, searchForStringInNode } from "./utils";
+import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
-import { escapeStringRegexp } from "./utils";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -66,9 +65,9 @@ export const Biospecimen = ({
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
+      const escapedSearchText = escapeRegExp(searchText);
       const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
-        const escapedSearchText = escapeStringRegexp(searchText);
-        return search(escapedSearchText, e);
+        return searchForStringInNode(escapedSearchText, e);
       });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
@@ -276,7 +275,7 @@ export const Biospecimen = ({
                     setTotalNodeCount={setTotalNodeCount}
                     setExpandedCount={setExpandedCount}
                     query={searchText.toLocaleLowerCase().trim()}
-                    search={search}
+                    search={searchForStringInNode}
                   />
                 )}
             </div>
