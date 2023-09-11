@@ -2,12 +2,27 @@ import { useState } from "react";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
-import { Statistics } from "@gff/core";
-import { convertDateToString } from "@/utils/date";
+import {
+  Statistics,
+  FilterSet,
+  buildCohortGqlOperator,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  joinFilters,
+} from "@gff/core";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { convertDateToString } from "@/utils/date";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import CategoricalBinningModal from "../CategoricalBinningModal";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import {
+  CategoricalBins,
+  CustomInterval,
+  NamedFromTo,
+  SelectedFacet,
+} from "../types";
+import { DEMO_COHORT_FILTERS } from "../constants";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -19,6 +34,7 @@ interface CardControlsProps {
   readonly setCustomBinnedData:
     | ((bins: CategoricalBins) => void)
     | ((bins: NamedFromTo[] | CustomInterval) => void);
+  readonly selectedFacets: SelectedFacet[];
   readonly stats?: Statistics;
 }
 
@@ -30,9 +46,11 @@ const CardControls: React.FC<CardControlsProps> = ({
   yTotal,
   customBinnedData,
   setCustomBinnedData,
+  selectedFacets,
   stats,
 }: CardControlsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const isDemoMode = useIsDemoApp();
 
   const downloadTSVFile = () => {
     const header = [fieldName, "# Cases"];
@@ -59,27 +77,38 @@ const CardControls: React.FC<CardControlsProps> = ({
     );
   };
 
+  const cohortFilters = useCoreSelector((state) =>
+    isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+  );
+
+  const filters: FilterSet = {
+    mode: "and",
+    root: {
+      [field]: {
+        operator: "includes",
+        operands: selectedFacets.map((facet) => facet.value),
+        field,
+      },
+    },
+  };
+
   return (
     <>
       <div className="flex justify-between py-2">
         <div className="flex flex-wrap gap-2">
-          <DropdownWithIcon
-            customDataTestId="button-create-new-cohort"
-            RightIcon={<DownIcon size={20} />}
-            TargetButtonChildren={"Create New Cohort"}
-            disableTargetWidth={true}
-            dropdownElements={[
-              { title: "Only Selected Cases (Coming Soon)", disabled: true },
-              {
-                title: "Existing Cohort With Selected Cases (Coming Soon)",
-                disabled: true,
-              },
-              {
-                title: "Existing Cohort Without Selected Cases (Coming Soon)",
-                disabled: true,
-              },
-            ]}
-            zIndex={100}
+          <CasesCohortButtonFromFilters
+            filters={
+              selectedFacets.length === 0
+                ? undefined
+                : buildCohortGqlOperator(joinFilters(filters, cohortFilters))
+            }
+            numCases={
+              selectedFacets.length === 0
+                ? 0
+                : selectedFacets
+                    .map((facet) => facet.numCases)
+                    .reduce((a, b) => a + b)
+            }
           />
           <Button
             data-testid="button-tsv-cdave-card"

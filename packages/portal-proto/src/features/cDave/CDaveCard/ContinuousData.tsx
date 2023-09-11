@@ -10,7 +10,12 @@ import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
-import { CustomInterval, NamedFromTo, ChartTypes } from "../types";
+import {
+  CustomInterval,
+  NamedFromTo,
+  ChartTypes,
+  SelectedFacet,
+} from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { isInterval, createBuckets, parseContinuousBucket } from "../utils";
 import BoxQQSection from "./BoxQQSection";
@@ -62,6 +67,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
   const ranges = isInterval(customBinnedData)
@@ -141,11 +147,13 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           )}
           <CardControls
             continuous={true}
-            field={fieldName}
+            field={field}
+            fieldName={fieldName}
             results={resultData}
             yTotal={yTotal}
             customBinnedData={customBinnedData}
             setCustomBinnedData={setCustomBinnedData}
+            selectedFacets={selectedFacets}
             stats={initialData}
           />
           <CDaveTable
@@ -156,6 +164,8 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
             survival={chartType === "survival"}
             selectedSurvivalPlots={selectedSurvivalPlots}
             setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+            selectedFacets={selectedFacets}
+            setSelectedFacets={setSelectedFacets}
             continuous={true}
           />
         </>

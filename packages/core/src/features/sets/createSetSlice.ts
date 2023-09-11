@@ -1,8 +1,20 @@
+import { GqlOperation } from "../gdcapi/filters";
 import {
   GraphQLApiResponse,
   graphqlAPISlice,
   graphqlAPI,
 } from "../gdcapi/gdcgraphql";
+
+interface CreateSetValueArgs {
+  values: readonly string[];
+}
+
+interface CreateSetFilterArgs {
+  filters?: GqlOperation;
+  size?: number;
+  score?: string;
+  set_id?: string;
+}
 
 const createGeneSetMutation = `mutation createSet(
   $input: CreateSetInput
@@ -89,7 +101,7 @@ export const createSetSlice = graphqlAPISlice
   .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets", "caseSets"] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      createGeneSetFromValues: builder.mutation({
+      createGeneSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
@@ -111,7 +123,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformGeneSetResponse,
       }),
-      createSsmsSetFromValues: builder.mutation({
+      createSsmsSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
@@ -133,7 +145,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformSsmsSetResponse,
       }),
-      createCaseSetFromValues: builder.mutation({
+      createCaseSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createCaseSetMutation,
           graphQLFilters: {
@@ -155,7 +167,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformCaseSetResponse,
       }),
-      createGeneSetFromFilters: builder.mutation({
+      createGeneSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
@@ -171,7 +183,7 @@ export const createSetSlice = graphqlAPISlice
           { type: "geneSets", id: arg?.set_id },
         ],
       }),
-      createSsmsSetFromFilters: builder.mutation({
+      createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score, set_id }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
@@ -188,7 +200,7 @@ export const createSetSlice = graphqlAPISlice
           { type: "ssmsSets", id: arg?.set_id },
         ],
       }),
-      createCaseSetFromFilters: builder.mutation({
+      createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score, set_id }) => ({
           graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {

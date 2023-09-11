@@ -4,7 +4,7 @@ import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
-import { CategoricalBins, ChartTypes } from "../types";
+import { CategoricalBins, ChartTypes, SelectedFacet } from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { flattenBinnedData } from "../utils";
 
@@ -28,6 +28,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
   const resultData = useMemo(
@@ -90,6 +91,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         yTotal={yTotal}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
+        selectedFacets={selectedFacets}
       />
       <CDaveTable
         fieldName={fieldName}
@@ -99,6 +101,8 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
+        selectedFacets={selectedFacets}
+        setSelectedFacets={setSelectedFacets}
         continuous={false}
       />
     </>

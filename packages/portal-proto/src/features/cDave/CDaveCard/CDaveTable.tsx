@@ -1,7 +1,12 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import {
+  CategoricalBins,
+  CustomInterval,
+  NamedFromTo,
+  SelectedFacet,
+} from "../types";
 import { flattenBinnedData } from "../utils";
 
 interface CDaveTableProps {
@@ -12,6 +17,8 @@ interface CDaveTableProps {
   readonly survival: boolean;
   readonly selectedSurvivalPlots: string[];
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
+  readonly selectedFacets: SelectedFacet[];
+  readonly setSelectedFacets: (facets: SelectedFacet[]) => void;
   readonly continuous: boolean;
 }
 
@@ -23,6 +30,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
+  selectedFacets,
+  setSelectedFacets,
   continuous,
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
@@ -90,6 +99,23 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       size="xs"
                       className="pt-1"
                       aria-labelledby={rowSelectId}
+                      checked={selectedFacets
+                        .map((facet) => facet.value)
+                        .includes(key)}
+                      onChange={() =>
+                        setSelectedFacets(
+                          selectedFacets
+                            .map((facet) => facet.value)
+                            .includes(key)
+                            ? selectedFacets.filter(
+                                (facet) => facet.value !== key,
+                              )
+                            : [
+                                ...selectedFacets,
+                                { value: key, numCases: count },
+                              ],
+                        )
+                      }
                     />
                   </td>
                   <td>

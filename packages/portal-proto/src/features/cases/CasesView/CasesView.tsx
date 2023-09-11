@@ -16,7 +16,7 @@ import { SummaryModalContext } from "src/utils/contexts";
 import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import Link from "next/link";
-import { CasesCohortButton } from "./CasesCohortButton";
+import { CasesCohortButtonFromValues } from "./CasesCohortButton";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { BiAddToQueue } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
@@ -494,7 +494,7 @@ export const ContextualCasesView: React.FC = () => {
         handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
-            <CasesCohortButton />
+            <CasesCohortButtonFromValues />
 
             <DropdownWithIcon
               dropdownElements={[
