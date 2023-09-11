@@ -24,6 +24,7 @@ def perform_filter_card_action(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         APP.cohort_builder_page.perform_action_within_filter_card(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(0.1)
 
 @step("Enter text <text_to_send> in the search bar on the Cohort Builder page")

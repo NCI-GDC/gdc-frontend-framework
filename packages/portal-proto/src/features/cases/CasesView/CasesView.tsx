@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useCoreSelector,
   selectCart,
   useCoreDispatch,
-  selectSelectedCases,
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
@@ -11,46 +10,25 @@ import {
   GqlOperation,
   useCurrentCohortCounts,
 } from "@gff/core";
-import { Button, createStyles, Divider, Loader, Menu } from "@mantine/core";
+import { Button, Divider, Loader } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
-import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-import Link from "next/link";
+import { ageDisplay, extractToArray } from "src/utils";
 import { CasesCohortButton } from "./CasesCohortButton";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
-import { BiAddToQueue } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
-import { addToCart, removeFromCart } from "../../cart/updateCart";
-import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ImageSlideCount } from "@/components/ImageSlideCount";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
-import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import {
-  HandleChangeInput,
-  VerticalTable,
-} from "@/features/shared/VerticalTable";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    "&[data-hovered]": {
-      // TODO: remove with theme color other than blue
-      backgroundColor: theme.colors.blue[3],
-      color: theme.white,
-    },
-  },
-  root: {
-    "&[data-disabled]": {
-      border: "1px solid gray",
-      margin: "2px 0",
-      cursor: "not-allowed",
-    },
-  },
-}));
+import {
+  ColumnOrderState,
+  SortingState,
+  VisibilityState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { statusBooleansToDataStatus } from "@/features/shared/utils";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -71,17 +49,16 @@ const getSlideCountFromCaseSummary = (
 export const ContextualCasesView: React.FC = () => {
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
-  const { classes } = useStyles();
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
-  const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
+  const cohortCounts = useCurrentCohortCounts();
+
   /* download active */
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
@@ -89,10 +66,6 @@ export const ContextualCasesView: React.FC = () => {
   const [cohortTableDownloadActive, setCohortTableDownloadActive] =
     useState(false);
   /* download active end */
-
-  const cohortCounts = useCurrentCohortCounts();
-  const caseCounts =
-    pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -130,170 +103,78 @@ export const ContextualCasesView: React.FC = () => {
   });
 
   useEffect(() => {
+    setRowSelection({});
     setOffset(0);
   }, [cohortFilters]);
 
-  const cases = useMemo(
-    () =>
-      data?.map((datum) => {
-        const isAllFilesInCart = datum?.files
-          ? allFilesInCart(currentCart, datum.files)
-          : false;
-        const numberOfFilesToRemove = datum.files
-          ?.map((file) =>
-            currentCart.filter(
-              (data_file) => data_file.file_id === file.file_id,
-            ),
-          )
-          .filter((item) => item.length > 0).length;
-        const slideCount = getSlideCountFromCaseSummary(
-          datum.experimental_strategies,
-        );
-        const isPlural = datum.filesCount > 1;
-        return {
-          selected: datum.case_uuid,
-          slides: (
-            <Link
-              href={{
-                pathname: "/image-viewer/MultipleImageViewerPage",
-                query: { caseId: datum.case_uuid },
-              }}
-              passHref
-              legacyBehavior
-            >
-              <ImageSlideCount slideCount={slideCount} />
-            </Link>
-          ),
-          cart: (
-            <Menu position="bottom-start" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  leftIcon={
-                    <CartIcon
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                    />
-                  }
-                  rightIcon={
-                    <Dropdown
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                      size={18}
-                    />
-                  }
-                  variant="outline"
-                  compact
-                  classNames={{
-                    root: "w-12 pr-0",
-                    rightIcon: "border-l ml-0",
-                    leftIcon: "mr-2",
-                  }}
-                  size="xs"
-                  className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                />
-              </Menu.Target>
-              <Menu.Dropdown>
-                {numberOfFilesToRemove < datum.filesCount && (
-                  <Menu.Item
-                    icon={<BiAddToQueue />}
-                    onClick={() => {
-                      addToCart(datum.files, currentCart, dispatch);
-                    }}
-                  >
-                    Add {datum.filesCount} Case {isPlural ? "files" : "file"} to
-                    the Cart
-                  </Menu.Item>
-                )}
+  const casesData: casesTableDataType[] =
+    data?.map((datum) => ({
+      case_uuid: datum.case_uuid,
+      case_id: datum.case_id,
+      project: datum.project_id,
+      program: datum.program,
+      primary_site: datum.primary_site,
+      disease_type: datum.disease_type ?? "--",
+      primary_diagnosis: datum?.primary_diagnosis ?? "--",
+      age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
+      vital_status: datum?.vital_status ?? "--",
+      days_to_death: ageDisplay(datum?.days_to_death),
+      gender: datum?.gender ?? "--",
+      race: datum?.race ?? "--",
+      ethnicity: datum?.ethnicity ?? "--",
+      slide_count: getSlideCountFromCaseSummary(datum.experimental_strategies),
+      files_count: datum?.filesCount,
+      files: datum.files,
+      experimental_strategies: datum?.experimental_strategies
+        ? [
+            ...((extractToArray(
+              datum?.experimental_strategies,
+              "experimental_strategy",
+            ) as string[]) ?? []),
+          ].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        : "--",
 
-                {numberOfFilesToRemove > 0 && (
-                  <Menu.Item
-                    icon={<BsTrash />}
-                    onClick={() => {
-                      removeFromCart(datum.files, currentCart, dispatch);
-                    }}
-                  >
-                    Remove{" "}
-                    {numberOfFilesToRemove === 0
-                      ? datum.filesCount
-                      : numberOfFilesToRemove}{" "}
-                    Case {isPlural ? "files" : "file"} from the Cart
-                  </Menu.Item>
-                )}
-              </Menu.Dropdown>
-            </Menu>
-          ),
-          case_id: (
-            <OverflowTooltippedLabel label={datum.case_id}>
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "case",
-                    entity_id: datum.case_uuid,
-                  })
-                }
-                label={datum.case_id}
-              />
-            </OverflowTooltippedLabel>
-          ),
-          case_uuid: datum.case_uuid,
-          project_id: (
-            <OverflowTooltippedLabel label={datum.project_id}>
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "project",
-                    entity_id: datum.project_id,
-                  })
-                }
-                label={datum.project_id}
-              />
-            </OverflowTooltippedLabel>
-          ),
-          program: datum.program,
-          primary_site: datum.primary_site,
-          disease_type: datum.disease_type ?? "--",
-          primary_diagnosis: datum?.primary_diagnosis ?? "--",
-          age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
-          vital_status: datum?.vital_status ?? "--",
-          days_to_death: ageDisplay(datum?.days_to_death),
-          gender: datum?.gender ?? "--",
-          race: datum?.race ?? "--",
-          ethnicity: datum?.ethnicity ?? "--",
-          files: datum?.filesCount?.toLocaleString(),
-          experimental_strategies: extractToArray(
-            datum?.experimental_strategies,
-            "experimental_strategy",
-          ),
-          annotations: getCasesTableAnnotationsLinkParams(
-            datum.annotations,
-            datum.case_uuid,
-          ) ? (
-            <Link
-              href={getCasesTableAnnotationsLinkParams(
-                datum.annotations,
-                datum.case_uuid,
-              )}
-              passHref
-            >
-              <a className="text-utility-link underline" target={"_blank"}>
-                {datum.annotations.length}
-              </a>
-            </Link>
-          ) : (
-            0
-          ),
-        };
-      }),
-    [data, currentCart, classes, dispatch, setEntityMetadata],
+      annotations: datum.annotations,
+    })) ?? [];
+
+  const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
+
+  const casesTableDefaultColumns = useGenerateCasesTableColumns({
+    casesDataColumnHelper,
+    currentCart,
+    setEntityMetadata,
+  });
+
+  const [rowSelection, setRowSelection] = useState({});
+  const pickedCases =
+    Object.entries(rowSelection).length > 0
+      ? Object.entries(rowSelection)
+          .filter(([, isSelected]) => isSelected)
+          .map(([index]) => (casesData[index] as casesTableDataType)?.case_uuid)
+      : [];
+
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    casesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    case_uuid: false,
+    program: false,
+    disease_type: false,
+    primary_diagnosis: false,
+    vital_status: false,
+    days_to_death: false,
+    race: false,
+    ethnicity: false,
+    age_at_diagnosis: false,
+    experimental_strategy: false,
+  });
 
-  const sortByActions = (sortByObj) => {
+  const sortByActions = (sortByObj: SortingState) => {
     const COLUMN_ID_TO_FIELD = {
       case_id: "submitter_id",
       case_uuid: "case_id",
-      project_id: "project.project_id",
+      project: "project.project_id",
       program: "project.program.name",
       primary_site: "primary_site",
       disease_type: "disease_type",
@@ -304,7 +185,7 @@ export const ContextualCasesView: React.FC = () => {
       ethnicity: "demographic.ethnicity",
       files: "summary.file_count",
     };
-    const tempSortBy = sortByObj.map((sortObj) => {
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
       return {
         field: COLUMN_ID_TO_FIELD[sortObj.id],
         direction: sortObj.desc ? "desc" : "asc",
@@ -312,6 +193,11 @@ export const ContextualCasesView: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
+
+  useEffect(() => {
+    setRowSelection({});
+    sortByActions(sorting);
+  }, [sorting]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -329,11 +215,11 @@ export const ContextualCasesView: React.FC = () => {
         setOffset(0);
         setSearchTerm(obj.newSearch);
         break;
-      case "newHeadings":
-        setColumns(obj.newHeadings);
-        break;
     }
   };
+
+  const caseCounts =
+    pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
 
   const downloadFilter: GqlOperation =
     pickedCases.length > 0
@@ -351,12 +237,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "cases",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
@@ -392,12 +272,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.${
@@ -415,12 +289,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -440,12 +308,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.${
@@ -463,12 +325,6 @@ export const ContextualCasesView: React.FC = () => {
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -488,13 +344,13 @@ export const ContextualCasesView: React.FC = () => {
       <Divider color="#C5C5C5" className="mb-3 mr-4" />
 
       <VerticalTable
-        tableData={cases || []}
-        columns={columns}
+        data={casesData}
+        columns={casesTableDefaultColumns}
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
-            <CasesCohortButton />
+            <CasesCohortButton pickedCases={pickedCases} />
 
             <DropdownWithIcon
               dropdownElements={[
@@ -551,21 +407,21 @@ export const ContextualCasesView: React.FC = () => {
         tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
           pagination?.total > 1 ? "Cases" : "Case"
         }`}
+        columnSorting="manual"
+        enableRowSelection={true}
         showControls={true}
-        columnSorting={"manual"}
-        selectableRow={false}
+        setRowSelection={setRowSelection}
+        rowSelection={rowSelection}
+        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         search={{
           enabled: true,
         }}
-        status={
-          isFetching
-            ? "pending"
-            : isSuccess
-            ? "fulfilled"
-            : isError
-            ? "rejected"
-            : "uninitialized"
-        }
+        sorting={sorting}
+        setSorting={setSorting}
+        setColumnVisibility={setColumnVisibility}
+        columnVisibility={columnVisibility}
+        columnOrder={columnOrder}
+        setColumnOrder={setColumnOrder}
       />
     </div>
   );

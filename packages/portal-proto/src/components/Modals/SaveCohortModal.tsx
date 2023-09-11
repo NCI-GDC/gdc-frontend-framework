@@ -10,6 +10,7 @@ import {
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
+  fetchCohortCaseCounts,
   FilterSet,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
@@ -61,6 +62,7 @@ const SaveCohortModal = ({
         );
         coreDispatch(setCurrentCohortId(payload.id));
         coreDispatch(updateCohortName(newName));
+        coreDispatch(fetchCohortCaseCounts(payload.id));
         onClose();
       })
       .catch((e: FetchBaseQueryError) => {

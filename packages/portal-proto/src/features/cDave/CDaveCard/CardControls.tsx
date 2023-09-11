@@ -7,7 +7,7 @@ import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningM
 import CategoricalBinningModal from "../CategoricalBinningModal";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 interface CardControlsProps {
   readonly continuous: boolean;

@@ -1,5 +1,6 @@
-import { Survival, ToggledCheck } from "@/components/expandableTables/shared";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import ToggledCheck from "../../SharedComponent/ToggledCheck";
+import { Survival } from "../types";
 
 const SMTableSurvival = ({
   affectedCasesInCohort,
@@ -31,8 +32,8 @@ const SMTableSurvival = ({
   const tooltip = disabled
     ? `Not enough data`
     : isActive
-    ? `Click to remove ${survival.name} from plot`
-    : `Click to plot ${survival.name}`;
+    ? `Remove ${survival.name} from plot`
+    : `Plot ${survival.name}`;
 
   return (
     <ToggledCheck
