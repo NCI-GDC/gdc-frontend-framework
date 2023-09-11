@@ -11,7 +11,7 @@ import {
 import dynamic from "next/dynamic";
 import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
 
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
+const MFSurvivalPlot = dynamic(() => import("../charts/MFSurvivalPlot"), {
   ssr: false,
 });
 
@@ -70,7 +70,7 @@ export const GenesPanel = ({
               (!survivalPlotReady && !topGeneSSMSSuccess)
             }
           />
-          <SurvivalPlot
+          <MFSurvivalPlot
             plotType={SurvivalPlotTypes.gene}
             data={
               survivalPlotReady && survivalPlotData.survivalData.length > 1

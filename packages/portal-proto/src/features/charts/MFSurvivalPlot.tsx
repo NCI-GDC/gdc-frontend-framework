@@ -20,12 +20,6 @@ import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
 import { DownloadButton } from "@/features/shared/tailwindComponents";
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
-interface SurvivalPlotLegend {
-  key: string;
-  style?: Record<string, string | number>;
-  value: string | JSX.Element;
-}
-
 const textColors = [
   "#1F77B4",
   "#BD5800",
@@ -48,6 +42,12 @@ const SVG_MARGINS = {
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
+
+interface SurvivalPlotLegend {
+  key: string;
+  style?: Record<string, string | number>;
+  value: string | JSX.Element;
+}
 
 type survival = (
   data: any,
@@ -342,8 +342,13 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
   // hook to call renderSurvivalPlot
+  const shouldPlot =
+    hasEnoughData &&
+    plotData
+      .map(({ donors }) => donors)
+      .every(({ length }) => length > MINIMUM_CASES);
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    shouldPlot ? plotData : [],
     xDomain,
     setXDomain,
     height,
@@ -360,22 +365,26 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
 
   let legend: SurvivalPlotLegend[];
-  switch (plotType) {
-    case SurvivalPlotTypes.overall:
-      legend = buildOnePlotLegend(plotData, "Explorer");
-      break;
-    case SurvivalPlotTypes.gene:
-      legend = buildTwoPlotLegend(plotData, names[0], plotType);
-      break;
-    case SurvivalPlotTypes.mutation:
-      legend = buildTwoPlotLegend(plotData, names[0], plotType);
-      break;
-    case SurvivalPlotTypes.categorical:
-      legend = buildManyLegend(plotData, names, field, plotType);
-      break;
-    case SurvivalPlotTypes.continuous:
-      legend = buildManyLegend(plotData, names, field, plotType);
-      break;
+  if (shouldPlot) {
+    switch (plotType) {
+      case SurvivalPlotTypes.overall:
+        legend = buildOnePlotLegend(plotData, "Explorer");
+        break;
+      case SurvivalPlotTypes.gene:
+        legend = buildTwoPlotLegend(plotData, names[0], plotType);
+        break;
+      case SurvivalPlotTypes.mutation:
+        legend = buildTwoPlotLegend(plotData, names[0], plotType);
+        break;
+      case SurvivalPlotTypes.categorical:
+        legend = buildManyLegend(plotData, names, field, plotType);
+        break;
+      case SurvivalPlotTypes.continuous:
+        legend = buildManyLegend(plotData, names, field, plotType);
+        break;
+    }
+  } else {
+    legend = [];
   }
 
   const handleDownloadJSON = async () => {
@@ -445,9 +454,16 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex w-100 items-center justify-center flex-wrap">
-        <div className="flex ml-auto text-montserrat text-lg">{title}</div>
+    <div>
+      <div className="flex w-100 flex-wrap">
+        <div className="flex flex-col w-inherit items-center justify-center ml-auto">
+          <div className="flex text-lg">{title}</div>
+          {!shouldPlot && (
+            <div className="flex font-bold text-sm py-2 text-primary">
+              Not enough survival data for {names[0]}
+            </div>
+          )}
+        </div>
         <div className="flex items-center ml-auto gap-1">
           <Menu position="bottom-start" offset={1} transitionDuration={0}>
             <Menu.Target>
@@ -514,26 +530,30 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
               );
             })}
         </div>
-        <div>
-          <Tooltip
-            label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
+        {shouldPlot ? (
+          <>
+            <div>
+              <Tooltip
+                label={
+                  pValue === 0 && (
+                    <div>
+                      Value shows 0.00e+0 because the
+                      <br />
+                      P-Value is extremely low and goes beyond
+                      <br />
+                      the precision inherent in the code
+                    </div>
+                  )
+                }
+              >
+                <div className="text-xs font-content">
+                  {isNumber(pValue) &&
+                    `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
                 </div>
-              )
-            }
-          >
-            <div className="text-xs font-content">
-              {isNumber(pValue) &&
-                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+              </Tooltip>
             </div>
-          </Tooltip>
-        </div>
+          </>
+        ) : undefined}
         <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
@@ -554,7 +574,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
         <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+          <h2 className="text-center text-base text-primary-content-dark">
             {title}
           </h2>
           <div className="flex flex-col items-center ">

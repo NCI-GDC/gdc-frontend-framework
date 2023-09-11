@@ -10,7 +10,7 @@ import {
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
+const MFSurvivalPlot = dynamic(() => import("../charts/MFSurvivalPlot"), {
   ssr: false,
 });
 
@@ -77,7 +77,7 @@ export const SSMSPanel = ({
           }
           zIndex={0}
         />
-        <SurvivalPlot
+        <MFSurvivalPlot
           plotType={SurvivalPlotTypes.mutation}
           data={
             survivalPlotReady &&
