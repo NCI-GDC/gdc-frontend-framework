@@ -14,8 +14,8 @@ import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
-import { isEqual } from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 function VerticalTable<TData>({
   columns,
@@ -54,11 +54,11 @@ function VerticalTable<TData>({
 
   // TODO: status fufilled is to be sent for all the tables (even without api calls)
   // also need in pagination (do sth about it)
-  useEffect(() => {
-    if (status === "fulfilled" && !isEqual(data, tableData)) {
+  useDeepCompareEffect(() => {
+    if (status === "fulfilled") {
       setTableData(data);
     }
-  }, [tableData, data, status]);
+  }, [data, status]);
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
@@ -267,7 +267,7 @@ function VerticalTable<TData>({
                         }
                         colSpan={header.colSpan}
                       >
-                        <button className="flex items-center">
+                        <button className="flex items-center font-heading">
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext(),

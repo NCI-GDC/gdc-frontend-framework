@@ -18,7 +18,7 @@ interface MatchTablesProps {
   readonly fieldDisplay: Record<string, string>;
 }
 
-const MatchTables: React.FC<MatchTablesProps> = ({
+const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
   matched,
   unmatched,
   numberInput,
@@ -94,4 +94,4 @@ const MatchTables: React.FC<MatchTablesProps> = ({
   );
 };
 
-export default MatchTables;
+export default MatchTablesWrapper;
