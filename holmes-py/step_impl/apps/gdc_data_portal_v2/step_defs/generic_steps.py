@@ -391,11 +391,19 @@ def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
         APP.shared.make_selection_within_filter_group(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
 
 @step("Perform the following actions on a filter card <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
         APP.shared.perform_action_within_filter_card(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
 
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):
