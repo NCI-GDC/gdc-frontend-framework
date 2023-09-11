@@ -247,7 +247,7 @@ function VerticalTable<TData>({
                     return (
                       <th
                         key={header.id}
-                        className={`${commonHeaderClass} ${
+                        className={`${commonHeaderClass} whitespace-nowrap ${
                           isColumnHighlighted
                             ? "hover:bg-nci-purple-lighter"
                             : "hover:bg-primary-lightest"
