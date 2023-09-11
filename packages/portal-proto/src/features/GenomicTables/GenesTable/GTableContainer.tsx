@@ -38,7 +38,7 @@ import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import { CountsIcon } from "@/features/shared/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
@@ -89,7 +89,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGenesTable({
     pageSize: pageSize,
     offset: (page - 1) * pageSize,
-    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
   });
@@ -291,12 +291,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     await download({
       endpoint: "genes",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: tableFilters,
         attachment: true,

@@ -9,7 +9,7 @@ import {
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
-import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
+import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 const MFSurvivalPlot = dynamic(() => import("../charts/MFSurvivalPlot"), {
   ssr: false,
 });
@@ -91,7 +91,6 @@ export const SSMSPanel = ({
               ? [comparativeSurvival.name]
               : []
           }
-          field="gene.ssm.ssm_id"
         />
       </div>
       <div ref={targetRef}>

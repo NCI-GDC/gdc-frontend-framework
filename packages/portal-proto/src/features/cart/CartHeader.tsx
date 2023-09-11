@@ -53,12 +53,6 @@ const downloadCart = (
     download({
       endpoint: "data",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       dispatch,
       params: {
         ids: filesByCanAccess.true.map((file) => file.file_id),
@@ -78,12 +72,6 @@ const downloadManifest = (
   download({
     endpoint: "files",
     method: "POST",
-    options: {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
     dispatch,
     params: {
       filters: {
@@ -218,12 +206,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               filters={{
                 content: [
                   {
@@ -254,12 +236,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               filters={{
                 content: [
                   {
@@ -290,12 +266,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               filters={{
                 content: [
                   {
@@ -325,12 +295,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               filters={{
                 content: [
                   {
@@ -360,12 +324,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tsv`}
               format="tsv"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               fields={[
                 "file_id",
                 "file_name",
@@ -406,12 +364,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               filename={`metadata.cart.${new Date()
                 .toISOString()
                 .slice(0, 10)}.json`}
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               method="POST"
               filters={{
                 content: [

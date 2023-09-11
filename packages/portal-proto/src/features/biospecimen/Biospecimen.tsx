@@ -10,8 +10,8 @@ import {
   selectCart,
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo, search } from "./utils";
-import { trimEnd, find, flatten } from "lodash";
+import { formatEntityInfo, searchForStringInNode } from "./utils";
+import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
 import { HeaderTitle } from "../shared/tailwindComponents";
@@ -65,9 +65,10 @@ export const Biospecimen = ({
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
-      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) =>
-        search(searchText, e),
-      );
+      const escapedSearchText = escapeRegExp(searchText);
+      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
+        return searchForStringInNode(escapedSearchText, e);
+      });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
 
@@ -122,12 +123,6 @@ export const Biospecimen = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
@@ -150,12 +145,6 @@ export const Biospecimen = ({
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -286,7 +275,7 @@ export const Biospecimen = ({
                     setTotalNodeCount={setTotalNodeCount}
                     setExpandedCount={setExpandedCount}
                     query={searchText.toLocaleLowerCase().trim()}
-                    search={search}
+                    search={searchForStringInNode}
                   />
                 )}
             </div>

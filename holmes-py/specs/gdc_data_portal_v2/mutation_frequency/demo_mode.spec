@@ -17,7 +17,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Is text "Mutation Frequency Demo" present on the page
 * Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page
 * Is text "- IDH1 Not Mutated Cases" present on the page
-* Is text "- IDH1 Mutated Cases" present on the page
+* Is text "- IDH1 Mutated (SSM/CNV) Cases" present on the page
 * Verify the table body text is correct
   |expected_text                        |row  |column |
   |-------------------------------------|-----|-------|
@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Validate Mutation Tab Demo
 * Switch to "Mutations" tab in the Mutation Frequency app
-* Wait for loading spinner
+* Wait for table loading spinner
 * Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page
 * Is text "- IDH1 R132H Missense Not Mutated Cases" present on the page
 * Is text "- IDH1 R132H Missense Mutated Cases" present on the page

@@ -25,7 +25,6 @@ import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal
 import { filtersToName } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
-
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
@@ -40,7 +39,7 @@ import {
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
+import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import SMTableSubcomponent from "./SMTableSubcomponent";
@@ -129,7 +128,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
     offset: pageSize * (page - 1),
-    searchTerm: searchTerm.length > 0 ? searchTerm.trim() : undefined,
+    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
@@ -288,12 +287,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     await download({
       endpoint: "ssms",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters:
           buildCohortGqlOperator(
@@ -360,7 +353,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
         <>
           {searchTermsForGene?.geneSymbol && (
-            <div id="announce" aria-live="polite">
+            <div id="announce" aria-live="polite" className="sr-only">
               <p>
                 You are now viewing the Mutations table filtered by{" "}
                 {searchTermsForGene.geneSymbol}

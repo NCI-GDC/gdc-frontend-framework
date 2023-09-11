@@ -13,8 +13,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 }: ProjectTableProps) => {
   const tableData = projectData.map((project) => ({
     key: project.key,
-    case_count: project.case_count,
-    doc_count: project.doc_count,
+    case_count: project.case_count?.toLocaleString(),
+    doc_count: project.doc_count?.toLocaleString(),
     file_size: fileSize(project.file_size),
   }));
 

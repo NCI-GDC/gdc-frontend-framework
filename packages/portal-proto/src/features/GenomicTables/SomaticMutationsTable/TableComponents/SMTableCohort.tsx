@@ -50,8 +50,8 @@ const SMTableCohort = ({
       isDemoMode
         ? "Feature not available in demo mode"
         : isToggledSsm
-        ? `Click to remove ${DNAChange} from cohort filters`
-        : `Click to add ${DNAChange} to cohort filters`
+        ? `Remove ${DNAChange} from cohort filters`
+        : `Add ${DNAChange} to cohort filters`
     }
     disabled={isDemoMode}
   />

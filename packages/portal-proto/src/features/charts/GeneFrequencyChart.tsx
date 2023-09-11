@@ -90,10 +90,20 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
     cohortFilters: cohortFilters,
   });
 
+  const jsonData = data?.geneCounts?.map((gene) => ({
+    label: gene.symbol,
+    value: (gene.numCases / data.casesTotal) * 100,
+  }));
+
   return (
     <div className="relative pr-2 border-r-2">
       {title ? (
-        <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
+        <ChartTitleBar
+          title={title}
+          divId={CHART_NAME}
+          filename={CHART_NAME}
+          jsonData={jsonData}
+        />
       ) : null}
       <div className="w-100 h-100 relative">
         <LoadingOverlay
