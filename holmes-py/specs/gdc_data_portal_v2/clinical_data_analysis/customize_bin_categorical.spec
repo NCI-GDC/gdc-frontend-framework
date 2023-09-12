@@ -17,7 +17,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * On the "Race" card, select "Customize Bins" button on the Clinical Data Analysis page
 * Select "Edit Bins"
 * Is text "Create Custom Bins: Race" present on the page
-* Validate values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |white                                   |
@@ -37,13 +37,13 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |unknown                                 |
    |missing                                 |
 * Select "Hide Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Validate hidden values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "hidden values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |black or african american               |
    |unknown                                 |
    |missing                                 |
-* Validate values are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |black or african american               |
@@ -55,7 +55,12 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |unknown                                 |
    |missing                                 |
 * Select "Show Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Validate values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "hidden values" are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
+   |value                                   |
+   |----------------------------------------|
+   |unknown                                 |
+   |missing                                 |
+* Validate "values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |white                                   |
@@ -67,16 +72,16 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |missing                                 |
    |american indian or alaska native        |
    |native hawaiian or other pacific islander|
-* Validate hidden values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "hidden values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |black or african american               |
-* Validate values are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |black or african american               |
 * Select "Reset Group" in a categorical custom bin modal on the Clinical Data Analysis page
-* Validate values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |white                                   |
@@ -104,7 +109,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Custom Bin Group 1                      |
    |missing                                 |
 * Select "Group Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Validate values are "present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |Custom Bin Group 1                      |
@@ -115,7 +120,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |----------------------------------------|
    |Edited Group Name                       |
 * Select "Ungroup Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Validate values are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
+* Validate "values" are "not present" in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
    |Custom Bin Group 1                      |
