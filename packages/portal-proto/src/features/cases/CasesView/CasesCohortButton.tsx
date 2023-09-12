@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
   useCoreSelector,
   selectSelectedCases,
@@ -100,7 +101,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         ${numCases > 1 ? " Cases" : " Case"}`}
         menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
         customPosition="bottom-start"
-        zIndex={10}
+        zIndex={100}
       />
 
       {openSelectCohorts && (
@@ -131,7 +132,10 @@ export const CasesCohortButtonFromValues: React.FC = () => {
     selectSelectedCases(state),
   );
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
-  const onCreateSet = () => createSet({ values: pickedCases });
+  const onCreateSet = useCallback(
+    () => createSet({ values: pickedCases }),
+    [createSet, pickedCases],
+  );
 
   return (
     <CasesCohortButton
@@ -152,12 +156,14 @@ export const CasesCohortButtonFromFilters: React.FC<
   CasesCohortButtonFromFilters
 > = ({ filters, numCases }: CasesCohortButtonFromFilters) => {
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
-  const onCreateSet = () => createSet({ filters });
+  const onCreateSet = useDeepCompareCallback(
+    () => createSet({ filters }),
+    [createSet, filters],
+  );
   const { data, isSuccess } = useGetCasesQuery(
     { filters, fields: ["case_id"], size: 50000 },
     { skip: filters === undefined },
   );
-  console.log("cases", data);
 
   return (
     <CasesCohortButton

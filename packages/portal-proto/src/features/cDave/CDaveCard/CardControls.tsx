@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { flatten } from "lodash";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
@@ -18,11 +19,13 @@ import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningM
 import CategoricalBinningModal from "../CategoricalBinningModal";
 import {
   CategoricalBins,
+  ContinuousCustomBinnedData,
   CustomInterval,
   NamedFromTo,
   SelectedFacet,
 } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
+import { isInterval } from "../utils";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -84,11 +87,49 @@ const CardControls: React.FC<CardControlsProps> = ({
   const filters: FilterSet = {
     mode: "and",
     root: {
-      [field]: {
-        operator: "includes",
-        operands: selectedFacets.map((facet) => facet.value),
-        field,
-      },
+      [field]: continuous
+        ? {
+            operator: "or",
+            operands: selectedFacets.map((facet) => {
+              const customBin =
+                customBinnedData &&
+                !isInterval(customBinnedData as ContinuousCustomBinnedData)
+                  ? (customBinnedData as NamedFromTo[]).find(
+                      (bin) => bin.name === facet.value,
+                    )
+                  : undefined;
+              const [from, to] = customBin
+                ? [customBin.from, customBin.to]
+                : facet.value.split(" to <");
+              return {
+                operator: "and",
+                operands: [
+                  {
+                    field,
+                    operator: ">=",
+                    operand: from,
+                  },
+                  {
+                    field,
+                    operator: "<",
+                    operand: to,
+                  },
+                ],
+                field,
+              };
+            }),
+          }
+        : {
+            operator: "includes",
+            operands: customBinnedData
+              ? flatten(
+                  selectedFacets.map(
+                    (facet) => customBinnedData[facet.value as string],
+                  ),
+                )
+              : selectedFacets.map((facet) => facet.value),
+            field,
+          },
     },
   };
 

@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { Bucket } from "@gff/core";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
@@ -42,7 +43,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     [initialData],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
       Object.entries(
         customBinnedData !== null
@@ -61,6 +62,8 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     if (customBinnedData === null) {
       setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
     }
+
+    setSelectedFacets([]);
   }, [customBinnedData, resultData]);
 
   return (

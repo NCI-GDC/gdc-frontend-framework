@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { mapKeys } from "lodash";
 import {
   useGetContinuousDataStatsQuery,
@@ -105,7 +106,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     [isSuccess, data, customBinnedData],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
       Object.entries(resultData)
         .filter(
@@ -120,6 +121,8 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     if (customBinnedData === null) {
       setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
     }
+
+    setSelectedFacets([]);
   }, [resultData, customBinnedData]);
 
   return (
