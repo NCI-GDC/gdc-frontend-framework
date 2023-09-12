@@ -4,13 +4,23 @@ import {
   ColumnOrderState,
   ExpandedState,
   Row,
+  RowData,
   RowSelectionState,
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
 import { ReactNode, Dispatch, SetStateAction } from "react";
+import "@tanstack/react-table";
 
-interface PaginationOptions {
+declare module "@tanstack/table-core" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    highlighted?: boolean;
+    sortingFn?: (rowA: TData, rowB: TData) => 1 | -1 | 0;
+  }
+}
+
+export interface PaginationOptions {
   /**
    * page on
    */
@@ -180,6 +190,10 @@ export interface TableProps<TData> {
    * Optional handle for onExpandedChange
    */
   setExpanded?: (row: Row<TData>, columnId: string) => void;
+  /**
+   * optional function is used to derive a unique ID for any given row
+   */
+  getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
 
 export interface HandleChangeInput {

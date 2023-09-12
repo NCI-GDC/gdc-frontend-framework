@@ -23,7 +23,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import download from "src/utils/download";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -34,8 +34,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
@@ -257,10 +256,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     handleMutationCountClick,
   });
 
+  const getRowId = (originalRow: Gene) => {
+    return originalRow.gene_id;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedGenes = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => (formattedTableData[index] as Gene).gene_id);
+  const selectedGenes = Object.entries(rowSelection)?.map(
+    ([gene_id]) => gene_id,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     genesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -311,15 +313,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [rowId, setRowId] = useState(-1);
+  const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<Gene>) => {
-    if (Object.keys(expanded).length > 0 && row.index === rowId) {
+    if (Object.keys(expanded).length > 0 && row.original.gene_id === rowId) {
       setExpanded({});
     } else if (
       row.original["#_ssm_affected_cases_across_the_gdc"].numerator !== 0
     ) {
-      setExpanded({ [row.index]: true });
-      setRowId(row.index);
+      setExpanded({ [row.original.gene_id]: true });
+      setRowId(row.original.gene_id);
     }
   };
 
@@ -484,6 +486,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setColumnOrder={setColumnOrder}
         expanded={expanded}
         setExpanded={handleExpand}
+        getRowId={getRowId}
       />
     </>
   );

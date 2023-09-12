@@ -12,11 +12,15 @@ import {
 } from "@gff/core";
 import { Button, Divider, Loader } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
-import { ageDisplay, extractToArray } from "src/utils";
+import {
+  ageDisplay,
+  extractToArray,
+  statusBooleansToDataStatus,
+} from "src/utils";
 import { CasesCohortButton } from "./CasesCohortButton";
 import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
 import {
@@ -27,7 +31,6 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 const getSlideCountFromCaseSummary = (
@@ -145,14 +148,13 @@ export const ContextualCasesView: React.FC = () => {
     setEntityMetadata,
   });
 
+  const getRowId = (originalRow: casesTableDataType) => {
+    return originalRow.case_uuid;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const pickedCases =
-    Object.entries(rowSelection).length > 0
-      ? Object.entries(rowSelection)
-          .filter(([, isSelected]) => isSelected)
-          .map(([index]) => (casesData[index] as casesTableDataType)?.case_uuid)
-      : [];
-
+  const pickedCases = Object.entries(rowSelection)?.map(
+    ([case_uuid]) => case_uuid,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     casesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -422,6 +424,7 @@ export const ContextualCasesView: React.FC = () => {
         columnVisibility={columnVisibility}
         columnOrder={columnOrder}
         setColumnOrder={setColumnOrder}
+        getRowId={getRowId}
       />
     </div>
   );

@@ -12,7 +12,7 @@ import {
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,

@@ -22,9 +22,9 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
-import { CountsIcon, HeaderTitle } from "@/features/shared/tailwindComponents";
+import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
@@ -41,7 +41,6 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 
 export interface SMTableContainerProps {
@@ -251,12 +250,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setShowCreateCohort,
   });
 
+  const getRowId = (originalRow: SomaticMutation) => {
+    return originalRow.mutation_id;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedMutations = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(
-      ([index]) => (formattedTableData[index] as SomaticMutation).mutation_id,
-    );
+  const selectedMutations = Object.entries(rowSelection)?.map(
+    ([mutation_id]) => mutation_id,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     SMTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -336,15 +336,18 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [rowId, setRowId] = useState(-1);
+  const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<SomaticMutation>) => {
-    if (Object.keys(expanded).length > 0 && row.index === rowId) {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.mutation_id === rowId
+    ) {
       setExpanded({});
     } else if (
       row.original["#_affected_cases_across_the_gdc"].numerator !== 0
     ) {
-      setExpanded({ [row.index]: true });
-      setRowId(row.index);
+      setExpanded({ [row.original.mutation_id]: true });
+      setRowId(row.original.mutation_id);
     }
   };
 
@@ -506,6 +509,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             setColumnOrder={setColumnOrder}
             expanded={expanded}
             setExpanded={handleExpand}
+            getRowId={getRowId}
           />
         </>
       )}

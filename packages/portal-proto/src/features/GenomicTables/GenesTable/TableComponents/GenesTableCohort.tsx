@@ -1,7 +1,7 @@
-import { SwitchSpring } from "@/components/expandableTables/shared";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 import { GeneToggledHandler } from "../types";
+import SwitchSpring from "@/components/SwitchSpring/shared/SwitchSpring";
 
 const GenesTableCohort = ({
   toggledGenes,
