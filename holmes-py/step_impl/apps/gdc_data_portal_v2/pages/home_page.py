@@ -6,7 +6,7 @@ from ....base.base_page import GenericLocators
 class HomePageLocators:
     """A class for Home page locators. All home page locators should come here"""
 
-    NAV_NIH_LOGO = "img[data-testid='NIH_LOGO']"
+    NAV_NIH_LOGO = "img[data-testid='button-header-nih-logo']"
     NAV_BAR_ANALYSIS_ICON = "img[alt='Analysis logo']"
     NAV_BAR_PROJECT_ICON = "img[alt='Studies logo']"
     NAV_BAR_COHORT_ICON = "img[alt='Cohort logo']"
