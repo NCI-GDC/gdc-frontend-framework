@@ -4,9 +4,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import { truncateString } from "src/utils";
 import VictoryBarChart from "../../charts/VictoryBarChart";
-import { CategoricalBins } from "../types";
 import { COLOR_MAP } from "../constants";
-import { flattenBinnedData } from "../utils";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { convertDateToString } from "@/utils/date";
 import { DashboardDownloadContext } from "../chartDownloadContext";
@@ -16,7 +14,6 @@ const formatBarChartData = (
   data: Record<string, number>,
   yTotal: number,
   displayPercent: boolean,
-  continuous: boolean,
 ) => {
   const mappedData = Object.entries(data || {}).map(([key, value]) => ({
     x: truncateString(key, 8),
@@ -27,9 +24,7 @@ const formatBarChartData = (
     yTotal,
   }));
 
-  return continuous
-    ? mappedData
-    : mappedData.sort((a, b) => b.yCount - a.yCount);
+  return mappedData;
 };
 
 interface HistogramProps {
@@ -38,8 +33,7 @@ interface HistogramProps {
   readonly isFetching: boolean;
   readonly noData: boolean;
   readonly field: string;
-  readonly continuous: boolean;
-  readonly customBinnedData?: CategoricalBins;
+  readonly hideYTicks?: boolean;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -47,24 +41,18 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   yTotal,
   isFetching,
   field,
-  continuous,
   noData,
-  customBinnedData = null,
+  hideYTicks = false,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>();
-  const barChartData = formatBarChartData(
-    customBinnedData !== null ? flattenBinnedData(customBinnedData) : data,
-    yTotal,
-    displayPercent,
-    continuous,
-  );
+
+  const barChartData = formatBarChartData(data, yTotal, displayPercent);
 
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
-  const hideYTicks = continuous && barChartData.every((d) => d.yCount === 0);
   const fieldName = toDisplayName(field);
   const downloadFileName = `${field
     .split(".")

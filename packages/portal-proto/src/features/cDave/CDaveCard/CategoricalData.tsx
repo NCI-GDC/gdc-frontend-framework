@@ -5,6 +5,7 @@ import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
+import CategoricalBinningModal from "../CategoricalBinningModal";
 import { CategoricalBins, ChartTypes, SelectedFacet } from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { flattenBinnedData } from "../utils";
@@ -26,6 +27,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
 }: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] =
     useState<CategoricalBins>(null);
+  const [binningModalOpen, setBinningModalOpen] = useState(false);
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
@@ -66,17 +68,23 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     setSelectedFacets([]);
   }, [customBinnedData, resultData]);
 
+  const displayedData = Object.fromEntries(
+    Object.entries(
+      customBinnedData !== null
+        ? flattenBinnedData(customBinnedData as CategoricalBins)
+        : resultData,
+    ).sort((a, b) => b[1] - a[1]),
+  );
+
   return (
     <>
       {chartType === "histogram" ? (
         <CDaveHistogram
           field={field}
-          data={resultData}
+          data={displayedData}
           yTotal={yTotal}
           isFetching={false}
-          continuous={false}
           noData={noData}
-          customBinnedData={customBinnedData}
         />
       ) : (
         <ClinicalSurvivalPlot
@@ -90,24 +98,33 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         continuous={false}
         field={field}
         fieldName={fieldName}
-        results={resultData}
+        displayedData={displayedData}
         yTotal={yTotal}
+        setBinningModalOpen={setBinningModalOpen}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
         selectedFacets={selectedFacets}
       />
       <CDaveTable
         fieldName={fieldName}
-        data={resultData}
+        displayedData={displayedData}
         yTotal={yTotal}
-        customBinnedData={customBinnedData}
+        hasCustomBins={customBinnedData !== null}
         survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
         selectedFacets={selectedFacets}
         setSelectedFacets={setSelectedFacets}
-        continuous={false}
       />
+      {binningModalOpen && (
+        <CategoricalBinningModal
+          setModalOpen={setBinningModalOpen}
+          field={fieldName}
+          results={resultData}
+          updateBins={setCustomBinnedData}
+          customBins={customBinnedData}
+        />
+      )}
     </>
   );
 };

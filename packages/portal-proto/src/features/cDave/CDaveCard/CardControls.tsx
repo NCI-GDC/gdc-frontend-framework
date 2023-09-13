@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { flatten } from "lodash";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
 import {
-  Statistics,
   FilterSet,
   buildCohortGqlOperator,
   useCoreSelector,
@@ -15,8 +13,6 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { convertDateToString } from "@/utils/date";
-import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
-import CategoricalBinningModal from "../CategoricalBinningModal";
 import {
   CategoricalBins,
   ContinuousCustomBinnedData,
@@ -25,50 +21,39 @@ import {
   SelectedFacet,
 } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
-import { isInterval } from "../utils";
+import { formatPercent, isInterval } from "../utils";
 
 interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
   readonly fieldName: string;
-  readonly results: Record<string, number>;
+  readonly displayedData: Record<string, number>;
   readonly yTotal: number;
+  readonly setBinningModalOpen: (open: boolean) => void;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
   readonly setCustomBinnedData:
     | ((bins: CategoricalBins) => void)
     | ((bins: NamedFromTo[] | CustomInterval) => void);
   readonly selectedFacets: SelectedFacet[];
-  readonly stats?: Statistics;
 }
 
 const CardControls: React.FC<CardControlsProps> = ({
   continuous,
   field,
   fieldName,
-  results,
+  displayedData,
   yTotal,
+  setBinningModalOpen,
   customBinnedData,
   setCustomBinnedData,
   selectedFacets,
-  stats,
 }: CardControlsProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
   const isDemoMode = useIsDemoApp();
 
   const downloadTSVFile = () => {
     const header = [fieldName, "# Cases"];
-    const body = Object.entries(results).map(([field, count]) =>
-      [
-        field,
-        `${count} (${
-          yTotal === 0
-            ? "0.00%"
-            : (count / yTotal).toLocaleString(undefined, {
-                style: "percent",
-                minimumFractionDigits: 2,
-              })
-        })`,
-      ].join("\t"),
+    const body = Object.entries(displayedData).map(([field, count]) =>
+      [field, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
     );
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
@@ -166,7 +151,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
-              { title: "Edit Bins", onClick: () => setModalOpen(true) },
+              { title: "Edit Bins", onClick: () => setBinningModalOpen(true) },
               {
                 title: "Reset to Default",
                 disabled: customBinnedData === null,
@@ -177,28 +162,6 @@ const CardControls: React.FC<CardControlsProps> = ({
           />
         </div>
       </div>
-      {modalOpen &&
-        (continuous ? (
-          <ContinuousBinningModal
-            setModalOpen={setModalOpen}
-            field={fieldName}
-            stats={stats}
-            updateBins={
-              setCustomBinnedData as (
-                bins: NamedFromTo[] | CustomInterval,
-              ) => void
-            }
-            customBins={customBinnedData as NamedFromTo[] | CustomInterval}
-          />
-        ) : (
-          <CategoricalBinningModal
-            setModalOpen={setModalOpen}
-            field={fieldName}
-            results={results}
-            updateBins={setCustomBinnedData as (bins: CategoricalBins) => void}
-            customBins={customBinnedData as CategoricalBins}
-          />
-        ))}
     </>
   );
 };

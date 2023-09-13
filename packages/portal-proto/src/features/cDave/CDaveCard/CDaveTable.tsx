@@ -1,38 +1,31 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
-import {
-  CategoricalBins,
-  CustomInterval,
-  NamedFromTo,
-  SelectedFacet,
-} from "../types";
-import { flattenBinnedData } from "../utils";
+import { SelectedFacet } from "../types";
+import { formatPercent } from "../utils";
 
 interface CDaveTableProps {
   readonly fieldName: string;
-  readonly data: Record<string, number>;
+  readonly displayedData: Record<string, number>;
   readonly yTotal: number;
-  readonly customBinnedData: CategoricalBins | CustomInterval | NamedFromTo[];
+  readonly hasCustomBins: boolean;
   readonly survival: boolean;
   readonly selectedSurvivalPlots: string[];
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
   readonly selectedFacets: SelectedFacet[];
   readonly setSelectedFacets: (facets: SelectedFacet[]) => void;
-  readonly continuous: boolean;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
   fieldName,
-  data = {},
+  displayedData,
   yTotal,
-  customBinnedData = null,
+  hasCustomBins = false,
   survival,
   selectedSurvivalPlots,
   setSelectedSurvivalPlots,
   selectedFacets,
   setSelectedFacets,
-  continuous,
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   return (
@@ -60,8 +53,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               </th>
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {fieldName}{" "}
-              {customBinnedData !== null && "(User Defined Bins Applied)"}
+              {fieldName} {hasCustomBins && "(User Defined Bins Applied)"}
             </th>
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
               # Cases
@@ -69,123 +61,107 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {Object.entries(
-            customBinnedData !== null && !continuous
-              ? flattenBinnedData(customBinnedData as CategoricalBins)
-              : data,
-          )
-            // Don't sort values if continuous
-            .sort((a, b) => (continuous ? 0 : b[1] - a[1]))
-            .map(([key, count], idx) => {
-              const survivalSelected = selectedSurvivalPlots.includes(key);
-              const enoughCasesForSurvival = count >= SURVIVAL_PLOT_MIN_COUNT;
-              const survivalDisabled =
-                (!survivalSelected && selectedSurvivalPlots.length === 5) ||
-                !enoughCasesForSurvival ||
-                key === "missing";
+          {Object.entries(displayedData).map(([key, count], idx) => {
+            const survivalSelected = selectedSurvivalPlots.includes(key);
+            const enoughCasesForSurvival = count >= SURVIVAL_PLOT_MIN_COUNT;
+            const survivalDisabled =
+              (!survivalSelected && selectedSurvivalPlots.length === 5) ||
+              !enoughCasesForSurvival ||
+              key === "missing";
 
-              return (
-                <tr
-                  className={`text-content text-sm font-content ${
-                    idx % 2
-                      ? "bg-base-lightest text-base-contrast-lightest"
-                      : "bg-base-max text-base-contrast-max"
-                  }`}
-                  key={`${fieldName}-${key}`}
-                >
-                  <td className="pl-2 py-1">
-                    <Checkbox
-                      color="accent"
-                      size="xs"
-                      className="pt-1"
-                      aria-labelledby={rowSelectId}
-                      checked={selectedFacets
-                        .map((facet) => facet.value)
-                        .includes(key)}
-                      onChange={() =>
-                        setSelectedFacets(
-                          selectedFacets
-                            .map((facet) => facet.value)
-                            .includes(key)
-                            ? selectedFacets.filter(
-                                (facet) => facet.value !== key,
-                              )
-                            : [
-                                ...selectedFacets,
-                                { value: key, numCases: count },
-                              ],
-                        )
-                      }
-                    />
-                  </td>
-
-                  {survival && (
-                    <td>
-                      <Tooltip
-                        label={
-                          key === "missing"
-                            ? `Plot cannot be generated for this value`
-                            : !enoughCasesForSurvival
-                            ? "Not enough data"
-                            : survivalSelected
-                            ? `Remove ${key} from plot`
-                            : selectedSurvivalPlots.length === 5
-                            ? `A maximum of 5 plots can be displayed at a time`
-                            : `Plot ${key}`
-                        }
-                        withArrow
-                        withinPortal={true}
-                      >
-                        <div>
-                          <ActionIcon
-                            variant="outline"
-                            className={
-                              survivalDisabled
-                                ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
-                                : survivalSelected
-                                ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
-                                    key,
-                                  )} text-white` // TODO: confirm 508 contrast compliance
-                                : "bg-base-lightest text-base-contrast-lightest"
-                            }
-                            disabled={survivalDisabled}
-                            onClick={() =>
-                              survivalSelected
-                                ? setSelectedSurvivalPlots(
-                                    selectedSurvivalPlots.filter(
-                                      (s) => s !== key,
-                                    ),
-                                  )
-                                : setSelectedSurvivalPlots([
-                                    ...selectedSurvivalPlots,
-                                    key,
-                                  ])
-                            }
-                          >
-                            <SurvivalChartIcon />
-                          </ActionIcon>
-                        </div>
-                      </Tooltip>
-                    </td>
-                  )}
-                  <td>
-                    <div className="pl-2">{key}</div>
-                  </td>
-                  <td className="text-right">
-                    <div className="pr-4 whitespace-nowrap">
-                      {count.toLocaleString()} (
-                      {yTotal === 0
-                        ? "0.00%"
-                        : (count / yTotal).toLocaleString(undefined, {
-                            style: "percent",
-                            minimumFractionDigits: 2,
-                          })}
+            return (
+              <tr
+                className={`text-content text-sm font-content ${
+                  idx % 2
+                    ? "bg-base-lightest text-base-contrast-lightest"
+                    : "bg-base-max text-base-contrast-max"
+                }`}
+                key={`${fieldName}-${key}`}
+              >
+                <td className="pl-2 py-1">
+                  <Checkbox
+                    color="accent"
+                    size="xs"
+                    className="pt-1"
+                    aria-labelledby={rowSelectId}
+                    checked={selectedFacets
+                      .map((facet) => facet.value)
+                      .includes(key)}
+                    onChange={() =>
+                      setSelectedFacets(
+                        selectedFacets.map((facet) => facet.value).includes(key)
+                          ? selectedFacets.filter(
+                              (facet) => facet.value !== key,
+                            )
+                          : [
+                              ...selectedFacets,
+                              { value: key, numCases: count },
+                            ],
                       )
-                    </div>
+                    }
+                  />
+                </td>
+
+                {survival && (
+                  <td>
+                    <Tooltip
+                      label={
+                        key === "missing"
+                          ? `Plot cannot be generated for this value`
+                          : !enoughCasesForSurvival
+                          ? "Not enough data"
+                          : survivalSelected
+                          ? `Remove ${key} from plot`
+                          : selectedSurvivalPlots.length === 5
+                          ? `A maximum of 5 plots can be displayed at a time`
+                          : `Plot ${key}`
+                      }
+                      withArrow
+                      withinPortal={true}
+                    >
+                      <div>
+                        <ActionIcon
+                          variant="outline"
+                          className={
+                            survivalDisabled
+                              ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
+                              : survivalSelected
+                              ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
+                                  key,
+                                )} text-white` // TODO: confirm 508 contrast compliance
+                              : "bg-base-lightest text-base-contrast-lightest"
+                          }
+                          disabled={survivalDisabled}
+                          onClick={() =>
+                            survivalSelected
+                              ? setSelectedSurvivalPlots(
+                                  selectedSurvivalPlots.filter(
+                                    (s) => s !== key,
+                                  ),
+                                )
+                              : setSelectedSurvivalPlots([
+                                  ...selectedSurvivalPlots,
+                                  key,
+                                ])
+                          }
+                        >
+                          <SurvivalChartIcon />
+                        </ActionIcon>
+                      </div>
+                    </Tooltip>
                   </td>
-                </tr>
-              );
-            })}
+                )}
+                <td>
+                  <div className="pl-2">{key}</div>
+                </td>
+                <td className="text-right">
+                  <div className="pr-4 whitespace-nowrap">
+                    {count.toLocaleString()} ({formatPercent(count, yTotal)})
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

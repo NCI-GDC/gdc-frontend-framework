@@ -92,6 +92,14 @@ export const flattenBinnedData = (
   return flattenedValues;
 };
 
+export const formatPercent = (count: number, yTotal: number): string =>
+  yTotal === 0
+    ? "0.00%"
+    : (count / yTotal).toLocaleString(undefined, {
+        style: "percent",
+        minimumFractionDigits: 2,
+      });
+
 export const isInterval = (
   customBinnedData: NamedFromTo[] | CustomInterval,
 ): customBinnedData is CustomInterval => {
