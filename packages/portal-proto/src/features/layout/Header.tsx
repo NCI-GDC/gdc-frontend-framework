@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
               <NIHLogo
                 layout="fill"
                 style={{ objectFit: "contain" }}
-                data-testid="button-header-nih-logo"
+                data-testid="button-header-home"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"
               />
