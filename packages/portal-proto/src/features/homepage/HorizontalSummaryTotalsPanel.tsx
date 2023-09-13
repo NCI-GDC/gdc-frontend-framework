@@ -20,6 +20,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
           Data Portal Summary
         </h2>
         <AnchorLink
+          customDataTestID="text-homepage-release-notes"
           title={isVersionInfoSuccess ? versionInfo.data_release : "..."}
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
         />
@@ -30,6 +31,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
       >
         <SummaryStatsItem
           title="Projects"
+          customDataTestID="text-projects-gdc-count"
           count={countsInfo.projectsCounts}
           icon={
             <ProjectsIcon
@@ -42,6 +44,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
         <SummaryStatsItem
           title="Primary Sites"
+          customDataTestID="text-primary-sites-gdc-count"
           count={countsInfo.primarySiteCounts}
           icon={
             <PrimarySitesIcon
@@ -54,6 +57,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
         <SummaryStatsItem
           title="Cases"
+          customDataTestID="text-cases-gdc-count"
           count={countsInfo.repositoryCaseCounts}
           icon={
             <UsersIcon
@@ -66,6 +70,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
         <SummaryStatsItem
           title="Files"
+          customDataTestID="text-files-gdc-count"
           count={countsInfo.fileCounts}
           icon={
             <FilesIcon
@@ -78,6 +83,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
         <SummaryStatsItem
           title="Genes"
+          customDataTestID="text-genes-gdc-count"
           count={countsInfo.genesCounts}
           icon={
             <GenesIcon
@@ -90,6 +96,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
         <SummaryStatsItem
           title="Mutations"
+          customDataTestID="text-mutations-gdc-count"
           count={countsInfo.mutationCounts}
           icon={
             <MutationsIcon
