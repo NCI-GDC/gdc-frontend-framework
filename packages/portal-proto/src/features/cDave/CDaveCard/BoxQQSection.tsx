@@ -33,11 +33,13 @@ const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest te
 
 interface BoxQQPlotProps {
   readonly field: string;
+  readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
 }
 
 const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
+  displayName,
   data,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
@@ -234,7 +236,6 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             color={color}
             width={boundingRectBox.width}
             height={boundingRectBox.height}
-            chartRef={boxDownloadChartRef}
           />
         </div>
         <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
@@ -245,13 +246,47 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             color={color}
             width={boundingRectQQ.width}
             height={boundingRectQQ.height}
+          />
+        </div>
+        {/* The chart for downloads is slightly different so render another chart offscreen */}
+        <div
+          className="h-64 absolute left-[-1000px]"
+          aria-hidden="true"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
+          inert=""
+        >
+          <BoxPlot
+            data={formattedData}
+            color={color}
+            width={500}
+            height={500}
+            chartRef={boxDownloadChartRef}
+            label={`${displayName} Box Plot`}
+          />
+        </div>
+        <div
+          className="h-64 absolute left-[-1000px]"
+          aria-hidden="true"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
+          inert=""
+        >
+          <QQPlot
+            field={field}
+            data={parsedQQValues}
+            isLoading={isLoading}
+            color={color}
+            width={500}
+            height={500}
             chartRef={qqDownloadChartRef}
+            label={`${displayName} QQ Plot`}
           />
         </div>
       </div>
       <Button
         data-testid="button-stats-tsv-cdave-card"
-        className="bg-base-max text-primary border-primary"
+        className="bg-base-max text-primary border-primary mb-2"
         onClick={downloadTableTSVFile}
       >
         TSV

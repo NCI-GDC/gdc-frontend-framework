@@ -188,12 +188,13 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
             inert=""
           >
             <VictoryBarChart
-              data={barChartData}
+              data={barChartData.map((d) => ({ ...d, x: d.fullName }))}
               color={color}
               yLabel={displayPercent ? "% of Cases" : "# of Cases"}
               chartLabel={fieldName}
               width={900}
-              height={500}
+              height={700}
+              chartPadding={{ left: 80, right: 100, bottom: 200, top: 10 }}
               hideXTicks={hideXTicks}
               hideYTicks={hideYTicks}
               xLabel={

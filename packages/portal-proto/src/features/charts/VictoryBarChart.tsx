@@ -86,6 +86,12 @@ interface VictoryBarChartProps {
   readonly chartLabel?: string;
   readonly width?: number;
   readonly height?: number;
+  readonly chartPadding?: {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  };
   readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
@@ -99,6 +105,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   chartLabel,
   width = 400,
   height = 400,
+  chartPadding = { left: 80, right: 80, bottom: 80, top: 10 },
   hideYTicks = false,
   hideXTicks = false,
   chartRef = undefined,
@@ -108,7 +115,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       width={width}
       height={height}
       domainPadding={60}
-      padding={{ left: 80, right: 80, bottom: 80, top: 10 }}
+      padding={chartPadding}
       containerComponent={
         chartRef ? (
           <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />

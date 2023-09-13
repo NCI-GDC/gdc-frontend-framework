@@ -58,7 +58,14 @@ interface QQPlotProps {
   readonly color: string;
   readonly height: number;
   readonly width: number;
+  readonly chartPadding?: {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  };
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
+  readonly label?: string;
 }
 
 const QQPlot: React.FC<QQPlotProps> = ({
@@ -66,8 +73,10 @@ const QQPlot: React.FC<QQPlotProps> = ({
   isLoading,
   height,
   width,
+  chartPadding = { left: 80, right: 20, bottom: 60, top: 50 },
   color,
   chartRef,
+  label = "QQ Plot",
 }: QQPlotProps) => {
   const emptyChart = data.every((val) => val.value === 0);
 
@@ -99,7 +108,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
     <VictoryChart
       height={height}
       width={width}
-      padding={{ left: 80, right: 20, bottom: 60, top: 50 }}
+      padding={chartPadding}
       minDomain={{ x: xMin, y: yMin < 0 ? yMin : 0 }}
       maxDomain={{ x: xMax, y: yMax }}
       containerComponent={
@@ -110,9 +119,10 @@ const QQPlot: React.FC<QQPlotProps> = ({
     >
       <VictoryLabel
         dy={20}
-        dx={width / 2}
-        text="QQ Plot"
+        dx={(width + chartPadding.left - chartPadding.right) / 2}
+        text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
+        textAnchor="middle"
       />
       <VictoryAxis
         label="Theoretical Normal Quantiles"

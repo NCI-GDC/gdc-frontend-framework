@@ -128,7 +128,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   return (
     <>
       {chartType === "boxqq" ? (
-        <BoxQQSection field={field} data={statsData} />
+        <BoxQQSection field={field} displayName={fieldName} data={statsData} />
       ) : (
         <>
           {chartType === "histogram" ? (

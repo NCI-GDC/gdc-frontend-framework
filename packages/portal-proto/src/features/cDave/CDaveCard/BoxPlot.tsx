@@ -80,7 +80,14 @@ interface BoxPlotProps {
   readonly color: string;
   readonly height: number;
   readonly width: number;
+  readonly chartPadding?: {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  };
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
+  readonly label?: string;
 }
 
 const BoxPlot: React.FC<BoxPlotProps> = ({
@@ -88,7 +95,9 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
   color,
   height,
   width,
+  chartPadding = { left: 60, right: 20, bottom: 40, top: 50 },
   chartRef,
+  label = "Box Plot",
 }: BoxPlotProps) => {
   const [tooltipProps, setShowTooltipProps] = useState<{
     visible: boolean;
@@ -105,7 +114,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
     <VictoryChart
       height={height}
       width={width}
-      padding={{ left: 60, right: 20, bottom: 40, top: 50 }}
+      padding={chartPadding}
       minDomain={{ x: 1, y: data.min }}
       maxDomain={{ x: 1, y: data.max }}
       containerComponent={
@@ -116,9 +125,8 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
     >
       <VictoryLabel
         dy={20}
-        // Centered, adjusted for padding
-        dx={width / 2 - 10}
-        text="Box Plot"
+        dx={width / 2 - chartPadding.right}
+        text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
       />
       <VictoryAxis

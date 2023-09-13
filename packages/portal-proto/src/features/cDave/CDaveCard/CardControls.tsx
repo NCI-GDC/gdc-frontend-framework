@@ -135,8 +135,8 @@ const CardControls: React.FC<CardControlsProps> = ({
 
   return (
     <>
-      <div className="flex justify-between py-2">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex justify-between gap-2 py-2">
+        <div className="flex flex-wrap-reverse gap-2">
           <CasesCohortButtonFromFilters
             filters={
               selectedFacets.length === 0
@@ -159,21 +159,23 @@ const CardControls: React.FC<CardControlsProps> = ({
             TSV
           </Button>
         </div>
-        <DropdownWithIcon
-          customDataTestId="button-customize-bins"
-          RightIcon={<DownIcon size={20} />}
-          TargetButtonChildren={"Customize Bins"}
-          disableTargetWidth={true}
-          dropdownElements={[
-            { title: "Edit Bins", onClick: () => setModalOpen(true) },
-            {
-              title: "Reset to Default",
-              disabled: customBinnedData === null,
-              onClick: () => setCustomBinnedData(null),
-            },
-          ]}
-          zIndex={100}
-        />
+        <div className="flex items-end">
+          <DropdownWithIcon
+            customDataTestId="button-customize-bins"
+            RightIcon={<DownIcon size={20} />}
+            TargetButtonChildren={"Customize Bins"}
+            disableTargetWidth={true}
+            dropdownElements={[
+              { title: "Edit Bins", onClick: () => setModalOpen(true) },
+              {
+                title: "Reset to Default",
+                disabled: customBinnedData === null,
+                onClick: () => setCustomBinnedData(null),
+              },
+            ]}
+            zIndex={100}
+          />
+        </div>
       </div>
       {modalOpen &&
         (continuous ? (

@@ -48,15 +48,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 Select
               </span>
             </th>
-            <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {fieldName}{" "}
-              {customBinnedData !== null && "(User Defined Bins Applied)"}
-            </th>
-            <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
-              # Cases
-            </th>
             {survival && (
-              <th className="text-right pr-2">
+              <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
                 <Tooltip
                   label="Change the survival plot display"
                   withArrow
@@ -66,6 +59,13 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 </Tooltip>
               </th>
             )}
+            <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
+              {fieldName}{" "}
+              {customBinnedData !== null && "(User Defined Bins Applied)"}
+            </th>
+            <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
+              # Cases
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -118,23 +118,9 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       }
                     />
                   </td>
-                  <td>
-                    <div className="pl-2">{key}</div>
-                  </td>
-                  <td className="text-right">
-                    <div className="pr-4 whitespace-nowrap">
-                      {count.toLocaleString()} (
-                      {yTotal === 0
-                        ? "0.00%"
-                        : (count / yTotal).toLocaleString(undefined, {
-                            style: "percent",
-                            minimumFractionDigits: 2,
-                          })}
-                      )
-                    </div>
-                  </td>
+
                   {survival && (
-                    <td className="float-right">
+                    <td>
                       <Tooltip
                         label={
                           key === "missing"
@@ -182,6 +168,21 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       </Tooltip>
                     </td>
                   )}
+                  <td>
+                    <div className="pl-2">{key}</div>
+                  </td>
+                  <td className="text-right">
+                    <div className="pr-4 whitespace-nowrap">
+                      {count.toLocaleString()} (
+                      {yTotal === 0
+                        ? "0.00%"
+                        : (count / yTotal).toLocaleString(undefined, {
+                            style: "percent",
+                            minimumFractionDigits: 2,
+                          })}
+                      )
+                    </div>
+                  </td>
                 </tr>
               );
             })}

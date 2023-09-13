@@ -6,8 +6,6 @@ import {
   RECOMMENDED_APPS,
 } from "@/features/user-flow/workflow/registeredApps";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
-import SearchInput from "@/components/SearchInput";
-import DownloadAllButton from "@/features/cDave/DownloadAllButton";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
@@ -159,11 +157,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
               onDemoApp={isDemoMode}
               skipSelectionScreen={skipSelectionScreen}
               rightComponent={
-                app === "CDave" ? (
-                  <DownloadAllButton />
-                ) : app === "CohortBuilder" && !isDemoMode ? (
-                  <SearchInput />
-                ) : null
+                appInfo?.rightComponent && <appInfo.rightComponent />
               }
             />
             <ActiveAnalysisToolNoSSR appId={app} />
