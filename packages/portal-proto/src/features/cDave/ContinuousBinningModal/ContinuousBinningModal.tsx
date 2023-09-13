@@ -4,7 +4,6 @@ import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
 import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
 import { Statistics } from "@gff/core";
-import _ from "lodash";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, NamedFromTo } from "../types";
 import { isInterval } from "../utils";
@@ -43,9 +42,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       : [],
   );
   const [hasReset, setHasReset] = useState(false);
-  const [customizedIntervalForm, setCustomizedIntervalForm] = useState(false);
-  const [customizedRangeForm, setCustomizedRangeForm] = useState(false);
-  const [customizedBinMethod, setCustomizedBinMethod] = useState(false);
 
   const initialIntervalForm = {
     setIntervalSize: customIntervalSet
@@ -63,8 +59,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     validateInputOnChange: true,
     initialValues: initialIntervalForm,
     validate: (values) => {
-      setCustomizedIntervalForm(!_.isEqual(values, initialIntervalForm));
-
       return validateIntervalInput(
         values.setIntervalSize,
         values.setIntervalMin,
@@ -90,8 +84,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const rangeForm = useForm({
     initialValues: initialRangeForm,
     validate: (values) => {
-      setCustomizedRangeForm(!_.isEqual(values, initialRangeForm));
-
       return validateRangeInput(values.ranges);
     },
   });
@@ -109,8 +101,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   }, [intervalForm.values]);
 
   useEffect(() => {
-    setCustomizedBinMethod(binMethod !== initialBinMethod);
-
     if (binMethod === "interval") {
       rangeForm.clearErrors();
       intervalForm.validate();
@@ -168,7 +158,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       size={1000}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      withinPortal={false}
       classNames={{
         header: "text-xl",
       }}
@@ -280,14 +269,12 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               setSavedRangeRows([]);
               setBinMethod("interval");
               setHasReset(true);
-              setCustomizedBinMethod(false);
-              setCustomizedIntervalForm(false);
-              setCustomizedRangeForm(false);
+              updateBins(null);
             }}
             disabled={
-              !customizedBinMethod &&
-              !customizedIntervalForm &&
-              !customizedRangeForm
+              !intervalForm.isDirty() &&
+              !rangeForm.isDirty() &&
+              customBins === null
             }
           >
             <ResetIcon size={20} />

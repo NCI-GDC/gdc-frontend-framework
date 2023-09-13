@@ -182,7 +182,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       size={800}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      withinPortal={false}
       classNames={{
         header: "text-xl",
       }}
@@ -208,7 +207,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setCustomized(false);
                 setErrorMessage("");
               }}
-              disabled={!customized}
+              disabled={customBins === null && !customized}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />
@@ -403,7 +402,7 @@ const ListValue: React.FC<ListValueProps> = ({
           updateSelectedValues(name, count);
           clearOtherValues();
         }}
-        onKeyPress={createKeyboardAccessibleFunction(() => {
+        onKeyDown={createKeyboardAccessibleFunction(() => {
           updateSelectedValues(name, count);
           clearOtherValues();
         })}
