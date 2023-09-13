@@ -10,7 +10,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
-* Wait for cohort bar case count loading spinner
 
 ## Create First Cohort
 * Select "Add" from the Cohort Bar
@@ -50,7 +49,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * "SaMe CoHoRt NaMe" should be the active cohort
 * Select "Save" from the Cohort Bar
 * Select "Save"
-* Is text "Replace Existing Cohort" not present on the page
+* Is text "Replace Existing Cohort" present on the page
 * "Replace" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "SaMe CoHoRt NaMe" should be the active cohort
 * Is text "Changes not saved" not present on the page
@@ -73,7 +72,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * "Same cohort name" should be the active cohort
 * Select "Save" from the Cohort Bar
 * Select "Save"
-* Is text "Replace Existing Cohort" not present on the page
+* Is text "Replace Existing Cohort" present on the page
 * "Replace" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "Same cohort name" should be the active cohort
 * Is text "Changes not saved" not present on the page

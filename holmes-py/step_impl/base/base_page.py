@@ -120,6 +120,11 @@ class BasePage:
         bdd_input_string = str(bdd_input_int)
         return bdd_input_string
 
+    def get_cohort_bar_case_count(self):
+        """Returns the count of cases in the current cohort"""
+        cohort_bar_case_count = self.get_text(GenericLocators.TEXT_COHORT_BAR_CASE_COUNT)
+        return cohort_bar_case_count
+
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS

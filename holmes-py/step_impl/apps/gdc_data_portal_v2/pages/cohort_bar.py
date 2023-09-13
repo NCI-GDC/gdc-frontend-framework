@@ -54,7 +54,7 @@ class CohortBar(BasePage):
     def is_cohort_bar_button_disabled(self, button_name:str):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
         class_attribute_text = self.get_attribute(locator, "class")
-        # Cohort bar buttons are not disabled in the usual way of having the atribute "disabled".
+        # Cohort bar buttons are not disabled in the usual way of having the attribute "disabled".
         # Because of that, we cannot use the method 'is_disabled' on the locator.
         # So we read the locators class, and if it has "cursor-not-allowed" it indicates its disabled.
         return "cursor-not-allowed" in class_attribute_text
