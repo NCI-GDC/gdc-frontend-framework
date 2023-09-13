@@ -2,24 +2,32 @@ import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 describe("ColumnOrdering", () => {
+  const mockGetToggleVisibilityHandlerCol1 = jest.fn();
   const mockTable = {
     initialState: {
-      columnOrder: ["col1", "col2"],
-      columnVisibility: { col1: true, col2: true },
+      columnOrder: ["col1", "col2", "col3"],
+      columnVisibility: { col1: true, col2: true, col3: true },
     },
     getState: () => ({
-      columnVisibility: { col1: true, col2: true },
+      columnVisibility: { col1: true, col2: true, col3: true },
     }),
     getAllLeafColumns: () => [
       {
         id: "col1",
         getIsVisible: jest.fn(),
-        getToggleVisibilityHandler: jest.fn(),
+        getToggleVisibilityHandler: mockGetToggleVisibilityHandlerCol1,
       },
       {
         id: "col2",
+        getIsVisible: jest.fn(),
+        getToggleVisibilityHandler: jest.fn(),
+      },
+      {
+        id: "col3",
         getIsVisible: jest.fn(),
         getToggleVisibilityHandler: jest.fn(),
       },
@@ -28,7 +36,7 @@ describe("ColumnOrdering", () => {
 
   const mockHandleColumnOrderingReset = jest.fn();
 
-  const mockColumnOrder = ["col1", "col2"];
+  const mockColumnOrder = ["col1", "col2", "col3"];
 
   const mockSetColumnOrder = jest.fn();
 
@@ -126,5 +134,55 @@ describe("ColumnOrdering", () => {
 
     const updatedSearchInput = screen.getByTestId("textbox-column-selector");
     expect(updatedSearchInput).toHaveValue("col1");
+  });
+
+  it("should reorder columns on drag and drop", async () => {
+    const { getByTestId } = render(
+      <DndProvider backend={HTML5Backend}>
+        <ColumnOrdering
+          table={mockTable}
+          handleColumnOrderingReset={mockHandleColumnOrderingReset}
+          columnOrder={mockColumnOrder}
+          setColumnOrder={mockSetColumnOrder}
+        />
+      </DndProvider>,
+    );
+
+    const button = screen.getByTestId("button-column-selector-box");
+    await userEvent.click(button);
+    // Simulate drag and drop operations using fireEvent
+    const column1 = getByTestId("column-selector-row-col1");
+    const column2 = getByTestId("column-selector-row-col2");
+    fireEvent.dragStart(column1);
+    fireEvent.dragEnter(column2);
+    fireEvent.drop(column2);
+
+    // Check if the column order has changed
+    const updatedColumnOrder = ["col2", "col1", "col3"];
+
+    console.log(mockTable);
+    expect(mockSetColumnOrder).toBeCalledWith(updatedColumnOrder);
+  });
+
+  it("should toggle column visibility on switch toggle", async () => {
+    const { getAllByTestId } = render(
+      <DndProvider backend={HTML5Backend}>
+        <ColumnOrdering
+          table={mockTable}
+          handleColumnOrderingReset={mockHandleColumnOrderingReset}
+          columnOrder={mockColumnOrder}
+          setColumnOrder={mockSetColumnOrder}
+        />
+      </DndProvider>,
+    );
+
+    const button = screen.getByTestId("button-column-selector-box");
+    await userEvent.click(button);
+    // Simulate clicking on the switch to toggle visibility of the first column
+    const switchToggle = getAllByTestId("switch-toggle");
+    fireEvent.click(switchToggle[0]);
+
+    // Check if the visibility has changed
+    expect(mockGetToggleVisibilityHandlerCol1).toBeCalled();
   });
 });
