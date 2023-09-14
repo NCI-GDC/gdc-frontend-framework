@@ -80,6 +80,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
 
 interface VictoryBarChartProps {
   readonly data: any;
+  readonly title?: string;
   readonly color: string;
   readonly yLabel?: string;
   readonly xLabel?: string;
@@ -99,6 +100,7 @@ interface VictoryBarChartProps {
 
 const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   data,
+  title,
   color,
   yLabel,
   xLabel,
@@ -112,6 +114,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
 }: VictoryBarChartProps) => {
   return (
     <VictoryChart
+      title={title}
       width={width}
       height={height}
       domainPadding={60}

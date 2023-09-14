@@ -155,6 +155,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
           <div className="h-64">
             <VictoryBarChart
               data={barChartData}
+              title={`${fieldName} histogram`}
               color={color}
               yLabel={displayPercent ? "% of Cases" : "# of Cases"}
               width={900}
