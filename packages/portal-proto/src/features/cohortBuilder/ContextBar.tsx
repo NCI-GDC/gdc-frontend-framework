@@ -333,8 +333,16 @@ const ContextBar = ({
               <>
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON ", onClick: handleBiospeciemenJSONDownload },
-                    { title: "TSV", onClick: handleBiospeciemenTSVDownload },
+                    {
+                      title: "JSON ",
+                      onClick: handleBiospeciemenJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleBiospeciemenTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
@@ -353,8 +361,16 @@ const ContextBar = ({
 
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON", onClick: handleClinicalJSONDownload },
-                    { title: "TSV", onClick: handleClinicalTSVDownload },
+                    {
+                      title: "JSON",
+                      onClick: handleClinicalJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleClinicalTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
