@@ -132,6 +132,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         tickCount={8}
         style={{ ticks: { stroke: "black", size: 8 } }}
         crossAxis={false}
+        orientation="bottom"
       />
       <VictoryAxis
         dependentAxis
