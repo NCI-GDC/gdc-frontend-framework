@@ -36,6 +36,7 @@ class HomePage(BasePage):
         return self.is_visible(expected_statistic_locator)
 
     def get_data_portal_summary_statistic(self, category):
+        """Returns the statistic for the specified data portal summary category"""
         category = category.lower()
         locator = HomePageLocators.TEXT_DATA_PORTAL_SUMMARY_STAT(category)
         return self.get_text(locator)
