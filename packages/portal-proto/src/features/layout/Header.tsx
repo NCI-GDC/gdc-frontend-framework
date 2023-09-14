@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="manageSetsLink"
-              className={`p-2 rounded-md ${
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
                 router.pathname === "/manage-sets"
                   ? "bg-secondary text-white"
                   : ""
@@ -148,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="cartLink"
-              className={`p-2 rounded-md ${
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
                 router.pathname === "/cart" ? "bg-secondary text-white" : ""
               }`}
             >
