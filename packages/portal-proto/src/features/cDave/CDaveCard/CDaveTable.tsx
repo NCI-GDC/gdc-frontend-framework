@@ -117,9 +117,8 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                           : `Plot ${key}`
                       }
                       withArrow
-                      withinPortal={true}
                     >
-                      <div>
+                      <div className="w-fit">
                         <ActionIcon
                           variant="outline"
                           className={

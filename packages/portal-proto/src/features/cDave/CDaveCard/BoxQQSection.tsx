@@ -27,6 +27,7 @@ import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
 import { DashboardDownloadContext } from "../chartDownloadContext";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -44,6 +45,16 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
+  const [boxPlotRef, boundingRectBox] = useResizeObserver();
+  const [qqPlotRef, boundingRectQQ] = useResizeObserver();
+
+  const { dispatch } = useContext(DashboardDownloadContext);
+  const boxDownloadChartRef = useRef<HTMLElement>();
+  const qqDownloadChartRef = useRef<HTMLElement>();
+  const fieldName = clinicalNestedField ?? clinicalField;
+  const date = convertDateToString(new Date());
+  const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
+  const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
   const color =
     tailwindConfig.theme.extend.colors[
@@ -139,17 +150,6 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     );
   };
 
-  const [boxPlotRef, boundingRectBox] = useResizeObserver();
-  const [qqPlotRef, boundingRectQQ] = useResizeObserver();
-
-  const { dispatch } = useContext(DashboardDownloadContext);
-  const boxDownloadChartRef = useRef<HTMLElement>();
-  const qqDownloadChartRef = useRef<HTMLElement>();
-  const fieldName = clinicalNestedField ?? clinicalField;
-  const date = convertDateToString(new Date());
-  const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
-  const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
-
   useEffect(() => {
     const charts = [
       { filename: boxPlotDownloadName, chartRef: boxPlotRef },
@@ -177,7 +177,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               position={"left"}
             >
               <ActionIcon
-                data-testid="button-histogram-download"
+                data-testid="button-qq-box-download"
                 variant="outline"
                 className="bg-base-max border-primary"
                 aria-label="Download image or data"
@@ -219,9 +219,9 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             <Menu.Item
               component="a"
               href={`data:text/json;charset=utf-8, ${encodeURIComponent(
-                JSON.stringify(downloadData, null, 2), // prettify JSON
+                JSON.stringify(downloadData, null, 2),
               )}`}
-              download={`${qqPlotDownloadName}}.json`}
+              download={`${qqPlotDownloadName}.json`}
             >
               QQ JSON
             </Menu.Item>
@@ -248,14 +248,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             height={boundingRectQQ.height}
           />
         </div>
-        {/* The chart for downloads is slightly different so render another chart offscreen */}
-        <div
-          className="h-64 absolute left-[-1000px]"
-          aria-hidden="true"
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
-          inert=""
-        >
+        <OffscreenWrapper>
           <BoxPlot
             data={formattedData}
             color={color}
@@ -264,14 +257,8 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             chartRef={boxDownloadChartRef}
             label={`${displayName} Box Plot`}
           />
-        </div>
-        <div
-          className="h-64 absolute left-[-1000px]"
-          aria-hidden="true"
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
-          inert=""
-        >
+        </OffscreenWrapper>
+        <OffscreenWrapper>
           <QQPlot
             field={field}
             data={parsedQQValues}
@@ -282,7 +269,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             chartRef={qqDownloadChartRef}
             label={`${displayName} QQ Plot`}
           />
-        </div>
+        </OffscreenWrapper>
       </div>
       <Button
         data-testid="button-stats-tsv-cdave-card"

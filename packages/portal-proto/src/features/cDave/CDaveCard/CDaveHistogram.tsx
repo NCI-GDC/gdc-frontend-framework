@@ -9,6 +9,7 @@ import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { convertDateToString } from "@/utils/date";
 import { DashboardDownloadContext } from "../chartDownloadContext";
 import { toDisplayName } from "../utils";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 const formatBarChartData = (
   data: Record<string, number>,
@@ -142,7 +143,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 <Menu.Item
                   component="a"
                   href={`data:text/json;charset=utf-8, ${encodeURIComponent(
-                    JSON.stringify(jsonData, null, 2), // prettify JSON
+                    JSON.stringify(jsonData, null, 2),
                   )}`}
                   download={`${downloadFileName}.json`}
                 >
@@ -167,14 +168,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               }
             />
           </div>
-          {/* The chart for downloads is slightly different so render another chart offscreen */}
-          <div
-            className="h-64 absolute left-[-1000px]"
-            aria-hidden="true"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore https://github.com/facebook/react/pull/24730 https://github.com/DefinitelyTyped/DefinitelyTyped/pull/60822
-            inert=""
-          >
+          <OffscreenWrapper>
             <VictoryBarChart
               data={barChartData.map((d) => ({ ...d, x: d.fullName }))}
               color={color}
@@ -192,7 +186,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               }
               chartRef={downloadChartRef}
             />
-          </div>
+          </OffscreenWrapper>
         </>
       )}
     </>
