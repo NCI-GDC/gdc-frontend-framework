@@ -339,7 +339,16 @@ const ContextBar = ({
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
-                  LeftIcon={biospecimenDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    biospecimenDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Biospecimen dropdown"
+                      />
+                    )
+                  }
                 />
 
                 <DropdownWithIcon
@@ -350,7 +359,16 @@ const ContextBar = ({
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
-                  LeftIcon={clinicalDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    clinicalDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Clinical dropdown"
+                      />
+                    )
+                  }
                 />
               </>
             )}
