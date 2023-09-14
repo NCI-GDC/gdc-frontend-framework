@@ -8,13 +8,13 @@ const DownloadAllButton: React.FC = () => {
   const { state } = useContext(DashboardDownloadContext);
   const downloadAllSvg = () => {
     state.map((download) => {
-      handleDownloadPNG(download.chartRef, `${download.filename}.png`);
+      handleDownloadSVG(download.chartRef, `${download.filename}.svg`);
     });
   };
 
   const downloadAllPng = () => {
     state.map((download) => {
-      handleDownloadSVG(download.chartRef, `${download.filename}.png`);
+      handleDownloadPNG(download.chartRef, `${download.filename}.png`);
     });
   };
 

@@ -125,9 +125,10 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
     >
       <VictoryLabel
         dy={20}
-        dx={width / 2 - chartPadding.right}
+        dx={(width + chartPadding.left - chartPadding.right) / 2}
         text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
+        textAnchor="middle"
       />
       <VictoryAxis
         dependentAxis
