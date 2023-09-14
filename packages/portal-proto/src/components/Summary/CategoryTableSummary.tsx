@@ -1,4 +1,4 @@
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 import { ColumnDef } from "@tanstack/react-table";
 import VerticalTable from "../Table/VerticalTable";

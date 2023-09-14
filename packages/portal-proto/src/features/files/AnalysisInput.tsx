@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction, useMemo } from "react";
 import { mapGdcFileToCartFile } from "./utils";
 import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 type AnalysisInputDataItem = {
   file: GdcCartFile;

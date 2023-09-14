@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const FileVersions = ({

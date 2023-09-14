@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import { PaginationOptions } from "@/features/shared/VerticalTable";
-import { SortingState } from "@tanstack/react-table";
+import { useState, useEffect, useCallback } from "react";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
+import { PaginationOptions } from "@/components/Table/types";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 /**
  * For use with the VerticalTable component or other paginated tables,
@@ -10,7 +11,7 @@ import { SortingState } from "@tanstack/react-table";
  */
 function useStandardPagination<TData>(
   fullData: TData[],
-  customSortingFns?: Record<string, any>,
+  columns?: ColumnDef<TData, any>[],
 ): PaginationOptions & {
   displayedData: TData[];
   /**
@@ -35,6 +36,7 @@ function useStandardPagination<TData>(
   const [displayedData, setDisplayedData] = useState([]);
   const [updatedFullData, setUpdatedFullData] = useState([]);
   const [activeSort, setActiveSort] = useState<SortingState>([]);
+  const [columnSortingFns, setColumnSortingFns] = useState({});
 
   const handlePageSizeChange = (x: string) => {
     setPageSize(parseInt(x));
@@ -49,15 +51,40 @@ function useStandardPagination<TData>(
     setActiveSort(x);
   };
 
+  const recursivelyExtractSortingFns = useCallback(
+    (columns: ColumnDef<TData, any>[]) => {
+      return columns.reduce((output, column) => {
+        if (column.meta?.sortingFn) {
+          output[column.id] = column.meta.sortingFn;
+        }
+        if ("columns" in column) {
+          const nestedFns = recursivelyExtractSortingFns(column.columns);
+          Object.assign(output, nestedFns);
+        }
+        return output;
+      }, {});
+    },
+    [],
+  );
+
+  useDeepCompareEffect(() => {
+    if (!columns) {
+      return;
+    }
+
+    const sortingFns = recursivelyExtractSortingFns(columns);
+    setColumnSortingFns(sortingFns);
+  }, [columns, recursivelyExtractSortingFns]);
+
   useEffect(() => {
     const tempData = [...fullData];
     if (activeSort.length > 0) {
       // If multiple filters
       activeSort.forEach((obj) => {
         // check if special instructions
-        if (customSortingFns[obj.id]) {
+        if (columnSortingFns[obj.id]) {
           // sort by sortingFn
-          tempData.sort(customSortingFns[obj.id]);
+          tempData.sort(columnSortingFns[obj.id]);
           if (obj.desc) {
             tempData.reverse();
           }
@@ -81,19 +108,19 @@ function useStandardPagination<TData>(
               if (Array.isArray(tempData[0][obj.id])) {
                 //if array sort by length
                 tempData.sort((a, b) => {
-                  if (a[obj.id].length > b[obj.id].length) {
-                    return obj.desc ? -1 : 1;
-                  }
                   if (a[obj.id].length < b[obj.id].length) {
                     return obj.desc ? 1 : -1;
                   }
+                  if (a[obj.id].length > b[obj.id].length) {
+                    return obj.desc ? -1 : 1;
+                  }
                   //If same length sort by first item
                   try {
-                    if (a[obj.id][0] > b[obj.id][0]) {
-                      return obj.desc ? -1 : 1;
-                    }
                     if (a[obj.id][0] < b[obj.id][0]) {
                       return obj.desc ? 1 : -1;
+                    }
+                    if (a[obj.id][0] > b[obj.id][0]) {
+                      return obj.desc ? -1 : 1;
                     }
                   } catch {
                     return 0;
@@ -113,7 +140,7 @@ function useStandardPagination<TData>(
     setDisplayedData(
       tempData.slice((activePage - 1) * pageSize, activePage * pageSize),
     );
-  }, [fullData, activePage, pageSize, customSortingFns, activeSort]);
+  }, [fullData, activePage, pageSize, columnSortingFns, activeSort]);
 
   return {
     handlePageSizeChange,

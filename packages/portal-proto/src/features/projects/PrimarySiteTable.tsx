@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useGetProjectsPrimarySitesAllQuery } from "@gff/core";
-import { HeaderTitle } from "../shared/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -14,9 +13,10 @@ import {
 } from "@tanstack/react-table";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
-import { generateSortingFn } from "@/utils/index";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { HeaderTitle } from "@/components/tailwindComponents";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;
@@ -49,8 +49,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     [isFetching, data],
   );
 
-  const primarySitesTableColumnHelper =
-    createColumnHelper<typeof formattedData[0]>();
+  const primarySitesTableColumnHelper = useMemo(
+    () => createColumnHelper<typeof formattedData[0]>(),
+    [],
+  );
 
   const primarySitesTableColumns = useMemo(
     () => [
@@ -93,10 +95,24 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             }}
           />
         ),
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            if (rowA.cases > rowB.cases) {
+              return 1;
+            }
+            if (rowA.cases < rowB.cases) {
+              return -1;
+            }
+            return 0;
+          },
+        },
       }),
       primarySitesTableColumnHelper.accessor("experimental_strategy", {
         id: "experimental_strategy",
         header: "Experimental Strategy",
+        cell: ({ getValue }) => (
+          <ArraySeparatedSpan data={getValue() as string[]} />
+        ),
         enableSorting: false,
       }),
       primarySitesTableColumnHelper.accessor("files", {
@@ -124,8 +140,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [expanded, setExpanded] = useState<ExpandedState>({});
-
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const getRowId = (originalRow: typeof formattedData[0]) => {
+    return originalRow.primary_site;
+  };
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "primary_site",
@@ -133,20 +151,13 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     },
   ]);
 
-  const customSortingFns = useMemo(
-    () => ({
-      cases: generateSortingFn("cases"),
-    }),
-    [],
-  );
-
   const {
     handlePageChange,
     handlePageSizeChange,
     handleSortByChange,
     displayedData,
     ...paginationProps
-  } = useStandardPagination(filteredTableData, customSortingFns);
+  } = useStandardPagination(filteredTableData, primarySitesTableColumns);
 
   useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
 
@@ -168,11 +179,14 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     row: Row<typeof formattedData[0]>,
     columnId: string,
   ) => {
-    if (Object.keys(expanded).length > 0 && row.index === expandedRowId) {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.primary_site === expandedRowId
+    ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
-      setExpandedRowId(row.index);
+      setExpanded({ [row.original.primary_site]: true });
+      setExpandedRowId(row.original.primary_site);
     }
   };
 
@@ -210,6 +224,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       }}
       showControls={true}
       handleChange={handleChange}
+      getRowId={getRowId}
     />
   );
 };

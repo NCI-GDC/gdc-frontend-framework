@@ -13,7 +13,7 @@ import { ImageSlideCount } from "@/components/ImageSlideCount";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { entityMetadataType } from "@/utils/contexts";
-import { ArraySeparatedSpan } from "@/features/shared/ArraySeparatedSpan";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 
 export type casesTableDataType = {
   case_uuid: string;

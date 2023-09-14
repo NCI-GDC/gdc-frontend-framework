@@ -4,11 +4,10 @@ import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
 import { Checkbox, Radio, Tooltip } from "@mantine/core";
 import { useCoreSelector, selectSetsByType, SetTypes } from "@gff/core";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { createColumnHelper } from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 interface SelectCellProps {
   readonly count: number;
@@ -94,41 +93,52 @@ const SetTable: React.FC<SetTableProps> = ({
     return Object.entries(sets)
       .sort((setA, setB) => (sortByName ? setA[1].localeCompare(setB[1]) : 0))
       .map((set) => ({
-        select: (
+        set,
+        name: set[1],
+        count: isSuccess ? (counts?.[set[0]] || 0).toLocaleString() : "...",
+      }));
+  }, [sets, sortByName, counts, isSuccess]);
+
+  const setTableColumnHelper = createColumnHelper<typeof tableData[0]>();
+
+  const setTableColumns = useMemo(
+    () => [
+      setTableColumnHelper.display({
+        id: "select",
+        header: "Select",
+        cell: ({ row }) => (
           <SelectCell
-            count={counts?.[set[0]] || 0}
-            set={set}
+            count={counts?.[row.original.set[0]] || 0}
+            set={row.original.set}
             multiselect={multiselect}
             shouldDisable={shouldDisable}
             selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}
           />
         ),
-        name: <label id={`set-table-${set[0]}`}>{set[1]}</label>,
-        count: isSuccess ? (counts?.[set[0]] || 0).toLocaleString() : "...",
-      }));
-  }, [
-    sets,
-    selectedSets,
-    multiselect,
-    setSelectedSets,
-    shouldDisable,
-    sortByName,
-    counts,
-    isSuccess,
-  ]);
-
-  const columns = useMemo(() => {
-    return [
-      { columnName: "Select", id: "select", visible: true },
-      { columnName: "Name", id: "name", visible: true },
-      {
-        columnName: `# ${upperFirst(setTypeLabel)}s`,
+      }),
+      setTableColumnHelper.accessor("name", {
+        id: "Name",
+        header: "Name",
+        cell: ({ getValue, row }) => (
+          <label id={`set-table-${row.original.set[0]}`}>{getValue()}</label>
+        ),
+      }),
+      setTableColumnHelper.accessor("count", {
         id: "count",
-        visible: true,
-      },
-    ];
-  }, [setTypeLabel]);
+        header: `# ${upperFirst(setTypeLabel)}s`,
+      }),
+    ],
+    [
+      setTableColumnHelper,
+      setTypeLabel,
+      selectedSets,
+      counts,
+      multiselect,
+      setSelectedSets,
+      shouldDisable,
+    ],
+  );
 
   const {
     displayedData,
@@ -150,11 +160,10 @@ const SetTable: React.FC<SetTableProps> = ({
 
   return (
     <VerticalTable
-      tableData={displayedData}
-      columns={columns}
-      selectableRow={false}
-      showControls={false}
+      data={displayedData}
+      columns={setTableColumns}
       handleChange={handleTableChange}
+      status={isSuccess ? "fulfilled" : "pending"}
       pagination={{ ...paginationProps, label: `${setTypeLabel} sets` }}
     />
   );

@@ -8,15 +8,15 @@ interface Item {
   denominator: number;
 }
 
-interface RatioSpringProps {
+interface RatioWithSpringProps {
   item: Item;
   index: number;
 }
 
-const RatioSpring: React.FC<RatioSpringProps> = ({
+const RatioWithSpring: React.FC<RatioWithSpringProps> = ({
   item,
   index,
-}: RatioSpringProps) => {
+}: RatioWithSpringProps) => {
   const staggeredSpring = useSpring({
     from: { opacity: 0 },
     to: { opacity: 1 },
@@ -40,4 +40,4 @@ const RatioSpring: React.FC<RatioSpringProps> = ({
   );
 };
 
-export default RatioSpring;
+export default RatioWithSpring;

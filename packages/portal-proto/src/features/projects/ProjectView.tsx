@@ -12,7 +12,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, Loader, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";

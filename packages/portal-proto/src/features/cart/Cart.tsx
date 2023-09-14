@@ -19,7 +19,7 @@ import { groupByAccess } from "./utils";
 import { FaExclamationCircle } from "react-icons/fa";
 import { useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 const H3 = tw.h3`
   font-heading

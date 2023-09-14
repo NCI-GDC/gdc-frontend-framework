@@ -35,10 +35,6 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
   ColumnDef,
@@ -50,6 +46,10 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
+import {
+  getAnnotationsLinkParamsFromFiles,
+  statusBooleansToDataStatus,
+} from "src/utils";
 
 export type FilesTableDataType = {
   file: GdcFile;

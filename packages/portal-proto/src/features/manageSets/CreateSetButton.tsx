@@ -95,6 +95,7 @@ const CreateSetButton: React.FC = () => {
               dispatch(showModal({ modal: Modals.GlobalMutationSetModal })),
           },
         ]}
+        zIndex={10}
       />
     </>
   );

@@ -26,7 +26,7 @@ import { formatImageDetailsInfo } from "@/features/files/utils";
 import { MdOutlineSearch } from "react-icons/md";
 import { useRouter } from "next/router";
 import { Slides } from "../Slides";
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 const ImageViewer = dynamic(() => import("./ImageViewer"), {
   ssr: false,

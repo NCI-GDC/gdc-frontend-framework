@@ -11,7 +11,7 @@ import {
 } from "./SelectCohortsModal";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 
 export const CasesCohortButton = ({
   pickedCases,

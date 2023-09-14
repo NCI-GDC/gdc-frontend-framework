@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { processFilters } from "src/utils";
-import { CountSpan } from "../shared/tailwindComponents";
+import { CountSpan } from "@/components/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,

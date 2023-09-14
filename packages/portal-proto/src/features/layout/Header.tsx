@@ -128,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="manage-sets" passHref>
+          <Link href="/manage-sets" passHref>
             <Button
               unstyled
               data-testid="manageSetsLink"
