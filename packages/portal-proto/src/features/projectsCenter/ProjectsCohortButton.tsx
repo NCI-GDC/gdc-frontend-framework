@@ -6,7 +6,7 @@ import {
   addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
-import { CountsIcon } from "../shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 
 const ProjectsCohortButton = ({
   pickedProjects,

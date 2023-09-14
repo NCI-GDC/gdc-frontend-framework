@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
@@ -13,7 +14,8 @@ import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
-import { isEqual } from "lodash";
+import { v4 as uuidv4 } from "uuid";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 function VerticalTable<TData>({
   columns,
@@ -42,19 +44,21 @@ function VerticalTable<TData>({
   setSorting,
   expanded,
   setExpanded,
+  getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
+    uuidv4(),
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  // TODO: status fufilled is to be sent for all the tables (even without api calls) when pagination is used
-  // do sth else
-  useEffect(() => {
-    if (status === "fulfilled" && !isEqual(data, tableData)) {
+  // TODO: status fufilled is to be sent for all the tables (even without api calls)
+  // also need in pagination (do sth about it)
+  useDeepCompareEffect(() => {
+    if (status === "fulfilled") {
       setTableData(data);
     }
-  }, [tableData, data, status]);
+  }, [data, status]);
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
@@ -79,7 +83,7 @@ function VerticalTable<TData>({
       expanded,
     },
     manualSorting: columnSorting === "manual",
-    sortDescFirst: true,
+    sortDescFirst: false,
     autoResetExpanded: false,
     onColumnOrderChange: setColumnOrder,
     onColumnVisibilityChange: setColumnVisibility,
@@ -89,6 +93,7 @@ function VerticalTable<TData>({
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
+    getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
 
@@ -110,14 +115,14 @@ function VerticalTable<TData>({
     }
   }, [pagination]);
 
-  const handlePageSizeChange = (newPageSize) => {
+  const handlePageSizeChange = (newPageSize: string) => {
     setPageSize(parseInt(newPageSize));
     handleChange &&
       handleChange({
         newPageSize: newPageSize,
       });
   };
-  const handlePageChange = (newPageNumber) => {
+  const handlePageChange = (newPageNumber: number) => {
     setPageOn(newPageNumber);
     handleChange &&
       handleChange({
@@ -126,7 +131,7 @@ function VerticalTable<TData>({
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = e.target.value.trim();
+    const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
 
     // Clear the previous timeout
@@ -134,7 +139,7 @@ function VerticalTable<TData>({
 
     // Set a new timeout to perform the search after 400ms
     timeoutRef.current = setTimeout(() => {
-      handleChange({ newSearch: newSearchTerm });
+      handleChange({ newSearch: newSearchTerm.trim() });
     }, 400);
   };
 
@@ -145,7 +150,7 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div className="grow overflow-hidden">
+    <div className="grow overflow-hidden pt-1">
       <div
         className={`flex ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -215,70 +220,82 @@ function VerticalTable<TData>({
                 className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
-                  return columnSorting === "none" ? (
-                    <th
-                      className="px-2.5 py-3 font-heading bg-base-max"
-                      key={header.id}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </th>
-                  ) : (
-                    <th
-                      key={header.id}
-                      className={`px-2.5 py-3 font-heading ${
-                        header.column.getCanSort() &&
-                        "hover:bg-primary-lightest"
-                      }`}
-                      onClick={() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
-                      }}
-                      onKeyDown={createKeyboardAccessibleFunction(() => {
-                        header.column.getCanSort() &&
-                          header.column.toggleSorting();
-                      })}
-                      aria-sort={
-                        header.column.getIsSorted()
-                          ? header.column.getIsSorted() === "desc"
-                            ? "descending"
-                            : "ascending"
-                          : undefined
-                      }
-                      tabIndex={header.column.getCanSort() === false ? -1 : 0}
-                      role={
-                        header.column.getCanSort() ? "button" : "columnheader"
-                      }
-                    >
-                      <div className="flex items-center">
+                  const isColumnSortable = header.column.getCanSort();
+                  const isColumnSorted = header.column.getIsSorted();
+                  const isColumnHighlighted =
+                    header.column.columnDef.meta?.highlighted;
+                  const commonHeaderClass = `px-2.5 py-3 font-heading ${
+                    isColumnHighlighted
+                      ? "bg-nci-purple-lightest"
+                      : "bg-base-max"
+                  }`;
+
+                  if (columnSorting === "none" || !isColumnSortable) {
+                    return (
+                      <th
+                        className={commonHeaderClass}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+                      </th>
+                    );
+                  } else {
+                    return (
+                      <th
+                        key={header.id}
+                        className={`${commonHeaderClass} whitespace-nowrap ${
+                          isColumnHighlighted
+                            ? "hover:bg-nci-purple-lighter"
+                            : "hover:bg-primary-lightest"
+                        }`}
+                        onClick={() => {
+                          header.column.toggleSorting();
+                        }}
+                        onKeyDown={createKeyboardAccessibleFunction(() => {
+                          header.column.toggleSorting();
+                        })}
+                        aria-sort={
+                          isColumnSorted
+                            ? isColumnSorted === "desc"
+                              ? "descending"
+                              : "ascending"
+                            : undefined
+                        }
+                        colSpan={header.colSpan}
+                      >
+                        <button className="flex items-center font-heading">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
 
-                        {header.column.getCanSort() && (
-                          <div className="inline-block text-xs pl-3 align-middle text-base-light">
-                            <BsCaretUpFill
-                              className={
-                                header.column.getIsSorted() === "desc"
-                                  ? "text-primary"
-                                  : ""
-                              }
-                            />
-                            <BsCaretDownFill
-                              className={`${
-                                header.column.getIsSorted() === "asc"
-                                  ? "text-primary"
-                                  : ""
-                              } relative top-[-2px]`}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </th>
-                  );
+                          {isColumnSortable && (
+                            <div
+                              className="inline-block text-xs pl-3 align-middle text-base-light"
+                              aria-hidden="true"
+                            >
+                              <BsCaretUpFill
+                                className={
+                                  isColumnSorted === "desc"
+                                    ? "text-primary"
+                                    : ""
+                                }
+                              />
+                              <BsCaretDownFill
+                                className={`${
+                                  isColumnSorted === "asc" ? "text-primary" : ""
+                                } relative top-[-2px]`}
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </th>
+                    );
+                  }
                 })}
               </tr>
             ))}
@@ -294,6 +311,7 @@ function VerticalTable<TData>({
                   {row.getVisibleCells().map((cell) => {
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
                     const columnId = cell.column.columnDef.id;
+
                     return (
                       <td key={cell.id} className="px-2.5 py-2 cursor-default">
                         {row.getCanExpand() &&
@@ -307,12 +325,12 @@ function VerticalTable<TData>({
                               setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             })}
-                            className="cursor-auto"
+                            className="cursor-auto align-bottom"
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>
                         ) : (
-                          <> {flexRender(columnDefCell, cell.getContext())}</>
+                          <>{flexRender(columnDefCell, cell.getContext())}</>
                         )}
                       </td>
                     );
@@ -373,7 +391,7 @@ function VerticalTable<TData>({
 
           <Pagination
             data-testid="pagination"
-            color="accent"
+            color="accent.5"
             className="ml-auto"
             page={pageOn}
             onChange={handlePageChange}

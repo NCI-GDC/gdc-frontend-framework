@@ -62,7 +62,6 @@ import {
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
-import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 import { sessionStorage } from "./storage-persist";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
@@ -110,7 +109,6 @@ export const reducers = combineReducers({
   [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
-  selectedCases: selectedCasesReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

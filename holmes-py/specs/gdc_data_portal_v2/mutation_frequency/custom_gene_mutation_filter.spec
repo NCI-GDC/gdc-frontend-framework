@@ -22,7 +22,7 @@ We are not guaranteed to get a loading spinner here to wait for,
 but it usually requires a wait. So I've put 3 seconds.
 * Pause "3" seconds
 * Is text "- MUC16 Not Mutated Cases" present on the page
-* Is text "- MUC16 Mutated Cases" present on the page
+* Is text "- MUC16 Mutated (SSM/CNV) Cases" present on the page
 * Verify the table body text is correct
   |expected_text                        |row  |column |
   |-------------------------------------|-----|-------|
@@ -40,7 +40,7 @@ but it usually requires a wait. So I've put 3 seconds.
 
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
-* Wait for loading spinner
+* Wait for table loading spinner
 * Select "Custom Mutation Filters" in the Mutation Frequency app
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page

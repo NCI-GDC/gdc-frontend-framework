@@ -1,7 +1,7 @@
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import {
   Demographic,
   Diagnoses,
@@ -93,12 +93,6 @@ export const ClinicalSummary = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.case-${submitter_id}-${project_id}.${new Date()
@@ -121,12 +115,6 @@ export const ClinicalSummary = ({
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",

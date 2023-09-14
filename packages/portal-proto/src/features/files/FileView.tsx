@@ -24,7 +24,7 @@ import { DownloadFile } from "@/components/DownloadButtons";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import GenericLink from "@/components/GenericLink";

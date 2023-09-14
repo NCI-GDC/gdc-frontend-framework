@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Validate Mutation Table Headers Text
 * Switch to "Mutations" tab in the Mutation Frequency app
-* Wait for loading spinner
+* Wait for table loading spinner
 * Verify the table header text is correct
   |expected_text                        |column |
   |-------------------------------------|-------|

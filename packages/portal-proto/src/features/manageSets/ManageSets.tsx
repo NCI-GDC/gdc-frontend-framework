@@ -12,7 +12,7 @@ import {
   removeSets,
 } from "@gff/core";
 import { WarningBanner } from "@/components/WarningBanner";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { convertDateToString } from "src/utils/date";
 import download from "@/utils/download";
 import { SetData } from "./types";
@@ -144,15 +144,8 @@ const ManageSets: React.FC = () => {
                       }_${setName.replace(/[^A-Za-z0-9_.]/g, "_")}.tsv`,
                     })),
                   },
-                  options: {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  },
                   method: "POST",
                   dispatch,
-                  form: true,
                 });
               }}
             />
@@ -188,7 +181,6 @@ const ManageSets: React.FC = () => {
           <ManageSetsTable
             geneData={geneData}
             ssmData={ssmData}
-            selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}
             detailSet={detailSet}
             setDetailSet={setDetailSet}

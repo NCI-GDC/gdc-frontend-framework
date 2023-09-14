@@ -23,6 +23,10 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
+    setValue(setName);
+  }, [setName]);
+
+  useEffect(() => {
     if (editing) {
       inputRef?.current.focus();
     }
@@ -55,7 +59,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 setValue(setName);
               }}
               className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%] mt-1"
-              aria-label={"Close input"}
+              aria-label="Close input"
             >
               <CloseIcon className="text-nci-red-darkest" />
             </ActionIcon>
@@ -68,7 +72,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               }}
               className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
               disabled={value.trim() === ""}
-              aria-label={"Rename set"}
+              aria-label="Rename set"
             >
               <CheckIcon className="text-nci-green-darkest" size={10} />
             </ActionIcon>

@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
               <NIHLogo
                 layout="fill"
                 style={{ objectFit: "contain" }}
-                data-testid="NIH_LOGO"
+                data-testid="button-header-home"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"
               />
@@ -128,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="manage-sets" passHref>
+          <Link href="/manage-sets" passHref>
             <Button
               unstyled
               data-testid="manageSetsLink"

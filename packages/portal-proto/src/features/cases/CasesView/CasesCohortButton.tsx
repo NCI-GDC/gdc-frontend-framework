@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import {
-  useCoreSelector,
-  selectSelectedCases,
   useCoreDispatch,
   FilterSet,
-  resetSelectedCases,
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromValuesMutation,
   useCreateCaseSetFromFiltersMutation,
@@ -18,7 +15,7 @@ import {
 } from "./SelectCohortsModal";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
@@ -50,7 +47,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
           },
         },
       };
-      coreDispatch(resetSelectedCases());
       coreDispatch(
         addNewCohortWithFilterAndMessage({
           filters: filters,
@@ -133,10 +129,13 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   );
 };
 
-export const CasesCohortButtonFromValues: React.FC = () => {
-  const pickedCases: ReadonlyArray<string> = useCoreSelector((state) =>
-    selectSelectedCases(state),
-  );
+interface CasesCohortButtonFromValuesProps {
+  readonly pickedCases: string[];
+}
+
+export const CasesCohortButtonFromValues: React.FC<
+  CasesCohortButtonFromValuesProps
+> = ({ pickedCases }: CasesCohortButtonFromValuesProps) => {
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const onCreateSet = useCallback(
     () => createSet({ values: pickedCases }),

@@ -8,16 +8,19 @@ export const AnchorLink = ({
   title,
   iconText,
   toolTipLabel,
+  customDataTestID,
 }: {
   href: string;
   title: string;
   iconText?: string;
+  customDataTestID?: string;
   toolTipLabel?: string;
 }): JSX.Element => {
   return (
     <span className="flex gap-2 items-center">
       <Link href={href} passHref>
         <Anchor
+          data-testid={customDataTestID}
           className="flex gap-1 underline font-content"
           size="sm"
           target="_blank"

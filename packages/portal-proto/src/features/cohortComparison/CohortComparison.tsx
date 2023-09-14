@@ -10,7 +10,7 @@ import {
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 
 export interface CohortComparisonType {
   primary_cohort: {
@@ -113,6 +113,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
               <LoadingOverlay
                 vdata-testid="loading-spinner"
                 visible={isFetching}
+                zIndex={0}
               />
             </div>
           ) : (

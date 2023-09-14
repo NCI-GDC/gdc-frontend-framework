@@ -2,7 +2,7 @@ import {
   PercentBar,
   PercentBarComplete,
   PercentBarLabel,
-} from "@/features/shared/tailwindComponents";
+} from "@/components/tailwindComponents";
 
 export const PercentageLabel = ({
   countPercentage,

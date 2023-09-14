@@ -21,7 +21,7 @@ import {
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 import { humanify } from "src/utils";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";

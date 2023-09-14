@@ -12,7 +12,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, Loader, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
@@ -138,12 +138,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `biospecimen.project-${projectData.project_id}.${new Date()
@@ -167,12 +161,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -198,12 +186,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filename: `clinical.project-${projectData.project_id}.${new Date()
@@ -227,12 +209,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "clinical_tar",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         format: "JSON",
@@ -258,12 +234,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     download({
       endpoint: "files",
       method: "POST",
-      options: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
       dispatch,
       params: {
         filters: {

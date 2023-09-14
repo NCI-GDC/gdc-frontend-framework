@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { ActionIcon, Drawer, ScrollArea } from "@mantine/core";
 import { MdKeyboardBackspace as LeftArrowIcon } from "react-icons/md";
 import { SortBy, useGetGenesQuery, useGetSsmsQuery } from "@gff/core";
 import { humanify } from "src/utils";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import { SetData } from "./types";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { createColumnHelper, SortingState } from "@tanstack/react-table";
 
 const PAGE_SIZE = 100;
 
@@ -25,11 +23,19 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const [tableData, setTableData] = useState([]);
   const [sortBy, setSortBy] = useState<SortBy[]>();
   const tableWrapperRef = useRef<HTMLDivElement>();
+  const [scrollHeight, setScrollHeight] = useState(0);
 
   useEffect(() => {
-    setCurrentPage(0);
-    setTableData([]);
-  }, [set?.setId]);
+    if (set === undefined) {
+      setCurrentPage(0);
+    }
+  }, [set]);
+
+  useEffect(() => {
+    if (tableWrapperRef?.current?.clientHeight !== undefined) {
+      setScrollHeight(tableWrapperRef?.current?.clientHeight);
+    }
+  }, [tableWrapperRef?.current?.clientHeight]);
 
   const {
     data: geneDetailData,
@@ -115,42 +121,44 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
 
   // Append new data to existing table data
   useEffect(() => {
-    setTableData([...tableData, ...responseData]);
+    if (set === undefined) {
+      setTableData([]);
+    } else {
+      setTableData([...tableData, ...responseData]);
+    }
     /* eslint-disable react-hooks/exhaustive-deps */
   }, [JSON.stringify(responseData)]);
   /* eslint-enable */
 
-  const columns = useMemo(
+  const setDetailPanelColumnHelper = createColumnHelper<typeof tableData[0]>();
+
+  const setDetailPanelColumns = useMemo(
     () =>
       set?.setType === undefined
         ? []
         : set.setType === "genes"
         ? [
-            {
+            setDetailPanelColumnHelper.accessor("gene_id", {
               id: "gene_id",
-              columnName: "Gene ID",
-              visible: true,
-            },
-            {
+              header: "Gene ID",
+            }),
+            setDetailPanelColumnHelper.accessor("symbol", {
               id: "symbol",
-              columnName: "Symbol",
-              visible: true,
-            },
+              header: "Symbol",
+            }),
           ]
         : [
-            {
+            setDetailPanelColumnHelper.accessor("ssm_id", {
               id: "ssm_id",
-              columnName: "Mutation ID",
-              visible: true,
-            },
-            {
+              header: "Mutation ID",
+            }),
+            setDetailPanelColumnHelper.accessor("consequence", {
               id: "consequence",
-              columnName: "Consequence",
-              visible: true,
-              disableSortBy: true,
-            },
+              header: "Consequence",
+              enableSorting: false,
+            }),
           ],
-    [set?.setType],
+    [set?.setType, setDetailPanelColumnHelper],
   );
 
   const scrollRef = useRef<HTMLDivElement>();
@@ -168,21 +176,18 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   };
 
   const displayData = useDeepCompareMemo(() => tableData, [tableData]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "sortBy":
-        setTableData([]);
-        setCurrentPage(0);
-        setSortBy(
-          obj.sortBy.map((sort) => ({
-            field: sort.id,
-            direction: sort.desc ? "desc" : "asc",
-          })),
-        );
-        return;
-    }
-  };
+  useDeepCompareEffect(() => {
+    setTableData([]);
+    setCurrentPage(0);
+    setSortBy(
+      sorting.map((sort) => ({
+        field: sort.id,
+        direction: sort.desc ? "desc" : "asc",
+      })),
+    );
+  }, [sorting]);
 
   return (
     <Drawer
@@ -206,7 +211,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     >
       <div className="h-full" ref={tableWrapperRef}>
         <ScrollArea
-          h={tableWrapperRef?.current?.clientHeight || 0}
+          h={scrollHeight}
           viewportRef={scrollRef}
           offsetScrollbars
           onScrollPositionChange={() => {
@@ -215,13 +220,14 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
           className="pl-4"
         >
           <VerticalTable
-            tableData={displayData}
-            columns={columns}
-            selectableRow={false}
-            showControls={false}
-            columnSorting={"manual"}
-            handleChange={handleChange}
-            stickyHeader
+            data={displayData}
+            columns={setDetailPanelColumns}
+            columnSorting="manual"
+            sorting={sorting}
+            status={
+              isGeneSuccess || isMutationSuccess ? "fulfilled" : "pending"
+            }
+            setSorting={setSorting}
           />
         </ScrollArea>
       </div>

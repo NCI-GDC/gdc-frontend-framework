@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
   buildCohortGqlOperator,
@@ -13,13 +12,12 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertDateToString } from "src/utils/date";
-import { extractToArray } from "src/utils";
-import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
+import { extractToArray, statusBooleansToDataStatus } from "src/utils";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
 import {
@@ -32,15 +30,11 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { Checkbox } from "@mantine/core";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
-import { FaCircle as Circle } from "react-icons/fa";
 import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
-import { animated, useSpring } from "@react-spring/web";
-import { useMeasure } from "react-use";
+import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { HandleChangeInput } from "@/components/Table/types";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 type ProjectDataType = {
   project: string;
@@ -165,7 +159,7 @@ const ProjectsTable: React.FC = () => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -181,6 +175,7 @@ const ProjectsTable: React.FC = () => {
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
+            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -219,70 +214,27 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("disease_type", {
         id: "disease_type",
         header: "Disease Type",
-        cell: ({ row, getValue }) => {
-          return getValue()?.length === 0
-            ? "--"
-            : getValue()?.length === 1
-            ? getValue()
-            : row.getCanExpand() && (
-                <div
-                  aria-label="Expand section"
-                  className="flex items-center text-primary cursor-pointer gap-2"
-                >
-                  {row.getIsExpanded() &&
-                  expandedColumnId === "disease_type" ? (
-                    <UpIcon size="1.25em" className="text-accent" />
-                  ) : (
-                    <DownIcon size="1.25em" className="text-accent" />
-                  )}
-                  <span
-                    className={`whitespace-nowrap ${
-                      row.getIsExpanded() &&
-                      expandedColumnId === "disease_type" &&
-                      "font-bold"
-                    }`}
-                  >
-                    {getValue()?.length.toLocaleString().padStart(6)} Disease
-                    Types
-                  </span>
-                </div>
-              );
-        },
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Disease Types"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "disease_type"}
+          />
+        ),
         enableSorting: false,
       }),
       projectsTableColumnHelper.accessor("primary_site", {
         id: "primary_site",
         header: "Primary Site",
-        cell: ({ row, getValue }) => {
-          return getValue()?.length === 0
-            ? "--"
-            : getValue()?.length === 1
-            ? getValue()
-            : row.getCanExpand() && (
-                <div
-                  aria-label="Expand section"
-                  className="flex items-center text-primary cursor-pointer gap-2"
-                >
-                  {row.getIsExpanded() &&
-                  expandedColumnId === "primary_site" ? (
-                    <UpIcon size="1.25em" className="text-accent" />
-                  ) : (
-                    <DownIcon size="1.25em" className="text-accent" />
-                  )}
-
-                  <span
-                    className={`whitespace-nowrap ${
-                      row.getIsExpanded() &&
-                      expandedColumnId === "primary_site" &&
-                      "font-bold"
-                    }`}
-                  >
-                    {getValue()?.length.toLocaleString().padStart(6)} Primary
-                    Sites
-                  </span>
-                </div>
-              );
-        },
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Primary Sites"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "primary_site"}
+          />
+        ),
         enableSorting: false,
       }),
       projectsTableColumnHelper.accessor("program", {
@@ -312,16 +264,20 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
-        enableSorting: false,
+        enableSorting: true,
       }),
     ],
     [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
   );
 
+  const getRowId = (originalRow: ProjectDataType) => {
+    return originalRow.project;
+  };
+
   const [rowSelection, setRowSelection] = useState({});
-  const pickedProjects = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => (formattedTableData[index] as ProjectDataType).project);
+  const pickedProjects = Object.entries(rowSelection)?.map(
+    ([project]) => project,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -334,6 +290,7 @@ const ProjectsTable: React.FC = () => {
   ]);
 
   useEffect(() => {
+    setRowSelection({});
     sortByActions(sorting);
   }, [sorting]);
 
@@ -359,12 +316,6 @@ const ProjectsTable: React.FC = () => {
     await download({
       endpoint: "projects",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(projectFilters) ?? {},
         size: 10000,
@@ -400,14 +351,14 @@ const ProjectsTable: React.FC = () => {
   const handleExpand = (row: Row<ProjectDataType>, columnId: string) => {
     if (
       Object.keys(expanded).length > 0 &&
-      row.index === expandedRowId &&
+      row.original.project === expandedRowId &&
       columnId === expandedColumnId
     ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
+      setExpanded({ [row.original.project]: true });
       setExpandedColumnId(columnId);
-      setExpandedRowId(row.index);
+      setExpandedRowId(row.original.project);
     }
   };
 
@@ -446,7 +397,7 @@ const ProjectsTable: React.FC = () => {
       getRowCanExpand={() => true}
       expandableColumnIds={["disease_type", "primary_site"]}
       renderSubComponent={({ row, clickedColumnId }) => (
-        <CreateContent row={row} columnId={clickedColumnId} />
+        <SubrowPrimarySiteDiseaseType row={row} columnId={clickedColumnId} />
       )}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
@@ -462,51 +413,9 @@ const ProjectsTable: React.FC = () => {
       setSorting={setSorting}
       expanded={expanded}
       setExpanded={handleExpand}
+      getRowId={getRowId}
     />
   );
 };
 
-const CreateContent = ({
-  row,
-  columnId,
-}: {
-  row: Row<ProjectDataType>;
-  columnId: string;
-}): JSX.Element => {
-  const values =
-    columnId === "disease_type"
-      ? row?.original?.disease_type
-      : row?.original?.primary_site;
-  const title = columnId === "disease_type" ? "Disease Type" : "Primary Site";
-
-  const [subRef, { width, height }] = useMeasure();
-
-  const fudgeFactor = width / 60;
-
-  const verticalSpring = useSpring({
-    from: { opacity: 0.25, height: 50 },
-    to: {
-      opacity: 1,
-      height: height + fudgeFactor,
-    },
-    immediate: true,
-  });
-
-  return (
-    <>
-      <animated.div ref={subRef} className="absolute mt-2 ml-2">
-        <div className="font-semibold text-[1rem] mb-2">{title}</div>
-        <div className="columns-4 gap-4 font-content text-sm">
-          {values.sort().map((value) => (
-            <div className="flex flex-row items-center" key={value}>
-              <Circle size="0.65em" className="text-primary shrink-0" />
-              <p className="pl-2">{value}</p>
-            </div>
-          ))}
-        </div>
-      </animated.div>
-      <animated.div style={verticalSpring}></animated.div>
-    </>
-  );
-};
 export default ProjectsTable;
