@@ -10,7 +10,7 @@ interface CreateSetValueArgs {
 }
 
 interface CreateSetFilterArgs {
-  filters?: GqlOperation;
+  filters?: GqlOperation | Record<string, never>;
   size?: number;
   score?: string;
   set_id?: string;
