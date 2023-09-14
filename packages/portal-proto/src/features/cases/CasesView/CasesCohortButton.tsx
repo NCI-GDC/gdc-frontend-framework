@@ -25,6 +25,7 @@ interface CasesCohortButtonProps {
   readonly response: { isSuccess: boolean; data?: string };
   readonly cases: readonly string[];
   readonly numCases: number;
+  readonly fetchingCases?: boolean;
 }
 
 export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
@@ -32,6 +33,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   response,
   cases,
   numCases,
+  fetchingCases = false,
 }: CasesCohortButtonProps) => {
   const [name, setName] = useState(undefined);
   const coreDispatch = useCoreDispatch();
@@ -67,28 +69,32 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   return (
     <>
       <DropdownWithIcon
-        dropdownElements={[
-          {
-            title: "Only Selected Cases",
-            onClick: () => {
-              setShowCreateCohort(true);
-            },
-          },
-          {
-            title: " Existing Cohort With Selected Cases",
-            onClick: () => {
-              setWithOrWithoutCohort("with");
-              setOpenSelectCohorts(true);
-            },
-          },
-          {
-            title: " Existing Cohort Without Selected Cases",
-            onClick: () => {
-              setWithOrWithoutCohort("without");
-              setOpenSelectCohorts(true);
-            },
-          },
-        ]}
+        dropdownElements={
+          fetchingCases
+            ? [{ title: "Loading..." }]
+            : [
+                {
+                  title: "Only Selected Cases",
+                  onClick: () => {
+                    setShowCreateCohort(true);
+                  },
+                },
+                {
+                  title: " Existing Cohort With Selected Cases",
+                  onClick: () => {
+                    setWithOrWithoutCohort("with");
+                    setOpenSelectCohorts(true);
+                  },
+                },
+                {
+                  title: " Existing Cohort Without Selected Cases",
+                  onClick: () => {
+                    setWithOrWithoutCohort("without");
+                    setOpenSelectCohorts(true);
+                  },
+                },
+              ]
+        }
         TargetButtonChildren="Create New Cohort"
         disableTargetWidth={true}
         targetButtonDisabled={numCases == 0}
@@ -160,7 +166,7 @@ export const CasesCohortButtonFromFilters: React.FC<
     () => createSet({ filters }),
     [createSet, filters],
   );
-  const { data, isSuccess } = useGetCasesQuery(
+  const { data, isSuccess, isLoading } = useGetCasesQuery(
     { filters, fields: ["case_id"], size: 50000 },
     { skip: filters === undefined },
   );
@@ -171,6 +177,7 @@ export const CasesCohortButtonFromFilters: React.FC<
       response={response}
       numCases={numCases}
       cases={isSuccess ? data.map((d) => d.case_id) : []}
+      fetchingCases={isLoading}
     />
   );
 };
