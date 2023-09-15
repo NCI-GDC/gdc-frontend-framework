@@ -160,7 +160,6 @@ describe("ColumnOrdering", () => {
     // Check if the column order has changed
     const updatedColumnOrder = ["col2", "col1", "col3"];
 
-    console.log(mockTable);
     expect(mockSetColumnOrder).toBeCalledWith(updatedColumnOrder);
   });
 
@@ -180,7 +179,7 @@ describe("ColumnOrdering", () => {
     await userEvent.click(button);
     // Simulate clicking on the switch to toggle visibility of the first column
     const switchToggle = getAllByTestId("switch-toggle");
-    fireEvent.click(switchToggle[0]);
+    userEvent.click(switchToggle[0]);
 
     // Check if the visibility has changed
     expect(mockGetToggleVisibilityHandlerCol1).toBeCalled();
