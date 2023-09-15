@@ -2,9 +2,15 @@ import React, { useEffect, useState, useMemo, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
-import { Badge, Highlight, Pagination, Tooltip } from "@mantine/core";
+import {
+  Badge,
+  Highlight,
+  Pagination,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import { MdSearch } from "react-icons/md";
+import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
 import { SearchResult } from "minisearch";
 import {
@@ -98,31 +104,33 @@ export const SearchInput: React.FC = () => {
   };
 
   return (
-    <div ref={ref}>
-      <div className="flex items-center justify-between bg-base-max w-[400px] p-1 focus:outline-2 rounded-sm border-1">
-        <MdSearch size="1.5em" />
-        <input
-          data-testid="textbox-search-bar"
-          type="search"
-          placeholder="Search"
-          value={searchTerm}
-          onChange={onSearchChanged}
-          className="border-none focus:outline-0 grow-1 w-full"
-          onFocus={() => setDropdownOpen(searchTerm.length > 0)}
-        />
-        {searchTerm.length > 0 && (
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={() => clearSearch()}
-            onKeyDown={createKeyboardAccessibleFunction(clearSearch)}
-            className="text-xs grow-0 mr-1 cursor-pointer"
-          >
-            Clear
-          </span>
-        )}
-      </div>
-
+    <div ref={ref} className="relative">
+      <TextInput
+        icon={<SearchIcon size={24} />}
+        placeholder="Search"
+        data-testid="textbox-search-bar"
+        aria-label="App Search Input"
+        value={searchTerm}
+        onChange={onSearchChanged}
+        onFocus={() => setDropdownOpen(searchTerm.length > 0)}
+        classNames={{
+          root: "w-[25rem]",
+          input: "focus:border-2 focus:border-primary text-sm",
+        }}
+        size="sm"
+        rightSection={
+          searchTerm.length > 0 && (
+            <CloseIcon
+              onClick={() => {
+                clearSearch();
+                ref.current.focus();
+              }}
+              className="cursor-pointer"
+              data-testid="search-input-clear-search"
+            />
+          )
+        }
+      />
       {dropdownOpen && (
         <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
           {searchResults.length === 0 ? (
