@@ -2,14 +2,14 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
+import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { truncateString } from "src/utils";
+import { convertDateToString } from "@/utils/date";
+import { DashboardDownloadContext } from "@/utils/contexts";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
-import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { convertDateToString } from "@/utils/date";
-import { DashboardDownloadContext } from "../chartDownloadContext";
 import { toDisplayName } from "../utils";
-import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 const formatBarChartData = (
   data: Record<string, number>,

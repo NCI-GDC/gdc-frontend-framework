@@ -13,7 +13,7 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   chartDownloadReducer,
   DashboardDownloadContext,
-} from "@/features/cDave/chartDownloadContext";
+} from "@/utils/contexts";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),

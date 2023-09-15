@@ -15,9 +15,11 @@ import {
   ClinicalContinuousStatsData,
 } from "@gff/core";
 import tailwindConfig from "tailwind.config";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { convertDateToString } from "@/utils/date";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { DashboardDownloadContext } from "@/utils/contexts";
+import { convertDateToString } from "@/utils/date";
 import {
   BOX_QQ_DATA_DIMENSIONS,
   COLOR_MAP,
@@ -26,8 +28,6 @@ import {
 import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
-import { DashboardDownloadContext } from "../chartDownloadContext";
-import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
