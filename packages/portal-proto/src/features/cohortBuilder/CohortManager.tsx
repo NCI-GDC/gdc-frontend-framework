@@ -32,7 +32,6 @@ import {
   FilterSet,
   buildGqlOperationToFilterSet,
   buildCohortGqlOperator,
-  resetSelectedCases,
   Modals,
   selectCurrentModal,
   useGetCasesQuery,
@@ -44,6 +43,7 @@ import {
   setCohort,
   setActiveCohort,
   useCurrentCohortCounts,
+  fetchCohortCaseCounts,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -142,7 +142,6 @@ const CohortManager: React.FC = () => {
   // Cohort specific actions
   const newCohort = useCallback(
     (customName: string) => {
-      coreDispatch(resetSelectedCases());
       coreDispatch(addNewCohort(customName));
     },
     [coreDispatch],
@@ -156,8 +155,12 @@ const CohortManager: React.FC = () => {
   );
 
   const deleteCohort = () => {
-    coreDispatch(resetSelectedCases());
+    const lastCohort = cohorts.length === 1; // check to see if deleting the last cohort
     coreDispatch(removeCohort({ shouldShowMessage: true }));
+    if (lastCohort) {
+      // deleted the last cohort., so a new one is created and requires needs counts
+      coreDispatch(fetchCohortCaseCounts(undefined));
+    }
   };
 
   const {

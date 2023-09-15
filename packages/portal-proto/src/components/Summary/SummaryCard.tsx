@@ -1,4 +1,4 @@
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 
 export interface SummaryCardProps {

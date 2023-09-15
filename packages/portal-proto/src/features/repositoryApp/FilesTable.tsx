@@ -35,10 +35,6 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
   ColumnDef,
@@ -50,6 +46,10 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
+import {
+  getAnnotationsLinkParamsFromFiles,
+  statusBooleansToDataStatus,
+} from "src/utils";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -362,12 +362,6 @@ const FilesTables: React.FC = () => {
     await download({
       endpoint: "files",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(allFilters) ?? {},
         size: 10000,
@@ -392,10 +386,6 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
-      queryParams: `?${new URLSearchParams({
-        annotations: "true",
-        related_files: "true",
-      }).toString()}`,
     });
   };
 

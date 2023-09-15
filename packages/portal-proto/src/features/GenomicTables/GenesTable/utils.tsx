@@ -2,7 +2,6 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Checkbox, Tooltip } from "@mantine/core";
-
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -13,12 +12,10 @@ import { CountButton } from "@/components/CountButton/CountButton";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { CohortCreationButton } from "@/components/CohortCreationButton";
-import {
-  AnnotationsIcon,
-  NumeratorDenominator,
-  RatioSpring,
-} from "@/components/expandableTables/shared";
 import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
+import NumeratorDenominator from "@/components/NumeratorDenominator";
+import AnnotationsIcon from "./AnnotationsIcon";
+import RatioWithSpring from "@/components/RatioWithSpring";
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -63,6 +60,7 @@ export const useGenerateGenesTableColumns = ({
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
+            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -224,7 +222,7 @@ export const useGenerateGenesTableColumns = ({
                 </div>
               )}
               {row.getCanExpand() && (
-                <RatioSpring index={0} item={{ numerator, denominator }} />
+                <RatioWithSpring index={0} item={{ numerator, denominator }} />
               )}
             </div>
           );

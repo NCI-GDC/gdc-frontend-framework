@@ -17,7 +17,7 @@ import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
-import { DownloadButton } from "@/features/shared/tailwindComponents";
+import { DownloadButton } from "@/components/tailwindComponents";
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
 const textColors = [

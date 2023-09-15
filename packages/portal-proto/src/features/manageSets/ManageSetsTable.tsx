@@ -1,5 +1,5 @@
-import React from "react";
-import { useDeepCompareMemo, useDeepCompareCallback } from "use-deep-compare";
+import React, { useMemo, useState } from "react";
+import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -7,18 +7,16 @@ import {
   FaExclamationCircle as WarningIcon,
 } from "react-icons/fa";
 import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
-import { Row } from "react-table";
-import { useCoreDispatch, removeSets } from "@gff/core";
+import { useCoreDispatch, removeSets, SetTypes } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { SetData } from "./types";
 import SetNameInput from "./SetNameInput";
 import DeleteSetsNotification from "./DeleteSetsNotification";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { createColumnHelper, SortingState } from "@tanstack/react-table";
 
 interface CountBadgeProps {
   readonly count: number;
@@ -115,15 +113,8 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
                   },
                 ],
               },
-              options: {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              },
               method: "POST",
               dispatch,
-              form: true,
             });
           }}
         >
@@ -137,54 +128,37 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
 interface MangeSetsTableProps {
   readonly geneData: SetData[];
   readonly ssmData: SetData[];
-  readonly selectedSets: SetData[];
   readonly setSelectedSets: (sets: SetData[]) => void;
   readonly detailSet: SetData;
   readonly setDetailSet: (set: SetData) => void;
 }
 
+type ManageSetsTableDataType = {
+  setId: string;
+  entityType: string;
+  setName: string;
+  count: number;
+  set: SetData;
+  setType: SetTypes;
+};
+
 const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   geneData,
   ssmData,
-  selectedSets,
   setSelectedSets,
   detailSet,
   setDetailSet,
 }) => {
-  const selectedSetIds = selectedSets.map((set) => set.setId);
-
-  const updateSelectedSets = useDeepCompareCallback(
-    (set: SetData) => {
-      if (selectedSetIds.includes(set.setId)) {
-        setSelectedSets(selectedSets.filter((s) => s.setId !== set.setId));
-      } else {
-        setSelectedSets([...selectedSets, set]);
-      }
-    },
-    [selectedSetIds, selectedSets, setSelectedSets],
-  );
-
   const tableData = useDeepCompareMemo(() => {
     return [
       ...ssmData.map((set) => {
         const { setName, count, setId, setType } = set;
         return {
-          select: (
-            <Checkbox
-              value={setId}
-              checked={selectedSetIds.includes(setId)}
-              onChange={() => updateSelectedSets(set)}
-              aria-label={`Select/deselect ${setName}`}
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-            />
-          ),
+          setId,
           entityType: "Mutations",
           setName,
           count,
-          actions: <ManageSetActions set={set} downloadType="ssm" />,
-          setId,
+          set,
           setType,
         };
       }),
@@ -192,27 +166,121 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         const { setName, count, setId, setType } = set;
 
         return {
-          select: (
-            <Checkbox
-              value={setId}
-              checked={selectedSetIds.includes(setId)}
-              onChange={() => updateSelectedSets(set)}
-              aria-label={`Select/deselect ${setName}`}
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-            />
-          ),
           entityType: "Genes",
           setName,
           count,
-          actions: <ManageSetActions set={set} downloadType="gene" />,
+          set,
           setId,
           setType,
         };
       }),
     ];
-  }, [selectedSetIds, ssmData, geneData, updateSelectedSets]);
+  }, [ssmData, geneData]);
+
+  const getRowId = (originalRow: ManageSetsTableDataType) => {
+    return originalRow.setId;
+  };
+  const [rowSelection, setRowSelection] = useState({});
+
+  const pickedSets: SetData[] = Object.entries(rowSelection).reduce(
+    (result, [id, isSelected]) => {
+      if (isSelected) {
+        const matchingItems = tableData.filter(
+          (tableDatum) => tableDatum.setId === id,
+        );
+        result.push(...matchingItems);
+      }
+      return result;
+    },
+    [],
+  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  useDeepCompareEffect(() => {
+    setSelectedSets(pickedSets);
+  }, [pickedSets, setSelectedSets]);
+
+  const manageSetsTableColumnHelper =
+    createColumnHelper<ManageSetsTableDataType>();
+
+  const manageSetsColumn = useMemo(
+    () => [
+      manageSetsTableColumnHelper.display({
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+            aria-label="Select all the rows of the table"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select/deselect ${row.original.setName}`}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        ),
+        enableHiding: false,
+      }),
+      manageSetsTableColumnHelper.accessor("entityType", {
+        id: "entityType",
+        header: "Entity Type",
+      }),
+      manageSetsTableColumnHelper.accessor("setName", {
+        id: "setName",
+        header: "Name",
+        cell: ({ getValue, row }) => (
+          <SetNameInput
+            setName={getValue()}
+            setId={row.original.setId}
+            setType={row.original.setType}
+          />
+        ),
+      }),
+      manageSetsTableColumnHelper.accessor("count", {
+        id: "count",
+        header: "# Items",
+        cell: ({ getValue, row }) => (
+          <CountBadge
+            count={getValue()}
+            active={detailSet?.setId === row.original.setId}
+            openSetDetail={() => {
+              setDetailSet({
+                setId: row.original.setId,
+                setName: row.original.setName,
+                setType: row.original.setType,
+                count: getValue(),
+              });
+            }}
+          />
+        ),
+      }),
+      manageSetsTableColumnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <ManageSetActions
+            set={row.original.set}
+            downloadType={row.original.entityType === "Genes" ? "gene" : "ssm"}
+          />
+        ),
+      }),
+    ],
+    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper],
+  );
 
   const {
     handlePageChange,
@@ -236,99 +304,11 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
     }
   };
 
-  const allSetIds = useDeepCompareMemo(
-    () => displayedData.map((set) => set.setId),
-    [displayedData],
-  );
-  const selectAllChecked = allSetIds.every((setId) =>
-    selectedSetIds.includes(setId),
-  );
-
-  const updateSelectAllSets = useDeepCompareCallback(() => {
-    if (allSetIds.every((setId) => selectedSetIds.includes(setId))) {
-      setSelectedSets([]);
-    } else {
-      setSelectedSets(
-        displayedData.map((data) => ({
-          setId: data.setId,
-          setType: data.setType,
-          count: data.count,
-          setName: data.setName,
-        })),
-      );
-    }
-  }, [allSetIds, selectedSetIds, setSelectedSets, displayedData]);
-
-  const columns = useDeepCompareMemo(
-    () => [
-      {
-        id: "select",
-        columnName: (
-          <Checkbox
-            checked={selectAllChecked}
-            onChange={updateSelectAllSets}
-            aria-label="Select/deselect all sets"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-          />
-        ),
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "entityType",
-        columnName: "Entity Type",
-        visible: true,
-      },
-      {
-        id: "setName",
-        columnName: "Name",
-        visible: true,
-        Cell: ({ value, row }: { value: string; row: Row<SetData> }) => (
-          <SetNameInput
-            setName={value}
-            setId={row.original.setId}
-            setType={row.original.setType}
-          />
-        ),
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-        Cell: ({ value, row }: { value: number; row: Row<SetData> }) => (
-          <CountBadge
-            count={value}
-            active={detailSet?.setId === row.original.setId}
-            openSetDetail={() => {
-              setDetailSet({
-                setId: row.original.setId,
-                setName: row.original.setName,
-                setType: row.original.setType,
-                count: value,
-              });
-            }}
-          />
-        ),
-      },
-      {
-        id: "actions",
-        columnName: "Actions",
-        visible: true,
-        disableSortBy: true,
-      },
-    ],
-    [detailSet?.setId, setDetailSet, selectAllChecked, updateSelectAllSets],
-  );
-
   return (
     <div className="w-3/4 pb-6">
       <VerticalTable
-        tableData={displayedData}
-        columns={columns}
-        selectableRow={false}
-        showControls={false}
+        data={displayedData}
+        columns={manageSetsColumn}
         pagination={{
           page,
           pages,
@@ -338,7 +318,14 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           label: "sets",
         }}
         handleChange={handleChange}
-        columnSorting={"enable"}
+        columnSorting="enable"
+        sorting={sorting}
+        setSorting={setSorting}
+        status="fulfilled"
+        enableRowSelection={true}
+        setRowSelection={setRowSelection}
+        rowSelection={rowSelection}
+        getRowId={getRowId}
       />
     </div>
   );
