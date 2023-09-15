@@ -314,6 +314,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
   };
 
+  const handleTSVDownload = () => {
+    download({
+      endpoint: "/analysis/top_ssms",
+      method: "POST",
+      params: {
+        filters: buildCohortGqlOperator(contextSensitiveFilters) ?? {},
+      },
+      dispatch,
+    });
+  };
+
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
@@ -472,8 +483,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     )}
                   </FunctionButton>
                 </ButtonTooltip>
-                <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton data-testid="button-tsv-mutation-frequency">
+                <ButtonTooltip label="Export current view">
+                  <FunctionButton
+                    onClick={handleTSVDownload}
+                    data-testid="button-tsv-mutation-frequency"
+                  >
                     TSV
                   </FunctionButton>
                 </ButtonTooltip>

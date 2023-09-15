@@ -312,6 +312,22 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     });
   };
 
+  const handleTSVDownload = async () => {
+    const tableFilters =
+      buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
+    //setDownloadMutatedGenesActive(true);
+    await download({
+      endpoint: "/analysis/top_mutated_genes",
+      method: "POST",
+      params: {
+        filters: tableFilters,
+        attachment: true,
+      },
+      dispatch,
+      //done: () => setDownloadMutatedGenesActive(false),
+    });
+  };
+
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<Gene>) => {
@@ -452,8 +468,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 {downloadMutatedGenesActive ? <Loader size="sm" /> : "JSON"}
               </FunctionButton>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton data-testid="button-tsv-mutation-frequency">
+            <ButtonTooltip label="Export current view">
+              <FunctionButton
+                onClick={handleTSVDownload}
+                data-testid="button-tsv-mutation-frequency"
+              >
                 TSV
               </FunctionButton>
             </ButtonTooltip>
