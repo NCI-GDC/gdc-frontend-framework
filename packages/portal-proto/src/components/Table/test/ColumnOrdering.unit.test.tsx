@@ -179,7 +179,7 @@ describe("ColumnOrdering", () => {
     await userEvent.click(button);
     // Simulate clicking on the switch to toggle visibility of the first column
     const switchToggle = getAllByTestId("switch-toggle");
-    userEvent.click(switchToggle[0]);
+    await userEvent.click(switchToggle[0]);
 
     // Check if the visibility has changed
     expect(mockGetToggleVisibilityHandlerCol1).toBeCalled();
