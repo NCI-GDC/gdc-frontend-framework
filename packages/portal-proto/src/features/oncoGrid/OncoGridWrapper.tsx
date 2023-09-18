@@ -285,7 +285,11 @@ const OncoGridWrapper: React.FC = () => {
               </Menu>
             </Box>
           </Tooltip>
-          <Menu position="bottom-start" offset={1} transitionDuration={0}>
+          <Menu
+            position="bottom-start"
+            offset={1}
+            transitionProps={{ duration: 0 }}
+          >
             <Menu.Target>
               <div className="flex">
                 <Tooltip

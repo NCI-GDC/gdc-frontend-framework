@@ -1,12 +1,13 @@
 import { Tooltip } from "@mantine/core";
-import { NextLink } from "@mantine/next";
+// import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 import AnalysisCenterIcon from "public/user-flow/icons/dna.svg";
 import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
 import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
 import DownloadIcon from "public/user-flow/icons/database.svg";
+// import Link from "next/link";
 
-const NavLink = tw(NextLink)`
+const NavLink = tw.a`
 flex
 items-center
 gap-1
@@ -26,21 +27,24 @@ export const headerElements = [
     width={220}
   >
     <NavLink
-      href={{
-        pathname: "/analysis_page",
-        query: { app: undefined },
-      }}
+      // href={{
+      //   pathname: "/analysis_page",
+      //   query: { app: undefined },
+      // }}
+      href={`/v2/analysis_page?app=`}
       data-testid="button-header-analysis"
       aria-label="analysis center button"
     >
-      <AnalysisCenterIcon
-        aria-label="Analysis logo"
-        width={24}
-        height={24}
-        viewBox="0 0 500 500"
-        role="img"
-      />
-      Analysis Center
+      <>
+        <AnalysisCenterIcon
+          aria-label="Analysis logo"
+          width={24}
+          height={24}
+          viewBox="0 0 500 500"
+          role="img"
+        />
+        Analysis Center
+      </>
     </NavLink>
   </Tooltip>,
   <Tooltip
@@ -58,14 +62,16 @@ export const headerElements = [
       data-testid="button-header-projects"
       aria-label="project/studies center button"
     >
-      <ProjectsIcon
-        aria-label="Studies logo"
-        width={24}
-        height={24}
-        viewBox="0 -15 100 100"
-        role="img"
-      />
-      Projects
+      <>
+        <ProjectsIcon
+          aria-label="Studies logo"
+          width={24}
+          height={24}
+          viewBox="0 -15 100 100"
+          role="img"
+        />
+        Projects
+      </>
     </NavLink>
   </Tooltip>,
   <Tooltip
@@ -83,14 +89,16 @@ export const headerElements = [
       data-testid="button-header-cohort"
       aria-label="cohort builder button"
     >
-      <CohortBuilderIcon
-        aria-label="Cohort logo"
-        width={24}
-        height={24}
-        viewBox="0 0 50 50"
-        role="img"
-      />
-      Cohort Builder
+      <>
+        <CohortBuilderIcon
+          aria-label="Cohort logo"
+          width={24}
+          height={24}
+          viewBox="0 0 50 50"
+          role="img"
+        />
+        Cohort Builder
+      </>
     </NavLink>
   </Tooltip>,
   <Tooltip
@@ -108,14 +116,16 @@ export const headerElements = [
       data-testid="button-header-downloads"
       aria-label="download center button"
     >
-      <DownloadIcon
-        aria-label="Downloads logo"
-        width={24}
-        height={24}
-        viewBox="0 0 50 50"
-        role="img"
-      />
-      Repository
+      <>
+        <DownloadIcon
+          aria-label="Downloads logo"
+          width={24}
+          height={24}
+          viewBox="0 0 50 50"
+          role="img"
+        />
+        Repository
+      </>
     </NavLink>
   </Tooltip>,
 ];

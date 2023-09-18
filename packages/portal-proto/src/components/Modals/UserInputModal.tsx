@@ -51,7 +51,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
       size={900}
       padding={0}
       withinPortal={false}
-      closeButtonLabel="close modal"
+      closeButtonProps={{ "aria-label": "close modal" }}
       centered
     >
       <DiscardChangesModal

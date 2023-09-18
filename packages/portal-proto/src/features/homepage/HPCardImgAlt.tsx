@@ -1,10 +1,10 @@
-import { LinkProps } from "next/link";
+import Link, { LinkProps } from "next/link";
 import tw from "tailwind-styled-components";
-import { NextLink } from "@mantine/next";
+// import { NextLink } from "@mantine/next";
 import { Image } from "@/components/Image";
 
 export const HomepageButtonAlt = tw(
-  NextLink,
+  Link,
 )`bg-primary-max text-sm text-summarybar-text border-base-light border-1
 hover:bg-primary-lightest hover:text-primary-min
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block`;

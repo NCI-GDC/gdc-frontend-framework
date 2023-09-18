@@ -108,12 +108,12 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       title={`Add ${addToCount.toLocaleString()} ${setTypeLabel}${
         addToCount > 1 ? "s" : ""
       } to an existing set`}
-      closeButtonLabel="close"
+      closeButtonProps={{ "aria-label": "close" }}
       opened
       onClose={closeModal}
       size="lg"
       classNames={{
-        modal: "p-0 drop-shadow-lg",
+        content: "p-0 drop-shadow-lg",
       }}
     >
       <div className="p-4">

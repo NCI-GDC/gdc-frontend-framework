@@ -194,7 +194,7 @@ export const SelectCohortsModal = ({
           withCloseButton
           title={title}
           classNames={{
-            modal: "p-0 drop-shadow-lg",
+            content: "p-0 drop-shadow-lg",
             body: "flex flex-col justify-between min-h-[300px]",
           }}
           size="xl"

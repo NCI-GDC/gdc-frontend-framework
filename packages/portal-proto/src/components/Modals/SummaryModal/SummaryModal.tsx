@@ -69,7 +69,6 @@ export const SummaryModal = ({
       size="calc(100vw - 100px)"
       withinPortal={false}
       zIndex={300}
-      overflow="inside"
       classNames={{
         header: "relative m-0 p-0 border-0",
         body: "relative",
@@ -77,8 +76,8 @@ export const SummaryModal = ({
           "absolute right-5 top-5 text-base-darkest [&_svg]:h-12 [&_svg]:w-12 mr-2 float-right z-30",
       }}
       padding={0}
-      overlayOpacity={0.5}
-      closeButtonLabel="button-close-modal"
+      overlayProps={{ opacity: 0.5 }}
+      closeButtonProps={{ "aria-label": "button-close-modal" }}
     >
       {SummaryPage}
     </Modal>

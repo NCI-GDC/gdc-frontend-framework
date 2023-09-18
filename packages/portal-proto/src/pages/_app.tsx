@@ -17,7 +17,6 @@ import {
   EmotionCache,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
-import { NotificationsProvider } from "@mantine/notifications";
 import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -35,6 +34,7 @@ import {
   SummaryModalContext,
   URLContext,
 } from "src/utils/contexts";
+import { Notifications } from "@mantine/notifications";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -147,11 +147,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             primaryColor: "primary",
             primaryShade: { light: 4, dark: 7 },
             breakpoints: {
-              xs: 500,
-              sm: 800,
-              md: 1000,
-              lg: 1275,
-              xl: 1800,
+              xs: "31.25em",
+              sm: "50em",
+              md: "62.5em",
+              lg: "80em",
+              xl: "112.5em",
             },
             components: {
               TextInput: {
@@ -245,16 +245,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             } color-transition duration-500`}
           >
             <URLContext.Provider value={{ prevPath, currentPath }}>
-              <NotificationsProvider position="top-center" zIndex={400}>
-                <SummaryModalContext.Provider
-                  value={{
-                    entityMetadata,
-                    setEntityMetadata,
-                  }}
-                >
-                  <Component {...pageProps} />
-                </SummaryModalContext.Provider>
-              </NotificationsProvider>
+              <SummaryModalContext.Provider
+                value={{
+                  entityMetadata,
+                  setEntityMetadata,
+                }}
+              >
+                <Notifications />
+                <Component {...pageProps} />
+              </SummaryModalContext.Provider>
             </URLContext.Provider>
             <Head>
               <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />

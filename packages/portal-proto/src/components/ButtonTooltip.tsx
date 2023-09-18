@@ -33,8 +33,7 @@ export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
       width={width}
       withArrow
       arrowSize={6}
-      transition="fade"
-      transitionDuration={200}
+      transitionProps={{ duration: 200, transition: "fade" }}
       multiline
     >
       {children}

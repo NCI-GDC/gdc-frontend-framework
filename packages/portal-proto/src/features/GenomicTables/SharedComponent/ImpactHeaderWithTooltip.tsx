@@ -95,8 +95,7 @@ const ImpactHeaderWithTooltip = (): JSX.Element => {
           </div>
         </div>
       }
-      transition="fade"
-      transitionDuration={200}
+      transitionProps={{ duration: 200, transition: "fade" }}
       multiline
       classNames={{
         tooltip:

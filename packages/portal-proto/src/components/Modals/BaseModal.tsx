@@ -59,7 +59,7 @@ export const BaseModal: React.FC<Props> = ({
           color: theme.extend.colors["gdc-grey"].darkest,
         },
       })}
-      closeButtonLabel={closeButtonLabel}
+      closeButtonProps={{ "aria-label": closeButtonLabel }}
       withinPortal={false}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}

@@ -36,8 +36,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
     <Tooltip
       label={`${tooltip}`}
       disabled={!tooltip || tooltip.length == 0}
-      transition="fade"
-      transitionDuration={200}
+      transitionProps={{ duration: 200, transition: "fade" }}
       multiline
     >
       <Checkbox

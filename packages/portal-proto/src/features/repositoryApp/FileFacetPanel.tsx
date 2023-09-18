@@ -142,7 +142,7 @@ export const FileFacetPanel = (): JSX.Element => {
           size="lg"
           opened={opened}
           onClose={() => setOpened(false)}
-          closeButtonLabel="button-close-modal"
+          closeButtonProps={{ "aria-label": "button-close-modal" }}
           zIndex={400}
         >
           <FacetSelection
