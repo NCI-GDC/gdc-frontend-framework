@@ -137,8 +137,8 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
       ["Maximum", formattedData.max].join("\t"),
       ["Mean", formattedData.mean].join("\t"),
       ["Median", formattedData.median].join("\t"),
-      ["Standard Deviation", data.std_dev].join("\t"),
-      ["IQR", data.iqr].join("\t"),
+      ["Standard Deviation", formatValue(data.std_dev)].join("\t"),
+      ["IQR", formatValue(data.iqr)].join("\t"),
     ];
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
@@ -189,29 +189,33 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
 
           <Menu.Dropdown>
             <Menu.Item
-              onClick={() => {
-                handleDownloadSVG(
-                  boxDownloadChartRef,
-                  `${boxPlotDownloadName}.svg`,
-                );
-                handleDownloadSVG(
-                  qqDownloadChartRef,
-                  `${qqPlotDownloadName}.svg`,
-                );
+              onClick={async () => {
+                Promise.all([
+                  handleDownloadSVG(
+                    boxDownloadChartRef,
+                    `${boxPlotDownloadName}.svg`,
+                  ),
+                  handleDownloadSVG(
+                    qqDownloadChartRef,
+                    `${qqPlotDownloadName}.svg`,
+                  ),
+                ]);
               }}
             >
               SVG
             </Menu.Item>
             <Menu.Item
-              onClick={() => {
-                handleDownloadPNG(
-                  boxDownloadChartRef,
-                  `${boxPlotDownloadName}.png`,
-                );
-                handleDownloadPNG(
-                  qqDownloadChartRef,
-                  `${qqPlotDownloadName}.png`,
-                );
+              onClick={async () => {
+                Promise.all([
+                  handleDownloadPNG(
+                    boxDownloadChartRef,
+                    `${boxPlotDownloadName}.png`,
+                  ),
+                  handleDownloadPNG(
+                    qqDownloadChartRef,
+                    `${qqPlotDownloadName}.png`,
+                  ),
+                ]);
               }}
             >
               PNG
@@ -252,10 +256,11 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           <BoxPlot
             data={formattedData}
             color={color}
-            width={500}
-            height={500}
+            width={boundingRectBox.width}
+            height={boundingRectBox.height}
             chartRef={boxDownloadChartRef}
-            label={`${displayName} Box Plot`}
+            label={[displayName, "Box Plot"]}
+            chartPadding={{ left: 60, right: 60, bottom: 40, top: 50 }}
           />
         </OffscreenWrapper>
         <OffscreenWrapper>
@@ -264,10 +269,10 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             data={parsedQQValues}
             isLoading={isLoading}
             color={color}
-            width={500}
-            height={500}
             chartRef={qqDownloadChartRef}
             label={`${displayName} QQ Plot`}
+            width={boundingRectQQ.width}
+            height={boundingRectQQ.height}
           />
         </OffscreenWrapper>
       </div>

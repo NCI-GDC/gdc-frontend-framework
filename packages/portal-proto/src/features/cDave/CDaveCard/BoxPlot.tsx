@@ -87,7 +87,7 @@ interface BoxPlotProps {
     bottom?: number;
   };
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
-  readonly label?: string;
+  readonly label?: string[];
 }
 
 const BoxPlot: React.FC<BoxPlotProps> = ({
@@ -97,7 +97,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
   width,
   chartPadding = { left: 60, right: 20, bottom: 40, top: 50 },
   chartRef,
-  label = "Box Plot",
+  label = ["Box Plot"],
 }: BoxPlotProps) => {
   const [tooltipProps, setShowTooltipProps] = useState<{
     visible: boolean;

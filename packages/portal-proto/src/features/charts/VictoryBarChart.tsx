@@ -128,8 +128,9 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       {chartLabel && (
         <VictoryLabel
           dy={20}
-          dx={width / 2}
+          dx={(width + chartPadding.left - chartPadding.right) / 2}
           text={chartLabel}
+          textAnchor="middle"
           style={{ fontSize: 28, fontFamily: "Noto Sans" }}
         />
       )}

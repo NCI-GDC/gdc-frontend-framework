@@ -84,6 +84,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     size="xs"
                     className="pt-1"
                     aria-labelledby={rowSelectId}
+                    disabled={count === 0}
                     checked={selectedFacets
                       .map((facet) => facet.value)
                       .includes(key)}
@@ -118,7 +119,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       }
                       withArrow
                     >
-                      <div className="w-fit">
+                      <div className="w-fit m-auto mr-auto">
                         <ActionIcon
                           variant="outline"
                           className={

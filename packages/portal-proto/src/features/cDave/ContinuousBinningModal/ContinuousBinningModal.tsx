@@ -151,6 +151,16 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     }
   };
 
+  const intervalFormAtDefault =
+    intervalForm.values.setIntervalSize === String(binSize) &&
+    intervalForm.values.setIntervalMin === String(stats.min) &&
+    intervalForm.values.setIntervalMax === String(stats.max + 1);
+  const rangeFormAtDefault =
+    rangeForm.values.ranges.length === 1 &&
+    rangeForm.values.ranges[0].name === "" &&
+    rangeForm.values.ranges[0].to === "" &&
+    rangeForm.values.ranges[0].from === "";
+
   return (
     <Modal
       opened
@@ -269,13 +279,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               setSavedRangeRows([]);
               setBinMethod("interval");
               setHasReset(true);
-              updateBins(null);
             }}
-            disabled={
-              !intervalForm.isDirty() &&
-              !rangeForm.isDirty() &&
-              customBins === null
-            }
+            disabled={intervalFormAtDefault && rangeFormAtDefault}
           >
             <ResetIcon size={20} />
           </FunctionButton>
