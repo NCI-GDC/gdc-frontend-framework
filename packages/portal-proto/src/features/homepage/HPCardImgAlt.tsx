@@ -1,6 +1,5 @@
 import Link, { LinkProps } from "next/link";
 import tw from "tailwind-styled-components";
-// import { NextLink } from "@mantine/next";
 import { Image } from "@/components/Image";
 
 export const HomepageButtonAlt = tw(
