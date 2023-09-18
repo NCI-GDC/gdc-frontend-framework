@@ -33,7 +33,7 @@ describe("</Footer>", () => {
   it("renders the proper data release info text", () => {
     jest.spyOn(core, "useVersionInfoDetails").mockReturnValue(mockData);
     render(<Footer />);
-    const el = screen.getByTestId("ftr-release-notes");
+    const el = screen.getByTestId("text-footer-release-notes");
     expect(el).toHaveTextContent(mockData.data.data_release);
   });
 

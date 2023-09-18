@@ -127,7 +127,7 @@ export const Footer: React.FC = () => {
                 </li>
                 <li>
                   <ExternalLink
-                    dataTestId="ftr-release-notes"
+                    dataTestId="text-footer-release-notes"
                     href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
                     className="underline"
                   >
