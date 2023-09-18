@@ -33,6 +33,7 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT)
         elif page_to_load == "cohort":
             self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
+            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "downloads":
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
         elif page_to_load == "home":

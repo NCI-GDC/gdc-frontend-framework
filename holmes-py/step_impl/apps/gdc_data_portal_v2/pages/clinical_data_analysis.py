@@ -100,7 +100,7 @@ class ClinicalDataAnalysisPage(BasePage):
         # If we find all values in the table, it passes the test
         return True
 
-    def is_table_value_on_analysis_card_is_present(self, analysis_card_name, table_value):
+    def is_table_value_on_analysis_card_present(self, analysis_card_name, table_value):
         """On the given analysis card, returns if specified value is present on the card's table"""
         text_table_locator = ClinicalDataAnalysisLocators.TEXT_IN_TABLE_ON_ANALYSIS_CARD(analysis_card_name,table_value)
         return self.is_visible(text_table_locator)

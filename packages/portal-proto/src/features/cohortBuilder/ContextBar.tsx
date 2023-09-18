@@ -333,24 +333,58 @@ const ContextBar = ({
               <>
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON ", onClick: handleBiospeciemenJSONDownload },
-                    { title: "TSV", onClick: handleBiospeciemenTSVDownload },
+                    {
+                      title: "JSON ",
+                      onClick: handleBiospeciemenJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleBiospeciemenTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
-                  LeftIcon={biospecimenDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    biospecimenDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Biospecimen dropdown"
+                      />
+                    )
+                  }
                 />
 
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON", onClick: handleClinicalJSONDownload },
-                    { title: "TSV", onClick: handleClinicalTSVDownload },
+                    {
+                      title: "JSON",
+                      onClick: handleClinicalJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleClinicalTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
-                  LeftIcon={clinicalDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    clinicalDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Clinical dropdown"
+                      />
+                    )
+                  }
                 />
               </>
             )}

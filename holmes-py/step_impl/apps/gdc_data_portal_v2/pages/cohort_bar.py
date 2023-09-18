@@ -15,7 +15,8 @@ class CohortBarLocators:
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = 'span:has-text("Set this as your current cohort.")'
     X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
 
-
+    TEXT_COHORT_QUERY_FILTER = lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) > div:has-text("{full_query_filter}") >> nth=0'
+    TEXT_COHORT_QUERY_FILTER_CHECK_WHOLE_AREA = lambda full_query_filter: f'[data-testid="text-cohort-filters"] > div:has-text("{full_query_filter}") >> nth=0'
 
 class CohortBar(BasePage):
 
@@ -50,14 +51,43 @@ class CohortBar(BasePage):
         locator = CohortBarLocators.ACTIVE_COHORT(cohort_name)
         return self.is_visible(locator)
 
-    # Checks if cohort bar button is disabled
+    def is_cohort_query_filter_present(self, filter, values, position):
+        """
+        is_cohort_query_filter_present returns if the given query filter is present
+        in the cohort query filter area
+
+        :param filter: The filter category
+        :param values: The values being filtered in the category
+        :param position: In what part of the query area is being checked for the filter (e.g 1,7,4,etc)
+        :return: True or False is the filter present
+        """
+        # Concatenate the full text of the filter being checked for
+        full_query_filter = filter+values
+        full_query_filter_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER(full_query_filter, position)
+        is_full_query_filter_locator_visible = self.is_visible(full_query_filter_locator)
+
+        return is_full_query_filter_locator_visible
+
+    def is_cohort_query_filter_not_present(self, filter, values):
+        """
+        is_cohort_query_filter_present returns if the given query filter is not present
+        anywhere in the cohort query filter area
+
+        :param filter: The filter category
+        :param values: The values being filtered in the category
+        :return: True or False is the filter present
+        """
+        # Concatenate the full text of the filter being checked for
+        full_query_filter = filter+values
+        full_query_filter_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER_CHECK_WHOLE_AREA(full_query_filter)
+        is_full_query_filter_locator_visible = self.is_visible(full_query_filter_locator)
+
+        return is_full_query_filter_locator_visible
+
     def is_cohort_bar_button_disabled(self, button_name:str):
+        """Returns if the cohort bar button has the attribute 'disabled'"""
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
-        class_attribute_text = self.get_attribute(locator, "class")
-        # Cohort bar buttons are not disabled in the usual way of having the atribute "disabled".
-        # Because of that, we cannot use the method 'is_disabled' on the locator.
-        # So we read the locators class, and if it has "cursor-not-allowed" it indicates its disabled.
-        return "cursor-not-allowed" in class_attribute_text
+        return self.is_disabled(locator)
 
     # After import cohort button has been clicked, we make sure the correct modal has loaded.
     # Then, we click the 'browse' button to open the file explorer.
