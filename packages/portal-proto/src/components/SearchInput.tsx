@@ -257,14 +257,28 @@ export const SearchInput: React.FC = () => {
                   })}
               </ul>
               <Pagination
+                data-testid="pagination"
+                color="accent.5"
+                className="ml-auto justify-center"
                 page={page}
-                onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
+                size="sm"
+                radius="xs"
                 withEdges
-                siblings={0}
-                color={"primary"}
-                classNames={{
-                  item: "border-0",
+                classNames={{ item: "border-0" }}
+                getItemAriaLabel={(page) => {
+                  switch (page) {
+                    case "prev":
+                      return "previous page button";
+                    case "next":
+                      return "next page button";
+                    case "first":
+                      return "first page button";
+                    case "last":
+                      return "last page button";
+                    default:
+                      return `${page} page button`;
+                  }
                 }}
               />
             </>
