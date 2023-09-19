@@ -136,6 +136,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           onChange={(d: Date | null) =>
             setDateRangeValue([d, dateRangeValue[1]])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           value={dateRangeValue[0]}
           aria-label="Set the since value"
           icon={<CalendarIcon />}
@@ -152,6 +153,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           onChange={(d: Date | null) =>
             setDateRangeValue([dateRangeValue[0], d])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           icon={<CalendarIcon />}
           aria-label="Set the through value"
         />
@@ -174,7 +176,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           <Popover.Dropdown>
             <DatePicker
               classNames={{
-                day: "data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
+                day: "hover:bg-primary hover:text-base-max data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
               }}
               numberOfColumns={2}
               type="range"
