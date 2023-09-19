@@ -56,3 +56,58 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 ## Add Mutations to Cohort and Save
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
+* Select "Add" from the Cohort Bar
+* Name the cohort "Mutation Cohort" in the Cohort Bar section
+* "Create" "Mutation Cohort has been created" and "remove modal" in the Cohort Bar section
+* Search the table for "chr3:g.179218294G>A"
+* Wait for table body text to appear
+  |expected_text        |row  |column |
+  |---------------------|-----|-------|
+  |chr3:g.179218294G>A  |1    |4      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |2     |
+* Pause "3" seconds
+* Select "Save" from the Cohort Bar
+* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* "Mutation Cohort" should be the active cohort
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections                           |position in filter area  |
+  |-------------------|-------------------------------------|-------------------------|
+  |SSM ID             |31df4cc1-3220-53c9-97a0-e926dd3f982b |1                        |
+
+## Add Mutation and Gene to Cohort and Save
+* Select "Add" from the Cohort Bar
+* Name the cohort "Mutation and Gene Cohort" in the Cohort Bar section
+* "Create" "Mutation and Gene Cohort has been created" and "remove modal" in the Cohort Bar section
+* Search the table for "chr7:g.140753336A>T"
+* Wait for table body text to appear
+  |expected_text        |row  |column |
+  |---------------------|-----|-------|
+  |chr7:g.140753336A>T  |1    |4      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |2     |
+* Switch to "Genes" tab in the Mutation Frequency app
+* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Wait for table loading spinner
+* Search the table for "BRAF"
+* Wait for table body text to appear
+  |expected_text|row  |column |
+  |-------------|-----|-------|
+  |BRAF         |1    |4      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |2     |
+* Pause "3" seconds
+* Select "Save" from the Cohort Bar
+* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* "Mutation and Gene Cohort" should be the active cohort
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections                           |position in filter area  |
+  |-------------------|-------------------------------------|-------------------------|
+  |SSM ID             |84aef48f-31e6-52e4-8e05-7d5b9ab15087 |1                        |
+  |Gene               |BRAF                                 |2                        |
