@@ -320,6 +320,8 @@ def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
 def wait_for_table_body_text_to_appear(table):
     """Waits for specified table body text to appear"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         """
@@ -328,6 +330,7 @@ def wait_for_table_body_text_to_appear(table):
         v[2] - Column
         """
         APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        time.sleep(1)
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
@@ -482,6 +485,7 @@ def select_table_value_by_row_column(table):
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
@@ -496,6 +500,7 @@ def send_text_into_table_search_bar(text: str):
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.keyboard_press("Enter")
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):

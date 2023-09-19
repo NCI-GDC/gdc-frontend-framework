@@ -82,12 +82,20 @@ def validate_cohort_is_present_in_dropdown(cohort_name: str):
 
 @step("Validate the cohort query filter area has these filters <table>")
 def validate_cohort_query_filters(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(v[0],v[1],v[2])
         assert is_cohort_filter_query_visible, f"The filter '{v[0]}', with values '{v[1]}' is NOT present in the cohort query filter area"
 
 @step("Validate the cohort query filter does not have these filters <table>")
 def validate_cohort_query_filters(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_not_present(v[0],v[1])
         assert is_cohort_filter_query_visible==False, f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"

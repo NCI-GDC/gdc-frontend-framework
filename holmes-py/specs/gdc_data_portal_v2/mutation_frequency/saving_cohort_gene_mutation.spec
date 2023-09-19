@@ -45,6 +45,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |2     |
 * Pause "3" seconds
+* Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
 * "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "Gene Cohort" should be the active cohort
@@ -69,6 +70,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |2     |
 * Pause "3" seconds
+* Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
 * "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "Mutation Cohort" should be the active cohort
@@ -103,6 +105,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |2     |
 * Pause "3" seconds
+* Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
 * "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "Mutation and Gene Cohort" should be the active cohort
