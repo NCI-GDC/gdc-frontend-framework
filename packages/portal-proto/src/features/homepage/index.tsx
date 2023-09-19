@@ -1,4 +1,3 @@
-// import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
