@@ -87,6 +87,40 @@ def verify_text_on_page(text, source, target_type):
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"
 
+@step("Verify the <source> is <equal_or_not_equal> to the home page count for <home_page_category>")
+def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_category):
+    """
+    verify_counts_match_home_page_count compares the specified home page statistic to another
+    specified statistic somewhere else in the data portal. Asserts if they are equal
+    or not equal based on spec file input.
+
+    :param source: The function being executed to get a statistic somewhere in the data portal
+    :param equal_or_not_equal: If the compared statistics should be equal or not
+    :param home_page_category: Name of the home page category we are comparing with
+    :return: N/A
+    """
+    sources = {
+        "Cohort Bar Case Count": APP.shared.get_cohort_bar_case_count()
+    }
+
+    # Get the statistic from somewhere in the data portal
+    count_from_page = sources.get(source)
+    # Turn it into an 'int' for comparison
+    count_from_page = count_from_page.replace(',', '')
+    count_from_page_int = int(count_from_page)
+
+    # From storage after previously running the test "store_home_page_data_portal_statistics"
+    # Get the category statistic from the data portal summary on the home page
+    count_from_home_page_statistics = data_store.spec[f"{home_page_category} count"]
+    # Turn it into an 'int' for comparison
+    count_from_home_page_statistics = count_from_home_page_statistics.replace(',', '')
+    count_from_home_page_statistics_int = int(count_from_home_page_statistics)
+
+    equal_or_not_equal = equal_or_not_equal.lower()
+    if equal_or_not_equal == "equal":
+        assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
+    elif equal_or_not_equal == "not equal":
+        assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
 
 @step("Close <modal_name> modal")
 def close_modal(modal_name: str):
@@ -299,6 +333,16 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
+
+@step("Collect these data portal statistics for comparison <table>")
+def store_home_page_data_portal_statistics(table):
+     """
+        Stores data portal summary statistics for use in future tests.
+        Pairs with the test 'verify_counts_match_home_page_count'
+     """
+     for k, v in enumerate(table):
+        category_statistic = APP.home_page.get_data_portal_summary_statistic(v[0])
+        data_store.spec[f"{v[0]} count"] = category_statistic
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):

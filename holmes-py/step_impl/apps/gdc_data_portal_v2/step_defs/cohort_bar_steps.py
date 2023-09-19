@@ -78,3 +78,15 @@ def validate_cohort_is_present_in_dropdown(cohort_name: str):
     is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
     click_button_on_cohort_bar("Switch")
     assert is_cohort_visible, f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"
+
+@step("Validate the cohort query filter area has these filters <table>")
+def validate_cohort_query_filters(table):
+    for k, v in enumerate(table):
+        is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(v[0],v[1],v[2])
+        assert is_cohort_filter_query_visible, f"The filter '{v[0]}', with values '{v[1]}' is NOT present in the cohort query filter area"
+
+@step("Validate the cohort query filter does not have these filters <table>")
+def validate_cohort_query_filters(table):
+    for k, v in enumerate(table):
+        is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_not_present(v[0],v[1])
+        assert is_cohort_filter_query_visible==False, f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"

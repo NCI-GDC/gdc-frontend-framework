@@ -87,6 +87,10 @@ class BasePage:
     def is_visible(self, locator):
         return self.driver.locator(locator).is_visible()
 
+    def is_disabled(self, locator):
+        """Returns if the locator has the attribute 'disabled'"""
+        return self.driver.locator(locator).is_disabled()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
@@ -119,6 +123,12 @@ class BasePage:
         bdd_input_int -= 1
         bdd_input_string = str(bdd_input_int)
         return bdd_input_string
+
+    def get_cohort_bar_case_count(self):
+        """Returns the count of cases in the current cohort"""
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        cohort_bar_case_count = self.get_text(GenericLocators.TEXT_COHORT_BAR_CASE_COUNT)
+        return cohort_bar_case_count
 
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""

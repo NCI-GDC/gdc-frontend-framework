@@ -38,13 +38,13 @@ def validate_default_analysis_cards_are_present(table):
 @step("Validate the <card_name> analysis card's table contains these values <table>")
 def validate_table_value_on_analysis_card_is_present(card_name, table):
     for k, v in enumerate(table):
-        is_table_value_on_analysis_card_present = APP.clinical_data_analysis.is_table_value_on_analysis_card_is_present(card_name, v[0])
+        is_table_value_on_analysis_card_present = APP.clinical_data_analysis.is_table_value_on_analysis_card_present(card_name, v[0])
         assert is_table_value_on_analysis_card_present, f"On analysis card '{card_name}', the table does not contain the value '{v[0]}'"
 
 @step("Validate the <card_name> analysis card's table do not contain these values <table>")
 def validate_table_value_on_analysis_card_is_present(card_name, table):
     for k, v in enumerate(table):
-        is_table_value_on_analysis_card_present = APP.clinical_data_analysis.is_table_value_on_analysis_card_is_present(card_name, v[0])
+        is_table_value_on_analysis_card_present = APP.clinical_data_analysis.is_table_value_on_analysis_card_present(card_name, v[0])
         assert is_table_value_on_analysis_card_present == False, f"On analysis card '{card_name}', the table does not contain the value '{v[0]}'"
 
 @step("On the <card_name> card, select <button_name> button on the Clinical Data Analysis page")
@@ -70,40 +70,28 @@ def click_hidden_value_categorical_modal(table):
        APP.clinical_data_analysis.click_hidden_value_categorical_modal(v[0])
 
 @step("Name the group of values <custom_group_name> in a categorical custom bin modal on the Clinical Data Analysis page")
-def name_group_of_values(custom_group_name):
+def name_group_of_values_categorical_modal(custom_group_name):
     """After clicking the 'group' button, name the custom bin"""
     APP.clinical_data_analysis.name_group_of_values_categorical_modal(custom_group_name)
     APP.shared.keyboard_press("Enter")
 
-@step("Validate values are <present_or_not_present> in a categorical custom bin modal on the Clinical Data Analysis page <table>")
-def validate_value_present_or_not_present(present_or_not_present, table):
-    """Validate if the values in the 'value' section are present or not as expected"""
+@step("Validate <values_or_hidden_values> are <present_or_not_present> in a categorical custom bin modal on the Clinical Data Analysis page <table>")
+def validate_value_present_or_not_present_categorical_modal(values_or_hidden_values, present_or_not_present, table):
+    """Validate if the items in the specified section are present or not as expected"""
+    values_or_hidden_values = values_or_hidden_values.lower()
     present_or_not_present = present_or_not_present.lower()
-    if present_or_not_present == "present":
-        for k, v in enumerate(table):
+    for k, v in enumerate(table):
+        # First, determine if we are checking the 'value' section or 'hidden value' section
+        if values_or_hidden_values == "values":
             is_present = APP.clinical_data_analysis.is_value_present_categorical_modal(v[0])
-            assert is_present, f"Value '{v[0]}' is NOT present in list"
-    elif present_or_not_present == "not present":
-        for k, v in enumerate(table):
-            is_present = APP.clinical_data_analysis.is_value_present_categorical_modal(v[0])
-            assert not is_present, f"Value '{v[0]}' is present in list when it should NOT be"
-    else:
-        print (f"No handle for input - {present_or_not_present}")
+        if values_or_hidden_values == "hidden values":
+            is_present = APP.clinical_data_analysis.is_hidden_value_present_categorical_modal(v[0])
 
-@step("Validate hidden values are <present_or_not_present> in a categorical custom bin modal on the Clinical Data Analysis page <table>")
-def validate_value_present_or_not_present(present_or_not_present, table):
-    """Validate if the values in the 'hidden value' section are present or not as expected"""
-    present_or_not_present = present_or_not_present.lower()
-    if present_or_not_present == "present":
-        for k, v in enumerate(table):
-            is_present = APP.clinical_data_analysis.is_hidden_value_present_categorical_modal(v[0])
+        # Then, we assert if they are present or not present based on spec file input
+        if present_or_not_present == "present":
             assert is_present, f"Hidden Value '{v[0]}' is NOT present in list"
-    elif present_or_not_present == "not present":
-        for k, v in enumerate(table):
-            is_present = APP.clinical_data_analysis.is_hidden_value_present_categorical_modal(v[0])
+        if present_or_not_present == "not present":
             assert not is_present, f"Hidden Value '{v[0]}' is present in list when it should NOT be"
-    else:
-        print (f"No handle for input - {present_or_not_present}")
 
 @step("Select bin option <button_name> in a continuous custom bin modal on the Clinical Data Analysis page")
 def click_button_bin_option_continuous_modal(button_name):
