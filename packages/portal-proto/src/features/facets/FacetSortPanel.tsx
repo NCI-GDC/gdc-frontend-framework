@@ -34,7 +34,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
     sortType.type === "value"
       ? sortType.direction === "asc"
         ? [SortAscIcon, "0.75rem"]
-        : [SortAscIcon, "0.75rem"]
+        : [SortDesIcon, "0.75rem"]
       : [Selector, "1rem"];
   return (
     <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
