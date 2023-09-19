@@ -439,6 +439,7 @@ def click_undo_in_message():
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
     APP.shared.click_set_as_current_cohort_in_message()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that

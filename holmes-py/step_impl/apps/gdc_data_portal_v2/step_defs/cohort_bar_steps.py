@@ -55,6 +55,7 @@ def is_expected_active_cohort_present(cohort_name: str):
 def select_cohort_from_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Set as current cohort")
 def set_as_current_cohort_from_temp_message():
