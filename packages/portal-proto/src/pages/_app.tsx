@@ -1,10 +1,8 @@
 import tailwindConfig from "../../tailwind.config";
 import store from "../app/store";
 import "../styles/globals.css";
-import "../styles/oncogrid.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";
-import "@/features/oncoGrid/registerApp";
 // import gdc apps here.
 // their default exports will trigger registration.
 import "@/features/projectsCenter/registerApp";
