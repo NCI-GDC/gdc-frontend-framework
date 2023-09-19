@@ -119,10 +119,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                       }
                       withArrow
                     >
-                      <div className="w-fit m-auto mr-auto">
+                      <div className="w-fit">
                         <ActionIcon
                           variant="outline"
-                          className={
+                          className={`${
                             survivalDisabled
                               ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
                               : survivalSelected
@@ -130,7 +130,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                                   key,
                                 )} text-white` // TODO: confirm 508 contrast compliance
                               : "bg-base-lightest text-base-contrast-lightest"
-                          }
+                          } ml-2`}
                           disabled={survivalDisabled}
                           onClick={() =>
                             survivalSelected
