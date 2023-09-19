@@ -95,6 +95,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         <Tooltip
           label={description}
           position="bottom-start"
+          disabled={!description}
           multiline
           width={220}
           withArrow
@@ -175,8 +176,9 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
               classNames={{
                 day: "data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
               }}
-              type="multiple"
-              // amountOfMonths={2}
+              numberOfColumns={2}
+              type="range"
+              allowSingleDateInRange={false}
               value={dateRangeValue}
               onChange={(d: [Date | null, Date | null]) => setDateRangeValue(d)}
               aria-label="date range picker"
