@@ -65,7 +65,7 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+          padding: `${theme.spacing.xs} ${theme.spacing.md}`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
           fontFamily: theme.fontFamily,
@@ -311,6 +311,7 @@ export const FacetTabs = (): JSX.Element => {
       setActiveTab(router.query.tab as string);
     }
   }, [router?.query?.tab, activeTab, setActiveTab]);
+
   return (
     <div className="w-100 mt-2">
       <StyledFacetTabs

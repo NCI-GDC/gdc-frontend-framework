@@ -9,10 +9,10 @@ import { useTotalCounts } from "@gff/core";
 import { Image } from "@/components/Image";
 import Link from "next/link";
 
-export const HomepageButton = tw(Link)`
+export const HomepageButton = tw.a`
 bg-primary text-sm text-base-max border-base-light border-1
 hover:bg-primary-darker hover:text-primary-darker-contrast
-font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block
+font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
 `;
 
 const Homepage = (): JSX.Element => {
@@ -36,15 +36,16 @@ const Homepage = (): JSX.Element => {
             </p>
           </div>
 
-          <HomepageButton
+          <Link
             href={{
               pathname: "/analysis_page",
               query: { app: undefined },
             }}
             data-testid="button-homepage-explore-datasets"
+            passHref
           >
-            Explore Our Cancer Datasets
-          </HomepageButton>
+            <HomepageButton>Explore Our Cancer Datasets</HomepageButton>
+          </Link>
           <HorizontalSummaryTotalsPanel />
           <div className="py-10" />
         </div>
@@ -164,14 +165,14 @@ const Homepage = (): JSX.Element => {
                 collection of tools for visualizing clinical features, genomic
                 alterations, and other cancer drivers.
               </p>
-              <HomepageButton
+              <Link
                 href={{
                   pathname: "/analysis_page",
                   query: { app: undefined },
                 }}
               >
-                Explore More Tools
-              </HomepageButton>
+                <HomepageButton>Explore More Tools</HomepageButton>
+              </Link>
             </div>
           </div>
         </div>
