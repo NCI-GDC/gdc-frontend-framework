@@ -320,19 +320,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const handleTSVDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
+
     download({
       endpoint: "/analysis/top_ssms",
       method: "POST",
       params: {
-        filters:
-          buildCohortGqlOperator(caseFilter ? caseFilter : genomicFilters) ??
-          {},
-        case_filters:
-          buildCohortGqlOperator(
-            geneSymbol
-              ? joinFilters(combinedFilters, geneFilter)
-              : combinedFilters,
-          ) ?? {},
+        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        case_filters: buildCohortGqlOperator(combinedFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -499,17 +493,24 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     )}
                   </FunctionButton>
                 </ButtonTooltip>
-                <FunctionButton
-                  onClick={handleTSVDownload}
-                  data-testid="button-tsv-mutation-frequency"
-                >
-                  {downloadMutationsFrequencyTSVActive ? (
-                    <Loader size="sm" />
-                  ) : (
-                    "TSV"
-                  )}
-                </FunctionButton>
-
+                {caseFilter || geneSymbol ? (
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
+                    <FunctionButton data-testid="button-tsv-mutation-frequency">
+                      TSV
+                    </FunctionButton>
+                  </ButtonTooltip>
+                ) : (
+                  <FunctionButton
+                    onClick={handleTSVDownload}
+                    data-testid="button-tsv-mutation-frequency"
+                  >
+                    {downloadMutationsFrequencyTSVActive ? (
+                      <Loader size="sm" />
+                    ) : (
+                      "TSV"
+                    )}
+                  </FunctionButton>
+                )}
                 <Text className="font-heading font-bold text-md">
                   TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
                   {data?.ssmsTotal == 1
