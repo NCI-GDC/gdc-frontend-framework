@@ -46,6 +46,8 @@
     "react-select": "^4.3.1",
     "react-select-search": "^3.0.8",
     "react-tabs": "^4.2.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-transition-group": "^4.4.2",
     "tailwind-styled-components": "2.1.8"
   },
