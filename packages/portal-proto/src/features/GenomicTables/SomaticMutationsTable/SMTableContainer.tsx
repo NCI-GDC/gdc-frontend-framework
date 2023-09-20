@@ -324,7 +324,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       endpoint: "/analysis/top_ssms",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(contextSensitiveFilters) ?? {},
+        filters:
+          buildCohortGqlOperator(caseFilter ? caseFilter : genomicFilters) ??
+          {},
+        case_filters:
+          buildCohortGqlOperator(
+            geneSymbol
+              ? joinFilters(combinedFilters, geneFilter)
+              : combinedFilters,
+          ) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -491,18 +499,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     )}
                   </FunctionButton>
                 </ButtonTooltip>
-                <ButtonTooltip label="Export current view">
-                  <FunctionButton
-                    onClick={handleTSVDownload}
-                    data-testid="button-tsv-mutation-frequency"
-                  >
-                    {downloadMutationsFrequencyTSVActive ? (
-                      <Loader size="sm" />
-                    ) : (
-                      "TSV"
-                    )}
-                  </FunctionButton>
-                </ButtonTooltip>
+                <FunctionButton
+                  onClick={handleTSVDownload}
+                  data-testid="button-tsv-mutation-frequency"
+                >
+                  {downloadMutationsFrequencyTSVActive ? (
+                    <Loader size="sm" />
+                  ) : (
+                    "TSV"
+                  )}
+                </FunctionButton>
 
                 <Text className="font-heading font-bold text-md">
                   TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}

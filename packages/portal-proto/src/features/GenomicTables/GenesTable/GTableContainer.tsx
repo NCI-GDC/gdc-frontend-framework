@@ -316,14 +316,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   };
 
   const handleTSVDownload = async () => {
-    const tableFilters =
-      buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
     setDownloadMutatedGenesTSVActive(true);
     await download({
       endpoint: "/analysis/top_mutated_genes",
       method: "POST",
       params: {
-        filters: tableFilters,
+        filters: buildCohortGqlOperator(genomicFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
         attachment: true,
         filename: `frequently-mutated-genes.${convertDateToString(
           new Date(),
@@ -474,14 +473,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 {downloadMutatedGenesJSONActive ? <Loader size="sm" /> : "JSON"}
               </FunctionButton>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view">
-              <FunctionButton
-                onClick={handleTSVDownload}
-                data-testid="button-tsv-mutation-frequency"
-              >
-                {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
-              </FunctionButton>
-            </ButtonTooltip>
+            <FunctionButton
+              onClick={handleTSVDownload}
+              data-testid="button-tsv-mutation-frequency"
+            >
+              {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
+            </FunctionButton>
 
             <Text className="font-heading font-bold text-md">
               TOTAL OF {data?.genes?.genes_total?.toLocaleString("en-US")}{" "}
