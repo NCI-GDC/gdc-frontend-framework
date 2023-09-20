@@ -345,10 +345,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     hasEnoughData &&
     plotData
       .map(({ donors }) => donors)
-      .every(({ length }) => length > MINIMUM_CASES);
+      .every(({ length }) => length >= MINIMUM_CASES);
   // hook to call renderSurvivalPlot
   const shouldUsePlotData =
-    (["gene", "mutation"].includes(plotType) && shouldPlot) || hasEnoughData;
+    (["gene", "mutation"].includes(plotType) && shouldPlot) ||
+    (["categorical", "continuous", "overall"].includes(plotType) &&
+      hasEnoughData);
   const dataToUse = shouldUsePlotData ? plotData : [];
   const container = useSurvival(
     dataToUse,
