@@ -319,6 +319,7 @@ def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
 @step("Wait for table body text to appear <table>")
 def wait_for_table_body_text_to_appear(table):
     """Waits for specified table body text to appear"""
+    # Wait for all possible loading spinners to detach before checking text
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
@@ -481,6 +482,10 @@ def select_table_value_by_row_column(table):
     for k, v in enumerate(table):
         APP.shared.select_table_by_row_column(v[0],v[1])
         time.sleep(1)
+        # In Mutation Frequency, selecting items in the table can take a
+        # long time to load. They can also load and spin at different times
+        # in different places (e.g the cohort case count, table, graphs, etc.)
+        # So we have an abundance of waits.
         APP.shared.wait_for_loading_spinner_table_to_detatch()
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
@@ -497,6 +502,10 @@ def send_text_into_table_search_bar(text: str):
     """Sends text into a table search bar"""
     APP.shared.send_text_into_table_search_bar(text)
     time.sleep(1)
+    # In Mutation Frequency, searching in the table can take a
+    # long time to load. They can also load and spin at different times
+    # in different places (e.g the cohort case count, table, graphs, etc.)
+    # So we have an abundance of waits.
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.keyboard_press("Enter")
     APP.shared.wait_for_loading_spinner_table_to_detatch()
