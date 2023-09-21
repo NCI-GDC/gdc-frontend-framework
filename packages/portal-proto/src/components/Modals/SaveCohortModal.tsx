@@ -82,14 +82,11 @@ const SaveCohortModal = ({
       opened
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
       title={showReplaceCohort ? "Replace Existing Cohort" : "Save Cohort"}
-      closeButtonProps={{ "aria-label": "cancel" }}
       size={"md"}
-      withinPortal={false}
       classNames={{
         content: "p-0",
         title: "text-xl",
       }}
-      centered
     >
       {showReplaceCohort ? (
         <>

@@ -18,7 +18,6 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
   <Modal
     title="Discard Changes"
     opened={openModal}
-    closeButtonProps={{ "aria-label": "close" }}
     onClose={onClose}
     size="lg"
     centered

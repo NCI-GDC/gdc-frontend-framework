@@ -108,7 +108,6 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       title={`Add ${addToCount.toLocaleString()} ${setTypeLabel}${
         addToCount > 1 ? "s" : ""
       } to an existing set`}
-      closeButtonProps={{ "aria-label": "close" }}
       opened
       onClose={closeModal}
       size="lg"

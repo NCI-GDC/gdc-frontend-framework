@@ -78,7 +78,6 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
       title={`Remove ${removeFromCount.toLocaleString()} ${setTypeLabel}${
         removeFromCount > 1 ? "s" : ""
       } from an existing set`}
-      closeButtonProps={{ "aria-label": "close" }}
       opened
       onClose={closeModal}
       size="lg"

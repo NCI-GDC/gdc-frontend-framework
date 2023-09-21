@@ -17,7 +17,6 @@ const isButtonOptions = (button): button is ButtonOptions => {
 interface Props {
   openModal: boolean;
   title: ReactNode;
-  closeButtonLabel: string;
   size?: string | number;
   children: ReactNode;
   buttons?: Array<ButtonOptions | JSX.Element>;
@@ -30,7 +29,6 @@ interface Props {
 export const BaseModal: React.FC<Props> = ({
   openModal,
   title,
-  closeButtonLabel,
   size,
   children,
   buttons,
@@ -59,7 +57,6 @@ export const BaseModal: React.FC<Props> = ({
           color: theme.extend.colors["gdc-grey"].darkest,
         },
       })}
-      closeButtonProps={{ "aria-label": closeButtonLabel }}
       withinPortal={false}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}

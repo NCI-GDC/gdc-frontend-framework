@@ -15,7 +15,6 @@ export const GeneralErrorModal = ({
           Error
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       buttons={[{ title: "Close", dataTestId: "button-general-close" }]}
     >

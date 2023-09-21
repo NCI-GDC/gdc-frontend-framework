@@ -76,7 +76,6 @@ export const SummaryModal = ({
       }}
       padding={0}
       overlayProps={{ opacity: 0.5 }}
-      closeButtonProps={{ "aria-label": "button-close-modal" }}
     >
       {SummaryPage}
     </Modal>

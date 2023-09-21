@@ -64,7 +64,6 @@ export const UserProfileModal = ({
       title={
         <Text size="lg" className="font-medium">{`Username: ${username}`}</Text>
       }
-      closeButtonLabel="Done"
       openModal={openModal}
       size="60%"
       buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}

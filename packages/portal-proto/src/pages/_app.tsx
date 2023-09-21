@@ -199,20 +199,26 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 defaultProps: {
                   zIndex: 400,
                   radius: "md",
+                  closeButtonProps: { "aria-label": "close modal button" },
                   styles: {
                     header: {
+                      borderColor: defaultTailwindColorTheme.base.lighter,
+                      borderStyle: "solid",
+                      borderWidth: "0px 0px 2px 0px",
+                      padding: "15px 15px 5px 15px",
+                      margin: "5px 5px 10px 5px",
+                    },
+                    title: {
                       color:
                         defaultTailwindColorTheme["primary-content"].darkest,
                       fontFamily: '"Montserrat", "sans-serif"',
                       fontSize: "1.65em",
                       fontWeight: 500,
                       letterSpacing: ".1rem",
-                      borderColor: defaultTailwindColorTheme.base.lighter,
-                      borderStyle: "solid",
-                      borderWidth: "0px 0px 2px 0px",
-                      padding: "15px 15px 5px 15px",
-                      margin: "5px 5px 10px 5px",
                       textTransform: "uppercase",
+                    },
+                    body: {
+                      padding: 0,
                     },
                     modal: {
                       backgroundColor: defaultTailwindColorTheme.base.max,

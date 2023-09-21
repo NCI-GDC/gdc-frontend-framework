@@ -90,7 +90,6 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       title={`Save ${max.toLocaleString()} ${setTypeLabel}${
         max > 1 ? "s" : ""
       } as a new set`}
-      closeButtonProps={{ "aria-label": "close" }}
       opened
       onClose={closeModal}
       size="lg"
