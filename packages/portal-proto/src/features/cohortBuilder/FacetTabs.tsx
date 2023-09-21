@@ -187,18 +187,15 @@ const CustomFacetGroup = (): JSX.Element => {
         data-testid="loading-spinner"
         visible={!isDictionaryReady}
       />
-      <Modal
-        size="lg"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        zIndex={400}
-      >
-        <FacetSelection
-          title={"Add a Case Filter"}
-          facetType="cases"
-          handleFilterSelected={handleFilterSelected}
-          usedFacets={cohortBuilderFilters}
-        />
+      <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+        <div className="p-4">
+          <FacetSelection
+            title="Add a Case Filter"
+            facetType="cases"
+            handleFilterSelected={handleFilterSelected}
+            usedFacets={cohortBuilderFilters}
+          />
+        </div>
       </Modal>
       {customFacetDefinitions.length == 0 ? (
         <Flex>

@@ -13,20 +13,17 @@ export const CohortFacetSelectionModal = (): JSX.Element => {
 
   return (
     <>
-      <Modal
-        size="lg"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        zIndex={400}
-      >
-        <FacetSelection
-          title={"Add a Case Filter"}
-          facetType="cases"
-          handleFilterSelected={handleFilterSelected}
-          usedFacets={useCoreSelector((state) =>
-            selectCohortBuilderConfigFilters(state),
-          )}
-        />
+      <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+        <div className="p-4">
+          <FacetSelection
+            title="Add a Case Filter"
+            facetType="cases"
+            handleFilterSelected={handleFilterSelected}
+            usedFacets={useCoreSelector((state) =>
+              selectCohortBuilderConfigFilters(state),
+            )}
+          />
+        </div>
       </Modal>
 
       <Button onClick={() => setOpened(true)}>Add Clinical Facet</Button>
