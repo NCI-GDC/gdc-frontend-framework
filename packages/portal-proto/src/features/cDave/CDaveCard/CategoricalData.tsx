@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { Bucket } from "@gff/core";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
@@ -68,12 +68,16 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     setSelectedFacets([]);
   }, [customBinnedData, resultData]);
 
-  const displayedData = Object.fromEntries(
-    Object.entries(
-      customBinnedData !== null
-        ? flattenBinnedData(customBinnedData as CategoricalBins)
-        : resultData,
-    ).sort((a, b) => b[1] - a[1]),
+  const displayedData = useDeepCompareMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(
+          customBinnedData !== null
+            ? flattenBinnedData(customBinnedData as CategoricalBins)
+            : resultData,
+        ).sort((a, b) => b[1] - a[1]),
+      ),
+    [customBinnedData, resultData],
   );
 
   return (
