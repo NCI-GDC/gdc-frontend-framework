@@ -3,7 +3,11 @@ import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
 import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
-import { SummaryModalContext, URLContext } from "src/utils/contexts";
+import {
+  SummaryModalContext,
+  URLContext,
+  DashboardDownloadContext,
+} from "src/utils/contexts";
 import store from "@/app/store";
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -21,7 +25,11 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
                 setEntityMetadata: jest.fn(),
               }}
             >
-              {children}
+              <DashboardDownloadContext.Provider
+                value={{ state: [], dispatch: jest.fn() }}
+              >
+                {children}
+              </DashboardDownloadContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>
         </MantineProvider>

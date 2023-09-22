@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
   useCoreDispatch,
   FilterSet,
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromValuesMutation,
+  useCreateCaseSetFromFiltersMutation,
+  GqlOperation,
+  useGetCasesQuery,
 } from "@gff/core";
 import {
   SelectCohortsModal,
@@ -12,15 +16,24 @@ import {
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
+import { Tooltip } from "@mantine/core";
 
-export const CasesCohortButton = ({
-  pickedCases,
-}: {
-  pickedCases: string[];
-}): JSX.Element => {
+interface CasesCohortButtonProps {
+  readonly onCreateSet: () => void;
+  readonly response: { isSuccess: boolean; data?: string };
+  readonly cases: readonly string[];
+  readonly numCases: number;
+  readonly fetchingCases?: boolean;
+}
+
+export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
+  onCreateSet,
+  response,
+  cases,
+  numCases,
+  fetchingCases = false,
+}: CasesCohortButtonProps) => {
   const [name, setName] = useState(undefined);
-  const [createSet, response] = useCreateCaseSetFromValuesMutation();
-
   const coreDispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -52,52 +65,59 @@ export const CasesCohortButton = ({
 
   return (
     <>
-      <DropdownWithIcon
-        dropdownElements={[
-          {
-            title: "Only Selected Cases",
-            onClick: () => {
-              setShowCreateCohort(true);
-            },
-          },
-          {
-            title: " Existing Cohort With Selected Cases",
-            onClick: () => {
-              setWithOrWithoutCohort("with");
-              setOpenSelectCohorts(true);
-            },
-          },
-          {
-            title: " Existing Cohort Without Selected Cases",
-            onClick: () => {
-              setWithOrWithoutCohort("without");
-              setOpenSelectCohorts(true);
-            },
-          },
-        ]}
-        TargetButtonChildren="Create New Cohort"
-        disableTargetWidth={true}
-        targetButtonDisabled={pickedCases.length == 0}
-        LeftIcon={
-          pickedCases.length ? (
-            <CountsIcon $count={pickedCases.length}>
-              {pickedCases.length}
-            </CountsIcon>
-          ) : null
-        }
-        menuLabelText={`${pickedCases.length}
-        ${pickedCases.length > 1 ? " Cases" : " Case"}`}
-        menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
-        customPosition="bottom-start"
-        zIndex={10}
-      />
-
+      <Tooltip label="Create a new unsaved cohort based on selection">
+        <span>
+          <DropdownWithIcon
+            dropdownElements={
+              fetchingCases
+                ? [{ title: "Loading..." }]
+                : [
+                    {
+                      title: "Only Selected Cases",
+                      onClick: () => {
+                        setShowCreateCohort(true);
+                      },
+                    },
+                    {
+                      title: " Existing Cohort With Selected Cases",
+                      onClick: () => {
+                        setWithOrWithoutCohort("with");
+                        setOpenSelectCohorts(true);
+                      },
+                    },
+                    {
+                      title: " Existing Cohort Without Selected Cases",
+                      onClick: () => {
+                        setWithOrWithoutCohort("without");
+                        setOpenSelectCohorts(true);
+                      },
+                    },
+                  ]
+            }
+            TargetButtonChildren="Create New Cohort"
+            disableTargetWidth={true}
+            targetButtonDisabled={numCases == 0}
+            LeftIcon={
+              numCases ? (
+                <CountsIcon $count={numCases}>
+                  {numCases.toLocaleString()}
+                </CountsIcon>
+              ) : null
+            }
+            menuLabelText={`${numCases.toLocaleString()}
+        ${numCases > 1 ? " Cases" : " Case"}`}
+            menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+            customPosition="bottom-start"
+            zIndex={100}
+          />
+        </span>
+      </Tooltip>
       {openSelectCohorts && (
         <SelectCohortsModal
           opened
           onClose={() => setOpenSelectCohorts(false)}
           withOrWithoutCohort={withOrWithoutCohort}
-          pickedCases={pickedCases}
+          pickedCases={cases}
         />
       )}
       {showCreateCohort && (
@@ -105,12 +125,64 @@ export const CasesCohortButton = ({
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             setName(newName);
-            if (pickedCases.length > 1) {
-              createSet({ values: pickedCases });
+            if (numCases > 1) {
+              onCreateSet();
             }
           }}
         />
       )}
     </>
+  );
+};
+
+interface CasesCohortButtonFromValuesProps {
+  readonly pickedCases: string[];
+}
+
+export const CasesCohortButtonFromValues: React.FC<
+  CasesCohortButtonFromValuesProps
+> = ({ pickedCases }: CasesCohortButtonFromValuesProps) => {
+  const [createSet, response] = useCreateCaseSetFromValuesMutation();
+  const onCreateSet = useCallback(
+    () => createSet({ values: pickedCases }),
+    [createSet, pickedCases],
+  );
+
+  return (
+    <CasesCohortButton
+      onCreateSet={onCreateSet}
+      response={response}
+      cases={pickedCases}
+      numCases={pickedCases.length}
+    />
+  );
+};
+
+interface CasesCohortButtonFromFilters {
+  readonly filters?: GqlOperation;
+  readonly numCases: number;
+}
+
+export const CasesCohortButtonFromFilters: React.FC<
+  CasesCohortButtonFromFilters
+> = ({ filters, numCases }: CasesCohortButtonFromFilters) => {
+  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
+  const onCreateSet = useDeepCompareCallback(
+    () => createSet({ filters }),
+    [createSet, filters],
+  );
+  const { data, isSuccess, isLoading } = useGetCasesQuery(
+    { filters, fields: ["case_id"], size: 50000 },
+    { skip: filters === undefined },
+  );
+
+  return (
+    <CasesCohortButton
+      onCreateSet={onCreateSet}
+      response={response}
+      numCases={numCases}
+      cases={isSuccess ? data.map((d) => d.case_id) : []}
+      fetchingCases={isLoading}
+    />
   );
 };

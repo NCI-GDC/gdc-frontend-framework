@@ -64,11 +64,11 @@ export const CountsIcon = tw.div<CountsIconProps>`
   inline-flex
   items-center
   justify-center
-  w-8
   h-5
   text-accent-contrast
   font-heading
   rounded-md
+  p-1
   `;
 
 export const DemoText = tw.span`

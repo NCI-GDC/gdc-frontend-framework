@@ -190,7 +190,7 @@ const CustomFacetGroup = (): JSX.Element => {
       <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
         <div className="p-4">
           <FacetSelection
-            title="Add a Case Filter"
+            title="Add a Custom Filter"
             facetType="cases"
             handleFilterSelected={handleFilterSelected}
             usedFacets={cohortBuilderFilters}
