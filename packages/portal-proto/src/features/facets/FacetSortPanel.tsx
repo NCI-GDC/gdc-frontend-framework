@@ -7,15 +7,15 @@ import {
 import React from "react";
 import { SortType } from "./types";
 
-const sortTypeToAriaDescription = (sortType: SortType) => {
-  if (sortType.type === "alpha") {
-    return sortType.direction === "asc"
-      ? "sorted alphabetically ascending"
-      : "sorted alphabetically descending";
+const sortTypeToAriaDescription = (sortTypeAndDirection: SortType) => {
+  if (sortTypeAndDirection.type === "alpha") {
+    return sortTypeAndDirection.direction === "asc"
+      ? "is now sorted alphabetically ascending"
+      : "is now sorted alphabetically descending";
   } else {
-    return sortType.direction === "asc"
-      ? "sorted numerically ascending"
-      : "sorted numerically descending";
+    return sortTypeAndDirection.direction === "asc"
+      ? "is now sorted numerically ascending"
+      : "is now sorted numerically descending";
   }
 };
 
@@ -84,7 +84,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       >
         {valueLabel}
       </Button>
-      <span className="!absolute h-[1px] w-[1px] mt-[-1px] overflow-hidden">
+      <span className="Offscreen">
         <span id="liveRegion" aria-live="polite">
           {sortTypeToAriaDescription(sortType)}
         </span>
