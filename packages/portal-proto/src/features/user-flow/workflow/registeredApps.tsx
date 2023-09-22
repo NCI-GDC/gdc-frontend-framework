@@ -1,5 +1,7 @@
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+import DownloadAllButton from "@/features/cDave/DownloadAllButton";
+import SearchInput from "@/components/SearchInput";
 import ClinicalDataIcon from "public/user-flow/icons/apps/ClinicalData.svg";
 import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
 import MutationFrequencyIcon from "public/user-flow/icons/apps/MutationsFrequency.svg";
@@ -39,6 +41,7 @@ export const REGISTERED_APPS = [
       "Use clinical variables to perform basic statistical analysis of your cohort.",
     noDataTooltip:
       "Current cohort does not have cases available for visualization.",
+    rightComponent: DownloadAllButton,
   },
   {
     name: "Cohort Builder",
@@ -57,6 +60,7 @@ export const REGISTERED_APPS = [
     countsField: "repositoryCaseCount",
     description:
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
+    rightComponent: SearchInput,
   },
   {
     name: "Mutation Frequency",

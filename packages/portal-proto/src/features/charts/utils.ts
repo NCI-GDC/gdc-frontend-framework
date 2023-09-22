@@ -13,33 +13,34 @@ export const processJSONData = (
  * @param url
  * @param filename
  */
-const DownloadFile = async (url: string, filename: string) => {
+const DownloadFile = async (url: string, filename: string): Promise<void> => {
   const res = await fetch(url, {
     method: "get",
     mode: "no-cors",
     referrerPolicy: "no-referrer",
   });
-  const dataUrl = await res.blob();
-  const aElement = document.createElement("a");
-  aElement.setAttribute("download", filename);
-  const href = URL.createObjectURL(dataUrl);
-  aElement.href = href;
-  aElement.setAttribute("target", "_blank");
-  aElement.click();
-  URL.revokeObjectURL(href);
+  res.blob().then((dataUrl) => {
+    const aElement = document.createElement("a");
+    aElement.setAttribute("download", filename);
+    const href = URL.createObjectURL(dataUrl);
+    aElement.href = href;
+    aElement.setAttribute("target", "_blank");
+    aElement.click();
+    URL.revokeObjectURL(href);
+  });
 };
 /**
  * handles a request to save a chart as SVG.
  * @param ref reference to the chart div
  * @param filename name of file to save to, extension should be included e.g. chart1.svg
  */
-export const handleDownloadSVG = (
-  ref: MutableRefObject<HTMLDivElement>,
+export const handleDownloadSVG = async (
+  ref: MutableRefObject<HTMLElement>,
   filename: string,
-): void => {
+): Promise<void> => {
   if (ref.current) {
     toSvg(ref.current, { cacheBust: true }).then(function (dataUrl) {
-      void DownloadFile(dataUrl, filename);
+      DownloadFile(dataUrl, filename);
     });
   }
 };
@@ -49,14 +50,14 @@ export const handleDownloadSVG = (
  * @param ref reference to the chart div
  * @param filename name of file to save to, extension should be included e.g. chart1.png
  */
-export const handleDownloadPNG = (
-  ref: MutableRefObject<HTMLDivElement>,
+export const handleDownloadPNG = async (
+  ref: MutableRefObject<HTMLElement>,
   filename: string,
-): void => {
+): Promise<void> => {
   if (ref.current) {
     toPng(ref.current, { cacheBust: true, backgroundColor: "#FFFFFF" }).then(
       function (blob) {
-        void DownloadFile(blob, filename);
+        DownloadFile(blob, filename);
       },
     );
   }

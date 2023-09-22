@@ -239,6 +239,7 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
+    expect(getByLabelText("reset bins")).toBeDisabled();
     const input = getByLabelText("A set interval of");
     await userEvent.clear(input);
     await userEvent.type(input, ".75");
@@ -247,6 +248,26 @@ describe("<ContinuousBinningModal />", () => {
     await userEvent.click(getByLabelText("reset bins"));
 
     expect(input).toHaveDisplayValue("0.5");
+  });
+
+  it("reset button available when starting with custom bins", async () => {
+    const { getByLabelText } = render(
+      <ContinuousBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        stats={{ min: 0, max: 1 } as Statistics}
+        updateBins={jest.fn()}
+        customBins={{ interval: 5, min: 0, max: 10 }}
+      />,
+    );
+
+    const input = getByLabelText("A set interval of");
+    const resetButton = getByLabelText("reset bins");
+    expect(resetButton).toBeEnabled();
+    await userEvent.click(resetButton);
+
+    expect(input).toHaveDisplayValue("0.5");
+    expect(resetButton).toBeDisabled();
   });
 
   it("can save changes to custom bins", async () => {

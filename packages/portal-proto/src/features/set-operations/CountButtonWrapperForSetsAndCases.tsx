@@ -5,6 +5,7 @@ import {
   useCreateCaseSetFromFiltersMutation,
   addNewCohortWithFilterAndMessage,
   useCoreDispatch,
+  GqlOperation,
 } from "@gff/core";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { SetOperationEntityType } from "@/features/set-operations/types";
@@ -57,7 +58,7 @@ export const CreateFromCountButton = ({
 
 interface CountButtonWrapperForSetProps {
   readonly count: number | undefined;
-  readonly filters: Record<string, any>;
+  readonly filters: GqlOperation;
   readonly entityType?: SetOperationEntityType;
 }
 

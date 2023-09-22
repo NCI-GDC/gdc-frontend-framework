@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  GqlOperation,
   useCreateSsmsSetFromFiltersMutation,
   useSsmSetCountsQuery,
 } from "@gff/core";
@@ -126,15 +127,15 @@ const SetOperationsDemo = (): JSX.Element => {
   useEffect(() => {
     if (needsToCreateSets) {
       createDemoSet1({
-        filters: DEMO_SETS[0].filters,
+        filters: DEMO_SETS[0].filters as GqlOperation,
         set_id: DEMO_SETS[0].id,
       });
       createDemoSet2({
-        filters: DEMO_SETS[1].filters,
+        filters: DEMO_SETS[1].filters as GqlOperation,
         set_id: DEMO_SETS[1].id,
       });
       createDemoSet3({
-        filters: DEMO_SETS[2].filters,
+        filters: DEMO_SETS[2].filters as GqlOperation,
         set_id: DEMO_SETS[2].id,
       });
     }

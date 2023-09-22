@@ -8,6 +8,7 @@ import {
   VictoryLabelProps,
   VictoryTooltip,
   Bar,
+  VictoryContainer,
 } from "victory";
 
 interface BarChartTooltipProps {
@@ -79,32 +80,60 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
 
 interface VictoryBarChartProps {
   readonly data: any;
+  readonly title?: string;
   readonly color: string;
   readonly yLabel?: string;
   readonly xLabel?: string;
+  readonly chartLabel?: string;
   readonly width?: number;
   readonly height?: number;
+  readonly chartPadding?: {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  };
   readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
+  readonly chartRef?: React.MutableRefObject<HTMLElement>;
 }
 
 const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   data,
+  title,
   color,
   yLabel,
   xLabel,
+  chartLabel,
   width = 400,
   height = 400,
+  chartPadding = { left: 80, right: 80, bottom: 80, top: 10 },
   hideYTicks = false,
   hideXTicks = false,
+  chartRef = undefined,
 }: VictoryBarChartProps) => {
   return (
     <VictoryChart
+      title={title}
       width={width}
       height={height}
       domainPadding={60}
-      padding={{ left: 80, right: 80, bottom: 80, top: 10 }}
+      padding={chartPadding}
+      containerComponent={
+        chartRef ? (
+          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
+        ) : undefined
+      }
     >
+      {chartLabel && (
+        <VictoryLabel
+          dy={20}
+          dx={(width + chartPadding.left - chartPadding.right) / 2}
+          text={chartLabel}
+          textAnchor="middle"
+          style={{ fontSize: 28, fontFamily: "Noto Sans" }}
+        />
+      )}
       <VictoryAxis
         dependentAxis
         label={yLabel}
