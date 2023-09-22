@@ -11,7 +11,7 @@ import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.s
 import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
-import OncoMatrixIcon from "public/user-flow/icons/apps/Oncogrid.svg";
+import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -147,20 +147,6 @@ export const REGISTERED_APPS = [
     id: "SetOperations",
     selectionScreen: SelectionPanel,
   },
-  // {
-  //   name: "OncoGrid",
-  //   icon: "icons/apps/Oncogrid.svg",
-  //   iconSize: { width: 80, height: 48 },
-  //   tags: ["variantAnalysis", "cnv", "ssm"],
-  //   hasDemo: true,
-  //   countsField: "ssmCaseCount",
-  //   description:
-  //     "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
-  //   id: "OncoGridApp",
-  //   optimizeRules: ["available data = ssm or cnv"],
-  //   noDataTooltip:
-  //     "Current cohort does not have SSM or CNV data available for visualization.",
-  // },
   {
     name: "Sequence Reads",
     icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,

@@ -334,6 +334,7 @@ const FromTo: React.FC<FromToProps> = ({
             // units are always days
             value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
+              if (value === "") return;
               setFromValue(
                 adjustYearsToDays(
                   clamp(value, lowerUnitRange, upperUnitRange),
@@ -368,6 +369,7 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
+              if (value === "") return;
               setToValue(
                 adjustYearsToDays(
                   clamp(value, lowerUnitRange, upperUnitRange),
@@ -814,8 +816,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             multiline
             width={220}
             withArrow
-            transition="fade"
-            transitionDuration={200}
+            transitionProps={{ duration: 200, transition: "fade" }}
           >
             <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}

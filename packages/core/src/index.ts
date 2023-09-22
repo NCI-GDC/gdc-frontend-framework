@@ -41,7 +41,6 @@ export * from "./features/genomic/ssmsConsequenceTableSlice";
 export * from "./features/cancerDistribution";
 export * from "./features/subrows";
 export * from "./features/tables";
-export * from "./features/oncoGrid/oncoGridSlice";
 export * from "./features/cohortComparison";
 export * from "./features/biospecimen/biospecimenSlice";
 export * from "./features/cart";

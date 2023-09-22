@@ -456,7 +456,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       <div className="flex w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg">{title}</div>
         <div className="flex items-center ml-auto gap-1">
-          <Menu position="bottom-start" offset={1} transitionDuration={0}>
+          <Menu
+            position="bottom-start"
+            offset={1}
+            transitionProps={{ duration: 0 }}
+          >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
                 <DownloadButton

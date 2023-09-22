@@ -87,7 +87,7 @@ export const ScrollableTableWithFixedHeader = ({
 
   return (
     <ScrollArea.Autosize
-      maxHeight={tableMaxHeight}
+      mah={tableMaxHeight}
       data-testid="scrolltable"
       type="auto"
       tabIndex={0}

@@ -249,14 +249,14 @@ export const SearchInput: React.FC = () => {
                   })}
               </ul>
               <Pagination
-                page={page}
+                value={page}
                 onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 withEdges
                 siblings={0}
                 color={"primary"}
                 classNames={{
-                  item: "border-0",
+                  control: "border-0",
                 }}
               />
             </>
