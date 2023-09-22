@@ -101,7 +101,6 @@ const FacetSelectionPanel = ({
   title,
   handleFilterSelected,
   handleFilteredWithValuesChanged,
-  facetType,
 }: FacetSelectionProps) => {
   const [searchString, setSearchString] = useState("");
   const [filteredData, setFilteredData] = useState(undefined);
@@ -125,13 +124,11 @@ const FacetSelectionPanel = ({
     }
   }, [facets, searchString]);
 
-  const facetTypeTrimmed = facetType.slice(0, -1);
-
   return (
     <div className="flex flex-col" data-testid="section-file-filter-search">
       <Title order={3}>{title}</Title>
       <TextInput
-        label={`Search for a ${facetTypeTrimmed} property`}
+        label="Search for a property"
         placeholder="search"
         value={searchString}
         rightSection={
@@ -145,12 +142,11 @@ const FacetSelectionPanel = ({
           ) : null
         }
         onChange={(evt) => setSearchString(evt.target.value)}
-        aria-label={`Search for a ${facetTypeTrimmed} property`}
+        aria-label="Search for a property"
       />
       <Group position="apart">
         <p>
-          {filteredData ? Object.values(filteredData).length : ""}{" "}
-          {facetTypeTrimmed} properties
+          {filteredData ? Object.values(filteredData).length : ""} properties
         </p>
         <Checkbox
           label="Only show properties with values"

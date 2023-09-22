@@ -194,7 +194,7 @@ const CustomFacetGroup = (): JSX.Element => {
         zIndex={400}
       >
         <FacetSelection
-          title={"Add a Case Filter"}
+          title="Add a Custom Filter"
           facetType="cases"
           handleFilterSelected={handleFilterSelected}
           usedFacets={cohortBuilderFilters}
