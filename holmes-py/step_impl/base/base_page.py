@@ -28,6 +28,7 @@ class GenericLocators:
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
+    SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
     QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list}'
@@ -39,10 +40,11 @@ class GenericLocators:
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
-    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}")'
+    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
+    TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
@@ -234,6 +236,14 @@ class BasePage:
             return False
         return True
 
+    def wait_for_table_body_text_by_row_column(self,text,row,column):
+        """
+        Waits for text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR(text,row,column)
+        self.wait_until_locator_is_visible(table_locator_to_select)
+
     def is_text_present(self, text):
         locator = GenericLocators.TEXT_IDENT(text)
         try:
@@ -384,6 +394,12 @@ class BasePage:
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
+    def send_text_into_table_search_bar(self, text_to_send):
+        """Sends text into a table search bar"""
+        locator = GenericLocators.SEARCH_BAR_TABLE_IDENT
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 

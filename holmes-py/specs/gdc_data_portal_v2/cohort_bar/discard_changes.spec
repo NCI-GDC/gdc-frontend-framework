@@ -116,7 +116,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 
 ## Discard Changes from Clear All Filters
-* Select "Clear All"
+* Clear active cohort filters
 * Verify the "Cohort Bar Case Count" is "Equal" to the home page count for "Cases"
 * Is text "Changes not saved" present on the page
 * Validate the cohort query filter does not have these filters
