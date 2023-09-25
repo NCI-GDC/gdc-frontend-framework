@@ -39,8 +39,6 @@ const MatchedTable = ({
     [],
   );
 
-  console.log("matched", matched);
-
   const matchedTableColumns = useDeepCompareMemo(
     () => [
       matchedTableColumnHelper.group({
@@ -141,8 +139,6 @@ const MatchedTable = ({
       ),
     }));
   }, [matched, uniqueMappedToFields, uniqueSubmittedIdentifierFields]);
-
-  console.log(formattedMatchData);
 
   const downloadTSV = () => {
     const header = [
