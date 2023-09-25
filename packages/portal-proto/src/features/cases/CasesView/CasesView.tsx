@@ -17,7 +17,7 @@ import {
   extractToArray,
   statusBooleansToDataStatus,
 } from "src/utils";
-import { CasesCohortButton } from "./CasesCohortButton";
+import { CasesCohortButtonFromValues } from "./CasesCohortButton";
 import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
@@ -352,7 +352,7 @@ export const ContextualCasesView: React.FC = () => {
         handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
-            <CasesCohortButton pickedCases={pickedCases} />
+            <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
               dropdownElements={[

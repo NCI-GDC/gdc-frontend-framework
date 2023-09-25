@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useEffect,
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
@@ -17,7 +18,9 @@ import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
+import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
+
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
 const textColors = [
@@ -304,6 +307,7 @@ export interface SurvivalPlotProps {
   readonly hideLegend?: boolean;
   readonly height?: number;
   readonly field?: string;
+  readonly downloadFileName?: string;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
@@ -314,6 +318,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   hideLegend = false,
   height = 380,
   field,
+  downloadFileName = "survival-plot",
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -387,7 +392,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       { type: "application/json" },
     );
 
-    saveAs(blob, "survival-plot.json");
+    saveAs(blob, `${downloadFileName}.json`);
   };
 
   const handleDownloadTSV = async () => {
@@ -435,15 +440,27 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    saveAs(blob, "survival-plot.tsv");
+    saveAs(blob, `${downloadFileName}.tsv`);
   };
+
+  const { dispatch } = useContext(DashboardDownloadContext);
+  useEffect(() => {
+    const charts = [{ filename: downloadFileName, chartRef: downloadRef }];
+
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [dispatch, downloadFileName]);
 
   return (
     <div className="flex flex-col">
       <div className="flex w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg">{title}</div>
         <div className="flex items-center ml-auto gap-1">
-          <Menu position="bottom-start" offset={1} transitionDuration={0}>
+          <Menu
+            position="bottom-start"
+            offset={1}
+            transitionProps={{ duration: 0 }}
+          >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
                 <DownloadButton
@@ -457,14 +474,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
                 onClick={() =>
-                  handleDownloadSVG(downloadRef, "survival-plot.svg")
+                  handleDownloadSVG(downloadRef, `${downloadFileName}.svg`)
                 }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={() =>
-                  handleDownloadPNG(downloadRef, "survival-plot.png")
+                  handleDownloadPNG(downloadRef, `${downloadFileName}.png`)
                 }
               >
                 PNG

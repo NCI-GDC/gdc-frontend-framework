@@ -13,7 +13,6 @@ const CartSizeLimitModal = ({
           Access Alert
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       buttons={[{ title: "Accept", dataTestId: "button-cart-modal-accept" }]}
     >

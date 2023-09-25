@@ -393,7 +393,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </p>
         <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
-          <Link href="/manage-sets">
+          <Link href="/manage_sets">
             <a className="text-utility-link font-content underline">
               Manage Sets
             </a>

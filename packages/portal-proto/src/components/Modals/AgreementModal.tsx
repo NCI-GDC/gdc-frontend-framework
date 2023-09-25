@@ -27,7 +27,6 @@ export const AgreementModal = ({
           Access Alert
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
     >

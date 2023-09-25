@@ -5,6 +5,8 @@ const config: InitialOptionsTsJest = {
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   transform: {
     "@sjcrh": "ts-jest",
+    "node_modules/(react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend)/.+\\.(j|t)sx?$":
+      "ts-jest",
     // uncomment when testing with npm linked sjpp client package code
     // "proteinpaint/client": "ts-jest"
   },
@@ -25,7 +27,10 @@ const config: InitialOptionsTsJest = {
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
-  transformIgnorePatterns: ["node_modules/(?!@sjcrh)", "!proteinpaint"],
+  transformIgnorePatterns: [
+    "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend)/",
+    "!proteinpaint",
+  ],
 };
 
 export default config;

@@ -324,12 +324,31 @@ describe("<CategoricalBinningModal />", () => {
       />,
     );
 
+    expect(queryByLabelText("reset groups")).toBeDisabled();
     await createGroup(queryByText);
 
     expect(queryByText("selected value 1")).toBeInTheDocument();
     await userEvent.click(queryByLabelText("reset groups"));
 
     expect(queryByText("selected value 1")).not.toBeInTheDocument();
+  });
+
+  it("reset button available when starting with custom groups", async () => {
+    const { queryByLabelText } = render(
+      <CategoricalBinningModal
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{ female: 10 }}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    const resetButton = queryByLabelText("reset groups");
+    expect(resetButton).toBeEnabled();
+    await userEvent.click(resetButton);
+
+    expect(resetButton).toBeDisabled();
   });
 
   it("default names given to groups", async () => {
