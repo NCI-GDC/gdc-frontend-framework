@@ -7,15 +7,15 @@ import {
 import React from "react";
 import { SortType } from "./types";
 
-const sortTypeToAriaDescription = (sortTypeAndDirection: SortType) => {
+const sortTypeToAriaDescription = (sortTypeAndDirection, valueLabel) => {
   if (sortTypeAndDirection.type === "alpha") {
     return sortTypeAndDirection.direction === "asc"
-      ? "is now sorted alphabetically ascending"
-      : "is now sorted alphabetically descending";
+      ? "Name is now sorted alphabetically ascending"
+      : "Name is now sorted alphabetically descending";
   } else {
     return sortTypeAndDirection.direction === "asc"
-      ? "is now sorted numerically ascending"
-      : "is now sorted numerically descending";
+      ? `${valueLabel} is now sorted numerically ascending`
+      : `${valueLabel} is now sorted numerically descending`;
   }
 };
 
@@ -31,6 +31,7 @@ interface FacetSortPanelProps {
  * @param setSort - sets the sort type and direction
  * @param valueLabel - Value labels, typically "case" "file"
  */
+
 const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   sortType,
   valueLabel,
@@ -63,7 +64,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
           })
         }
         rightIcon={<NameSortIcon size={nameIconSize} />}
-        aria-label="Sort alphabetically"
+        aria-label="Sort name alphabetically"
       >
         Name
       </Button>
@@ -80,13 +81,13 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
           })
         }
         rightIcon={<ValueSortIcon size={valueIconSize} />}
-        aria-label="Sort numerically"
+        aria-label={`Sort ${valueLabel} numerically`}
       >
         {valueLabel}
       </Button>
       <span className="Offscreen">
         <span id="liveRegion" aria-live="polite">
-          {sortTypeToAriaDescription(sortType)}
+          {sortTypeToAriaDescription(sortType, valueLabel)}
         </span>
       </span>
     </div>
