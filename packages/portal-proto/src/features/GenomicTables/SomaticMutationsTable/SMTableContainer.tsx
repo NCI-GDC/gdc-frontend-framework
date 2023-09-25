@@ -99,8 +99,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     searchTermsForGene?.geneId ?? "",
   );
   const [
-    downloadMutationsFrequencyActive,
-    setDownloadMutationsFrequencyActive,
+    downloadMutationsFrequencyJSONActive,
+    setDownloadMutationsFrequencyJSONActive,
+  ] = useState(false);
+  const [
+    downloadMutationsFrequencyTSVActive,
+    setDownloadMutationsFrequencyTSVActive,
   ] = useState(false);
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
@@ -284,9 +288,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
-  const handleJSONDownload = async () => {
-    setDownloadMutationsFrequencyActive(true);
-    await download({
+  const handleJSONDownload = () => {
+    setDownloadMutationsFrequencyJSONActive(true);
+    download({
       endpoint: "ssms",
       method: "POST",
       params: {
@@ -310,7 +314,24 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         ].join(","),
       },
       dispatch,
-      done: () => setDownloadMutationsFrequencyActive(false),
+      done: () => setDownloadMutationsFrequencyJSONActive(false),
+    });
+  };
+
+  const handleTSVDownload = () => {
+    setDownloadMutationsFrequencyTSVActive(true);
+
+    download({
+      endpoint: "/analysis/top_ssms",
+      method: "POST",
+      params: {
+        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        case_filters: buildCohortGqlOperator(combinedFilters) ?? {},
+        attachment: true,
+        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+      },
+      dispatch,
+      done: () => setDownloadMutationsFrequencyTSVActive(false),
     });
   };
 
@@ -465,19 +486,31 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     onClick={handleJSONDownload}
                     data-testid="button-json-mutation-frequency"
                   >
-                    {downloadMutationsFrequencyActive ? (
+                    {downloadMutationsFrequencyJSONActive ? (
                       <Loader size="sm" />
                     ) : (
                       "JSON"
                     )}
                   </FunctionButton>
                 </ButtonTooltip>
-                <ButtonTooltip label="Export current view" comingSoon={true}>
-                  <FunctionButton data-testid="button-tsv-mutation-frequency">
-                    TSV
+                {caseFilter || geneSymbol ? (
+                  <ButtonTooltip label="Export current view" comingSoon={true}>
+                    <FunctionButton data-testid="button-tsv-mutation-frequency">
+                      TSV
+                    </FunctionButton>
+                  </ButtonTooltip>
+                ) : (
+                  <FunctionButton
+                    onClick={handleTSVDownload}
+                    data-testid="button-tsv-mutation-frequency"
+                  >
+                    {downloadMutationsFrequencyTSVActive ? (
+                      <Loader size="sm" />
+                    ) : (
+                      "TSV"
+                    )}
                   </FunctionButton>
-                </ButtonTooltip>
-
+                )}
                 <Text className="font-heading font-bold text-md">
                   TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
                   {data?.ssmsTotal == 1
