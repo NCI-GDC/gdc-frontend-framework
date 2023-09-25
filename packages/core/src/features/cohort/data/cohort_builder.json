@@ -57,6 +57,7 @@
         "cases.diagnoses.ann_arbor_clinical_stage",
         "cases.diagnoses.ann_arbor_pathologic_stage",
         "cases.diagnoses.cog_renal_stage",
+        "cases.diagnoses.enneking_msts_stage",
         "cases.diagnoses.figo_stage",
         "cases.diagnoses.igcccg_stage",
         "cases.diagnoses.inss_stage",
@@ -69,6 +70,7 @@
     "grade_classification": {
       "label": "Grade Classification",
       "facets": [
+        "cases.diagnoses.inpc_grade",
         "cases.diagnoses.tumor_grade",
         "cases.diagnoses.who_cns_grade"
       ],
@@ -78,6 +80,7 @@
     "other_classification": {
       "label": "Other Classification",
       "facets": [
+        "cases.diagnoses.cog_neuroblastoma_risk_group",
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
         "cases.diagnoses.international_prognostic_index",
