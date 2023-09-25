@@ -14,8 +14,7 @@ export const HeaderTooltip = ({
       width={200}
       multiline
       withArrow
-      transition="fade"
-      transitionDuration={200}
+      transitionProps={{ duration: 200, transition: "fade" }}
       position="bottom-start"
     >
       <div className="font-heading text-left text-sm whitespace-pre-line">

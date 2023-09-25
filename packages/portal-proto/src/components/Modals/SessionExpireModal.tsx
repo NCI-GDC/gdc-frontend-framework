@@ -15,7 +15,6 @@ export const SessionExpireModal = ({
           Session Expired
         </Text>
       }
-      closeButtonLabel="Cancel"
       openModal={openModal}
       buttons={[
         { title: "Cancel", dataTestId: "button-session-expired-cancel" },

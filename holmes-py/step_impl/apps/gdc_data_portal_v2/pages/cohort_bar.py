@@ -16,7 +16,9 @@ class CohortBarLocators:
     X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
 
     TEXT_COHORT_QUERY_FILTER = lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) > div:has-text("{full_query_filter}") >> nth=0'
+    TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK= lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) >> text={full_query_filter} >> nth=0'
     TEXT_COHORT_QUERY_FILTER_CHECK_WHOLE_AREA = lambda full_query_filter: f'[data-testid="text-cohort-filters"] > div:has-text("{full_query_filter}") >> nth=0'
+    TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK_WHOLE_AREA = lambda full_query_filter: f'[data-testid="text-cohort-filters"] >> text={full_query_filter} >> nth=0'
 
 class CohortBar(BasePage):
 
@@ -65,8 +67,14 @@ class CohortBar(BasePage):
         full_query_filter = filter+values
         full_query_filter_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER(full_query_filter, position)
         is_full_query_filter_locator_visible = self.is_visible(full_query_filter_locator)
-
-        return is_full_query_filter_locator_visible
+        # Some query filter text can appear differently. As such, if we don't find it at first
+        # we attempt another way to search for it and return that value.
+        if not is_full_query_filter_locator_visible:
+                full_query_filter_alt_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK(full_query_filter, position)
+                is_full_query_filter_locator_alt_visible = self.is_visible(full_query_filter_alt_locator)
+                return is_full_query_filter_locator_alt_visible
+        else:
+            return is_full_query_filter_locator_visible
 
     def is_cohort_query_filter_not_present(self, filter, values):
         """
@@ -81,6 +89,15 @@ class CohortBar(BasePage):
         full_query_filter = filter+values
         full_query_filter_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER_CHECK_WHOLE_AREA(full_query_filter)
         is_full_query_filter_locator_visible = self.is_visible(full_query_filter_locator)
+        # Some query filter text can appear differently. As such, if we don't find it at first
+        # we attempt another way to search for it and return that value.
+        if not is_full_query_filter_locator_visible:
+                full_query_filter_alt_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK_WHOLE_AREA(full_query_filter)
+                is_full_query_filter_locator_alt_visible = self.is_visible(full_query_filter_alt_locator)
+                return is_full_query_filter_locator_alt_visible
+        else:
+            return is_full_query_filter_locator_visible
+
 
         return is_full_query_filter_locator_visible
 

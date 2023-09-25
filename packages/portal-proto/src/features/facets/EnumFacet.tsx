@@ -196,8 +196,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             multiline
             width={220}
             withArrow
-            transition="fade"
-            transitionDuration={200}
+            transitionProps={{ duration: 200, transition: "fade" }}
             disabled={!description}
           >
             <header.Label>

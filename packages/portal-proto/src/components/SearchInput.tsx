@@ -261,10 +261,12 @@ export const SearchInput: React.FC = () => {
                 color="accent.5"
                 className="ml-auto justify-center"
                 page={page}
+                onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 size="sm"
                 radius="xs"
                 withEdges
+                siblings={0}
                 classNames={{ item: "border-0" }}
                 getItemAriaLabel={(page) => {
                   switch (page) {

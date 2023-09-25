@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
-import { DatePicker, RangeCalendar } from "@mantine/dates";
+import { DateInput, DatePicker } from "@mantine/dates";
 import {
   buildRangeOperator,
   extractRangeValues,
@@ -95,11 +95,11 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         <Tooltip
           label={description}
           position="bottom-start"
+          disabled={!description}
           multiline
           width={220}
           withArrow
-          transition="fade"
-          transitionDuration={200}
+          transitionProps={{ duration: 200, transition: "fade" }}
         >
           <FacetText>
             {facetName ? facetName : trimFirstFieldNameToTitle(field, true)}
@@ -126,37 +126,37 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         </div>
       </FacetHeader>
       <div className="flex flex-nowrap items-center p-2">
-        <DatePicker
-          allowFreeInput
+        <DateInput
           clearable
           size="xs"
           placeholder="Since"
           className="px-1"
           maxDate={dateRangeValue[1]}
-          inputFormat="YYYY-MM-DD"
+          valueFormat="YYYY-MM-DD"
           onChange={(d: Date | null) =>
             setDateRangeValue([d, dateRangeValue[1]])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           value={dateRangeValue[0]}
           aria-label="Set the since value"
           icon={<CalendarIcon />}
-        ></DatePicker>
+        />
         <MinusIcon />
-        <DatePicker
-          allowFreeInput
+        <DateInput
           clearable
           size="xs"
           placeholder="Through"
           className="px-1"
-          inputFormat="YYYY-MM-DD"
+          valueFormat="YYYY-MM-DD"
           value={dateRangeValue[1]}
           minDate={dateRangeValue[0]}
           onChange={(d: Date | null) =>
             setDateRangeValue([dateRangeValue[0], d])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           icon={<CalendarIcon />}
           aria-label="Set the through value"
-        ></DatePicker>
+        />
         <Popover
           position="bottom-end"
           withArrow
@@ -174,12 +174,13 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             </ActionIcon>
           </Popover.Target>
           <Popover.Dropdown>
-            <RangeCalendar
+            <DatePicker
               classNames={{
-                day: "data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
+                day: "hover:bg-primary hover:text-base-max data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
               }}
+              numberOfColumns={2}
+              type="range"
               allowSingleDateInRange={false}
-              amountOfMonths={2}
               value={dateRangeValue}
               onChange={(d: [Date | null, Date | null]) => setDateRangeValue(d)}
               aria-label="date range picker"

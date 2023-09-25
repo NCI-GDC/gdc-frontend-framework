@@ -104,10 +104,12 @@ const ProjectsTable: React.FC = () => {
   };
 
   const prevProjectFilters = usePrevious(projectFilters);
-  useEffect(
-    () => !isEqual(prevProjectFilters, projectFilters) && setActivePage(1),
-    [prevProjectFilters, projectFilters],
-  );
+
+  useEffect(() => {
+    if (!isEqual(prevProjectFilters, projectFilters)) {
+      setActivePage(1);
+    }
+  }, [prevProjectFilters, projectFilters]);
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (!isFetching && isSuccess) {

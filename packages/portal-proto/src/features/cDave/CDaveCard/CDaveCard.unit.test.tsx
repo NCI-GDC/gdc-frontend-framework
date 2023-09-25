@@ -1,7 +1,16 @@
-import { render } from "@testing-library/react";
 import * as core from "@gff/core";
 import * as facetHooks from "../../facets/hooks";
+import * as router from "next/router";
+import { render } from "test-utils";
 import CDaveCard from "./CDaveCard";
+
+jest.spyOn(router, "useRouter").mockImplementation(
+  () =>
+    ({
+      pathname: "",
+      query: {},
+    } as any),
+);
 
 describe("CDaveCard", () => {
   it("enum result with data", () => {

@@ -27,7 +27,6 @@ const CartDownloadModal = ({
   return (
     <BaseModal
       title={<Text size="xl">Access Alert</Text>}
-      closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
       onClose={() => setActive(false)}

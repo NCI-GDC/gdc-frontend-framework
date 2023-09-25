@@ -16,7 +16,6 @@ tags: gdc-data-portal-v2, end-to-end, regression
   |row   |column|
   |------|------|
   |1     |2     |
-* Wait for loading spinner
 * Wait for cohort bar case count loading spinner
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar

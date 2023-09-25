@@ -12,7 +12,7 @@ const FilesFacetSelection = (): JSX.Element => {
 
   return (
     <FacetSelection
-      title={"Add a File Filter"}
+      title="Add a File Filter"
       facetType="files"
       handleFilterSelected={handleFilterSelected}
       usedFacets={useAppSelector((state) =>
@@ -40,7 +40,7 @@ export const FilesFacetSelectionModal = (): JSX.Element => {
         zIndex={400}
       >
         <FacetSelection
-          title={"Add Files Filter"}
+          title="Add Files Filter"
           facetType="files"
           handleFilterSelected={handleFilterSelected}
           usedFacets={useAppSelector((state) =>

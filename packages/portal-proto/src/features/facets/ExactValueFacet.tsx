@@ -115,8 +115,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           multiline
           width={220}
           withArrow
-          transition="fade"
-          transitionDuration={200}
+          transitionProps={{ duration: 200, transition: "fade" }}
         >
           <FacetText>{facetTitle}</FacetText>
         </Tooltip>

@@ -30,10 +30,7 @@ export const SaveOrCreateEntityModal = ({
       opened={opened}
       padding={0}
       radius="md"
-      zIndex={400}
       onClose={onClose}
-      withinPortal={false}
-      centered
     >
       <SaveOrCreateEntityBody
         entity={entity}

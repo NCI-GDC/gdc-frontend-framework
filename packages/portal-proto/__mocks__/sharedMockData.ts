@@ -19,6 +19,7 @@ export const mantineFormNoErrorObj = {
   removeListItem: jest.fn(),
   insertListItem: jest.fn(),
   getInputProps: jest.fn(),
+  getTransformedValues: jest.fn(),
   onSubmit: jest.fn(),
   onReset: jest.fn(),
   isDirty: jest.fn(),
