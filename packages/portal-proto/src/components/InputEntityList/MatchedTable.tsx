@@ -55,7 +55,7 @@ const MatchedTable = ({
               id: `mapped_${id.replaceAll(".", "_")}`,
               header: fieldDisplay[id],
               cell: ({ row }) =>
-                row.original[`mapped_${id.replaceAll(".", "_")}`],
+                row?.original[`mapped_${id.replaceAll(".", "_")}`] ?? "--",
               meta: {
                 highlighted: true,
                 sortingFn: (rowA, rowB) => {
@@ -84,7 +84,7 @@ const MatchedTable = ({
               id: `submitted_${id.replaceAll(".", "_")}`,
               header: fieldDisplay[id],
               cell: ({ row }) =>
-                row.original[`submitted_${id.replaceAll(".", "_")}`],
+                row?.original[`submitted_${id.replaceAll(".", "_")}`] ?? "--",
               meta: {
                 sortingFn: (rowA, rowB) => {
                   const property = `submitted_${id.replaceAll(".", "_")}`;
@@ -116,7 +116,7 @@ const MatchedTable = ({
       ...Object.fromEntries(
         uniqueMappedToFields.map((id) => [
           `mapped_${id.replaceAll(".", "_")}`,
-          "--",
+          undefined,
         ]),
       ),
       ...Object.fromEntries(
@@ -128,7 +128,7 @@ const MatchedTable = ({
       ...Object.fromEntries(
         uniqueSubmittedIdentifierFields.map((id) => [
           `submitted_${id.replaceAll(".", "_")}`,
-          "--",
+          undefined,
         ]),
       ),
       ...Object.fromEntries(
@@ -147,11 +147,7 @@ const MatchedTable = ({
         (field) => `submitted${fieldDisplay[field]}`,
       ),
     ];
-    const body = formattedMatchData.map((d) =>
-      Object.values(d)
-        .map((v) => v.replace("--", ""))
-        .join("\t"),
-    );
+    const body = formattedMatchData.map((d) => Object.values(d).join("\t"));
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
     saveAs(
