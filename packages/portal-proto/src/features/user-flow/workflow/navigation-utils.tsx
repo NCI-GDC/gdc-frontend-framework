@@ -39,7 +39,10 @@ export const headerElements = [
       className="cursor-pointer"
       passHref
     >
-      <NavLink>
+      <NavLink
+        data-testid="button-header-analysis"
+        aria-label="analysis center button"
+      >
         <AnalysisCenterIcon
           aria-label="Analysis logo"
           width={24}
@@ -64,12 +67,13 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "Projects" },
       }}
-      data-testid="button-header-projects"
-      aria-label="project/studies center button"
       className="cursor-pointer"
       passHref
     >
-      <NavLink>
+      <NavLink
+        data-testid="button-header-projects"
+        aria-label="project/studies center button"
+      >
         <ProjectsIcon
           aria-label="Studies logo"
           width={24}
@@ -94,10 +98,13 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "CohortBuilder" },
       }}
-      data-testid="button-header-cohort"
-      aria-label="Cohort Builder button"
+      className="cursor-pointer"
+      passHref
     >
-      <NavLink>
+      <NavLink
+        data-testid="button-header-cohort"
+        aria-label="Cohort Builder button"
+      >
         <CohortBuilderIcon
           aria-label="Cohort Builder logo"
           width={24}
@@ -122,12 +129,13 @@ export const headerElements = [
         pathname: "/analysis_page",
         query: { app: "Downloads" },
       }}
-      data-testid="button-header-downloads"
-      aria-label="Repository button"
       className="cursor-pointer"
       passHref
     >
-      <NavLink>
+      <NavLink
+        data-testid="button-header-downloads"
+        aria-label="Repository button"
+      >
         <DownloadIcon
           aria-label="Repository logo"
           width={24}

@@ -180,7 +180,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    *  which will update the survival plot
    */
   useEffect(() => {
-    if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
+    // if we have a top gene and no comparative survival set, and there is a gene or ssm symbol
+    // set the comparative survival to the top gene
+    if (
+      topGeneSSMSSuccess &&
+      comparativeSurvival === undefined &&
+      topGeneSSMS[0][appMode].symbol
+    ) {
       setComparativeSurvival({
         symbol: topGeneSSMS[0][appMode].symbol,
         name:

@@ -133,18 +133,19 @@ export const FileFacetPanel = (): JSX.Element => {
       >
         <AddAdditionalIcon className="text-primary-content" size="2em" />
         <Text size="md" weight={700} className="text-primary-content-darker">
-          {" "}
           Add a Custom Filter
         </Text>
       </Button>
       <div className="flex flex-col gap-y-4" data-testid="filters-facets">
-        <Modal size="lg" opened={opened} onClose={() => setOpened(false)}>
-          <FacetSelection
-            title="Add a Custom Filter"
-            facetType="files"
-            handleFilterSelected={handleFilterSelected}
-            usedFacets={config.facets}
-          />
+        <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+          <div className="p-4">
+            <FacetSelection
+              title="Add a Custom Filter"
+              facetType="files"
+              handleFilterSelected={handleFilterSelected}
+              usedFacets={config.facets}
+            />
+          </div>
         </Modal>
         <LoadingOverlay
           data-testid="loading-spinner"
