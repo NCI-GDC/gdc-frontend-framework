@@ -53,6 +53,7 @@ interface ContinuousDataProps {
   readonly chartType: ChartTypes;
   readonly noData: boolean;
   readonly cohortFilters: GqlOperation;
+  readonly dataDimension?: string;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -62,6 +63,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   chartType,
   noData,
   cohortFilters,
+  dataDimension,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
@@ -130,7 +132,12 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   return (
     <>
       {chartType === "boxqq" ? (
-        <BoxQQSection field={field} displayName={fieldName} data={statsData} />
+        <BoxQQSection
+          field={field}
+          displayName={fieldName}
+          data={statsData}
+          dataDimension={dataDimension}
+        />
       ) : (
         <>
           {chartType === "histogram" ? (

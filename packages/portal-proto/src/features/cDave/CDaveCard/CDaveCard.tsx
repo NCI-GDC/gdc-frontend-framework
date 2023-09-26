@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, ActionIcon, Tooltip } from "@mantine/core";
+import { Card, ActionIcon, Tooltip, SegmentedControl } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
@@ -17,7 +17,11 @@ import {
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes } from "../types";
-import { CONTINUOUS_FACET_TYPES, HIDE_QQ_BOX_FIELDS } from "../constants";
+import {
+  CONTINUOUS_FACET_TYPES,
+  HIDE_QQ_BOX_FIELDS,
+  DATA_DIMENSIONS,
+} from "../constants";
 import { toDisplayName } from "../utils";
 
 interface CDaveCardProps {
@@ -68,6 +72,18 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
+        {DATA_DIMENSIONS?.[field.split(".").at(-1)]?.unit === "Days" && (
+          <SegmentedControl
+            data={["Days", "Years"]}
+            classNames={{
+              root: "bg-transparent p-0",
+              control:
+                "first:border-r-0 last:border-l-0 first:[&_label]:rounded-l-md last:[&_label]:rounded-r-md",
+              label:
+                "bg-base-max text-primary border-1 border-primary data-active:bg-primary data-active:text-base-max rounded-none",
+            }}
+          />
+        )}
         <div className="flex gap-1">
           <Tooltip
             label={"Histogram"}
@@ -171,6 +187,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           chartType={chartType}
           noData={noData}
           cohortFilters={cohortFilters}
+          dataDimension={DATA_DIMENSIONS?.[field]?.unit}
         />
       ) : (
         <CategoricalData

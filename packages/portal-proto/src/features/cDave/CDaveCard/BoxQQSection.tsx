@@ -20,11 +20,7 @@ import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { convertDateToString } from "@/utils/date";
-import {
-  BOX_QQ_DATA_DIMENSIONS,
-  COLOR_MAP,
-  DEMO_COHORT_FILTERS,
-} from "../constants";
+import { COLOR_MAP, DEMO_COHORT_FILTERS } from "../constants";
 import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
@@ -36,12 +32,14 @@ interface BoxQQPlotProps {
   readonly field: string;
   readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
+  readonly dataDimension?: string;
 }
 
 const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
   displayName,
   data,
+  dataDimension,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
@@ -60,15 +58,13 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     tailwindConfig.theme.extend.colors[
       COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
     ]?.DEFAULT;
-  const dataDimension =
-    BOX_QQ_DATA_DIMENSIONS?.[clinicalNestedField ?? clinicalField];
+  //const dataDimension =
+  //  BOX_QQ_DATA_DIMENSIONS?.[clinicalNestedField ?? clinicalField];
 
   const formatValue = useCallback(
     (value: number) => {
       return Number(
-        dataDimension?.unit === "Years"
-          ? value / DAYS_IN_YEAR
-          : value.toFixed(2),
+        dataDimension === "Years" ? value / DAYS_IN_YEAR : value.toFixed(2),
       );
     },
     [dataDimension],
@@ -131,7 +127,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   };
 
   const downloadTableTSVFile = () => {
-    const header = ["Statistics", dataDimension?.unit || "Quantities"];
+    const header = ["Statistics", dataDimension || "Quantities"];
     const body = [
       ["Minimum", formattedData.min].join("\t"),
       ["Maximum", formattedData.max].join("\t"),
@@ -294,7 +290,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
                 Statistics
               </th>
               <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
-                {dataDimension?.unit || "Quantities"}
+                {dataDimension || "Quantities"}
               </th>
             </tr>
           </thead>

@@ -166,12 +166,13 @@ export const FACET_SORT = {
   ],
 };
 
-export const BOX_QQ_DATA_DIMENSIONS = {
+export const DATA_DIMENSIONS = {
   age_at_diagnosis: {
     unit: "Days",
   },
   days_to_birth: { unit: "Days" },
   days_to_death: { unit: "Days" },
+  days_to_diagnosis: { unit: "Days" },
   days_to_hiv_diagnosis: { unit: "Days" },
   days_to_last_follow_up: { unit: "Days" },
   days_to_last_known_disease_status: { unit: "Days" },
