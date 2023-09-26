@@ -372,22 +372,15 @@ export const ContextualCasesView: React.FC = () => {
                 biospecimenDownloadActive ? "Processing" : "Biospecimen"
               }
               LeftIcon={
-                <div className="flex gap-1 items-center">
-                  {pickedCases.length ? (
-                    <CountsIcon $count={pickedCases.length}>
-                      {pickedCases.length}
-                    </CountsIcon>
-                  ) : null}
-
-                  {biospecimenDownloadActive ? (
-                    <Loader size={20} />
-                  ) : (
-                    <DownloadIcon
-                      size="1rem"
-                      aria-label="Biospecimen dropdown"
-                    />
-                  )}
-                </div>
+                biospecimenDownloadActive ? (
+                  <Loader size={20} />
+                ) : pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : (
+                  <DownloadIcon size="1rem" aria-label="Biospecimen dropdown" />
+                )
               }
             />
 
