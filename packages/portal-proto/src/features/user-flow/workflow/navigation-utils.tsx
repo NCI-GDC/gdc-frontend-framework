@@ -16,7 +16,7 @@ font-medium
 text-base-darker
 p-1
 mr-2
-hover:rounded-md 
+hover:rounded-md
 hover:bg-primary-lightest
 `;
 
