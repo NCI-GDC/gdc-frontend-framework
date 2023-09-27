@@ -260,26 +260,26 @@ export const SearchInput: React.FC = () => {
                 data-testid="pagination"
                 color="accent.5"
                 className="ml-auto justify-center"
-                page={page}
+                value={page}
                 onChange={setPage}
                 total={Math.ceil(filteredResults.length / PAGE_SIZE)}
                 size="sm"
                 radius="xs"
                 withEdges
                 siblings={0}
-                classNames={{ item: "border-0" }}
-                getItemAriaLabel={(page) => {
-                  switch (page) {
-                    case "prev":
-                      return "previous page button";
+                classNames={{ control: "border-0" }}
+                getControlProps={(control) => {
+                  switch (control) {
+                    case "previous":
+                      return { "aria-label": "previous page button" };
                     case "next":
-                      return "next page button";
+                      return { "aria-label": "next page button" };
                     case "first":
-                      return "first page button";
+                      return { "aria-label": "first page button" };
                     case "last":
-                      return "last page button";
+                      return { "aria-label": "last page button" };
                     default:
-                      return `${page} page button`;
+                      return { "aria-label": `${control} page button` };
                   }
                 }}
               />
