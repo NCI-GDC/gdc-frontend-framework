@@ -51,12 +51,12 @@ def default_filters(table):
     )
 
 
-@step("Verify <count> items on Add a File Filter filter list")
+@step("Verify <count> items on Add a Custom Filter filter list")
 def verify_file_filter_list_count(count: int):
     actual_count = APP.repository_page.get_file_filter_list_count()
     assert (
         int(count) == actual_count
-    ), f"Add a File Filters list count mismatch.\nExpected: {count}\nActual: {actual_count}"
+    ), f"Add a Custom Filters list count mismatch.\nExpected: {count}\nActual: {actual_count}"
 
 
 @step("Verify file filter names do not start with <pattern>")

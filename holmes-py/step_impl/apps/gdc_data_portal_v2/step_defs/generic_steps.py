@@ -76,7 +76,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a File Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
     }
     first_text = text.split(" ")[0]
     try:
@@ -124,7 +124,7 @@ def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_ca
 
 @step("Close <modal_name> modal")
 def close_modal(modal_name: str):
-    modals = {"Add a File Filter": APP.repository_page.close_add_a_file_filter_modal}
+    modals = {"Add a Custom Filter": APP.repository_page.close_add_a_custom_filter_modal}
     modals.get(modal_name)()
     assert (
         not APP.repository_page.get_file_filter_list_count()
