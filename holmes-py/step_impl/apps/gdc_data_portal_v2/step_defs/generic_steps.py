@@ -36,6 +36,7 @@ def setup_next_spec_run():
     """
     APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     if not APP.shared.is_no_active_cohort_filter_text_present():
         APP.shared.clear_active_cohort_filters()
 

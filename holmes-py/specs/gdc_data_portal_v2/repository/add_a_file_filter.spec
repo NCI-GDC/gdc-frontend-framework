@@ -40,7 +40,7 @@ tags: regression, smoke
 * Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
 
 ## File properties on Add a Custom Filter modal
-* Verify that the "303 file properties" text is displayed on "Add a Custom Filter" "modal"
+* Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
 
 ## # file counts listed on Add a Custom Filter modal
 * Verify "303" items on Add a Custom Filter filter list
