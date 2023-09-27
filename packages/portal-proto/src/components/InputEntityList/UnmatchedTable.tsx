@@ -1,7 +1,9 @@
-import useStandardPagination from "@/hooks/useStandardPagination";
-import { createColumnHelper, SortingState } from "@tanstack/react-table";
-import { upperFirst } from "lodash";
 import { useMemo, useState } from "react";
+import { upperFirst } from "lodash";
+import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import saveAs from "file-saver";
+import useStandardPagination from "@/hooks/useStandardPagination";
+import FunctionButton from "@/components/FunctionButton";
 import { HandleChangeInput } from "../Table/types";
 import VerticalTable from "../Table/VerticalTable";
 
@@ -51,12 +53,28 @@ const UnmatchedTable = ({
     }
   };
 
+  const downloadTSV = () => {
+    const header = ["submitted"];
+    const body = unmatchedTableData.map((d) => d.id);
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
+
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `unmatched-${entityLabel}-list.tsv`,
+    );
+  };
+
   return (
     <div className="m-4">
-      <p className="text-sm mb-2">
-        {unmatched.length} submitted {entityLabel} identifier
-        {unmatched.length !== 1 && "s"} not recognized
-      </p>
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-sm">
+          {unmatched.length} submitted {entityLabel} identifier
+          {unmatched.length !== 1 && "s"} not recognized
+        </p>
+        <FunctionButton onClick={downloadTSV}>TSV</FunctionButton>
+      </div>
       {unmatched.length > 0 && (
         <VerticalTable
           data={displayedUnmatchedData}

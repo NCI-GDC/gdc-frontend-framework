@@ -4,7 +4,7 @@ interface Match {
 }
 
 export interface MatchResults {
-  readonly givenIdentifiers: Match[];
+  readonly submittedIdentifiers: Match[];
   readonly mappedTo: Match[];
   readonly output: Match[];
 }
@@ -13,7 +13,7 @@ export interface MatchResults {
   Parses through the API response to figure out what fields our matched values correspond to
   @param data: API response for the matches
   @param mappedToFields: fields we mapped to
-  @param givenIdentifierFields: fields that we accept from the user
+  @param submittedIdentifierFields: fields that we accept from the user
   @param outputField: field used for creating set
   @param tokens: the list of identifiers the user input
 **/
@@ -21,7 +21,7 @@ export interface MatchResults {
 export const getMatchedIdentifiers = (
   data: readonly Record<string, any>[],
   mappedToFields: string[],
-  givenIdentifierFields: string[],
+  submittedIdentifierFields: string[],
   outputField: string,
   tokens: string[],
 ): MatchResults[] => {
@@ -30,13 +30,13 @@ export const getMatchedIdentifiers = (
 
   data.forEach((d) => {
     const matches: MatchResults = {
-      givenIdentifiers: [],
+      submittedIdentifiers: [],
       mappedTo: [],
       output: [],
     };
     findAllIdentifiers(
       d,
-      givenIdentifierFields,
+      submittedIdentifierFields,
       mappedToFields,
       outputField,
       caseInsensitiveTokens,
@@ -44,7 +44,7 @@ export const getMatchedIdentifiers = (
       matches,
     );
 
-    if (matches.givenIdentifiers.length > 0) {
+    if (matches.submittedIdentifiers.length > 0) {
       matchedData.push(matches);
     }
   });
@@ -55,7 +55,7 @@ export const getMatchedIdentifiers = (
 /**
  * Recursively looks through API response to match values input by user to their API fields
  * @param object: object we are recursively searching through
- * @param givenIdentifierFields: fields that we accept from the user
+ * @param submittedIdentifierFields: fields that we accept from the user
  * @param mappedToFields: fields we mapped to
  * @param outputField: field used for creating set
  * @param tokens: the list of identifiers the user input
@@ -65,7 +65,7 @@ export const getMatchedIdentifiers = (
 
 const findAllIdentifiers = (
   object: Record<string, any> | string,
-  givenIdentifierFields: string[],
+  submittedIdentifierFields: string[],
   mappedToFields: string[],
   outputField: string,
   tokens: Set<string>,
@@ -82,10 +82,10 @@ const findAllIdentifiers = (
     if (Array.isArray(object[k])) {
       object[k].forEach((v) => {
         if (
-          givenIdentifierFields.includes(fullPath) &&
+          submittedIdentifierFields.includes(fullPath) &&
           tokens.has(v.toLowerCase())
         ) {
-          results.givenIdentifiers.push({
+          results.submittedIdentifiers.push({
             field: fullPath,
             value: v,
           });
@@ -107,7 +107,7 @@ const findAllIdentifiers = (
 
         findAllIdentifiers(
           v,
-          givenIdentifierFields,
+          submittedIdentifierFields,
           mappedToFields,
           outputField,
           tokens,
@@ -117,10 +117,10 @@ const findAllIdentifiers = (
       });
     } else {
       if (
-        givenIdentifierFields.includes(fullPath) &&
+        submittedIdentifierFields.includes(fullPath) &&
         tokens.has(object[k].toLowerCase())
       ) {
-        results.givenIdentifiers.push({
+        results.submittedIdentifiers.push({
           field: fullPath,
           value: object[k],
         });
@@ -142,7 +142,7 @@ const findAllIdentifiers = (
 
       findAllIdentifiers(
         object[k],
-        givenIdentifierFields,
+        submittedIdentifierFields,
         mappedToFields,
         outputField,
         tokens,

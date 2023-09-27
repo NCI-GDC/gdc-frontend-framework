@@ -81,7 +81,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
           <div className="flex flex-row justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
-              className="px-2"
+              className="px-2 flex flex-row gap-2"
               onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
