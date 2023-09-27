@@ -20,6 +20,7 @@ import {
 import { CasesCohortButtonFromValues } from "./CasesCohortButton";
 import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { convertDateToString } from "@/utils/date";
 import download from "@/utils/download";
@@ -356,8 +357,16 @@ export const ContextualCasesView: React.FC = () => {
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON", onClick: handleBiospeciemenJSONDownload },
-                { title: "TSV", onClick: handleBiospeciemenTSVDownload },
+                {
+                  title: "JSON",
+                  onClick: handleBiospeciemenJSONDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
+                {
+                  title: "TSV",
+                  onClick: handleBiospeciemenTSVDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
               ]}
               TargetButtonChildren={
                 biospecimenDownloadActive ? "Processing" : "Biospecimen"
@@ -369,14 +378,24 @@ export const ContextualCasesView: React.FC = () => {
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
-                ) : null
+                ) : (
+                  <DownloadIcon size="1rem" aria-label="Biospecimen dropdown" />
+                )
               }
             />
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON", onClick: handleClinicalJSONDownload },
-                { title: "TSV", onClick: handleClinicalTSVDownload },
+                {
+                  title: "JSON",
+                  onClick: handleClinicalJSONDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
+                {
+                  title: "TSV",
+                  onClick: handleClinicalTSVDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
               ]}
               TargetButtonChildren={
                 clinicalDownloadActive ? "Processing" : "Clinical"
@@ -388,9 +407,12 @@ export const ContextualCasesView: React.FC = () => {
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
-                ) : null
+                ) : (
+                  <DownloadIcon size="1rem" aria-label="Clinical dropdown" />
+                )
               }
             />
+
             <Button
               onClick={handleJSONDownload}
               variant="outline"
