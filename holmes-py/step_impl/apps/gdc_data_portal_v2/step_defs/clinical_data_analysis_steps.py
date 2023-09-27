@@ -1,3 +1,5 @@
+import time
+
 from getgauge.python import step, before_spec
 
 from step_impl.base.webdriver import WebDriver
@@ -102,6 +104,9 @@ def click_button_bin_option_continuous_modal(button_name):
 def click_save_cancel_button_continuous_modal(button_name):
     """Select save or cancel on the continuous custom bin modal"""
     APP.clinical_data_analysis.click_save_cancel_button_continuous_modal(button_name)
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    time.sleep(1)
 
 @step("Select <button_name> in a continuous custom bin modal on the Clinical Data Analysis page")
 def click_button_continuous_modal(button_name):
