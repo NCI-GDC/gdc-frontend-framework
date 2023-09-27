@@ -20,6 +20,8 @@ class HeaderSection(BasePage):
     def navigate_to_main_pages(self, button_name:str):
         button_name = self.normalize_button_identifier(button_name)
         locator = HeaderSectionLocators.BUTTON_IDENT(button_name)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_until_locator_is_visible(locator)
         self.click(locator)
         self.wait_for_page_to_load(button_name)
 

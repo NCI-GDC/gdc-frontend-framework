@@ -61,11 +61,6 @@ def select_cohort_from_dropdown(cohort_name: str):
 def set_as_current_cohort_from_temp_message():
     APP.cohort_bar.click_set_as_current_cohort_from_temp_message()
 
-@step("The secondary Cohort Bar save screen should appear")
-def is_secondary_cohort_bar_save_screen_present():
-    is_second_save_modal_present = APP.cohort_bar.is_secondary_cohort_bar_save_screen_present()
-    assert is_second_save_modal_present, f"The secondary save modal is NOT present"
-
 @step("The cohort <cohort_name> should not appear in the cohort dropdown list")
 def validate_cohort_is_not_present_in_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
