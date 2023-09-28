@@ -22,7 +22,7 @@ class HeaderSection(BasePage):
         locator = HeaderSectionLocators.BUTTON_IDENT(button_name)
         self.wait_for_loading_spinner_to_detatch()
         self.wait_until_locator_is_visible(locator)
-        self.click(locator)
+        self.click(locator, True)
         self.wait_for_page_to_load(button_name)
 
     # Pages in the data portal do not load instantaneously.
