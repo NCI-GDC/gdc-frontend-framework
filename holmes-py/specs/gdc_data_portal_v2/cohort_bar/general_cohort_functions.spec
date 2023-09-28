@@ -34,6 +34,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Disease Type     |adenomas and adenocarcinomas |
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
+* Is text "You cannot undo this action." present on the page
 * "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
 * "test save 1" should be the active cohort
 * Is text "Changes not saved" not present on the page
