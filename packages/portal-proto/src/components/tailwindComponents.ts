@@ -68,7 +68,7 @@ export const CountsIcon = tw.div<CountsIconProps>`
   text-accent-contrast
   font-heading
   rounded-md
-  p-1
+  p-2
   `;
 
 export const DemoText = tw.span`
