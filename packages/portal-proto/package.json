@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
@@ -17,7 +17,7 @@
     "@datadog/browser-rum": "^4.32.0",
     "@fontsource/montserrat": "^4.5.14",
     "@fontsource/noto-sans": "^4.5.11",
-    "@gff/core": "2.8.0",
+    "@gff/core": "2.9.0",
     "@mantine/core": "^6.0.21",
     "@mantine/dates": "^6.0.21",
     "@mantine/form": "^6.0.21",
