@@ -565,10 +565,10 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       </div>
       <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
         <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center font-montserrat">
             <div
               className={
                 [

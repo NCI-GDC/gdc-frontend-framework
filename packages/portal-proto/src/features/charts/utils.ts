@@ -27,22 +27,26 @@ const isFontRule = (rule: CSSRule): rule is CSSFontFaceRule => {
   return rule.constructor.name === "CSSFontFaceRule";
 };
 
-const createSVG = async (
-  ref: MutableRefObject<HTMLElement>,
-  className: string,
-): Promise<Blob> => {
-  const svgElement = document.importNode(
-    ref.current.querySelectorAll("svg")[0],
-    true,
+/**
+ * Creates SVG that will display correctly in a download from React element
+ * @param ref - React element to create download from
+ * @returns Blob containing the new SVG content
+ */
+const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
+  const svgElement = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg",
   );
   svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svgElement.setAttribute("style", "background-color: white;");
-  if (className) {
-    svgElement.setAttribute("class", className);
-  }
+  svgElement.setAttribute("height", "100%");
+  svgElement.setAttribute("width", "100%");
+  // For namespaced css styles
+  svgElement.setAttribute("id", "__next");
 
   const styleTag = document.createElement("style");
   const styles = [];
+  // Copy styles from page into SVG
   for (const sheet of document.styleSheets) {
     for (const rule of sheet.cssRules) {
       // For fonts we need to retrieve the font file, encode it to a data url and then embed back in svg
@@ -64,8 +68,23 @@ const createSVG = async (
     }
   }
   styleTag.innerHTML = styles.join("\n");
+  svgElement.append(styleTag);
 
-  svgElement.prepend(styleTag);
+  const chartWrapper = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "foreignObject",
+  );
+  chartWrapper.setAttribute(
+    "width",
+    `${ref.current.querySelector("svg").getAttribute("width")}`,
+  );
+  chartWrapper.setAttribute(
+    "height",
+    `${ref.current.querySelector("svg").getAttribute("height")}`,
+  );
+  chartWrapper.append(document.importNode(ref.current, true));
+  svgElement.append(chartWrapper);
+
   const svgBlob = new Blob(
     [new XMLSerializer().serializeToString(svgElement)],
     {
@@ -84,10 +103,9 @@ const createSVG = async (
 export const handleDownloadSVG = async (
   ref: MutableRefObject<HTMLElement>,
   filename: string,
-  className?: string,
 ): Promise<void> => {
   if (ref.current) {
-    const svgBlob = await createSVG(ref, className);
+    const svgBlob = await createSVG(ref);
     const href = URL.createObjectURL(svgBlob);
     handleDownload(href, filename);
   }
@@ -101,11 +119,13 @@ export const handleDownloadSVG = async (
 export const handleDownloadPNG = async (
   ref: MutableRefObject<HTMLElement>,
   filename: string,
-  className?: string,
 ): Promise<void> => {
-  const svgBlob = await createSVG(ref, className);
+  const svgBlob = await createSVG(ref);
   const svgHref = URL.createObjectURL(svgBlob);
-  const svgImage = new Image();
+  const svgImage = new Image(
+    Number(ref.current.querySelector("svg").getAttribute("width")),
+    Number(ref.current.querySelector("svg").getAttribute("height")),
+  );
   const canvas = document.createElement("canvas");
   const canvasCtx = canvas.getContext("2d");
 
@@ -119,5 +139,5 @@ export const handleDownloadPNG = async (
     handleDownload(href, filename);
   };
 
-  svgImage.src = svgHref;
+  svgImage.src = await blobToBase64(svgBlob);
 };
