@@ -27,15 +27,18 @@ const isFontRule = (rule: CSSRule): rule is CSSFontFaceRule => {
   return rule.constructor.name === "CSSFontFaceRule";
 };
 
-const createSVG = async (ref, className): Promise<Blob> => {
-  const svgData = document.importNode(
+const createSVG = async (
+  ref: MutableRefObject<HTMLElement>,
+  className: string,
+): Promise<Blob> => {
+  const svgElement = document.importNode(
     ref.current.querySelectorAll("svg")[0],
     true,
   );
-  svgData.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  svgData.setAttribute("style", "background-color: white;");
+  svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  svgElement.setAttribute("style", "background-color: white;");
   if (className) {
-    svgData.setAttribute("class", className);
+    svgElement.setAttribute("class", className);
   }
 
   const styleTag = document.createElement("style");
@@ -60,12 +63,15 @@ const createSVG = async (ref, className): Promise<Blob> => {
       }
     }
   }
-  styleTag.innerHTML = styles.join("\n").replaceAll("&", "&amp;");
+  styleTag.innerHTML = styles.join("\n");
 
-  svgData.prepend(styleTag);
-  const svgBlob = new Blob([svgData.outerHTML], {
-    type: "image/svg+xml;charset=utf-8",
-  });
+  svgElement.prepend(styleTag);
+  const svgBlob = new Blob(
+    [new XMLSerializer().serializeToString(svgElement)],
+    {
+      type: "image/svg+xml;charset=utf-8",
+    },
+  );
 
   return svgBlob;
 };
