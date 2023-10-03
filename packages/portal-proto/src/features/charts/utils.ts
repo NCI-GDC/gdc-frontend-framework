@@ -76,11 +76,11 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
   );
   chartWrapper.setAttribute(
     "width",
-    `${ref.current.querySelector("svg").getAttribute("width")}`,
+    `${Number(ref.current.querySelector("svg").getAttribute("width")) + 50}`,
   );
   chartWrapper.setAttribute(
     "height",
-    `${ref.current.querySelector("svg").getAttribute("height")}`,
+    `${Number(ref.current.querySelector("svg").getAttribute("height")) + 50}`,
   );
   chartWrapper.append(document.importNode(ref.current, true));
   svgElement.append(chartWrapper);

@@ -152,14 +152,14 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
 
   useEffect(() => {
     const charts = [
-      { filename: boxPlotDownloadName, chartRef: boxPlotRef },
-      { filename: qqPlotDownloadName, chartRef: qqPlotRef },
+      { filename: boxPlotDownloadName, chartRef: boxDownloadChartRef },
+      { filename: qqPlotDownloadName, chartRef: qqDownloadChartRef },
     ];
     dispatch({ type: "add", payload: charts });
     return () => dispatch({ type: "remove", payload: charts });
   }, [
-    boxPlotRef,
-    qqPlotRef,
+    boxDownloadChartRef,
+    qqDownloadChartRef,
     boxPlotDownloadName,
     qqPlotDownloadName,
     dispatch,

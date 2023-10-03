@@ -4,7 +4,6 @@ import {
   SetStateAction,
   useContext,
   useLayoutEffect,
-  useRef,
   useState,
   useEffect,
 } from "react";
@@ -20,6 +19,7 @@ import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -325,7 +325,6 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
-  const downloadRef = useRef<HTMLDivElement | null>(null);
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -354,7 +353,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
-    height,
+    height > 380 ? height : 380,
     setSurvivalPlotLineTooltipContent,
   );
 
@@ -445,11 +444,13 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const { dispatch } = useContext(DashboardDownloadContext);
   useEffect(() => {
-    const charts = [{ filename: downloadFileName, chartRef: downloadRef }];
+    const charts = [
+      { filename: downloadFileName, chartRef: containerForDownload },
+    ];
 
     dispatch({ type: "add", payload: charts });
     return () => dispatch({ type: "remove", payload: charts });
-  }, [dispatch, downloadFileName]);
+  }, [dispatch, downloadFileName, containerForDownload]);
 
   return (
     <div className="flex flex-col">
@@ -474,14 +475,20 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
                 onClick={() =>
-                  handleDownloadSVG(downloadRef, `${downloadFileName}.svg`)
+                  handleDownloadSVG(
+                    containerForDownload,
+                    `${downloadFileName}.svg`,
+                  )
                 }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={() =>
-                  handleDownloadPNG(downloadRef, `${downloadFileName}.png`)
+                  handleDownloadPNG(
+                    containerForDownload,
+                    `${downloadFileName}.png`,
+                  )
                 }
               >
                 PNG
@@ -563,8 +570,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </Box>
         <div className="survival-plot" ref={container} />
       </div>
-      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
-        <div ref={downloadRef}>
+      <OffscreenWrapper>
+        <div className="w-[700px] h-[500px]">
           <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
@@ -595,7 +602,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </div>
           <div className="survival-plot" ref={containerForDownload} />
         </div>
-      </div>
+      </OffscreenWrapper>
     </div>
   );
 };
