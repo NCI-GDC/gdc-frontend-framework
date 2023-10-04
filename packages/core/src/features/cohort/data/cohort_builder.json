@@ -11,7 +11,7 @@
         "cases.diagnoses.tissue_or_organ_of_origin"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "demographic": {
       "label": "Demographic",
@@ -23,7 +23,7 @@
         "cases.demographic.vital_status"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "general_diagnosis": {
       "label": "General Diagnosis",
@@ -35,7 +35,7 @@
         "cases.diagnoses.laterality"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "disease_status": {
       "label": "Disease Status and History",
@@ -47,7 +47,7 @@
         "cases.diagnoses.residual_disease"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "stage_classification": {
       "label": "Stage Classification",
@@ -65,7 +65,7 @@
         "cases.diagnoses.masaoka_stage"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "grade_classification": {
       "label": "Grade Classification",
@@ -75,7 +75,7 @@
         "cases.diagnoses.who_cns_grade"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "other_classification": {
       "label": "Other Classification",
@@ -87,7 +87,7 @@
         "cases.diagnoses.wilms_tumor_histologic_subtype"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "treatment": {
       "label": "Treatment",
@@ -99,7 +99,7 @@
         "cases.diagnoses.treatments.treatment_type"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "exposure": {
       "label": "Exposure",
@@ -112,7 +112,7 @@
         "cases.exposures.tobacco_smoking_onset_year"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "biospecimen": {
       "label": "Biospecimen",
@@ -127,7 +127,7 @@
         "cases.samples.portions.analytes.aliquots.analyte_type"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "available_data": {
       "label": "Available Data",
@@ -141,13 +141,13 @@
         "files.access"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "custom": {
       "label": "Custom Filters",
       "facets": [],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     }
   }
 }
