@@ -234,7 +234,14 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
-            <span className="font-content">{`Not enough survival data for ${name}`}</span>
+            <>
+              {/* // todo: change this based off diff plot types */}
+              <span className="font-content">
+                {plotType !== "cohortComparison"
+                  ? `Not enough survival data for ${name}`
+                  : null}
+              </span>
+            </>
           ),
         },
       ];
@@ -303,6 +310,7 @@ export enum SurvivalPlotTypes {
   categorical = "categorical",
   continuous = "continuous",
   overall = "overall",
+  cohortComparison = "cohortComparison",
 }
 
 export interface SurvivalPlotProps {
@@ -341,6 +349,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     "mutation",
     "categorical",
     "continuous",
+    "cohortComparison",
   ].includes(plotType)
     ? enoughDataOnSomeCurves(plotData)
     : enoughData(plotData);
@@ -354,7 +363,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   // hook to call renderSurvivalPlot
   const shouldUsePlotData =
     (["gene", "mutation"].includes(plotType) && shouldPlot) ||
-    (["categorical", "continuous", "overall"].includes(plotType) &&
+    (["categorical", "continuous", "overall", "cohortComparison"].includes(
+      plotType,
+    ) &&
       hasEnoughData);
   const dataToUse = shouldUsePlotData ? plotData : [];
   const container = useSurvival(
@@ -390,6 +401,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
     case SurvivalPlotTypes.continuous:
       legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.cohortComparison:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
   }
 
