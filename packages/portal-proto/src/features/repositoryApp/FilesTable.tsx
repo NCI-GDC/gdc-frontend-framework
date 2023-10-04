@@ -18,7 +18,6 @@ import {
   AccessType,
   FileCaseType,
   DataCategory,
-  DataType,
   DataFormat,
   ExperimentalStrategy,
   FileAnnontationsType,
@@ -59,7 +58,7 @@ export type FilesTableDataType = {
   project: string;
   cases: FileCaseType;
   data_category: DataCategory;
-  data_type: DataType;
+  data_type: string;
   data_format: DataFormat;
   experimental_strategy?: ExperimentalStrategy;
   platform: string;

@@ -1,9 +1,9 @@
-import { DataCategory, DataFormat, DataType } from "../files/filesSlice";
+import { DataCategory, DataFormat } from "../files/filesSlice";
 
 export interface caseFileType {
   readonly access: "open" | "controlled";
   readonly acl: Array<string>;
-  readonly data_type: DataType;
+  readonly data_type: string;
   readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;

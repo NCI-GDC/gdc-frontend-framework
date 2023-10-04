@@ -131,54 +131,6 @@ const asDataFormat = (x: unknown): DataFormat => {
   }
 };
 
-const dataTypes = [
-  "Aggregated Somatic Mutation",
-  "Aligned Reads",
-  "Allele-specific Copy Number Segment",
-  "Annotated Somatic Mutation",
-  "Biospecimen Supplement",
-  "Clinical Supplement",
-  "Copy Number Segment",
-  "Differential Gene Expression",
-  "Gene Expression Quantification",
-  "Gene Level Copy Number Scores",
-  "Gene Level Copy Number",
-  "Isoform Expression Quantification",
-  "Masked Annotated Somatic Mutation",
-  "Masked Copy Number Segment",
-  "Masked Somatic Mutation",
-  "Methylation Beta Value",
-  "Protein Expression Quantification",
-  "Raw CGI Variant",
-  "Raw Intensities",
-  "Raw Simple Somatic Mutation",
-  "Simple Germline Variation",
-  "Single Cell Analysis",
-  "Slide Image",
-  "Splice Junction Quantification",
-  "Structural Rearrangement",
-  "Transcript Fusion",
-  "Masked Intensities",
-  "miRNA Expression Quantification",
-  "Pathology Report",
-  "Aligned Reads Index",
-  "Somatic Mutation Index",
-] as const;
-
-export type DataType = typeof dataTypes[number];
-
-const isDataType = (x: unknown): x is DataType => {
-  return dataTypes.some((t) => t === x);
-};
-
-const asDataType = (x: unknown): DataType => {
-  if (isDataType(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data type`);
-  }
-};
-
 const experimentalStrategies = [
   "ATAC-Seq",
   "Diagnostic Slide",
@@ -219,7 +171,7 @@ const asExperimentalStrategy = (
 export interface GdcCartFile {
   readonly file_name: string;
   readonly data_category: DataCategory;
-  readonly data_type: DataType;
+  readonly data_type: string;
   readonly data_format: DataFormat;
   readonly state: string;
   readonly file_size: number;
@@ -308,7 +260,7 @@ export interface GdcFile {
   readonly data_category: DataCategory;
   readonly data_format: DataFormat;
   readonly dataRelease?: string;
-  readonly data_type: DataType;
+  readonly data_type: string;
   readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;
@@ -352,7 +304,7 @@ export interface GdcFile {
     readonly updatedDatetime: string;
     readonly data_category: DataCategory;
     readonly data_format: DataFormat;
-    readonly data_type: DataType;
+    readonly data_type: string;
     readonly file_id: string;
     readonly file_name: string;
     readonly file_size: number;
@@ -372,7 +324,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     data_category: asDataCategory(hit.data_category),
     data_format: asDataFormat(hit.data_format),
     dataRelease: hit.data_release,
-    data_type: asDataType(hit.data_type),
+    data_type: hit.data_type,
     file_id: hit.file_id,
     file_name: hit.file_name,
     file_size: hit.file_size,
@@ -474,7 +426,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
             return {
               file_name: file.file_name,
               data_category: asDataCategory(file.data_category),
-              data_type: asDataType(file.data_type),
+              data_type: file.data_type,
               data_format: asDataFormat(file.data_format),
               file_size: file.file_size,
               file_id: file.file_id,
@@ -511,7 +463,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
           return {
             file_name: file.file_name,
             data_category: asDataCategory(file.data_category),
-            data_type: asDataType(file.data_type),
+            data_type: file.data_type,
             data_format: asDataFormat(file.data_format),
             file_size: file.file_size,
             file_id: file.file_id,
@@ -533,7 +485,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       updatedDatetime: idx.updated_datetime,
       data_category: asDataCategory(idx.data_category),
       data_format: asDataFormat(idx.data_format),
-      data_type: asDataType(idx.data_type),
+      data_type: idx.data_type,
       file_id: idx.file_id,
       file_name: idx.file_name,
       file_size: idx.file_size,

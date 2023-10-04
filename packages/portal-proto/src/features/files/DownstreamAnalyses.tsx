@@ -3,7 +3,6 @@ import { fileInCart } from "@/utils/index";
 import {
   DataCategory,
   GdcFile,
-  DataType,
   DataFormat,
   GdcCartFile,
   CartFile,
@@ -28,7 +27,7 @@ const DownstreamAnalyses = ({
     file_name: string;
     file_id: string;
     data_category: DataCategory;
-    data_type: DataType;
+    data_type: string;
     data_format: DataFormat;
     analysis_workflow: string;
     size: string;
