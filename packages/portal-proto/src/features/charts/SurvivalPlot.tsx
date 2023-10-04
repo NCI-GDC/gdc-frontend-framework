@@ -237,7 +237,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
             // displayed for ["genes", "mutation"] plotTypes
             <span className="font-content">
               {plotType !== "cohortComparison"
-                ? `Not enough survival data for ${name}`
+                ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
                 : null}
             </span>
           ),
