@@ -66,42 +66,6 @@ const asDataFormat = (x: unknown): DataFormat => {
   }
 };
 
-const experimentalStrategies = [
-  "ATAC-Seq",
-  "Diagnostic Slide",
-  "Genotyping Array",
-  "Methylation Array",
-  "RNA-Seq",
-  "Targeted Sequencing",
-  "Tissue Slide",
-  "WGS",
-  "WXS",
-  "miRNA-Seq",
-  "scRNA-Seq",
-  "_missing",
-  "Reverse Phase Protein Array",
-] as const;
-
-export type ExperimentalStrategy = typeof experimentalStrategies[number];
-
-const isExperimentalStrategy = (x: unknown): x is ExperimentalStrategy => {
-  return experimentalStrategies.some((t) => t === x);
-};
-
-const asExperimentalStrategy = (
-  x: unknown,
-): ExperimentalStrategy | undefined => {
-  if (x === undefined) {
-    return undefined;
-  }
-
-  if (isExperimentalStrategy(x)) {
-    return x;
-  }
-
-  throw new Error(`${x} is not a valid experimental strategy`);
-};
-
 // TODO use CartFile instead and combine anything that submits to cart
 export interface GdcCartFile {
   readonly file_name: string;
@@ -204,7 +168,7 @@ export interface GdcFile {
   readonly state: string;
   readonly fileType?: string;
   readonly version?: string;
-  readonly experimental_strategy?: ExperimentalStrategy;
+  readonly experimental_strategy?: string;
   readonly project_id?: string;
   readonly annotations?: FileAnnontationsType;
   readonly cases?: FileCaseType;
@@ -268,7 +232,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     state: hit.state,
     fileType: hit.type,
     version: hit.version,
-    experimental_strategy: asExperimentalStrategy(hit.experimental_strategy),
+    experimental_strategy: hit.experimental_strategy,
     project_id: hit.cases?.[0]?.project?.project_id,
     annotations: hit.annotations?.map((annotation) => annotation),
     cases: hit.cases?.map((caseObj) => {
