@@ -234,14 +234,12 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
-            <>
-              {/* // todo: change this based off diff plot types */}
-              <span className="font-content">
-                {plotType !== "cohortComparison"
-                  ? `Not enough survival data for ${name}`
-                  : null}
-              </span>
-            </>
+            // displayed for ["genes", "mutation"] plotTypes
+            <span className="font-content">
+              {plotType !== "cohortComparison"
+                ? `Not enough survival data for ${name}`
+                : null}
+            </span>
           ),
         },
       ];
