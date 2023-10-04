@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
@@ -325,6 +326,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
+  const downloadRef = useRef<HTMLDivElement | null>(null);
 
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
@@ -444,13 +446,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   const { dispatch } = useContext(DashboardDownloadContext);
   useEffect(() => {
-    const charts = [
-      { filename: downloadFileName, chartRef: containerForDownload },
-    ];
+    const charts = [{ filename: downloadFileName, chartRef: downloadRef }];
 
     dispatch({ type: "add", payload: charts });
     return () => dispatch({ type: "remove", payload: charts });
-  }, [dispatch, downloadFileName, containerForDownload]);
+  }, [dispatch, downloadFileName]);
 
   return (
     <div className="flex flex-col">
@@ -475,20 +475,14 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
                 onClick={() =>
-                  handleDownloadSVG(
-                    containerForDownload,
-                    `${downloadFileName}.svg`,
-                  )
+                  handleDownloadSVG(downloadRef, `${downloadFileName}.svg`)
                 }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={() =>
-                  handleDownloadPNG(
-                    containerForDownload,
-                    `${downloadFileName}.png`,
-                  )
+                  handleDownloadPNG(downloadRef, `${downloadFileName}.png`)
                 }
               >
                 PNG
@@ -571,7 +565,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="survival-plot" ref={container} />
       </div>
       <OffscreenWrapper>
-        <div className="w-[700px] h-[500px]">
+        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
           <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
