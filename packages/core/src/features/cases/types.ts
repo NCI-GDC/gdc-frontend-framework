@@ -1,4 +1,4 @@
-import { DataCategory, DataFormat } from "../files/filesSlice";
+import { DataFormat } from "../files/filesSlice";
 
 export interface caseFileType {
   readonly access: "open" | "controlled";
@@ -13,7 +13,7 @@ export interface caseFileType {
   readonly created_datetime: string;
   readonly submitter_id: string;
   readonly updated_datetime: string;
-  readonly data_category: DataCategory;
+  readonly data_category: string;
   readonly md5sum: string;
   readonly type: string;
 }

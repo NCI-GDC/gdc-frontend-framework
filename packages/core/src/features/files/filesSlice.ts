@@ -25,34 +25,6 @@ const asAccessType = (x: unknown): AccessType => {
   }
 };
 
-const dataCategories: ReadonlyArray<string> = [
-  "Simple Nucleotide Variation",
-  "Copy Number Variation",
-  "Transcriptome Profiling",
-  "Proteome Profiling",
-  "Sequencing Reads",
-  "Biospecimen",
-  "Clinical",
-  "DNA Methylation",
-  "Structural Variation",
-  "Somatic Structural Variation",
-  "Combined Nucleotide Variation",
-] as const;
-
-export type DataCategory = typeof dataCategories[number];
-
-const isDataCategory = (x: unknown): x is DataCategory => {
-  return dataCategories.some((t) => t === x);
-};
-
-const asDataCategory = (x: unknown): DataCategory => {
-  if (isDataCategory(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data category`);
-  }
-};
-
 const dataFormats = [
   "TXT",
   "VCF",
@@ -133,7 +105,7 @@ const asExperimentalStrategy = (
 // TODO use CartFile instead and combine anything that submits to cart
 export interface GdcCartFile {
   readonly file_name: string;
-  readonly data_category: DataCategory;
+  readonly data_category: string;
   readonly data_type: string;
   readonly data_format: DataFormat;
   readonly state: string;
@@ -220,7 +192,7 @@ export interface GdcFile {
   readonly acl: ReadonlyArray<string>;
   readonly createdDatetime: string;
   readonly updatedDatetime: string;
-  readonly data_category: DataCategory;
+  readonly data_category: string;
   readonly data_format: DataFormat;
   readonly dataRelease?: string;
   readonly data_type: string;
@@ -265,7 +237,7 @@ export interface GdcFile {
     readonly submitterId: string;
     readonly createdDatetime: string;
     readonly updatedDatetime: string;
-    readonly data_category: DataCategory;
+    readonly data_category: string;
     readonly data_format: DataFormat;
     readonly data_type: string;
     readonly file_id: string;
@@ -284,7 +256,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     acl: [...hit.acl],
     createdDatetime: hit.created_datetime,
     updatedDatetime: hit.updated_datetime,
-    data_category: asDataCategory(hit.data_category),
+    data_category: hit.data_category,
     data_format: asDataFormat(hit.data_format),
     dataRelease: hit.data_release,
     data_type: hit.data_type,
@@ -388,7 +360,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
           input_files: hit.analysis.input_files?.map((file) => {
             return {
               file_name: file.file_name,
-              data_category: asDataCategory(file.data_category),
+              data_category: file.data_category,
               data_type: file.data_type,
               data_format: asDataFormat(file.data_format),
               file_size: file.file_size,
@@ -425,7 +397,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         output_files: analysis.output_files?.map((file) => {
           return {
             file_name: file.file_name,
-            data_category: asDataCategory(file.data_category),
+            data_category: file.data_category,
             data_type: file.data_type,
             data_format: asDataFormat(file.data_format),
             file_size: file.file_size,
@@ -446,7 +418,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       submitterId: idx.submitter_id,
       createdDatetime: idx.created_datetime,
       updatedDatetime: idx.updated_datetime,
-      data_category: asDataCategory(idx.data_category),
+      data_category: idx.data_category,
       data_format: asDataFormat(idx.data_format),
       data_type: idx.data_type,
       file_id: idx.file_id,

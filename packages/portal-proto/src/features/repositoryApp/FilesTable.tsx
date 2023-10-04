@@ -17,7 +17,6 @@ import {
   SortBy,
   AccessType,
   FileCaseType,
-  DataCategory,
   DataFormat,
   ExperimentalStrategy,
   FileAnnontationsType,
@@ -57,7 +56,7 @@ export type FilesTableDataType = {
   file_name: string;
   project: string;
   cases: FileCaseType;
-  data_category: DataCategory;
+  data_category: string;
   data_type: string;
   data_format: DataFormat;
   experimental_strategy?: ExperimentalStrategy;
