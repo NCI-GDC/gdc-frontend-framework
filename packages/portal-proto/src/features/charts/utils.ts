@@ -123,8 +123,8 @@ export const handleDownloadPNG = async (
   const svgBlob = await createSVG(ref);
   const svgHref = URL.createObjectURL(svgBlob);
   const svgImage = new Image(
-    Number(ref.current.querySelector("svg").getAttribute("width")),
-    Number(ref.current.querySelector("svg").getAttribute("height")),
+    Number(ref.current.querySelector("svg").getAttribute("width")) + 50,
+    Number(ref.current.querySelector("svg").getAttribute("height")) + 50,
   );
   const canvas = document.createElement("canvas");
   const canvasCtx = canvas.getContext("2d");
