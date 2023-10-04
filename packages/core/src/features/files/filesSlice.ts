@@ -25,43 +25,6 @@ const asAccessType = (x: unknown): AccessType => {
   }
 };
 
-const fileTypes = [
-  "annotated_somatic_mutation",
-  "simple_somatic_mutation",
-  "aligned_reads",
-  "gene_expression",
-  "copy_number_segment",
-  "copy_number_estimate",
-  "slide_image",
-  "mirna_expression",
-  "biospecimen_supplement",
-  "clinical_supplement",
-  "methylation_beta_value",
-  "structural_variation",
-  "aggregated_somatic_mutation",
-  "masked_somatic_mutation",
-  "secondary_expression_analysis",
-  "masked_methylation_array",
-  "protein_expression",
-  "pathology_report",
-  "simple_germline_variation",
-  "submitted_genotyping_array",
-] as const;
-
-export type FileType = typeof fileTypes[number];
-
-const isFileType = (x: unknown): x is FileType => {
-  return fileTypes.some((t) => t === x);
-};
-
-const asFileType = (x: unknown): FileType => {
-  if (isFileType(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid file type`);
-  }
-};
-
 const dataCategories: ReadonlyArray<string> = [
   "Simple Nucleotide Variation",
   "Copy Number Variation",
@@ -267,7 +230,7 @@ export interface GdcFile {
   readonly md5sum: string;
   readonly platform?: string;
   readonly state: string;
-  readonly fileType?: FileType;
+  readonly fileType?: string;
   readonly version?: string;
   readonly experimental_strategy?: ExperimentalStrategy;
   readonly project_id?: string;
@@ -331,7 +294,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     md5sum: hit.md5sum,
     platform: hit.platform,
     state: hit.state,
-    fileType: asFileType(hit.type),
+    fileType: hit.type,
     version: hit.version,
     experimental_strategy: asExperimentalStrategy(hit.experimental_strategy),
     project_id: hit.cases?.[0]?.project?.project_id,
