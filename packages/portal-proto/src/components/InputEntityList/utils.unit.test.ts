@@ -36,7 +36,7 @@ describe("getMatchedIdentifiers", () => {
     ];
 
     const mappedToFields = ["case_id"];
-    const givenIdentifierFields = [
+    const submittedIdentifierFields = [
       "samples.submitter_id",
       "samples.portions.analytes.aliquots.submitter_id",
     ];
@@ -51,7 +51,7 @@ describe("getMatchedIdentifiers", () => {
       getMatchedIdentifiers(
         data,
         mappedToFields,
-        givenIdentifierFields,
+        submittedIdentifierFields,
         outputField,
         tokens,
       ),
@@ -60,7 +60,7 @@ describe("getMatchedIdentifiers", () => {
         mappedTo: [
           { field: "case_id", value: "3a3fc890-1985-4353-861b-dc3abfb364b1" },
         ],
-        givenIdentifiers: [
+        submittedIdentifiers: [
           { field: "samples.submitter_id", value: "TCGA-06-5416-01A" },
           {
             field: "samples.portions.analytes.aliquots.submitter_id",
@@ -87,7 +87,7 @@ describe("getMatchedIdentifiers", () => {
     ];
 
     const mappedToFields = ["symbol"];
-    const givenIdentifierFields = ["gene_id"];
+    const submittedIdentifierFields = ["gene_id"];
     const tokens = ["ENSG00000181143"];
     const outputField = "gene_id";
 
@@ -95,14 +95,14 @@ describe("getMatchedIdentifiers", () => {
       getMatchedIdentifiers(
         data,
         mappedToFields,
-        givenIdentifierFields,
+        submittedIdentifierFields,
         outputField,
         tokens,
       ),
     ).toEqual([
       {
         mappedTo: [{ field: "symbol", value: "MUC16" }],
-        givenIdentifiers: [{ field: "gene_id", value: "ENSG00000181143" }],
+        submittedIdentifiers: [{ field: "gene_id", value: "ENSG00000181143" }],
         output: [{ field: "gene_id", value: "ENSG00000181143" }],
       },
     ]);
@@ -153,7 +153,7 @@ describe("getMatchedIdentifiers", () => {
           { field: "symbol", value: "MUC16" },
           { field: "gene_id", value: "ENSG00000181143" },
         ],
-        givenIdentifiers: [
+        submittedIdentifiers: [
           { field: "external_db_ids.hgnc", value: "HGNC:15582" },
         ],
         output: [{ field: "id", value: "ENSG00000181143" }],
@@ -163,7 +163,7 @@ describe("getMatchedIdentifiers", () => {
           { field: "symbol", value: "TP53" },
           { field: "gene_id", value: "ENSG00000141510" },
         ],
-        givenIdentifiers: [
+        submittedIdentifiers: [
           { field: "external_db_ids.uniprotkb_swissprot", value: "P04637" },
         ],
         output: [{ field: "id", value: "ENSG00000141510" }],
@@ -200,7 +200,7 @@ describe("getMatchedIdentifiers", () => {
     ).toEqual([
       {
         mappedTo: [{ field: "gene_id", value: "ENSG00000181143" }],
-        givenIdentifiers: [{ field: "symbol", value: "MUC16" }],
+        submittedIdentifiers: [{ field: "symbol", value: "MUC16" }],
         output: [{ field: "symbol", value: "MUC16" }],
       },
     ]);

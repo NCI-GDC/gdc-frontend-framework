@@ -25,28 +25,30 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Link
-      href={{
-        pathname: "/analysis_page",
-        query: { app: undefined },
-      }}
-      className="cursor-pointer"
-      passHref
-    >
-      <NavLink
-        data-testid="button-header-analysis"
-        aria-label="analysis center button"
+    <span>
+      <Link
+        href={{
+          pathname: "/analysis_page",
+          query: { app: undefined },
+        }}
+        className="cursor-pointer"
+        passHref
       >
-        <AnalysisCenterIcon
-          aria-label="Analysis logo"
-          width={24}
-          height={24}
-          viewBox="0 0 500 500"
-          role="img"
-        />
-        Analysis Center
-      </NavLink>
-    </Link>
+        <NavLink
+          data-testid="button-header-analysis"
+          aria-label="analysis center button"
+        >
+          <AnalysisCenterIcon
+            aria-label="Analysis logo"
+            width={24}
+            height={24}
+            viewBox="0 0 500 500"
+            role="img"
+          />
+          Analysis Center
+        </NavLink>
+      </Link>
+    </span>
   </Tooltip>,
   <Tooltip
     key="Studies"
@@ -55,28 +57,30 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Link
-      href={{
-        pathname: "/analysis_page",
-        query: { app: "Projects" },
-      }}
-      className="cursor-pointer"
-      passHref
-    >
-      <NavLink
-        data-testid="button-header-projects"
-        aria-label="project/studies center button"
+    <span>
+      <Link
+        href={{
+          pathname: "/analysis_page",
+          query: { app: "Projects" },
+        }}
+        className="cursor-pointer"
+        passHref
       >
-        <ProjectsIcon
-          aria-label="Studies logo"
-          width={24}
-          height={24}
-          viewBox="0 -15 100 100"
-          role="img"
-        />
-        Projects
-      </NavLink>
-    </Link>
+        <NavLink
+          data-testid="button-header-projects"
+          aria-label="project/studies center button"
+        >
+          <ProjectsIcon
+            aria-label="Studies logo"
+            width={24}
+            height={24}
+            viewBox="0 -15 100 100"
+            role="img"
+          />
+          Projects
+        </NavLink>
+      </Link>
+    </span>
   </Tooltip>,
   <Tooltip
     key="Cohort"
@@ -85,28 +89,30 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Link
-      href={{
-        pathname: "/analysis_page",
-        query: { app: "CohortBuilder" },
-      }}
-      className="cursor-pointer"
-      passHref
-    >
-      <NavLink
-        data-testid="button-header-cohort"
-        aria-label="cohort builder button"
+    <span>
+      <Link
+        href={{
+          pathname: "/analysis_page",
+          query: { app: "CohortBuilder" },
+        }}
+        className="cursor-pointer"
+        passHref
       >
-        <CohortBuilderIcon
-          aria-label="Cohort logo"
-          width={24}
-          height={24}
-          viewBox="0 0 50 50"
-          role="img"
-        />
-        Cohort Builder
-      </NavLink>
-    </Link>
+        <NavLink
+          data-testid="button-header-cohort"
+          aria-label="cohort builder button"
+        >
+          <CohortBuilderIcon
+            aria-label="Cohort logo"
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            role="img"
+          />
+          Cohort Builder
+        </NavLink>
+      </Link>
+    </span>
   </Tooltip>,
   <Tooltip
     key="Download"
@@ -115,27 +121,29 @@ export const headerElements = [
     multiline
     width={220}
   >
-    <Link
-      href={{
-        pathname: "/analysis_page",
-        query: { app: "Downloads" },
-      }}
-      className="cursor-pointer"
-      passHref
-    >
-      <NavLink
-        data-testid="button-header-downloads"
-        aria-label="download center button"
+    <span>
+      <Link
+        href={{
+          pathname: "/analysis_page",
+          query: { app: "Downloads" },
+        }}
+        className="cursor-pointer"
+        passHref
       >
-        <DownloadIcon
-          aria-label="Downloads logo"
-          width={24}
-          height={24}
-          viewBox="0 0 50 50"
-          role="img"
-        />
-        Repository
-      </NavLink>
-    </Link>
+        <NavLink
+          data-testid="button-header-downloads"
+          aria-label="download center button"
+        >
+          <DownloadIcon
+            aria-label="Downloads logo"
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            role="img"
+          />
+          Repository
+        </NavLink>
+      </Link>
+    </span>
   </Tooltip>,
 ];

@@ -131,7 +131,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     const matchedIds = new Set(
       flatten(
         matched.map((m) =>
-          m.givenIdentifiers.map((i) => i.value.toUpperCase()),
+          m.submittedIdentifiers.map((i) => i.value.toUpperCase()),
         ),
       ),
     );
