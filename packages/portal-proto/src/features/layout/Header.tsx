@@ -128,12 +128,12 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="/manage-sets" passHref>
+          <Link href="/manage_sets" passHref>
             <Button
               unstyled
               data-testid="manageSetsLink"
               className={`p-2 rounded-md ${
-                router.pathname === "/manage-sets"
+                router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
                   : ""
               }`}
@@ -392,11 +392,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-row justify-between">
         <div className="flex flex-row flex-wrap items-center divide-x divide-gray-300">
           {headerElements.map((element, i) => (
-            <div
-              key={i}
-              className={`${i === 0 ? "pr-2" : "pl-4"}`}
-              data-testid={`headerElement${i}`}
-            >
+            <div key={i} className={`${i === 0 ? "pr-2" : "pl-4"}`}>
               {typeof element === "string" ? (
                 <span className="font-semibold">{element}</span>
               ) : (

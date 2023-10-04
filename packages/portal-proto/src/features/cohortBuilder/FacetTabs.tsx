@@ -65,7 +65,7 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+          padding: `${theme.spacing.xs} ${theme.spacing.md}`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
           fontFamily: theme.fontFamily,
@@ -187,18 +187,15 @@ const CustomFacetGroup = (): JSX.Element => {
         data-testid="loading-spinner"
         visible={!isDictionaryReady}
       />
-      <Modal
-        size="lg"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        zIndex={400}
-      >
-        <FacetSelection
-          title={"Add a Case Filter"}
-          facetType="cases"
-          handleFilterSelected={handleFilterSelected}
-          usedFacets={cohortBuilderFilters}
-        />
+      <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+        <div className="p-4">
+          <FacetSelection
+            title="Add a Custom Filter"
+            facetType="cases"
+            handleFilterSelected={handleFilterSelected}
+            usedFacets={cohortBuilderFilters}
+          />
+        </div>
       </Modal>
       {customFacetDefinitions.length == 0 ? (
         <Flex>
@@ -284,6 +281,8 @@ export const FacetTabs = (): JSX.Element => {
     isEqual,
   );
   const router = useRouter();
+  const routerTab = router?.query?.tab;
+  const prevRouterTab = usePrevious(routerTab);
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const [activeTab, setActiveTab] = useState(
@@ -293,24 +292,22 @@ export const FacetTabs = (): JSX.Element => {
   );
 
   useEffect(() => {
-    if (
-      router !== null &&
-      activeTab !== undefined &&
-      activeTab !== router?.query?.tab
-    ) {
+    if (router !== null && activeTab !== undefined && activeTab !== routerTab) {
       router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
         scroll: false,
       });
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, routerTab]);
 
+  // This can change from SearchInput component
   useEffect(() => {
-    if (router?.query?.tab && activeTab !== router.query.tab) {
-      setActiveTab(router.query.tab as string);
+    if (routerTab !== prevRouterTab) {
+      setActiveTab(routerTab as string);
     }
-  }, [router?.query?.tab, activeTab, setActiveTab]);
+  }, [routerTab, prevRouterTab, setActiveTab]);
+
   return (
     <div className="w-100 mt-2">
       <StyledFacetTabs

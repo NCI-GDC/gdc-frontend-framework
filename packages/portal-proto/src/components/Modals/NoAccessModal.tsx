@@ -15,7 +15,6 @@ export const NoAccessModal = ({
           Access Alert
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       buttons={[
         {

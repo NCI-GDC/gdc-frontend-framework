@@ -1,7 +1,6 @@
 import { useCoreSelector, selectAllGdcAppMetadata } from "@gff/core";
 import { NextPage } from "next";
 import Link from "next/link";
-
 import { SimpleLayout } from "../features/layout/Simple";
 
 const AppsPage: NextPage = () => {

@@ -1,26 +1,60 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useContext } from "react";
+import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
-import { DAYS_IN_YEAR, ClinicalContinuousStatsData } from "@gff/core";
+import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
+import { useResizeObserver } from "@mantine/hooks";
+import { FiDownload as DownloadIcon } from "react-icons/fi";
+import {
+  useGetCaseSsmsQuery,
+  joinFilters,
+  FilterSet,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  DAYS_IN_YEAR,
+  ClinicalContinuousStatsData,
+} from "@gff/core";
 import tailwindConfig from "tailwind.config";
-import { BOX_QQ_DATA_DIMENSIONS, COLOR_MAP } from "../constants";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
+import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { DashboardDownloadContext } from "@/utils/contexts";
+import { convertDateToString } from "@/utils/date";
+import {
+  BOX_QQ_DATA_DIMENSIONS,
+  COLOR_MAP,
+  DEMO_COHORT_FILTERS,
+} from "../constants";
+import { parseNestedQQResponseData, qnorm } from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
-import { useResizeObserver } from "@mantine/hooks";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
 
 interface BoxQQPlotProps {
   readonly field: string;
+  readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
 }
 
 const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
+  displayName,
   data,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
+  const [boxPlotRef, boundingRectBox] = useResizeObserver();
+  const [qqPlotRef, boundingRectQQ] = useResizeObserver();
+
+  const { dispatch } = useContext(DashboardDownloadContext);
+  const boxDownloadChartRef = useRef<HTMLElement>();
+  const qqDownloadChartRef = useRef<HTMLElement>();
+  const fieldName = clinicalNestedField ?? clinicalField;
+  const date = convertDateToString(new Date());
+  const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
+  const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
   const color =
     tailwindConfig.theme.extend.colors[
@@ -49,11 +83,156 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     q3: formatValue(data.q3),
   };
 
-  const [boxPlotRef, boundingRectBox] = useResizeObserver();
-  const [qqPlotRef, boundingRectQQ] = useResizeObserver();
+  const missingFilter: FilterSet = {
+    root: {
+      [`cases.${field}`]: {
+        field: `cases.${field}`,
+        operator: "exists",
+      },
+    },
+    mode: "and",
+  };
+
+  const isDemoMode = useIsDemoApp();
+  const cohortFilters = useCoreSelector((state) =>
+    isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+  );
+
+  const {
+    data: qqData,
+    isLoading,
+    isSuccess,
+  } = useGetCaseSsmsQuery({
+    fields: [field],
+    filters: buildCohortGqlOperator(joinFilters(missingFilter, cohortFilters)),
+    size: 10000,
+  });
+
+  const parsedQQValues = isSuccess
+    ? parseNestedQQResponseData(qqData, field)
+    : [];
+  const downloadData = parsedQQValues.map((caseEntry, i) => ({
+    id: caseEntry.id,
+    "Sample Quantile": caseEntry.value,
+    "Theoretical Normal Quantile": qnorm((i + 1 - 0.5) / parsedQQValues.length),
+  }));
+
+  const downloadTSVFile = () => {
+    const header = ["id", "Sample Quantile", "Theoretical Normal Quantile"];
+    const body = downloadData.map((d) => Object.values(d).join("\t"));
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
+
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `${qqPlotDownloadName}.tsv`,
+    );
+  };
+
+  const downloadTableTSVFile = () => {
+    const header = ["Statistics", dataDimension?.unit || "Quantities"];
+    const body = [
+      ["Minimum", formattedData.min].join("\t"),
+      ["Maximum", formattedData.max].join("\t"),
+      ["Mean", formattedData.mean].join("\t"),
+      ["Median", formattedData.median].join("\t"),
+      ["Standard Deviation", formatValue(data.std_dev)].join("\t"),
+      ["IQR", formatValue(data.iqr)].join("\t"),
+    ];
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
+
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `${fieldName}-statistics-${date}.tsv`,
+    );
+  };
+
+  useEffect(() => {
+    const charts = [
+      { filename: boxPlotDownloadName, chartRef: boxPlotRef },
+      { filename: qqPlotDownloadName, chartRef: qqPlotRef },
+    ];
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [
+    boxPlotRef,
+    qqPlotRef,
+    boxPlotDownloadName,
+    qqPlotDownloadName,
+    dispatch,
+  ]);
 
   return (
     <>
+      <div className="flex justify-end">
+        <Menu>
+          <Menu.Target>
+            <Tooltip
+              label="Download image or data"
+              withArrow
+              withinPortal
+              position={"left"}
+            >
+              <ActionIcon
+                data-testid="button-qq-box-download"
+                variant="outline"
+                className="bg-base-max border-primary"
+                aria-label="Download image or data"
+              >
+                <DownloadIcon className="text-primary" />
+              </ActionIcon>
+            </Tooltip>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              onClick={async () => {
+                Promise.all([
+                  handleDownloadSVG(
+                    boxDownloadChartRef,
+                    `${boxPlotDownloadName}.svg`,
+                  ),
+                  handleDownloadSVG(
+                    qqDownloadChartRef,
+                    `${qqPlotDownloadName}.svg`,
+                  ),
+                ]);
+              }}
+            >
+              SVG
+            </Menu.Item>
+            <Menu.Item
+              onClick={async () => {
+                Promise.all([
+                  handleDownloadPNG(
+                    boxDownloadChartRef,
+                    `${boxPlotDownloadName}.png`,
+                  ),
+                  handleDownloadPNG(
+                    qqDownloadChartRef,
+                    `${qqPlotDownloadName}.png`,
+                  ),
+                ]);
+              }}
+            >
+              PNG
+            </Menu.Item>
+            <Menu.Item
+              component="a"
+              href={`data:text/json;charset=utf-8, ${encodeURIComponent(
+                JSON.stringify(downloadData, null, 2),
+              )}`}
+              download={`${qqPlotDownloadName}.json`}
+            >
+              QQ JSON
+            </Menu.Item>
+            <Menu.Item onClick={downloadTSVFile}>QQ TSV</Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </div>
       <div className="flex flex-row">
         <div className="w-full h-72 basis-1/3" ref={boxPlotRef}>
           <BoxPlot
@@ -66,12 +245,44 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
           <QQPlot
             field={field}
+            data={parsedQQValues}
+            isLoading={isLoading}
             color={color}
             width={boundingRectQQ.width}
             height={boundingRectQQ.height}
           />
         </div>
+        <OffscreenWrapper>
+          <BoxPlot
+            data={formattedData}
+            color={color}
+            width={boundingRectBox.width}
+            height={boundingRectBox.height}
+            chartRef={boxDownloadChartRef}
+            label={[displayName, "Box Plot"]}
+            chartPadding={{ left: 60, right: 60, bottom: 40, top: 50 }}
+          />
+        </OffscreenWrapper>
+        <OffscreenWrapper>
+          <QQPlot
+            field={field}
+            data={parsedQQValues}
+            isLoading={isLoading}
+            color={color}
+            chartRef={qqDownloadChartRef}
+            label={`${displayName} QQ Plot`}
+            width={boundingRectQQ.width}
+            height={boundingRectQQ.height}
+          />
+        </OffscreenWrapper>
       </div>
+      <Button
+        data-testid="button-stats-tsv-cdave-card"
+        className="bg-base-max text-primary border-primary mb-2"
+        onClick={downloadTableTSVFile}
+      >
+        TSV
+      </Button>
       <div className="min-h-44 block overflow-auto w-full relative border-base-light border-1">
         <table
           data-testid="table-card"

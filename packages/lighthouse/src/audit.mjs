@@ -90,7 +90,6 @@ const PATHS = {
   clinicalAnalysis: "/analysis_page?app=CDave",
   cohortComparison: "/analysis_page?app=CohortComparisonApp",
   mutationFrequency: "/analysis_page?app=MutationFrequencyApp",
-  oncoGrid: "/analysis_page?app=OncoGridApp",
   oncoMatrix: "/analysis_page?app=OncoMatrix",
   proteinPaint: "/analysis_page?app=ProteinPaintApp",
   sequenceRead: "/analysis_page?app=SequenceReadApp",

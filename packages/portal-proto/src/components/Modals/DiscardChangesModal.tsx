@@ -18,12 +18,11 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
   <Modal
     title="Discard Changes"
     opened={openModal}
-    closeButtonLabel="close"
     onClose={onClose}
     size="lg"
     centered
     classNames={{
-      modal: "p-0 drop-shadow-lg",
+      content: "p-0 drop-shadow-lg",
     }}
   >
     <div className="p-4">

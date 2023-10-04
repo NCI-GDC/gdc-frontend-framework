@@ -1,103 +1,167 @@
-import { useState } from "react";
+import { flatten } from "lodash";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
-import { Statistics } from "@gff/core";
-
-import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
-import CategoricalBinningModal from "../CategoricalBinningModal";
-import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { saveAs } from "file-saver";
+import {
+  FilterSet,
+  buildCohortGqlOperator,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  joinFilters,
+} from "@gff/core";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
+import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { convertDateToString } from "@/utils/date";
+import {
+  CategoricalBins,
+  ContinuousCustomBinnedData,
+  CustomInterval,
+  NamedFromTo,
+  SelectedFacet,
+} from "../types";
+import { DEMO_COHORT_FILTERS } from "../constants";
+import { formatPercent, isInterval } from "../utils";
 
 interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
-  readonly results: Record<string, number>;
+  readonly fieldName: string;
+  readonly displayedData: Record<string, number>;
+  readonly yTotal: number;
+  readonly setBinningModalOpen: (open: boolean) => void;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
   readonly setCustomBinnedData:
     | ((bins: CategoricalBins) => void)
     | ((bins: NamedFromTo[] | CustomInterval) => void);
-  readonly stats?: Statistics;
+  readonly selectedFacets: SelectedFacet[];
 }
 
 const CardControls: React.FC<CardControlsProps> = ({
   continuous,
   field,
-  results,
+  fieldName,
+  displayedData,
+  yTotal,
+  setBinningModalOpen,
   customBinnedData,
   setCustomBinnedData,
-  stats,
+  selectedFacets,
 }: CardControlsProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const isDemoMode = useIsDemoApp();
+
+  const downloadTSVFile = () => {
+    const header = [fieldName, "# Cases"];
+    const body = Object.entries(displayedData).map(([field, count]) =>
+      [field, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
+    );
+    const tsv = [header.join("\t"), body.join("\n")].join("\n");
+
+    saveAs(
+      new Blob([tsv], {
+        type: "text/tsv",
+      }),
+      `${field.split(".").at(-1)}-table.${convertDateToString(new Date())}.tsv`,
+    );
+  };
+
+  const cohortFilters = useCoreSelector((state) =>
+    isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+  );
+
+  const filters: FilterSet = {
+    mode: "and",
+    root: {
+      [field]: continuous
+        ? {
+            operator: "or",
+            operands: selectedFacets.map((facet) => {
+              const customBin =
+                customBinnedData &&
+                !isInterval(customBinnedData as ContinuousCustomBinnedData)
+                  ? (customBinnedData as NamedFromTo[]).find(
+                      (bin) => bin.name === facet.value,
+                    )
+                  : undefined;
+              const [from, to] = customBin
+                ? [customBin.from, customBin.to]
+                : facet.value.split(" to <");
+              return {
+                operator: "and",
+                operands: [
+                  {
+                    field,
+                    operator: ">=",
+                    operand: from,
+                  },
+                  {
+                    field,
+                    operator: "<",
+                    operand: to,
+                  },
+                ],
+                field,
+              };
+            }),
+          }
+        : {
+            operator: "includes",
+            operands: customBinnedData
+              ? flatten(
+                  selectedFacets.map(
+                    (facet) => customBinnedData[facet.value as string],
+                  ),
+                )
+              : selectedFacets.map((facet) => facet.value),
+            field,
+          },
+    },
+  };
+
   return (
     <>
-      <div className="flex justify-between py-2">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex justify-between gap-2 py-2">
+        <div className="flex flex-wrap-reverse gap-2">
+          <CasesCohortButtonFromFilters
+            filters={
+              selectedFacets.length === 0
+                ? undefined
+                : buildCohortGqlOperator(joinFilters(filters, cohortFilters))
+            }
+            numCases={
+              selectedFacets.length === 0
+                ? 0
+                : selectedFacets
+                    .map((facet) => facet.numCases)
+                    .reduce((a, b) => a + b)
+            }
+          />
+          <Button
+            data-testid="button-tsv-cdave-card"
+            className="bg-base-max text-primary border-primary"
+            onClick={downloadTSVFile}
+          >
+            TSV
+          </Button>
+        </div>
+        <div className="flex items-end">
           <DropdownWithIcon
-            customDataTestId="button-create-new-cohort"
+            customDataTestId="button-customize-bins"
             RightIcon={<DownIcon size={20} />}
-            TargetButtonChildren={"Create New Cohort"}
+            TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
-              { title: "Only Selected Cases (Coming Soon)", disabled: true },
+              { title: "Edit Bins", onClick: () => setBinningModalOpen(true) },
               {
-                title: "Existing Cohort With Selected Cases (Coming Soon)",
-                disabled: true,
-              },
-              {
-                title: "Existing Cohort Without Selected Cases (Coming Soon)",
-                disabled: true,
+                title: "Reset to Default",
+                disabled: customBinnedData === null,
+                onClick: () => setCustomBinnedData(null),
               },
             ]}
             zIndex={100}
           />
-          <ButtonTooltip label=" " comingSoon={true}>
-            <Button
-              data-testid="button-tsv-cdave-card"
-              className="bg-base-max text-primary border-primary"
-            >
-              TSV
-            </Button>
-          </ButtonTooltip>
         </div>
-        <DropdownWithIcon
-          customDataTestId="button-customize-bins"
-          RightIcon={<DownIcon size={20} />}
-          TargetButtonChildren={"Customize Bins"}
-          disableTargetWidth={true}
-          dropdownElements={[
-            { title: "Edit Bins", onClick: () => setModalOpen(true) },
-            {
-              title: "Reset to Default",
-              disabled: customBinnedData === null,
-              onClick: () => setCustomBinnedData(null),
-            },
-          ]}
-          zIndex={100}
-        />
       </div>
-      {modalOpen &&
-        (continuous ? (
-          <ContinuousBinningModal
-            setModalOpen={setModalOpen}
-            field={field}
-            stats={stats}
-            updateBins={
-              setCustomBinnedData as (
-                bins: NamedFromTo[] | CustomInterval,
-              ) => void
-            }
-            customBins={customBinnedData as NamedFromTo[] | CustomInterval}
-          />
-        ) : (
-          <CategoricalBinningModal
-            setModalOpen={setModalOpen}
-            field={field}
-            results={results}
-            updateBins={setCustomBinnedData as (bins: CategoricalBins) => void}
-            customBins={customBinnedData as CategoricalBins}
-          />
-        ))}
     </>
   );
 };

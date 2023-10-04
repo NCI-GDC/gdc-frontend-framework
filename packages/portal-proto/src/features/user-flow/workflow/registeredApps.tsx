@@ -1,5 +1,7 @@
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+import DownloadAllButton from "@/features/cDave/DownloadAllButton";
+import SearchInput from "@/components/SearchInput";
 import ClinicalDataIcon from "public/user-flow/icons/apps/ClinicalData.svg";
 import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
 import MutationFrequencyIcon from "public/user-flow/icons/apps/MutationsFrequency.svg";
@@ -9,7 +11,7 @@ import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.s
 import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
-import OncoMatrixIcon from "public/user-flow/icons/apps/Oncogrid.svg";
+import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -39,6 +41,7 @@ export const REGISTERED_APPS = [
       "Use clinical variables to perform basic statistical analysis of your cohort.",
     noDataTooltip:
       "Current cohort does not have cases available for visualization.",
+    rightComponent: DownloadAllButton,
   },
   {
     name: "Cohort Builder",
@@ -57,6 +60,7 @@ export const REGISTERED_APPS = [
     countsField: "repositoryCaseCount",
     description:
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
+    rightComponent: SearchInput,
   },
   {
     name: "Mutation Frequency",
@@ -143,20 +147,6 @@ export const REGISTERED_APPS = [
     id: "SetOperations",
     selectionScreen: SelectionPanel,
   },
-  // {
-  //   name: "OncoGrid",
-  //   icon: "icons/apps/Oncogrid.svg",
-  //   iconSize: { width: 80, height: 48 },
-  //   tags: ["variantAnalysis", "cnv", "ssm"],
-  //   hasDemo: true,
-  //   countsField: "ssmCaseCount",
-  //   description:
-  //     "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
-  //   id: "OncoGridApp",
-  //   optimizeRules: ["available data = ssm or cnv"],
-  //   noDataTooltip:
-  //     "Current cohort does not have SSM or CNV data available for visualization.",
-  // },
   {
     name: "Sequence Reads",
     icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,

@@ -126,31 +126,26 @@ export const FileFacetPanel = (): JSX.Element => {
       </Group>
       <Button
         variant="outline"
-        aria-label="Add a file filter"
+        aria-label="Add a custom filter"
         data-testid="button-add-a-file-filter"
         className="mx-1 bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2"
         onClick={() => setOpened(true)}
       >
         <AddAdditionalIcon className="text-primary-content" size="2em" />
         <Text size="md" weight={700} className="text-primary-content-darker">
-          {" "}
-          Add a File Filter
+          Add a Custom Filter
         </Text>
       </Button>
       <div className="flex flex-col gap-y-4" data-testid="filters-facets">
-        <Modal
-          size="lg"
-          opened={opened}
-          onClose={() => setOpened(false)}
-          closeButtonLabel="button-close-modal"
-          zIndex={400}
-        >
-          <FacetSelection
-            title={"Add a File Filter"}
-            facetType="files"
-            handleFilterSelected={handleFilterSelected}
-            usedFacets={config.facets}
-          />
+        <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+          <div className="p-4">
+            <FacetSelection
+              title="Add a Custom Filter"
+              facetType="files"
+              handleFilterSelected={handleFilterSelected}
+              usedFacets={config.facets}
+            />
+          </div>
         </Modal>
         <LoadingOverlay
           data-testid="loading-spinner"

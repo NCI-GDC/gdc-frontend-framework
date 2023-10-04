@@ -87,7 +87,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
-  const [customized, setCustomized] = useState<boolean>(false);
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
   );
@@ -140,13 +139,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       setEditField(newGroupName);
     }
     setSelectedValues({});
-    setCustomized(true);
     setErrorMessage("");
   };
 
   const updateGroupName = (oldName: string, newName: string) => {
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
-    setCustomized(true);
     setErrorMessage("");
   };
 
@@ -168,7 +165,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     setValues(restValues);
 
     setSelectedValues({});
-    setCustomized(true);
   };
 
   const sortedValues = Object.entries(values).sort((a, b) =>
@@ -182,9 +178,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       size={800}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      withinPortal={false}
       classNames={{
-        header: "text-xl",
+        header: "text-xl m-0 px-0",
+        content: "p-4",
       }}
     >
       <p className="font-content">
@@ -205,10 +201,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
-                setCustomized(false);
                 setErrorMessage("");
               }}
-              disabled={!customized}
+              disabled={isEqual(results, values)}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />
@@ -403,7 +398,7 @@ const ListValue: React.FC<ListValueProps> = ({
           updateSelectedValues(name, count);
           clearOtherValues();
         }}
-        onKeyPress={createKeyboardAccessibleFunction(() => {
+        onKeyDown={createKeyboardAccessibleFunction(() => {
           updateSelectedValues(name, count);
           clearOtherValues();
         })}

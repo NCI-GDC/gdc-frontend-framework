@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { mapKeys } from "lodash";
 import {
   useGetContinuousDataStatsQuery,
@@ -10,9 +11,15 @@ import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
-import { CustomInterval, NamedFromTo, ChartTypes } from "../types";
+import {
+  CustomInterval,
+  NamedFromTo,
+  ChartTypes,
+  SelectedFacet,
+} from "../types";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { isInterval, createBuckets, parseContinuousBucket } from "../utils";
+import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import BoxQQSection from "./BoxQQSection";
 
 const processContinuousResultData = (
@@ -59,9 +66,11 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
   >(null);
+  const [binningModalOpen, setBinningModalOpen] = useState(false);
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
   const ranges = isInterval(customBinnedData)
@@ -94,14 +103,14 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     },
   });
 
-  const resultData = useMemo(
+  const displayedData = useMemo(
     () => processContinuousResultData(isSuccess ? data : {}, customBinnedData),
     [isSuccess, data, customBinnedData],
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
-      Object.entries(resultData)
+      Object.entries(displayedData)
         .filter(
           ([key, value]) =>
             key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
@@ -112,24 +121,27 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     );
 
     if (customBinnedData === null) {
-      setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
+      setYTotal(Object.values(displayedData).reduce((a, b) => a + b, 0));
     }
-  }, [resultData, customBinnedData]);
+
+    setSelectedFacets([]);
+  }, [displayedData, customBinnedData]);
 
   return (
     <>
       {chartType === "boxqq" ? (
-        <BoxQQSection field={field} data={statsData} />
+        <BoxQQSection field={field} displayName={fieldName} data={statsData} />
       ) : (
         <>
           {chartType === "histogram" ? (
             <CDaveHistogram
               field={field}
-              fieldName={fieldName}
-              data={resultData}
+              data={displayedData}
               yTotal={yTotal}
               isFetching={isFetching}
-              continuous={true}
+              hideYTicks={Object.values(displayedData).every(
+                (val) => val === 0,
+              )}
               noData={noData}
             />
           ) : (
@@ -142,23 +154,36 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           )}
           <CardControls
             continuous={true}
-            field={fieldName}
-            results={resultData}
+            field={field}
+            fieldName={fieldName}
+            displayedData={displayedData}
+            yTotal={yTotal}
+            setBinningModalOpen={setBinningModalOpen}
             customBinnedData={customBinnedData}
             setCustomBinnedData={setCustomBinnedData}
-            stats={initialData}
+            selectedFacets={selectedFacets}
           />
           <CDaveTable
             fieldName={fieldName}
-            data={resultData}
             yTotal={yTotal}
-            customBinnedData={customBinnedData}
+            displayedData={displayedData}
+            hasCustomBins={customBinnedData !== null}
             survival={chartType === "survival"}
             selectedSurvivalPlots={selectedSurvivalPlots}
             setSelectedSurvivalPlots={setSelectedSurvivalPlots}
-            continuous={true}
+            selectedFacets={selectedFacets}
+            setSelectedFacets={setSelectedFacets}
           />
         </>
+      )}
+      {binningModalOpen && (
+        <ContinuousBinningModal
+          setModalOpen={setBinningModalOpen}
+          field={fieldName}
+          stats={initialData}
+          updateBins={setCustomBinnedData}
+          customBins={customBinnedData}
+        />
       )}
     </>
   );
