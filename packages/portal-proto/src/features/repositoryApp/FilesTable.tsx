@@ -17,7 +17,6 @@ import {
   SortBy,
   AccessType,
   FileCaseType,
-  DataFormat,
   FileAnnontationsType,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
@@ -57,7 +56,7 @@ export type FilesTableDataType = {
   cases: FileCaseType;
   data_category: string;
   data_type: string;
-  data_format: DataFormat;
+  data_format: string;
   experimental_strategy?: string;
   platform: string;
   file_size: string;

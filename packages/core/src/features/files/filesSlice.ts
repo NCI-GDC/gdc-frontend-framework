@@ -25,53 +25,12 @@ const asAccessType = (x: unknown): AccessType => {
   }
 };
 
-const dataFormats = [
-  "TXT",
-  "VCF",
-  "BAM",
-  "MAF",
-  "SVS",
-  "IDAT",
-  "BCR XML",
-  "TSV",
-  "BCR SSF XML",
-  "BEDPE",
-  "BCR AUXILIARY XML",
-  "BCR Auxiliary XML",
-  "BCR OMF XML",
-  "BCR BIOTAB",
-  "BCR Biotab",
-  "BCR PPS XML",
-  "CDC JSON",
-  "XLSX",
-  "MEX",
-  "HDF5",
-  "PDF",
-  "BAI",
-  "TBI",
-  "CEL",
-] as const;
-
-export type DataFormat = typeof dataFormats[number];
-
-const isDataFormat = (x: unknown): x is DataFormat => {
-  return dataFormats.some((t) => t === x);
-};
-
-const asDataFormat = (x: unknown): DataFormat => {
-  if (isDataFormat(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data format`);
-  }
-};
-
 // TODO use CartFile instead and combine anything that submits to cart
 export interface GdcCartFile {
   readonly file_name: string;
   readonly data_category: string;
   readonly data_type: string;
-  readonly data_format: DataFormat;
+  readonly data_format: string;
   readonly state: string;
   readonly file_size: number;
   readonly file_id: string;
@@ -157,7 +116,7 @@ export interface GdcFile {
   readonly createdDatetime: string;
   readonly updatedDatetime: string;
   readonly data_category: string;
-  readonly data_format: DataFormat;
+  readonly data_format: string;
   readonly dataRelease?: string;
   readonly data_type: string;
   readonly file_id: string;
@@ -202,7 +161,7 @@ export interface GdcFile {
     readonly createdDatetime: string;
     readonly updatedDatetime: string;
     readonly data_category: string;
-    readonly data_format: DataFormat;
+    readonly data_format: string;
     readonly data_type: string;
     readonly file_id: string;
     readonly file_name: string;
@@ -221,7 +180,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     createdDatetime: hit.created_datetime,
     updatedDatetime: hit.updated_datetime,
     data_category: hit.data_category,
-    data_format: asDataFormat(hit.data_format),
+    data_format: hit.data_format,
     dataRelease: hit.data_release,
     data_type: hit.data_type,
     file_id: hit.file_id,
@@ -326,7 +285,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
               file_name: file.file_name,
               data_category: file.data_category,
               data_type: file.data_type,
-              data_format: asDataFormat(file.data_format),
+              data_format: file.data_format,
               file_size: file.file_size,
               file_id: file.file_id,
               acl: hit.acl,
@@ -363,7 +322,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
             file_name: file.file_name,
             data_category: file.data_category,
             data_type: file.data_type,
-            data_format: asDataFormat(file.data_format),
+            data_format: file.data_format,
             file_size: file.file_size,
             file_id: file.file_id,
             acl: hit.acl,
@@ -383,7 +342,7 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       createdDatetime: idx.created_datetime,
       updatedDatetime: idx.updated_datetime,
       data_category: idx.data_category,
-      data_format: asDataFormat(idx.data_format),
+      data_format: idx.data_format,
       data_type: idx.data_type,
       file_id: idx.file_id,
       file_name: idx.file_name,
