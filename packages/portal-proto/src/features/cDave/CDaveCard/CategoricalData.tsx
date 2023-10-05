@@ -110,6 +110,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         selectedFacets={selectedFacets}
       />
       <CDaveTable
+        field={field}
         fieldName={fieldName}
         displayedData={displayedData}
         yTotal={yTotal}

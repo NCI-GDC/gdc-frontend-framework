@@ -44,6 +44,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
   );
+  const fieldNoIndex = field.split(".").at(-1);
+  const [dataDimension, setDataDimension] = useState<string>(
+    DATA_DIMENSIONS?.[fieldNoIndex]?.toggleValue ??
+      DATA_DIMENSIONS?.[fieldNoIndex]?.unit,
+  );
 
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
   const noData = continuous
@@ -72,92 +77,96 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
-        {DATA_DIMENSIONS?.[field.split(".").at(-1)]?.unit === "Days" && (
-          <SegmentedControl
-            data={["Days", "Years"]}
-            classNames={{
-              root: "bg-transparent p-0",
-              control:
-                "first:border-r-0 last:border-l-0 first:[&_label]:rounded-l-md last:[&_label]:rounded-r-md",
-              label:
-                "bg-base-max text-primary border-1 border-primary data-active:bg-primary data-active:text-base-max rounded-none",
-            }}
-          />
-        )}
-        <div className="flex gap-1">
-          <Tooltip
-            label={"Histogram"}
-            position="bottom-end"
-            withArrow
-            arrowSize={7}
-          >
-            <ActionIcon
-              data-testid="button-historgram-plot"
-              variant="outline"
-              className={
-                chartType === "histogram" && !noData
-                  ? "bg-primary"
-                  : "border-primary"
-              }
-              onClick={() => setChartType("histogram")}
-              aria-label={`Select ${fieldName} histogram plot`}
-              disabled={noData}
+        <div className="flex gap-2">
+          {DATA_DIMENSIONS?.[fieldNoIndex]?.toggleValue && (
+            <SegmentedControl
+              data={[
+                DATA_DIMENSIONS?.[fieldNoIndex]?.toggleValue,
+                DATA_DIMENSIONS?.[fieldNoIndex]?.unit,
+              ]}
+              classNames={{
+                root: "bg-transparent p-0 border-1 border-primary rounded-md h-7",
+                label:
+                  "bg-base-max text-primary data-active:bg-primary data-active:text-base-max rounded-none py-0.5 px-1",
+              }}
+              onChange={setDataDimension}
+            />
+          )}
+          <div className="flex flex-row gap-1">
+            <Tooltip
+              label={"Histogram"}
+              position="bottom-end"
+              withArrow
+              arrowSize={7}
             >
-              <BarChartIcon
-                className={
-                  chartType === "histogram" && !noData
-                    ? "text-primary-contrast"
-                    : "text-primary"
-                }
-              />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
-            <ActionIcon
-              data-testid="button-survival-plot"
-              variant="outline"
-              className={
-                chartType === "survival"
-                  ? "bg-primary text-primary"
-                  : "border-primary text-primary-content"
-              }
-              onClick={() => setChartType("survival")}
-              aria-label={`Select ${fieldName} survival plot`}
-              disabled={noData}
-            >
-              <SurvivalChartIcon
-                className={
-                  chartType === "survival"
-                    ? "text-primary-contrast"
-                    : "text-primary"
-                }
-              />
-            </ActionIcon>
-          </Tooltip>
-          {continuous && !HIDE_QQ_BOX_FIELDS.includes(field) && (
-            <Tooltip label={"Box/QQ Plot"} withArrow arrowSize={7}>
               <ActionIcon
-                data-testid="button-box-qq-plot"
+                data-testid="button-historgram-plot"
                 variant="outline"
                 className={
-                  chartType === "boxqq"
-                    ? "bg-primary text-primary"
-                    : "border-primary text-primary-content"
+                  chartType === "histogram" && !noData
+                    ? "bg-primary"
+                    : "border-primary"
                 }
-                onClick={() => setChartType("boxqq")}
-                aria-label={`Select ${fieldName} Box/QQ Plot`}
+                onClick={() => setChartType("histogram")}
+                aria-label={`Select ${fieldName} histogram plot`}
                 disabled={noData}
               >
-                <BoxPlotIcon
+                <BarChartIcon
                   className={
-                    chartType === "boxqq"
-                      ? "text-primary-contrast rotate-90"
-                      : "text-primary rotate-90"
+                    chartType === "histogram" && !noData
+                      ? "text-primary-contrast"
+                      : "text-primary"
                   }
                 />
               </ActionIcon>
             </Tooltip>
-          )}
+            <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
+              <ActionIcon
+                data-testid="button-survival-plot"
+                variant="outline"
+                className={
+                  chartType === "survival"
+                    ? "bg-primary text-primary"
+                    : "border-primary text-primary-content"
+                }
+                onClick={() => setChartType("survival")}
+                aria-label={`Select ${fieldName} survival plot`}
+                disabled={noData}
+              >
+                <SurvivalChartIcon
+                  className={
+                    chartType === "survival"
+                      ? "text-primary-contrast"
+                      : "text-primary"
+                  }
+                />
+              </ActionIcon>
+            </Tooltip>
+            {continuous && !HIDE_QQ_BOX_FIELDS.includes(field) && (
+              <Tooltip label={"Box/QQ Plot"} withArrow arrowSize={7}>
+                <ActionIcon
+                  data-testid="button-box-qq-plot"
+                  variant="outline"
+                  className={
+                    chartType === "boxqq"
+                      ? "bg-primary text-primary"
+                      : "border-primary text-primary-content"
+                  }
+                  onClick={() => setChartType("boxqq")}
+                  aria-label={`Select ${fieldName} Box/QQ Plot`}
+                  disabled={noData}
+                >
+                  <BoxPlotIcon
+                    className={
+                      chartType === "boxqq"
+                        ? "text-primary-contrast rotate-90"
+                        : "text-primary rotate-90"
+                    }
+                  />
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </div>
           <Tooltip
             label={"Remove Card"}
             position="bottom-end"
@@ -187,7 +196,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           chartType={chartType}
           noData={noData}
           cohortFilters={cohortFilters}
-          dataDimension={DATA_DIMENSIONS?.[field]?.unit}
+          dataDimension={dataDimension}
         />
       ) : (
         <CategoricalData

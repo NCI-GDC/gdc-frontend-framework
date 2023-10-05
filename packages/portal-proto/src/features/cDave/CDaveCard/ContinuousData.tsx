@@ -5,6 +5,7 @@ import {
   useGetContinuousDataStatsQuery,
   Statistics,
   GqlOperation,
+  DAYS_IN_YEAR,
 } from "@gff/core";
 import { useRangeFacet } from "../../facets/hooks";
 import CDaveHistogram from "./CDaveHistogram";
@@ -25,25 +26,32 @@ import BoxQQSection from "./BoxQQSection";
 const processContinuousResultData = (
   data: Record<string, number>,
   customBinnedData: NamedFromTo[] | CustomInterval,
+  dataDimension: string,
 ): Record<string, number> => {
   if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
     return Object.fromEntries(
       Object.entries(data).map(([, v], idx) => [
         customBinnedData[idx]?.name,
-        v,
+        formatValue(v, dataDimension),
       ]),
     );
   }
 
-  return mapKeys(data, (_, k) => toBucketDisplayName(k));
+  return mapKeys(data, (_, k) => toBucketDisplayName(k, dataDimension));
 };
 
-const toBucketDisplayName = (bucket: string): string => {
+const toBucketDisplayName = (bucket: string, dataDimension: string): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
 
-  return `${Number(Number(fromValue).toFixed(2))} to <${Number(
-    Number(toValue).toFixed(2),
-  )}`;
+  return `${Number(
+    formatValue(Number(fromValue), dataDimension).toFixed(2),
+  )} to <${Number(formatValue(Number(toValue), dataDimension).toFixed(2))}`;
+};
+
+const formatValue = (value: number, dataDimension: string) => {
+  return Number(
+    dataDimension === "Years" ? value / DAYS_IN_YEAR : value.toFixed(2),
+  );
 };
 
 interface ContinuousDataProps {
@@ -106,8 +114,13 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   });
 
   const displayedData = useMemo(
-    () => processContinuousResultData(isSuccess ? data : {}, customBinnedData),
-    [isSuccess, data, customBinnedData],
+    () =>
+      processContinuousResultData(
+        isSuccess ? data : {},
+        customBinnedData,
+        dataDimension,
+      ),
+    [isSuccess, data, customBinnedData, dataDimension],
   );
 
   useDeepCompareEffect(() => {
@@ -169,8 +182,10 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
             customBinnedData={customBinnedData}
             setCustomBinnedData={setCustomBinnedData}
             selectedFacets={selectedFacets}
+            dataDimension={dataDimension}
           />
           <CDaveTable
+            field={field}
             fieldName={fieldName}
             yTotal={yTotal}
             displayedData={displayedData}
@@ -180,6 +195,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
             setSelectedSurvivalPlots={setSelectedSurvivalPlots}
             selectedFacets={selectedFacets}
             setSelectedFacets={setSelectedFacets}
+            dataDimension={dataDimension}
           />
         </>
       )}

@@ -20,7 +20,7 @@ import {
   NamedFromTo,
   SelectedFacet,
 } from "../types";
-import { DEMO_COHORT_FILTERS } from "../constants";
+import { DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import { formatPercent, isInterval } from "../utils";
 
 interface CardControlsProps {
@@ -35,6 +35,7 @@ interface CardControlsProps {
     | ((bins: CategoricalBins) => void)
     | ((bins: NamedFromTo[] | CustomInterval) => void);
   readonly selectedFacets: SelectedFacet[];
+  readonly dataDimension?: string;
 }
 
 const CardControls: React.FC<CardControlsProps> = ({
@@ -47,11 +48,18 @@ const CardControls: React.FC<CardControlsProps> = ({
   customBinnedData,
   setCustomBinnedData,
   selectedFacets,
+  dataDimension,
 }: CardControlsProps) => {
   const isDemoMode = useIsDemoApp();
+  const fieldNoIndex = field.split(".").at(-1);
 
   const downloadTSVFile = () => {
-    const header = [fieldName, "# Cases"];
+    const header = [
+      DATA_DIMENSIONS?.[fieldNoIndex]?.toggleValue
+        ? `${fieldName} (${dataDimension})`
+        : fieldName,
+      "# Cases",
+    ];
     const body = Object.entries(displayedData).map(([field, count]) =>
       [field, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
     );

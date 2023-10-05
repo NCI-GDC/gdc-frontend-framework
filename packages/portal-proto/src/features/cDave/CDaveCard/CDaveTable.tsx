@@ -1,10 +1,11 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
-import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
+import { SURVIVAL_PLOT_MIN_COUNT, DATA_DIMENSIONS } from "../constants";
 import { SelectedFacet } from "../types";
 import { formatPercent } from "../utils";
 
 interface CDaveTableProps {
+  readonly field: string;
   readonly fieldName: string;
   readonly displayedData: Record<string, number>;
   readonly yTotal: number;
@@ -14,9 +15,11 @@ interface CDaveTableProps {
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
   readonly selectedFacets: SelectedFacet[];
   readonly setSelectedFacets: (facets: SelectedFacet[]) => void;
+  readonly dataDimension?: string;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
+  field,
   fieldName,
   displayedData,
   yTotal,
@@ -26,8 +29,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedSurvivalPlots,
   selectedFacets,
   setSelectedFacets,
+  dataDimension,
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
+  const fieldNoIndex = field.split(".").at(-1);
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
@@ -53,7 +58,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               </th>
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {fieldName} {hasCustomBins && "(User Defined Bins Applied)"}
+              {fieldName}
+              {DATA_DIMENSIONS?.[fieldNoIndex]?.toggleValue &&
+                ` (${dataDimension})`}
+              {hasCustomBins && " (User Defined Bins Applied)"}
             </th>
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
               # Cases
