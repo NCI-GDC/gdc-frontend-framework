@@ -36,6 +36,8 @@ const DownloadButtonTotal: React.FC<DownloadButtonTotalProps> = ({
   useEffect(() => {
     if (response.isLoading) {
       setLoading(true);
+    } else {
+      setLoading(false);
     }
   }, [response.isLoading]);
 
@@ -60,7 +62,6 @@ const DownloadButtonTotal: React.FC<DownloadButtonTotalProps> = ({
         endpoint: "tar_sets",
         method: "POST",
         dispatch,
-        done: () => setLoading(false),
         hideNotification: true,
       });
     }
