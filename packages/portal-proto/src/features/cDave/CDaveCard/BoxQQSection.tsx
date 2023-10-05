@@ -58,8 +58,6 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     tailwindConfig.theme.extend.colors[
       COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
     ]?.DEFAULT;
-  //const dataDimension =
-  //  BOX_QQ_DATA_DIMENSIONS?.[clinicalNestedField ?? clinicalField];
 
   const formatValue = useCallback(
     (value: number) => {
