@@ -12,7 +12,7 @@ import {
   clearCohortMessage,
 } from "@gff/core";
 import Banner from "@/components/Banner";
-import { Button } from "@mantine/core";
+import { Button, LoadingOverlay } from "@mantine/core";
 import {
   DeleteCohortNotification,
   DiscardChangesCohortNotification,
@@ -24,6 +24,7 @@ import {
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
+import { useSetupInitialCohorts } from "../cohortBuilder/hooks";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -41,6 +42,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   ContextBar = undefined,
   isContextBarSticky = false,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
+  const isFetchingAll = useSetupInitialCohorts();
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -145,6 +147,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
 
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
+      <LoadingOverlay visible={isFetchingAll} />
       <header
         className="flex-none bg-base-max sticky top-0 z-[300]"
         ref={headerRef}

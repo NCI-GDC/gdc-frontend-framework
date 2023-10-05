@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -12,10 +12,11 @@ import {
   NullCountsData,
 } from "@gff/core";
 
-export const useSetupInitialCohorts = (): void => {
+export const useSetupInitialCohorts = (): boolean => {
   const {
     data: cohortsListData,
     isSuccess,
+    isFetching,
     isError,
   } = useGetCohortsByContextIdQuery();
   const coreDispatch = useCoreDispatch();
@@ -26,6 +27,15 @@ export const useSetupInitialCohorts = (): void => {
     .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
     .map((c) => c.id);
 
+  const [isFetchingAll, setIsFetchingAll] = useState(false);
+
+  useEffect(() => {
+    if (isFetching) {
+      setIsFetchingAll(true);
+    } else {
+      setIsFetchingAll(false);
+    }
+  }, [isFetching]);
   useEffect(() => {
     // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
     // or call to fetch the cohort list errored out. We need to create a default cohort for them.
@@ -74,4 +84,6 @@ export const useSetupInitialCohorts = (): void => {
     JSON.stringify(cohorts.map((cohort) => cohort.id)),
   ]);
   /* eslint-enable */
+
+  return isFetchingAll;
 };
