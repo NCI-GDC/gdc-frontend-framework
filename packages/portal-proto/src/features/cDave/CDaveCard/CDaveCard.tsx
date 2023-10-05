@@ -87,7 +87,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               classNames={{
                 root: "bg-transparent p-0 border-1 border-primary rounded-md h-7",
                 label:
-                  "bg-base-max text-primary data-active:bg-primary data-active:text-base-max rounded-none py-0.5 px-1",
+                  "bg-base-max text-primary data-active:bg-primary data-active:text-base-max rounded-none py-0.5 px-1 h-full",
               }}
               onChange={setDataDimension}
             />
