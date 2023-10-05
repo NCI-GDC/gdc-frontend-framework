@@ -4,9 +4,9 @@ import {
   SetStateAction,
   useContext,
   useLayoutEffect,
-  useRef,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
@@ -20,6 +20,7 @@ import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
@@ -354,7 +355,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
-    height,
+    height > 380 ? height : 380,
     setSurvivalPlotLineTooltipContent,
   );
 
@@ -563,12 +564,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </Box>
         <div className="survival-plot" ref={container} />
       </div>
-      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
-        <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+      <OffscreenWrapper>
+        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
+          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center font-montserrat">
             <div
               className={
                 [
@@ -595,7 +596,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </div>
           <div className="survival-plot" ref={containerForDownload} />
         </div>
-      </div>
+      </OffscreenWrapper>
     </div>
   );
 };
