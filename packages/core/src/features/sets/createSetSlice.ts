@@ -179,6 +179,12 @@ export const createSetSlice = graphqlAPISlice
           },
         }),
         transformResponse: transformGeneSetResponse,
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "geneSets", id: arg?.set_id }];
+          }
+          return [];
+        },
       }),
       createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score, set_id }) => ({
@@ -193,6 +199,12 @@ export const createSetSlice = graphqlAPISlice
           },
         }),
         transformResponse: transformSsmsSetResponse,
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "ssmsSets", id: arg?.set_id }];
+          }
+          return [];
+        },
       }),
       createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score, set_id }) => ({
@@ -208,6 +220,12 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: (response) =>
           response.data.sets.create.explore.case.set_id,
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "caseSets", id: arg?.set_id }];
+          }
+          return [];
+        },
       }),
     }),
   });
