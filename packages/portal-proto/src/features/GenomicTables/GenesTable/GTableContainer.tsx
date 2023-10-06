@@ -23,7 +23,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import download from "src/utils/download";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -34,14 +34,14 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
+import { CountsIcon } from "@/components/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
+import { convertDateToString } from "@/utils/date";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -72,7 +72,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [downloadMutatedGenesActive, setDownloadMutatedGenesActive] =
+  const [downloadMutatedGenesJSONActive, setDownloadMutatedGenesJSONActive] =
+    useState(false);
+  const [downloadMutatedGenesTSVActive, setDownloadMutatedGenesTSVActive] =
     useState(false);
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
@@ -257,10 +259,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     handleMutationCountClick,
   });
 
+  const getRowId = (originalRow: Gene) => {
+    return originalRow.gene_id;
+  };
   const [rowSelection, setRowSelection] = useState({});
-  const selectedGenes = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => (formattedTableData[index] as Gene).gene_id);
+  const selectedGenes = Object.entries(rowSelection)?.map(
+    ([gene_id]) => gene_id,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     genesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -287,7 +292,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const handleJSONDownload = async () => {
     const tableFilters =
       buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
-    setDownloadMutatedGenesActive(true);
+    setDownloadMutatedGenesJSONActive(true);
     await download({
       endpoint: "genes",
       method: "POST",
@@ -306,20 +311,38 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         ].join(","),
       },
       dispatch,
-      done: () => setDownloadMutatedGenesActive(false),
+      done: () => setDownloadMutatedGenesJSONActive(false),
+    });
+  };
+
+  const handleTSVDownload = async () => {
+    setDownloadMutatedGenesTSVActive(true);
+    await download({
+      endpoint: "/analysis/top_mutated_genes",
+      method: "POST",
+      params: {
+        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+        attachment: true,
+        filename: `frequently-mutated-genes.${convertDateToString(
+          new Date(),
+        )}.tsv`,
+      },
+      dispatch,
+      done: () => setDownloadMutatedGenesTSVActive(false),
     });
   };
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [rowId, setRowId] = useState(-1);
+  const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<Gene>) => {
-    if (Object.keys(expanded).length > 0 && row.index === rowId) {
+    if (Object.keys(expanded).length > 0 && row.original.gene_id === rowId) {
       setExpanded({});
     } else if (
       row.original["#_ssm_affected_cases_across_the_gdc"].numerator !== 0
     ) {
-      setExpanded({ [row.index]: true });
-      setRowId(row.index);
+      setExpanded({ [row.original.gene_id]: true });
+      setRowId(row.original.gene_id);
     }
   };
 
@@ -447,14 +470,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 onClick={handleJSONDownload}
                 data-testid="button-json-mutation-frequency"
               >
-                {downloadMutatedGenesActive ? <Loader size="sm" /> : "JSON"}
+                {downloadMutatedGenesJSONActive ? <Loader size="sm" /> : "JSON"}
               </FunctionButton>
             </ButtonTooltip>
-            <ButtonTooltip label="Export current view" comingSoon={true}>
-              <FunctionButton data-testid="button-tsv-mutation-frequency">
-                TSV
-              </FunctionButton>
-            </ButtonTooltip>
+            <FunctionButton
+              onClick={handleTSVDownload}
+              data-testid="button-tsv-mutation-frequency"
+            >
+              {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
+            </FunctionButton>
 
             <Text className="font-heading font-bold text-md">
               TOTAL OF {data?.genes?.genes_total?.toLocaleString("en-US")}{" "}
@@ -484,6 +508,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setColumnOrder={setColumnOrder}
         expanded={expanded}
         setExpanded={handleExpand}
+        getRowId={getRowId}
       />
     </>
   );

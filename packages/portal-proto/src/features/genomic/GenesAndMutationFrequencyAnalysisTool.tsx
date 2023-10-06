@@ -21,7 +21,7 @@ import {
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 import { humanify } from "src/utils";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";
@@ -180,7 +180,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    *  which will update the survival plot
    */
   useEffect(() => {
-    if (topGeneSSMSSuccess && comparativeSurvival === undefined) {
+    // if we have a top gene and no comparative survival set, and there is a gene or ssm symbol
+    // set the comparative survival to the top gene
+    if (
+      topGeneSSMSSuccess &&
+      comparativeSurvival === undefined &&
+      topGeneSSMS[0][appMode].symbol
+    ) {
       setComparativeSurvival({
         symbol: topGeneSSMS[0][appMode].symbol,
         name:
@@ -190,11 +196,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 topGeneSSMS[0][appMode].aa_change
                   ? topGeneSSMS[0][appMode].aa_change
                   : ""
-              } ${humanify({
-                term: topGeneSSMS[0][appMode].consequence_type
-                  .replace("_variant", "")
-                  .replace("_", " "),
-              })}`,
+              } ${
+                topGeneSSMS[0][appMode]?.consequence_type
+                  ? humanify({
+                      term: topGeneSSMS[0][appMode].consequence_type
+                        .replace("_variant", "")
+                        .replace("_", " "),
+                    })
+                  : ""
+              }`,
         field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
       });
     }

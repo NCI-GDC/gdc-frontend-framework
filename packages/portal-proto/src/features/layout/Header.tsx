@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
+    <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
         href="#main"
         className="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
               <NIHLogo
                 layout="fill"
                 style={{ objectFit: "contain" }}
-                data-testid="NIH_LOGO"
+                data-testid="button-header-home"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"
               />
@@ -118,21 +118,21 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="manage-sets" passHref>
+          <Link href="/manage-sets" passHref>
             <Button
               unstyled
               data-testid="manageSetsLink"
-              className={`p-2 rounded-md ${
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
                 router.pathname === "/manage-sets"
                   ? "bg-secondary text-white"
                   : ""
@@ -148,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="cartLink"
-              className={`p-2 rounded-md ${
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
                 router.pathname === "/cart" ? "bg-secondary text-white" : ""
               }`}
             >
@@ -284,7 +284,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 data-testid="extraButton"
                 aria-label="GDC apps button"
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
                 <p className="font-heading">GDC Apps</p>
@@ -392,11 +392,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-row justify-between">
         <div className="flex flex-row flex-wrap items-center divide-x divide-gray-300">
           {headerElements.map((element, i) => (
-            <div
-              key={i}
-              className={`${i === 0 ? "pr-2" : "pl-4"}`}
-              data-testid={`headerElement${i}`}
-            >
+            <div key={i} className={`${i === 0 ? "pr-2" : "pl-4"}`}>
               {typeof element === "string" ? (
                 <span className="font-semibold">{element}</span>
               ) : (

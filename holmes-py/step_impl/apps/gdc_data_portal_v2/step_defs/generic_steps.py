@@ -87,6 +87,40 @@ def verify_text_on_page(text, source, target_type):
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"
 
+@step("Verify the <source> is <equal_or_not_equal> to the home page count for <home_page_category>")
+def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_category):
+    """
+    verify_counts_match_home_page_count compares the specified home page statistic to another
+    specified statistic somewhere else in the data portal. Asserts if they are equal
+    or not equal based on spec file input.
+
+    :param source: The function being executed to get a statistic somewhere in the data portal
+    :param equal_or_not_equal: If the compared statistics should be equal or not
+    :param home_page_category: Name of the home page category we are comparing with
+    :return: N/A
+    """
+    sources = {
+        "Cohort Bar Case Count": APP.shared.get_cohort_bar_case_count()
+    }
+
+    # Get the statistic from somewhere in the data portal
+    count_from_page = sources.get(source)
+    # Turn it into an 'int' for comparison
+    count_from_page = count_from_page.replace(',', '')
+    count_from_page_int = int(count_from_page)
+
+    # From storage after previously running the test "store_home_page_data_portal_statistics"
+    # Get the category statistic from the data portal summary on the home page
+    count_from_home_page_statistics = data_store.spec[f"{home_page_category} count"]
+    # Turn it into an 'int' for comparison
+    count_from_home_page_statistics = count_from_home_page_statistics.replace(',', '')
+    count_from_home_page_statistics_int = int(count_from_home_page_statistics)
+
+    equal_or_not_equal = equal_or_not_equal.lower()
+    if equal_or_not_equal == "equal":
+        assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
+    elif equal_or_not_equal == "not equal":
+        assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
 
 @step("Close <modal_name> modal")
 def close_modal(modal_name: str):
@@ -238,7 +272,7 @@ def verify_table_header_text(table):
         assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
 @step("Verify the table body text is correct <table>")
-def verify_table_header_text(table):
+def verify_table_body_text(table):
     """Verifies the table body has the correct text"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
@@ -251,7 +285,7 @@ def verify_table_header_text(table):
         assert f"{table_body_text_by_row_column}" == v[0], f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
 
 @step("Verify the table body tooltips are correct <table>")
-def verify_table_header_text(table):
+def verify_table_body_tooltips_text(table):
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     """Verifies the table body has correct tooltips"""
@@ -282,6 +316,23 @@ def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
     """Waits for table loading spinner to disappear on the page"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
 
+@step("Wait for table body text to appear <table>")
+def wait_for_table_body_text_to_appear(table):
+    """Waits for specified table body text to appear"""
+    # Wait for all possible loading spinners to detach before checking text
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        """
+        v[0] - Text
+        v[1] - Row
+        v[2] - Column
+        """
+        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        time.sleep(1)
+
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if expected text is on the page"""
@@ -299,6 +350,16 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
+
+@step("Collect these data portal statistics for comparison <table>")
+def store_home_page_data_portal_statistics(table):
+     """
+        Stores data portal summary statistics for use in future tests.
+        Pairs with the test 'verify_counts_match_home_page_count'
+     """
+     for k, v in enumerate(table):
+        category_statistic = APP.home_page.get_data_portal_summary_statistic(v[0])
+        data_store.spec[f"{v[0]} count"] = category_statistic
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -382,6 +443,7 @@ def click_undo_in_message():
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
     APP.shared.click_set_as_current_cohort_in_message()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that
@@ -419,11 +481,35 @@ def select_table_value_by_row_column(table):
     """
     for k, v in enumerate(table):
         APP.shared.select_table_by_row_column(v[0],v[1])
+        time.sleep(1)
+        # In Mutation Frequency, selecting items in the table can take a
+        # long time to load. They can also load and spin at different times
+        # in different places (e.g the cohort case count, table, graphs, etc.)
+        # So we have an abundance of waits.
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
     APP.shared.send_text_into_search_bar(text, aria_label)
+
+@step("Search the table for <text>")
+def send_text_into_table_search_bar(text: str):
+    """Sends text into a table search bar"""
+    APP.shared.send_text_into_table_search_bar(text)
+    time.sleep(1)
+    # In Mutation Frequency, searching in the table can take a
+    # long time to load. They can also load and spin at different times
+    # in different places (e.g the cohort case count, table, graphs, etc.)
+    # So we have an abundance of waits.
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.keyboard_press("Enter")
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):

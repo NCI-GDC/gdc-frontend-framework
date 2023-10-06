@@ -11,7 +11,10 @@ import {
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { calculatePercentageAsNumber, generateSortingFn } from "src/utils";
+import {
+  calculatePercentageAsNumber,
+  statusBooleansToDataStatus,
+} from "src/utils";
 import { CohortCreationButton } from "@/components/CohortCreationButton/";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import {
@@ -23,7 +26,6 @@ import {
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { statusBooleansToDataStatus } from "../shared/utils";
 import {
   CancerDistributionDataType,
   CancerDistributionTableProps,
@@ -31,9 +33,10 @@ import {
   handleJSONDownload,
   handleTSVDownload,
 } from "./utils";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
+import { useDeepCompareMemo } from "use-deep-compare";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,
@@ -138,9 +141,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [data, projectsById, isGene, isSuccess, projectsFetching],
   );
 
+  const getRowId = (originalRow: CancerDistributionDataType) => {
+    return originalRow.project;
+  };
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "#_ssm_affected_cases",
@@ -148,63 +154,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     },
   ]);
 
-  const customSortingFns = useMemo(
-    () => ({
-      "#_ssm_affected_cases": generateSortingFn("ssm_percent"),
-      "#_cnv_gains": generateSortingFn("cnv_gains_percent"),
-      "#_cnv_losses": generateSortingFn("cnv_losses_percent"),
-      "#_mutations": generateSortingFn("num_mutations"),
-    }),
+  const cancerDistributionTableColumnHelper = useMemo(
+    () => createColumnHelper<CancerDistributionDataType>(),
     [],
   );
 
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    handleSortByChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-    updatedFullData,
-  } = useStandardPagination(formattedData, customSortingFns);
-
-  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
-
-  const handleExpand = (
-    row: Row<CancerDistributionDataType>,
-    columnId: string,
-  ) => {
-    if (
-      Object.keys(expanded).length > 0 &&
-      row.index === expandedRowId &&
-      columnId === expandedColumnId
-    ) {
-      setExpanded({});
-    } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
-      setExpandedColumnId(columnId);
-      setExpandedRowId(row.index);
-    }
-  };
-
-  const cancerDistributionTableColumnHelper =
-    createColumnHelper<CancerDistributionDataType>();
-
-  const cancerDistributionTableColumns = useMemo(
+  const cancerDistributionTableColumns = useDeepCompareMemo(
     () => [
       cancerDistributionTableColumnHelper.accessor("project", {
         id: "project",
@@ -271,6 +226,17 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             }
           />
         ),
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            if (rowA.ssm_percent > rowB.ssm_percent) {
+              return 1;
+            }
+            if (rowA.ssm_percent < rowB.ssm_percent) {
+              return -1;
+            }
+            return 0;
+          },
+        },
         enableSorting: true,
       }),
       ...(isGene
@@ -307,6 +273,17 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   }
                 />
               ),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
+                    return 1;
+                  }
+                  if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
               enableSorting: true,
             }),
             cancerDistributionTableColumnHelper.accessor("cnv_losses_percent", {
@@ -341,6 +318,17 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   }
                 />
               ),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
+                    return 1;
+                  }
+                  if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
               enableSorting: true,
             }),
             cancerDistributionTableColumnHelper.accessor("num_mutations", {
@@ -353,12 +341,66 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               enableSorting: true,
               cell: ({ row }) => row.original.num_mutations.toLocaleString(),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.num_mutations > rowB.num_mutations) {
+                    return 1;
+                  }
+                  if (rowA.num_mutations < rowB.num_mutations) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
             }),
           ]
         : []),
     ],
     [cancerDistributionTableColumnHelper, expandedColumnId, id, isGene, symbol],
   );
+
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    handleSortByChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+    updatedFullData,
+  } = useStandardPagination(formattedData, cancerDistributionTableColumns);
+
+  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
+  const handleExpand = (
+    row: Row<CancerDistributionDataType>,
+    columnId: string,
+  ) => {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.project === expandedRowId &&
+      columnId === expandedColumnId
+    ) {
+      setExpanded({});
+    } else if ((row.original[columnId] as string[]).length > 1) {
+      setExpanded({ [row.original.project]: true });
+      setExpandedColumnId(columnId);
+      setExpandedRowId(row.original.project);
+    }
+  };
 
   const createSSMAffectedFilters = useCallback(
     async (project: string, id: string): Promise<FilterSet> => {
@@ -557,6 +599,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
+        getRowId={getRowId}
       />
     </>
   );

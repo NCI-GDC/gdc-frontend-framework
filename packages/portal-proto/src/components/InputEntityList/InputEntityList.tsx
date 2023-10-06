@@ -23,7 +23,7 @@ import { UserInputContext } from "@/components/Modals/UserInputModal";
 import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { getMatchedIdentifiers, MatchResults } from "./utils";
-import MatchTables from "./MatchTables";
+import MatchTablesWrapper from "./MatchTablesWrapper";
 import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
@@ -131,7 +131,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     const matchedIds = new Set(
       flatten(
         matched.map((m) =>
-          m.givenIdentifiers.map((i) => i.value.toUpperCase()),
+          m.submittedIdentifiers.map((i) => i.value.toUpperCase()),
         ),
       ),
     );
@@ -260,7 +260,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             <p>validating {entityLabel}s</p>
           </div>
         ) : (
-          <MatchTables
+          <MatchTablesWrapper
             matched={matched}
             unmatched={unmatched}
             numberInput={tokens.length}

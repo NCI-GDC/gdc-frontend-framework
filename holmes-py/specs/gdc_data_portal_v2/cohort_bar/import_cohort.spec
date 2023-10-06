@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * "Create" "organoid" and "keep modal" in the Cohort Bar section
 * Set as current cohort
 * The cohort bar case count should be "70"
-* Select "Clear All"
+* Clear active cohort filters
 * The cohort bar case count should be "86,513"
 
 ## Import Cohort from Data Portal V1 file

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { HandleChangeInput } from "../shared/VerticalTable";
 import {
   useGetProjectsQuery,
   buildCohortGqlOperator,
@@ -13,13 +12,12 @@ import { useAppSelector } from "@/features/projectsCenter/appApi";
 import { selectFilters } from "@/features/projectsCenter/projectCenterFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { statusBooleansToDataStatus } from "@/features/shared/utils";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertDateToString } from "src/utils/date";
-import { extractToArray } from "src/utils";
-import { ArraySeparatedSpan } from "../shared/ArraySeparatedSpan";
+import { extractToArray, statusBooleansToDataStatus } from "src/utils";
+import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
 import {
@@ -34,8 +32,9 @@ import {
 import { Checkbox } from "@mantine/core";
 import { downloadTSV } from "@/components/Table/utils";
 import { isEqual } from "lodash";
-import SubrowPrimarySiteDiseaseType from "../shared/SubrowPrimarySiteDiseaseType";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { HandleChangeInput } from "@/components/Table/types";
+import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 
 type ProjectDataType = {
   project: string;
@@ -105,10 +104,12 @@ const ProjectsTable: React.FC = () => {
   };
 
   const prevProjectFilters = usePrevious(projectFilters);
-  useEffect(
-    () => !isEqual(prevProjectFilters, projectFilters) && setActivePage(1),
-    [prevProjectFilters, projectFilters],
-  );
+
+  useEffect(() => {
+    if (!isEqual(prevProjectFilters, projectFilters)) {
+      setActivePage(1);
+    }
+  }, [prevProjectFilters, projectFilters]);
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (!isFetching && isSuccess) {
@@ -160,7 +161,7 @@ const ProjectsTable: React.FC = () => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(-1);
+  const [expandedRowId, setExpandedRowId] = useState(null);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -271,10 +272,14 @@ const ProjectsTable: React.FC = () => {
     [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
   );
 
+  const getRowId = (originalRow: ProjectDataType) => {
+    return originalRow.project;
+  };
+
   const [rowSelection, setRowSelection] = useState({});
-  const pickedProjects = Object.entries(rowSelection)
-    .filter(([, isSelected]) => isSelected)
-    .map(([index]) => (formattedTableData[index] as ProjectDataType).project);
+  const pickedProjects = Object.entries(rowSelection)?.map(
+    ([project]) => project,
+  );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     projectsTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
   );
@@ -348,14 +353,14 @@ const ProjectsTable: React.FC = () => {
   const handleExpand = (row: Row<ProjectDataType>, columnId: string) => {
     if (
       Object.keys(expanded).length > 0 &&
-      row.index === expandedRowId &&
+      row.original.project === expandedRowId &&
       columnId === expandedColumnId
     ) {
       setExpanded({});
     } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.index]: true });
+      setExpanded({ [row.original.project]: true });
       setExpandedColumnId(columnId);
-      setExpandedRowId(row.index);
+      setExpandedRowId(row.original.project);
     }
   };
 
@@ -410,6 +415,7 @@ const ProjectsTable: React.FC = () => {
       setSorting={setSorting}
       expanded={expanded}
       setExpanded={handleExpand}
+      getRowId={getRowId}
     />
   );
 };

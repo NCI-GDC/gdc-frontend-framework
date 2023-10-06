@@ -105,7 +105,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-1"
+        width ? width : "mx-0"
       } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
@@ -115,8 +115,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           multiline
           width={220}
           withArrow
-          transition="fade"
-          transitionDuration={200}
+          transitionProps={{ duration: 200, transition: "fade" }}
         >
           <FacetText>{facetTitle}</FacetText>
         </Tooltip>

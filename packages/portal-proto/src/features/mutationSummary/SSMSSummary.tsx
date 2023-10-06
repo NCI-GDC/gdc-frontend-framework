@@ -10,7 +10,7 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
 import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
-import { HeaderTitle } from "../shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
 
 export const SSMSSummary = ({

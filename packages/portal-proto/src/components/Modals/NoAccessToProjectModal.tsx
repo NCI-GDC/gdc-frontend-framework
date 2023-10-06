@@ -13,7 +13,6 @@ export const NoAccessToProjectModal = ({
           Access Alert
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       buttons={[
         {

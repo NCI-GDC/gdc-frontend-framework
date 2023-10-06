@@ -33,7 +33,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center
   |OncoMatrix               |Current cohort does not have SSM or CNV data available for visualization.  |
   |ProteinPaint             |Current cohort does not have SSM data available for visualization.         |
   |Sequence Reads           |Current cohort does not have available BAMs for visualization.             |
-* Select "Clear All"
+* Clear active cohort filters
 
 ## Validate Analysis Tools Description
 * Validate analysis tool description

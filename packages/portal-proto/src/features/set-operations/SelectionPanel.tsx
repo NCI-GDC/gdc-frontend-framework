@@ -3,7 +3,6 @@ import { shallowEqual } from "react-redux";
 import Link from "next/link";
 import { Checkbox, Tooltip } from "@mantine/core";
 import { upperFirst } from "lodash";
-import { Row } from "react-table";
 import {
   useCoreSelector,
   selectSetsByType,
@@ -11,10 +10,6 @@ import {
   useSsmSetCountsQuery,
   selectAvailableCohorts,
 } from "@gff/core";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -23,7 +18,11 @@ import {
   SelectedEntity,
   SetOperationEntityType,
 } from "./types";
-import { SortingState } from "@tanstack/react-table";
+import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
+import { entityTypes } from "@/components/BioTree/types";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 const shouldDisableInput = (
   entityType: string,
@@ -173,13 +172,14 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     selectSetsByType(state, "ssms"),
   );
 
-  const { data: geneCounts } = useGeneSetCountsQuery({
+  const { data: geneCounts, isSuccess: isGeneSuccess } = useGeneSetCountsQuery({
     setIds: Object.keys(geneSets),
   });
 
-  const { data: mutationCounts } = useSsmSetCountsQuery({
-    setIds: Object.keys(mutationSets),
-  });
+  const { data: mutationCounts, isSuccess: isMutationSuccess } =
+    useSsmSetCountsQuery({
+      setIds: Object.keys(mutationSets),
+    });
 
   // cohorts are not sets, but we want to display them in the same table
   // the associated case set will be created when a cohort is selected
@@ -191,33 +191,13 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     }
   }, [selectedEntities, setSelectedEntityType]);
 
-  const tableData = useMemo(() => {
+  const tableData = useDeepCompareMemo(() => {
     return [
       ...Object.entries(geneSets).map(([setId, setName]) => {
         const count = geneCounts?.[setId] || 0;
-        const disabled = shouldDisableInput(
-          "genes",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        );
+
         return {
-          select: (
-            <SelectCell
-              setId={setId}
-              name={setName}
-              disabled={disabled}
-              count={count}
-              entityType="genes"
-              selectedEntities={selectedEntities}
-              selectedEntityType={selectedEntityType}
-              setSelectedEntities={setSelectedEntities}
-              setSelectedEntityType={setSelectedEntityType}
-              key={`gene-select-${setId}`}
-            />
-          ),
-          entityType: "genes",
+          entity_type: "genes",
           name: setName,
           setId,
           count,
@@ -225,29 +205,9 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       }),
       ...Object.entries(mutationSets).map(([setId, setName]) => {
         const count = mutationCounts?.[setId] || 0;
-        const disabled = shouldDisableInput(
-          "mutations",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        );
+
         return {
-          select: (
-            <SelectCell
-              setId={setId}
-              name={setName}
-              disabled={disabled}
-              count={count}
-              entityType="mutations"
-              selectedEntities={selectedEntities}
-              selectedEntityType={selectedEntityType}
-              setSelectedEntities={setSelectedEntities}
-              setSelectedEntityType={setSelectedEntityType}
-              key={`mutation-select-${setId}`}
-            />
-          ),
-          entityType: "mutations",
+          entity_type: "mutations",
           name: setName,
           setId,
           count: count,
@@ -255,29 +215,9 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       }),
       ...Object.entries(caseSetsAndCounts.caseSets).map(([setId, setName]) => {
         const count = caseSetsAndCounts.caseCounts?.[setId] || 0;
-        const disabled = shouldDisableInput(
-          "cohort",
-          count,
-          setId,
-          selectedEntityType,
-          selectedEntities,
-        );
+
         return {
-          select: (
-            <SelectCell
-              setId={setId}
-              name={setName}
-              disabled={disabled}
-              count={count}
-              entityType="cohort"
-              selectedEntities={selectedEntities}
-              selectedEntityType={selectedEntityType}
-              setSelectedEntities={setSelectedEntities}
-              setSelectedEntityType={setSelectedEntityType}
-              key={`cohort-select-${setId}`}
-            />
-          ),
-          entityType: "cohort",
+          entity_type: "cohort",
           name: setName,
           setId,
           count,
@@ -296,21 +236,124 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       }
       return 0;
     });
-    // Prevent infinite rerender issue
-    /* eslint-disable react-hooks/exhaustive-deps */
   }, [
-    JSON.stringify(caseSetsAndCounts),
-    JSON.stringify(geneSets),
-    JSON.stringify(geneCounts),
-    JSON.stringify(mutationSets),
-    JSON.stringify(mutationCounts),
-    selectedEntities,
-    setSelectedEntities,
-    selectedEntityType,
-    setSelectedEntityType,
+    caseSetsAndCounts,
+    geneSets,
+    geneCounts,
+    mutationSets,
+    mutationCounts,
     sortBy,
   ]);
-  /* eslint-enable */
+
+  const setSelectionPanelColumnHelper =
+    createColumnHelper<typeof tableData[0]>();
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const setSelectionPanelColumns = useMemo(
+    () => [
+      setSelectionPanelColumnHelper.display({
+        id: "select",
+        header: "Select",
+        cell: ({ row }) => {
+          const disabled = shouldDisableInput(
+            row.original.entity_type,
+            row.original.count,
+            row.original.setId,
+            selectedEntityType,
+            selectedEntities,
+          );
+
+          return (
+            <SelectCell
+              setId={row.original.setId}
+              name={row.original.name}
+              disabled={disabled}
+              count={row.original.count}
+              entityType={row.original.entity_type as SetOperationEntityType}
+              selectedEntities={selectedEntities}
+              selectedEntityType={selectedEntityType}
+              setSelectedEntities={setSelectedEntities}
+              setSelectedEntityType={setSelectedEntityType}
+              key={`${entityTypes}-select-${row.original.setId}`}
+            />
+          );
+        },
+      }),
+      setSelectionPanelColumnHelper.accessor("entity_type", {
+        id: "entity_type",
+        header: "Entity Type",
+        cell: ({ getValue, row }) => (
+          <span
+            className={
+              shouldDisableInput(
+                row.original.entity_type,
+                row.original.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {upperFirst(getValue())}
+          </span>
+        ),
+      }),
+      setSelectionPanelColumnHelper.accessor("name", {
+        id: "name",
+        header: "Name",
+        cell: ({ getValue, row }) => (
+          <label
+            id={`${row.original.entity_type}-selection-${
+              (row.original as Record<string, any>).setId
+            }`}
+            className={
+              shouldDisableInput(
+                row.original.entity_type,
+                row.original.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {getValue()}
+          </label>
+        ),
+      }),
+      setSelectionPanelColumnHelper.accessor("count", {
+        id: "count",
+        header: "# Items",
+        cell: ({ getValue, row }) => (
+          <span
+            className={
+              shouldDisableInput(
+                row.original.entity_type,
+                row.original.count,
+                (row.original as Record<string, any>).setId,
+                selectedEntityType,
+                selectedEntities,
+              )
+                ? "text-base-lighter"
+                : undefined
+            }
+          >
+            {getValue().toLocaleString()}
+          </span>
+        ),
+      }),
+    ],
+    [
+      selectedEntities,
+      selectedEntityType,
+      setSelectedEntities,
+      setSelectedEntityType,
+      setSelectionPanelColumnHelper,
+    ],
+  );
 
   const {
     handlePageChange,
@@ -323,92 +366,12 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     displayedData,
   } = useStandardPagination(tableData);
 
-  const columns = useMemo(
-    () => [
-      {
-        id: "select",
-        columnName: "Select",
-        visible: true,
-        disableSortBy: true,
-      },
-      {
-        id: "entityType",
-        columnName: "Entity Type",
-        visible: true,
-        Cell: ({ value, row }: { value: string; row: Row }) => (
-          <span
-            className={
-              shouldDisableInput(
-                row.values.entityType,
-                row.values.count,
-                (row.original as Record<string, any>).setId,
-                selectedEntityType,
-                selectedEntities,
-              )
-                ? "text-base-lighter"
-                : undefined
-            }
-          >
-            {upperFirst(value)}
-          </span>
-        ),
-      },
-      {
-        id: "name",
-        columnName: "Name",
-        visible: true,
-        Cell: ({ value, row }: { value: string; row: Row }) => (
-          <label
-            id={`${row.values.entityType}-selection-${
-              (row.original as Record<string, any>).setId
-            }`}
-            className={
-              shouldDisableInput(
-                row.values.entityType,
-                row.values.count,
-                (row.original as Record<string, any>).setId,
-                selectedEntityType,
-                selectedEntities,
-              )
-                ? "text-base-lighter"
-                : undefined
-            }
-          >
-            {value}
-          </label>
-        ),
-      },
-      {
-        id: "count",
-        columnName: "# Items",
-        visible: true,
-        Cell: ({ value, row }: { value: number; row: Row }) => (
-          <span
-            className={
-              shouldDisableInput(
-                row.values.entityType,
-                row.values.count,
-                (row.original as Record<string, any>).setId,
-                selectedEntityType,
-                selectedEntities,
-              )
-                ? "text-base-lighter"
-                : undefined
-            }
-          >
-            {value.toLocaleString()}
-          </span>
-        ),
-      },
-    ],
-    [selectedEntityType, selectedEntities],
-  );
+  useDeepCompareEffect(() => {
+    setSortBy(sorting);
+  }, [sorting]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
-      case "sortBy":
-        setSortBy(obj.sortBy);
-        break;
       case "newPageSize":
         handlePageSizeChange(obj.newPageSize);
         break;
@@ -429,12 +392,14 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           the same type.
         </p>
         <p className="pb-2 font-content">
-          Create cohorts in the Analysis Center. Create gene/mutation sets in
-          Manage Sets or in analysis tools (e.g.{" "}
-          <Link
-            className="text-utility-link"
-            href="/analysis_page?app=MutationFrequencyApp"
-          >
+          Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
+          <Link href="/manage_sets">
+            <a className="text-utility-link font-content underline">
+              Manage Sets
+            </a>
+          </Link>{" "}
+          or in analysis tools (e.g.{" "}
+          <Link href="/analysis_page?app=MutationFrequencyApp">
             <a className="text-utility-link font-content underline">
               Mutation Frequency
             </a>
@@ -443,10 +408,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </p>
         <div className="w-3/4">
           <VerticalTable
-            tableData={displayedData}
-            columns={columns}
-            selectableRow={false}
-            showControls={false}
+            data={displayedData}
+            columns={setSelectionPanelColumns}
             pagination={{
               page,
               pages,
@@ -455,8 +418,13 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               total,
               label: "sets",
             }}
+            status={
+              isGeneSuccess && isMutationSuccess ? "fulfilled" : "pending"
+            }
+            sorting={sorting}
+            setSorting={setSorting}
             handleChange={handleChange}
-            columnSorting={"manual"}
+            columnSorting="manual"
           />
         </div>
       </div>

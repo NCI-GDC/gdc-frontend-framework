@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { useMeasure } from "react-use";
-import RatioSpring from "../../../components/expandableTables/shared/RatioSpring";
 import { FaCircle as Circle } from "react-icons/fa";
 import { TableSubrowData } from "@gff/core";
+import RatioWithSpring from "@/components/RatioWithSpring";
 
 interface ListAffectedCasesProps {
   subData: ReadonlyArray<TableSubrowData>;
@@ -59,7 +59,7 @@ const ListAffectedCases: React.FC<ListAffectedCasesProps> = ({
       return (
         <div className="flex items-center" key={`item-${index}`}>
           <Circle size="0.65em" className="text-primary shrink-0 mr-2" />
-          <RatioSpring
+          <RatioWithSpring
             item={{
               numerator: item.numerator ?? 0,
               denominator: item.denominator ?? 0,

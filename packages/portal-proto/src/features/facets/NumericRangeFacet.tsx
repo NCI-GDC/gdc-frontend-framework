@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { DAYS_IN_YEAR, fieldNameToTitle } from "@gff/core";
+import { SortType } from "./types";
 
 import {
   DEFAULT_VISIBLE_ITEMS,
@@ -140,7 +141,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   const updateFilters = useUpdateFacetFilters();
 
   // toggle to handle sorting by value vs. label
-  const [isSortedByValue, setIsSortedByValue] = useState(false);
+  const [sortType, setSortType] = useState<SortType>({
+    type: "alpha",
+    direction: "dsc",
+  });
 
   // process when range is selected
   const handleSelection = (rangeKey) => {
@@ -163,10 +167,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
         <>
           <FacetSortPanel
-            isSortedByValue={isSortedByValue}
+            sortType={sortType}
             valueLabel={valueLabel}
-            setIsSortedByValue={setIsSortedByValue}
-            isNumberSort={true}
+            setSort={setSortType}
           />
         </>
       ) : null}
@@ -174,11 +177,19 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
         {Object.keys(rangeLabelsAndValues)
           .slice(0, itemsToShow)
           .sort(
-            isSortedByValue
+            sortType.type === "value"
               ? (a, b) =>
-                  rangeLabelsAndValues[b].value - rangeLabelsAndValues[a].value
+                  sortType.direction === "dsc"
+                    ? rangeLabelsAndValues[b].value -
+                      rangeLabelsAndValues[a].value
+                    : rangeLabelsAndValues[a].value -
+                      rangeLabelsAndValues[b].value
               : (a, b) =>
-                  rangeLabelsAndValues[a].from - rangeLabelsAndValues[b].from,
+                  sortType.direction === "dsc"
+                    ? rangeLabelsAndValues[a].from -
+                      rangeLabelsAndValues[b].from
+                    : rangeLabelsAndValues[b].from -
+                      rangeLabelsAndValues[a].from,
           )
           .map((rangeKey, i) => {
             return (
@@ -334,6 +345,7 @@ const FromTo: React.FC<FromToProps> = ({
             // units are always days
             value={adjustDaysToYears(fromValue, units)}
             onChange={(value) => {
+              if (value === "") return;
               setFromValue(
                 adjustYearsToDays(
                   clamp(value, lowerUnitRange, upperUnitRange),
@@ -368,6 +380,7 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             onChange={(value) => {
+              if (value === "") return;
               setToValue(
                 adjustYearsToDays(
                   clamp(value, lowerUnitRange, upperUnitRange),
@@ -590,7 +603,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             }
           </div>
           <div
-            className={`card-face card-back bg-base-max h-full pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
@@ -758,7 +771,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+    <div className="flex flex-col w-100 space-y-2 px-2  mt-2">
       <RangeInputWithPrefixedRanges
         valueLabel={valueLabel}
         hooks={hooks}
@@ -804,8 +817,8 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
     <div id={field}>
       <div
         className={`flex flex-col ${
-          width ? width : "mx-1"
-        } bg-base-max relative shadow-lg border-base-lightest border-1 rounded-b-md text-xs transition `}
+          width ? width : "mx-0"
+        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition `}
       >
         <FacetHeader>
           <Tooltip
@@ -814,8 +827,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             multiline
             width={220}
             withArrow
-            transition="fade"
-            transitionDuration={200}
+            transitionProps={{ duration: 200, transition: "fade" }}
           >
             <FacetText>
               {facetName ? facetName : fieldNameToTitle(field)}

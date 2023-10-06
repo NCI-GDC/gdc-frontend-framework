@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getSortedRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
@@ -13,7 +14,8 @@ import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
-import { isEqual } from "lodash";
+import { v4 as uuidv4 } from "uuid";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 function VerticalTable<TData>({
   columns,
@@ -42,6 +44,8 @@ function VerticalTable<TData>({
   setSorting,
   expanded,
   setExpanded,
+  getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
+    uuidv4(),
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -50,11 +54,11 @@ function VerticalTable<TData>({
 
   // TODO: status fufilled is to be sent for all the tables (even without api calls)
   // also need in pagination (do sth about it)
-  useEffect(() => {
-    if (status === "fulfilled" && !isEqual(data, tableData)) {
+  useDeepCompareEffect(() => {
+    if (status === "fulfilled") {
       setTableData(data);
     }
-  }, [tableData, data, status]);
+  }, [data, status]);
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
@@ -89,6 +93,7 @@ function VerticalTable<TData>({
     getExpandedRowModel: getExpandedRowModel<TData>(),
     getCoreRowModel: getCoreRowModel<TData>(),
     getSortedRowModel: getSortedRowModel<TData>(),
+    getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
 
@@ -165,7 +170,7 @@ function VerticalTable<TData>({
                   aria-label="Table Search Input"
                   classNames={{
                     input:
-                      "border-base-lighter focus:border-2 focus:drop-shadow-xl focus:border-primary",
+                      "border-base-lighter focus:border-2 focus:border-primary",
                     wrapper: "w-72 h-8",
                   }}
                   size="sm"
@@ -215,65 +220,82 @@ function VerticalTable<TData>({
                 className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-b-4 h-full max-h-12"
               >
                 {headerGroup.headers.map((header) => {
-                  return columnSorting === "none" ||
-                    !header.column.getCanSort() ? (
-                    <th
-                      className="px-2.5 py-3 font-heading bg-base-max"
-                      key={header.id}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                    </th>
-                  ) : (
-                    <th
-                      key={header.id}
-                      className="px-2.5 py-3 font-heading bg-base-max hover:bg-primary-lightest"
-                      onClick={() => {
-                        header.column.toggleSorting();
-                      }}
-                      onKeyDown={createKeyboardAccessibleFunction(() => {
-                        header.column.toggleSorting();
-                      })}
-                      aria-sort={
-                        header.column.getIsSorted()
-                          ? header.column.getIsSorted() === "desc"
-                            ? "descending"
-                            : "ascending"
-                          : undefined
-                      }
-                    >
-                      <button className="flex items-center">
+                  const isColumnSortable = header.column.getCanSort();
+                  const isColumnSorted = header.column.getIsSorted();
+                  const isColumnHighlighted =
+                    header.column.columnDef.meta?.highlighted;
+                  const commonHeaderClass = `px-2.5 py-3 font-heading ${
+                    isColumnHighlighted
+                      ? "bg-nci-purple-lightest"
+                      : "bg-base-max"
+                  }`;
+
+                  if (columnSorting === "none" || !isColumnSortable) {
+                    return (
+                      <th
+                        className={commonHeaderClass}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-
-                        {
-                          <div
-                            className="inline-block text-xs pl-3 align-middle text-base-light"
-                            aria-hidden="true"
-                          >
-                            <BsCaretUpFill
-                              className={
-                                header.column.getIsSorted() === "asc"
-                                  ? "text-primary"
-                                  : ""
-                              }
-                            />
-                            <BsCaretDownFill
-                              className={`${
-                                header.column.getIsSorted() === "desc"
-                                  ? "text-primary"
-                                  : ""
-                              } relative top-[-2px]`}
-                            />
-                          </div>
+                      </th>
+                    );
+                  } else {
+                    return (
+                      <th
+                        key={header.id}
+                        className={`${commonHeaderClass} whitespace-nowrap ${
+                          isColumnHighlighted
+                            ? "hover:bg-nci-purple-lighter"
+                            : "hover:bg-primary-lightest"
+                        }`}
+                        onClick={() => {
+                          header.column.toggleSorting();
+                        }}
+                        onKeyDown={createKeyboardAccessibleFunction(() => {
+                          header.column.toggleSorting();
+                        })}
+                        aria-sort={
+                          isColumnSorted
+                            ? isColumnSorted === "desc"
+                              ? "descending"
+                              : "ascending"
+                            : undefined
                         }
-                      </button>
-                    </th>
-                  );
+                        colSpan={header.colSpan}
+                      >
+                        <button className="flex items-center font-heading">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+
+                          {isColumnSortable && (
+                            <div
+                              className="inline-block text-xs pl-3 align-middle text-base-light"
+                              aria-hidden="true"
+                            >
+                              <BsCaretUpFill
+                                className={
+                                  isColumnSorted === "desc"
+                                    ? "text-primary"
+                                    : ""
+                                }
+                              />
+                              <BsCaretDownFill
+                                className={`${
+                                  isColumnSorted === "asc" ? "text-primary" : ""
+                                } relative top-[-2px]`}
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </th>
+                    );
+                  }
                 })}
               </tr>
             ))}
@@ -371,25 +393,25 @@ function VerticalTable<TData>({
             data-testid="pagination"
             color="accent.5"
             className="ml-auto"
-            page={pageOn}
+            value={pageOn}
             onChange={handlePageChange}
             total={pageTotal}
             size="sm"
             radius="xs"
             withEdges
-            classNames={{ item: "border-0" }}
-            getItemAriaLabel={(page) => {
-              switch (page) {
-                case "prev":
-                  return "previous page button";
+            classNames={{ control: "border-0" }}
+            getControlProps={(control) => {
+              switch (control) {
+                case "previous":
+                  return { "aria-label": "previous page button" };
                 case "next":
-                  return "next page button";
+                  return { "aria-label": "next page button" };
                 case "first":
-                  return "first page button";
+                  return { "aria-label": "first page button" };
                 case "last":
-                  return "last page button";
+                  return { "aria-label": "last page button" };
                 default:
-                  return `${page} page button`;
+                  return { "aria-label": `${control} page button` };
               }
             }}
           />

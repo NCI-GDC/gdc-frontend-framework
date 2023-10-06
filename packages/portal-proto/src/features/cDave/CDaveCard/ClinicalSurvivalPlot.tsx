@@ -11,6 +11,7 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import SurvivalPlot, {
   SurvivalPlotTypes,
 } from "@/features/charts/SurvivalPlot";
+import { convertDateToString } from "@/utils/date";
 import { isInterval } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
@@ -127,6 +128,9 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
             field={field}
             names={selectedSurvivalPlots}
             plotType={plotType}
+            downloadFileName={`${field
+              .split(".")
+              .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
           />
         )}
       </div>

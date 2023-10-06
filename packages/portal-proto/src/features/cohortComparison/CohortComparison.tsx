@@ -10,7 +10,7 @@ import {
 import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 
 export interface CohortComparisonType {
   primary_cohort: {

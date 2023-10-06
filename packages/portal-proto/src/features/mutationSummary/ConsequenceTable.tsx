@@ -14,7 +14,11 @@ import {
 import Link from "next/link";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { AnchorLink } from "@/components/AnchorLink";
-import { externalLinks, humanify } from "@/utils/index";
+import {
+  externalLinks,
+  humanify,
+  statusBooleansToDataStatus,
+} from "@/utils/index";
 import {
   SMTableConsequences,
   SMTableImpacts,
@@ -23,7 +27,6 @@ import saveAs from "file-saver";
 import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
-import { statusBooleansToDataStatus } from "../shared/utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 

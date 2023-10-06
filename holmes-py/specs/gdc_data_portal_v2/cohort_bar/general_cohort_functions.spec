@@ -12,6 +12,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Navigate to "Cohort" from "Header" "section"
 
 ## Save a cohort for the first time
+* Select "Add" from the Cohort Bar
+* Name the cohort "test save 1" in the Cohort Bar section
+* "Create" "test save 1 has been created" and "remove modal" in the Cohort Bar section
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
@@ -52,6 +55,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 ## Delete a saved cohort
 * Select "Delete" from the Cohort Bar
 * "Delete" "test save 1" and "remove modal" in the Cohort Bar section
+* Switch cohort to "Added unsaved cohort" from the Cohort Bar dropdown list
 * "Added unsaved cohort" should be the active cohort
 
 ## Delete an unsaved cohort
@@ -62,12 +66,3 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Is text "Changes not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
-* "New Unsaved Cohort" should be the active cohort
-
-## Delete New Unsaved Cohort
-* "New Unsaved Cohort" should be the active cohort
-* Is text "Changes not saved" present on the page
-* Select "Delete" from the Cohort Bar
-* "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
-* "New Unsaved Cohort" should be the active cohort
-* Is text "Changes not saved" present on the page

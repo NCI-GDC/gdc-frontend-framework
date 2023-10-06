@@ -249,8 +249,8 @@ const ContextBar = ({
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
-        <div className="relative p-2">
-          <div className="flex flex-row absolute ml-2 gap-4">
+        <div className="relative p-4">
+          <div className="flex flex-row absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -333,24 +333,58 @@ const ContextBar = ({
               <>
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON ", onClick: handleBiospeciemenJSONDownload },
-                    { title: "TSV", onClick: handleBiospeciemenTSVDownload },
+                    {
+                      title: "JSON ",
+                      onClick: handleBiospeciemenJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleBiospeciemenTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
-                  LeftIcon={biospecimenDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    biospecimenDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Biospecimen dropdown"
+                      />
+                    )
+                  }
                 />
 
                 <DropdownWithIcon
                   dropdownElements={[
-                    { title: "JSON", onClick: handleClinicalJSONDownload },
-                    { title: "TSV", onClick: handleClinicalTSVDownload },
+                    {
+                      title: "JSON",
+                      onClick: handleClinicalJSONDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
+                    {
+                      title: "TSV",
+                      onClick: handleClinicalTSVDownload,
+                      icon: <DownloadIcon aria-label="Download" />,
+                    },
                   ]}
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
-                  LeftIcon={clinicalDownloadActive && <Loader size={20} />}
+                  LeftIcon={
+                    clinicalDownloadActive ? (
+                      <Loader size={20} />
+                    ) : (
+                      <DownloadIcon
+                        size="1rem"
+                        aria-label="Clinical dropdown"
+                      />
+                    )
+                  }
                 />
               </>
             )}
@@ -358,7 +392,7 @@ const ContextBar = ({
           <Tabs
             classNames={{
               tab: SecondaryTabStyle,
-              tabsList: "px-2 mb-4 border-0",
+              tabsList: "mb-4 border-0",
               root: "border-0",
             }}
             data-tour="cohort_summary"

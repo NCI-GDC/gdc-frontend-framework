@@ -12,10 +12,10 @@ import { CountButton } from "@/components/CountButton/CountButton";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { CohortCreationButton } from "@/components/CohortCreationButton";
-import { RatioSpring } from "@/components/expandableTables/shared";
 import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
+import RatioWithSpring from "@/components/RatioWithSpring";
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -222,7 +222,7 @@ export const useGenerateGenesTableColumns = ({
                 </div>
               )}
               {row.getCanExpand() && (
-                <RatioSpring index={0} item={{ numerator, denominator }} />
+                <RatioWithSpring index={0} item={{ numerator, denominator }} />
               )}
             </div>
           );

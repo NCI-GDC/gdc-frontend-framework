@@ -48,11 +48,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
       onClose={() =>
         userEnteredInput ? setShowDiscardModal("close") : dispatch(hideModal())
       }
-      size="xl"
-      padding={0}
-      withinPortal={false}
-      closeButtonLabel="close modal"
-      centered
+      size={900}
     >
       <DiscardChangesModal
         openModal={showDiscardModal !== null}

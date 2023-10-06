@@ -1,5 +1,5 @@
 import { HomepageButton } from "./index";
-import { LinkProps } from "next/link";
+import Link, { LinkProps } from "next/link";
 
 // TODO eliminate duplicate styles
 const homepageButtonStyles = `
@@ -43,7 +43,9 @@ const HPCard = ({
             {linkText}
           </a>
         ) : (
-          <HomepageButton href={href}>{linkText}</HomepageButton>
+          <Link href={href} passHref>
+            <HomepageButton>{linkText}</HomepageButton>
+          </Link>
         )}
       </div>
     </div>

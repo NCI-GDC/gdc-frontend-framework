@@ -111,7 +111,6 @@ export const BAMSlicingModal = ({
         </Text>
       }
       size="60%"
-      closeButtonLabel="Cancel"
       openModal={openModal}
       buttons={[
         { title: "Cancel", dataTestId: "button-download-sliced-bam-cancel" },

@@ -1,4 +1,4 @@
-import { LinkProps } from "next/link";
+import Link, { LinkProps } from "next/link";
 import { HomepageButton } from "./index";
 import { Image } from "@/components/Image";
 
@@ -30,7 +30,9 @@ const HPCardImg = ({
           {head}
         </h2>
         <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
-        <HomepageButton href={href}>{linkText}</HomepageButton>
+        <Link href={href} passHref>
+          <HomepageButton>{linkText}</HomepageButton>
+        </Link>
       </div>
       <div className="w-1/2 relative h-[334px]">
         <Image
