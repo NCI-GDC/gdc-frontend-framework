@@ -118,3 +118,11 @@ export interface RangeBucketElement {
   readonly valueLabel?: string; // string representation of the count
   value?: number; // count of items in range
 }
+
+/**
+ * Sort type for range buckets
+ */
+export interface SortType {
+  type: "value" | "alpha";
+  direction: "asc" | "dsc";
+}
