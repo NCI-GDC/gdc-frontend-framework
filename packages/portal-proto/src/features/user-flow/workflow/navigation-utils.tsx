@@ -14,7 +14,10 @@ font-heading
 text-sm
 font-medium
 text-base-darker
-pr-4
+p-1
+mr-2
+hover:rounded-md
+hover:bg-primary-lightest
 `;
 
 export const headerElements = [
@@ -24,6 +27,7 @@ export const headerElements = [
     position="bottom-start"
     multiline
     width={220}
+    withArrow
   >
     <span>
       <Link
@@ -56,6 +60,7 @@ export const headerElements = [
     position="bottom-start"
     multiline
     width={220}
+    withArrow
   >
     <span>
       <Link
@@ -88,6 +93,7 @@ export const headerElements = [
     position="bottom-start"
     multiline
     width={220}
+    withArrow
   >
     <span>
       <Link
@@ -100,10 +106,10 @@ export const headerElements = [
       >
         <NavLink
           data-testid="button-header-cohort"
-          aria-label="cohort builder button"
+          aria-label="cohort Builder button"
         >
           <CohortBuilderIcon
-            aria-label="Cohort logo"
+            aria-label="Cohort Builder logo"
             width={24}
             height={24}
             viewBox="0 0 50 50"
@@ -120,6 +126,7 @@ export const headerElements = [
     position="bottom-start"
     multiline
     width={220}
+    withArrow
   >
     <span>
       <Link
@@ -132,10 +139,10 @@ export const headerElements = [
       >
         <NavLink
           data-testid="button-header-downloads"
-          aria-label="download center button"
+          aria-label="Repository button"
         >
           <DownloadIcon
-            aria-label="Downloads logo"
+            aria-label="Repository logo"
             width={24}
             height={24}
             viewBox="0 0 50 50"

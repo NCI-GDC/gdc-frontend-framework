@@ -16,7 +16,6 @@ const QueryExpressionContainer = tw.div`
   flex
   items-center
   bg-white
-  shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
   border-secondary-darkest
   border-1
   border-l-4
@@ -170,9 +169,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             <>
               <button
                 data-testid="button-clear-all-cohort-filters"
-                className={`text-sm font-montserrat pl-2 ${
+                className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
                   noFilters
-                    ? "cursor-not-allowed text-secondary-contrast-darkest"
+                    ? "hidden"
                     : "cursor-pointer text-secondary-contrast-darkest"
                 }`}
                 onClick={clearAllFilters}
@@ -198,12 +197,13 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   }
                   aria-label="Expand/collapse all queries"
                   aria-expanded={!allQueryExpressionsCollapsed}
+                  className="text-primary hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest"
                   disabled={noFilters}
                 >
                   {allQueryExpressionsCollapsed ? (
                     <>
-                      <LeftArrowIcon size={20} className="text-primary" />
-                      <RightArrowIcon size={20} className="text-primary" />
+                      <LeftArrowIcon size={20} />
+                      <RightArrowIcon size={20} />
                     </>
                   ) : (
                     <>
@@ -222,15 +222,18 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   aria-label="Expand/collapse filters section"
                   aria-expanded={!filtersSectionCollapsed}
                   disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                  className={`data-disabled:bg-gray-300`}
+                  className={`text-white data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary hover:bg-primary-darkest hover:border-primary-darkest`}
                 >
                   {filtersSectionCollapsed ? (
                     <>
-                      <DownArrowIcon size={30} className="text-white" />
+                      <DownArrowIcon size={30} className="" />
                     </>
                   ) : (
                     <>
-                      <UpArrowIcon size={30} className="text-primary" />
+                      <UpArrowIcon
+                        size={30}
+                        className="text-primary hover:text-white "
+                      />
                     </>
                   )}
                 </ActionIcon>
@@ -239,7 +242,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
           <div
             data-testid="text-cohort-filters"
-            className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
+            className={`flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden ${
               filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
             }`}
             style={
@@ -252,7 +255,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             {noFilters ? (
               <p
                 data-testid="text-no-active-cohort-filter"
-                className="pb-2 font-content"
+                className="font-content"
               >
                 No filters currently applied.
               </p>
