@@ -196,11 +196,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
                 topGeneSSMS[0][appMode].aa_change
                   ? topGeneSSMS[0][appMode].aa_change
                   : ""
-              } ${humanify({
-                term: topGeneSSMS[0][appMode].consequence_type
-                  .replace("_variant", "")
-                  .replace("_", " "),
-              })}`,
+              } ${
+                topGeneSSMS[0][appMode]?.consequence_type
+                  ? humanify({
+                      term: topGeneSSMS[0][appMode].consequence_type
+                        .replace("_variant", "")
+                        .replace("_", " "),
+                    })
+                  : ""
+              }`,
         field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
       });
     }

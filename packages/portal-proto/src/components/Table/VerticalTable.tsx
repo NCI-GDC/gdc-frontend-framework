@@ -170,7 +170,7 @@ function VerticalTable<TData>({
                   aria-label="Table Search Input"
                   classNames={{
                     input:
-                      "border-base-lighter focus:border-2 focus:drop-shadow-xl focus:border-primary",
+                      "border-base-lighter focus:border-2 focus:border-primary",
                     wrapper: "w-72 h-8",
                   }}
                   size="sm"

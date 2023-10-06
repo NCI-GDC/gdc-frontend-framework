@@ -9,7 +9,7 @@ import { Image } from "@/components/Image";
 import Link from "next/link";
 
 export const HomepageButton = tw.a`
-bg-primary text-sm text-base-max border-base-light border-1
+bg-primary text-sm text-base-max border-base-light border-0
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
 `;

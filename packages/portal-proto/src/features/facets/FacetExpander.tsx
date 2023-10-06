@@ -33,7 +33,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   onShowChanged,
 }: FacetExpanderProps) => {
   return (
-    <div className="mt-3 flex flex-row justify-end  border-t-2 p-1.5">
+    <div className="mt-3 flex flex-row justify-end border-t-2 p-1.5">
       {remainingValues > 0 && !isGroupExpanded ? (
         <button
           onClick={() => onShowChanged(!isGroupExpanded)}
@@ -49,7 +49,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
           onClick={() => onShowChanged(!isGroupExpanded)}
           data-testid="minus-icon"
         >
-          <div className="flex flex-row flex-nowrap items-center ">
+          <div className="flex flex-row flex-nowrap items-center">
             <LessIcon
               className="text-accent"
               key="show-less"

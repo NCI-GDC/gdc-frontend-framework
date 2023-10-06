@@ -43,7 +43,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-4 mr-3 w-1/5 mx-2 ">
+    <div className="flex flex-col gap-y-2 mt-1 w-1/4">
       <Group position="apart">
         <Text size="lg" weight={700} className="text-primary-content-darker">
           Filters
@@ -51,7 +51,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
       </Group>
       <div
         data-testid="filters-facets"
-        className="flex flex-col gap-y-4 h-screen overflow-y-scroll px-4"
+        className="flex flex-col gap-y-4 h-screen overflow-y-scroll mr-3 mb-4 border-t-1 border-b-1 rounded-md"
       >
         {FilterFacets.project.map((x) => {
           const facetName = x.title || fieldNameToTitle(x.full);

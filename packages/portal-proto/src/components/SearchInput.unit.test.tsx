@@ -109,11 +109,11 @@ describe("<SearchInput />", () => {
   });
 
   it("clears out search", async () => {
-    const { getByPlaceholderText, getByText, queryByRole } = render(
+    const { getByPlaceholderText, queryByRole, getByTestId } = render(
       <SearchInput />,
     );
     await userEvent.type(getByPlaceholderText("Search"), "bio");
-    await userEvent.click(getByText("Clear"));
+    await userEvent.click(getByTestId("search-input-clear-search"));
     expect(
       queryByRole("button", { name: "Bio Thing Category: General" }),
     ).not.toBeInTheDocument();

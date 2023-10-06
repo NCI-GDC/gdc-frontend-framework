@@ -1,71 +1,95 @@
-import { ActionIcon } from "@mantine/core";
+import { Button } from "@mantine/core";
 import {
-  MdSort as SortIcon,
-  MdSortByAlpha as AlphaSortIcon,
-} from "react-icons/md";
-import { ImSortAmountAsc as NumberSortAsc } from "react-icons/im";
+  PiCaretUpDownFill as Selector,
+  PiCaretDownFill as SortDesIcon,
+  PiCaretUpFill as SortAscIcon,
+} from "react-icons/pi";
 import React from "react";
+import { SortType } from "./types";
+
+const sortTypeToAriaDescription = (sortTypeAndDirection, valueLabel) => {
+  if (sortTypeAndDirection.type === "alpha") {
+    return sortTypeAndDirection.direction === "asc"
+      ? "Name is now sorted alphabetically ascending"
+      : "Name is now sorted alphabetically descending";
+  } else {
+    return sortTypeAndDirection.direction === "asc"
+      ? `${valueLabel} is now sorted numerically ascending`
+      : `${valueLabel} is now sorted numerically descending`;
+  }
+};
 
 interface FacetSortPanelProps {
-  isSortedByValue: boolean;
+  sortType: SortType;
   valueLabel: string;
-  setIsSortedByValue: (boolean) => void;
-  isNumberSort?: boolean;
+  setSort: (sort: SortType) => void;
 }
 
 /**
- * FacetCards "sort" header supporting sort by A-Z (ascending) or by Value (descending)
- * @param isSortedByValue - true if softBy Value
- * @param setIsSortedByValue - function to set state
+ * FacetCards "sort" header supporting sort by A-Z or by Value both ascending and descending
+ * @param sortType - current sort type
+ * @param setSort - sets the sort type and direction
  * @param valueLabel - Value labels, typically "case" "file"
- * @param isNumberSort - set to true to change icon from A-Z to numeric sort
- * @constructor
  */
+
 const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
-  isSortedByValue,
-  setIsSortedByValue,
+  sortType,
   valueLabel,
-  isNumberSort = false,
+  setSort,
 }: FacetSortPanelProps) => {
+  const [NameSortIcon, nameIconSize] =
+    sortType.type === "alpha"
+      ? sortType.direction === "asc"
+        ? [SortAscIcon, "0.75rem"]
+        : [SortDesIcon, "0.75rem"]
+      : [Selector, "1rem"];
+  const [ValueSortIcon, valueIconSize] =
+    sortType.type === "value"
+      ? sortType.direction === "asc"
+        ? [SortAscIcon, "0.75rem"]
+        : [SortDesIcon, "0.75rem"]
+      : [Selector, "1rem"];
   return (
-    <div className="flex flex-row items-center justify-between flex-wrap p-1 mb-1 border-b-2">
-      <ActionIcon
+    <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
+      <Button
+        className="pl-0 ml-0"
+        variant="subtle"
         size="xs"
-        className={`ml-1 border rounded-sm border-accent-darkest ${
-          !isSortedByValue
-            ? "bg-accent text-accent-contrast"
-            : "bg-accent-lightest text-accent-contrast-lightest"
-        }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
-        aria-label="Sort alphabetically"
+        compact
+        color="primary.9"
+        onClick={() =>
+          setSort({
+            type: "alpha",
+            direction: sortType.direction === "asc" ? "dsc" : "asc",
+          })
+        }
+        rightIcon={<NameSortIcon size={nameIconSize} />}
+        aria-label="Sort name alphabetically"
       >
-        {isNumberSort ? (
-          <NumberSortAsc
-            onClick={() => setIsSortedByValue(false)}
-            scale="1.5em"
-          />
-        ) : (
-          <AlphaSortIcon
-            onClick={() => setIsSortedByValue(false)}
-            scale="1.5em"
-          />
-        )}
-      </ActionIcon>
-      <div className={"flex flex-row items-center "}>
-        <ActionIcon
-          size="xs"
-          variant={isSortedByValue ? "filled" : "outline"}
-          onClick={() => setIsSortedByValue(true)}
-          className={`ml-1 border rounded-sm border-accent-darkest ${
-            isSortedByValue
-              ? "bg-accent text-accent-contrast"
-              : "bg-accent-lightest text-accent-contrast-lightest"
-          }  hover:bg-accent-darker  hover:text-accent-contrast-darker`}
-          aria-label="Sort numerically"
-        >
-          <SortIcon scale="1.5em" />
-        </ActionIcon>
-        <p className="px-2 mr-3">{valueLabel}</p>
-      </div>
+        Name
+      </Button>
+      <Button
+        className="pr-0 mr-0"
+        variant="subtle"
+        size="xs"
+        compact
+        color="primary.9"
+        onClick={() =>
+          setSort({
+            type: "value",
+            direction: sortType.direction === "asc" ? "dsc" : "asc",
+          })
+        }
+        rightIcon={<ValueSortIcon size={valueIconSize} />}
+        aria-label={`Sort ${valueLabel} numerically`}
+      >
+        {valueLabel}
+      </Button>
+      <span className="Offscreen">
+        <span id="liveRegion" aria-live="polite">
+          {sortTypeToAriaDescription(sortType, valueLabel)}
+        </span>
+      </span>
     </div>
   );
 };

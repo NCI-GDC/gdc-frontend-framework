@@ -26,7 +26,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
     <div className="w-full bg-primary px-4 py-2 flex items-center ">
       <Button
         onClick={() => setActiveApp(undefined)}
-        className="bg-base-max text-primary-content-darkest px-2"
+        className="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest"
         aria-label="Close app"
       >
         <MdClose size={20} />

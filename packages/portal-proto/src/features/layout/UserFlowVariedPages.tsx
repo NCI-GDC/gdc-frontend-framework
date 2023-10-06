@@ -146,7 +146,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header
-        className="flex-none bg-base-max sticky top-0 z-[300]"
+        className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
         ref={headerRef}
       >
         {banners.map((banner) => (
@@ -155,7 +155,7 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <div
-        className={`${isContextBarSticky ? `sticky z-[299]` : ""}`}
+        className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
         style={{
           top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
         }}

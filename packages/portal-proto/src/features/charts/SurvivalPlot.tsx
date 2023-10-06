@@ -23,6 +23,12 @@ import { DownloadButton } from "@/components/tailwindComponents";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
+interface SurvivalPlotLegend {
+  key: string;
+  style?: Record<string, string | number>;
+  value: string | JSX.Element;
+}
+
 const textColors = [
   "#1F77B4",
   "#BD5800",
@@ -228,7 +234,12 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
-            <span className="font-content">{`Not enough survival data for ${name}`}</span>
+            // displayed for ["genes", "mutation"] plotTypes
+            <span className="font-content">
+              {plotType !== "cohortComparison"
+                ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
+                : null}
+            </span>
           ),
         },
       ];
@@ -297,6 +308,7 @@ export enum SurvivalPlotTypes {
   categorical = "categorical",
   continuous = "continuous",
   overall = "overall",
+  cohortComparison = "cohortComparison",
 }
 
 export interface SurvivalPlotProps {
@@ -335,14 +347,27 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     "mutation",
     "categorical",
     "continuous",
+    "cohortComparison",
   ].includes(plotType)
     ? enoughDataOnSomeCurves(plotData)
     : enoughData(plotData);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
+  const shouldPlot =
+    hasEnoughData &&
+    plotData
+      .map(({ donors }) => donors)
+      .every(({ length }) => length >= MINIMUM_CASES);
   // hook to call renderSurvivalPlot
+  const shouldUsePlotData =
+    (["gene", "mutation"].includes(plotType) && shouldPlot) ||
+    (["categorical", "continuous", "overall", "cohortComparison"].includes(
+      plotType,
+    ) &&
+      hasEnoughData);
+  const dataToUse = shouldUsePlotData ? plotData : [];
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    dataToUse,
     xDomain,
     setXDomain,
     height,
@@ -358,7 +383,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     setSurvivalPlotLineTooltipContent,
   );
 
-  let legend;
+  let legend: SurvivalPlotLegend[];
   switch (plotType) {
     case SurvivalPlotTypes.overall:
       legend = buildOnePlotLegend(plotData, "Explorer");
@@ -374,6 +399,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
     case SurvivalPlotTypes.continuous:
       legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.cohortComparison:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
   }
 

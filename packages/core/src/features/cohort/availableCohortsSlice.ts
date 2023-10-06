@@ -1258,7 +1258,7 @@ export const selectCohortCountsResults = (
   return {
     data: cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData,
     status:
-      cohortSelectors.selectById(state, cohortId)?.counts.status ??
+      cohortSelectors.selectById(state, cohortId)?.counts?.status ??
       NullCountsData.status,
   };
 };
