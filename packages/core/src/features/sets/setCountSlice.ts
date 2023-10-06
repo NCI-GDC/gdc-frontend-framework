@@ -99,9 +99,6 @@ export const setCountSlice = graphqlAPISlice
               },
         }),
         transformResponse: transformGeneSetCountResponse,
-        providesTags: (_result, _error, arg) => [
-          { type: "geneSets", id: arg.setId },
-        ],
       }),
       geneSetCounts: builder.query<
         Record<string, number>,
@@ -133,8 +130,6 @@ export const setCountSlice = graphqlAPISlice
 
           return { data: counts };
         },
-        providesTags: (_result, _error, arg) =>
-          arg.setIds.map((id) => ({ type: "geneSets", id })),
       }),
       ssmSetCount: builder.query({
         query: ({ setId, additionalFilters }) => ({
@@ -166,9 +161,6 @@ export const setCountSlice = graphqlAPISlice
               },
         }),
         transformResponse: transformSsmsSetCountResponse,
-        providesTags: (_result, _error, arg) => [
-          { type: "ssmsSets", id: arg.setId },
-        ],
       }),
       ssmSetCounts: builder.query<Record<string, number>, { setIds: string[] }>(
         {
@@ -198,8 +190,6 @@ export const setCountSlice = graphqlAPISlice
 
             return { data: counts };
           },
-          providesTags: (_result, _error, arg) =>
-            arg.setIds.map((id) => ({ type: "ssmsSets", id })),
         },
       ),
       caseSetCount: builder.query({
@@ -245,9 +235,6 @@ export const setCountSlice = graphqlAPISlice
               },
         }),
         transformResponse: transformCaseSetCountResponse,
-        providesTags: (_result, _error, arg) => [
-          { type: "caseSets", id: arg.setId },
-        ],
       }),
       caseSetCounts: builder.query<
         Record<string, number>,
@@ -278,8 +265,6 @@ export const setCountSlice = graphqlAPISlice
           }
           return { data: counts };
         },
-        providesTags: (_result, _error, arg) =>
-          arg.setIds.map((id) => ({ type: "caseSets", id })),
       }),
     }),
   });

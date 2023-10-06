@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
-import DownloadButton from "./DownloadButton";
 import { Checkbox } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
 import { GqlOperation } from "@gff/core";
@@ -14,13 +13,12 @@ import { pickBy } from "lodash";
 import { SelectedEntities } from "./types";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
-import DownloadButtonTotal from "./DownloadButtonTotal";
+import DownloadButtonTotal from "./DownloadButton";
 
 type SetOperationtableDataType = {
   setOperation: string;
   count: number;
   operationKey: string;
-  caseId: string;
 };
 
 export const SetOperationTable = ({
@@ -37,7 +35,6 @@ export const SetOperationTable = ({
     readonly label: string;
     readonly key: string;
     readonly value: number;
-    readonly caseId: string;
   }[];
   readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
   selectedSets: {
@@ -75,7 +72,6 @@ export const SetOperationTable = ({
         setOperation: r.label,
         count: r.value,
         operationKey: r.key,
-        caseId: r.caseId,
       })),
     [data],
   );
@@ -132,10 +128,15 @@ export const SetOperationTable = ({
         id: "download",
         header: "Download",
         cell: ({ row }) => (
-          <DownloadButton
+          <DownloadButtonTotal
+            filters={createSetFiltersByKey(
+              row.original.operationKey,
+              entityType,
+              sets,
+            )}
             entityType={entityType}
             setKey={row.original.setOperation}
-            caseSetId={row.original.caseId}
+            createSetHook={ENTITY_TYPE_TO_CREATE_SET_HOOK[entityType]}
             disabled={row.original.count === 0}
           />
         ),

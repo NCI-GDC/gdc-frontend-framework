@@ -1,8 +1,10 @@
-import React from "react";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { ActionIcon, Loader, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MutationDefinition } from "@reduxjs/toolkit/query";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import { useCoreDispatch } from "@gff/core";
+import { GqlOperation, useCoreDispatch } from "@gff/core";
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 
@@ -13,19 +15,57 @@ const ENTITY_TYPE_TO_TAR = {
 };
 
 interface DownloadButtonProps {
+  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
   readonly entityType: SetOperationEntityType;
+  readonly filters: GqlOperation;
   readonly setKey: string;
   readonly disabled: boolean;
-  readonly caseSetId: string;
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
+  createSetHook,
   entityType,
-  caseSetId,
+  filters,
   setKey,
   disabled,
 }: DownloadButtonProps) => {
+  const [loading, setLoading] = useState(false);
+  const [createSet, response] = createSetHook();
   const dispatch = useCoreDispatch();
+
+  useEffect(() => {
+    if (response.isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [response.isLoading]);
+
+  useEffect(() => {
+    if (response.isSuccess) {
+      download({
+        params: {
+          attachment: true,
+          format: "tsv",
+          sets: [
+            {
+              id: response.data,
+              type: ENTITY_TYPE_TO_TAR[entityType],
+              filename: `${setKey
+                .replace(/∩/g, "intersection")
+                .replace(/∪/g, "union")}-set-ids.${convertDateToString(
+                new Date(),
+              )}.tsv`,
+            },
+          ],
+        },
+        endpoint: "tar_sets",
+        method: "POST",
+        dispatch,
+        hideNotification: true,
+      });
+    }
+  }, [dispatch, entityType, response.data, response.isSuccess, setKey]);
 
   return (
     <Tooltip
@@ -34,29 +74,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     >
       <div className="w-fit">
         <ActionIcon
-          onClick={() => {
-            download({
-              params: {
-                attachment: true,
-                format: "tsv",
-                sets: [
-                  {
-                    id: caseSetId,
-                    type: ENTITY_TYPE_TO_TAR[entityType],
-                    filename: `${setKey
-                      .replace(/∩/g, "intersection")
-                      .replace(/∪/g, "union")}-set-ids.${convertDateToString(
-                      new Date(),
-                    )}.tsv`,
-                  },
-                ],
-              },
-              endpoint: "tar_sets",
-              method: "POST",
-              dispatch,
-              hideNotification: true,
-            });
-          }}
+          onClick={() => createSet({ filters })}
           color="primary"
           variant="outline"
           className={`${
@@ -67,7 +85,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
           disabled={disabled}
           aria-label="download button"
         >
-          <DownloadIcon />
+          {loading ? <Loader size={14} /> : <DownloadIcon />}
         </ActionIcon>
       </div>
     </Tooltip>

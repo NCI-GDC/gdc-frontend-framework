@@ -4,7 +4,6 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SetOperationsProps } from "./types";
 import { SetOperationsSummaryTable } from "./SetOperationsSummaryTable";
 import { SetOperationTable } from "./SetOperationTable";
-import { Loader } from "@mantine/core";
 
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
@@ -16,7 +15,6 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
   data,
   queryHook,
   countHook,
-  isAllSuccess,
 }: SetOperationsProps) => {
   const isDemoMode = useIsDemoApp();
   const [selectedSets, setSelectedSets] = useState(
@@ -53,28 +51,20 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
           onClickHandler={onClickHandler}
         />
         <div className="w-full ml-2 mt-2 mb-4 relative">
-          {isAllSuccess ? (
-            <>
-              <SetOperationsSummaryTable
-                sets={sets}
-                countHook={countHook}
-                entityType={entityType}
-              />
-              <div className="m-8" />
-              <SetOperationTable
-                data={data}
-                selectedSets={selectedSets}
-                setSelectedSets={setSelectedSets}
-                queryHook={queryHook}
-                entityType={entityType}
-                sets={sets}
-              />
-            </>
-          ) : (
-            <div className="flex items-center justify-center w-100 h-96">
-              <Loader />
-            </div>
-          )}
+          <SetOperationsSummaryTable
+            sets={sets}
+            countHook={countHook}
+            entityType={entityType}
+          />
+          <div className="m-8" />
+          <SetOperationTable
+            data={data}
+            selectedSets={selectedSets}
+            setSelectedSets={setSelectedSets}
+            queryHook={queryHook}
+            entityType={entityType}
+            sets={sets}
+          />
         </div>
       </div>
     </div>

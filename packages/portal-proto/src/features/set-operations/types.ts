@@ -22,13 +22,11 @@ export interface SetOperationsProps {
     readonly label: string;
     readonly key: string;
     readonly value: number;
-    readonly caseId: string;
   }[];
   readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
   readonly countHook: UseQuery<
     QueryDefinition<any, any, any, Record<string, number>, string>
   >;
-  readonly isAllSuccess: boolean;
 }
 
 export interface SetOperationsExternalProps {
