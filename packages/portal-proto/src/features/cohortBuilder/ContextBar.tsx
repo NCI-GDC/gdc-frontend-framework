@@ -249,8 +249,8 @@ const ContextBar = ({
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
-        <div className="relative p-2">
-          <div className="flex flex-row absolute ml-2 gap-4">
+        <div className="relative p-4">
+          <div className="flex flex-row absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -392,7 +392,7 @@ const ContextBar = ({
           <Tabs
             classNames={{
               tab: SecondaryTabStyle,
-              tabsList: "px-2 mb-4 border-0",
+              tabsList: "mb-4 border-0",
               root: "border-0",
             }}
             data-tour="cohort_summary"

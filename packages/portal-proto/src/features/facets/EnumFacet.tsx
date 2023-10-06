@@ -26,6 +26,7 @@ import {
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { SortType } from "./types";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -66,7 +67,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSortedByValue, setIsSortedByValue] = useState(false);
+  const [sortType, setSortType] = useState<SortType>({
+    type: "alpha",
+    direction: "dsc",
+  });
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -149,7 +153,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   const cardStyle = isGroupExpanded
     ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : `overflow-hidden pr-3.5 h-auto`;
+    : `overflow-hidden h-auto`;
   const numberOfLines =
     total - maxValuesToDisplay < 0
       ? total
@@ -166,9 +170,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     ? Object.fromEntries(
         filteredData
           .sort(
-            isSortedByValue
-              ? ([, a], [, b]) => b - a
-              : ([a], [b]) => a.localeCompare(b),
+            sortType.type === "value"
+              ? ([, a], [, b]) => (sortType.direction === "dsc" ? a - b : b - a)
+              : ([a], [b]) =>
+                  sortType.direction === "dsc"
+                    ? a.localeCompare(b)
+                    : b.localeCompare(a),
           )
           .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
       )
@@ -177,8 +184,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-1"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+        width ? width : "mx-0"
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       id={field}
     >
       <div>
@@ -236,6 +243,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label={"search values"}
+            className={"p-2"}
+            placeholder="Search"
             ref={searchInputRef}
             rightSection={
               searchTerm.length > 0 ? (
@@ -253,23 +262,19 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           />
         )}
         <div
-          className={
-            isFacetView
-              ? `flip-card h-full `
-              : `flip-card flip-card-flipped h-full`
-          }
+          className={isFacetView ? `flip-card ` : `flip-card flip-card-flipped`}
           ref={cardRef}
         >
           <div
-            className={`card-face bg-base-max ${
+            className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
               !isFacetView ? "invisible" : ""
             }`}
           >
             <div>
               <FacetSortPanel
-                isSortedByValue={isSortedByValue}
+                sortType={sortType}
                 valueLabel={valueLabel}
-                setIsSortedByValue={setIsSortedByValue}
+                setSort={setSortType}
               />
 
               <div className={cardStyle}>
@@ -371,7 +376,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             }
           </div>
           <div
-            className={`card-face card-back bg-base-max h-full overflow-y-auto pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full overflow-y-auto pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
