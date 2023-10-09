@@ -6,11 +6,25 @@ import { MdDragIndicator as DragIcon } from "react-icons/md";
 import { BsList, BsX } from "react-icons/bs";
 import { MdSearch as SearchIcon } from "react-icons/md";
 import { isEqual } from "lodash";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { FaUndo as RevertIcon } from "react-icons/fa";
 import { humanify } from "@/utils/index";
 import { NO_COLUMN_ORDERING_IDS } from "./utils";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function ColumnOrdering<TData>({
   table,
@@ -37,6 +51,27 @@ function ColumnOrdering<TData>({
         ),
       ),
     );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    console.log({ active, over });
+
+    if (active.id !== over.id) {
+      setColumnOrder((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 
   return (
     <div ref={ref}>
@@ -92,14 +127,21 @@ function ColumnOrdering<TData>({
             className="mb-2 mt-4"
             data-testid="textbox-column-selector"
           />
-          <DndProvider backend={HTML5Backend}>
-            <List
-              columns={table.getAllLeafColumns()}
-              searchValue={searchValue}
-              columnOrder={columnOrder}
-              setColumnOrder={setColumnOrder}
-            />
-          </DndProvider>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={table.getAllLeafColumns()}
+              strategy={verticalListSortingStrategy}
+            >
+              <List
+                columns={table.getAllLeafColumns()}
+                searchValue={searchValue}
+              />
+            </SortableContext>
+          </DndContext>
         </div>
       )}
     </div>
@@ -109,24 +151,11 @@ function ColumnOrdering<TData>({
 function List<TData>({
   columns,
   searchValue,
-  columnOrder,
-  setColumnOrder,
 }: {
   columns: Column<TData, unknown>[];
   searchValue: string;
-  columnOrder: string[];
-  setColumnOrder: Dispatch<SetStateAction<ColumnOrderState>>;
 }) {
-  const moveColumn = (dragIndex: number, hoverIndex: number) => {
-    const reorderedColumnOrder = [...columnOrder];
-    reorderedColumnOrder.splice(
-      hoverIndex,
-      0,
-      reorderedColumnOrder.splice(dragIndex, 1)[0],
-    );
-    setColumnOrder(reorderedColumnOrder);
-  };
-
+  console.log({ columns });
   return (
     <ul>
       {columns
@@ -141,11 +170,9 @@ function List<TData>({
         })
         .map((column, index) => {
           return !NO_COLUMN_ORDERING_IDS.includes(column.id) ? (
-            <ColumnItem
+            <DraggableColumnItem
               key={column.id}
               column={column}
-              index={index}
-              moveColumn={moveColumn}
               isNotLast={index < columns.length - 1}
             />
           ) : (
@@ -156,42 +183,29 @@ function List<TData>({
   );
 }
 
-function ColumnItem<TData>({
+function DraggableColumnItem<TData>({
   column,
-  index,
-  moveColumn,
   isNotLast,
 }: {
   column: Column<TData, unknown>;
-  index: number;
-  moveColumn: (dragIndex: number, hoverIndex: number) => void;
   isNotLast: boolean;
 }) {
-  const [{ isDragging }, drag] = useDrag({
-    type: "COLUMN",
-    item: { id: column.id, index },
-    collect: (monitor: any) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: column.id });
 
-  const [, drop] = useDrop({
-    accept: "COLUMN",
-    hover: (item: { id: string; index: number }) => {
-      if (item.index !== index) {
-        moveColumn(item.index, index);
-        item.index = index;
-      }
-    },
-  });
-
-  const o = isDragging ? 0 : 1;
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   return (
     <div
-      ref={(node) => drag(drop(node))}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       className={`flex justify-between items-center bg-nci-violet-lightest ${
         isNotLast ? "mb-2" : ""
-      } px-1 py-1.5 gap-4 h-6 opacity-${o} cursor-move`}
+      } px-1 py-1.5 gap-4 h-6  cursor-move`}
       data-testid={`column-selector-row-${column.id}`}
     >
       <div className="flex gap-2 items-center">
