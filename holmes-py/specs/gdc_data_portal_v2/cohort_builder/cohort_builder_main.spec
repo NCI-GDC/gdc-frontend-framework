@@ -17,6 +17,11 @@ tags: regression, smoke, cohort-builder
 ## Cohort Builder - General Card Functions
 tags: cohort-selections
 
+* Make the following selections from "Disease Status and History" tab on the Cohort Builder page
+  |facet_name       |selection            |
+  |-----------------|---------------------|
+  |Prior Treatment  |no                   |
+
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|

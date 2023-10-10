@@ -10,7 +10,7 @@ class CohortBuilderPageLocators:
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
     FACET_GROUP_IDENT = lambda group_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]'
-    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
+    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid=“title-cohort-builder-facet-groups”] >> div:has-text("{group_name}") >> [data-testid=“checkbox-{selection}”]'
     FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
     FACET_GROUP_TEXT_AREA_IDENT = lambda group_name, area: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//input[@aria-label="{area}"]'
     FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
