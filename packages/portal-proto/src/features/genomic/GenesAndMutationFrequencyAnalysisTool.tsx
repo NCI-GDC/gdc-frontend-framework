@@ -169,9 +169,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
-        caseFilter: {},
-      }).then(({ data }) => {
-        const { ssm_id, consequence_type, aa_change } = data;
+        caseFilter: { mode: "", root: {} } as FilterSet,
+      }).then((response) => {
+        const { ssm_id, consequence_type, aa_change } = response?.data;
         handleSurvivalPlotToggled(
           ssm_id,
           consequence_type
