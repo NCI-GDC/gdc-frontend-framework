@@ -307,7 +307,6 @@ export const useGenerateGenesTableColumns = ({
         cell: ({ row }) => {
           const count = row.original["#_mutations"] ?? 0;
           const disabled = count === 0;
-          const { symbol = "", label: name = "" } = row?.original["survival"];
           return (
             <CountButton
               tooltipLabel={
@@ -317,7 +316,6 @@ export const useGenerateGenesTableColumns = ({
               }
               disabled={disabled}
               handleOnClick={() => {
-                handleSurvivalPlotToggled(symbol, name, "gene.symbol");
                 handleMutationCountClick(
                   row?.original?.gene_id,
                   row?.original?.symbol,

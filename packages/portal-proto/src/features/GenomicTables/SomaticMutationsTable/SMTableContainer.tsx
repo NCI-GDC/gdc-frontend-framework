@@ -22,7 +22,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus, humanify } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -79,7 +79,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot = {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
-
   geneSymbol = undefined,
   projectId = undefined,
   genomicFilters = { mode: "and", root: {} },
@@ -149,21 +148,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setLoading(false);
     }
   }, [response.isLoading]);
-
-  useEffect(() => {
-    if (data?.ssms) {
-      const topMostMutation = data?.ssms[0];
-      const { consequence, ssm_id } = topMostMutation;
-      const { aa_change, consequence_type } = consequence[0].transcript;
-      handleSurvivalPlotToggled(
-        ssm_id,
-        `${humanify({
-          term: consequence_type.replace("_variant", "").replace("_", " "),
-        })} ${aa_change} `,
-        "gene.ssm.ssm_id",
-      );
-    }
-  }, [searchTermsForGene, data]);
 
   const generateFilters = useCallback(
     async (ssmId: string) => {

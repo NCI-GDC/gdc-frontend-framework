@@ -11,6 +11,7 @@ import {
   removeCohortFilter,
   updateActiveCohortFilter,
   usePrevious,
+  useGetSsmTableDataMutation,
 } from "@gff/core";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -58,6 +59,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
+
+  const [getTopSSM] = useGetSsmTableDataMutation();
 
   const overwritingDemoFilter = useMemo(
     () => overwritingDemoFilterMutationFrequency,
@@ -159,8 +162,30 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (geneId: string, geneSymbol: string) => {
       setSearchTermsForGeneId({ geneId, geneSymbol });
       setAppMode("ssms");
+      getTopSSM({
+        pageSize: 1,
+        offset: 0,
+        searchTerm: geneId,
+        geneSymbol: geneSymbol,
+        genomicFilters: genomicFilters,
+        cohortFilters: cohortFilters,
+        caseFilter: {},
+      }).then(({ data }) => {
+        const { ssm_id, consequence_type, aa_change } = data;
+        handleSurvivalPlotToggled(
+          ssm_id,
+          consequence_type
+            ? `${humanify({
+                term: consequence_type
+                  .replace("_variant", "")
+                  .replace("_", " "),
+              })} ${aa_change}`
+            : "",
+          "gene.ssm.ssm_id",
+        );
+      });
     },
-    [],
+    [cohortFilters, genomicFilters, getTopSSM, handleSurvivalPlotToggled],
   );
 
   // clear local filters when cohort changes or tabs change
