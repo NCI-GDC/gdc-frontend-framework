@@ -175,11 +175,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         handleSurvivalPlotToggled(
           ssm_id,
           consequence_type
-            ? `${humanify({
+            ? `${geneSymbol} ${aa_change} ${humanify({
                 term: consequence_type
                   .replace("_variant", "")
                   .replace("_", " "),
-              })} ${aa_change}`
+              })}`
             : "",
           "gene.ssm.ssm_id",
         );

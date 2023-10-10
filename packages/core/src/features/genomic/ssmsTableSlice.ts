@@ -231,6 +231,12 @@ export interface SsmsTableState {
   readonly error?: string;
 }
 
+export interface TopSsm {
+  ssm_id: string;
+  aa_change: string;
+  consequence_type: string;
+}
+
 const generateFilter = ({
   pageSize,
   offset,
@@ -336,10 +342,7 @@ const generateFilter = ({
 
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSsmTableData: builder.mutation<
-      Record<string, string>,
-      SsmsTableRequestParameters
-    >({
+    getSsmTableData: builder.mutation<TopSsm, SsmsTableRequestParameters>({
       query: (request: SsmsTableRequestParameters) => ({
         graphQLQuery: SSMSTableGraphQLQuery,
         graphQLFilters: generateFilter(request),
