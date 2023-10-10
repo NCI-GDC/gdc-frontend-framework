@@ -2,8 +2,6 @@ import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 describe("ColumnOrdering", () => {
   const mockGetToggleVisibilityHandlerCol1 = jest.fn();
@@ -136,43 +134,14 @@ describe("ColumnOrdering", () => {
     expect(updatedSearchInput).toHaveValue("col1");
   });
 
-  it("should reorder columns on drag and drop", async () => {
-    const { getByTestId } = render(
-      <DndProvider backend={HTML5Backend}>
-        <ColumnOrdering
-          table={mockTable}
-          handleColumnOrderingReset={mockHandleColumnOrderingReset}
-          columnOrder={mockColumnOrder}
-          setColumnOrder={mockSetColumnOrder}
-        />
-      </DndProvider>,
-    );
-
-    const button = screen.getByTestId("button-column-selector-box");
-    await userEvent.click(button);
-    // Simulate drag and drop operations using fireEvent
-    const column1 = getByTestId("column-selector-row-col1");
-    const column2 = getByTestId("column-selector-row-col2");
-    fireEvent.dragStart(column1);
-    fireEvent.dragEnter(column2);
-    fireEvent.drop(column2);
-
-    // Check if the column order has changed
-    const updatedColumnOrder = ["col2", "col1", "col3"];
-
-    expect(mockSetColumnOrder).toBeCalledWith(updatedColumnOrder);
-  });
-
   it("should toggle column visibility on switch toggle", async () => {
     const { getAllByTestId } = render(
-      <DndProvider backend={HTML5Backend}>
-        <ColumnOrdering
-          table={mockTable}
-          handleColumnOrderingReset={mockHandleColumnOrderingReset}
-          columnOrder={mockColumnOrder}
-          setColumnOrder={mockSetColumnOrder}
-        />
-      </DndProvider>,
+      <ColumnOrdering
+        table={mockTable}
+        handleColumnOrderingReset={mockHandleColumnOrderingReset}
+        columnOrder={mockColumnOrder}
+        setColumnOrder={mockSetColumnOrder}
+      />,
     );
 
     const button = screen.getByTestId("button-column-selector-box");

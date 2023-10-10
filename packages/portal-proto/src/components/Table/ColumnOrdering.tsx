@@ -16,6 +16,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -25,6 +26,10 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToVerticalAxis,
+  restrictToWindowEdges,
+} from "@dnd-kit/modifiers";
 
 function ColumnOrdering<TData>({
   table,
@@ -53,25 +58,26 @@ function ColumnOrdering<TData>({
     );
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
-  function handleDragEnd(event) {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    console.log({ active, over });
 
-    if (active.id !== over.id) {
+    if (active?.id !== over?.id) {
       setColumnOrder((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
+        const oldIndex = items.indexOf(active.id as string);
+        const newIndex = items.indexOf(over.id as string);
 
         return arrayMove(items, oldIndex, newIndex);
       });
     }
-  }
+  };
 
   return (
     <div ref={ref}>
@@ -131,6 +137,7 @@ function ColumnOrdering<TData>({
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
           >
             <SortableContext
               items={table.getAllLeafColumns()}
@@ -155,7 +162,6 @@ function List<TData>({
   columns: Column<TData, unknown>[];
   searchValue: string;
 }) {
-  console.log({ columns });
   return (
     <ul>
       {columns
@@ -197,6 +203,7 @@ function DraggableColumnItem<TData>({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
   return (
     <div
       ref={setNodeRef}
@@ -205,7 +212,7 @@ function DraggableColumnItem<TData>({
       {...listeners}
       className={`flex justify-between items-center bg-nci-violet-lightest ${
         isNotLast ? "mb-2" : ""
-      } px-1 py-1.5 gap-4 h-6  cursor-move`}
+      } px-1 py-1.5 gap-4 h-6 cursor-move`}
       data-testid={`column-selector-row-${column.id}`}
     >
       <div className="flex gap-2 items-center">

@@ -16,6 +16,7 @@
   "dependencies": {
     "@datadog/browser-rum": "^4.32.0",
     "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
     "@fontsource/montserrat": "^4.5.14",
@@ -39,8 +40,6 @@
     "plotly.js": "^2.3.1",
     "postcss-preset-env": "^7.3.1",
     "react": "^18.2.0",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-markdown": "^8.0.3",
