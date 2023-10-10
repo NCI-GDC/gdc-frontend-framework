@@ -41,6 +41,7 @@ class GenericLocators:
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
+    BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
@@ -314,6 +315,11 @@ class BasePage:
     def click_button_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text"""
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
+        self.click(locator)
+
+    def click_button_in_modal_with_displayed_text_name(self, button_text_name):
+        """Clicks a button in a modal based on its displayed text"""
+        locator = GenericLocators.BUTTON_IN_MODAL_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):

@@ -45,8 +45,11 @@ class CohortBuilderPage(BasePage):
     # Checks to see if specified facet card is present
     def check_facet_card_presence(self, facet_group_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_IDENT(facet_group_name)
-        result = self.is_visible(locator)
-        return result
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     # Adds a custom filter from the Custom Filters tab
     def add_custom_filter(self, facet_to_add):
