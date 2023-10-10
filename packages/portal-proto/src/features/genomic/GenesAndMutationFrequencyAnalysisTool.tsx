@@ -171,18 +171,20 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         cohortFilters: cohortFilters,
         caseFilter: { mode: "", root: {} } as FilterSet,
       }).then((response) => {
-        const { ssm_id, consequence_type, aa_change } = response?.data;
-        handleSurvivalPlotToggled(
-          ssm_id,
-          consequence_type
-            ? `${geneSymbol} ${aa_change} ${humanify({
-                term: consequence_type
-                  .replace("_variant", "")
-                  .replace("_", " "),
-              })}`
-            : "",
-          "gene.ssm.ssm_id",
-        );
+        if (response?.data) {
+          const { ssm_id, consequence_type, aa_change } = response.data;
+          handleSurvivalPlotToggled(
+            ssm_id,
+            consequence_type
+              ? `${geneSymbol} ${aa_change} ${humanify({
+                  term: consequence_type
+                    .replace("_variant", "")
+                    .replace("_", " "),
+                })}`
+              : "",
+            "gene.ssm.ssm_id",
+          );
+        }
       });
     },
     [cohortFilters, genomicFilters, getTopSSM, handleSurvivalPlotToggled],
