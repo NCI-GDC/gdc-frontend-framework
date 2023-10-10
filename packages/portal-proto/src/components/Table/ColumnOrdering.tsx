@@ -27,6 +27,7 @@ import {
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
+  restrictToParentElement,
   restrictToVerticalAxis,
   restrictToWindowEdges,
 } from "@dnd-kit/modifiers";
@@ -115,6 +116,7 @@ function ColumnOrdering<TData>({
                   onClick={handleColumnOrderingReset}
                   className={isBackToDefaults && "invisible"}
                   data-testid="restore-default-icon"
+                  aria-label="restore default column ordering button"
                 >
                   <RevertIcon className="text-primary" size="1rem" />
                 </ActionIcon>
@@ -137,7 +139,11 @@ function ColumnOrdering<TData>({
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+            modifiers={[
+              restrictToVerticalAxis,
+              restrictToWindowEdges,
+              restrictToParentElement,
+            ]}
           >
             <SortableContext
               items={table.getAllLeafColumns()}
@@ -182,7 +188,7 @@ function List<TData>({
               isNotLast={index < columns.length - 1}
             />
           ) : (
-            <div className="hide" key={column.id} />
+            <li className="hide" key={column.id} />
           );
         })}
     </ul>
@@ -205,36 +211,38 @@ function DraggableColumnItem<TData>({
   };
 
   return (
-    <div
+    <li
       ref={setNodeRef}
       style={style}
-      {...attributes}
       {...listeners}
-      className={`flex justify-between items-center bg-nci-violet-lightest ${
-        isNotLast ? "mb-2" : ""
-      } px-1 py-1.5 gap-4 h-6 cursor-move`}
+      className={` ${isNotLast ? "mb-2" : ""}`}
       data-testid={`column-selector-row-${column.id}`}
     >
-      <div className="flex gap-2 items-center">
-        <DragIcon size="1rem" className="text-primary" />
-        <span className="text-xs text-secondary-contrast-lighter font-medium tracking-normal">
-          {humanify({ term: column.id })}
-        </span>
-      </div>
+      <div
+        {...attributes}
+        className="flex justify-between items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move gap-4"
+      >
+        <div className="flex gap-2 items-center">
+          <DragIcon size="1rem" className="text-primary" />
+          <span className="text-xs text-secondary-contrast-lighter font-medium tracking-normal">
+            {humanify({ term: column.id })}
+          </span>
+        </div>
 
-      <Switch
-        color="accent"
-        {...{
-          checked: column.getIsVisible(),
-          onChange: column.getToggleVisibilityHandler(),
-        }}
-        size="xs"
-        aria-label={`toggle column visibility switch button for ${humanify({
-          term: column.id,
-        })} column`}
-        data-testid="switch-toggle"
-      />
-    </div>
+        <Switch
+          color="accent"
+          {...{
+            checked: column.getIsVisible(),
+            onChange: column.getToggleVisibilityHandler(),
+          }}
+          size="xs"
+          aria-label={`toggle column visibility switch button for ${humanify({
+            term: column.id,
+          })} column`}
+          data-testid="switch-toggle"
+        />
+      </div>
+    </li>
   );
 }
 
