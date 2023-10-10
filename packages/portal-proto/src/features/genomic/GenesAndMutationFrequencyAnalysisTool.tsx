@@ -60,7 +60,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     selectGeneAndSSMFilters(state),
   );
 
-  const [getTopSSM] = useGetSsmTableDataMutation();
+  const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
   const overwritingDemoFilter = useMemo(
     () => overwritingDemoFilterMutationFrequency,
@@ -170,25 +170,27 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
         caseFilter: { mode: "", root: {} } as FilterSet,
-      }).then((response) => {
-        if (response?.data) {
-          const { ssm_id, consequence_type, aa_change } = response.data;
-          handleSurvivalPlotToggled(
-            ssm_id,
-            consequence_type
-              ? `${geneSymbol} ${aa_change} ${humanify({
-                  term: consequence_type
-                    .replace("_variant", "")
-                    .replace("_", " "),
-                })}`
-              : "",
-            "gene.ssm.ssm_id",
-          );
-        }
       });
     },
-    [cohortFilters, genomicFilters, getTopSSM, handleSurvivalPlotToggled],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cohortFilters, genomicFilters],
   );
+
+  useEffect(() => {
+    if (topSSM) {
+      const { ssm_id, consequence_type, aa_change } = topSSM;
+      handleSurvivalPlotToggled(
+        ssm_id,
+        consequence_type
+          ? `${searchTermsForGeneId.geneSymbol} ${aa_change} ${humanify({
+              term: consequence_type.replace("_variant", "").replace("_", " "),
+            })}`
+          : "",
+        "gene.ssm.ssm_id",
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topSSM]);
 
   // clear local filters when cohort changes or tabs change
   useEffect(() => {
