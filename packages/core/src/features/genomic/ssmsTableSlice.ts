@@ -342,7 +342,10 @@ const generateFilter = ({
 
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSsmTableData: builder.mutation<TopSsm, SsmsTableRequestParameters>({
+    getSsmTableData: builder.mutation<
+      TopSsm | { error: string | number },
+      SsmsTableRequestParameters
+    >({
       query: (request: SsmsTableRequestParameters) => ({
         graphQLQuery: SSMSTableGraphQLQuery,
         graphQLFilters: generateFilter(request),
