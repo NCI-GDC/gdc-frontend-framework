@@ -186,9 +186,6 @@ export const fetchGenesTable = createAsyncThunk<
         searchFilters,
       ),
     );
-    const filterContents = genesTableFilters?.content
-      ? Object(genesTableFilters?.content)
-      : [];
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
@@ -318,7 +315,7 @@ export const fetchGenesTable = createAsyncThunk<
         );
       const counts = await fetchSmsAggregations({
         ids: geneIds,
-        filters: filterContents,
+        filters: [],
         caseFilters: caseFilters,
       });
       if (!counts.errors) {
