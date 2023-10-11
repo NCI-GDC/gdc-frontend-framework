@@ -1,4 +1,5 @@
 import { Image } from "@/components/Image";
+import { Tooltip } from "@mantine/core";
 import { forwardRef } from "react";
 
 export const UnsavedIcon = (): JSX.Element => (
@@ -23,7 +24,13 @@ export const CustomCohortSelectItem = forwardRef<HTMLDivElement, ItemProps>(
       <span className="flex justify-between gap-2 items-center">
         <span className="basis-11/12 break-all">{label}</span>
         <div className="basis-1/12 text-right">
-          {modified && <UnsavedIcon />}
+          {modified && (
+            <Tooltip label="Cohort not saved" withArrow>
+              <span>
+                <UnsavedIcon />
+              </span>
+            </Tooltip>
+          )}
         </div>
       </span>
     </div>

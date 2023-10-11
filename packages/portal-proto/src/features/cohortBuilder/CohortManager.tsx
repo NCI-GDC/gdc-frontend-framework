@@ -251,7 +251,7 @@ const CohortManager: React.FC = () => {
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 shadow-lg bg-primary"
     >
       {(isCohortIdFetching ||
         isDeleteCohortLoading ||
@@ -421,7 +421,7 @@ const CohortManager: React.FC = () => {
       {/*  Modals End   */}
 
       <div className="border-opacity-0">
-        <div className="flex gap-4">
+        <div className="flex gap-4 py-3">
           <div className="flex justify-center items-center">
             <Tooltip
               label="Discard Unsaved Changes"
@@ -442,10 +442,7 @@ const CohortManager: React.FC = () => {
               </span>
             </Tooltip>
 
-            <div
-              className="flex flex-col pt-5"
-              data-testid="cohort-list-dropdown"
-            >
+            <div data-testid="cohort-list-dropdown">
               <Select
                 data={menu_items}
                 searchable
@@ -466,20 +463,19 @@ const CohortManager: React.FC = () => {
                 data-testid="switchButton"
                 rightSection={
                   <div className="flex gap-1 items-center">
-                    {cohortModified && <UnsavedIcon />}
+                    {cohortModified && (
+                      <Tooltip label="as;dfasd;l">
+                        <span>
+                          <UnsavedIcon />
+                        </span>
+                      </Tooltip>
+                    )}
                     <DownArrowIcon size={20} className="text-primary" />
                   </div>
                 }
                 rightSectionWidth={cohortModified ? 45 : 30}
                 styles={{ rightSection: { pointerEvents: "none" } }}
               />
-              <div
-                className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
-                  cohortModified ? "visible" : "invisible"
-                }`}
-              >
-                Changes not saved
-              </div>
             </div>
           </div>
 
