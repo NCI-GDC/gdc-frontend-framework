@@ -79,7 +79,7 @@ interface CohortGroupButtonProps {
 const CohortGroupButton = tw.button<CohortGroupButtonProps>`
 ${(p: CohortGroupButtonProps) =>
   p.disabled
-    ? "text-primary bg-base-light"
+    ? "opacity-50 bg-base-max text-primary"
     : "text-primary hover:bg-primary-darkest hover:text-primary-content-lightest bg-base-max"}
 ${(p: CohortGroupButtonProps) => (p.$isDiscard ? "rounded-l" : "rounded")}
 h-12
@@ -459,7 +459,7 @@ const CohortManager: React.FC = () => {
                 classNames={{
                   root: "border-secondary-darkest w-80",
                   input:
-                    "text-heading font-medium text-primary-darkest rounded-l-none h-12",
+                    "text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
                 }}
                 aria-label="Select cohort"

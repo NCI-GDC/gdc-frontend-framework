@@ -96,5 +96,15 @@ body {
   outline-style: dotted;
 }
 
+.Offscreen {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(100%);
+  margin-top: -1px;
+}
+
 @tailwind utilities;
 @tailwind variants;
