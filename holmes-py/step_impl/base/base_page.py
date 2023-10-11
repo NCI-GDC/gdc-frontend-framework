@@ -197,7 +197,7 @@ class BasePage:
                 # On occasion, the automation will move so fast and click the close 'x' button
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops
                 # when I put this sleep here.
-                time.sleep(2)
+                time.sleep(1)
                 x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
                 # Remove the message after locating it.
                 # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
