@@ -1,11 +1,10 @@
 import { useState, useMemo } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { mapKeys } from "lodash";
 import {
   useGetContinuousDataStatsQuery,
   Statistics,
   GqlOperation,
-  DAYS_IN_YEAR,
 } from "@gff/core";
 import { useRangeFacet } from "../../facets/hooks";
 import CDaveHistogram from "./CDaveHistogram";
@@ -17,41 +16,53 @@ import {
   NamedFromTo,
   ChartTypes,
   SelectedFacet,
+  DataDimension,
 } from "../types";
-import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
-import { isInterval, createBuckets, parseContinuousBucket } from "../utils";
+import { SURVIVAL_PLOT_MIN_COUNT, DATA_DIMENSIONS } from "../constants";
+import {
+  isInterval,
+  createBuckets,
+  parseContinuousBucket,
+  convertDataDimension,
+  formatValue,
+} from "../utils";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import BoxQQSection from "./BoxQQSection";
 
 const processContinuousResultData = (
   data: Record<string, number>,
   customBinnedData: NamedFromTo[] | CustomInterval,
-  dataDimension: string,
+  field: string,
+  dataDimension: DataDimension,
 ): Record<string, number> => {
   if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
     return Object.fromEntries(
       Object.entries(data).map(([, v], idx) => [
         customBinnedData[idx]?.name,
-        formatValue(v, dataDimension),
+        v,
       ]),
     );
   }
 
-  return mapKeys(data, (_, k) => toBucketDisplayName(k, dataDimension));
+  return mapKeys(data, (_, k) => toBucketDisplayName(k, field, dataDimension));
 };
 
-const toBucketDisplayName = (bucket: string, dataDimension: string): string => {
+const toBucketDisplayName = (
+  bucket: string,
+  field: string,
+  dataDimension: DataDimension,
+): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
-
-  return `${Number(
-    formatValue(Number(fromValue), dataDimension).toFixed(2),
-  )} to <${Number(formatValue(Number(toValue), dataDimension).toFixed(2))}`;
-};
-
-const formatValue = (value: number, dataDimension: string) => {
-  return Number(
-    dataDimension === "Years" ? value / DAYS_IN_YEAR : value.toFixed(2),
-  );
+  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
+  return `${formatValue(
+    convertDataDimension(
+      Number(fromValue),
+      originalDataDimension,
+      dataDimension,
+    ),
+  )} to <${formatValue(
+    convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
+  )}`;
 };
 
 interface ContinuousDataProps {
@@ -61,7 +72,7 @@ interface ContinuousDataProps {
   readonly chartType: ChartTypes;
   readonly noData: boolean;
   readonly cohortFilters: GqlOperation;
-  readonly dataDimension?: string;
+  readonly dataDimension?: DataDimension;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -83,15 +94,22 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
-  const ranges = isInterval(customBinnedData)
-    ? createBuckets(
-        customBinnedData.min,
-        customBinnedData.max,
-        customBinnedData.interval,
-      )
-    : customBinnedData?.length > 0
-    ? customBinnedData.map((d) => ({ to: d.to, from: d.from }))
-    : createBuckets(initialData.min, initialData.max);
+  const ranges = useDeepCompareMemo(
+    () =>
+      isInterval(customBinnedData)
+        ? createBuckets(
+            customBinnedData.min,
+            customBinnedData.max,
+            customBinnedData.interval,
+          )
+        : customBinnedData?.length > 0
+        ? customBinnedData.map((d) => ({
+            to: d.to,
+            from: d.from,
+          }))
+        : createBuckets(initialData.min, initialData.max),
+    [customBinnedData, initialData],
+  );
 
   const { data, isFetching, isSuccess } = useRangeFacet(
     "cases",
@@ -118,9 +136,10 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
       processContinuousResultData(
         isSuccess ? data : {},
         customBinnedData,
+        field,
         dataDimension,
       ),
-    [isSuccess, data, customBinnedData, dataDimension],
+    [isSuccess, data, customBinnedData, field, dataDimension],
   );
 
   useDeepCompareEffect(() => {
@@ -202,10 +221,11 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
       {binningModalOpen && (
         <ContinuousBinningModal
           setModalOpen={setBinningModalOpen}
-          field={fieldName}
+          field={field}
           stats={initialData}
           updateBins={setCustomBinnedData}
           customBins={customBinnedData}
+          dataDimension={dataDimension}
         />
       )}
     </>

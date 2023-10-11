@@ -179,7 +179,7 @@ describe("CDaveCard", () => {
 
   it("continuous result with toggled value bucket", async () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "diagnosis.days_to_treatment_start",
+      field: "diagnoses.treatments.days_to_treatment_start",
       type: "long",
     });
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
@@ -195,7 +195,7 @@ describe("CDaveCard", () => {
     const { getByRole, getByLabelText } = render(
       <CDaveCard
         data={{ stats: { count: 38 } } as any}
-        field="diagnosis.days_to_treatment_start"
+        field="diagnoses.treatments.days_to_treatment_start"
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}

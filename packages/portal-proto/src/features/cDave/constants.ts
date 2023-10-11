@@ -1,4 +1,5 @@
 import { FilterSet } from "@gff/core";
+import { DataDimension } from "./types";
 
 export const DEMO_COHORT_FILTERS: FilterSet = {
   mode: "and",
@@ -166,30 +167,32 @@ export const FACET_SORT = {
   ],
 };
 
-export const DATA_DIMENSIONS = {
-  age_at_diagnosis: {
+export const DATA_DIMENSIONS: Record<
+  string,
+  { unit: DataDimension; toggleValue?: DataDimension }
+> = {
+  "diagnoses.age_at_diagnosis": {
     unit: "Days",
     toggleValue: "Years",
   },
-  days_to_birth: { unit: "Days", toggleValue: "Years" },
-  days_to_death: { unit: "Days", toggleValue: "Years" },
-  days_to_diagnosis: { unit: "Days", toggleValue: "Years" },
-  days_to_last_follow_up: { unit: "Days", toggleValue: "Years" },
-  days_to_last_known_disease_status: { unit: "Days", toggleValue: "Years" },
-  days_to_recurrence: { unit: "Days", toggleValue: "Years" },
-  days_to_treatment_end: { unit: "Days", toggleValue: "Years" },
-  days_to_treatment_start: { unit: "Days", toggleValue: "Years" },
-  height: {
-    unit: "cm",
+  "diagnoses.days_to_birth": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_death": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_diagnosis": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_last_follow_up": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_last_known_disease_status": {
+    unit: "Days",
+    toggleValue: "Years",
   },
-  tumor_largest_dimension_diameter: {
-    unit: "cm",
+  "diagnoses.days_to_recurrence": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.treatments.days_to_treatment_end": {
+    unit: "Days",
+    toggleValue: "Years",
   },
-  weight: {
-    unit: "kg",
+  "diagnoses.treatments.days_to_treatment_start": {
+    unit: "Days",
+    toggleValue: "Years",
   },
-  year_of_diagnosis: { unit: "Years" },
-  years_smoked: { unit: "Years" },
+  "diagnoses.year_of_diagnosis": { unit: "Years" },
 };
 
 export const TABS = {
