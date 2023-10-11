@@ -231,9 +231,13 @@ function DraggableColumnItem<TData>({
 
         <Switch
           color="accent"
-          {...{
-            checked: column.getIsVisible(),
-            onChange: column.getToggleVisibilityHandler(),
+          checked={column.getIsVisible()}
+          onChange={() => column.toggleVisibility()}
+          onKeyDown={(e) => {
+            if (e.code === "Space") {
+              e.preventDefault();
+              column.toggleVisibility();
+            }
           }}
           size="xs"
           aria-label={`toggle column visibility switch button for ${humanify({
