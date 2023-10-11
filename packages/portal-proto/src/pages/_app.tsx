@@ -3,6 +3,7 @@ import store from "../app/store";
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";
+import Script from "next/script";
 // import gdc apps here.
 // their default exports will trigger registration.
 import "@/features/projectsCenter/registerApp";
@@ -17,7 +18,6 @@ import {
 import { useLocalStorage } from "@mantine/hooks";
 import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import React, { useEffect } from "react";
@@ -259,10 +259,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 <Component {...pageProps} />
               </SummaryModalContext.Provider>
             </URLContext.Provider>
-            <Head>
-              <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
-            </Head>
-
+            <Script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
             <script>{`_satellite.pageBottom()`}</script>
           </div>
         </MantineProvider>

@@ -47,6 +47,10 @@ const fetchSsmAnalysisQuery = async (
   contextFilters: FilterSet | undefined,
 ) => {
   const gqlContextFilter = buildCohortGqlOperator(contextFilters);
+  const gqlContextIntersection =
+    gqlContextFilter && (gqlContextFilter as GqlIntersection).content
+      ? (gqlContextFilter as GqlIntersection).content
+      : [];
   const graphqlFilters = gene
     ? {
         caseAggsFilters: {
@@ -73,9 +77,7 @@ const fetchSsmAnalysisQuery = async (
                 value: "MISSING",
               },
             },
-            ...(gqlContextFilter
-              ? (gqlContextFilter as GqlIntersection)?.content
-              : []),
+            ...gqlContextIntersection,
           ],
         },
         ssmFilters: {
@@ -95,9 +97,7 @@ const fetchSsmAnalysisQuery = async (
                 value: [gene],
               },
             },
-            ...(gqlContextFilter
-              ? (gqlContextFilter as GqlIntersection)?.content
-              : []),
+            ...gqlContextIntersection,
           ],
         },
         ssmTested: {
