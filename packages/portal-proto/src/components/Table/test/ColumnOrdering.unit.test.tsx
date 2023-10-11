@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
 
 describe("ColumnOrdering", () => {
-  const mockGetToggleVisibilityHandlerCol1 = jest.fn();
+  const mockGetToggleVisibilityCol1 = jest.fn();
   const mockTable = {
     initialState: {
       columnOrder: ["col1", "col2", "col3"],
@@ -17,17 +17,17 @@ describe("ColumnOrdering", () => {
       {
         id: "col1",
         getIsVisible: jest.fn(),
-        getToggleVisibilityHandler: mockGetToggleVisibilityHandlerCol1,
+        toggleVisibility: mockGetToggleVisibilityCol1,
       },
       {
         id: "col2",
         getIsVisible: jest.fn(),
-        getToggleVisibilityHandler: jest.fn(),
+        toggleVisibility: jest.fn(),
       },
       {
         id: "col3",
         getIsVisible: jest.fn(),
-        getToggleVisibilityHandler: jest.fn(),
+        toggleVisibility: jest.fn(),
       },
     ],
   } as any;
@@ -151,6 +151,6 @@ describe("ColumnOrdering", () => {
     await userEvent.click(switchToggle[0]);
 
     // Check if the visibility has changed
-    expect(mockGetToggleVisibilityHandlerCol1).toBeCalled();
+    expect(mockGetToggleVisibilityCol1).toBeCalled();
   });
 });
