@@ -6,11 +6,27 @@ export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
 export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
   x.replaceAll("__", ".");
 
+export const buildGraphQLFacetQuery = (
+  docType: GQLDocType,
+  index: GQLIndexType = "explore",
+) => {
+  return `query QueryBucketCounts( $filters: FiltersArgument, $facets: [String]!) {
+      viewer {
+          ${index} {
+            ${docType} {
+              facets( filters:$filters, facets:$facets )
+              }
+          }
+       }
+  }`;
+};
+
 /**
  * Builds a GraphQL request
  * @param facetName - name of the facet
  * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
  * @param index - which GraphQL index to query
+ * @param alias - possible alias for the facet
  */
 export const buildGraphGLBucketQuery = (
   facetName: string,

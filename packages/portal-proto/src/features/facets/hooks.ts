@@ -7,7 +7,7 @@ import {
   handleOperation,
   FilterSet,
   removeCohortFilter,
-  fetchFacetByNameGQL,
+  fetchCasesFacetsByNameGQL,
   updateCohortFilter,
   useCoreDispatch,
   useCoreSelector,
@@ -102,7 +102,7 @@ export const useEnumFacet = (
       !isEqual(prevEnumValues, enumValues)
     ) {
       coreDispatch(
-        fetchFacetByNameGQL({
+        fetchCasesFacetsByNameGQL({
           field: field,
           docType: docType,
           index: indexType,
@@ -166,7 +166,7 @@ export const useEnumFacets = (
         !isEqual(prevEnumValues, enumValues))
     ) {
       coreDispatch(
-        fetchFacetByNameGQL({
+        fetchCasesFacetsByNameGQL({
           field: fields,
           docType: docType,
           index: indexType,

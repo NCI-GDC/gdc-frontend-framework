@@ -14,6 +14,7 @@ import {
   buildGraphGLBucketsQuery,
   processBuckets,
   AliasedFieldQuery,
+  buildGraphQLFacetQuery,
 } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
@@ -28,6 +29,44 @@ export interface FetchFacetByNameGQLProps {
   readonly localFilters?: FilterSet;
   readonly splitIntoCasePlusLocalFilters?: boolean;
 }
+
+export const fetchCasesFacetsByNameGQL = createAsyncThunk<
+  GraphQLApiResponse<Record<string, unknown>>,
+  FetchFacetByNameGQLProps,
+  { dispatch: CoreDispatch; state: CoreState }
+>(
+  "facet/fetchCasesFacetByNameGQL",
+  async (
+    {
+      field,
+      docType = "cases",
+      index = "explore" as GQLIndexType,
+      caseFilterSelector = selectCurrentCohortGeneAndSSMCaseSet,
+      localFilters = undefined,
+    },
+    thunkAPI,
+  ) => {
+    // the GDC GraphQL schema does accept the docType prepended if the
+    // docType is the same. Remove it but use the original field string
+    // as the alias which reduces the complexity when processing facet buckets
+    const filtersToUpdate = typeof field === "string" ? [field] : field;
+    const filtersToQuery = filtersToUpdate.map((f) =>
+      f.includes(`${docType}.`) ? f.replace(`${docType}.`, "") : f,
+    );
+    const caseFilters = caseFilterSelector(thunkAPI.getState());
+    const queryGQL = buildGraphQLFacetQuery(docType, index);
+    let filtersGQL: Record<string, unknown> = {};
+
+    filtersGQL = {
+      filters: buildCohortGqlOperator(
+        joinFilters(caseFilters, localFilters ?? { mode: "and", root: {} }),
+      ),
+      facets: filtersToQuery,
+    };
+
+    return graphqlAPI(queryGQL, filtersGQL);
+  },
+);
 
 export const fetchFacetByNameGQL = createAsyncThunk<
   GraphQLApiResponse<Record<string, unknown>>,
@@ -103,6 +142,7 @@ export const facetsGQLSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      /* -----
       .addCase(fetchFacetByNameGQL.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.index ?? "explore";
@@ -152,6 +192,61 @@ export const facetsGQLSlice = createSlice({
             (state[itemType][f] = {
               status: "rejected",
             }),
+        );
+      })
+      ---- */
+      .addCase(fetchCasesFacetsByNameGQL.fulfilled, (state, action) => {
+        const response = action.payload;
+        const index = action.meta.arg.index ?? "explore";
+        const docType = action.meta.arg.docType ?? "cases";
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
+        if (response.errors && Object.keys(response.errors).length > 0) {
+          fields.forEach(
+            (f) =>
+              (state[docType][f] = {
+                status: "rejected",
+                error: response.errors.facets,
+              }),
+          );
+        } else {
+          const facets =
+            docType === "projects"
+              ? Object(response).data.viewer[docType].facets
+              : Object(response).data.viewer[index][docType].facets;
+          const facetsData = JSON.parse(facets);
+          console.log("Facets Data", facetsData);
+          facets && processBuckets(facetsData, state[docType]);
+        }
+      })
+      .addCase(fetchCasesFacetsByNameGQL.pending, (state, action) => {
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
+        const itemType = action.meta.arg.docType ?? "cases";
+        fields.forEach(
+          (f) =>
+            (state[itemType][f] = state[itemType][f] =
+              {
+                status: "pending",
+              }),
+        );
+      })
+      .addCase(fetchCasesFacetsByNameGQL.rejected, (state, action) => {
+        const fields =
+          typeof action.meta.arg.field === "string"
+            ? [action.meta.arg.field]
+            : action.meta.arg.field;
+        const itemType = action.meta.arg.docType ?? "cases";
+        fields.forEach(
+          (f) =>
+            (state[itemType][f] = state[itemType][f] =
+              {
+                status: "rejected",
+              }),
         );
       });
   },
