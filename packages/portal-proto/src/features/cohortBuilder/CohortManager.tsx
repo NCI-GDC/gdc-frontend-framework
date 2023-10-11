@@ -462,9 +462,9 @@ const CohortManager: React.FC = () => {
                 aria-label="Select cohort"
                 data-testid="switchButton"
                 rightSection={
-                  <div className="flex gap-1 items-center">
+                  <div className="flex gap-1 items-center pointer-events-auto">
                     {cohortModified && (
-                      <Tooltip label="as;dfasd;l">
+                      <Tooltip label="Cohort not saved" withArrow>
                         <span>
                           <UnsavedIcon />
                         </span>
