@@ -4,14 +4,26 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v7. The minimum node version is set to v16.
+This is a multi-workspace repo that requires npm v8. The minimum node version is set to v16.15.1.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v7. To install it, run:
+Your version of Node may not ship with npm v8. To install it, run:
 
 ```bash
-npm install npm@7
+npm install npm@8
+```
+
+If you are using a Node version manager, you can run the following to install the correct version of Node:
+
+```bash
+nvm install 16.15.1
+```
+
+to use the correct version of Node:
+
+```bash
+nvm use 16.15.1
 ```
 
 ### Install Dependencies
