@@ -15,7 +15,7 @@ import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import DownloadButtonTotal from "./DownloadButton";
 
-type SetOperationtableDataType = {
+type SetOperationTableDataType = {
   setOperation: string;
   count: number;
   operationKey: string;
@@ -63,10 +63,10 @@ export const SetOperationTable = ({
       ? totalSelectedSets
       : 0;
   const [rowSelection, setRowSelection] = useState({});
-  const [operationTablesorting, setOperationTableSorting] =
+  const [operationTableSorting, setOperationTableSorting] =
     useState<SortingState>([]);
 
-  const setOperationtableData: SetOperationtableDataType[] = useMemo(
+  const setOperationTableData: SetOperationTableDataType[] = useMemo(
     () =>
       data.map((r) => ({
         setOperation: r.label,
@@ -77,9 +77,9 @@ export const SetOperationTable = ({
   );
 
   const setOperationTableColumnsHelper =
-    createColumnHelper<SetOperationtableDataType>();
+    createColumnHelper<SetOperationTableDataType>();
   const setOperationTableColumns = useMemo<
-    ColumnDef<SetOperationtableDataType>[]
+    ColumnDef<SetOperationTableDataType>[]
   >(
     () => [
       {
@@ -154,14 +154,14 @@ export const SetOperationTable = ({
 
   return (
     <VerticalTable
-      data={setOperationtableData}
+      data={setOperationTableData}
       columns={setOperationTableColumns}
       enableRowSelection={true}
       setRowSelection={setRowSelection}
       rowSelection={rowSelection}
       showControls={false}
       status="fulfilled"
-      sorting={operationTablesorting}
+      sorting={operationTableSorting}
       setSorting={setOperationTableSorting}
       columnSorting="enable"
       footer={

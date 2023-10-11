@@ -38,7 +38,7 @@ export const SetOperationsSummaryTable = ({
     [entityType, isFetching, sets, summaryCounts],
   );
 
-  const [summaryTablesorting, setSummaryTableSorting] = useState<SortingState>(
+  const [summaryTableSorting, setSummaryTableSorting] = useState<SortingState>(
     [],
   );
   const summaryTableColumnsHelper = createColumnHelper<SummaryTableDataType>();
@@ -78,7 +78,7 @@ export const SetOperationsSummaryTable = ({
       data={summaryTableData}
       columns={summaryTableColumns}
       showControls={false}
-      sorting={summaryTablesorting}
+      sorting={summaryTableSorting}
       setSorting={setSummaryTableSorting}
       columnSorting="enable"
       status={isFetching ? "pending" : "fulfilled"}
