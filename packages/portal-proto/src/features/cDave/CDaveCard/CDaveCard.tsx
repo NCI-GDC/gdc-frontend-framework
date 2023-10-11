@@ -80,14 +80,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role="button"
             aria-label={`Select ${fieldName} histogram plot`}
           >
-            <BarChartIcon
-              size={20}
-              className={
-                chartType === "histogram" && !noData
-                  ? "text-primary-contrast"
-                  : "text-primary"
-              }
-            />
+            <BarChartIcon size={20} />
           </div>
         </Tooltip>
       ),
@@ -101,14 +94,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role={"button"}
             aria-label={`Select ${fieldName} survival plot`}
           >
-            <SurvivalChartIcon
-              size={20}
-              className={
-                chartType === "survival"
-                  ? "text-primary-contrast"
-                  : "text-primary"
-              }
-            />
+            <SurvivalChartIcon size={20} />
           </div>
         </Tooltip>
       ),
@@ -125,14 +111,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role="button"
             aria-label={`Select ${fieldName} Box/QQ Plot`}
           >
-            <BoxPlotIcon
-              size={20}
-              className={
-                chartType === "boxqq"
-                  ? "text-primary-contrast rotate-90"
-                  : "text-primary rotate-90"
-              }
-            />
+            <BoxPlotIcon size={20} className={"rotate-90"} />
           </div>
         </Tooltip>
       ),

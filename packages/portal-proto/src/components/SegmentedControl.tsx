@@ -11,11 +11,11 @@ const SegmentedControl: React.FC<SegmentedControlProps> = (
     <MantineSegmentedControl
       classNames={{
         root: "bg-base-max h-fit",
-        indicator: "display-none",
+        indicator: "opacity-0",
         control:
-          "rounded-none border-0 [&:nth-child(2)>label]:rounded-l-md [&:nth-child(2)>label]:border-r-0 [&:last-child>label]:border-l-0 [&:last-child>label]:rounded-r-md",
-        label:
-          "text-primary data-active:text-base-max data-active:bg-primary py-[3px] px-1.5 border-1 !border-primary rounded-none",
+          "rounded-none border-0 [&:nth-child(2)>label]:rounded-l-md [&:last-child>label]:rounded-r-md [&:last-child>label]:border-r-1",
+        label: `text-primary data-active:text-base-max data-active:bg-primary data-disabled:bg-base-lightest data-disabled:text-base-lighter
+          py-[3px] px-1.5 border-1 border-r-0 !border-primary rounded-none data-disabled:!border-base-lighter`,
       }}
       {...props}
     />
