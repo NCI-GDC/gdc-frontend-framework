@@ -23,21 +23,21 @@ def start_app():
     APP = GDCDataPortalV2App(WebDriver.page)
 
 @after_spec
-def remove_active_cohort_filters():
+def setup_next_spec_run():
     """
     After each spec file's execution, this function will run. The intention is to
-    clear the active cohort filters to setup the next spec run.
+    clear the active cohort filters and setup the next spec run.
 
-    First, we check to see if there is the 'No filters currently applied' text is present.
-    If not, we then check to see if we are on the analysis center page. If not,
-    then we go to the analysis center. Then, we click the 'Clear All' button to remove
-    the active cohort filters. Finally, we wait to see the the text confirming there
-    are no active cohort filters present.
+    First, we go to the analysis center. If a test found a bug in the data portal the next test
+    may not execute correctly, because the previous test ended in an unexpected and difficult to get
+    out of place. Then, we check to see if there is the 'No filters currently applied' text is present.
+    If not, we click the 'Clear All' button to remove the active cohort filters.
+    Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     if not APP.shared.is_no_active_cohort_filter_text_present():
-        if not APP.analysis_center_page.is_analysis_center_page_present():
-            APP.analysis_center_page.visit()
-            APP.header_section.wait_for_page_to_load("analysis")
         APP.shared.clear_active_cohort_filters()
 
 @step("On GDC Data Portal V2 app")
@@ -76,7 +76,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a File Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
     }
     first_text = text.split(" ")[0]
     try:
@@ -124,7 +124,7 @@ def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_ca
 
 @step("Close <modal_name> modal")
 def close_modal(modal_name: str):
-    modals = {"Add a File Filter": APP.repository_page.close_add_a_file_filter_modal}
+    modals = {"Add a Custom Filter": APP.repository_page.close_add_a_custom_filter_modal}
     modals.get(modal_name)()
     assert (
         not APP.repository_page.get_file_filter_list_count()

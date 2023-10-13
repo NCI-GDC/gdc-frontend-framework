@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, download
 
 
 ## Export All Cases Cohort
+* Wait for cohort bar case count loading spinner
 * Download "Download" from "Cohort Bar"
 * Read from "Download from Cohort Bar"
 * Verify that "Download from Cohort Bar" has expected information

@@ -29,7 +29,7 @@ def click_named_button_wait_for_message_text(button_name: str, message_text: str
     :param action: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
     """
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    APP.shared.click_button_with_displayed_text_name(button_name)
+    APP.shared.click_button_in_modal_with_displayed_text_name(button_name)
     is_cohort_message_present= APP.cohort_bar.wait_for_text_in_temporary_message(message_text, action)
     assert is_cohort_message_present, f"The text '{message_text}' is NOT present"
     # Need to let the page load after our actions here.
@@ -60,11 +60,6 @@ def select_cohort_from_dropdown(cohort_name: str):
 @step("Set as current cohort")
 def set_as_current_cohort_from_temp_message():
     APP.cohort_bar.click_set_as_current_cohort_from_temp_message()
-
-@step("The secondary Cohort Bar save screen should appear")
-def is_secondary_cohort_bar_save_screen_present():
-    is_second_save_modal_present = APP.cohort_bar.is_secondary_cohort_bar_save_screen_present()
-    assert is_second_save_modal_present, f"The secondary save modal is NOT present"
 
 @step("The cohort <cohort_name> should not appear in the cohort dropdown list")
 def validate_cohort_is_not_present_in_dropdown(cohort_name: str):

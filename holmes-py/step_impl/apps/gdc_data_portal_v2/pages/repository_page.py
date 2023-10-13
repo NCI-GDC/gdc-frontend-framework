@@ -90,7 +90,7 @@ class RepositoryPage(BasePage):
         return self.is_visible(repo_table_case_count_locator)
 
     def get_text_on_modal(self, text):
-        modal_name = "Add a File Filter"
+        modal_name = "Add a Custom Filter"
         result = None
         try:
             result = self.get_text(
@@ -159,7 +159,7 @@ class RepositoryPage(BasePage):
         locator = f"{RepositoryPageLocators.LIST_IDENT(list_name)}//button//div[1]"
         self.driver.locator(locator).nth(nth).click()
 
-    def close_add_a_file_filter_modal(self):
+    def close_add_a_custom_filter_modal(self):
         self.driver.locator(RepositoryPageLocators.MODAL_CLOSE).click()
 
     def remove_slide_image_viewer_search_filter(self, search_filter:str):

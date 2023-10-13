@@ -67,7 +67,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Make the following selections from "General" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
-  |Primary Diagnosis|acinar cell neoplasms|
+  |Disease Type     |acinar cell neoplasms|
 * Is text "Changes not saved" present on the page
 * "Same cohort name" should be the active cohort
 * Select "Save" from the Cohort Bar

@@ -1,8 +1,8 @@
-# Clinical Data Analysis - Customize Bin Categorical
+# Clinical Data Analysis - Customize Bin Continuous
 Date Created      : 08/28/2023
 Version		      : 1.0
 Owner		         : GDC QA
-Description       : cDAVE continuous bin categorical values
+Description       : cDAVE continuous bin continuous values
 Test-Case         : PEAR-610
 
 tags: gdc-data-portal-v2, clinical-data-analysis, regression

@@ -9,8 +9,7 @@ class CohortBarLocators:
     COHORT_FROM_DROPDOWN_LIST = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> text="{cohort_name}"'
     ACTIVE_COHORT = lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
 
-    IMPORT_COHORT_MODAL = 'div:text("Import a New Cohort") >> ..  >> .. '
-    SECOND_SAVE_MODAL = 'div:text("Save Cohort") >> ..  >> .. >> div:text("You cannot undo this action.")'
+    IMPORT_COHORT_MODAL = 'text="Import a New Cohort"'
 
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = 'span:has-text("Set this as your current cohort.")'
     X_BUTTON_IN_TEMP_COHORT_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
@@ -112,11 +111,3 @@ class CohortBar(BasePage):
         self.wait_until_locator_is_visible(CohortBarLocators.IMPORT_COHORT_MODAL)
         # It does not click the 'browse' button without force parameter set to 'True'
         self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
-
-    def is_secondary_cohort_bar_save_screen_present(self):
-        locator = CohortBarLocators.SECOND_SAVE_MODAL
-        try:
-            self.wait_until_locator_is_visible(locator)
-        except:
-            return False
-        return True

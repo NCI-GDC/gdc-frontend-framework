@@ -81,7 +81,7 @@ class AnalysisCenterPage(BasePage):
                 self.click(navigation)
                 self.wait_until_locator_is_visible(location)
                 # Navigate back to the analysis center for the next test
-                self.click(AnalysisCenterLocators.ANALYSIS_CENTER_HEADER)
+                self.click(AnalysisCenterLocators.ANALYSIS_CENTER_HEADER, True)
                 self.wait_until_locator_is_visible(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT)
             except:
                 return False

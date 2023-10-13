@@ -20,7 +20,7 @@ tags: gdc-data-portal-v2, cohort-builder, regression
 
 * Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Enter text "days_to_collection" in the "Search for a case property" search bar
+* Enter text "days_to_collection" in the "Search for a property" search bar
 
 * Select "samples.days_to_collection" a data-testid button
 
@@ -31,7 +31,7 @@ tags: gdc-data-portal-v2, cohort-builder, regression
 
 * Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Enter text "serological laboratory test" in the "Search for a case property" search bar
+* Enter text "serological laboratory test" in the "Search for a property" search bar
 
 * Select "follow_ups.viral_hepatitis_serologies" a data-testid button
 
