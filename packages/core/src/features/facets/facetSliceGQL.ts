@@ -21,6 +21,25 @@ import { FacetsState } from "./facetSlice";
 import { facetDictionaryReducer } from "./facetDictionarySlice";
 import { usefulFacetsReducer } from "./usefulFacetsSlice";
 
+/**
+ *  Build a map of facet names to their aliases given a list facets and the docType
+ *  Since the GDC GraphQL schema does not accept the docType prepended to the facet name if the
+ *  docType is the same, we need to remove it but use the original field string to store the
+ *  returned facet buckets
+ */
+
+const buildFacetNameToAliasMap = (
+  facets: ReadonlyArray<string>,
+  docType: GQLDocType,
+): Record<string, string> => {
+  return facets.reduce((obj, facet) => {
+    obj[
+      facet.includes(`${docType}.`) ? facet.replace(`${docType}.`, "") : facet
+    ] = facet;
+    return obj;
+  }, {} as Record<string, string>);
+};
+
 export interface FetchFacetByNameGQLProps {
   readonly field: string | ReadonlyArray<string>;
   readonly docType?: GQLDocType;
@@ -86,11 +105,12 @@ export const fetchFacetByNameGQL = createAsyncThunk<
     thunkAPI,
   ) => {
     const caseFilters = caseFilterSelector(thunkAPI.getState());
-    // the GDC GraphQL schema does accept the docType prepended if the
+    // the GDC GraphQL schema does not accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
     const filtersToUpdate = typeof field === "string" ? [field] : field;
 
+    // if docType is prepended to the field name, remove it
     const filtersToQuery = filtersToUpdate.map((f) => ({
       facetName: f.includes(`${docType}.`) ? f.replace(`${docType}.`, "") : f,
       alias: f,
@@ -203,10 +223,13 @@ export const facetsGQLSlice = createSlice({
           typeof action.meta.arg.field === "string"
             ? [action.meta.arg.field]
             : action.meta.arg.field;
+
+        // use the original field name to store the facet buckets
+        const facetNameToAliasMap = buildFacetNameToAliasMap(fields, docType);
         if (response.errors && Object.keys(response.errors).length > 0) {
           fields.forEach(
             (f) =>
-              (state[docType][f] = {
+              (state[docType][facetNameToAliasMap[f]] = {
                 status: "rejected",
                 error: response.errors.facets,
               }),
@@ -217,8 +240,14 @@ export const facetsGQLSlice = createSlice({
               ? Object(response).data.viewer[docType].facets
               : Object(response).data.viewer[index][docType].facets;
           const facetsData = JSON.parse(facets);
-          console.log("Facets Data", facetsData);
-          facets && processBuckets(facetsData, state[docType]);
+          const unaliasedFacetsData = Object.keys(facetsData).reduce(
+            (obj, key) => {
+              obj[facetNameToAliasMap[key]] = facetsData[key];
+              return obj;
+            },
+            {} as Record<string, FacetBuckets>,
+          );
+          facets && processBuckets(unaliasedFacetsData, state[docType]);
         }
       })
       .addCase(fetchCasesFacetsByNameGQL.pending, (state, action) => {
@@ -227,9 +256,10 @@ export const facetsGQLSlice = createSlice({
             ? [action.meta.arg.field]
             : action.meta.arg.field;
         const itemType = action.meta.arg.docType ?? "cases";
+        const facetNameToAliasMap = buildFacetNameToAliasMap(fields, itemType);
         fields.forEach(
           (f) =>
-            (state[itemType][f] = state[itemType][f] =
+            (state[itemType][facetNameToAliasMap[f]] = state[itemType][f] =
               {
                 status: "pending",
               }),
@@ -241,9 +271,10 @@ export const facetsGQLSlice = createSlice({
             ? [action.meta.arg.field]
             : action.meta.arg.field;
         const itemType = action.meta.arg.docType ?? "cases";
+        const facetNameToAliasMap = buildFacetNameToAliasMap(fields, itemType);
         fields.forEach(
           (f) =>
-            (state[itemType][f] = state[itemType][f] =
+            (state[itemType][facetNameToAliasMap[f]] = state[itemType][f] =
               {
                 status: "rejected",
               }),
