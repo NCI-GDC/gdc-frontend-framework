@@ -179,13 +179,19 @@ export const fetchGenesTable = createAsyncThunk<
 
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
 
+    // get filters already applied
+    const baseFilters = filterSetToOperation(genomicFilters) as
+      | UnionOrIntersection
+      | undefined;
+
     // filters for the genes table using local filters
     const genesTableFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(
-        filterSetToOperation(genomicFilters) as UnionOrIntersection | undefined,
-        searchFilters,
-      ),
+      appendFilterToOperation(baseFilters, searchFilters),
     );
+
+    const rawFilterContents =
+      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
+    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
@@ -315,7 +321,7 @@ export const fetchGenesTable = createAsyncThunk<
         );
       const counts = await fetchSmsAggregations({
         ids: geneIds,
-        filters: [],
+        filters: filterContents,
         caseFilters: caseFilters,
       });
       if (!counts.errors) {
