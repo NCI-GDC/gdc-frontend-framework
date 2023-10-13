@@ -419,7 +419,9 @@ const ContextBar = ({
               </Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="summary">
-              <SummaryFacets fields={summaryFields} />
+              {!isGroupCollapsed && ( //dont load unless shown TODO address this in CollapsibleContainer
+                <SummaryFacets fields={summaryFields} />
+              )}
             </Tabs.Panel>
             <Tabs.Panel value="table">
               <ContextualCasesView />

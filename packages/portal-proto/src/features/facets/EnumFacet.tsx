@@ -90,17 +90,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     }
   }, [isSearching]);
 
-  // filter missing and "" strings and update checkboxes
-  useEffect(() => {
-    if (isSuccess) {
-      setVisibleItems(
-        Object.entries(data).filter(
-          (entry) => entry[0] != "_missing" && entry[0] != "",
-        ).length,
-      );
-    }
-  }, [data, field, isSuccess]);
-
   useEffect(() => {
     if (!isEqual(prevFilters, enumFilters)) {
       setSelectedEnums(enumFilters);
@@ -108,13 +97,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   }, [enumFilters, isSuccess, prevFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
-  const total = visibleItems;
-  if (total == 0 && hideIfEmpty) {
-    return null; // nothing to render if total == 0
-  }
 
   // update filters when checkbox is selected
   const handleChange = (value: string, checked: boolean) => {
+    setFacetChartData({
+      ...facetChartData,
+      isSuccess: false,
+    });
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
@@ -133,54 +122,114 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const filteredData = data
-    ? Object.entries(data)
+  const [facetChartData, setFacetChartData] = useState({
+    filteredData: {},
+    numberOfBarsToDisplay: maxValuesToDisplay,
+    isSuccess: false,
+    height: 150,
+  });
+
+  const [filteredData, setFilteredData] = useState([]);
+  const [remainingValues, setRemainingValues] = useState(0);
+  const [cardStyle, setCardStyle] = useState("overflow-hidden h-auto");
+  const calcCardStyle = (tempRemainingValues) => {
+    if (isGroupExpanded) {
+      const cardHeight =
+        tempRemainingValues > 16
+          ? 96
+          : tempRemainingValues > 0
+          ? Math.min(96, tempRemainingValues * 5 + 40)
+          : 24;
+      setCardStyle(`flex-none  h-${cardHeight} overflow-y-scroll `);
+    } else {
+      setCardStyle("overflow-hidden h-auto");
+    }
+  };
+  const [numberOfLines, setNumberOfLines] = useState(maxValuesToDisplay);
+  const calcNumberOfLines = (tempVisibleItems) => {
+    setNumberOfLines(
+      tempVisibleItems - maxValuesToDisplay < 0
+        ? tempVisibleItems
+        : isGroupExpanded
+        ? 16
+        : maxValuesToDisplay,
+    );
+  };
+  const calcNumberOfBarsToDisplay = (tempVisibleItems) => {
+    const totalNumberOfBars = enumFilters
+      ? enumFilters.length
+      : tempVisibleItems;
+    return isGroupExpanded
+      ? Math.min(16, totalNumberOfBars)
+      : Math.min(maxValuesToDisplay, totalNumberOfBars);
+  };
+  useEffect(() => {
+    if (isSuccess && data) {
+      const tempFlteredData = Object.entries(data)
         .filter((entry) => entry[0] != "_missing" && entry[0] != "")
         .filter((entry) =>
           searchTerm === ""
             ? entry
             : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-        )
-    : [];
+        );
+      const tempRemainingValues = tempFlteredData.length - maxValuesToDisplay;
+      setRemainingValues(tempRemainingValues);
+      calcCardStyle(tempRemainingValues);
 
-  const remainingValues = filteredData.length - maxValuesToDisplay;
-  const cardHeight =
-    remainingValues > 16
-      ? 96
-      : remainingValues > 0
-      ? Math.min(96, remainingValues * 5 + 40)
-      : 24;
+      // filter missing and "" strings and update checkboxes
+      const tempVisibleItems = Object.entries(tempFlteredData).filter(
+        (entry) => entry[0] != "_missing" && entry[0] != "",
+      ).length;
+      setVisibleItems(tempVisibleItems);
+      calcNumberOfLines(tempVisibleItems);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(tempVisibleItems);
+      setFilteredData(tempFlteredData);
+      setFacetChartData({
+        filteredData: Object.fromEntries(tempFlteredData),
+        numberOfBarsToDisplay,
+        isSuccess: true,
+        height:
+          numberOfBarsToDisplay == 1
+            ? 150
+            : numberOfBarsToDisplay == 2
+            ? 220
+            : numberOfBarsToDisplay == 3
+            ? 240
+            : numberOfBarsToDisplay * 65 + 10,
+      });
+    } else {
+      setFacetChartData({
+        ...facetChartData,
+        filteredData: {},
+        isSuccess: false,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isSuccess, maxValuesToDisplay, searchTerm]);
 
-  const cardStyle = isGroupExpanded
-    ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : `overflow-hidden h-auto`;
-  const numberOfLines =
-    total - maxValuesToDisplay < 0
-      ? total
-      : isGroupExpanded
-      ? 16
-      : maxValuesToDisplay;
-
-  const totalNumberOfBars = enumFilters ? enumFilters.length : total;
-  const numberOfBarsToDisplay = isGroupExpanded
-    ? Math.min(16, totalNumberOfBars)
-    : Math.min(maxValuesToDisplay, totalNumberOfBars);
-
-  const sortedData = filteredData
-    ? Object.fromEntries(
-        filteredData
-          .sort(
-            sortType.type === "value"
-              ? ([, a], [, b]) => (sortType.direction === "dsc" ? a - b : b - a)
-              : ([a], [b]) =>
-                  sortType.direction === "dsc"
-                    ? a.localeCompare(b)
-                    : b.localeCompare(a),
-          )
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
-      )
-    : undefined;
-
+  const [sortedData, setSortedData] = useState(undefined);
+  useEffect(() => {
+    if (filteredData && filteredData.length > 0) {
+      setSortedData(
+        Object.fromEntries(
+          [...filteredData]
+            .sort(
+              sortType.type === "value"
+                ? ([, a], [, b]) =>
+                    sortType.direction === "dsc" ? a - b : b - a
+                : ([a], [b]) =>
+                    sortType.direction === "dsc"
+                      ? a.localeCompare(b)
+                      : b.localeCompare(a),
+            )
+            .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
+        ),
+      );
+    }
+  }, [filteredData, sortType, isGroupExpanded, maxValuesToDisplay]);
+  if (visibleItems == 0 && hideIfEmpty) {
+    return null; // nothing to render if visibleItems == 0
+  }
   return (
     <div
       className={`flex flex-col ${
@@ -282,12 +331,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   data-testid="loading-spinner"
                   visible={!isSuccess}
                 />
-                {total == 0 ? (
+                {visibleItems == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
                   </div>
                 ) : isSuccess ? (
-                  Object.entries(sortedData).length === 0 ? (
+                  !sortedData || Object.entries(sortedData).length === 0 ? (
                     <div className="mx-4">No results found</div>
                   ) : (
                     Object.entries(sortedData).map(([value, count]) => {
@@ -376,7 +425,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             }
           </div>
           <div
-            className={`card-face card-back rounded-b-md bg-base-max h-full overflow-y-auto pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
@@ -386,21 +435,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               !isFacetView && (
                 <EnumFacetChart
                   field={field}
-                  data={Object.fromEntries(filteredData)}
+                  data={facetChartData.filteredData}
                   selectedEnums={selectedEnums}
-                  isSuccess={isSuccess}
+                  isSuccess={facetChartData.isSuccess}
                   showTitle={false}
                   valueLabel={valueLabel}
-                  maxBins={numberOfBarsToDisplay}
-                  height={
-                    numberOfBarsToDisplay == 1
-                      ? 150
-                      : numberOfBarsToDisplay == 2
-                      ? 220
-                      : numberOfBarsToDisplay == 3
-                      ? 240
-                      : numberOfBarsToDisplay * 65 + 10
-                  }
+                  maxBins={facetChartData.numberOfBarsToDisplay}
+                  height={facetChartData.height}
                 />
               )
             )}
