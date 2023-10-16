@@ -41,3 +41,8 @@ tags: gdc-data-portal-v2, repository, regression
 Reset the cart to 0 for future tests
 * Undo Action
 * The cart should have "0" files
+
+A separate specification ensures the cart has 0 files
+## Remove All Files from Cart
+* Select "Remove All" on the Repository page
+* The cart should have "0" files

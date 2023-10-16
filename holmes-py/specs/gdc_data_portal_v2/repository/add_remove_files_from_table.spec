@@ -77,3 +77,8 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 4 files from the cart." present on the page and "Keep Modal"
 * The cart should have "0" files
+
+A separate specification ensures the cart has 0 files
+## Remove All Files from Cart
+* Select "Remove All" on the Repository page
+* The cart should have "0" files
