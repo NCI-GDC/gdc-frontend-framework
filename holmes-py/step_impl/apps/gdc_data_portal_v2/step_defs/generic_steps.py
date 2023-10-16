@@ -122,14 +122,6 @@ def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_ca
     elif equal_or_not_equal == "not equal":
         assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
 
-@step("Close <modal_name> modal")
-def close_modal(modal_name: str):
-    modals = {"Add a Custom Filter": APP.repository_page.close_add_a_custom_filter_modal}
-    modals.get(modal_name)()
-    assert (
-        not APP.repository_page.get_file_filter_list_count()
-    ), f"Modal is still open.\nModal name: {modal_name}"
-
 @step("Close the modal")
 def close_the_modal():
     APP.shared.click_close_modal_button()
