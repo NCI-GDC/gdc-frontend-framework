@@ -12,6 +12,8 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 * Navigate to "Downloads" from "Header" "section"
 
 ## Add Files from the Table
+* Wait for table loading spinner
+* Wait for cohort bar case count loading spinner
 * Select value from table by row and column
   |row|column|
   |------|---|
