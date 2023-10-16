@@ -26,6 +26,7 @@ module.exports = {
   rules: {
     // disable these because we're using React 17+ with the jsx transform
     // need to reverify these rules
+    "@next/next/no-sync-scripts": "off",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/display-name": "off",
