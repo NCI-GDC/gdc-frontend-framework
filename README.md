@@ -184,12 +184,12 @@ local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key local
 
 ## Project Structure
 
-This project is a monorepo managed by [lerna](http://https://lerna.js.org/). It is composed of the following packages:
+This project is a monorepo managed by [lerna](https://lerna.js.org). It is composed of the following packages:
 
 - `packages/core`: Contains the state management and function for accessing the APIs of the GDC.
 - `packages/portal-proto`: The GDC Frontend Framework prototype. This is the main package for the project. It uses NextJS
-  as the application framework and React as the UI framework. For basic components we use [Mantine.dev](https://mantine.dev/) as the UI library as it compatiable
-  with our design system and use of [Tailwind CSS](https://tailwindcss.com/). Please note that before the final release
+  as the application framework and React as the UI framework. For basic components we use [Mantine.dev](https://v6.mantine.dev/) (version 6), as the UI library as it compatiable
+  with our design system and use of [Tailwind CSS](https://tailwindcss.com). Please note that before the final release
   the package will be renamed to `packages/portal`.
 - `packages/sapien`: is the package that contains the Bodyplot UI used on the GDC Portal V2 home page.
 - `packages/lighthouse`: is the package that contains the Lighthouse UI used on the GDC Portal V2 home page for testing performance.
