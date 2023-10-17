@@ -429,6 +429,27 @@ def click_create_or_save_in_cohort_modal(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
 
+@step("Perform action and validate modal text <table>")
+def click_named_button_in_modal_and_wait_for_temp_message_text(table):
+    """
+    click_named_button_wait_for_message_text clicks a button by its displayed name in a modal,
+    validates text in a temporary pop-up modal message, and either clicks the 'x' to remove the temp message,
+    or does nothing to let the message persist.
+
+    :param v[0]: The name of the button to be clicked
+    :param v[1]: The text in the temporary message that we are waiting for
+    :param v[2]: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
+    """
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    for k, v in enumerate(table):
+        APP.shared.click_button_in_modal_with_displayed_text_name(v[0])
+        is_cohort_message_present = APP.cohort_bar.wait_for_text_in_temporary_message(v[1], v[2])
+        assert is_cohort_message_present, f"The text '{v[1]}' is NOT present"
+        # Need to let the page load after our actions here.
+        # Automation moves too quickly in the cohort bar section.
+        time.sleep(1)
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
 @step("Clear active cohort filters")
 def clear_active_cohort_filters():
     # Clicks the 'clear all' button in the cohort query area
