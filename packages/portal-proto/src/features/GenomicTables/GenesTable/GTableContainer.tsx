@@ -115,6 +115,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         joinFilters(cohortFilters, genomicFilters),
       );
 
+      console.log("generateFilters", cohortAndGenomic);
+
       return await createSet({ filters: cohortAndGenomic })
         .unwrap()
         .then((setId) => {
@@ -174,6 +176,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   operator: "includes",
                   operands: [geneId],
                 },
+                ...genomicFilters?.root,
               },
             });
           }
@@ -185,6 +188,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const createCohort = async (name: string) => {
     const mainFilter = await generateFilters(columnType, geneID);
+    console.log("createCohort", mainFilter);
     dispatch(
       addNewCohortWithFilterAndMessage({
         filters: mainFilter,
