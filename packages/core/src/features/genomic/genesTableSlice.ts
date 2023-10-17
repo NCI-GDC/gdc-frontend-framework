@@ -277,6 +277,7 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...filterContents,
         ],
       },
       cnvLossFilters: {
@@ -299,6 +300,7 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...filterContents,
         ],
       },
     };

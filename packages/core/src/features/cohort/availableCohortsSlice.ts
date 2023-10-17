@@ -168,14 +168,6 @@ export const createCaseSet = createAsyncThunk<
       REQUIRES_CASE_SET_FILTERS,
     );
 
-    const query = buildCaseSetGQLQueryAndVariablesFromFilters(
-      pendingFilters,
-      caseSetId ?? cohort.id,
-    );
-
-    console.log("query", query);
-    console.log("dividedFilters", dividedFilters);
-
     const graphQL = buildCaseSetMutationQuery(
       "$inputFilters: CreateSetInput",
       "case (input: $inputFilters) { set_id size }",
