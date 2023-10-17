@@ -128,6 +128,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 operands: [`set_id:${setId}`],
                 operator: "includes",
               },
+              ...genomicFilters?.root,
             },
           };
 
@@ -176,7 +177,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                   operator: "includes",
                   operands: [geneId],
                 },
-                ...genomicFilters?.root,
               },
             });
           }
