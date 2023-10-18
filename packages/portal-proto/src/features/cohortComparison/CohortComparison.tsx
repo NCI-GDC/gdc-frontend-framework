@@ -34,7 +34,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   cohorts,
   demoMode = false,
 }: CohortComparisonProps) => {
-  console.log({ cohorts });
   const [selectedCards, setSelectedCards] = useState({
     survival: true,
     ethnicity: false,
