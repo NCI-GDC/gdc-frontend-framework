@@ -34,6 +34,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   cohorts,
   demoMode = false,
 }: CohortComparisonProps) => {
+  console.log({ cohorts });
   const [selectedCards, setSelectedCards] = useState({
     survival: true,
     ethnicity: false,
@@ -83,8 +84,12 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     createComparisonCaseSet({
       filters: buildCohortGqlOperator(cohorts.comparison_cohort.filter) ?? {},
     });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    cohorts.primary_cohort.filter,
+    cohorts.comparison_cohort.filter,
+    createComparisonCaseSet,
+    createPrimaryCaseSet,
+  ]);
 
   const loading =
     isFetching ||
