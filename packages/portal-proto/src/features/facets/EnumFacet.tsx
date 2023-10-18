@@ -72,7 +72,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     direction: "dsc",
   });
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess } = hooks.useGetFacetData(field);
 
@@ -123,42 +122,30 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   };
 
   const [facetChartData, setFacetChartData] = useState({
-    filteredData: {},
+    filteredData: [],
+    filteredDataObj: {},
+    remainingValues: 0,
     numberOfBarsToDisplay: maxValuesToDisplay,
     isSuccess: false,
     height: 150,
+    cardStyle: "overflow-hidden h-auto",
   });
 
-  const [filteredData, setFilteredData] = useState([]);
-  const [remainingValues, setRemainingValues] = useState(0);
-  const [cardStyle, setCardStyle] = useState("overflow-hidden h-auto");
-  const calcCardStyle = (tempRemainingValues) => {
+  const calcCardStyle = (remainingValues) => {
     if (isGroupExpanded) {
       const cardHeight =
-        tempRemainingValues > 16
+        remainingValues > 16
           ? 96
-          : tempRemainingValues > 0
-          ? Math.min(96, tempRemainingValues * 5 + 40)
+          : remainingValues > 0
+          ? Math.min(96, remainingValues * 5 + 40)
           : 24;
-      setCardStyle(`flex-none  h-${cardHeight} overflow-y-scroll `);
+      return `flex-none  h-${cardHeight} overflow-y-scroll `;
     } else {
-      setCardStyle("overflow-hidden h-auto");
+      return "overflow-hidden h-auto";
     }
   };
-  const [numberOfLines, setNumberOfLines] = useState(maxValuesToDisplay);
-  const calcNumberOfLines = (tempVisibleItems) => {
-    setNumberOfLines(
-      tempVisibleItems - maxValuesToDisplay < 0
-        ? tempVisibleItems
-        : isGroupExpanded
-        ? 16
-        : maxValuesToDisplay,
-    );
-  };
-  const calcNumberOfBarsToDisplay = (tempVisibleItems) => {
-    const totalNumberOfBars = enumFilters
-      ? enumFilters.length
-      : tempVisibleItems;
+  const calcNumberOfBarsToDisplay = (visibleItems) => {
+    const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
     return isGroupExpanded
       ? Math.min(16, totalNumberOfBars)
       : Math.min(maxValuesToDisplay, totalNumberOfBars);
@@ -172,20 +159,16 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             ? entry
             : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
         );
-      const tempRemainingValues = tempFlteredData.length - maxValuesToDisplay;
-      setRemainingValues(tempRemainingValues);
-      calcCardStyle(tempRemainingValues);
+      const remainingValues = tempFlteredData.length - maxValuesToDisplay;
+      const cardStyle = calcCardStyle(remainingValues);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
+        tempFlteredData.length,
+      );
 
-      // filter missing and "" strings and update checkboxes
-      const tempVisibleItems = Object.entries(tempFlteredData).filter(
-        (entry) => entry[0] != "_missing" && entry[0] != "",
-      ).length;
-      setVisibleItems(tempVisibleItems);
-      calcNumberOfLines(tempVisibleItems);
-      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(tempVisibleItems);
-      setFilteredData(tempFlteredData);
       setFacetChartData({
-        filteredData: Object.fromEntries(tempFlteredData),
+        filteredData: tempFlteredData,
+        filteredDataObj: Object.fromEntries(tempFlteredData),
+        remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
         height:
@@ -196,11 +179,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             : numberOfBarsToDisplay == 3
             ? 240
             : numberOfBarsToDisplay * 65 + 10,
+        cardStyle: cardStyle,
       });
     } else {
       setFacetChartData({
         ...facetChartData,
-        filteredData: {},
+        filteredDataObj: {},
         isSuccess: false,
       });
     }
@@ -209,10 +193,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   const [sortedData, setSortedData] = useState(undefined);
   useEffect(() => {
-    if (filteredData && filteredData.length > 0) {
+    if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
       setSortedData(
         Object.fromEntries(
-          [...filteredData]
+          [...facetChartData.filteredData]
             .sort(
               sortType.type === "value"
                 ? ([, a], [, b]) =>
@@ -226,8 +210,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         ),
       );
     }
-  }, [filteredData, sortType, isGroupExpanded, maxValuesToDisplay]);
-  if (visibleItems == 0 && hideIfEmpty) {
+  }, [facetChartData, sortType, isGroupExpanded, maxValuesToDisplay]);
+  if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
     return null; // nothing to render if visibleItems == 0
   }
   return (
@@ -326,12 +310,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 setSort={setSortType}
               />
 
-              <div className={cardStyle}>
+              <div className={facetChartData.cardStyle}>
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}
                 />
-                {visibleItems == 0 ? (
+                {facetChartData.filteredData.length == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
                   </div>
@@ -394,7 +378,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   <div>
                     {
                       // uninitialized, loading, error animated bars
-                      Array.from(Array(numberOfLines)).map((_, index) => {
+                      Array.from(Array(maxValuesToDisplay)).map((_, index) => {
                         return (
                           <div
                             key={`${field}-${index}`}
@@ -418,7 +402,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             </div>
             {
               <FacetExpander
-                remainingValues={remainingValues}
+                remainingValues={facetChartData.remainingValues}
                 isGroupExpanded={isGroupExpanded}
                 onShowChanged={setIsGroupExpanded}
               />
@@ -429,13 +413,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               isFacetView ? "invisible" : ""
             }`}
           >
-            {filteredData.length === 0 ? (
+            {facetChartData.filteredData.length === 0 ? (
               <div className="mx-4">No results found</div>
             ) : (
               !isFacetView && (
                 <EnumFacetChart
                   field={field}
-                  data={facetChartData.filteredData}
+                  data={facetChartData.filteredDataObj}
                   selectedEnums={selectedEnums}
                   isSuccess={facetChartData.isSuccess}
                   showTitle={false}
