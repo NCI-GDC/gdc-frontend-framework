@@ -189,9 +189,8 @@ export const fetchGenesTable = createAsyncThunk<
       appendFilterToOperation(baseFilters, searchFilters),
     );
 
-    const rawFilterContents =
-      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
-    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
+    const filterContents =
+      baseFilters ? convertFilterToGqlFilter(baseFilters)?.content : [];
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
