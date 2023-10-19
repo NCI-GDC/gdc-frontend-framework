@@ -191,6 +191,13 @@ describe("CDaveCard", () => {
       isFetching: false,
       isSuccess: true,
     } as any);
+    jest.spyOn(router, "useRouter").mockImplementation(
+      () =>
+        ({
+          pathname: "",
+          query: { featureFlag: "yearToggle" },
+        } as any),
+    );
 
     const { getByRole, getByLabelText } = render(
       <CDaveCard

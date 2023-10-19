@@ -23,7 +23,7 @@ import {
   HIDE_QQ_BOX_FIELDS,
   DATA_DIMENSIONS,
 } from "../constants";
-import { shouldDisplayDataDimension, toDisplayName } from "../utils";
+import { toDisplayName, useDataDimension } from "../utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -42,11 +42,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const { scrollIntoView, targetRef } = useScrollIntoView();
+  const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
   );
   const [dataDimension, setDataDimension] = useState<DataDimension | null>(
-    DATA_DIMENSIONS?.[field]?.toggleValue ?? DATA_DIMENSIONS?.[field]?.unit,
+    displayDataDimension && DATA_DIMENSIONS?.[field]?.toggleValue
+      ? DATA_DIMENSIONS?.[field]?.toggleValue
+      : DATA_DIMENSIONS?.[field]?.unit,
   );
 
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
@@ -130,7 +133,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
         <div className="flex gap-2 h-7 items-center">
-          {shouldDisplayDataDimension(field) && (
+          {displayDataDimension && (
             <SegmentedControl
               data={[
                 DATA_DIMENSIONS?.[field]?.toggleValue,

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { omitBy, some, capitalize, isNumber } from "lodash";
 import { NumericFromTo, Buckets, Stats, DAYS_IN_YEAR } from "@gff/core";
 import {
@@ -114,8 +115,11 @@ export const isInterval = (
   return false;
 };
 
-export const shouldDisplayDataDimension = (field: string): boolean => {
-  return DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
+export const useDataDimension = (field: string): boolean => {
+  // TODO - remove feature flag
+  const router = useRouter();
+  const yearToggleFlag = router?.query?.featureFlag === "yearToggle";
+  return yearToggleFlag && DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
 };
 
 export const formatValue = (value: number): number => {

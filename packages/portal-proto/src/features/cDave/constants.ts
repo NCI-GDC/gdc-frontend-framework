@@ -175,8 +175,8 @@ export const DATA_DIMENSIONS: Record<
     unit: "Days",
     toggleValue: "Years",
   },
-  "diagnoses.days_to_birth": { unit: "Days", toggleValue: "Years" },
-  "diagnoses.days_to_death": { unit: "Days", toggleValue: "Years" },
+  "demographic.days_to_birth": { unit: "Days", toggleValue: "Years" },
+  "demographic.days_to_death": { unit: "Days", toggleValue: "Years" },
   "diagnoses.days_to_diagnosis": { unit: "Days", toggleValue: "Years" },
   "diagnoses.days_to_last_follow_up": { unit: "Days", toggleValue: "Years" },
   "diagnoses.days_to_last_known_disease_status": {

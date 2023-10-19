@@ -9,7 +9,7 @@ import { CustomInterval, DataDimension, NamedFromTo } from "../types";
 import {
   convertDataDimension,
   isInterval,
-  shouldDisplayDataDimension,
+  useDataDimension,
   formatValue,
   toDisplayName,
 } from "../utils";
@@ -35,19 +35,18 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 }: ContinuousBinningModalProps) => {
   const customIntervalSet = isInterval(customBins);
 
+  const displayDataDimension = useDataDimension(field);
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
   const formattedStats = {
     min: formatValue(
       convertDataDimension(stats.min, originalDataDimension, dataDimension),
     ),
     max: formatValue(
-      convertDataDimension(stats.max, originalDataDimension, dataDimension),
+      convertDataDimension(stats.max + 1, originalDataDimension, dataDimension),
     ),
   };
 
-  const binSize = formatValue(
-    (formattedStats.max + 1 - formattedStats.min) / 4,
-  );
+  const binSize = formatValue((formattedStats.max - formattedStats.min) / 4);
 
   const initialBinMethod =
     !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval";
@@ -68,31 +67,37 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const initialIntervalForm = {
     setIntervalSize: customIntervalSet
       ? String(
-          convertDataDimension(
-            customBins.interval,
-            originalDataDimension,
-            dataDimension,
+          formatValue(
+            convertDataDimension(
+              customBins.interval,
+              originalDataDimension,
+              dataDimension,
+            ),
           ),
         )
       : String(binSize),
     setIntervalMin: customIntervalSet
       ? String(
-          convertDataDimension(
-            customBins.min,
-            originalDataDimension,
-            dataDimension,
+          formatValue(
+            convertDataDimension(
+              customBins.min,
+              originalDataDimension,
+              dataDimension,
+            ),
           ),
         )
       : String(formattedStats.min),
     setIntervalMax: customIntervalSet
       ? String(
-          convertDataDimension(
-            customBins.max,
-            originalDataDimension,
-            dataDimension,
+          formatValue(
+            convertDataDimension(
+              customBins.max,
+              originalDataDimension,
+              dataDimension,
+            ),
           ),
         )
-      : String(formattedStats.max + 1),
+      : String(formattedStats.max),
   };
 
   const intervalForm = useForm({
@@ -227,7 +232,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   const intervalFormAtDefault =
     intervalForm.values.setIntervalSize === String(binSize) &&
     intervalForm.values.setIntervalMin === String(formattedStats.min) &&
-    intervalForm.values.setIntervalMax === String(formattedStats.max + 1);
+    intervalForm.values.setIntervalMax === String(formattedStats.max);
   const rangeFormAtDefault =
     rangeForm.values.ranges.length === 1 &&
     rangeForm.values.ranges[0].name === "" &&
@@ -257,7 +262,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         <p>
           Available values from <b>{formattedStats.min}</b> to{" "}
           <b>
-            {"<"} {formattedStats.max + 1}
+            {"<"} {formattedStats.max}
           </b>
         </p>
         <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
@@ -270,7 +275,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           <div className="flex-grow">
             <span className="font-content">
               Define bins{" "}
-              {shouldDisplayDataDimension(field)
+              {displayDataDimension
                 ? `in ${dataDimension.toLocaleLowerCase()}`
                 : "by"}
               :
@@ -351,7 +356,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               intervalForm.setValues({
                 setIntervalSize: String(binSize),
                 setIntervalMin: String(formattedStats.min),
-                setIntervalMax: String(formattedStats.max + 1),
+                setIntervalMax: String(formattedStats.max),
               });
               rangeForm.setValues({
                 ranges: [{ name: "", from: "", to: "" }],

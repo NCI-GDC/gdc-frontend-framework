@@ -21,11 +21,7 @@ import {
   SelectedFacet,
 } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
-import {
-  formatPercent,
-  isInterval,
-  shouldDisplayDataDimension,
-} from "../utils";
+import { formatPercent, isInterval, useDataDimension } from "../utils";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -55,12 +51,11 @@ const CardControls: React.FC<CardControlsProps> = ({
   dataDimension,
 }: CardControlsProps) => {
   const isDemoMode = useIsDemoApp();
+  const displayDataDimension = useDataDimension(field);
 
   const downloadTSVFile = () => {
     const header = [
-      shouldDisplayDataDimension(field)
-        ? `${fieldName} (${dataDimension})`
-        : fieldName,
+      displayDataDimension ? `${fieldName} (${dataDimension})` : fieldName,
       "# Cases",
     ];
     const body = Object.entries(displayedData).map(([field, count]) =>

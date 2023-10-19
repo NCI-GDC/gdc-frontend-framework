@@ -2,7 +2,7 @@ import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
 import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { DataDimension, SelectedFacet } from "../types";
-import { formatPercent, shouldDisplayDataDimension } from "../utils";
+import { formatPercent, useDataDimension } from "../utils";
 
 interface CDaveTableProps {
   readonly field: string;
@@ -32,6 +32,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   dataDimension,
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
+  const displayDataDimension = useDataDimension(field);
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
@@ -58,7 +59,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
               {fieldName}
-              {shouldDisplayDataDimension(field) && ` (${dataDimension})`}
+              {displayDataDimension && ` (${dataDimension})`}
               {hasCustomBins && " (User Defined Bins Applied)"}
             </th>
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
