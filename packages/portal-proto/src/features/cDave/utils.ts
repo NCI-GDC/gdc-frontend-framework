@@ -6,7 +6,12 @@ import {
   SPECIAL_CASE_FIELDS,
   DATA_DIMENSIONS,
 } from "./constants";
-import { CustomInterval, DataDimension, NamedFromTo } from "./types";
+import {
+  CustomInterval,
+  DataDimension,
+  DisplayData,
+  NamedFromTo,
+} from "./types";
 
 export const filterUsefulFacets = (
   facets: Record<string, Buckets | Stats>,
@@ -83,18 +88,22 @@ export const parseContinuousBucket = (bucket: string): string[] => {
 
 export const flattenBinnedData = (
   binnedData: Record<string, number | Record<string, number>>,
-): Record<string, number> => {
-  const flattenedValues = {};
+): DisplayData => {
+  const flattenedValues: Record<string, number> = {};
 
   Object.entries(binnedData).forEach(([k, v]) => {
     if (Number.isInteger(v)) {
-      flattenedValues[k] = v;
+      flattenedValues[k] = v as number;
     } else {
       flattenedValues[k] = Object.values(v).reduce((a, b) => a + b);
     }
   });
 
-  return flattenedValues;
+  return Object.entries(flattenedValues).map(([k, v]) => ({
+    key: k,
+    displayName: k,
+    count: v,
+  }));
 };
 
 export const formatPercent = (count: number, yTotal: number): string =>

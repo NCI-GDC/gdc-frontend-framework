@@ -17,6 +17,7 @@ import {
   CategoricalBins,
   ContinuousCustomBinnedData,
   CustomInterval,
+  DisplayData,
   NamedFromTo,
   SelectedFacet,
 } from "../types";
@@ -27,7 +28,7 @@ interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
   readonly fieldName: string;
-  readonly displayedData: Record<string, number>;
+  readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly setBinningModalOpen: (open: boolean) => void;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
@@ -58,8 +59,8 @@ const CardControls: React.FC<CardControlsProps> = ({
       displayDataDimension ? `${fieldName} (${dataDimension})` : fieldName,
       "# Cases",
     ];
-    const body = Object.entries(displayedData).map(([field, count]) =>
-      [field, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
+    const body = displayedData.map(({ displayName, count }) =>
+      [displayName, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
     );
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
@@ -91,7 +92,7 @@ const CardControls: React.FC<CardControlsProps> = ({
                   : undefined;
               const [from, to] = customBin
                 ? [customBin.from, customBin.to]
-                : facet.value.split(" to <");
+                : facet.value.split("-");
               return {
                 operator: "and",
                 operands: [

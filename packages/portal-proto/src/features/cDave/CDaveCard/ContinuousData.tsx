@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
-import { mapKeys } from "lodash";
 import {
   useGetContinuousDataStatsQuery,
   Statistics,
@@ -17,8 +16,13 @@ import {
   ChartTypes,
   SelectedFacet,
   DataDimension,
+  DisplayData,
 } from "../types";
-import { SURVIVAL_PLOT_MIN_COUNT, DATA_DIMENSIONS } from "../constants";
+import {
+  SURVIVAL_PLOT_MIN_COUNT,
+  DATA_DIMENSIONS,
+  MISSING_KEY,
+} from "../constants";
 import {
   isInterval,
   createBuckets,
@@ -34,17 +38,20 @@ const processContinuousResultData = (
   customBinnedData: NamedFromTo[] | CustomInterval,
   field: string,
   dataDimension: DataDimension,
-): Record<string, number> => {
+): DisplayData => {
   if (!isInterval(customBinnedData) && customBinnedData?.length > 0) {
-    return Object.fromEntries(
-      Object.entries(data).map(([, v], idx) => [
-        customBinnedData[idx]?.name,
-        v,
-      ]),
-    );
+    return Object.values(data).map((v, idx) => ({
+      displayName: customBinnedData[idx]?.name,
+      key: customBinnedData[idx]?.name,
+      count: v,
+    }));
   }
 
-  return mapKeys(data, (_, k) => toBucketDisplayName(k, field, dataDimension));
+  return Object.entries(data).map(([k, v]) => ({
+    displayName: toBucketDisplayName(k, field, dataDimension),
+    key: k,
+    count: v,
+  }));
 };
 
 const toBucketDisplayName = (
@@ -144,18 +151,18 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
 
   useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
-      Object.entries(displayedData)
+      displayedData
         .filter(
-          ([key, value]) =>
-            key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
+          ({ count, key }) =>
+            key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
         )
-        .sort((a, b) => b[1] - a[1])
-        .map(([key]) => key)
+        .sort((a, b) => b.count - a.count)
+        .map(({ key }) => key)
         .slice(0, 2),
     );
 
     if (customBinnedData === null) {
-      setYTotal(Object.values(displayedData).reduce((a, b) => a + b, 0));
+      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
     }
 
     setSelectedFacets([]);
@@ -178,9 +185,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
               data={displayedData}
               yTotal={yTotal}
               isFetching={isFetching}
-              hideYTicks={Object.values(displayedData).every(
-                (val) => val === 0,
-              )}
+              hideYTicks={displayedData.every((val) => val.count === 0)}
               noData={noData}
             />
           ) : (

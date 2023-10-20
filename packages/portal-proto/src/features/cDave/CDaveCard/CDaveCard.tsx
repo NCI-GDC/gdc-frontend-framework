@@ -22,6 +22,7 @@ import {
   CONTINUOUS_FACET_TYPES,
   HIDE_QQ_BOX_FIELDS,
   DATA_DIMENSIONS,
+  MISSING_KEY,
 } from "../constants";
 import { toDisplayName, useDataDimension } from "../utils";
 
@@ -56,7 +57,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
     : data !== undefined &&
-      (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
+      (data as Buckets).buckets.every((bucket) => bucket.key === MISSING_KEY);
 
   const fieldName = toDisplayName(field);
 

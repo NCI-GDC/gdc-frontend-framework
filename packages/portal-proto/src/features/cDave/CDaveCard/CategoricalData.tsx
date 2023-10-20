@@ -6,8 +6,13 @@ import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
 import CategoricalBinningModal from "../CategoricalBinningModal";
-import { CategoricalBins, ChartTypes, SelectedFacet } from "../types";
-import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
+import {
+  CategoricalBins,
+  ChartTypes,
+  DisplayData,
+  SelectedFacet,
+} from "../types";
+import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { flattenBinnedData } from "../utils";
 
 interface CategoricalDataProps {
@@ -38,47 +43,44 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     () =>
       Object.fromEntries(
         (initialData || []).map((d) => [
-          d.key === "_missing" ? "missing" : d.key,
+          d.key === MISSING_KEY ? "missing" : d.key,
           d.doc_count,
         ]),
       ),
     [initialData],
   );
 
+  const displayedData: DisplayData = useDeepCompareMemo(
+    () =>
+      (customBinnedData !== null
+        ? flattenBinnedData(customBinnedData as CategoricalBins)
+        : (initialData || []).map(({ key, doc_count }) => ({
+            key,
+            displayName: key === MISSING_KEY ? "missing" : key,
+            count: doc_count,
+          }))
+      ).sort((a, b) => b.count - a.count),
+    [customBinnedData, initialData],
+  );
+
   useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
-      Object.entries(
-        customBinnedData !== null
-          ? flattenBinnedData(customBinnedData as CategoricalBins)
-          : resultData,
-      )
+      displayedData
         .filter(
-          ([key, value]) =>
-            key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
+          ({ key, count }) =>
+            key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
         )
-        .sort((a, b) => b[1] - a[1])
-        .map(([key]) => key)
+        .sort((a, b) => b.count - a.count)
+        .map(({ key }) => key)
         .slice(0, 2),
     );
 
     if (customBinnedData === null) {
-      setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
+      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
     }
 
     setSelectedFacets([]);
-  }, [customBinnedData, resultData]);
-
-  const displayedData = useDeepCompareMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(
-          customBinnedData !== null
-            ? flattenBinnedData(customBinnedData as CategoricalBins)
-            : resultData,
-        ).sort((a, b) => b[1] - a[1]),
-      ),
-    [customBinnedData, resultData],
-  );
+  }, [customBinnedData, displayedData]);
 
   return (
     <>
