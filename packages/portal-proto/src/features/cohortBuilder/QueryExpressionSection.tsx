@@ -23,8 +23,6 @@ const QueryExpressionContainer = tw.div`
   mx-3
 `;
 
-const MAX_COLLAPSED_ROWS = 3;
-
 interface CollapsedStateReducerAction {
   type: "expand" | "collapse" | "clear" | "init" | "expandAll" | "collapseAll";
   cohortId: string;
@@ -96,8 +94,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 }: QueryExpressionSectionProps) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
-  const [numOfRows, setNumberOfRows] = useState(0);
-  const [collapsedHeight, setCollapsedHeight] = useState(0);
   const filtersRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useCoreDispatch();
@@ -117,38 +113,6 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
       setExpandedState({ type: "init", cohortId: currentCohortId });
     }
   }, [currentCohortId, expandedState]);
-
-  useEffect(() => {
-    if (filtersRef.current) {
-      let tempNumRows = 0;
-      let tempCollapsedHeight = 0;
-      const filterElements = Array.from(
-        filtersRef.current.children,
-      ) as HTMLDivElement[];
-      filterElements.forEach((f, i) => {
-        if (i === 0) {
-          tempNumRows++;
-          const style = window.getComputedStyle(f);
-          tempCollapsedHeight += f.clientHeight + parseInt(style.marginBottom);
-        } else if (f.offsetLeft <= filterElements[i - 1].offsetLeft) {
-          // If the current element is further to the left than the previous, we are on a new row
-          tempNumRows++;
-          if (tempNumRows <= MAX_COLLAPSED_ROWS) {
-            const style = window.getComputedStyle(f);
-            tempCollapsedHeight +=
-              f.clientHeight + parseInt(style.marginBottom);
-          }
-        }
-      });
-
-      setNumberOfRows(tempNumRows);
-      const parentStyle = window.getComputedStyle(filtersRef.current);
-      // height of rows + top padding of parent + padding below rows
-      setCollapsedHeight(
-        tempCollapsedHeight + parseInt(parentStyle.paddingTop) + 4,
-      );
-    }
-  }, [filters, filtersRef?.current?.clientHeight, expandedState]);
 
   return (
     <QueryExpressionContainer>
@@ -221,7 +185,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   }
                   aria-label="Expand/collapse filters section"
                   aria-expanded={!filtersSectionCollapsed}
-                  disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                  disabled={
+                    noFilters || filtersRef?.current?.clientHeight < 100
+                  }
                   className={`text-white data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary hover:bg-primary-darkest hover:border-primary-darkest`}
                 >
                   {filtersSectionCollapsed ? (
@@ -246,8 +212,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
             }`}
             style={
-              filtersSectionCollapsed && numOfRows > MAX_COLLAPSED_ROWS
-                ? { maxHeight: collapsedHeight }
+              filtersSectionCollapsed && filtersRef?.current?.clientHeight > 100
+                ? { maxHeight: 100 }
                 : undefined
             }
             ref={filtersRef}
