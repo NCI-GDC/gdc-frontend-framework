@@ -4,7 +4,6 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { truncateString } from "src/utils";
 import { convertDateToString } from "@/utils/date";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import VictoryBarChart from "../../charts/VictoryBarChart";
@@ -18,7 +17,7 @@ const formatBarChartData = (
   displayPercent: boolean,
 ) => {
   const mappedData = data.map(({ displayName, key, count }) => ({
-    x: truncateString(displayName, 8),
+    x: key,
     fullName: displayName,
     key,
     y: displayPercent ? (count / yTotal) * 100 : count,
