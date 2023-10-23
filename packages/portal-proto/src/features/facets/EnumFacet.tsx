@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { usePrevious, fieldNameToTitle } from "@gff/core";
+import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import {
   MdFlip as FlipIcon,
@@ -16,7 +16,6 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { isEqual } from "lodash";
 import {
   FacetIconButton,
   controlsIconStyle,
@@ -27,6 +26,7 @@ import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { SortType } from "./types";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -71,12 +71,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     type: "alpha",
     direction: "dsc",
   });
+  const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess } = hooks.useGetFacetData(field);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-  const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
   const totalCount = hooks.useTotalCounts();
@@ -89,11 +89,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     }
   }, [isSearching]);
 
-  useEffect(() => {
-    if (!isEqual(prevFilters, enumFilters)) {
-      setSelectedEnums(enumFilters);
-    }
-  }, [enumFilters, isSuccess, prevFilters]);
+  useDeepCompareEffect(() => {
+    setSelectedEnums(enumFilters);
+  }, [enumFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
 
@@ -121,7 +119,15 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const [facetChartData, setFacetChartData] = useState({
+  const [facetChartData, setFacetChartData] = useState<{
+    filteredData: [string, number][];
+    filteredDataObj: Record<string, number>;
+    remainingValues: number;
+    numberOfBarsToDisplay: number;
+    isSuccess: boolean;
+    height: number;
+    cardStyle: string;
+  }>({
     filteredData: [],
     filteredDataObj: {},
     remainingValues: 0,
@@ -131,26 +137,34 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     cardStyle: "overflow-hidden h-auto",
   });
 
-  const calcCardStyle = (remainingValues) => {
-    if (isGroupExpanded) {
-      const cardHeight =
-        remainingValues > 16
-          ? 96
-          : remainingValues > 0
-          ? Math.min(96, remainingValues * 5 + 40)
-          : 24;
-      return `flex-none  h-${cardHeight} overflow-y-scroll `;
-    } else {
-      return "overflow-hidden h-auto";
-    }
-  };
-  const calcNumberOfBarsToDisplay = (visibleItems) => {
-    const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
-    return isGroupExpanded
-      ? Math.min(16, totalNumberOfBars)
-      : Math.min(maxValuesToDisplay, totalNumberOfBars);
-  };
-  useEffect(() => {
+  const calcCardStyle = useDeepCompareCallback(
+    (remainingValues: number) => {
+      if (isGroupExpanded) {
+        const cardHeight =
+          remainingValues > 16
+            ? 96
+            : remainingValues > 0
+            ? Math.min(96, remainingValues * 5 + 40)
+            : 24;
+        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+      } else {
+        return "overflow-hidden h-auto";
+      }
+    },
+    [isGroupExpanded],
+  );
+
+  const calcNumberOfBarsToDisplay = useDeepCompareCallback(
+    (visibleItems: number) => {
+      const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
+      return isGroupExpanded
+        ? Math.min(16, totalNumberOfBars)
+        : Math.min(maxValuesToDisplay, totalNumberOfBars);
+    },
+    [isGroupExpanded, enumFilters, maxValuesToDisplay],
+  );
+
+  useDeepCompareEffect(() => {
     if (isSuccess && data) {
       const tempFlteredData = Object.entries(data)
         .filter((entry) => entry[0] != "_missing" && entry[0] != "")
@@ -165,7 +179,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         tempFlteredData.length,
       );
 
-      setFacetChartData({
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
         filteredData: tempFlteredData,
         filteredDataObj: Object.fromEntries(tempFlteredData),
         remainingValues,
@@ -180,19 +195,24 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             ? 240
             : numberOfBarsToDisplay * 65 + 10,
         cardStyle: cardStyle,
-      });
+      }));
     } else {
-      setFacetChartData({
-        ...facetChartData,
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
         filteredDataObj: {},
         isSuccess: false,
-      });
+      }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isSuccess, maxValuesToDisplay, searchTerm]);
+  }, [
+    data,
+    isSuccess,
+    maxValuesToDisplay,
+    searchTerm,
+    calcCardStyle,
+    calcNumberOfBarsToDisplay,
+  ]);
 
-  const [sortedData, setSortedData] = useState(undefined);
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
       setSortedData(
         Object.fromEntries(
@@ -210,7 +230,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         ),
       );
     }
-  }, [facetChartData, sortType, isGroupExpanded, maxValuesToDisplay]);
+  }, [
+    facetChartData.filteredData,
+    sortType,
+    isGroupExpanded,
+    maxValuesToDisplay,
+  ]);
+
   if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
     return null; // nothing to render if visibleItems == 0
   }
