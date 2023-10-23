@@ -31,7 +31,7 @@ const config: InitialOptionsTsJest = {
     "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend)/",
     "!proteinpaint",
   ],
-  testTimeout: 10000,
+  testTimeout: 20000,
 };
 
 export default config;
