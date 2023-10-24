@@ -69,7 +69,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
         onMouseOver={() => setShowTooltip(true)}
         onMouseOut={() => setShowTooltip(false)}
       >
-        {truncateString(data[index].fullName, 8)}
+        {truncateString(data?.[index]?.fullName || "", 8)}
       </text>
       {showTooltip && (
         <BarChartTooltip x={x + 20} y={y - 20} datum={data[index]} />
