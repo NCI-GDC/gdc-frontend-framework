@@ -20,7 +20,10 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar
 * Name the cohort "Multiple Filters Cohort" in the Cohort Bar section
-* "Create" "Multiple Filters Cohort has been created" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Create           |Multiple Filters Cohort has been created   |Remove Modal        |
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection              |
   |-----------------|-----------------------|
@@ -31,7 +34,10 @@ tags: gdc-data-portal-v2, end-to-end, regression
   |Data Format      |bam                    |
 * Select "Save" from the Cohort Bar
 * Name the cohort "Multiple Filters Cohort" in the Cohort Bar section
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
 * "Multiple Filters Cohort" should be the active cohort
 
 ## Projects Page
