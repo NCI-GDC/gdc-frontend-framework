@@ -1,13 +1,6 @@
 import GenericLink from "@/components/GenericLink";
 import { fileInCart } from "@/utils/index";
-import {
-  DataCategory,
-  GdcFile,
-  DataType,
-  DataFormat,
-  GdcCartFile,
-  CartFile,
-} from "@gff/core";
+import { GdcFile, GdcCartFile, CartFile } from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
 import { Dispatch, SetStateAction, useMemo } from "react";
@@ -27,9 +20,9 @@ const DownstreamAnalyses = ({
   type DownstreamAnalysesType = {
     file_name: string;
     file_id: string;
-    data_category: DataCategory;
-    data_type: DataType;
-    data_format: DataFormat;
+    data_category: string;
+    data_type: string;
+    data_format: string;
     analysis_workflow: string;
     size: string;
     outputFile: GdcCartFile;
