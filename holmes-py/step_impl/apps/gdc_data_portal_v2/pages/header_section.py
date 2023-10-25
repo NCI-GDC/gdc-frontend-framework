@@ -21,6 +21,7 @@ class HeaderSection(BasePage):
         button_name = self.normalize_button_identifier(button_name)
         locator = HeaderSectionLocators.BUTTON_IDENT(button_name)
         self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_until_locator_is_visible(locator)
         self.click(locator, True)
         self.wait_for_page_to_load(button_name)
