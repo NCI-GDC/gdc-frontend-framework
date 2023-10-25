@@ -72,4 +72,13 @@ describe("extract filters by prefix", () => {
       root: {},
     });
   });
+
+  test("should return an empty FilterSet is passed an undefined FilterSet", () => {
+    const result = extractFiltersWithPrefixFromFilterSet(undefined, "cases.");
+
+    expect(result).toEqual({
+      mode: "and",
+      root: {},
+    });
+  });
 });
