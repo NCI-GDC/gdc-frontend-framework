@@ -10,6 +10,7 @@ class HeaderSectionLocators:
     PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
     REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
+    REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
 
 class HeaderSection(BasePage):
@@ -38,7 +39,10 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
             self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "downloads":
+            # Repository page does not load quickly, and automation will move too fast at times
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
+            self.wait_for_selector(HeaderSectionLocators.REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT)
             self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+            self.wait_for_loading_spinner_table_to_detatch()
         elif page_to_load == "home":
             self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
