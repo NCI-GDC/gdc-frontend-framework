@@ -11,13 +11,11 @@ import {
 import { SetOperationsChartInputProps } from "@/features/set-operations/types";
 import { Loader } from "@mantine/core";
 import {
-  SetOperationsThree,
-  SetOperationsTwo,
-} from "@/features/set-operations/SetOperations";
-import {
   cohortComparisonDemo1,
   cohortComparisonDemo2,
 } from "../apps/CohortComparisonApp";
+import { SetOperationsTwo } from "./SetOperationsTwo";
+import { SetOperationsThree } from "./SetOperationsThree";
 
 /**
  * This component handles the case when the user has selected cohorts for set operations.

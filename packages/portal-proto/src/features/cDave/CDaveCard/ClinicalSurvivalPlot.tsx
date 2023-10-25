@@ -79,7 +79,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
                 });
               }
             } else {
-              const [fromValue, toValue] = value.split(" to <");
+              const [fromValue, toValue] = value.split("-");
 
               content.push({
                 op: ">=",

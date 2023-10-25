@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
@@ -243,7 +243,6 @@ const CustomFacetGroup = (): JSX.Element => {
               weight={700}
               className="text-primary-contrast-lightest"
             >
-              {" "}
               Add a Custom Filter
             </Text>
           </Button>
@@ -286,27 +285,24 @@ export const FacetTabs = (): JSX.Element => {
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const [activeTab, setActiveTab] = useState(
-    router?.query?.tab
-      ? (router.query.tab as string)
-      : Object.keys(tabsConfig)[0],
+    routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
 
   useEffect(() => {
-    if (router !== null && activeTab !== undefined && activeTab !== routerTab) {
-      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
-        scroll: false,
-      });
+    // Check if the change was initiated by the router
+    if (routerTab !== prevRouterTab) {
+      setActiveTab(routerTab as string);
+    } else {
+      // Change initiated by user interaction
+      if (activeTab !== routerTab) {
+        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+          scroll: false,
+        });
+      }
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, routerTab]);
-
-  // This can change from SearchInput component
-  useEffect(() => {
-    if (routerTab !== prevRouterTab) {
-      setActiveTab(routerTab as string);
-    }
-  }, [routerTab, prevRouterTab, setActiveTab]);
+  }, [activeTab, routerTab, prevRouterTab]);
 
   return (
     <div className="w-100">
@@ -350,7 +346,6 @@ export const FacetTabs = (): JSX.Element => {
               key === "custom" ? [] : getFacetInfo(tabEntry.facets, facets);
             return (
               <Tabs.Panel key={key} value={key}>
-                {" "}
                 {key === "custom" ? (
                   <CustomFacetGroup />
                 ) : (

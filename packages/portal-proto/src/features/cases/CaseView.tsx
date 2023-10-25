@@ -10,7 +10,6 @@ import {
   Demographic,
   caseSummaryDefaults,
   FilterSet,
-  DataFormat,
   AccessType,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
@@ -210,7 +209,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
       access: AccessType;
       file_id: string;
       file_name: string;
-      data_format: DataFormat;
+      data_format: string;
       file_size: string;
       file: caseFileType;
     };

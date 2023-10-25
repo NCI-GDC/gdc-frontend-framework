@@ -14,6 +14,7 @@ import {
   useCoreDispatch,
   addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromFiltersMutation,
+  extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -97,6 +98,12 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   });
   /* GeneTable call end */
 
+  /* Extract only the "genes." filters */
+  const genesOnlyFilters = extractFiltersWithPrefixFromFilterSet(
+    genomicFilters,
+    "genes.",
+  );
+
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const [loading, setLoading] = useState(false);
@@ -111,11 +118,20 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const generateFilters = useCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
-      const cohortAndGenomic = buildCohortGqlOperator(
+      let caseSetCreationFilters = buildCohortGqlOperator(
         joinFilters(cohortFilters, genomicFilters),
       );
 
-      return await createSet({ filters: cohortAndGenomic })
+      // for CNV gain/loss only "genes." filters should be applied
+      // as the counts in the table are based on genes only
+      // ssms filters will not affect the counts
+      if (type === "cnvgain" || type === "cnvloss") {
+        caseSetCreationFilters = buildCohortGqlOperator(
+          joinFilters(cohortFilters, genesOnlyFilters),
+        );
+      }
+
+      return await createSet({ filters: caseSetCreationFilters })
         .unwrap()
         .then((setId) => {
           const commonFilters: FilterSet = {
@@ -126,11 +142,27 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 operands: [`set_id:${setId}`],
                 operator: "includes",
               },
+              ...genomicFilters?.root,
+            },
+          };
+
+          // for CNV gain/loss only "genes." filters should be added to the
+          // new cohort
+          const commonFiltersWithGenesOnly: FilterSet = {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+              ...genesOnlyFilters?.root,
             },
           };
 
           if (type === "cnvgain") {
-            return joinFilters(commonFilters, {
+            // only genes filters
+            return joinFilters(commonFiltersWithGenesOnly, {
               mode: "and",
               root: {
                 "genes.cnv.cnv_change": {
@@ -146,7 +178,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               },
             });
           } else if (type === "cnvloss") {
-            return joinFilters(commonFilters, {
+            // only genes filters
+            return joinFilters(commonFiltersWithGenesOnly, {
               mode: "and",
               root: {
                 "genes.cnv.cnv_change": {
@@ -162,6 +195,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               },
             });
           } else {
+            // any other type will use all filters
             return joinFilters(commonFilters, {
               mode: "and",
               root: {
@@ -179,12 +213,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         });
     },
-    [genomicFilters, cohortFilters, createSet],
+    [cohortFilters, genomicFilters, createSet, genesOnlyFilters?.root],
   );
 
   const [showCreateCohort, setShowCreateCohort] = useState(false);
   const createCohort = async (name: string) => {
     const mainFilter = await generateFilters(columnType, geneID);
+
     dispatch(
       addNewCohortWithFilterAndMessage({
         filters: mainFilter,

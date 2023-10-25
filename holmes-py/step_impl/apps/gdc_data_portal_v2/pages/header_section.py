@@ -9,7 +9,7 @@ class HeaderSectionLocators:
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
     PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
-    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter']"
+    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
 
 class HeaderSection(BasePage):
@@ -38,5 +38,6 @@ class HeaderSection(BasePage):
             self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "downloads":
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
+            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "home":
             self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)

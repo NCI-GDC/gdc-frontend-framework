@@ -12,6 +12,8 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 * Navigate to "Downloads" from "Header" "section"
 
 ## Add Files from the Table
+* Wait for table loading spinner
+* Wait for cohort bar case count loading spinner
 * Select value from table by row and column
   |row|column|
   |------|---|
@@ -74,4 +76,9 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 * The cart should have "4" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 4 files from the cart." present on the page and "Keep Modal"
+* The cart should have "0" files
+
+A separate specification ensures the cart has 0 files
+## Remove All Files from Cart
+* Select "Remove All" on the Repository page
 * The cart should have "0" files

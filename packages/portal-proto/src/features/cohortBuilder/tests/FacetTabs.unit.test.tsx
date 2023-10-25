@@ -4,6 +4,11 @@ import { FacetTabs } from "../FacetTabs";
 import * as core from "@gff/core";
 import * as func from "@gff/core";
 import * as hooks from "@/features/facets/hooks";
+import { NextRouter, useRouter } from "next/router";
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
 
 describe("<FacetTabs />", () => {
   beforeEach(() => {
@@ -35,7 +40,9 @@ describe("<FacetTabs />", () => {
       },
     });
     jest.spyOn(hooks, "useEnumFacets").mockImplementation(jest.fn());
-
+    (useRouter as jest.Mock<NextRouter>).mockReturnValue({
+      push: jest.fn(),
+    } as any);
     const { queryByText } = render(<FacetTabs />);
     const customTab = queryByText("Custom");
     expect(customTab).toBeInTheDocument();

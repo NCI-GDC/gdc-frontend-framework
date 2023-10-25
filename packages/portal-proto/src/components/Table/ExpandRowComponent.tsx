@@ -23,6 +23,7 @@ const ExpandRowComponent = ({
       <div
         className="flex items-center text-primary cursor-pointer gap-2"
         aria-label={`${value.length} ${title}`}
+        role="button"
       >
         {isRowExpanded && isColumnExpanded ? (
           <UpIcon

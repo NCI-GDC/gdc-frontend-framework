@@ -5,9 +5,16 @@ import { MdReplay as ResetIcon } from "react-icons/md";
 import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
 import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
-import { CustomInterval, NamedFromTo } from "../types";
-import { isInterval } from "../utils";
+import { CustomInterval, DataDimension, NamedFromTo } from "../types";
+import {
+  convertDataDimension,
+  isInterval,
+  useDataDimension,
+  formatValue,
+  toDisplayName,
+} from "../utils";
 import FunctionButton from "@/components/FunctionButton";
+import { DATA_DIMENSIONS } from "../constants";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -15,6 +22,7 @@ interface ContinuousBinningModalProps {
   readonly stats: Statistics;
   readonly updateBins: (bins: NamedFromTo[] | CustomInterval) => void;
   readonly customBins: NamedFromTo[] | CustomInterval;
+  readonly dataDimension?: DataDimension;
 }
 
 const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
@@ -23,10 +31,23 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   stats,
   updateBins,
   customBins,
+  dataDimension,
 }: ContinuousBinningModalProps) => {
   const customIntervalSet = isInterval(customBins);
 
-  const binSize = (stats.max + 1 - stats.min) / 4;
+  const displayDataDimension = useDataDimension(field);
+  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
+  const formattedStats = {
+    min: formatValue(
+      convertDataDimension(stats.min, originalDataDimension, dataDimension),
+    ),
+    max: formatValue(
+      convertDataDimension(stats.max + 1, originalDataDimension, dataDimension),
+    ),
+  };
+
+  const binSize = formatValue((formattedStats.max - formattedStats.min) / 4);
+
   const initialBinMethod =
     !customIntervalSet && customBins?.length > 0 ? "ranges" : "interval";
   const [binMethod, setBinMethod] = useState<"interval" | "ranges">(
@@ -45,14 +66,38 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 
   const initialIntervalForm = {
     setIntervalSize: customIntervalSet
-      ? String(customBins.interval)
+      ? String(
+          formatValue(
+            convertDataDimension(
+              customBins.interval,
+              originalDataDimension,
+              dataDimension,
+            ),
+          ),
+        )
       : String(binSize),
     setIntervalMin: customIntervalSet
-      ? String(customBins.min)
-      : String(stats.min),
+      ? String(
+          formatValue(
+            convertDataDimension(
+              customBins.min,
+              originalDataDimension,
+              dataDimension,
+            ),
+          ),
+        )
+      : String(formattedStats.min),
     setIntervalMax: customIntervalSet
-      ? String(customBins.max)
-      : String(stats.max + 1),
+      ? String(
+          formatValue(
+            convertDataDimension(
+              customBins.max,
+              originalDataDimension,
+              dataDimension,
+            ),
+          ),
+        )
+      : String(formattedStats.max),
   };
 
   const intervalForm = useForm({
@@ -73,8 +118,20 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         ? [
             ...customBins.map((b) => ({
               name: b.name,
-              from: String(b.from),
-              to: String(b.to),
+              from: String(
+                convertDataDimension(
+                  b.from,
+                  originalDataDimension,
+                  dataDimension,
+                ),
+              ),
+              to: String(
+                convertDataDimension(
+                  b.to,
+                  originalDataDimension,
+                  dataDimension,
+                ),
+              ),
             })),
             { name: "", from: "", to: "" },
           ]
@@ -124,11 +181,24 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 
   const saveBins = () => {
     setModalOpen(false);
+    // Store bins in the field's original data dimension
     if (binMethod === "interval") {
-      const newBins = {
-        interval: Number(intervalForm.values.setIntervalSize),
-        min: Number(intervalForm.values.setIntervalMin),
-        max: Number(intervalForm.values.setIntervalMax),
+      const newBins: CustomInterval = {
+        interval: convertDataDimension(
+          Number(intervalForm.values.setIntervalSize),
+          dataDimension,
+          originalDataDimension,
+        ),
+        min: convertDataDimension(
+          Number(intervalForm.values.setIntervalMin),
+          dataDimension,
+          originalDataDimension,
+        ),
+        max: convertDataDimension(
+          Number(intervalForm.values.setIntervalMax),
+          dataDimension,
+          originalDataDimension,
+        ),
       };
       if (!hasReset || intervalForm.isDirty()) {
         updateBins(newBins);
@@ -136,11 +206,19 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         updateBins(null);
       }
     } else {
-      const newBins = rangeForm.values.ranges
+      const newBins: NamedFromTo[] = rangeForm.values.ranges
         .map((r) => ({
           name: r.name,
-          to: Number(r.to),
-          from: Number(r.from),
+          to: convertDataDimension(
+            Number(r.to),
+            dataDimension,
+            originalDataDimension,
+          ),
+          from: convertDataDimension(
+            Number(r.from),
+            dataDimension,
+            originalDataDimension,
+          ),
         }))
         .slice(0, -1);
       if (!hasReset || rangeForm.isDirty()) {
@@ -153,8 +231,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 
   const intervalFormAtDefault =
     intervalForm.values.setIntervalSize === String(binSize) &&
-    intervalForm.values.setIntervalMin === String(stats.min) &&
-    intervalForm.values.setIntervalMax === String(stats.max + 1);
+    intervalForm.values.setIntervalMin === String(formattedStats.min) &&
+    intervalForm.values.setIntervalMax === String(formattedStats.max);
   const rangeFormAtDefault =
     rangeForm.values.ranges.length === 1 &&
     rangeForm.values.ranges[0].name === "" &&
@@ -167,7 +245,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       onClose={() => setModalOpen(false)}
       size={1000}
       zIndex={400}
-      title={`Create Custom Bins: ${field}`}
+      title={`Create Custom Bins: ${toDisplayName(field)}`}
       classNames={{
         header: "text-xl m-0 px-0",
         content: "p-4",
@@ -182,9 +260,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content"
       >
         <p>
-          Available values from <b>{stats.min}</b> to{" "}
+          Available values from <b>{formattedStats.min}</b> to{" "}
           <b>
-            {"<"} {stats.max + 1}
+            {"<"} {formattedStats.max}
           </b>
         </p>
         <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
@@ -195,7 +273,13 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       <div className="bg-base-lightest p-4 flex flex-col">
         <div className="flex">
           <div className="flex-grow">
-            <span className="font-content">Define bins by:</span>
+            <span className="font-content">
+              Define bins{" "}
+              {displayDataDimension
+                ? `in ${dataDimension.toLocaleLowerCase()}`
+                : "by"}
+              :
+            </span>
             {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
             {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <div
@@ -271,8 +355,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             onClick={() => {
               intervalForm.setValues({
                 setIntervalSize: String(binSize),
-                setIntervalMin: String(stats.min),
-                setIntervalMax: String(stats.max + 1),
+                setIntervalMin: String(formattedStats.min),
+                setIntervalMax: String(formattedStats.max),
               });
               rangeForm.setValues({
                 ranges: [{ name: "", from: "", to: "" }],

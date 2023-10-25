@@ -83,8 +83,12 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     createComparisonCaseSet({
       filters: buildCohortGqlOperator(cohorts.comparison_cohort.filter) ?? {},
     });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    cohorts.primary_cohort.filter,
+    cohorts.comparison_cohort.filter,
+    createComparisonCaseSet,
+    createPrimaryCaseSet,
+  ]);
 
   const loading =
     isFetching ||

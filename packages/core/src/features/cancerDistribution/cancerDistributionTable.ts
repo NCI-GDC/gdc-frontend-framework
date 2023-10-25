@@ -84,6 +84,10 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         };
 
         const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
+        const gqlContextIntersection =
+          gqlContextFilter && (gqlContextFilter as GqlIntersection).content
+            ? (gqlContextFilter as GqlIntersection).content
+            : [];
         return {
           graphQLQuery: `
         query CancerDistributionTable(
@@ -175,16 +179,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                // {
-                //   op: "in",
-                //   content: {
-                //     field: "genes.gene_id",
-                //     value: [request.gene],
-                //   },
-                // },
-                ...(gqlContextFilter
-                  ? (gqlContextFilter as GqlIntersection)?.content
-                  : []),
+                ...gqlContextIntersection,
               ],
             },
             caseAggsFilter: {
@@ -204,16 +199,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     value: "MISSING",
                   },
                 },
-                // {
-                //   op: "in",
-                //   content: {
-                //     field: "genes.gene_id",
-                //     value: [request.gene],
-                //   },
-                // },
-                ...(gqlContextFilter
-                  ? (gqlContextFilter as GqlIntersection)?.content
-                  : []),
+                ...gqlContextIntersection,
               ],
             },
             cnvGainFilter: {
@@ -233,16 +219,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                // {
-                //   op: "in",
-                //   content: {
-                //     field: "genes.gene_id",
-                //     value: [request.gene],
-                //   },
-                // },
-                ...(gqlContextFilter
-                  ? (gqlContextFilter as GqlIntersection)?.content
-                  : []),
+                ...gqlContextIntersection,
               ],
             },
             cnvLossFilter: {
@@ -262,16 +239,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                // {
-                //   op: "in",
-                //   content: {
-                //     field: "genes.gene_id",
-                //     value: [request.gene],
-                //   },
-                // },
-                ...(gqlContextFilter
-                  ? (gqlContextFilter as GqlIntersection)?.content
-                  : []),
+                ...gqlContextIntersection,
               ],
             },
             cnvTested: {

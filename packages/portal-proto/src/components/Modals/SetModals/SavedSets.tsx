@@ -181,7 +181,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
               operator: "includes",
               operands: [
                 ...(existingOperation && isIncludes(existingOperation)
-                  ? existingOperation?.operands
+                  ? existingOperation?.operands ?? []
                   : []),
                 ...selectedSets.map((id) => `set_id:${id}`),
               ],

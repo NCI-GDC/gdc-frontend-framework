@@ -76,6 +76,10 @@ const fetchCnvAnalysisQuery = async (
   };
 
   const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
+  const gqlContextIntersection =
+    gqlContextFilter && (gqlContextFilter as GqlIntersection).content
+      ? (gqlContextFilter as GqlIntersection).content
+      : [];
   const graphQLFilters = {
     cnvAll: {
       op: "and",
@@ -94,9 +98,7 @@ const fetchCnvAnalysisQuery = async (
             value: ["Gain", "Loss"],
           },
         },
-        ...(gqlContextFilter
-          ? (gqlContextFilter as GqlIntersection)?.content
-          : []),
+        ...gqlContextIntersection,
       ],
     },
     cnvGain: {
@@ -116,9 +118,7 @@ const fetchCnvAnalysisQuery = async (
             value: ["Gain"],
           },
         },
-        ...(gqlContextFilter
-          ? (gqlContextFilter as GqlIntersection)?.content
-          : []),
+        ...gqlContextIntersection,
       ],
     },
     cnvLoss: {
@@ -138,9 +138,7 @@ const fetchCnvAnalysisQuery = async (
             value: ["Loss"],
           },
         },
-        ...(gqlContextFilter
-          ? (gqlContextFilter as GqlIntersection)?.content
-          : []),
+        ...gqlContextIntersection,
       ],
     },
     cnvTested: {
@@ -165,9 +163,7 @@ const fetchCnvAnalysisQuery = async (
             value: ["cnv"],
           },
         },
-        ...(gqlContextFilter
-          ? (gqlContextFilter as GqlIntersection)?.content
-          : []),
+        ...gqlContextIntersection,
       ],
     },
   };

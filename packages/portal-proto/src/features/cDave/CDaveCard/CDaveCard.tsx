@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, ActionIcon, Tooltip } from "@mantine/core";
+import { Card, ActionIcon, Tooltip, SegmentedControlItem } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
   MdBarChart as BarChartIcon,
@@ -14,11 +14,17 @@ import {
   Stats,
   GqlOperation,
 } from "@gff/core";
+import SegmentedControl from "@/components/SegmentedControl";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
-import { ChartTypes } from "../types";
-import { CONTINUOUS_FACET_TYPES, HIDE_QQ_BOX_FIELDS } from "../constants";
-import { toDisplayName } from "../utils";
+import { ChartTypes, DataDimension } from "../types";
+import {
+  CONTINUOUS_FACET_TYPES,
+  HIDE_QQ_BOX_FIELDS,
+  DATA_DIMENSIONS,
+  MISSING_KEY,
+} from "../constants";
+import { toDisplayName, useDataDimension } from "../utils";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -37,15 +43,21 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const { scrollIntoView, targetRef } = useScrollIntoView();
+  const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
+  );
+  const [dataDimension, setDataDimension] = useState<DataDimension | null>(
+    displayDataDimension && DATA_DIMENSIONS?.[field]?.toggleValue
+      ? DATA_DIMENSIONS?.[field]?.toggleValue
+      : DATA_DIMENSIONS?.[field]?.unit,
   );
 
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
     : data !== undefined &&
-      (data as Buckets).buckets.every((bucket) => bucket.key === "_missing");
+      (data as Buckets).buckets.every((bucket) => bucket.key === MISSING_KEY);
 
   const fieldName = toDisplayName(field);
 
@@ -56,6 +68,59 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     // this should only happen on initial component mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const chartButtons: SegmentedControlItem[] = [
+    {
+      value: "histogram",
+      label: (
+        <Tooltip
+          label={"Histogram"}
+          position="bottom-end"
+          withArrow
+          arrowSize={7}
+        >
+          <div
+            data-testid="button-histogram-plot"
+            role="button"
+            aria-label={`Select ${fieldName} histogram plot`}
+          >
+            <BarChartIcon size={20} />
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      value: "survival",
+      label: (
+        <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
+          <div
+            data-testid="button-survival-plot"
+            role={"button"}
+            aria-label={`Select ${fieldName} survival plot`}
+          >
+            <SurvivalChartIcon size={20} />
+          </div>
+        </Tooltip>
+      ),
+    },
+  ];
+
+  if (continuous && !HIDE_QQ_BOX_FIELDS.includes(field)) {
+    chartButtons.push({
+      value: "boxqq",
+      label: (
+        <Tooltip label={"Box/QQ Plot"} withArrow arrowSize={7}>
+          <div
+            data-testid="button-box-qq-plot"
+            role="button"
+            aria-label={`Select ${fieldName} Box/QQ Plot`}
+          >
+            <BoxPlotIcon size={20} className={"rotate-90"} />
+          </div>
+        </Tooltip>
+      ),
+    });
+  }
 
   return (
     <Card
@@ -68,80 +133,22 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
-        <div className="flex gap-1">
-          <Tooltip
-            label={"Histogram"}
-            position="bottom-end"
-            withArrow
-            arrowSize={7}
-          >
-            <ActionIcon
-              data-testid="button-historgram-plot"
-              variant="outline"
-              className={
-                chartType === "histogram" && !noData
-                  ? "bg-primary"
-                  : "border-primary"
-              }
-              onClick={() => setChartType("histogram")}
-              aria-label={`Select ${fieldName} histogram plot`}
+        <div className="flex gap-2 h-7 items-center">
+          {displayDataDimension && (
+            <SegmentedControl
+              data={[
+                DATA_DIMENSIONS?.[field]?.toggleValue,
+                DATA_DIMENSIONS?.[field]?.unit,
+              ]}
+              onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData}
-            >
-              <BarChartIcon
-                className={
-                  chartType === "histogram" && !noData
-                    ? "text-primary-contrast"
-                    : "text-primary"
-                }
-              />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
-            <ActionIcon
-              data-testid="button-survival-plot"
-              variant="outline"
-              className={
-                chartType === "survival"
-                  ? "bg-primary text-primary"
-                  : "border-primary text-primary-content"
-              }
-              onClick={() => setChartType("survival")}
-              aria-label={`Select ${fieldName} survival plot`}
-              disabled={noData}
-            >
-              <SurvivalChartIcon
-                className={
-                  chartType === "survival"
-                    ? "text-primary-contrast"
-                    : "text-primary"
-                }
-              />
-            </ActionIcon>
-          </Tooltip>
-          {continuous && !HIDE_QQ_BOX_FIELDS.includes(field) && (
-            <Tooltip label={"Box/QQ Plot"} withArrow arrowSize={7}>
-              <ActionIcon
-                data-testid="button-box-qq-plot"
-                variant="outline"
-                className={
-                  chartType === "boxqq"
-                    ? "bg-primary text-primary"
-                    : "border-primary text-primary-content"
-                }
-                onClick={() => setChartType("boxqq")}
-                aria-label={`Select ${fieldName} Box/QQ Plot`}
-                disabled={noData}
-              >
-                <BoxPlotIcon
-                  className={
-                    chartType === "boxqq"
-                      ? "text-primary-contrast rotate-90"
-                      : "text-primary rotate-90"
-                  }
-                />
-              </ActionIcon>
-            </Tooltip>
+            />
           )}
+          <SegmentedControl
+            data={chartButtons}
+            onChange={(c) => setChartType(c as ChartTypes)}
+            disabled={noData}
+          />
           <Tooltip
             label={"Remove Card"}
             position="bottom-end"
@@ -171,6 +178,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           chartType={chartType}
           noData={noData}
           cohortFilters={cohortFilters}
+          dataDimension={dataDimension}
         />
       ) : (
         <CategoricalData

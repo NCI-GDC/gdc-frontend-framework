@@ -6,7 +6,7 @@ import React from "react";
 const OffscreenWrapper: React.FC = ({ children }) => {
   return (
     <div
-      className="h-64 absolute left-[-1000px]"
+      className="h-64 absolute left-[-10000px]"
       aria-hidden="true"
       // Makes component and children non-interactable by keyboard
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

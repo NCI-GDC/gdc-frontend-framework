@@ -1,3 +1,6 @@
+import { FilterSet } from "./filters";
+import { isIntersectionOrUnion, Operation } from "../gdcapi/filters";
+
 export const defaultCohortNameGenerator = (): string =>
   `Custom cohort ${new Date()
     .toLocaleString("en-CA", {
@@ -5,3 +8,33 @@ export const defaultCohortNameGenerator = (): string =>
       hour12: false,
     })
     .replace(",", "")}`;
+
+/**
+This function takes a FilterSet object and a prefix string as input.
+It filters the root property of the FilterSet object and returns a
+new FilterSet object that only contains filters with field names
+that start with the specified prefix.
+
+ @param {FilterSet} fs - The FilterSet object to filter
+ @param {string} prefix - The prefix to filter by
+ @returns {FilterSet} - A new FilterSet object that only contains filters with field names that start with the specified prefix
+ */
+export const extractFiltersWithPrefixFromFilterSet = (
+  fs: FilterSet | undefined,
+  prefix: string,
+): FilterSet => {
+  if (fs === undefined || fs.root === undefined) {
+    return { mode: "and", root: {} } as FilterSet;
+  }
+  return Object.values(fs.root).reduce(
+    (acc, filter: Operation) => {
+      if (isIntersectionOrUnion(filter)) return acc;
+
+      if (filter.field.startsWith(prefix)) {
+        acc.root[filter.field] = filter;
+      }
+      return acc;
+    },
+    { mode: "and", root: {} } as FilterSet,
+  );
+};

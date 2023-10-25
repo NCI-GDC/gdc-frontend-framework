@@ -12,6 +12,8 @@ tags: gdc-data-portal-v2, repository, regression
 * Navigate to "Downloads" from "Header" "section"
 
 ## Undo Adding File from Table
+* Wait for table loading spinner
+* Wait for cohort bar case count loading spinner
 * Select value from table by row and column
   |row|column|
   |------|---|
@@ -38,4 +40,9 @@ tags: gdc-data-portal-v2, repository, regression
 * The cart should have "1" files
 Reset the cart to 0 for future tests
 * Undo Action
+* The cart should have "0" files
+
+A separate specification ensures the cart has 0 files
+## Remove All Files from Cart
+* Select "Remove All" on the Repository page
 * The cart should have "0" files

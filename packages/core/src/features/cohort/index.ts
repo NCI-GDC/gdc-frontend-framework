@@ -78,7 +78,10 @@ import {
   fetchCohortCaseCounts,
 } from "./cohortCountsQuery";
 
-import { defaultCohortNameGenerator } from "./utils";
+import {
+  defaultCohortNameGenerator,
+  extractFiltersWithPrefixFromFilterSet,
+} from "./utils";
 
 export {
   Cohort,
@@ -150,4 +153,5 @@ export {
   getCohortFilterForAPI,
   selectAllCohorts,
   fetchCohortCaseCounts,
+  extractFiltersWithPrefixFromFilterSet,
 };

@@ -23,7 +23,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Wait for loading spinner
 * Select "Add" from the Cohort Bar
 * Name the cohort "Blank - Mutation Frequency" in the Cohort Bar section
-* "Create" "Blank - Mutation Frequency" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Create           |Blank - Mutation Frequency                 |Remove Modal        |
 
 ## Genes - SSM Affected Cases in Cohort
 * Search the table for "PTEN"
@@ -36,7 +39,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |6     |
 * Name the cohort "PTEN SSM Affected Cases in Cohort" in the Cohort Bar section
-* "Create" "PTEN SSM Affected Cases in Cohort has been created" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |PTEN SSM Affected Cases in Cohort has been created |Remove Modal        |
 * Switch cohort to "PTEN SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "PTEN SSM Affected Cases in Cohort" should be the active cohort
 * Validate the cohort query filter area has these filters
@@ -46,7 +52,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Gene               |PTEN                 |3                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
 * "PTEN SSM Affected Cases in Cohort" should be the active cohort
 
 ## Genes - CNV Gain
@@ -62,7 +71,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |8     |
 * Name the cohort "CSMD3 CNV Gain" in the Cohort Bar section
-* "Create" "CSMD3 CNV Gain has been created" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |CSMD3 CNV Gain has been created                    |Remove Modal        |
 * Switch cohort to "CSMD3 CNV Gain" from the Cohort Bar dropdown list
 * "CSMD3 CNV Gain" should be the active cohort
 * Validate the cohort query filter area has these filters
@@ -72,7 +84,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Gene Id            |=CSMD3               |3                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
 * "CSMD3 CNV Gain" should be the active cohort
 
 ## Genes - CNV Loss
@@ -88,7 +103,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |9     |
 * Name the cohort "ZFHX3 CNV Loss" in the Cohort Bar section
-* "Create" "ZFHX3 CNV Loss has been created" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |ZFHX3 CNV Loss has been created                    |Remove Modal        |
 * Switch cohort to "ZFHX3 CNV Loss" from the Cohort Bar dropdown list
 * "ZFHX3 CNV Loss" should be the active cohort
 * Validate the cohort query filter area has these filters
@@ -98,7 +116,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Gene Id            |=ZFHX3               |3                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
 * "ZFHX3 CNV Loss" should be the active cohort
 
 
@@ -117,7 +138,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |8     |
 * Name the cohort "chr1:g.6197725delT Affected Cases in Cohort" in the Cohort Bar section
-* "Create" "chr1:g.6197725delT Affected Cases in Cohort" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |chr1:g.6197725delT Affected Cases in Cohort        |Remove Modal        |
 * Switch cohort to "chr1:g.6197725delT Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "chr1:g.6197725delT Affected Cases in Cohort" should be the active cohort
 * Validate the cohort query filter area has these filters
@@ -126,5 +150,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |SSM ID             |78066279-06cf-5b55-bc10-10eeba4ec015 |2                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
 * "chr1:g.6197725delT Affected Cases in Cohort" should be the active cohort

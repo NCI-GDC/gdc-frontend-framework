@@ -128,12 +128,12 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="/manage-sets" passHref>
+          <Link href="/manage_sets" passHref>
             <Button
               unstyled
               data-testid="manageSetsLink"
               className={`p-1 rounded-md hover:bg-primary-lightest ${
-                router.pathname === "/manage-sets"
+                router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
                   : ""
               }`}

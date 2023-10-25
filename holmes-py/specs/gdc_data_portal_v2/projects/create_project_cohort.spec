@@ -32,11 +32,17 @@ tags: gdc-data-portal-v2, regression, projects, cohort
 * "REBC Project Page Cohort" should be the active cohort
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
-* "Save" "Cohort has been saved" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal    |Keep or Remove Modal|
+  |-----------------|-----------------------------|--------------------|
+  |Save             |Cohort has been saved        |Remove Modal        |
 * "REBC Project Page Cohort" should be the active cohort
 * Is text "Changes not saved" not present on the page
 * Select "Delete" from the Cohort Bar
-* "Delete" "has been deleted" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal    |Keep or Remove Modal|
+  |-----------------|-----------------------------|--------------------|
+  |Delete           |has been deleted             |Remove Modal        |
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|

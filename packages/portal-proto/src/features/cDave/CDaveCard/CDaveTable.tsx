@@ -1,12 +1,13 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
-import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
-import { SelectedFacet } from "../types";
-import { formatPercent } from "../utils";
+import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
+import { DataDimension, DisplayData, SelectedFacet } from "../types";
+import { formatPercent, useDataDimension } from "../utils";
 
 interface CDaveTableProps {
+  readonly field: string;
   readonly fieldName: string;
-  readonly displayedData: Record<string, number>;
+  readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly hasCustomBins: boolean;
   readonly survival: boolean;
@@ -14,9 +15,11 @@ interface CDaveTableProps {
   readonly setSelectedSurvivalPlots: (field: string[]) => void;
   readonly selectedFacets: SelectedFacet[];
   readonly setSelectedFacets: (facets: SelectedFacet[]) => void;
+  readonly dataDimension?: DataDimension;
 }
 
 const CDaveTable: React.FC<CDaveTableProps> = ({
+  field,
   fieldName,
   displayedData,
   yTotal,
@@ -26,8 +29,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedSurvivalPlots,
   selectedFacets,
   setSelectedFacets,
+  dataDimension,
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
+  const displayDataDimension = useDataDimension(field);
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
@@ -53,7 +58,9 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               </th>
             )}
             <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-              {fieldName} {hasCustomBins && "(User Defined Bins Applied)"}
+              {fieldName}
+              {displayDataDimension && ` (${dataDimension})`}
+              {hasCustomBins && " (User Defined Bins Applied)"}
             </th>
             <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
               # Cases
@@ -61,13 +68,13 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {Object.entries(displayedData).map(([key, count], idx) => {
+          {displayedData.map(({ key, displayName, count }, idx) => {
             const survivalSelected = selectedSurvivalPlots.includes(key);
             const enoughCasesForSurvival = count >= SURVIVAL_PLOT_MIN_COUNT;
             const survivalDisabled =
               (!survivalSelected && selectedSurvivalPlots.length === 5) ||
               !enoughCasesForSurvival ||
-              key === "missing";
+              key === MISSING_KEY;
 
             return (
               <tr
@@ -107,15 +114,15 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                   <td>
                     <Tooltip
                       label={
-                        key === "missing"
+                        key === MISSING_KEY
                           ? `Plot cannot be generated for this value`
                           : !enoughCasesForSurvival
                           ? "Not enough data"
                           : survivalSelected
-                          ? `Remove ${key} from plot`
+                          ? `Remove ${displayName} from plot`
                           : selectedSurvivalPlots.length === 5
                           ? `A maximum of 5 plots can be displayed at a time`
-                          : `Plot ${key}`
+                          : `Plot ${displayName}`
                       }
                       withArrow
                     >
@@ -152,7 +159,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                   </td>
                 )}
                 <td>
-                  <div className="pl-2">{key}</div>
+                  <div className="pl-2">{displayName}</div>
                 </td>
                 <td className="text-right">
                   <div className="pr-4 whitespace-nowrap">

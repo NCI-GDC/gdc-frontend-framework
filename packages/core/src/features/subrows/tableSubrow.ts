@@ -90,7 +90,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
-        const { cases } = response?.data?.explore;
+        const { cases } = response?.data?.explore ?? {};
         const {
           numerators: {
             project__project_id: { buckets: nBuckets = [] },
@@ -175,7 +175,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
-        const { cases } = response?.data?.explore;
+        const { cases } = response?.data?.explore ?? {};
         const {
           numerators: {
             project__project_id: { buckets: nBuckets = [] },

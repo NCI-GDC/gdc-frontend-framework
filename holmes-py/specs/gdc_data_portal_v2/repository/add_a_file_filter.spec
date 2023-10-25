@@ -50,7 +50,7 @@ tags: regression, smoke
 
 ## Only show properties with values on Add a Custom Filter modal
 * Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
-* Close "Add a Custom Filter" modal
+* Close the modal
 
 ## Search filters
 

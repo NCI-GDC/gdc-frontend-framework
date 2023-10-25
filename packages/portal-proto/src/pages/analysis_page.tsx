@@ -13,8 +13,11 @@ import {
 import QueryExpressionSection from "@/features/cohortBuilder/QueryExpressionSection";
 import { useCohortFacetFilters } from "@/features/cohortBuilder/utils";
 import { useState } from "react";
+import { useSetupInitialCohorts } from "@/features/cohortBuilder/hooks";
+import { LoadingOverlay } from "@mantine/core";
 
 const SingleAppsPage: NextPage = () => {
+  const isFetchingAll = useSetupInitialCohorts();
   const router = useRouter();
   const {
     query: { app },
@@ -50,7 +53,7 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-
+      <LoadingOverlay visible={isFetchingAll} />
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}

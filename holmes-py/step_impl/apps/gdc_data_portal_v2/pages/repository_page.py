@@ -13,8 +13,6 @@ class RepositoryPageLocators:
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="section-file-filter-search"]>div>div>input'
 
-    MODAL_CLOSE = "[aria-label='button-close-modal']"
-
     IMAGE_VIEWER_IDENT = lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
@@ -158,9 +156,6 @@ class RepositoryPage(BasePage):
         list_name = "file-filters"
         locator = f"{RepositoryPageLocators.LIST_IDENT(list_name)}//button//div[1]"
         self.driver.locator(locator).nth(nth).click()
-
-    def close_add_a_custom_filter_modal(self):
-        self.driver.locator(RepositoryPageLocators.MODAL_CLOSE).click()
 
     def remove_slide_image_viewer_search_filter(self, search_filter:str):
         """Removes search filter on the slide image viewer page
