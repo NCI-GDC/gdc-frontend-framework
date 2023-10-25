@@ -103,6 +103,7 @@ const download = async ({
   Modal400 = Modals.GeneralErrorModal,
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
+  hideNotification = false,
 }: {
   endpoint: string;
   params: Record<string, any>;
@@ -112,6 +113,7 @@ const download = async ({
   Modal403?: Modals;
   Modal400?: Modals;
   customErrorMessage?: string;
+  hideNotification?: boolean;
 }): Promise<void> => {
   const cookies = new Cookies();
 
@@ -146,6 +148,7 @@ const download = async ({
         styles: () => ({
           root: {
             textAlign: "center",
+            display: hideNotification && "none",
           },
           closeButton: {
             color: "black",

@@ -55,3 +55,8 @@ tags: gdc-data-portal-v2, repository, regression
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |GATK4 MuTect2        |
+
+A separate specification ensures the cart has 0 files
+## Remove All Files from Cart
+* Select "Remove All" on the Repository page
+* The cart should have "0" files

@@ -32,7 +32,6 @@ import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { mapGdcFileToCartFile } from "@/features/files/utils";
 import { addToCart } from "@/features/cart/updateCart";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { useSetupInitialCohorts } from "./hooks";
 import {
   INITIAL_SUMMARY_FIELDS,
   METADATA_EXPAND_PROPS,
@@ -48,7 +47,6 @@ const ContextBar = ({
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
 }): JSX.Element => {
-  useSetupInitialCohorts();
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
@@ -249,8 +247,8 @@ const ContextBar = ({
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
-        <div className="relative p-2">
-          <div className="flex flex-row absolute ml-2 gap-4">
+        <div className="relative p-4">
+          <div className="flex flex-row absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -392,7 +390,7 @@ const ContextBar = ({
           <Tabs
             classNames={{
               tab: SecondaryTabStyle,
-              tabsList: "px-2 mb-4 border-0",
+              tabsList: "mb-4 border-0",
               root: "border-0",
             }}
             data-tour="cohort_summary"

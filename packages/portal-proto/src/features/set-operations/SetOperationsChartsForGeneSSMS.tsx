@@ -1,8 +1,4 @@
 import { Loader } from "@mantine/core";
-import {
-  SetOperationsThree,
-  SetOperationsTwo,
-} from "@/features/set-operations/SetOperations";
 import { SetOperationsChartInputProps } from "./types";
 import {
   useSetOperationGeneTotalQuery,
@@ -10,12 +6,13 @@ import {
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
 } from "@gff/core";
+import { SetOperationsTwo } from "./SetOperationsTwo";
+import { SetOperationsThree } from "./SetOperationsThree";
 
 const ENTITY_TYPE_TO_QUERY_HOOK = {
   genes: useSetOperationGeneTotalQuery,
   mutations: useSetOperationSsmTotalQuery,
 };
-
 const ENTITY_TYPE_TO_COUNT_HOOK = {
   genes: useGeneSetCountsQuery,
   mutations: useSsmSetCountsQuery,

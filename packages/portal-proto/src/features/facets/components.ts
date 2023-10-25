@@ -19,5 +19,5 @@ text-primary-contrast-darker font-heading font-semibold text-[1.25em] break-word
 `;
 
 export const FacetHeader = tw.div`
-flex items-start justify-between flex-nowrap bg-primary-darker shadow-md px-1.5
+flex items-start justify-between flex-nowrap bg-primary-darker px-2
 `;

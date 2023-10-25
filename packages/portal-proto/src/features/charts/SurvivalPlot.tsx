@@ -4,9 +4,9 @@ import {
   SetStateAction,
   useContext,
   useLayoutEffect,
-  useRef,
   useState,
   useEffect,
+  useRef,
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
@@ -20,9 +20,16 @@ import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
+interface SurvivalPlotLegend {
+  key: string;
+  style?: Record<string, string | number>;
+  value: string | JSX.Element;
+}
+
 const textColors = [
   "#1F77B4",
   "#BD5800",
@@ -228,7 +235,12 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
-            <span className="font-content">{`Not enough survival data for ${name}`}</span>
+            // displayed for ["genes", "mutation"] plotTypes
+            <span className="font-content">
+              {plotType !== "cohortComparison"
+                ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
+                : null}
+            </span>
           ),
         },
       ];
@@ -297,6 +309,7 @@ export enum SurvivalPlotTypes {
   categorical = "categorical",
   continuous = "continuous",
   overall = "overall",
+  cohortComparison = "cohortComparison",
 }
 
 export interface SurvivalPlotProps {
@@ -335,14 +348,27 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     "mutation",
     "categorical",
     "continuous",
+    "cohortComparison",
   ].includes(plotType)
     ? enoughDataOnSomeCurves(plotData)
     : enoughData(plotData);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
+  const shouldPlot =
+    hasEnoughData &&
+    plotData
+      .map(({ donors }) => donors)
+      .every(({ length }) => length >= MINIMUM_CASES);
   // hook to call renderSurvivalPlot
+  const shouldUsePlotData =
+    (["gene", "mutation"].includes(plotType) && shouldPlot) ||
+    (["categorical", "continuous", "overall", "cohortComparison"].includes(
+      plotType,
+    ) &&
+      hasEnoughData);
+  const dataToUse = shouldUsePlotData ? plotData : [];
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    dataToUse,
     xDomain,
     setXDomain,
     height,
@@ -354,11 +380,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
-    height,
+    height > 380 ? height : 380,
     setSurvivalPlotLineTooltipContent,
   );
 
-  let legend;
+  let legend: SurvivalPlotLegend[];
   switch (plotType) {
     case SurvivalPlotTypes.overall:
       legend = buildOnePlotLegend(plotData, "Explorer");
@@ -374,6 +400,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
     case SurvivalPlotTypes.continuous:
       legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.cohortComparison:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
   }
 
@@ -563,12 +592,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </Box>
         <div className="survival-plot" ref={container} />
       </div>
-      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
-        <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+      <OffscreenWrapper>
+        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
+          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center font-montserrat">
             <div
               className={
                 [
@@ -595,7 +624,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </div>
           <div className="survival-plot" ref={containerForDownload} />
         </div>
-      </div>
+      </OffscreenWrapper>
     </div>
   );
 };

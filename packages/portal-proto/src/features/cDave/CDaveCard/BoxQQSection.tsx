@@ -177,14 +177,14 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
 
   useEffect(() => {
     const charts = [
-      { filename: boxPlotDownloadName, chartRef: boxPlotRef },
-      { filename: qqPlotDownloadName, chartRef: qqPlotRef },
+      { filename: boxPlotDownloadName, chartRef: boxDownloadChartRef },
+      { filename: qqPlotDownloadName, chartRef: qqDownloadChartRef },
     ];
     dispatch({ type: "add", payload: charts });
     return () => dispatch({ type: "remove", payload: charts });
   }, [
-    boxPlotRef,
-    qqPlotRef,
+    boxDownloadChartRef,
+    qqDownloadChartRef,
     boxPlotDownloadName,
     qqPlotDownloadName,
     dispatch,
@@ -204,10 +204,15 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               <ActionIcon
                 data-testid="button-qq-box-download"
                 variant="outline"
-                className="bg-base-max border-primary"
+                className="bg-base-max border-primary disabled:border-base-contrast-lightest disabled:bg-base-light"
                 aria-label="Download image or data"
+                disabled={isLoading}
               >
-                <DownloadIcon className="text-primary" />
+                <DownloadIcon
+                  className={
+                    isLoading ? "text-base-contrast-lightest" : "text-primary"
+                  }
+                />
               </ActionIcon>
             </Tooltip>
           </Menu.Target>

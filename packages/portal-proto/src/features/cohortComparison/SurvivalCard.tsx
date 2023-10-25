@@ -8,7 +8,7 @@ import {
   useCreateCaseSetFromFiltersMutation,
   GqlIntersection,
 } from "@gff/core";
-import SurvivalPlot from "../charts/SurvivalPlot";
+import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
 
@@ -159,7 +159,11 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
           ) : isFetching || isUninitialized ? (
             <Loader />
           ) : (
-            <SurvivalPlot data={data} hideLegend />
+            <SurvivalPlot
+              plotType={SurvivalPlotTypes.cohortComparison}
+              data={data}
+              hideLegend
+            />
           )}
           <div className="font-heading mt-[1.5rem]">
             <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
