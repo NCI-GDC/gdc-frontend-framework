@@ -12,6 +12,7 @@ import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
+import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -202,6 +203,27 @@ export const REGISTERED_APPS = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have SSM or CNV data available for visualization.",
+  },
+  {
+    name: "Gene Expression Prototype",
+    icon: (
+      <GeneExpressionIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        aria-label="Gene Expression icon"
+      />
+    ),
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    hasDemo: false,
+    description:
+      "Visualize the top most variably expressed genes in your cohort.",
+    id: "GeneExpression",
+    countsField: "ssmCaseCount",
+    caseCounts: 0.25,
+    optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have gene expression data available for visualization.",
   },
   /*
   {
