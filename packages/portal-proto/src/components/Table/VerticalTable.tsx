@@ -51,6 +51,19 @@ function VerticalTable<TData>({
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
+  const liveRegionRef = useRef(null); // Reference to the Live Region
+  const [sortingStatus, setSortingStatus] = useState(""); // Sorting status announcement
+  const [announcementTimestamp, setAnnouncementTimestamp] = useState(
+    Date.now(),
+  );
+
+  useEffect(() => {
+    // Update the Live Region content and attributes
+    if (sortingStatus && announcementTimestamp) {
+      liveRegionRef.current.textContent = sortingStatus;
+      liveRegionRef.current.setAttribute("aria-live", "polite");
+    }
+  }, [sortingStatus, announcementTimestamp]);
 
   // TODO: status fufilled is to be sent for all the tables (even without api calls)
   // also need in pagination (do sth about it)
@@ -213,6 +226,11 @@ function VerticalTable<TData>({
           {tableTitle && (
             <caption className="font-semibold text-left">{tableTitle}</caption>
           )}
+          <div
+            key={announcementTimestamp}
+            ref={liveRegionRef}
+            className="sr-only"
+          />
           <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
@@ -254,9 +272,29 @@ function VerticalTable<TData>({
                         }`}
                         onClick={() => {
                           header.column.toggleSorting();
+                          if (isColumnSorted) {
+                            const sortingDirection =
+                              isColumnSorted === "desc"
+                                ? "sorted none"
+                                : "sorted up";
+                            setSortingStatus(sortingDirection);
+                          } else {
+                            setSortingStatus("sorted down");
+                          }
+                          setAnnouncementTimestamp(Date.now());
                         }}
                         onKeyDown={createKeyboardAccessibleFunction(() => {
                           header.column.toggleSorting();
+                          if (isColumnSorted) {
+                            const sortingDirection =
+                              isColumnSorted === "desc"
+                                ? "sorted none"
+                                : "sorted up";
+                            setSortingStatus(sortingDirection);
+                          } else {
+                            setSortingStatus("sorted down");
+                          }
+                          setAnnouncementTimestamp(Date.now());
                         })}
                         aria-sort={
                           isColumnSorted
