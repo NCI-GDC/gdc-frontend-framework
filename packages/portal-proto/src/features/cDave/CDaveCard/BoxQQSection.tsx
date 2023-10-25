@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef, useContext } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
@@ -11,7 +12,6 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  DAYS_IN_YEAR,
   ClinicalContinuousStatsData,
 } from "@gff/core";
 import tailwindConfig from "tailwind.config";
@@ -20,14 +20,16 @@ import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { convertDateToString } from "@/utils/date";
+import { COLOR_MAP, DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import {
-  BOX_QQ_DATA_DIMENSIONS,
-  COLOR_MAP,
-  DEMO_COHORT_FILTERS,
-} from "../constants";
-import { parseNestedQQResponseData, qnorm } from "../utils";
+  parseNestedQQResponseData,
+  qnorm,
+  formatValue,
+  convertDataDimension,
+} from "../utils";
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
+import { DataDimension } from "../types";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -36,12 +38,14 @@ interface BoxQQPlotProps {
   readonly field: string;
   readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
+  readonly dataDimension?: DataDimension;
 }
 
 const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
   displayName,
   data,
+  dataDimension,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
@@ -60,27 +64,34 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     tailwindConfig.theme.extend.colors[
       COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
     ]?.DEFAULT;
-  const dataDimension =
-    BOX_QQ_DATA_DIMENSIONS?.[clinicalNestedField ?? clinicalField];
 
-  const formatValue = useCallback(
-    (value: number) => {
-      return Number(
-        dataDimension?.unit === "Years"
-          ? value / DAYS_IN_YEAR
-          : value.toFixed(2),
-      );
-    },
-    [dataDimension],
-  );
+  const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
 
   const formattedData = {
-    min: formatValue(data.min),
-    max: formatValue(data.max),
-    mean: formatValue(data.mean),
-    median: formatValue(data.median),
-    q1: formatValue(data.q1),
-    q3: formatValue(data.q3),
+    min: formatValue(
+      convertDataDimension(data.min, originalDataDimension, dataDimension),
+    ),
+    max: formatValue(
+      convertDataDimension(data.max, originalDataDimension, dataDimension),
+    ),
+    mean: formatValue(
+      convertDataDimension(data.mean, originalDataDimension, dataDimension),
+    ),
+    median: formatValue(
+      convertDataDimension(data.median, originalDataDimension, dataDimension),
+    ),
+    q1: formatValue(
+      convertDataDimension(data.q1, originalDataDimension, dataDimension),
+    ),
+    q3: formatValue(
+      convertDataDimension(data.q3, originalDataDimension, dataDimension),
+    ),
+    std_dev: formatValue(
+      convertDataDimension(data.std_dev, originalDataDimension, dataDimension),
+    ),
+    iqr: formatValue(
+      convertDataDimension(data.iqr, originalDataDimension, dataDimension),
+    ),
   };
 
   const missingFilter: FilterSet = {
@@ -108,18 +119,32 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     size: 10000,
   });
 
-  const parsedQQValues = isSuccess
-    ? parseNestedQQResponseData(qqData, field)
-    : [];
-  const downloadData = parsedQQValues.map((caseEntry, i) => ({
+  const parsedQQValues = useDeepCompareMemo(
+    () => (isSuccess ? parseNestedQQResponseData(qqData, field) : []),
+    [qqData, isSuccess, field],
+  );
+  const formattedQQValues = useDeepCompareMemo(
+    () =>
+      parsedQQValues.map((caseEntry, i) => ({
+        id: caseEntry.id,
+        x: qnorm((i + 1 - 0.5) / parsedQQValues.length),
+        y: convertDataDimension(
+          caseEntry.value,
+          originalDataDimension,
+          dataDimension,
+        ),
+      })),
+    [parsedQQValues, dataDimension, originalDataDimension],
+  );
+  const downloadData = formattedQQValues.map((caseEntry) => ({
     id: caseEntry.id,
-    "Sample Quantile": caseEntry.value,
-    "Theoretical Normal Quantile": qnorm((i + 1 - 0.5) / parsedQQValues.length),
+    "Sample Quantile": caseEntry.y,
+    "Theoretical Normal Quantile": caseEntry.x,
   }));
 
   const downloadTSVFile = () => {
     const header = ["id", "Sample Quantile", "Theoretical Normal Quantile"];
-    const body = downloadData.map((d) => Object.values(d).join("\t"));
+    const body = formattedQQValues.map((d) => [d.id, d.x, d.y].join("\t"));
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
     saveAs(
@@ -131,14 +156,14 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   };
 
   const downloadTableTSVFile = () => {
-    const header = ["Statistics", dataDimension?.unit || "Quantities"];
+    const header = ["Statistics", dataDimension || "Quantities"];
     const body = [
       ["Minimum", formattedData.min].join("\t"),
       ["Maximum", formattedData.max].join("\t"),
       ["Mean", formattedData.mean].join("\t"),
       ["Median", formattedData.median].join("\t"),
-      ["Standard Deviation", formatValue(data.std_dev)].join("\t"),
-      ["IQR", formatValue(data.iqr)].join("\t"),
+      ["Standard Deviation", formattedData.std_dev].join("\t"),
+      ["IQR", formattedData.iqr].join("\t"),
     ];
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
@@ -152,14 +177,14 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
 
   useEffect(() => {
     const charts = [
-      { filename: boxPlotDownloadName, chartRef: boxPlotRef },
-      { filename: qqPlotDownloadName, chartRef: qqPlotRef },
+      { filename: boxPlotDownloadName, chartRef: boxDownloadChartRef },
+      { filename: qqPlotDownloadName, chartRef: qqDownloadChartRef },
     ];
     dispatch({ type: "add", payload: charts });
     return () => dispatch({ type: "remove", payload: charts });
   }, [
-    boxPlotRef,
-    qqPlotRef,
+    boxDownloadChartRef,
+    qqDownloadChartRef,
     boxPlotDownloadName,
     qqPlotDownloadName,
     dispatch,
@@ -179,10 +204,15 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
               <ActionIcon
                 data-testid="button-qq-box-download"
                 variant="outline"
-                className="bg-base-max border-primary"
+                className="bg-base-max border-primary disabled:border-base-contrast-lightest disabled:bg-base-light"
                 aria-label="Download image or data"
+                disabled={isLoading}
               >
-                <DownloadIcon className="text-primary" />
+                <DownloadIcon
+                  className={
+                    isLoading ? "text-base-contrast-lightest" : "text-primary"
+                  }
+                />
               </ActionIcon>
             </Tooltip>
           </Menu.Target>
@@ -244,8 +274,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         </div>
         <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
           <QQPlot
-            field={field}
-            data={parsedQQValues}
+            chartValues={formattedQQValues}
             isLoading={isLoading}
             color={color}
             width={boundingRectQQ.width}
@@ -265,8 +294,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         </OffscreenWrapper>
         <OffscreenWrapper>
           <QQPlot
-            field={field}
-            data={parsedQQValues}
+            chartValues={formattedQQValues}
             isLoading={isLoading}
             color={color}
             chartRef={qqDownloadChartRef}
@@ -294,7 +322,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
                 Statistics
               </th>
               <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
-                {dataDimension?.unit || "Quantities"}
+                {dataDimension || "Quantities"}
               </th>
             </tr>
           </thead>
@@ -317,11 +345,11 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             </DarkTableRow>
             <LightTableRow>
               <td className="pl-1">Standard Deviation</td>
-              <td>{formatValue(data.std_dev).toLocaleString()}</td>
+              <td>{formattedData.std_dev.toLocaleString()}</td>
             </LightTableRow>
             <DarkTableRow>
               <td className="pl-1">IQR</td>
-              <td>{formatValue(data.iqr).toLocaleString()}</td>
+              <td>{formattedData.iqr.toLocaleString()}</td>
             </DarkTableRow>
           </tbody>
         </table>

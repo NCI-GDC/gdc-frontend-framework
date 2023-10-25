@@ -17,17 +17,18 @@ import {
   CategoricalBins,
   ContinuousCustomBinnedData,
   CustomInterval,
+  DisplayData,
   NamedFromTo,
   SelectedFacet,
 } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
-import { formatPercent, isInterval } from "../utils";
+import { formatPercent, isInterval, useDataDimension } from "../utils";
 
 interface CardControlsProps {
   readonly continuous: boolean;
   readonly field: string;
   readonly fieldName: string;
-  readonly displayedData: Record<string, number>;
+  readonly displayedData: DisplayData;
   readonly yTotal: number;
   readonly setBinningModalOpen: (open: boolean) => void;
   readonly customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval;
@@ -35,6 +36,7 @@ interface CardControlsProps {
     | ((bins: CategoricalBins) => void)
     | ((bins: NamedFromTo[] | CustomInterval) => void);
   readonly selectedFacets: SelectedFacet[];
+  readonly dataDimension?: string;
 }
 
 const CardControls: React.FC<CardControlsProps> = ({
@@ -47,13 +49,18 @@ const CardControls: React.FC<CardControlsProps> = ({
   customBinnedData,
   setCustomBinnedData,
   selectedFacets,
+  dataDimension,
 }: CardControlsProps) => {
   const isDemoMode = useIsDemoApp();
+  const displayDataDimension = useDataDimension(field);
 
   const downloadTSVFile = () => {
-    const header = [fieldName, "# Cases"];
-    const body = Object.entries(displayedData).map(([field, count]) =>
-      [field, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
+    const header = [
+      displayDataDimension ? `${fieldName} (${dataDimension})` : fieldName,
+      "# Cases",
+    ];
+    const body = displayedData.map(({ displayName, count }) =>
+      [displayName, `${count} (${formatPercent(count, yTotal)})`].join("\t"),
     );
     const tsv = [header.join("\t"), body.join("\n")].join("\n");
 
@@ -85,7 +92,7 @@ const CardControls: React.FC<CardControlsProps> = ({
                   : undefined;
               const [from, to] = customBin
                 ? [customBin.from, customBin.to]
-                : facet.value.split(" to <");
+                : facet.value.split("-");
               return {
                 operator: "and",
                 operands: [

@@ -4,24 +4,24 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { truncateString } from "src/utils";
 import { convertDateToString } from "@/utils/date";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";
+import { DisplayData } from "../types";
 
 const formatBarChartData = (
-  data: Record<string, number>,
+  data: DisplayData,
   yTotal: number,
   displayPercent: boolean,
 ) => {
-  const mappedData = Object.entries(data || {}).map(([key, value]) => ({
-    x: truncateString(key, 8),
-    fullName: key,
+  const mappedData = data.map(({ displayName, key, count }) => ({
+    x: key,
+    fullName: displayName,
     key,
-    y: displayPercent ? (value / yTotal) * 100 : value,
-    yCount: value,
+    y: displayPercent ? (count / yTotal) * 100 : count,
+    yCount: count,
     yTotal,
   }));
 
@@ -29,7 +29,7 @@ const formatBarChartData = (
 };
 
 interface HistogramProps {
-  readonly data: Record<string, number>;
+  readonly data: DisplayData;
   readonly yTotal: number;
   readonly isFetching: boolean;
   readonly noData: boolean;
