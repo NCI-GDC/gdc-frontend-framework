@@ -1,3 +1,4 @@
+import { truncateString } from "@/utils/index";
 import { Box, Tooltip } from "@mantine/core";
 import React, { useState } from "react";
 import {
@@ -48,7 +49,6 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
 };
 
 const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
-  text,
   x,
   y,
   style,
@@ -69,7 +69,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
         onMouseOver={() => setShowTooltip(true)}
         onMouseOut={() => setShowTooltip(false)}
       >
-        {text}
+        {truncateString(data?.[index]?.fullName || "", 8)}
       </text>
       {showTooltip && (
         <BarChartTooltip x={x + 20} y={y - 20} datum={data[index]} />
