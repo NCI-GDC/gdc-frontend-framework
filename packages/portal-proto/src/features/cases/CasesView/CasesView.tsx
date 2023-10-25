@@ -439,6 +439,7 @@ export const ContextualCasesView: React.FC = () => {
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         search={{
           enabled: true,
+          tooltip: "e.g. TCGA-GM-A2DA, c07b122e-ac50-4db2-add2-5617a5d0e976",
         }}
         sorting={sorting}
         setSorting={setSorting}

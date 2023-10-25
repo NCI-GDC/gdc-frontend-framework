@@ -221,6 +221,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       status={isFetching ? "pending" : "fulfilled"}
       search={{
         enabled: true,
+        tooltip: "e.g. Bronchus and lung, Kidney",
       }}
       showControls={true}
       handleChange={handleChange}

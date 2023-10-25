@@ -395,6 +395,7 @@ const ProjectsTable: React.FC = () => {
       }}
       search={{
         enabled: true,
+        tooltip: "e.g. TCGA-BRCA, CPTAC-3",
       }}
       getRowCanExpand={() => true}
       expandableColumnIds={["disease_type", "primary_site"]}

@@ -7,7 +7,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  useId,
+} from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
@@ -49,6 +56,7 @@ function VerticalTable<TData>({
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
+  const [searchFocused, setSearchFocused] = useState(false);
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
 
@@ -148,7 +156,22 @@ function VerticalTable<TData>({
     clearTimeout(timeoutRef.current);
     handleChange({ newSearch: "" });
   };
-
+  const tableSearchBarId = useId();
+  const tooltipContainer = search?.tooltip
+    ? (children) => (
+        <div className="w-72 relative">
+          {children}
+          <div
+            className="border border-base-lighter border-t-primary absolute z-10 w-full bg-white p-2 text-sm overflow-auto rounded-b"
+            hidden={!searchFocused}
+            role="tooltip"
+            id={tableSearchBarId}
+          >
+            {search.tooltip}
+          </div>
+        </div>
+      )
+    : undefined;
   return (
     <div className="grow overflow-hidden pt-1">
       <div
@@ -168,9 +191,11 @@ function VerticalTable<TData>({
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
+                  aria-describedby={search?.tooltip && tableSearchBarId}
                   classNames={{
-                    input:
-                      "border-base-lighter focus:border-2 focus:border-primary",
+                    input: `border-base-lighter focus:border-2 focus:border-primary${
+                      tooltipContainer ? " focus:rounded-b-none" : ""
+                    }`,
                     wrapper: "w-72 h-8",
                   }}
                   size="sm"
@@ -185,6 +210,9 @@ function VerticalTable<TData>({
                   value={searchTerm}
                   onChange={handleInputChange}
                   ref={inputRef}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  inputContainer={tooltipContainer}
                 />
               )}
               {showControls && (

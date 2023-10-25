@@ -128,6 +128,10 @@ export interface TableProps<TData> {
      * default search term if any
      */
     defaultSearchTerm?: string;
+    /**
+     * optional tooltip to display under search bar
+     */
+    tooltip?: string;
   };
   /**
    * Column sorting
