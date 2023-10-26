@@ -1,5 +1,7 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
+import { useDeepCompareCallback } from "use-deep-compare";
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { DataDimension, DisplayData, SelectedFacet } from "../types";
 import { formatPercent, useDataDimension } from "../utils";
@@ -33,6 +35,29 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   const displayDataDimension = useDataDimension(field);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const toggleSelectAll = useDeepCompareCallback(() => {
+    if (selectAllChecked) {
+      setSelectedFacets([]);
+    } else {
+      setSelectedFacets(
+        displayedData
+          .filter(({ key: _, count }) => count > 0)
+          .map(({ key, count }) => ({ value: key, numCases: count })),
+      );
+    }
+    setSelectAllChecked((prev) => !prev);
+  }, [selectAllChecked, setSelectedFacets, displayedData]);
+
+  useEffect(() => {
+    // Check if all rows are selected individually
+    const allSelected = displayedData.every(({ key }) =>
+      selectedFacets.map((facet) => facet.value).includes(key),
+    );
+    setSelectAllChecked(allSelected);
+  }, [selectedFacets, displayedData]);
+
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
@@ -41,10 +66,14 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
       >
         <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
           <tr>
-            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
-              <span className="pl-2" id={rowSelectId}>
-                Select
-              </span>
+            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1 pl-2">
+              <Checkbox
+                color="accent"
+                size="xs"
+                aria-labelledby={rowSelectId}
+                checked={selectAllChecked}
+                onChange={toggleSelectAll}
+              />
             </th>
             {survival && (
               <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">

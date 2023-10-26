@@ -213,7 +213,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         });
     },
-    [cohortFilters, genomicFilters, createSet, genesOnlyFilters?.root],
+    [cohortFilters, genomicFilters, createSet, genesOnlyFilters],
   );
 
   const [showCreateCohort, setShowCreateCohort] = useState(false);
