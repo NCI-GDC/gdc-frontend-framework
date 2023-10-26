@@ -5,7 +5,7 @@ Owner		         : GDC QA
 Description       : cDAVE Negative Rule Checking for Categorical Bin
 Test-Case         : PEAR-1584
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, negative-test
 
 ## Navigate to Clinical Data Analysis
 * On GDC Data Portal V2 app
