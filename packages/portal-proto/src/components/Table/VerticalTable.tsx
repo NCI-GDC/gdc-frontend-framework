@@ -7,16 +7,15 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import {
-  ChangeEvent,
-  Fragment,
-  useEffect,
-  useRef,
-  useState,
-  useId,
-} from "react";
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Pagination,
+  Select,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
@@ -156,20 +155,22 @@ function VerticalTable<TData>({
     clearTimeout(timeoutRef.current);
     handleChange({ newSearch: "" });
   };
-  const tableSearchBarId = useId();
   const tooltipContainer = search?.tooltip
     ? (children) => (
-        <div className="w-72 relative">
+        <Tooltip
+          multiline
+          label={search.tooltip}
+          position="bottom-start"
+          opened={searchFocused}
+          zIndex={10}
+          offset={0}
+          classNames={{
+            tooltip:
+              "w-72 border border-base-lighter border-t-base-lighter border-t-primary absolute bg-white p-2 text-sm text-base overflow-wrap break-all rounded-b rounded-t-none",
+          }}
+        >
           {children}
-          <div
-            className="border border-base-lighter border-t-primary absolute z-10 w-full bg-white p-2 text-sm overflow-auto rounded-b"
-            hidden={!searchFocused}
-            role="tooltip"
-            id={tableSearchBarId}
-          >
-            {search.tooltip}
-          </div>
-        </div>
+        </Tooltip>
       )
     : undefined;
   return (
@@ -191,7 +192,6 @@ function VerticalTable<TData>({
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
-                  aria-describedby={search?.tooltip && tableSearchBarId}
                   classNames={{
                     input: `border-base-lighter focus:border-2 focus:border-primary${
                       tooltipContainer ? " focus:rounded-b-none" : ""
