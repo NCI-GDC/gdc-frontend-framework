@@ -1,14 +1,19 @@
 import { Image } from "@/components/Image";
+import { Tooltip } from "@mantine/core";
 import { forwardRef } from "react";
 
 export const UnsavedIcon = (): JSX.Element => (
-  <Image
-    src="/user-flow/icons/cohort_unsaved.svg"
-    width={16}
-    height={16}
-    layout="fixed"
-    alt="this cohort is not saved"
-  />
+  <Tooltip label="Changes not saved" withArrow>
+    <span className="leading-[0px] pointer-events-auto">
+      <Image
+        src="/user-flow/icons/cohort_unsaved.svg"
+        width={16}
+        height={16}
+        layout="fixed"
+        alt="this cohort is not saved"
+      />
+    </span>
+  </Tooltip>
 );
 
 export interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
