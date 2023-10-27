@@ -190,16 +190,16 @@ export const fetchGenesTable = createAsyncThunk<
       appendFilterToOperation(baseFilters, searchFilters),
     );
 
+    const rawFilterContents =
+      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
+    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
+
     /**
      * Only apply "genes." filters to the genes table's CNV gain and loss filters.
      */
     const onlyGenesFilters = buildCohortGqlOperator(
       extractFiltersWithPrefixFromFilterSet(genomicFilters, "genes."),
     );
-
-    const filterContents = genesTableFilters?.content
-      ? Object(genesTableFilters?.content)
-      : [];
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
