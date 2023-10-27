@@ -12,6 +12,7 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
+  extractFiltersWithPrefixFromFilterSet,
   filterSetToOperation,
   selectCurrentCohortFilterSet,
 } from "../cohort";
@@ -189,9 +190,16 @@ export const fetchGenesTable = createAsyncThunk<
       appendFilterToOperation(baseFilters, searchFilters),
     );
 
-    const rawFilterContents =
-      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
-    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
+    /**
+     * Only apply "genes." filters to the genes table's CNV gain and loss filters.
+     */
+    const onlyGenesFilters = buildCohortGqlOperator(
+      extractFiltersWithPrefixFromFilterSet(genomicFilters, "genes."),
+    );
+
+    const filterContents = genesTableFilters?.content
+      ? Object(genesTableFilters?.content)
+      : [];
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
@@ -280,6 +288,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
       cnvLossFilters: {
@@ -302,6 +313,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
     };

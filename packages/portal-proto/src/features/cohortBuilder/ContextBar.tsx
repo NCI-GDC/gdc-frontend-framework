@@ -32,7 +32,6 @@ import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { mapGdcFileToCartFile } from "@/features/files/utils";
 import { addToCart } from "@/features/cart/updateCart";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { useSetupInitialCohorts } from "./hooks";
 import {
   INITIAL_SUMMARY_FIELDS,
   METADATA_EXPAND_PROPS,
@@ -48,7 +47,6 @@ const ContextBar = ({
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
 }): JSX.Element => {
-  useSetupInitialCohorts();
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
@@ -419,7 +417,9 @@ const ContextBar = ({
               </Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="summary">
-              <SummaryFacets fields={summaryFields} />
+              {!isGroupCollapsed && ( //dont load unless shown TODO address this in CollapsibleContainer
+                <SummaryFacets fields={summaryFields} />
+              )}
             </Tabs.Panel>
             <Tabs.Panel value="table">
               <ContextualCasesView />

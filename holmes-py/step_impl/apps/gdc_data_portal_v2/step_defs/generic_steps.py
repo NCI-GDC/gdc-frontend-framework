@@ -23,21 +23,21 @@ def start_app():
     APP = GDCDataPortalV2App(WebDriver.page)
 
 @after_spec
-def remove_active_cohort_filters():
+def setup_next_spec_run():
     """
     After each spec file's execution, this function will run. The intention is to
-    clear the active cohort filters to setup the next spec run.
+    clear the active cohort filters and setup the next spec run.
 
-    First, we check to see if there is the 'No filters currently applied' text is present.
-    If not, we then check to see if we are on the analysis center page. If not,
-    then we go to the analysis center. Then, we click the 'Clear All' button to remove
-    the active cohort filters. Finally, we wait to see the the text confirming there
-    are no active cohort filters present.
+    First, we go to the analysis center. If a test found a bug in the data portal the next test
+    may not execute correctly, because the previous test ended in an unexpected and difficult to get
+    out of place. Then, we check to see if there is the 'No filters currently applied' text is present.
+    If not, we click the 'Clear All' button to remove the active cohort filters.
+    Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     if not APP.shared.is_no_active_cohort_filter_text_present():
-        if not APP.analysis_center_page.is_analysis_center_page_present():
-            APP.analysis_center_page.visit()
-            APP.header_section.wait_for_page_to_load("analysis")
         APP.shared.clear_active_cohort_filters()
 
 @step("On GDC Data Portal V2 app")
@@ -76,7 +76,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a File Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
     }
     first_text = text.split(" ")[0]
     try:
@@ -121,14 +121,6 @@ def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_ca
         assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
     elif equal_or_not_equal == "not equal":
         assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
-
-@step("Close <modal_name> modal")
-def close_modal(modal_name: str):
-    modals = {"Add a File Filter": APP.repository_page.close_add_a_file_filter_modal}
-    modals.get(modal_name)()
-    assert (
-        not APP.repository_page.get_file_filter_list_count()
-    ), f"Modal is still open.\nModal name: {modal_name}"
 
 @step("Close the modal")
 def close_the_modal():
@@ -294,6 +286,11 @@ def verify_table_body_tooltips_text(table):
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
 
+@step("Verify the button <button_name> is disabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
@@ -428,6 +425,27 @@ def click_create_or_save_in_cohort_modal(table):
     for k, v in enumerate(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
+
+@step("Perform action and validate modal text <table>")
+def click_named_button_in_modal_and_wait_for_temp_message_text(table):
+    """
+    click_named_button_wait_for_message_text clicks a button by its displayed name in a modal,
+    validates text in a temporary pop-up modal message, and either clicks the 'x' to remove the temp message,
+    or does nothing to let the message persist.
+
+    :param v[0]: The name of the button to be clicked
+    :param v[1]: The text in the temporary message that we are waiting for
+    :param v[2]: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
+    """
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    for k, v in enumerate(table):
+        APP.shared.click_button_in_modal_with_displayed_text_name(v[0])
+        is_cohort_message_present = APP.cohort_bar.wait_for_text_in_temporary_message(v[1], v[2])
+        assert is_cohort_message_present, f"The text '{v[1]}' is NOT present"
+        # Need to let the page load after our actions here.
+        # Automation moves too quickly in the cohort bar section.
+        time.sleep(1)
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Clear active cohort filters")
 def clear_active_cohort_filters():

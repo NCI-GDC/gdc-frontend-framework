@@ -41,6 +41,7 @@ class GenericLocators:
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
+    BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
@@ -50,11 +51,12 @@ class GenericLocators:
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
     SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
 
-    FILTER_GROUP_IDENT = lambda group_name: f'//div[@data-testid="filters-facets"]>> text="{group_name}"'
-    FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
-    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/..//div[@data-testid="text-{selection}"]'
-    FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
-    FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="filters-facets"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
+
+    FILTER_GROUP_IDENT = lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
+    FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
+    FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
 
     SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
 
@@ -195,7 +197,7 @@ class BasePage:
                 # On occasion, the automation will move so fast and click the close 'x' button
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops
                 # when I put this sleep here.
-                time.sleep(2)
+                time.sleep(1)
                 x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
                 # Remove the message after locating it.
                 # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
@@ -273,6 +275,12 @@ class BasePage:
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
+    def is_button_disabled(self, button_name):
+        button_name = self.normalize_button_identifier(button_name)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
     def is_facet_card_enum_checkbox_checked(self, checkbox_id):
         """Returns if a filter card enum checkbox is checked"""
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
@@ -314,6 +322,11 @@ class BasePage:
     def click_button_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text"""
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
+        self.click(locator)
+
+    def click_button_in_modal_with_displayed_text_name(self, button_text_name):
+        """Clicks a button in a modal based on its displayed text"""
+        locator = GenericLocators.BUTTON_IN_MODAL_BY_DISPLAYED_TEXT(button_text_name)
         self.click(locator)
 
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):
