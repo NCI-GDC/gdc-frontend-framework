@@ -247,6 +247,18 @@ function VerticalTable<TData>({
                       ? "bg-nci-purple-lightest"
                       : "bg-base-max"
                   }`;
+                  const headerName = flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  );
+
+                  const ariaText = `Sort by ${headerName}: ${
+                    isColumnSorted
+                      ? isColumnSorted === "desc"
+                        ? "descending"
+                        : "ascending"
+                      : "not sorted"
+                  }`;
 
                   if (columnSorting === "none" || !isColumnSortable) {
                     return (
@@ -255,47 +267,36 @@ function VerticalTable<TData>({
                         key={header.id}
                         colSpan={header.colSpan}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {headerName}
                       </th>
                     );
                   } else {
+                    const handleSorting = () => {
+                      header.column.toggleSorting();
+                      if (isColumnSorted) {
+                        const sortingDirection =
+                          isColumnSorted === "desc"
+                            ? "Table not sorted"
+                            : `Table sorted by ${headerName} in descending order.`;
+                        setSortingStatus(sortingDirection);
+                      } else {
+                        setSortingStatus(
+                          `Table sorted by ${headerName} in ascending order.`,
+                        );
+                      }
+                      setAnnouncementTimestamp(Date.now());
+                    };
                     return (
                       <th
                         key={header.id}
-                        className={`${commonHeaderClass} whitespace-nowrap ${
+                        className={`
+                        ${commonHeaderClass} whitespace-nowrap
+                        ${
                           isColumnHighlighted
                             ? "hover:bg-nci-purple-lighter"
                             : "hover:bg-primary-lightest"
-                        }`}
-                        onClick={() => {
-                          header.column.toggleSorting();
-                          if (isColumnSorted) {
-                            const sortingDirection =
-                              isColumnSorted === "desc"
-                                ? "sorted none"
-                                : "sorted up";
-                            setSortingStatus(sortingDirection);
-                          } else {
-                            setSortingStatus("sorted down");
-                          }
-                          setAnnouncementTimestamp(Date.now());
-                        }}
-                        onKeyDown={createKeyboardAccessibleFunction(() => {
-                          header.column.toggleSorting();
-                          if (isColumnSorted) {
-                            const sortingDirection =
-                              isColumnSorted === "desc"
-                                ? "sorted none"
-                                : "sorted up";
-                            setSortingStatus(sortingDirection);
-                          } else {
-                            setSortingStatus("sorted down");
-                          }
-                          setAnnouncementTimestamp(Date.now());
-                        })}
+                        }
+                      `}
                         aria-sort={
                           isColumnSorted
                             ? isColumnSorted === "desc"
@@ -305,11 +306,15 @@ function VerticalTable<TData>({
                         }
                         colSpan={header.colSpan}
                       >
-                        <button className="flex items-center font-heading">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
+                        <button
+                          className="flex items-center font-heading"
+                          onClick={handleSorting}
+                          onKeyDown={createKeyboardAccessibleFunction(
+                            handleSorting,
                           )}
+                          aria-label={ariaText}
+                        >
+                          {headerName}
 
                           {isColumnSortable && (
                             <div
