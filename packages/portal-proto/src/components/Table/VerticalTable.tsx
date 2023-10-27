@@ -58,7 +58,6 @@ function VerticalTable<TData>({
   );
 
   useEffect(() => {
-    // Update the Live Region content and attributes
     if (sortingStatus && announcementTimestamp) {
       liveRegionRef.current.textContent = sortingStatus;
       liveRegionRef.current.setAttribute("aria-live", "polite");
