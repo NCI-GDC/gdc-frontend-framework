@@ -275,6 +275,12 @@ class BasePage:
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
 
+    def is_button_disabled(self, button_name):
+        button_name = self.normalize_button_identifier(button_name)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
     def is_facet_card_enum_checkbox_checked(self, checkbox_id):
         """Returns if a filter card enum checkbox is checked"""
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
