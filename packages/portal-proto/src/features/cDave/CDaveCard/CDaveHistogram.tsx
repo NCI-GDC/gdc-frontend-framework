@@ -159,7 +159,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               color={color}
               yLabel={displayPercent ? "% of Cases" : "# of Cases"}
               width={900}
-              height={500}
+              height={400}
               hideXTicks={hideXTicks}
               hideYTicks={hideYTicks}
               xLabel={
@@ -167,6 +167,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   ? "Mouse over the histogram to see x-axis labels"
                   : undefined
               }
+              truncateLabels
             />
           </div>
           <OffscreenWrapper>
