@@ -66,6 +66,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Replace          |Cohort has been saved                      |Remove Modal        |
+* Switch cohort to "SaMe CoHoRt NaMe" from the Cohort Bar dropdown list
 * "SaMe CoHoRt NaMe" should be the active cohort
 * Is text "Changes not saved" not present on the page
 * The cohort "SAME COHORT NAME" should not appear in the cohort dropdown list
