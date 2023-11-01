@@ -560,15 +560,13 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div>
           <Tooltip
             label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
-                </div>
-              )
+              <div>
+                Value shows 0.00e+0 because the
+                <br />
+                P-Value is extremely low and goes beyond
+                <br />
+                the precision inherent in the code
+              </div>
             }
             disabled={pValue !== 0}
           >
@@ -579,9 +577,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
         {tableTooltip && (
-          <div className="text-xs text-primary-content font-content">
-            Use the Survival button <SurvivalIcon className="inline-block" /> in
-            the table below to change the survival plot
+          <div className="text-xs font-content">
+            Use the Survival buttons <SurvivalIcon className="inline-block" />{" "}
+            in the table below to change the survival plot
           </div>
         )}
         <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
