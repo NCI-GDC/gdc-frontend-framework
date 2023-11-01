@@ -139,6 +139,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                               : "bg-base-lightest text-base-contrast-lightest"
                           } ml-2`}
                           disabled={survivalDisabled}
+                          aria-label={`Toggle survival plot for ${displayName}`}
                           onClick={() =>
                             survivalSelected
                               ? setSelectedSurvivalPlots(
