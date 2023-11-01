@@ -12,12 +12,16 @@ import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { Box, Menu, Tooltip } from "@mantine/core";
+import { Box, Menu, Tooltip, Loader } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
-import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+  DownloadProgressContext,
+} from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
@@ -480,6 +484,10 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     return () => dispatch({ type: "remove", payload: charts });
   }, [dispatch, downloadFileName]);
 
+  const { downloadInProgress, setDownloadInProgress } = useContext(
+    DownloadProgressContext,
+  );
+
   return (
     <div className="flex flex-col">
       <div className="flex w-100 items-center justify-center flex-wrap">
@@ -496,22 +504,36 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
                   data-testid="button-download-survival-plot"
                   aria-label="Download button with an icon"
                 >
-                  <DownloadIcon size="1.25em" />
+                  {downloadInProgress ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon size="1.25em" />
+                  )}
                 </DownloadButton>
               </Tooltip>
             </Menu.Target>
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
-                onClick={() =>
-                  handleDownloadSVG(downloadRef, `${downloadFileName}.svg`)
-                }
+                onClick={async () => {
+                  setDownloadInProgress(true);
+                  await handleDownloadSVG(
+                    downloadRef,
+                    `${downloadFileName}.svg`,
+                  );
+                  setDownloadInProgress(false);
+                }}
               >
                 SVG
               </Menu.Item>
               <Menu.Item
-                onClick={() =>
-                  handleDownloadPNG(downloadRef, `${downloadFileName}.png`)
-                }
+                onClick={async () => {
+                  setDownloadInProgress(true);
+                  await handleDownloadPNG(
+                    downloadRef,
+                    `${downloadFileName}.png`,
+                  );
+                  setDownloadInProgress(false);
+                }}
               >
                 PNG
               </Menu.Item>
