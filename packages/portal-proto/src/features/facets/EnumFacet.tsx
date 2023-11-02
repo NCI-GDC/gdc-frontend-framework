@@ -264,23 +264,33 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={header.iconStyle} />
+              <FacetIconButton onClick={toggleSearch}>
+                <SearchIcon
+                  size="1.45em"
+                  className={header.iconStyle}
+                  title="search values"
+                />
               </FacetIconButton>
             ) : null}
             {showFlip ? (
               <FacetIconButton
                 onClick={toggleFlip}
-                aria-label="Flip between form and chart"
+                aria-pressed={!isFacetView}
+                aria-label="chart view"
               >
-                <FlipIcon size="1.45em" className={header.iconStyle} />
+                <FlipIcon
+                  size="1.45em"
+                  className={header.iconStyle}
+                  title={isFacetView ? "chart view" : "selection view"}
+                />
               </FacetIconButton>
             ) : null}
-            <FacetIconButton
-              onClick={() => clearFilters(field)}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.25em" className={header.iconStyle} />
+            <FacetIconButton onClick={() => clearFilters(field)}>
+              <UndoIcon
+                size="1.25em"
+                className={header.iconStyle}
+                title="clear selection"
+              />
             </FacetIconButton>
             {dismissCallback ? (
               <FacetIconButton
@@ -288,9 +298,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   clearFilters(field);
                   dismissCallback(field);
                 }}
-                aria-label="Remove the facet"
               >
-                <CloseIcon size="1.25em" className={header.iconStyle} />
+                <CloseIcon
+                  size="1.25em"
+                  className={header.iconStyle}
+                  title="remove the facet"
+                />
               </FacetIconButton>
             ) : null}
           </div>
@@ -312,9 +325,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
-                  aria-label={"clear search"}
                 >
-                  <CloseIcon />
+                  <CloseIcon title="clear search" />
                 </ActionIcon>
               ) : undefined
             }
