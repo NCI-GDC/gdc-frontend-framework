@@ -78,6 +78,8 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
     if (isSuccess) {
       const cd = processChartData(data, selectedEnums, maxBins);
       setChartData(cd);
+    } else {
+      setChartData([]);
     }
   }, [data, selectedEnums, field, isSuccess, maxBins]);
 
@@ -94,7 +96,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : null}
 
-      {chart_data && isSuccess ? (
+      {isSuccess && chart_data && chart_data.length > 0 ? (
         <EnumBarChart
           data={chart_data}
           height={height}

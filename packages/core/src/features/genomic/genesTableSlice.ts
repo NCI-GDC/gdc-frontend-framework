@@ -12,6 +12,7 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
+  extractFiltersWithPrefixFromFilterSet,
   filterSetToOperation,
   selectCurrentCohortFilterSet,
 } from "../cohort";
@@ -179,16 +180,26 @@ export const fetchGenesTable = createAsyncThunk<
 
     const searchFilters = buildGeneTableSearchFilters(searchTerm);
 
+    // get filters already applied
+    const baseFilters = filterSetToOperation(genomicFilters) as
+      | UnionOrIntersection
+      | undefined;
+
     // filters for the genes table using local filters
     const genesTableFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(
-        filterSetToOperation(genomicFilters) as UnionOrIntersection | undefined,
-        searchFilters,
-      ),
+      appendFilterToOperation(baseFilters, searchFilters),
     );
-    const filterContents = genesTableFilters?.content
-      ? Object(genesTableFilters?.content)
-      : [];
+
+    const rawFilterContents =
+      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
+    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
+
+    /**
+     * Only apply "genes." filters to the genes table's CNV gain and loss filters.
+     */
+    const onlyGenesFilters = buildCohortGqlOperator(
+      extractFiltersWithPrefixFromFilterSet(genomicFilters, "genes."),
+    );
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
@@ -277,6 +288,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
       cnvLossFilters: {
@@ -299,6 +313,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
     };

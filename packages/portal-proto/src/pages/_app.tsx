@@ -199,7 +199,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 defaultProps: {
                   zIndex: 400,
                   radius: "md",
-                  closeButtonProps: { "aria-label": "close modal button" },
+                  closeButtonProps: { "aria-label": "button-close-modal" },
                   styles: {
                     header: {
                       borderColor: defaultTailwindColorTheme.base.lighter,

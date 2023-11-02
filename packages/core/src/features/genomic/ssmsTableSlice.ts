@@ -38,7 +38,7 @@ $sort: [Sort]
         }
       }
       filteredCases: cases {
-        hits(first: 0, case_filters: $ssmCaseFilter, filters: $ssmsTable_filters) {
+        hits(first: 0, case_filters: $ssmCaseFilter) {
           total
         }
       }
@@ -247,6 +247,10 @@ const generateFilter = ({
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+  const gqlCohortIntersection =
+    cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
+      ? (cohortFiltersGQl as GqlIntersection).content
+      : [];
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -286,9 +290,7 @@ const generateFilter = ({
           },
         ],
         // For case filter only use cohort filter and not genomic filter
-        ...(cohortFiltersGQl
-          ? (cohortFiltersGQl as GqlIntersection)?.content
-          : []),
+        ...gqlCohortIntersection,
       ],
       op: "and",
     },
