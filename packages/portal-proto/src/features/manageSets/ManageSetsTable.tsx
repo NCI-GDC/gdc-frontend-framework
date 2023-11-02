@@ -37,6 +37,7 @@ const CountBadge: React.FC<CountBadgeProps> = ({
       withArrow
     >
       <Badge
+        data-testid="text-set-count"
         variant={active ? "filled" : "outline"}
         radius="xs"
         className={`cursor-pointer w-16 ${
@@ -79,6 +80,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
     <div className="flex flex-row items-center gap-1">
       <ActionIcon
         size={20}
+        data-testid="button-delete-set"
         aria-label="Delete set"
         className="text-primary"
         onClick={() => {
@@ -94,6 +96,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
       {count > 0 && (
         <ActionIcon
           size={20}
+          data-testid="button-download-set"
           aria-label="Download set"
           className={"text-primary"}
           variant="transparent"
@@ -131,6 +134,7 @@ interface MangeSetsTableProps {
   readonly setSelectedSets: (sets: SetData[]) => void;
   readonly detailSet: SetData;
   readonly setDetailSet: (set: SetData) => void;
+  readonly customDataTestID?: string;
 }
 
 type ManageSetsTableDataType = {
@@ -140,6 +144,7 @@ type ManageSetsTableDataType = {
   count: number;
   set: SetData;
   setType: SetTypes;
+  customDataTestID: string;
 };
 
 const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
@@ -148,6 +153,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   setSelectedSets,
   detailSet,
   setDetailSet,
+  customDataTestID,
 }) => {
   const tableData = useDeepCompareMemo(() => {
     return [
@@ -160,6 +166,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           count,
           set,
           setType,
+          customDataTestID,
         };
       }),
       ...geneData.map((set) => {
@@ -172,6 +179,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           set,
           setId,
           setType,
+          customDataTestID,
         };
       }),
     ];
@@ -217,6 +225,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
+            data-testid="button-select-all-rows"
             aria-label="Select all the rows of the table"
           />
         ),
@@ -226,6 +235,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            data-testid="checkbox-select-saved-"
             aria-label={`Select/deselect ${row.original.setName}`}
             {...{
               checked: row.getIsSelected(),
@@ -305,7 +315,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   };
 
   return (
-    <div className="w-3/4 pb-6">
+    <div data-testid="table-manage-sets" className="w-3/4 pb-6">
       <VerticalTable
         data={displayedData}
         columns={manageSetsColumn}
