@@ -70,6 +70,10 @@ export interface SMTableContainerProps {
    */
   isModal?: boolean;
   /*
+   * boolean used to determine if being called in a modal
+   */
+  inModal?: boolean;
+  /*
    *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
    */
   searchTermsForGene?: { geneId?: string; geneSymbol?: string };
@@ -89,6 +93,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = [],
   isDemoMode = false,
   isModal = false,
+  inModal = false,
   tableTitle = undefined,
   searchTermsForGene,
 }: SMTableContainerProps) => {
@@ -541,6 +546,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             expanded={expanded}
             setExpanded={handleExpand}
             getRowId={getRowId}
+            baseZIndex={inModal ? 300 : 0}
           />
         </>
       )}

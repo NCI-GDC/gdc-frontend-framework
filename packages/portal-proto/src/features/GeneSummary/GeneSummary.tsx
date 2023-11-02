@@ -280,6 +280,7 @@ const GeneView = ({
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}
                   isModal={isModal}
+                  inModal={isModal}
                   tableTitle="Most Frequent Somatic Mutations"
                 />
               </div>

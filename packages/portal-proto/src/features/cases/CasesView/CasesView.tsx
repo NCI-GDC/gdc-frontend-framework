@@ -448,6 +448,7 @@ export const ContextualCasesView: React.FC = () => {
         columnOrder={columnOrder}
         setColumnOrder={setColumnOrder}
         getRowId={getRowId}
+        baseZIndex={300}
       />
     </div>
   );

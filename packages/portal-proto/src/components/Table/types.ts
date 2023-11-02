@@ -198,6 +198,10 @@ export interface TableProps<TData> {
    * optional function is used to derive a unique ID for any given row
    */
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
+  /**
+   * optional used to properly set z-index of table elements (e.g. tooltips)
+   */
+  baseZIndex?: number;
 }
 
 export interface HandleChangeInput {

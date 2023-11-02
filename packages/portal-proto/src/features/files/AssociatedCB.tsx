@@ -190,6 +190,7 @@ const AssociatedCB = ({
         </div>
       }
       handleChange={handleChange}
+      baseZIndex={300}
     />
   );
 };

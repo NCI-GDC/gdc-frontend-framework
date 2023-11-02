@@ -52,6 +52,7 @@ function VerticalTable<TData>({
   setExpanded,
   getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
     uuidv4(),
+  baseZIndex = 0,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -162,7 +163,7 @@ function VerticalTable<TData>({
           label={search.tooltip}
           position="bottom-start"
           opened={searchFocused}
-          zIndex={10}
+          zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
           offset={0}
           classNames={{
             tooltip:
