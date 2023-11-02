@@ -134,7 +134,6 @@ interface MangeSetsTableProps {
   readonly setSelectedSets: (sets: SetData[]) => void;
   readonly detailSet: SetData;
   readonly setDetailSet: (set: SetData) => void;
-  readonly customDataTestID?: string;
 }
 
 type ManageSetsTableDataType = {
@@ -144,7 +143,6 @@ type ManageSetsTableDataType = {
   count: number;
   set: SetData;
   setType: SetTypes;
-  customDataTestID: string;
 };
 
 const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
@@ -153,7 +151,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   setSelectedSets,
   detailSet,
   setDetailSet,
-  customDataTestID,
 }) => {
   const tableData = useDeepCompareMemo(() => {
     return [
@@ -166,7 +163,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           count,
           set,
           setType,
-          customDataTestID,
         };
       }),
       ...geneData.map((set) => {
@@ -179,7 +175,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           set,
           setId,
           setType,
-          customDataTestID,
         };
       }),
     ];
@@ -225,7 +220,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            data-testid="button-select-all-rows"
+            data-testid="checkbox-select-all-sets"
             aria-label="Select all the rows of the table"
           />
         ),
@@ -235,7 +230,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            data-testid="checkbox-select-saved-"
+            data-testid="checkbox-select-set"
             aria-label={`Select/deselect ${row.original.setName}`}
             {...{
               checked: row.getIsSelected(),
