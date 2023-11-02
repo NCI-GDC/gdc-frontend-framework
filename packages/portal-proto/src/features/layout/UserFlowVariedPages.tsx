@@ -24,6 +24,7 @@ import {
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
+import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -154,21 +155,23 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
         ))}
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
-      <div
-        className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
-        style={{
-          top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
-        }}
-      >
-        {ContextBar ? ContextBar : null}
-      </div>
-      <main
-        data-tour="full_page_content"
-        className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
-        id="main"
-      >
-        {children}
-      </main>
+      <ClearStoreErrorBoundary>
+        <div
+          className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
+          style={{
+            top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+          }}
+        >
+          {ContextBar ? ContextBar : null}
+        </div>
+        <main
+          data-tour="full_page_content"
+          className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
+          id="main"
+        >
+          {children}
+        </main>
+      </ClearStoreErrorBoundary>
       <Footer />
     </div>
   );

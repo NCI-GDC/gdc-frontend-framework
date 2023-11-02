@@ -41,9 +41,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Custom Bin 3     |4000    |4500          |3          |
    |Custom Bin 4     |4501    |10000         |4          |
    |Custom Bin 5     |10000   |18000         |5          |
-   |Custom Bin 6     |18000   |30000         |6          |
-   |Custom Bin 7     |30000   |50000         |7          |
-   |Custom Bin 8     |50000   |1000000       |8          |
+
 * "Save" the continuous custom bin modal on the Clinical Data Analysis page
 * Validate the "Age At Diagnosis" analysis card's table contains these values
    |value                                   |
@@ -53,36 +51,29 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Custom Bin 3                            |
    |Custom Bin 4                            |
    |Custom Bin 5                            |
-   |Custom Bin 6                            |
-   |Custom Bin 7                            |
-   |Custom Bin 8                            |
 * On the "Age At Diagnosis" card, select "Customize Bins" button on the Clinical Data Analysis page
 * Select "Edit Bins"
 * "Edit" a custom range bin in a continuous custom bin modal on the Clinical Data Analysis page
    |Bin Name         |From    |To Less Than  |Row Number |
    |-----------------|--------|--------------|-----------|
-   |Edited Name 2    |100     |2500          |2          |
-   |Edited Name 5    |10000   |20000         |5          |
-   |Edited Name 7    |35000   |50000         |7          |
-* Delete custom range bin in row number "6"
+   |Edited Name 2    |2000    |2999          |2          |
+   |Edited Name 3    |4050    |4321          |3          |
+   |Edited Name 4    |6000    |7500          |4          |
 * Delete custom range bin in row number "1"
 * "Save" the continuous custom bin modal on the Clinical Data Analysis page
 * Validate the "Age At Diagnosis" analysis card's table contains these values
    |value                                   |
    |----------------------------------------|
    |Edited Name 2                           |
-   |Custom Bin 3                            |
-   |Custom Bin 4                            |
-   |Edited Name 5                           |
-   |Edited Name 7                           |
-   |Custom Bin 8                            |
+   |Edited Name 3                           |
+   |Edited Name 4                           |
+   |Custom Bin 5                            |
 * Validate the "Age At Diagnosis" analysis card's table do not contain these values
    |value                                   |
    |----------------------------------------|
    |Custom Bin 1                            |
    |Custom Bin 2                            |
-   |Custom Bin 5                            |
-   |Custom Bin 6                            |
-   |Custom Bin 7                            |
+   |Custom Bin 3                            |
+   |Custom Bin 4                            |
 * On the "Age At Diagnosis" card, select "Customize Bins" button on the Clinical Data Analysis page
 * Select "Reset to Default"

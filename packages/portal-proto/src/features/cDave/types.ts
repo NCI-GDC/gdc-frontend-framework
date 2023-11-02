@@ -17,3 +17,11 @@ export type CategoricalBins = Record<string, number | Record<string, number>>;
 export type ChartTypes = "histogram" | "survival" | "boxqq";
 
 export type SelectedFacet = { value: string; numCases: number };
+
+export type DataDimension = "Years" | "Days";
+
+export type DisplayData = {
+  displayName: string;
+  key: string;
+  count: number;
+}[];

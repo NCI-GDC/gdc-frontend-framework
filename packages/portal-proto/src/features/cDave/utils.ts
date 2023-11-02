@@ -1,7 +1,17 @@
+import { useRouter } from "next/router";
 import { omitBy, some, capitalize, isNumber } from "lodash";
-import { NumericFromTo, Buckets, Stats } from "@gff/core";
-import { CAPITALIZED_TERMS, SPECIAL_CASE_FIELDS } from "./constants";
-import { CustomInterval, NamedFromTo } from "./types";
+import { NumericFromTo, Buckets, Stats, DAYS_IN_YEAR } from "@gff/core";
+import {
+  CAPITALIZED_TERMS,
+  SPECIAL_CASE_FIELDS,
+  DATA_DIMENSIONS,
+} from "./constants";
+import {
+  CustomInterval,
+  DataDimension,
+  DisplayData,
+  NamedFromTo,
+} from "./types";
 
 export const filterUsefulFacets = (
   facets: Record<string, Buckets | Stats>,
@@ -78,18 +88,22 @@ export const parseContinuousBucket = (bucket: string): string[] => {
 
 export const flattenBinnedData = (
   binnedData: Record<string, number | Record<string, number>>,
-): Record<string, number> => {
-  const flattenedValues = {};
+): DisplayData => {
+  const flattenedValues: Record<string, number> = {};
 
   Object.entries(binnedData).forEach(([k, v]) => {
     if (Number.isInteger(v)) {
-      flattenedValues[k] = v;
+      flattenedValues[k] = v as number;
     } else {
       flattenedValues[k] = Object.values(v).reduce((a, b) => a + b);
     }
   });
 
-  return flattenedValues;
+  return Object.entries(flattenedValues).map(([k, v]) => ({
+    key: k,
+    displayName: k,
+    count: v,
+  }));
 };
 
 export const formatPercent = (count: number, yTotal: number): string =>
@@ -108,6 +122,31 @@ export const isInterval = (
   }
 
   return false;
+};
+
+export const useDataDimension = (field: string): boolean => {
+  // TODO - remove feature flag
+  const router = useRouter();
+  const yearToggleFlag = router?.query?.featureFlag === "yearToggle";
+  return yearToggleFlag && DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
+};
+
+export const formatValue = (value: number): number => {
+  return Number(value.toFixed(2));
+};
+
+export const convertDataDimension = (
+  value: number,
+  currentDataDimension: DataDimension,
+  newDataDimension: DataDimension,
+): number => {
+  if (currentDataDimension === "Days" && newDataDimension === "Years") {
+    return value / DAYS_IN_YEAR;
+  } else if (currentDataDimension === "Years" && newDataDimension === "Days") {
+    return value * DAYS_IN_YEAR;
+  }
+
+  return value;
 };
 
 /**

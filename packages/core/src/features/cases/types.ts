@@ -1,19 +1,17 @@
-import { DataCategory, DataFormat, DataType } from "../files/filesSlice";
-
 export interface caseFileType {
   readonly access: "open" | "controlled";
   readonly acl: Array<string>;
-  readonly data_type: DataType;
+  readonly data_type: string;
   readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;
   readonly state: string;
   readonly project_id: string;
-  readonly data_format: DataFormat;
+  readonly data_format: string;
   readonly created_datetime: string;
   readonly submitter_id: string;
   readonly updated_datetime: string;
-  readonly data_category: DataCategory;
+  readonly data_category: string;
   readonly md5sum: string;
   readonly type: string;
 }

@@ -9,7 +9,6 @@ import {
   VictoryLabel,
   VictoryContainer,
 } from "victory";
-import { qnorm } from "../utils";
 
 const getQuantile = (count: number, quantile: number) =>
   Math.ceil(count * (quantile / 4)) - 1;
@@ -52,8 +51,7 @@ export const getQ1Q3Line = (
 };
 
 interface QQPlotProps {
-  readonly field: string;
-  readonly data: { id: string; value: number }[];
+  readonly chartValues: { id: string; x: number; y: number }[];
   readonly isLoading: boolean;
   readonly color: string;
   readonly height: number;
@@ -69,7 +67,7 @@ interface QQPlotProps {
 }
 
 const QQPlot: React.FC<QQPlotProps> = ({
-  data,
+  chartValues,
   isLoading,
   height,
   width,
@@ -78,17 +76,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
   chartRef,
   label = "QQ Plot",
 }: QQPlotProps) => {
-  const emptyChart = data.every((val) => val.value === 0);
-
-  const chartValues = useDeepCompareMemo(
-    () =>
-      data.map((caseEntry, i) => ({
-        id: caseEntry.id,
-        x: qnorm((i + 1 - 0.5) / data.length),
-        y: caseEntry.value,
-      })),
-    [data],
-  );
+  const emptyChart = chartValues.every((val) => val.x === 0);
 
   const xMin = Math.floor(Math.min(...chartValues.map((v) => v.x)));
   const yMin = Math.floor(Math.min(...chartValues.map((v) => v.y)));
