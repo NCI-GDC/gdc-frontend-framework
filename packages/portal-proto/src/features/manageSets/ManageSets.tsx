@@ -115,7 +115,10 @@ const ManageSets: React.FC = () => {
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon size={80} className="text-primary-darkest" />
             </div>
-            <p className="uppercase text-primary-darkest text-2xl font-montserrat my-4">
+            <p
+              data-testid="text-no-saved-sets-available"
+              className="uppercase text-primary-darkest text-2xl font-montserrat my-4"
+            >
               No saved sets available
             </p>
             <CreateSetInstructions />
@@ -187,7 +190,6 @@ const ManageSets: React.FC = () => {
             )}
           </div>
           <ManageSetsTable
-            customDataTestID="table-manage-sets"
             geneData={geneData}
             ssmData={ssmData}
             setSelectedSets={setSelectedSets}
