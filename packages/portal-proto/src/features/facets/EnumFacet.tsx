@@ -321,8 +321,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
+                  aria-label={"clear search"}
                 >
-                  <CloseIcon title="clear search" />
+                  <CloseIcon />
                 </ActionIcon>
               ) : undefined
             }
