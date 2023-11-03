@@ -5,7 +5,10 @@ import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { convertDateToString } from "@/utils/date";
-import { DashboardDownloadContext } from "@/utils/contexts";
+import {
+  DashboardDownloadContext,
+  DownloadProgressContext,
+} from "@/utils/contexts";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";
@@ -47,6 +50,9 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>();
+  const { downloadInProgress, setDownloadInProgress } = useContext(
+    DownloadProgressContext,
+  );
 
   const barChartData = formatBarChartData(data, yTotal, displayPercent);
 
@@ -114,29 +120,37 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    <DownloadIcon className="text-primary" />
+                    {downloadInProgress ? (
+                      <Loader size={16} />
+                    ) : (
+                      <DownloadIcon className="text-primary" />
+                    )}
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
 
               <Menu.Dropdown>
                 <Menu.Item
-                  onClick={() =>
-                    handleDownloadSVG(
+                  onClick={async () => {
+                    setDownloadInProgress(true);
+                    await handleDownloadSVG(
                       downloadChartRef,
                       `${downloadFileName}.svg`,
-                    )
-                  }
+                    );
+                    setDownloadInProgress(false);
+                  }}
                 >
                   SVG
                 </Menu.Item>
                 <Menu.Item
-                  onClick={() =>
-                    handleDownloadPNG(
+                  onClick={async () => {
+                    setDownloadInProgress(true);
+                    await handleDownloadPNG(
                       downloadChartRef,
                       `${downloadFileName}.png`,
-                    )
-                  }
+                    );
+                    setDownloadInProgress(false);
+                  }}
                 >
                   PNG
                 </Menu.Item>
