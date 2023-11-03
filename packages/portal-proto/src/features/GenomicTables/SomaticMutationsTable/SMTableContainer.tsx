@@ -15,6 +15,7 @@ import {
   useCreateCaseSetFromFiltersMutation,
   addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
+  getSSMTestedCases,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { Loader, LoadingOverlay, Text } from "@mantine/core";
@@ -326,7 +327,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: buildCohortGqlOperator(combinedFilters) ?? {},
+        case_filters: getSSMTestedCases(cohortFilters),
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
