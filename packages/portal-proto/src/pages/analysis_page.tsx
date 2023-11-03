@@ -1,23 +1,21 @@
+import { useState } from "react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
-import ContextBar from "@/features/cohortBuilder/ContextBar";
-import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
-import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
 import {
   selectCurrentCohortId,
   selectCurrentCohortName,
   useCoreSelector,
 } from "@gff/core";
+import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
+import ContextBar from "@/features/cohortBuilder/ContextBar";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
+import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
 import QueryExpressionSection from "@/features/cohortBuilder/QueryExpressionSection";
 import { useCohortFacetFilters } from "@/features/cohortBuilder/utils";
-import { useState } from "react";
 import { useSetupInitialCohorts } from "@/features/cohortBuilder/hooks";
-import { LoadingOverlay } from "@mantine/core";
 
 const SingleAppsPage: NextPage = () => {
-  const isFetchingAll = useSetupInitialCohorts();
   const router = useRouter();
   const {
     query: { app },
@@ -29,6 +27,7 @@ const SingleAppsPage: NextPage = () => {
   const currentCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
+  useSetupInitialCohorts();
   const filters = useCohortFacetFilters();
   const [isSticky, setIsSticky] = useState(true);
 
@@ -53,7 +52,6 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-      <LoadingOverlay visible={isFetchingAll} />
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}
