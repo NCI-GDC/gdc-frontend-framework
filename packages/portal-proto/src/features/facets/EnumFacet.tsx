@@ -264,47 +264,43 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch}>
-                <SearchIcon
-                  size="1.45em"
-                  className={header.iconStyle}
-                  title="search values"
-                />
-              </FacetIconButton>
+              <Tooltip label="Search values">
+                <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                  <SearchIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
             {showFlip ? (
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-pressed={!isFacetView}
-                aria-label="chart view"
-              >
-                <FlipIcon
-                  size="1.45em"
-                  className={header.iconStyle}
-                  title={isFacetView ? "chart view" : "selection view"}
-                />
-              </FacetIconButton>
+              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
+                <FacetIconButton
+                  onClick={toggleFlip}
+                  aria-pressed={!isFacetView}
+                  aria-label="chart view"
+                >
+                  <FlipIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
-            <FacetIconButton onClick={() => clearFilters(field)}>
-              <UndoIcon
-                size="1.25em"
-                className={header.iconStyle}
-                title="clear selection"
-              />
-            </FacetIconButton>
-            {dismissCallback ? (
+            <Tooltip label="Clear selection">
               <FacetIconButton
-                onClick={() => {
-                  clearFilters(field);
-                  dismissCallback(field);
-                }}
+                onClick={() => clearFilters(field)}
+                aria-label="clear selection"
               >
-                <CloseIcon
-                  size="1.25em"
-                  className={header.iconStyle}
-                  title="remove the facet"
-                />
+                <UndoIcon size="1.25em" className={header.iconStyle} />
               </FacetIconButton>
+            </Tooltip>
+            {dismissCallback ? (
+              <Tooltip label="Rmove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="remove the facet"
+                >
+                  <CloseIcon size="1.25em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </header.Panel>
