@@ -1,6 +1,4 @@
-import { ReactNode } from "react";
-
-const Typefaces: ReactNode = () => {
+const Typefaces = () => {
   return (
     <article className="prose font-montserrat text-primary-content-dark md:prose-md">
       <p className="prose font-medium text-2xl">GDC Portal Style guide</p>
