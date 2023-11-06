@@ -358,7 +358,10 @@ function VerticalTable<TData>({
       {pagination && (
         <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
-            <div className="flex flex-row items-center m-auto ml-0 text-sm">
+            <div
+              data-testid="area-show-number-of-entries"
+              className="flex flex-row items-center m-auto ml-0 text-sm"
+            >
               <span className="my-auto mx-1">Show</span>
               <Select
                 size="xs"
@@ -374,6 +377,7 @@ function VerticalTable<TData>({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
+                data-testid="button-show-entries"
                 aria-label="select page size"
               />
               <span className="my-auto mx-1">Entries</span>

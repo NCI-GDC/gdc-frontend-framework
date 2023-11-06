@@ -6,7 +6,9 @@ export const WarningBanner = ({ text }: { text: string }): JSX.Element => (
       <FaExclamationCircle color="white" className="h-6 w-6" />
     </div>
     <div className="bg-[#FFAD0D33] h-full w-full flex items-center pl-4">
-      <span className="text-sm">{text}</span>
+      <span data-testid="text-warning-banner" className="text-sm">
+        {text}
+      </span>
     </div>
   </div>
 );
