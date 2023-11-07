@@ -1,10 +1,6 @@
 import React, { ReactNode, useState } from "react";
-import {
-  FilterSet,
-  useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
-} from "@gff/core";
-import CreateCohortModal from "../Modals/CreateCohortModal";
+import { FilterSet } from "@gff/core";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import CohortCreationButton from "./CohortCreationButton";
 
 interface CohortCreationButtonWrapperProps {
@@ -20,18 +16,7 @@ const CohortCreationButtonWrapper: React.FC<
   label,
   numCases,
 }: CohortCreationButtonWrapperProps) => {
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const coreDispatch = useCoreDispatch();
-
-  const createCohort = (name: string) => {
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: caseFilters,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
 
   return (
     <div className="p-1">
@@ -39,16 +24,14 @@ const CohortCreationButtonWrapper: React.FC<
         label={label}
         numCases={numCases}
         handleClick={() => {
-          setShowCreateCohort(true);
+          setShowSaveCohort(true);
         }}
       />
 
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            createCohort(newName);
-          }}
+      {showSaveCohort && (
+        <SaveCohortModal
+          onClose={() => setShowSaveCohort(false)}
+          filters={caseFilters}
         />
       )}
     </div>

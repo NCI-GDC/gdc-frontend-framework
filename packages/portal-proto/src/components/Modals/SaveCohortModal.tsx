@@ -12,6 +12,9 @@ import {
   useAddCohortMutation,
   fetchCohortCaseCounts,
   FilterSet,
+  setCohort,
+  buildGqlOperationToFilterSet,
+  NullCountsData,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -22,9 +25,9 @@ const SaveCohortModal = ({
   cohortId,
   filters,
 }: {
-  initialName: string;
+  initialName?: string;
   onClose: () => void;
-  cohortId: string;
+  cohortId?: string;
   filters: FilterSet;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
@@ -46,23 +49,43 @@ const SaveCohortModal = ({
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
       .then((payload) => {
-        coreDispatch(copyCohort({ sourceId: prevCohort, destId: payload.id }));
-        // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-        // which does not exist will cause this
-        // Therefore, copy the unsaved cohort to the new cohort id received from
-        // the BE.
-        coreDispatch(
-          setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-        );
-        coreDispatch(
-          removeCohort({
-            shouldShowMessage: false,
-            currentID: prevCohort,
-          }),
-        );
-        coreDispatch(setCurrentCohortId(payload.id));
-        coreDispatch(updateCohortName(newName));
-        coreDispatch(fetchCohortCaseCounts(payload.id));
+        if (prevCohort) {
+          coreDispatch(
+            copyCohort({ sourceId: prevCohort, destId: payload.id }),
+          );
+          // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+          // which does not exist will cause this
+          // Therefore, copy the unsaved cohort to the new cohort id received from
+          // the BE.
+          coreDispatch(
+            setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+          );
+          coreDispatch(
+            removeCohort({
+              shouldShowMessage: false,
+              currentID: prevCohort,
+            }),
+          );
+          coreDispatch(setCurrentCohortId(payload.id));
+          coreDispatch(updateCohortName(newName));
+          coreDispatch(fetchCohortCaseCounts(payload.id));
+        } else {
+          coreDispatch(
+            setCohort({
+              id: payload.id,
+              name: payload.name,
+              filters: buildGqlOperationToFilterSet(payload.filters),
+              caseSet: { status: "uninitialized" },
+              counts: {
+                ...NullCountsData,
+              },
+              modified_datetime: payload.modified_datetime,
+              saved: true,
+              modified: false,
+            }),
+          );
+        }
+
         onClose();
       })
       .catch((e: FetchBaseQueryError) => {
@@ -130,7 +153,7 @@ const SaveCohortModal = ({
             saveAction(name, false);
             setEnteredName(name);
           }}
-          descriptionMessage={"Provide a name to save your current cohort."}
+          descriptionMessage={"Provide a name to save the cohort."}
           closeOnAction={false}
           loading={isLoading}
         />

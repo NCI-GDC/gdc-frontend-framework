@@ -12,7 +12,7 @@ import {
   NullCountsData,
 } from "@gff/core";
 
-export const useSetupInitialCohorts = () => {
+export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
   const {
     data: cohortsListData,
@@ -63,4 +63,6 @@ export const useSetupInitialCohorts = () => {
       }
     }
   }, [cohortsListData, isSuccess, isError]);
+
+  return fetched;
 };

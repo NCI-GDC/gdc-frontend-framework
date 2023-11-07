@@ -7,6 +7,7 @@ import {
   selectCurrentCohortName,
   useCoreSelector,
 } from "@gff/core";
+import { LoadingOverlay } from "@mantine/core";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import ContextBar from "@/features/cohortBuilder/ContextBar";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
@@ -27,7 +28,7 @@ const SingleAppsPage: NextPage = () => {
   const currentCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
-  useSetupInitialCohorts();
+  const initialCohortsFetched = useSetupInitialCohorts();
   const filters = useCohortFacetFilters();
   const [isSticky, setIsSticky] = useState(true);
 
@@ -52,6 +53,7 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
+      <LoadingOverlay visible={!initialCohortsFetched} />
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}

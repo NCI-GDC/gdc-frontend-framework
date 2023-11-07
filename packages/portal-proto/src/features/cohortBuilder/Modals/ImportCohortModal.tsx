@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
-  FilterSet,
-  hideModal,
-  useCreateCaseSetFromValuesMutation,
-} from "@gff/core";
+import { useCreateCaseSetFromValuesMutation } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 interface SubmitButtonProps {
   readonly ids: string[];
@@ -20,50 +14,37 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   ids,
   disabled,
 }: SubmitButtonProps) => {
-  const coreDispatch = useCoreDispatch();
-  const [name, setName] = useState(undefined);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
   useEffect(() => {
     if (response.isSuccess) {
-      const filters: FilterSet = {
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            operator: "includes",
-            field: "cases.case_id",
-            operands: [`set_id:${response.data}`],
-          },
-        },
-      };
-      coreDispatch(
-        addNewCohortWithFilterAndMessage({
-          filters: filters,
-          message: "newCasesCohort",
-          name,
-        }),
-      );
-
-      coreDispatch(hideModal());
+      setShowSaveCohort(true);
     }
-  }, [response.isSuccess, name, coreDispatch, response.data]);
+  }, [response.isSuccess]);
 
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
 
   return (
     <>
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            setName(newName);
-            createSet({ values: ids });
+      {showSaveCohort && (
+        <SaveCohortModal
+          onClose={() => setShowSaveCohort(false)}
+          filters={{
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                operator: "includes",
+                field: "cases.case_id",
+                operands: [`set_id:${response.data}`],
+              },
+            },
           }}
         />
       )}
       <DarkFunctionButton
         disabled={disabled}
-        onClick={() => setShowCreateCohort(true)}
+        onClick={() => createSet({ values: ids })}
+        loading={response.isLoading}
       >
         Submit
       </DarkFunctionButton>
