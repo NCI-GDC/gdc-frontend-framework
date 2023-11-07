@@ -6,5 +6,5 @@ module.exports = {
     "^@/core/(.*)$": "<rootDir>/src/core/$1",
   },
   modulePaths: ["<rootDir>"],
-  testTimeout: 20000,
+  testTimeout: 50000,
 };

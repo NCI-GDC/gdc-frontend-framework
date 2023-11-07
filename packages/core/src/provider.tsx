@@ -19,3 +19,5 @@ export const CoreProvider: React.FC<unknown> = ({
     </Provider>
   );
 };
+
+export { persistor };
