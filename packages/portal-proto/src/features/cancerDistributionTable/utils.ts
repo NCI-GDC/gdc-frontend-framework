@@ -24,7 +24,8 @@ export interface CancerDistributionTableProps {
   readonly symbol: string;
   readonly id: string;
   readonly isGene: boolean;
-  readonly contextFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
+  readonly genomicFilters?: FilterSet;
 }
 
 export type CancerDistributionDataType = {

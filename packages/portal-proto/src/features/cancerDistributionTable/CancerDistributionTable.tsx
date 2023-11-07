@@ -13,6 +13,7 @@ import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
   calculatePercentageAsNumber,
+  processFilters,
   statusBooleansToDataStatus,
 } from "src/utils";
 import { CohortCreationButton } from "@/components/CohortCreationButton/";
@@ -46,7 +47,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   symbol,
   id,
   isGene,
-  contextFilters,
+  cohortFilters,
+  genomicFilters,
 }: CancerDistributionTableProps) => {
   const coreDispatch = useCoreDispatch();
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
@@ -55,6 +57,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     CreateSSMCohortParams | undefined
   >(undefined);
   const [showCreateCohort, setShowCreateCohort] = useState(false);
+
+  const contextFilters = processFilters(genomicFilters, cohortFilters);
 
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -482,6 +486,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       gene: string,
       filter: "Loss" | "Gain",
     ): Promise<FilterSet> => {
+      console.log("createCNVGainLossFilters", contextFilters);
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
       })
