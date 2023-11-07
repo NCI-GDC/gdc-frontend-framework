@@ -167,7 +167,7 @@ function VerticalTable<TData>({
           offset={0}
           classNames={{
             tooltip:
-              "w-72 border border-base-lighter absolute bg-white p-2 text-sm text-base overflow-wrap break-all rounded-b rounded-t-none",
+              "w-72 border border-base-lighter absolute bg-white p-2 text-nci-gray text-sm  overflow-wrap break-all rounded-b rounded-t-none font-content",
           }}
         >
           {children}
