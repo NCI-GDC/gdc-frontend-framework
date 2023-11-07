@@ -68,11 +68,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }); // get the default top gene/ssms to show by default
   const prevTopGeneSSMS = usePrevious(topGeneSSMS);
   const prevAppMode = usePrevious(appMode);
+  const prevSearchTerms = usePrevious(searchTermsForGeneId);
 
   useEffect(() => {
     if (
       topGeneSSMS.length &&
-      (!isEqual(topGeneSSMS, prevTopGeneSSMS) || !isEqual(appMode, prevAppMode))
+      (!isEqual(topGeneSSMS, prevTopGeneSSMS) ||
+        !isEqual(appMode, prevAppMode) ||
+        !isEqual(prevSearchTerms, searchTermsForGeneId))
     ) {
       const { genes, ssms } = topGeneSSMS[0];
       const { name, symbol } = appMode === "genes" ? genes : ssms;
@@ -94,7 +97,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topGeneSSMS, appMode]);
+  }, [topGeneSSMS, appMode, searchTermsForGeneId]);
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -108,13 +111,31 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const handleSurvivalPlotToggled = useCallback(
     (symbol: string, name: string, field: string) => {
       if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
-        // remove toggle
-        setComparativeSurvival(undefined);
+        // remove toggle and plot topmost
+        const { genes, ssms } = topGeneSSMS[0];
+        const { name, symbol } = appMode === "genes" ? genes : ssms;
+        const { consequence_type, aa_change } = ssms;
+        setComparativeSurvival({
+          symbol: symbol,
+          name:
+            appMode === "genes"
+              ? name
+              : `${name} ${aa_change ?? ""} ${
+                  consequence_type
+                    ? humanify({
+                        term: consequence_type
+                          .replace("_variant", "")
+                          .replace("_", " "),
+                      })
+                    : ""
+                }`,
+          field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
+        });
       } else {
         setComparativeSurvival({ symbol: symbol, name: name, field: field });
       }
     },
-    [comparativeSurvival],
+    [comparativeSurvival, appMode, topGeneSSMS],
   );
 
   const handleGeneAndSSmToggled = useCallback(
@@ -169,8 +190,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   const handleMutationCountClick = useCallback(
     (geneId: string, geneSymbol: string) => {
-      setSearchTermsForGeneId({ geneId, geneSymbol });
       setAppMode("ssms");
+      setSearchTermsForGeneId({ geneId: geneId, geneSymbol: geneSymbol });
     },
     [],
   );
