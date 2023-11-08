@@ -1,7 +1,6 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
-import { useEffect, useState } from "react";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { DataDimension, DisplayData, SelectedFacet } from "../types";
 import { formatPercent, useDataDimension } from "../utils";
@@ -35,28 +34,30 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
 }: CDaveTableProps) => {
   const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   const displayDataDimension = useDataDimension(field);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-  const toggleSelectAll = useDeepCompareCallback(() => {
-    if (selectAllChecked) {
+  const validData = useDeepCompareMemo(
+    () => displayedData.filter(({ count }) => count > 0),
+    [displayedData],
+  );
+
+  const allSelected = useDeepCompareMemo(
+    () =>
+      validData.length > 0 &&
+      validData.every(({ key }) =>
+        selectedFacets.map((facet) => facet.value).includes(key),
+      ),
+    [selectedFacets, validData],
+  );
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
       setSelectedFacets([]);
     } else {
       setSelectedFacets(
-        displayedData
-          .filter(({ key: _, count }) => count > 0)
-          .map(({ key, count }) => ({ value: key, numCases: count })),
+        validData.map(({ key, count }) => ({ value: key, numCases: count })),
       );
     }
-    setSelectAllChecked((prev) => !prev);
-  }, [selectAllChecked, setSelectedFacets, displayedData]);
-
-  useEffect(() => {
-    // Check if all rows are selected individually
-    const allSelected = displayedData.every(({ key }) =>
-      selectedFacets.map((facet) => facet.value).includes(key),
-    );
-    setSelectAllChecked(allSelected);
-  }, [selectedFacets, displayedData]);
+  };
 
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
@@ -70,9 +71,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               <Checkbox
                 color="accent"
                 size="xs"
-                aria-labelledby={rowSelectId}
-                checked={selectAllChecked}
+                aria-label={`${
+                  allSelected ? "Unselect" : "Select"
+                } all the rows of ${fieldName} table`}
+                checked={allSelected}
                 onChange={toggleSelectAll}
+                disabled={validData.length === 0}
               />
             </th>
             {survival && (
