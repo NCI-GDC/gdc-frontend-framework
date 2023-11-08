@@ -68,14 +68,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   }); // get the default top gene/ssms to show by default
   const prevTopGeneSSMS = usePrevious(topGeneSSMS);
   const prevAppMode = usePrevious(appMode);
-  const prevSearchTerms = usePrevious(searchTermsForGeneId);
 
   useEffect(() => {
     if (
       topGeneSSMS.length &&
-      (!isEqual(topGeneSSMS, prevTopGeneSSMS) ||
-        !isEqual(appMode, prevAppMode) ||
-        !isEqual(prevSearchTerms, searchTermsForGeneId))
+      (!isEqual(topGeneSSMS, prevTopGeneSSMS) || !isEqual(appMode, prevAppMode))
     ) {
       const { genes, ssms } = topGeneSSMS[0];
       const { name, symbol } = appMode === "genes" ? genes : ssms;
@@ -97,7 +94,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topGeneSSMS, appMode, searchTermsForGeneId]);
+  }, [topGeneSSMS, appMode]);
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
