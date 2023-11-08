@@ -319,9 +319,6 @@ function VerticalTable<TData>({
                           onClick={() =>
                             handleSorting(header, headerName, isColumnSorted)
                           }
-                          onKeyDown={createKeyboardAccessibleFunction(() =>
-                            handleSorting(header, headerName, isColumnSorted),
-                          )}
                         >
                           {headerName}
                           {isColumnSortable && (
