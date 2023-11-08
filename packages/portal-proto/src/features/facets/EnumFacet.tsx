@@ -290,7 +290,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               </FacetIconButton>
             </Tooltip>
             {dismissCallback ? (
-              <Tooltip label="Rmove the facet">
+              <Tooltip label="Remove the facet">
                 <FacetIconButton
                   onClick={() => {
                     clearFilters(field);
