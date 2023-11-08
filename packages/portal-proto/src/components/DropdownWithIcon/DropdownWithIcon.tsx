@@ -91,7 +91,10 @@ export const DropdownWithIcon = ({
           {TargetButtonChildren}
         </Button>
       </Menu.Target>
-      <Menu.Dropdown className="border-1 border-secondary">
+      <Menu.Dropdown
+        data-testid="dropdown-menu-options"
+        className="border-1 border-secondary"
+      >
         {menuLabelText && (
           <>
             <Menu.Label
