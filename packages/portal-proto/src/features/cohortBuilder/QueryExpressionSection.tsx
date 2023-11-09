@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-import { ActionIcon } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -180,9 +179,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 Clear All
               </button>
               <div className="display flex gap-2 ml-auto mr-3">
-                <ActionIcon
+                <button
                   data-testid="button-expand-collapse-cohort-queries"
-                  variant={allQueryExpressionsCollapsed ? "filled" : "outline"}
                   color="white"
                   onClick={() =>
                     allQueryExpressionsCollapsed
@@ -197,32 +195,39 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   }
                   aria-label="Expand/collapse all queries"
                   aria-expanded={!allQueryExpressionsCollapsed}
-                  className="text-primary hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest"
+                  className={`${
+                    allQueryExpressionsCollapsed
+                      ? "text-primary"
+                      : "text-base-max"
+                  } disabled:pointer-events-none hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest flex gap-0 items-center border-1 border-white rounded-md w-7 h-7 ${
+                    allQueryExpressionsCollapsed ? "bg-white" : "bg-transparent"
+                  }`}
                   disabled={noFilters}
                 >
                   {allQueryExpressionsCollapsed ? (
                     <>
-                      <LeftArrowIcon size={20} />
-                      <RightArrowIcon size={20} />
+                      <LeftArrowIcon size={16} />
+                      <RightArrowIcon size={16} />
                     </>
                   ) : (
                     <>
-                      <RightArrowIcon size={20} className="text-white" />
-                      <LeftArrowIcon size={20} className="text-white" />
+                      <RightArrowIcon size={16} />
+                      <LeftArrowIcon size={16} />
                     </>
                   )}
-                </ActionIcon>
-                <ActionIcon
+                </button>
+                <button
                   data-testid="button-expand-collapse-cohort-filters-section"
-                  variant={filtersSectionCollapsed ? "outline" : "filled"}
-                  color={filtersSectionCollapsed ? "white" : "white"}
+                  color="white"
                   onClick={() =>
                     setFiltersSectionCollapsed(!filtersSectionCollapsed)
                   }
                   aria-label="Expand/collapse filters section"
                   aria-expanded={!filtersSectionCollapsed}
                   disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                  className={`text-white data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary hover:bg-primary-darkest hover:border-primary-darkest`}
+                  className={`text-base-max disabled:pointer-events-none disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:hover:bg-base-max hover:bg-primary-darkest hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center ${
+                    filtersSectionCollapsed ? "" : "bg-white"
+                  }`}
                 >
                   {filtersSectionCollapsed ? (
                     <>
@@ -236,7 +241,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                       />
                     </>
                   )}
-                </ActionIcon>
+                </button>
               </div>
             </>
           </div>

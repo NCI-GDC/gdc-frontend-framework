@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { MdClose, MdCircle } from "react-icons/md";
-import { Button } from "@mantine/core";
 import { SelectionScreenContext } from "./AnalysisWorkspace";
 import { REGISTERED_APPS } from "./registeredApps";
 
@@ -24,13 +23,13 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
 
   return (
     <div className="w-full bg-primary px-4 py-2 flex items-center ">
-      <Button
+      <button
         onClick={() => setActiveApp(undefined)}
-        className="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest"
+        className="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9"
         aria-label="Close app"
       >
         <MdClose size={20} />
-      </Button>
+      </button>
       <span
         className={`p-2 mx-2 uppercase text-white ${
           !displayAdditionalSteps ? "font-bold" : ""

@@ -61,7 +61,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   const [createComparisonCaseSet, comparisonSetResponse] =
     useCreateCaseSetFromFiltersMutation();
 
-  const { data, isFetching, isUninitialized } = useCohortFacetsQuery(
+  const { data, isFetching } = useCohortFacetsQuery(
     {
       facetFields: fieldsToQuery,
       primaryCohortSetId: primarySetResponse.data,
@@ -91,8 +91,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   ]);
 
   const loading =
-    isFetching ||
-    isUninitialized ||
     primarySetResponse.isUninitialized ||
     primarySetResponse.isLoading ||
     comparisonSetResponse.isUninitialized ||
