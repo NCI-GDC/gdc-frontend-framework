@@ -214,7 +214,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         });
     },
-    [cohortFilters, genomicFilters, createSet, genesOnlyFilters],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cohortFilters, genomicFilters, createSet, genesOnlyFilters?.root],
   );
 
   const [showCreateCohort, setShowCreateCohort] = useState(false);

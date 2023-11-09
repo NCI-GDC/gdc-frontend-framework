@@ -35,6 +35,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
   return (
     <>
       <div
+        data-testid="text-set-name"
         className={`flex flex-row gap-2 ${
           editing ? "items-start" : "items-center"
         }`}
@@ -52,6 +53,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               }
               maxLength={100}
               aria-label="Enter set name"
+              data-testid="textbox-enter-set-name"
             />
             <ActionIcon
               onClick={() => {
@@ -59,6 +61,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
                 setValue(setName);
               }}
               className="border-nci-red-darkest bg-nci-red-lighter rounded-[50%] mt-1"
+              data-testid="button-close-set-name-input"
               aria-label="Close input"
             >
               <CloseIcon className="text-nci-red-darkest" />
@@ -72,6 +75,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               }}
               className="border-nci-green-darkest bg-nci-green-lighter rounded-[50%] mt-1"
               disabled={value.trim() === ""}
+              data-testid="button-accept-set-name-input"
               aria-label="Rename set"
             >
               <CheckIcon className="text-nci-green-darkest" size={10} />
@@ -84,6 +88,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               onClick={() => setEditing(true)}
               variant="transparent"
               aria-label="Edit set name"
+              data-testid="button-edit-set-name"
             >
               <EditIcon className="text-accent" />
             </ActionIcon>

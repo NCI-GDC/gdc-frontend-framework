@@ -22,10 +22,13 @@ import ManageSetsTable from "./ManageSetsTable";
 import DeleteSetsNotification from "./DeleteSetsNotification";
 
 const CreateSetInstructions = () => (
-  <p className="py-2 text-sm">
+  <p data-testid="text-manage-sets-description" className="py-2 text-sm">
     Create gene and mutation sets using the <b>Create Set</b> button or from the{" "}
     <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-      <a className="text-utility-link underline font-heading">
+      <a
+        data-testid="link-mutation-frequency"
+        className="text-utility-link underline font-heading"
+      >
         Mutation Frequency app
       </a>
     </Link>
@@ -36,18 +39,21 @@ const CreateSetInstructions = () => (
 interface SelectedSetButtonProps {
   readonly selection: SetData[];
   readonly text: string;
+  readonly customDataTestID?: string;
   readonly onClick: () => void;
 }
 
 const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
   selection,
   text,
+  customDataTestID,
   onClick,
 }: SelectedSetButtonProps) => {
   return (
     <Button
       variant="outline"
       color="primary"
+      data-testid={customDataTestID}
       onClick={onClick}
       disabled={selection.length == 0}
       leftIcon={
@@ -109,7 +115,10 @@ const ManageSets: React.FC = () => {
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon size={80} className="text-primary-darkest" />
             </div>
-            <p className="uppercase text-primary-darkest text-2xl font-montserrat my-4">
+            <p
+              data-testid="text-no-saved-sets-available"
+              className="uppercase text-primary-darkest text-2xl font-montserrat my-4"
+            >
               No saved sets available
             </p>
             <CreateSetInstructions />
@@ -127,6 +136,7 @@ const ManageSets: React.FC = () => {
           <div className="flex flex-row gap-2 py-2">
             <CreateSetButton />
             <SelectedSetButton
+              customDataTestID="button-export-selected-set"
               selection={selectedSets}
               text={"Export Selected"}
               onClick={() => {
@@ -150,6 +160,7 @@ const ManageSets: React.FC = () => {
               }}
             />
             <SelectedSetButton
+              customDataTestID="button-delete-selected-set"
               selection={selectedSets}
               text={"Delete Selected"}
               onClick={() => {
