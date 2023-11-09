@@ -350,10 +350,10 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
         graphQLFilters: generateFilter(request),
       }),
       transformResponse: (response: { data: ssmtableResponse }) => {
-        const { consequence, ssm_id } =
-          response?.data?.viewer?.explore?.ssms?.hits?.edges?.[0]?.node;
-        const { aa_change = "", consequence_type = "" } =
-          consequence?.hits?.edges?.[0]?.node?.transcript;
+        const { consequence, ssm_id } = response?.data?.viewer?.explore?.ssms
+          ?.hits?.edges?.[0]?.node ?? { consequence: {}, ssm_id: "" };
+        const { aa_change, consequence_type } = consequence?.hits?.edges?.[0]
+          ?.node?.transcript ?? { aa_change: "", consequence_type: "" };
         return {
           ssm_id,
           aa_change,
