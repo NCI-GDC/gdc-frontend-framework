@@ -857,15 +857,17 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               </FacetIconButton>
             </Tooltip>
             {dismissCallback ? (
-              <FacetIconButton
-                onClick={() => {
-                  clearFilters(field);
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" />
-              </FacetIconButton>
+              <Tooltip label="Remove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="Remove the facet"
+                >
+                  <CloseIcon size="1.25em" />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </FacetHeader>
