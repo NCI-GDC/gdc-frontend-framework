@@ -77,6 +77,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 checked={allSelected}
                 onChange={toggleSelectAll}
                 disabled={validData.length === 0}
+                id={rowSelectId}
               />
             </th>
             {survival && (
