@@ -2,7 +2,8 @@ import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import partial from "lodash/partial";
-import React from "react";
+import React, { useCallback } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { emptySurvivalPlot } from "@/features/genomic/types";
 import {
   useSelectFilterContent,
@@ -50,6 +51,12 @@ export const GenesPanel = ({
   } = useGeneAndSSMPanelData(comparativeSurvival, true);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
+  const toggledGenes = useDeepCompareMemo(() => currentGenes, [currentGenes]);
+  const handleGeneToggled = useCallback(
+    () =>
+      partial(handleGeneAndSSmToggled, toggledGenes, "genes.gene_id", "geneID"),
+    [handleGeneAndSSmToggled, toggledGenes],
+  );
 
   return (
     <div className="flex flex-col w-100 mx-6">
@@ -89,13 +96,8 @@ export const GenesPanel = ({
       <GTableContainer
         selectedSurvivalPlot={comparativeSurvival}
         handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-        handleGeneToggled={partial(
-          handleGeneAndSSmToggled,
-          currentGenes,
-          "genes.gene_id",
-          "geneID",
-        )}
-        toggledGenes={currentGenes}
+        handleGeneToggled={handleGeneToggled}
+        toggledGenes={toggledGenes}
         genomicFilters={genomicFilters}
         cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
         isDemoMode={isDemoMode}

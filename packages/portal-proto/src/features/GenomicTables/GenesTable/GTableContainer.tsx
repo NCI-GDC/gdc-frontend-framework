@@ -12,14 +12,14 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromFiltersMutation,
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import { Loader, Text, LoadingOverlay } from "@mantine/core";
+import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -40,7 +40,6 @@ import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
 import { convertDateToString } from "@/utils/date";
 
@@ -79,8 +78,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     useState(false);
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
-  const [columnType, setColumnType] = useState<columnFilterType>(null);
-  const [geneID, setGeneID] = useState<string | undefined>(undefined);
 
   /* Modal start */
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -105,17 +102,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   );
 
   /* Create Cohort*/
-  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (response.isLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [response.isLoading]);
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const generateFilters = useCallback(
+  const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
       let caseSetCreationFilters = buildCohortGqlOperator(
@@ -213,21 +202,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           }
         });
     },
-    [cohortFilters, genomicFilters, createSet, genesOnlyFilters?.root],
+    [cohortFilters, genomicFilters, createSet, genesOnlyFilters],
   );
-
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const createCohort = async (name: string) => {
-    const mainFilter = await generateFilters(columnType, geneID);
-
-    dispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: mainFilter,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
   /* End Create Cohort */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
@@ -288,9 +264,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     isDemoMode,
     setEntityMetadata,
     genomicFilters,
-    setColumnType,
-    setGeneID,
-    setShowCreateCohort,
+    generateFilters,
     handleMutationCountClick,
   });
 
@@ -401,7 +375,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      {loading && <LoadingOverlay visible />}
       {showSaveModal && (
         <SaveSelectionAsSetModal
           filters={buildCohortGqlOperator(setFilters)}
@@ -455,15 +428,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           removeFromSetHook={useRemoveFromGeneSetMutation}
         />
       )}
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            createCohort(newName);
-          }}
-        />
-      )}
-
       <VerticalTable
         data={formattedTableData}
         columns={genesTableDefaultColumns}
