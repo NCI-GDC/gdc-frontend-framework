@@ -148,10 +148,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       geneSymbol: searchTermsForGene.geneSymbol,
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
-      caseFilter: { mode: "", root: {} } as FilterSet,
+      caseFilter: caseFilter,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTermsForGene, genomicFilters, cohortFilters]);
+  }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
   useEffect(() => {
     if (topSSM) {
@@ -167,7 +167,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM, searchTermsForGene]);
+  }, [topSSM]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
