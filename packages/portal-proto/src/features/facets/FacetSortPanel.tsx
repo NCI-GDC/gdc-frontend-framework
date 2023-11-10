@@ -4,10 +4,13 @@ import {
   PiCaretDownFill as SortDesIcon,
   PiCaretUpFill as SortAscIcon,
 } from "react-icons/pi";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SortType } from "./types";
 
-const sortTypeToAriaDescription = (sortTypeAndDirection, valueLabel) => {
+const sortTypeToAriaDescription = (
+  sortTypeAndDirection: SortType,
+  valueLabel: string,
+) => {
   if (sortTypeAndDirection.type === "alpha") {
     return sortTypeAndDirection.direction === "asc"
       ? "Name is now sorted alphabetically ascending"
@@ -37,6 +40,14 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   valueLabel,
   setSort,
 }: FacetSortPanelProps) => {
+  const liveRegionRef = useRef(null);
+  const [sortingStatus, setSortingStatus] = useState("");
+  useEffect(() => {
+    if (sortingStatus) {
+      liveRegionRef.current.textContent = sortingStatus;
+    }
+  }, [sortingStatus]);
+
   const [NameSortIcon, nameIconSize] =
     sortType.type === "alpha"
       ? sortType.direction === "asc"
@@ -49,6 +60,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         ? [SortAscIcon, "0.75rem"]
         : [SortDesIcon, "0.75rem"]
       : [Selector, "1rem"];
+
   return (
     <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
       <Button
@@ -57,12 +69,21 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="xs"
         compact
         color="primary.9"
-        onClick={() =>
+        onClick={() => {
           setSort({
             type: "alpha",
             direction: sortType.direction === "asc" ? "dsc" : "asc",
-          })
-        }
+          });
+          setSortingStatus(
+            sortTypeToAriaDescription(
+              {
+                type: "alpha",
+                direction: sortType.direction === "asc" ? "dsc" : "asc",
+              },
+              "Name",
+            ),
+          );
+        }}
         rightIcon={<NameSortIcon size={nameIconSize} />}
         aria-label="Sort name alphabetically"
       >
@@ -74,20 +95,33 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="xs"
         compact
         color="primary.9"
-        onClick={() =>
+        onClick={() => {
           setSort({
             type: "value",
             direction: sortType.direction === "asc" ? "dsc" : "asc",
-          })
-        }
+          });
+          setSortingStatus(
+            sortTypeToAriaDescription(
+              {
+                type: "value",
+                direction: sortType.direction === "asc" ? "dsc" : "asc",
+              },
+              valueLabel,
+            ),
+          );
+        }}
         rightIcon={<ValueSortIcon size={valueIconSize} />}
         aria-label={`Sort ${valueLabel} numerically`}
       >
         {valueLabel}
       </Button>
       <span className="Offscreen">
-        <span id="liveRegion" aria-live="polite">
-          {sortTypeToAriaDescription(sortType, valueLabel)}
+        <span
+          id={`${valueLabel}-liveRegion`}
+          aria-live="polite"
+          ref={liveRegionRef}
+        >
+          {sortingStatus}
         </span>
       </span>
     </div>
