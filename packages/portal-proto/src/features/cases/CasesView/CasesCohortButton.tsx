@@ -96,7 +96,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
             }
             TargetButtonChildren="Create New Cohort"
             disableTargetWidth={true}
-            targetButtonDisabled={numCases == 0}
+            targetButtonDisabled={numCases === 0}
             LeftIcon={
               numCases ? (
                 <CountsIcon $count={numCases}>
@@ -125,7 +125,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
           onClose={() => setShowCreateCohort(false)}
           onActionClick={(newName: string) => {
             setName(newName);
-            if (numCases > 1) {
+            if (numCases > 0) {
               onCreateSet();
             }
           }}
