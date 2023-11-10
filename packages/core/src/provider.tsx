@@ -8,7 +8,9 @@ import { CoreContext } from "./hooks";
 
 const persistor = persistStore(coreStore);
 
-export const CoreProvider: React.FC<unknown> = ({
+export const CoreProvider: ({
+  children,
+}: PropsWithChildren<unknown>) => React.JSX.Element = ({
   children,
 }: PropsWithChildren<unknown>) => {
   return (
