@@ -145,8 +145,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     getTopSSM({
       pageSize: 1,
       offset: 0,
-      searchTerm: searchTermsForGene.geneId,
-      geneSymbol: searchTermsForGene.geneSymbol,
+      searchTerm: searchTermsForGene?.geneId ?? "",
+      geneSymbol: searchTermsForGene?.geneSymbol ?? "",
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
       caseFilter: { mode: "", root: {} } as FilterSet,
@@ -156,11 +156,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   useEffect(() => {
     if (topSSM) {
-      const { ssm_id, consequence_type, aa_change } = topSSM;
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
         ssm_id,
         consequence_type
-          ? `${searchTermsForGene.geneSymbol} ${aa_change} ${humanify({
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
               term: consequence_type.replace("_variant", "").replace("_", " "),
             })}`
           : "",
