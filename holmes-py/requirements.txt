@@ -30,8 +30,8 @@ mouseinfo==0.1.3
     # via pyautogui
 nodeenv==1.7.0
     # via pre-commit
-pillow==9.4.0
-    # via pyscreeze
+pillow==10.0.1
+    # via -r requirements.in
 platformdirs==2.5.2
     # via virtualenv
 playwright==1.23.1
@@ -712,8 +712,6 @@ rubicon-objc==0.4.3
     # via mouseinfo
 toml==0.10.2
     # via pre-commit
-typing-extensions==4.3.0
-    # via playwright
 virtualenv==20.16.2
     # via pre-commit
 websockets==10.1
