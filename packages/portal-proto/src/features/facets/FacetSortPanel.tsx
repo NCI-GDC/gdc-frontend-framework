@@ -26,6 +26,7 @@ interface FacetSortPanelProps {
   sortType: SortType;
   valueLabel: string;
   setSort: (sort: SortType) => void;
+  field: string;
 }
 
 /**
@@ -39,6 +40,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   sortType,
   valueLabel,
   setSort,
+  field,
 }: FacetSortPanelProps) => {
   const liveRegionRef = useRef(null);
   const [sortingStatus, setSortingStatus] = useState("");
@@ -115,14 +117,14 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       >
         {valueLabel}
       </Button>
-      <span className="Offscreen">
-        <span
-          id={`${valueLabel}-liveRegion`}
-          aria-live="polite"
-          ref={liveRegionRef}
-        >
-          {sortingStatus}
-        </span>
+
+      <span
+        id={`${field}-liveRegion`}
+        aria-live="polite"
+        ref={liveRegionRef}
+        className="sr-only"
+      >
+        {sortingStatus}
       </span>
     </div>
   );
