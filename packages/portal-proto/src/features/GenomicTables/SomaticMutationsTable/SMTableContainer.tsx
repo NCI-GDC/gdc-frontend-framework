@@ -143,7 +143,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   useEffect(() => {
     if (searchTermsForGene) {
-      const { geneId, geneSymbol } = searchTermsForGene;
+      const { geneId = "", geneSymbol = "" } = searchTermsForGene;
       getTopSSM({
         pageSize: 1,
         offset: 0,
