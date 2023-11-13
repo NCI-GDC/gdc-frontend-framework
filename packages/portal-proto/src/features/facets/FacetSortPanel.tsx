@@ -7,21 +7,6 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { SortType } from "./types";
 
-const sortTypeToAriaDescription = (
-  sortTypeAndDirection: SortType,
-  valueLabel: string,
-) => {
-  if (sortTypeAndDirection.type === "alpha") {
-    return sortTypeAndDirection.direction === "asc"
-      ? "Name is now sorted alphabetically ascending"
-      : "Name is now sorted alphabetically descending";
-  } else {
-    return sortTypeAndDirection.direction === "asc"
-      ? `${valueLabel} is now sorted numerically ascending`
-      : `${valueLabel} is now sorted numerically descending`;
-  }
-};
-
 interface FacetSortPanelProps {
   sortType: SortType;
   valueLabel: string;
@@ -29,13 +14,30 @@ interface FacetSortPanelProps {
   field: string;
 }
 
+const sortTypeToAriaDescription = (
+  sortTypeAndDirection: SortType,
+  valueLabel: string,
+  field: string,
+) => {
+  console.log({ sortTypeAndDirection });
+  if (sortTypeAndDirection.type === "alpha") {
+    return sortTypeAndDirection.direction === "asc"
+      ? `The ${field} names are now sorted alphabetically ascending`
+      : `The ${field} names are now sorted alphabetically descending`;
+  } else {
+    return sortTypeAndDirection.direction === "asc"
+      ? `The ${field} ${valueLabel} are now sorted numerically ascending`
+      : `The ${field} ${valueLabel} are now sorted numerically descending`;
+  }
+};
+
 /**
  * FacetCards "sort" header supporting sort by A-Z or by Value both ascending and descending
  * @param sortType - current sort type
- * @param setSort - sets the sort type and direction
  * @param valueLabel - Value labels, typically "case" "file"
+ * @param setSort - sets the sort type and direction
+ * @param field - specifies the facet table name
  */
-
 const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   sortType,
   valueLabel,
@@ -56,6 +58,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         ? [SortAscIcon, "0.75rem"]
         : [SortDesIcon, "0.75rem"]
       : [Selector, "1rem"];
+
   const [ValueSortIcon, valueIconSize] =
     sortType.type === "value"
       ? sortType.direction === "asc"
@@ -72,19 +75,16 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         compact
         color="primary.9"
         onClick={() => {
-          setSort({
+          const direction =
+            sortType.type === "alpha" && sortType.direction === "asc"
+              ? "dsc"
+              : "asc";
+          const sortObj: SortType = {
             type: "alpha",
-            direction: sortType.direction === "asc" ? "dsc" : "asc",
-          });
-          setSortingStatus(
-            sortTypeToAriaDescription(
-              {
-                type: "alpha",
-                direction: sortType.direction === "asc" ? "dsc" : "asc",
-              },
-              "Name",
-            ),
-          );
+            direction,
+          };
+          setSort(sortObj);
+          setSortingStatus(sortTypeToAriaDescription(sortObj, "Name", field));
         }}
         rightIcon={<NameSortIcon size={nameIconSize} />}
         aria-label="Sort name alphabetically"
@@ -98,18 +98,17 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         compact
         color="primary.9"
         onClick={() => {
-          setSort({
+          const direction =
+            sortType.type === "value" && sortType.direction === "asc"
+              ? "dsc"
+              : "asc";
+          const sortObj: SortType = {
             type: "value",
-            direction: sortType.direction === "asc" ? "dsc" : "asc",
-          });
+            direction,
+          };
+          setSort(sortObj);
           setSortingStatus(
-            sortTypeToAriaDescription(
-              {
-                type: "value",
-                direction: sortType.direction === "asc" ? "dsc" : "asc",
-              },
-              valueLabel,
-            ),
+            sortTypeToAriaDescription(sortObj, valueLabel, field),
           );
         }}
         rightIcon={<ValueSortIcon size={valueIconSize} />}
@@ -123,9 +122,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         aria-live="polite"
         ref={liveRegionRef}
         className="sr-only"
-      >
-        {sortingStatus}
-      </span>
+      />
     </div>
   );
 };

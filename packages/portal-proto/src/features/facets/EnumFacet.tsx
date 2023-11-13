@@ -69,7 +69,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState<SortType>({
     type: "alpha",
-    direction: "dsc",
+    direction: "asc",
   });
   const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
@@ -220,11 +220,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             .sort(
               sortType.type === "value"
                 ? ([, a], [, b]) =>
-                    sortType.direction === "dsc" ? a - b : b - a
+                    sortType.direction === "dsc" ? b - a : a - b
                 : ([a], [b]) =>
                     sortType.direction === "dsc"
-                      ? a.localeCompare(b)
-                      : b.localeCompare(a),
+                      ? b.localeCompare(a)
+                      : a.localeCompare(b),
             )
             .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
         ),
