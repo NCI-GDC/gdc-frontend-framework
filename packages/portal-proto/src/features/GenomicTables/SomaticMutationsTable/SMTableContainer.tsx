@@ -142,15 +142,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
   useEffect(() => {
-    getTopSSM({
-      pageSize: 1,
-      offset: 0,
-      searchTerm: searchTermsForGene?.geneId ?? "",
-      geneSymbol: searchTermsForGene?.geneSymbol ?? "",
-      genomicFilters: genomicFilters,
-      cohortFilters: cohortFilters,
-      caseFilter: { mode: "", root: {} } as FilterSet,
-    });
+    if (searchTermsForGene) {
+      const { geneId, geneSymbol } = searchTermsForGene;
+      getTopSSM({
+        pageSize: 1,
+        offset: 0,
+        searchTerm: geneId,
+        geneSymbol: geneSymbol,
+        genomicFilters: genomicFilters,
+        cohortFilters: cohortFilters,
+        caseFilter: { mode: "", root: {} } as FilterSet,
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters]);
 
@@ -168,7 +172,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM, searchTermsForGene]);
+  }, [topSSM]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
