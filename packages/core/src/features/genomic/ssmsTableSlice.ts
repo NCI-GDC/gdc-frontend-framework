@@ -288,6 +288,17 @@ const generateFilter = ({
             },
             op: "in",
           },
+          ...(geneSymbol
+            ? [
+                {
+                  content: {
+                    field: "genes.symbol",
+                    value: [geneSymbol],
+                  },
+                  op: "in",
+                },
+              ]
+            : []),
         ],
         // For case filter only use cohort filter and not genomic filter
         ...gqlCohortIntersection,
