@@ -34,35 +34,40 @@ export const useSetupInitialCohorts = (): boolean => {
     }
   }, [isSuccess, isError]);
 
-  useDeepCompareEffect(() => {
-    if (isSuccess || isError) {
-      const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
-        const existingCohort = cohorts.find((c) => c.id === data.id);
-        return existingCohort?.modified
-          ? existingCohort
-          : {
-              id: data.id,
-              name: data.name,
-              filters: buildGqlOperationToFilterSet(data.filters),
-              caseSet: {
-                ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
-              },
-              counts: {
-                ...NullCountsData,
-              },
-              modified_datetime: data.modified_datetime,
-              saved: true,
-              modified: false,
-            };
-      });
+  useDeepCompareEffect(
+    () => {
+      if (isSuccess || isError) {
+        const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
+          const existingCohort = cohorts.find((c) => c.id === data.id);
+          return existingCohort?.modified
+            ? existingCohort
+            : {
+                id: data.id,
+                name: data.name,
+                filters: buildGqlOperationToFilterSet(data.filters),
+                caseSet: {
+                  ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
+                },
+                counts: {
+                  ...NullCountsData,
+                },
+                modified_datetime: data.modified_datetime,
+                saved: true,
+                modified: false,
+              };
+        });
 
-      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
-      // A saved cohort that's not present in the API response has been deleted in another session
-      for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ currentID: id }));
+        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
+        // A saved cohort that's not present in the API response has been deleted in another session
+        for (const id of outdatedCohortsIds) {
+          coreDispatch(removeCohort({ currentID: id }));
+        }
       }
-    }
-  }, [cohortsListData, isSuccess, isError]);
+    },
+    /* eslint-disable react-hooks/exhaustive-deps */
+    [cohortsListData, isSuccess, isError],
+    /* eslint-enable */
+  );
 
   return fetched;
 };

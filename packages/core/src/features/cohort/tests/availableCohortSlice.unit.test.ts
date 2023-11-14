@@ -815,6 +815,80 @@ describe("add, update, and remove cohort", () => {
       },
     });
   });
+
+  test("should removed prior unsaved cohort when adding new one", () => {
+    const availableCohorts = availableCohortsReducer(
+      {
+        currentCohort: "000-000-000-1",
+        message: undefined,
+        ids: ["000-000-000-1"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              status: "uninitialized",
+              caseSetIds: undefined,
+              filters: undefined,
+            },
+            counts: {
+              ...NullCountsData,
+            },
+            modified: true,
+            modified_datetime: new Date().toISOString(),
+          },
+        },
+      },
+      addNewCohortWithFilterAndMessage({
+        filters: {
+          mode: "and",
+          root: {
+            "cases.primary_site": {
+              operator: "includes",
+              field: "cases.primary_site",
+              operands: ["breast", "bronchus and lung"],
+            },
+          },
+        },
+        message: "newProjectsCohort",
+        name: "New Cohort 2",
+        makeCurrent: true,
+      }),
+    );
+    expect(availableCohorts).toEqual({
+      currentCohort: "000-000-000-4",
+      message: ["newProjectsCohort|New Cohort 2|000-000-000-4"],
+      ids: ["000-000-000-4"],
+      entities: {
+        "000-000-000-4": {
+          filters: {
+            mode: "and",
+            root: {
+              "cases.primary_site": {
+                field: "cases.primary_site",
+                operands: ["breast", "bronchus and lung"],
+                operator: "includes",
+              },
+            },
+          },
+          id: "000-000-000-4",
+          caseSet: {
+            status: "uninitialized",
+            caseSetIds: undefined,
+            filters: undefined,
+          },
+          counts: {
+            ...NullCountsData,
+          },
+          modified: true,
+          modified_datetime: "2020-11-01T00:00:00.000Z",
+          name: "New Cohort 2",
+          saved: false,
+        },
+      },
+    });
+  });
 });
 
 describe("caseSet creation", () => {
