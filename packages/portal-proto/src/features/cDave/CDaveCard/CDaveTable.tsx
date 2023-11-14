@@ -32,7 +32,6 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedFacets,
   dataDimension,
 }: CDaveTableProps) => {
-  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   const displayDataDimension = useDataDimension(field);
 
   const validData = useDeepCompareMemo(
@@ -77,7 +76,6 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                 checked={allSelected}
                 onChange={toggleSelectAll}
                 disabled={validData.length === 0}
-                id={rowSelectId}
               />
             </th>
             {survival && (
@@ -124,7 +122,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     color="accent"
                     size="xs"
                     className="pt-1"
-                    aria-labelledby={rowSelectId}
+                    aria-label={`Select ${displayName}`}
                     disabled={count === 0}
                     checked={selectedFacets
                       .map((facet) => facet.value)

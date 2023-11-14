@@ -38,7 +38,7 @@ describe("CDaveCard", () => {
 
     expect(
       getByRole("row", {
-        name: "Select all the rows of Gender table male 1,000 (66.67%)",
+        name: "Select male male 1,000 (66.67%)",
       }),
     ).toBeInTheDocument();
   });
@@ -89,7 +89,7 @@ describe("CDaveCard", () => {
 
     expect(
       getByRole("row", {
-        name: "Select all the rows of Gender table missing 1,000 (66.67%)",
+        name: "Select missing missing 1,000 (66.67%)",
       }),
     ).toBeInTheDocument();
   });
@@ -147,12 +147,12 @@ describe("CDaveCard", () => {
 
     expect(
       getByRole("row", {
-        name: "Select all the rows of Cigarettes Per Day table 0 to <12 10 (10.00%)",
+        name: "Select 0 to <12 0 to <12 10 (10.00%)",
       }),
     ).toBeInTheDocument();
     expect(
       getByRole("row", {
-        name: "Select all the rows of Cigarettes Per Day table 12 to <24 90 (90.00%)",
+        name: "Select 12 to <24 12 to <24 90 (90.00%)",
       }),
     ).toBeInTheDocument();
   });
