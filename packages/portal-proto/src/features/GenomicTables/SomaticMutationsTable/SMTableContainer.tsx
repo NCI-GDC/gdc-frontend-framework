@@ -41,7 +41,6 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import SMTableSubcomponent from "./SMTableSubcomponent";
-import useTraceUpdate from "@/hooks/useTraceUpdate";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: Record<string, string>;
@@ -216,18 +215,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           total: undefined,
         };
   }, [pageSize, page, data?.ssmsTotal, isSuccess]);
-
-  useTraceUpdate({
-    isDemoMode,
-    handleSsmToggled,
-    toggledSsms,
-    handleSurvivalPlotToggled,
-    isModal,
-    geneSymbol,
-    setEntityMetadata,
-    projectId,
-    generateFilters,
-  });
 
   const SMTableDefaultColumns = useGenerateSMTableColumns({
     isDemoMode,
