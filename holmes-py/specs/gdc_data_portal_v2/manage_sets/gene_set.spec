@@ -3,7 +3,7 @@ Date Created   : 11/13/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Gene Set
-Test-Case      :
+Test-Case      : PEAR-1619
 
 tags: gdc-data-portal-v2, manage-sets, regression
 

@@ -19,7 +19,7 @@ class ManageSetsPage(BasePage):
         self.click(ManageSetsLocators.BUTTON_CREATE_SET)
         self.click(ManageSetsLocators.BUTTON_SET_MENU_OPTIONS(dropdown_option))
 
-    def click_import_set_browse(self, button_text_name):
+    def click_browse_import_set(self, button_text_name):
         """
         Click the 'browse' button to open the file explorer.
         """
