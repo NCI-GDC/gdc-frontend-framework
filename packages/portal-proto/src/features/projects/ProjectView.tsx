@@ -237,7 +237,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         leftElement={
           <div className="flex gap-4">
             <Tooltip
-              label={`Create a new unsaved cohort of ${projectData.project_id} cases`}
+              label={`Save a new cohort of ${projectData.project_id} cases`}
               withArrow
             >
               <Button

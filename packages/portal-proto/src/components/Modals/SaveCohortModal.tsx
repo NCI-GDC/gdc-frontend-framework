@@ -24,11 +24,13 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
+  setAsCurrent,
 }: {
   initialName?: string;
   onClose: () => void;
   cohortId?: string;
   filters: FilterSet;
+  setAsCurrent?: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
@@ -58,7 +60,7 @@ const SaveCohortModal = ({
           // Therefore, copy the unsaved cohort to the new cohort id received from
           // the BE.
           coreDispatch(
-            setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+            setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
           );
           coreDispatch(
             removeCohort({
@@ -84,6 +86,18 @@ const SaveCohortModal = ({
               modified: false,
             }),
           );
+          if (setAsCurrent) {
+            coreDispatch(setCurrentCohortId(payload.id));
+            coreDispatch(
+              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+            );
+          } else {
+            coreDispatch(
+              setCohortMessage([
+                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+              ]),
+            );
+          }
         }
 
         onClose();

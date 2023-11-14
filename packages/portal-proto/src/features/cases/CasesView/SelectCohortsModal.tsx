@@ -177,7 +177,7 @@ export const SelectCohortsModal = ({
     isWithCohort ? "with" : "without"
   } selected cases`;
 
-  const description = `Select an existing cohort, then click Submit. This will create a new
+  const description = `Select an existing cohort, then click Submit. This will save a new
     cohort that contains all the cases from your selected cohort ${
       isWithCohort ? "and" : "except"
     } the cases previously selected.`;

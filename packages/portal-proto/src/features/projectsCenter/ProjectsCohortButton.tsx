@@ -13,7 +13,7 @@ const ProjectsCohortButton = ({
   return (
     <>
       <Tooltip
-        label="Create a new unsaved cohort of cases in selected project(s)"
+        label="Save a new cohort of cases in selected project(s)"
         withArrow
       >
         <span>

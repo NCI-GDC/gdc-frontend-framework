@@ -29,6 +29,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       {showSaveCohort && (
         <SaveCohortModal
           onClose={() => setShowSaveCohort(false)}
+          setAsCurrent
           filters={{
             mode: "and",
             root: {

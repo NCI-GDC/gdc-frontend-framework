@@ -43,7 +43,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
 
   return (
     <>
-      <Tooltip label="Create a new unsaved cohort based on selection">
+      <Tooltip label="Save a new cohort based on selection">
         <span>
           <DropdownWithIcon
             dropdownElements={
