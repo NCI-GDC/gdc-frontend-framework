@@ -450,6 +450,7 @@ describe("add, update, and remove cohort", () => {
             },
             modified: true,
             modified_datetime: new Date().toISOString(),
+            saved: true,
           },
         },
       },
@@ -487,6 +488,7 @@ describe("add, update, and remove cohort", () => {
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
+          saved: true,
         },
         "000-000-000-2": {
           filters: {
@@ -538,6 +540,7 @@ describe("add, update, and remove cohort", () => {
             },
             modified: false,
             modified_datetime: "2020-11-01T00:00:00.000Z",
+            saved: true,
           },
         },
       },
@@ -560,6 +563,7 @@ describe("add, update, and remove cohort", () => {
           },
           modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
+          saved: true,
         },
         "000-000-000-3": {
           filters: { mode: "and", root: {} },
@@ -717,7 +721,7 @@ describe("add, update, and remove cohort", () => {
       removeCohort({ shouldShowMessage: true }),
     );
     expect(Object.values(availableCohorts.entities)[0]?.name).toEqual(
-      "New Unsaved Cohort",
+      "Unsaved_Cohort",
     );
   });
 
@@ -742,6 +746,7 @@ describe("add, update, and remove cohort", () => {
             },
             modified: true,
             modified_datetime: new Date().toISOString(),
+            saved: true,
           },
         },
       },
@@ -780,6 +785,7 @@ describe("add, update, and remove cohort", () => {
           },
           modified: true,
           modified_datetime: "2020-11-01T00:00:00.000Z",
+          saved: true,
         },
         "000-000-000-4": {
           filters: {

@@ -14,7 +14,14 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <CoreProvider>
       <Provider store={store}>
-        <MantineProvider>
+        <MantineProvider
+          theme={{
+            colors: {
+              primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+              base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            },
+          }}
+        >
           <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
             <SummaryModalContext.Provider
               value={{
