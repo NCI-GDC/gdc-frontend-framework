@@ -45,7 +45,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
                   )
                 : setSelectedSets([...selectedSets, set])
             }
-            aria-labelledby={`set-table-${set[0]}`}
+            aria-label={`checkbox for selecting set ${set[0]} in set table`}
+            aria-checked={selected}
           />
         ) : (
           <Radio
@@ -53,7 +54,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
-            aria-labelledby={`set-table-${set[0]}`}
+            aria-label={`radio button for selecting set ${set[0]} in set table`}
+            aria-checked={selected}
           />
         )}
       </span>
