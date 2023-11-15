@@ -159,11 +159,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   useEffect(() => {
     if (topSSM) {
-      const { ssm_id, consequence_type, aa_change } = topSSM;
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
         ssm_id,
         consequence_type
-          ? `${searchTermsForGene.geneSymbol} ${aa_change} ${humanify({
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
               term: consequence_type.replace("_variant", "").replace("_", " "),
             })}`
           : "",
