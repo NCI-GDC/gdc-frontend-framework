@@ -835,32 +835,39 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             {rangeDatatype !== "range" && (
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-label="Flip between form and chart"
-              >
-                <FlipIcon size="1.45em" className={controlsIconStyle} />
-              </FacetIconButton>
+              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
+                <FacetIconButton
+                  onClick={toggleFlip}
+                  aria-pressed={!isFacetView}
+                  aria-label="chart view"
+                >
+                  <FlipIcon size="1.45em" className={controlsIconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             )}
-            <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                setClearValues(true);
-              }}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.15em" />
-            </FacetIconButton>
-            {dismissCallback ? (
+            <Tooltip label="Clear selection">
               <FacetIconButton
                 onClick={() => {
                   clearFilters(field);
-                  dismissCallback(field);
+                  setClearValues(true);
                 }}
-                aria-label="Remove the facet"
+                aria-label="clear selection"
               >
-                <CloseIcon size="1.25em" />
+                <UndoIcon size="1.15em" />
               </FacetIconButton>
+            </Tooltip>
+            {dismissCallback ? (
+              <Tooltip label="Remove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="Remove the facet"
+                >
+                  <CloseIcon size="1.25em" />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </FacetHeader>
