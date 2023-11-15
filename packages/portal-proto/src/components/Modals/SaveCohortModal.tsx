@@ -53,7 +53,11 @@ const SaveCohortModal = ({
       .then((payload) => {
         if (prevCohort) {
           coreDispatch(
-            copyCohort({ sourceId: prevCohort, destId: payload.id }),
+            copyCohort({
+              sourceId: prevCohort,
+              destId: payload.id,
+              saved: true,
+            }),
           );
           // NOTE: the current cohort can not be undefined. Setting the id to a cohort
           // which does not exist will cause this

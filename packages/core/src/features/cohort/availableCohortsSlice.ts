@@ -534,6 +534,7 @@ interface NewCohortParams {
 interface CopyCohortParams {
   sourceId: string;
   destId: string;
+  saved: boolean;
 }
 
 /**
@@ -618,6 +619,7 @@ const slice = createSlice({
           ...sourceCohort,
           id: action.payload.destId,
           modified: false,
+          saved: action.payload.saved,
         };
         cohortsAdapter.addOne(state, destCohort);
       }
