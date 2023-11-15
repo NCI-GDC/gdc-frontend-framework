@@ -226,7 +226,9 @@ export const SearchInput: React.FC = () => {
         aria-haspopup="grid"
         aria-expanded={dropdownOpen}
         aria-controls={comboboxId}
-        aria-activedescendant={`${comboboxItemId}${activedescendant}`}
+        aria-activedescendant={
+          activedescendant && `${comboboxItemId}${activedescendant}`
+        }
         icon={<SearchIcon size={24} />}
         placeholder="Search"
         data-testid="textbox-search-bar"
