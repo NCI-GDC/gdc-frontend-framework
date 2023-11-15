@@ -19,7 +19,6 @@ const sortTypeToAriaDescription = (
   valueLabel: string,
   field: string,
 ) => {
-  console.log({ sortTypeAndDirection });
   if (sortTypeAndDirection.type === "alpha") {
     return sortTypeAndDirection.direction === "asc"
       ? `The ${field} names are now sorted alphabetically ascending`
