@@ -145,7 +145,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           />
         )}
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           disabled={
