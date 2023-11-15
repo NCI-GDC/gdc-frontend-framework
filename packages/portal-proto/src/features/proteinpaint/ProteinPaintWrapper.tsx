@@ -52,9 +52,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
-      console.log(55, arg);
-      setPickedCases(arg.samples.map((d) => d["cases.case_id"]));
-      console.log(57, pickedCases);
+      const cases = arg.samples.map((d) => d["cases.case_id"]);
+      setPickedCases(cases);
       setShowCreateCohort(true);
     },
     [createSet, pickedCases],

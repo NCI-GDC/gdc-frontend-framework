@@ -54,7 +54,6 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       setPickedCases(cases);
-      console.log(57, pickedCases);
       setShowCreateCohort(true);
     },
     [createSet, pickedCases],
