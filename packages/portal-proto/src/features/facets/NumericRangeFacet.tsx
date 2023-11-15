@@ -170,6 +170,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             sortType={sortType}
             valueLabel={valueLabel}
             setSort={setSortType}
+            field={field}
           />
         </>
       ) : null}
@@ -186,10 +187,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                       rangeLabelsAndValues[b].value
               : (a, b) =>
                   sortType.direction === "dsc"
-                    ? rangeLabelsAndValues[a].from -
-                      rangeLabelsAndValues[b].from
-                    : rangeLabelsAndValues[b].from -
-                      rangeLabelsAndValues[a].from,
+                    ? rangeLabelsAndValues[b].from -
+                      rangeLabelsAndValues[a].from
+                    : rangeLabelsAndValues[a].from -
+                      rangeLabelsAndValues[b].from,
           )
           .map((rangeKey, i) => {
             return (
