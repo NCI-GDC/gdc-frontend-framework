@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useMemo, ChangeEvent } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  ChangeEvent,
+  useId,
+  useRef,
+} from "react";
 import { useRouter } from "next/router";
 import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
@@ -17,8 +24,7 @@ import {
   FacetSearchDocument,
   useFacetSearch,
 } from "@/features/cohortBuilder/dictionary";
-import { createKeyboardAccessibleFunction } from "src/utils";
-import DivWithHoverCallout from "./DivWithHoverCallout";
+import BtnWithHoverCallout from "./BtnWithHoverCallout";
 
 const PAGE_SIZE = 5;
 
@@ -37,7 +43,10 @@ export const SearchInput: React.FC = () => {
   const [page, setPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const ref = useClickOutside(() => setDropdownOpen(false));
+  const ref = useClickOutside(() => {
+    setDropdownOpen(false);
+    setActivedescendant(undefined);
+  });
 
   const miniSearch = useFacetSearch();
 
@@ -102,10 +111,122 @@ export const SearchInput: React.FC = () => {
       setFilteredCategories([...filteredCategories, cat]);
     }
   };
+  const id = useId();
+  const comboboxId = `${id}-combobox`;
+  const comboboxlistId = `${id}-combobox-list`;
+  const comboboxItemId = `${id}-item-`;
+  const textInputRef = useRef(null);
+  const selectedItemRef = useRef(null);
+  const [activedescendant, setActivedescendant] = useState(undefined);
+
+  const menuKeybordNav = (e: React.KeyboardEvent<any>) => {
+    switch (e.key) {
+      case "Escape":
+        e.preventDefault();
+        //If the grid is displayed, closes it
+        if (dropdownOpen) {
+          setDropdownOpen(false);
+          setActivedescendant(undefined);
+          //Sets visual focus on the textbox
+          textInputRef.current.focus();
+        } else {
+          //If the grid is not displayed, clears the textbox
+          setSearchTerm("");
+        }
+        break;
+      case "Enter":
+        //Exclude tabbed items
+        if (!selectedItemRef.current) {
+          break;
+        }
+        //Sets the textbox value to the content of the first cell in the row containing focus.
+        selectedItemRef.current.click();
+        setActivedescendant(undefined);
+        //Closes the grid popup. happens automaticly
+        //Sets focus on the textbox. should already be there
+        break;
+      case "ArrowRight":
+      case "ArrowDown":
+        //If the grid is displayed, moves focus to the first suggested value.
+        if (dropdownOpen && filteredResults.length > 0) {
+          e.preventDefault();
+          textInputRef.current.focus(); // make sure focus is on search bar
+          //figure out what to select
+
+          // if more items select next item
+          if (
+            typeof activedescendant === "undefined" ||
+            activedescendant + 2 + (page - 1) * PAGE_SIZE >
+              filteredResults.length
+          ) {
+            // if on last page go back to beginning
+            setPage(1);
+            // if at end of list go back to beginning
+            setActivedescendant(0);
+          } else {
+            //if at end of page go to next page
+            if (activedescendant + 2 > PAGE_SIZE) {
+              setPage(page + 1);
+              setActivedescendant(0);
+            } else {
+              setActivedescendant(activedescendant + 1);
+            }
+          }
+        }
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        // If the grid is displayed, moves focus to the last suggested value
+        if (dropdownOpen && filteredResults.length > 0) {
+          e.preventDefault();
+          textInputRef.current.focus(); // make sure focus is on search bar
+          //figure out what to select
+
+          // if previous items select previous item
+          if (
+            typeof activedescendant === "undefined" ||
+            (page === 1 && activedescendant === 0)
+          ) {
+            // moves focus to the last suggested page
+            setPage(Math.ceil(filteredResults.length / PAGE_SIZE));
+            // moves focus to the last suggested value
+            setActivedescendant((filteredResults.length - 1) % PAGE_SIZE);
+          } else {
+            //if at start of page go to previous page
+            if (activedescendant === 0) {
+              setPage(page - 1);
+              setActivedescendant(PAGE_SIZE - 1);
+            } else {
+              setActivedescendant(activedescendant - 1);
+            }
+          }
+        }
+
+        break;
+      case "Home":
+        //Moves focus to the textbox and places the editing cursor at the beginning of the field
+        setActivedescendant(undefined);
+        break;
+      case "End":
+        //Moves focus to the textbox and places the editing cursor at the end of the field
+        setActivedescendant(undefined);
+        break;
+      default:
+        //Moves focus to the textbox.
+        //Types the character in the textbox.
+        setActivedescendant(undefined);
+    }
+  };
 
   return (
     <div ref={ref} className="relative">
       <TextInput
+        role="combobox"
+        aria-autocomplete="list"
+        aria-haspopup="grid"
+        aria-expanded={dropdownOpen}
+        aria-controls={comboboxId}
+        aria-activedescendant={`${comboboxItemId}${activedescendant}`}
         icon={<SearchIcon size={24} />}
         placeholder="Search"
         data-testid="textbox-search-bar"
@@ -113,6 +234,7 @@ export const SearchInput: React.FC = () => {
         value={searchTerm}
         onChange={onSearchChanged}
         onFocus={() => setDropdownOpen(searchTerm.length > 0)}
+        onKeyDown={menuKeybordNav}
         classNames={{
           root: "w-[25rem]",
           input: "focus:border-2 focus:border-primary text-sm",
@@ -130,9 +252,16 @@ export const SearchInput: React.FC = () => {
             />
           )
         }
+        ref={textInputRef}
       />
       {dropdownOpen && (
-        <div className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md">
+        <div
+          className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md"
+          id={comboboxId}
+          onKeyDown={menuKeybordNav}
+          role="grid"
+          tabIndex={-1}
+        >
           {searchResults.length === 0 ? (
             <p
               className="text-base text-sm"
@@ -146,32 +275,39 @@ export const SearchInput: React.FC = () => {
           ) : (
             <>
               <P>Related Categories</P>
-              <div className="flex flex-wrap gap-1 my-2">
+              <ul
+                className="flex flex-wrap gap-1 my-2 gap-y-0"
+                role="group"
+                aria-label="Filter Results by Related Categories"
+                aria-controls={comboboxlistId}
+              >
                 {uniq(searchResults.map((result) => result.category)).map(
                   (cat) => {
                     const selected = filteredCategories.includes(cat);
                     return (
-                      <Badge
-                        className={
-                          selected
-                            ? "text-white bg-primary-dark capitalize text-sm font-normal hover: "
-                            : "text-primary-dark border-solid border-primary-dark capitalize text-sm font-normal hover:text-white hover:bg-primary-dark"
-                        }
-                        color="white"
-                        tabIndex={0}
-                        onClick={() => toggleCategory(selected, cat)}
-                        onKeyDown={createKeyboardAccessibleFunction(() =>
-                          toggleCategory(selected, cat),
-                        )}
-                        leftSection={selected ? <CheckIcon /> : undefined}
-                        key={cat}
-                      >
-                        {cat}
-                      </Badge>
+                      <li key={cat}>
+                        <button
+                          onClick={() => toggleCategory(selected, cat)}
+                          aria-checked={selected}
+                          role="checkbox"
+                        >
+                          <Badge
+                            className={`cursor-pointer capitalize text-sm font-normal ${
+                              selected
+                                ? "text-white bg-primary-dark hover: "
+                                : "text-primary-dark border-solid border-primary-dark hover:text-white hover:bg-primary-dark"
+                            }`}
+                            color="white"
+                            leftSection={selected ? <CheckIcon /> : undefined}
+                          >
+                            {cat}
+                          </Badge>
+                        </button>
+                      </li>
                     );
                   },
                 )}
-              </div>
+              </ul>
               <P>
                 Showing {(page - 1) * PAGE_SIZE + 1} -{" "}
                 {page * PAGE_SIZE > filteredResults.length
@@ -179,15 +315,24 @@ export const SearchInput: React.FC = () => {
                   : page * PAGE_SIZE}{" "}
                 out of {filteredResults.length} for: <b>{searchTerm}</b>
               </P>
-              <ul className="mb-4">
+
+              <ul className="mb-4" id={comboboxlistId}>
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-                  .map((result) => {
+                  .map((result, index) => {
                     const matchingEnums = result?.enum.filter((e) =>
                       result.terms.some((t) => e.toLowerCase().includes(t)),
                     );
                     const showTooltip =
                       result.description !== "" || matchingEnums.length > 0;
+                    const extraAttributes =
+                      activedescendant === index
+                        ? {
+                            $focus: true,
+                            "aria-selected": "true",
+                            ref: selectedItemRef,
+                          }
+                        : {};
                     return (
                       <li className="cursor-pointer" key={result.id}>
                         <Tooltip
@@ -227,14 +372,14 @@ export const SearchInput: React.FC = () => {
                             tooltip: "text-black drop-shadow-md rounded-none",
                           }}
                           offset={17}
+                          opened={activedescendant === index ? true : undefined}
                         >
-                          <DivWithHoverCallout
-                            role="button"
-                            tabIndex={0}
+                          <BtnWithHoverCallout
+                            role="option"
                             onClick={() => clickResult(result)}
-                            onKeyPress={createKeyboardAccessibleFunction(() =>
-                              clickResult(result),
-                            )}
+                            tabIndex={-1}
+                            id={`${comboboxItemId}${index}`}
+                            {...extraAttributes}
                           >
                             <div className="p-2 leading-5">
                               <b>
@@ -249,7 +394,7 @@ export const SearchInput: React.FC = () => {
                                 <b>Category:</b> {result.category}
                               </span>
                             </div>
-                          </DivWithHoverCallout>
+                          </BtnWithHoverCallout>
                         </Tooltip>
                         <hr />
                       </li>
@@ -268,20 +413,8 @@ export const SearchInput: React.FC = () => {
                 withEdges
                 siblings={0}
                 classNames={{ control: "border-0" }}
-                getControlProps={(control) => {
-                  switch (control) {
-                    case "previous":
-                      return { "aria-label": "previous page button" };
-                    case "next":
-                      return { "aria-label": "next page button" };
-                    case "first":
-                      return { "aria-label": "first page button" };
-                    case "last":
-                      return { "aria-label": "last page button" };
-                    default:
-                      return { "aria-label": `${control} page button` };
-                  }
-                }}
+                getItemProps={() => ({ tabIndex: "-1" })}
+                getControlProps={() => ({ tabIndex: "-1" })}
               />
             </>
           )}
