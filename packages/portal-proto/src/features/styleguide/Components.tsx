@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { divider_style } from "./style";
 import { Divider } from "@mantine/core";
 import EnumFacet from "../facets/EnumFacet";
@@ -17,7 +16,7 @@ import {
 import partial from "lodash/partial";
 import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
 
-const Components: ReactNode = () => {
+const Components = () => {
   return (
     <div className="flex flex-col font-montserrat text-primary-content w-100">
       <p className="prose font-medium text-2xl">UI Components</p>

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 /***
  * Render component offscreen and invisible to screen readers. Use for rendering charts for downloads.
  */
-const OffscreenWrapper: React.FC = ({ children }) => {
+const OffscreenWrapper = ({ children }: PropsWithChildren) => {
   return (
     <div
       className="h-64 absolute left-[-10000px]"

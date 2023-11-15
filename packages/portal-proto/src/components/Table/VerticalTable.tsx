@@ -3,11 +3,20 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getSortedRowModel,
+  Header,
   Row,
+  SortDirection,
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import {
   LoadingOverlay,
@@ -59,6 +68,17 @@ function VerticalTable<TData>({
   const [searchFocused, setSearchFocused] = useState(false);
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
+  const liveRegionRef = useRef(null); // Reference to the Live Region
+  const [sortingStatus, setSortingStatus] = useState(""); // Sorting status announcement
+  const [announcementTimestamp, setAnnouncementTimestamp] = useState(
+    Date.now(),
+  );
+
+  useEffect(() => {
+    if (sortingStatus && announcementTimestamp) {
+      liveRegionRef.current.textContent = sortingStatus;
+    }
+  }, [sortingStatus, announcementTimestamp]);
 
   // TODO: status fufilled is to be sent for all the tables (even without api calls)
   // also need in pagination (do sth about it)
@@ -156,6 +176,7 @@ function VerticalTable<TData>({
     clearTimeout(timeoutRef.current);
     handleChange({ newSearch: "" });
   };
+
   const tooltipContainer = search?.tooltip
     ? (children) => (
         <Tooltip
@@ -174,6 +195,28 @@ function VerticalTable<TData>({
         </Tooltip>
       )
     : undefined;
+
+  const handleSorting = (
+    header: Header<TData, unknown>,
+    headerName: ReactNode | JSX.Element,
+    isColumnSorted: false | SortDirection,
+  ) => {
+    header.column.toggleSorting();
+    if (isColumnSorted) {
+      const sortingDirection =
+        isColumnSorted === "desc"
+          ? "Table not sorted"
+          : `Table sorted by ${headerName} in descending order.`;
+      setSortingStatus(sortingDirection);
+    } else {
+      setSortingStatus(`Table sorted by ${headerName} in ascending order.`);
+    }
+    // This is needed for when the sortingStatus between two columns stays the same.
+    // If it's the same then the useEffect on line 69 will not fire. So, I added a new variable
+    // announcementTimestamp so that it's announced everytime it's needed.
+    setAnnouncementTimestamp(Date.now());
+  };
+
   return (
     <div className="grow overflow-hidden pt-1">
       <div
@@ -233,6 +276,12 @@ function VerticalTable<TData>({
       </div>
 
       <div className="overflow-y-auto w-full relative">
+        <div
+          key={announcementTimestamp}
+          ref={liveRegionRef}
+          className="sr-only"
+          aria-live="polite"
+        />
         <LoadingOverlay
           data-testid="loading-spinner-table"
           visible={status === "pending" || status === "uninitialized"}
@@ -258,6 +307,10 @@ function VerticalTable<TData>({
                       ? "bg-nci-purple-lightest"
                       : "bg-base-max"
                   }`;
+                  const headerName = flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  );
 
                   if (columnSorting === "none" || !isColumnSortable) {
                     return (
@@ -266,42 +319,39 @@ function VerticalTable<TData>({
                         key={header.id}
                         colSpan={header.colSpan}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {headerName}
                       </th>
                     );
                   } else {
                     return (
                       <th
                         key={header.id}
-                        className={`${commonHeaderClass} whitespace-nowrap ${
+                        scope="col"
+                        className={`
+                        ${commonHeaderClass} whitespace-nowrap
+                        ${
                           isColumnHighlighted
                             ? "hover:bg-nci-purple-lighter"
                             : "hover:bg-primary-lightest"
-                        }`}
-                        onClick={() => {
-                          header.column.toggleSorting();
-                        }}
-                        onKeyDown={createKeyboardAccessibleFunction(() => {
-                          header.column.toggleSorting();
-                        })}
+                        }
+                      `}
                         aria-sort={
                           isColumnSorted
                             ? isColumnSorted === "desc"
                               ? "descending"
                               : "ascending"
-                            : undefined
+                            : "none"
                         }
                         colSpan={header.colSpan}
+                        role="columnheader"
                       >
-                        <button className="flex items-center font-heading">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-
+                        <button
+                          className="flex items-center font-heading"
+                          onClick={() =>
+                            handleSorting(header, headerName, isColumnSorted)
+                          }
+                        >
+                          {headerName}
                           {isColumnSortable && (
                             <div
                               className="inline-block text-xs pl-3 align-middle text-base-light"
@@ -309,14 +359,14 @@ function VerticalTable<TData>({
                             >
                               <BsCaretUpFill
                                 className={
-                                  isColumnSorted === "desc"
-                                    ? "text-primary"
-                                    : ""
+                                  isColumnSorted === "asc" ? "text-primary" : ""
                                 }
                               />
                               <BsCaretDownFill
                                 className={`${
-                                  isColumnSorted === "asc" ? "text-primary" : ""
+                                  isColumnSorted === "desc"
+                                    ? "text-primary"
+                                    : ""
                                 } relative top-[-2px]`}
                               />
                             </div>
@@ -387,7 +437,10 @@ function VerticalTable<TData>({
       {pagination && (
         <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
-            <div className="flex flex-row items-center m-auto ml-0 text-sm">
+            <div
+              data-testid="area-show-number-of-entries"
+              className="flex flex-row items-center m-auto ml-0 text-sm"
+            >
               <span className="my-auto mx-1">Show</span>
               <Select
                 size="xs"
@@ -403,6 +456,7 @@ function VerticalTable<TData>({
                 classNames={{
                   root: "w-16 font-heading",
                 }}
+                data-testid="button-show-entries"
                 aria-label="select page size"
               />
               <span className="my-auto mx-1">Entries</span>

@@ -1,6 +1,6 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
 import { createStyles, Table, ScrollArea } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -126,7 +126,7 @@ export const ScrollableTableWithFixedHeader = ({
             >
               {Object.values(row).map((item, index) => (
                 <td key={index} className="text-sm px-2 py-2.5 border-0">
-                  {typeof item === "undefined" ? "--" : item}
+                  {item !== undefined ? (item as ReactNode) : "--"}
                 </td>
               ))}
             </tr>

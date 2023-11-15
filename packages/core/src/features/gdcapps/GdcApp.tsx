@@ -35,7 +35,9 @@ export interface CreateGdcAppOptions {
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
 }
 
-export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
+export const createGdcApp = (
+  options: CreateGdcAppOptions,
+): (() => React.JSX.Element) => {
   const { App, name, version, requiredEntityTypes } = options;
 
   // create a stable id for this app
@@ -58,7 +60,7 @@ export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
     },
   });
 
-  const GdcAppWrapper: React.FC = () => {
+  const GdcAppWrapper = () => {
     useEffect(() => {
       document.title = `GDC - ${name}`;
     });
@@ -174,7 +176,7 @@ export interface CreateGdcAppWithOwnStoreOptions<
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
-): React.ReactNode => {
+): (() => React.JSX.Element) => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
 
@@ -187,7 +189,7 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   // this will be used to build page3
   // click app link
 
-  const GdcAppWrapper: React.FC = () => {
+  const GdcAppWrapper = () => {
     useEffect(() => {
       document.title = `GDC - ${name}`;
     });

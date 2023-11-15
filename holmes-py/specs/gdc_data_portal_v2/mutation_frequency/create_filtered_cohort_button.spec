@@ -48,8 +48,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Ssm Id is          |exists               |2                        |
-  |Gene               |PTEN                 |3                        |
+  |Ssm Id is          |exists               |3                        |
+  |Gene               |PTEN                 |4                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
@@ -80,8 +80,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=gain                |2                        |
-  |Gene Id            |=CSMD3               |3                        |
+  |Cnv Change         |=gain                |3                        |
+  |Gene Id            |=CSMD3               |4                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
@@ -112,8 +112,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=loss                |2                        |
-  |Gene Id            |=ZFHX3               |3                        |
+  |Cnv Change         |=loss                |3                        |
+  |Gene Id            |=ZFHX3               |4                        |
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text

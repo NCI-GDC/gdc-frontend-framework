@@ -12,6 +12,7 @@ tags: gdc-data-portal-v2, repository, regression
 * Navigate to "Downloads" from "Header" "section"
 
 ## Undo Adding File from Table
+* Pause "4" seconds
 * Wait for table loading spinner
 * Wait for cohort bar case count loading spinner
 * Select value from table by row and column

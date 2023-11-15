@@ -231,6 +231,12 @@ export interface SsmsTableState {
   readonly error?: string;
 }
 
+export interface TopSsm {
+  ssm_id: string;
+  aa_change: string;
+  consequence_type: string;
+}
+
 const generateFilter = ({
   pageSize,
   offset,
@@ -338,6 +344,26 @@ const generateFilter = ({
 
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
+    getSsmTableData: builder.mutation<TopSsm, SsmsTableRequestParameters>({
+      query: (request: SsmsTableRequestParameters) => ({
+        graphQLQuery: SSMSTableGraphQLQuery,
+        graphQLFilters: generateFilter(request),
+      }),
+      transformResponse: (response: { data: ssmtableResponse }) => {
+        const { consequence, ssm_id } = response?.data?.viewer?.explore?.ssms
+          ?.hits?.edges?.[0]?.node ?? { consequence: {}, ssm_id: "" };
+        const { aa_change, consequence_type } = consequence?.hits?.edges?.[0]
+          ?.node?.transcript ?? { aa_change: "", consequence_type: "" };
+        return {
+          ssm_id,
+          aa_change,
+          consequence_type,
+        };
+      },
+      transformErrorResponse: (response: { status: string | number }) => {
+        return response.status;
+      },
+    }),
     getSssmTableData: builder.query({
       query: (request: SsmsTableRequestParameters) => ({
         graphQLQuery: SSMSTableGraphQLQuery,
@@ -384,5 +410,6 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
   }),
 });
 
-export const { useGetSssmTableDataQuery } = smtableslice;
+export const { useGetSssmTableDataQuery, useGetSsmTableDataMutation } =
+  smtableslice;
 export const ssmsTableReducer: Reducer = smtableslice.reducer as Reducer;

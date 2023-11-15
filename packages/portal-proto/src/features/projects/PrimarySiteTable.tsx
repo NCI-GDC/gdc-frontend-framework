@@ -147,7 +147,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "primary_site",
-      desc: true,
+      desc: false,
     },
   ]);
 

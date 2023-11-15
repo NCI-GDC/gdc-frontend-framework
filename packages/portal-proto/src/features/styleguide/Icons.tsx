@@ -30,13 +30,10 @@ import {
   MdSortByAlpha,
   MdViewModule,
 } from "react-icons/md";
-
 import { FaCartPlus, FaEdit, FaFile, FaTable, FaUserCog } from "react-icons/fa";
 import { BsFillTriangleFill, BsQuestionCircleFill } from "react-icons/bs";
-
 import { SiMicrogenetics } from "react-icons/si";
 import { BiLineChartDown } from "react-icons/bi";
-import { ReactNode } from "react";
 
 const GDC_ICONS = [
   MdAdd,
@@ -90,7 +87,7 @@ const IconCard = (x, idx) => (
   </Grid.Col>
 );
 
-const Icons: ReactNode = () => {
+const Icons = () => {
   return (
     <Stack className="prose font-montserrat text-primary-content-dark md:prose-md">
       <p className="prose font-medium text-2xl">Interface Icons</p>

@@ -286,6 +286,11 @@ def verify_table_body_tooltips_text(table):
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
 
+@step("Verify the button <button_name> is disabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""

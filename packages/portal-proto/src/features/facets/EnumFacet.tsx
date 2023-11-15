@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { usePrevious, fieldNameToTitle } from "@gff/core";
+import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import {
   MdFlip as FlipIcon,
@@ -16,7 +16,6 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { isEqual } from "lodash";
 import {
   FacetIconButton,
   controlsIconStyle,
@@ -27,6 +26,7 @@ import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { SortType } from "./types";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -69,15 +69,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState<SortType>({
     type: "alpha",
-    direction: "dsc",
+    direction: "asc",
   });
+  const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const [visibleItems, setVisibleItems] = useState(DEFAULT_VISIBLE_ITEMS);
   const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess } = hooks.useGetFacetData(field);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-  const prevFilters = usePrevious(enumFilters);
   const searchInputRef = useRef(null);
 
   const totalCount = hooks.useTotalCounts();
@@ -90,31 +89,18 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     }
   }, [isSearching]);
 
-  // filter missing and "" strings and update checkboxes
-  useEffect(() => {
-    if (isSuccess) {
-      setVisibleItems(
-        Object.entries(data).filter(
-          (entry) => entry[0] != "_missing" && entry[0] != "",
-        ).length,
-      );
-    }
-  }, [data, field, isSuccess]);
-
-  useEffect(() => {
-    if (!isEqual(prevFilters, enumFilters)) {
-      setSelectedEnums(enumFilters);
-    }
-  }, [enumFilters, isSuccess, prevFilters]);
+  useDeepCompareEffect(() => {
+    setSelectedEnums(enumFilters);
+  }, [enumFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
-  const total = visibleItems;
-  if (total == 0 && hideIfEmpty) {
-    return null; // nothing to render if total == 0
-  }
 
   // update filters when checkbox is selected
   const handleChange = (value: string, checked: boolean) => {
+    setFacetChartData({
+      ...facetChartData,
+      isSuccess: false,
+    });
     if (checked) {
       const updated = selectedEnums ? [...selectedEnums, value] : [value];
       updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
@@ -133,54 +119,127 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     setIsFacetView(!isFacetView);
   };
 
-  const filteredData = data
-    ? Object.entries(data)
+  const [facetChartData, setFacetChartData] = useState<{
+    filteredData: [string, number][];
+    filteredDataObj: Record<string, number>;
+    remainingValues: number;
+    numberOfBarsToDisplay: number;
+    isSuccess: boolean;
+    height: number;
+    cardStyle: string;
+  }>({
+    filteredData: [],
+    filteredDataObj: {},
+    remainingValues: 0,
+    numberOfBarsToDisplay: maxValuesToDisplay,
+    isSuccess: false,
+    height: 150,
+    cardStyle: "overflow-hidden h-auto",
+  });
+
+  const calcCardStyle = useDeepCompareCallback(
+    (remainingValues: number) => {
+      if (isGroupExpanded) {
+        const cardHeight =
+          remainingValues > 16
+            ? 96
+            : remainingValues > 0
+            ? Math.min(96, remainingValues * 5 + 40)
+            : 24;
+        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+      } else {
+        return "overflow-hidden h-auto";
+      }
+    },
+    [isGroupExpanded],
+  );
+
+  const calcNumberOfBarsToDisplay = useDeepCompareCallback(
+    (visibleItems: number) => {
+      const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
+      return isGroupExpanded
+        ? Math.min(16, totalNumberOfBars)
+        : Math.min(maxValuesToDisplay, totalNumberOfBars);
+    },
+    [isGroupExpanded, enumFilters, maxValuesToDisplay],
+  );
+
+  useDeepCompareEffect(() => {
+    if (isSuccess && data) {
+      const tempFlteredData = Object.entries(data)
         .filter((entry) => entry[0] != "_missing" && entry[0] != "")
         .filter((entry) =>
           searchTerm === ""
             ? entry
             : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-        )
-    : [];
+        );
+      const remainingValues = tempFlteredData.length - maxValuesToDisplay;
+      const cardStyle = calcCardStyle(remainingValues);
+      const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
+        tempFlteredData.length,
+      );
 
-  const remainingValues = filteredData.length - maxValuesToDisplay;
-  const cardHeight =
-    remainingValues > 16
-      ? 96
-      : remainingValues > 0
-      ? Math.min(96, remainingValues * 5 + 40)
-      : 24;
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
+        filteredData: tempFlteredData,
+        filteredDataObj: Object.fromEntries(tempFlteredData),
+        remainingValues,
+        numberOfBarsToDisplay,
+        isSuccess: true,
+        height:
+          numberOfBarsToDisplay == 1
+            ? 150
+            : numberOfBarsToDisplay == 2
+            ? 220
+            : numberOfBarsToDisplay == 3
+            ? 240
+            : numberOfBarsToDisplay * 65 + 10,
+        cardStyle: cardStyle,
+      }));
+    } else {
+      setFacetChartData((prevFacetChartData) => ({
+        ...prevFacetChartData,
+        filteredDataObj: {},
+        isSuccess: false,
+      }));
+    }
+  }, [
+    data,
+    isSuccess,
+    maxValuesToDisplay,
+    searchTerm,
+    calcCardStyle,
+    calcNumberOfBarsToDisplay,
+  ]);
 
-  const cardStyle = isGroupExpanded
-    ? `flex-none  h-${cardHeight} overflow-y-scroll `
-    : `overflow-hidden h-auto`;
-  const numberOfLines =
-    total - maxValuesToDisplay < 0
-      ? total
-      : isGroupExpanded
-      ? 16
-      : maxValuesToDisplay;
+  useDeepCompareEffect(() => {
+    if (facetChartData.filteredData && facetChartData.filteredData.length > 0) {
+      setSortedData(
+        Object.fromEntries(
+          [...facetChartData.filteredData]
+            .sort(
+              sortType.type === "value"
+                ? ([, a], [, b]) =>
+                    sortType.direction === "dsc" ? b - a : a - b
+                : ([a], [b]) =>
+                    sortType.direction === "dsc"
+                      ? b.localeCompare(a)
+                      : a.localeCompare(b),
+            )
+            .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
+        ),
+      );
+    }
+  }, [
+    facetChartData.filteredData,
+    sortType,
+    isGroupExpanded,
+    maxValuesToDisplay,
+  ]);
 
-  const totalNumberOfBars = enumFilters ? enumFilters.length : total;
-  const numberOfBarsToDisplay = isGroupExpanded
-    ? Math.min(16, totalNumberOfBars)
-    : Math.min(maxValuesToDisplay, totalNumberOfBars);
-
-  const sortedData = filteredData
-    ? Object.fromEntries(
-        filteredData
-          .sort(
-            sortType.type === "value"
-              ? ([, a], [, b]) => (sortType.direction === "dsc" ? a - b : b - a)
-              : ([a], [b]) =>
-                  sortType.direction === "dsc"
-                    ? a.localeCompare(b)
-                    : b.localeCompare(a),
-          )
-          .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
-      )
-    : undefined;
-
+  if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
+    return null; // nothing to render if visibleItems == 0
+  }
   return (
     <div
       className={`flex flex-col ${
@@ -205,34 +264,43 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={header.iconStyle} />
-              </FacetIconButton>
+              <Tooltip label="Search values">
+                <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                  <SearchIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
             {showFlip ? (
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-label="Flip between form and chart"
-              >
-                <FlipIcon size="1.45em" className={header.iconStyle} />
-              </FacetIconButton>
+              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
+                <FacetIconButton
+                  onClick={toggleFlip}
+                  aria-pressed={!isFacetView}
+                  aria-label="chart view"
+                >
+                  <FlipIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
-            <FacetIconButton
-              onClick={() => clearFilters(field)}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.25em" className={header.iconStyle} />
-            </FacetIconButton>
-            {dismissCallback ? (
+            <Tooltip label="Clear selection">
               <FacetIconButton
-                onClick={() => {
-                  clearFilters(field);
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
+                onClick={() => clearFilters(field)}
+                aria-label="clear selection"
               >
-                <CloseIcon size="1.25em" className={header.iconStyle} />
+                <UndoIcon size="1.25em" className={header.iconStyle} />
               </FacetIconButton>
+            </Tooltip>
+            {dismissCallback ? (
+              <Tooltip label="Remove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="remove the facet"
+                >
+                  <CloseIcon size="1.25em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </header.Panel>
@@ -275,19 +343,20 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 sortType={sortType}
                 valueLabel={valueLabel}
                 setSort={setSortType}
+                field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={cardStyle}>
+              <div className={facetChartData.cardStyle}>
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}
                 />
-                {total == 0 ? (
+                {facetChartData.filteredData.length == 0 ? (
                   <div className="mx-4 font-content">
                     No data for this field
                   </div>
                 ) : isSuccess ? (
-                  Object.entries(sortedData).length === 0 ? (
+                  !sortedData || Object.entries(sortedData).length === 0 ? (
                     <div className="mx-4">No results found</div>
                   ) : (
                     Object.entries(sortedData).map(([value, count]) => {
@@ -345,7 +414,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   <div>
                     {
                       // uninitialized, loading, error animated bars
-                      Array.from(Array(numberOfLines)).map((_, index) => {
+                      Array.from(Array(maxValuesToDisplay)).map((_, index) => {
                         return (
                           <div
                             key={`${field}-${index}`}
@@ -369,38 +438,30 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             </div>
             {
               <FacetExpander
-                remainingValues={remainingValues}
+                remainingValues={facetChartData.remainingValues}
                 isGroupExpanded={isGroupExpanded}
                 onShowChanged={setIsGroupExpanded}
               />
             }
           </div>
           <div
-            className={`card-face card-back rounded-b-md bg-base-max h-full overflow-y-auto pb-1 ${
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
               isFacetView ? "invisible" : ""
             }`}
           >
-            {filteredData.length === 0 ? (
+            {facetChartData.filteredData.length === 0 ? (
               <div className="mx-4">No results found</div>
             ) : (
               !isFacetView && (
                 <EnumFacetChart
                   field={field}
-                  data={Object.fromEntries(filteredData)}
+                  data={facetChartData.filteredDataObj}
                   selectedEnums={selectedEnums}
-                  isSuccess={isSuccess}
+                  isSuccess={facetChartData.isSuccess}
                   showTitle={false}
                   valueLabel={valueLabel}
-                  maxBins={numberOfBarsToDisplay}
-                  height={
-                    numberOfBarsToDisplay == 1
-                      ? 150
-                      : numberOfBarsToDisplay == 2
-                      ? 220
-                      : numberOfBarsToDisplay == 3
-                      ? 240
-                      : numberOfBarsToDisplay * 65 + 10
-                  }
+                  maxBins={facetChartData.numberOfBarsToDisplay}
+                  height={facetChartData.height}
                 />
               )
             )}

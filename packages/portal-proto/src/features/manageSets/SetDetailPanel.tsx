@@ -199,7 +199,10 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
         body: "h-full",
       }}
       title={
-        <div className="flex flex-row gap-2 items-center w-full text-primary-darker font-bold p-2 border-b border-base-lighter">
+        <div
+          data-testid="button-close-set-panel"
+          className="flex flex-row gap-2 items-center w-full text-primary-darker font-bold p-2 border-b border-base-lighter"
+        >
           <ActionIcon onClick={closePanel} aria-label="Close set panel">
             <LeftArrowIcon size={30} className="text-primary-darker" />
           </ActionIcon>
@@ -209,7 +212,11 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
       size={"lg"}
       withCloseButton={false}
     >
-      <div className="h-full" ref={tableWrapperRef}>
+      <div
+        data-testid="table-set-information"
+        className="h-full"
+        ref={tableWrapperRef}
+      >
         <ScrollArea
           h={scrollHeight}
           viewportRef={scrollRef}
