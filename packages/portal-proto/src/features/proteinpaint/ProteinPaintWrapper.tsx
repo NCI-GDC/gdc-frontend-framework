@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, FC } from "react";
+import { useEffect, useRef, useCallback, useState, FC } from "react";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -10,14 +10,15 @@ import {
   useCoreDispatch,
   buildCohortGqlOperator,
   addNewCohortWithFilterAndMessage,
+  useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
+import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
-  getFilters,
 } from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
@@ -40,21 +41,47 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
   const coreDispatch = useCoreDispatch();
+  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const [name, setName] = useState(undefined);
+  const [createSet, response] = useCreateCaseSetFromValuesMutation();
+  const [pickedCases, setPickedCases] = useState([]);
+  const onCreateSet = useCallback(
+    () => createSet({ values: pickedCases }),
+    [createSet, pickedCases],
+  );
+
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
-      const filters = getFilters(arg);
+      console.log(55, arg);
+      setPickedCases(arg.samples.map((d) => d["cases.case_id"]));
+      console.log(57, pickedCases);
+      setShowCreateCohort(true);
+    },
+    [createSet, pickedCases],
+  );
+
+  useEffect(() => {
+    if (response.isSuccess) {
+      const filters: FilterSet = {
+        mode: "and",
+        root: {
+          "cases.case_id": {
+            operator: "includes",
+            field: "cases.case_id",
+            operands: [`set_id:${response.data}`],
+          },
+        },
+      };
+      // create the cohort
       coreDispatch(
-        // TODO: option to edit a cohort using ImportCohortModal???
         addNewCohortWithFilterAndMessage({
-          filters,
+          filters: filters,
           message: "newCasesCohort",
-          // TODO: improve cohort name constructor
-          name: arg.source + ` (n=${arg.samples.length})`,
+          name,
         }),
       );
-    },
-    [coreDispatch],
-  );
+    }
+  }, [response.isSuccess, name, coreDispatch, response.data]);
 
   useEffect(
     () => {
@@ -108,6 +135,19 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
+      {showCreateCohort && (
+        <CreateCohortModal // Show the modal, create cohort when create button is clicked
+          // this will call the create set mutation in the parent component
+          // and add the cohort to the store
+          onClose={() => setShowCreateCohort(false)}
+          onActionClick={(newName: string) => {
+            setName(newName);
+            if (pickedCases.length > 1) {
+              onCreateSet();
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
