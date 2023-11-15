@@ -103,7 +103,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
             );
             setSelectedEntityType(entityType);
           }}
-          aria-labelledby={`${entityType}-selection-${setId}`}
+          aria-label={`checkbox for selecting ${entityType} set ${setId}`}
+          aria-checked={selectedEntities.map((e) => e.id).includes(setId)}
         />
       </span>
     </Tooltip>
