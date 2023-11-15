@@ -30,7 +30,7 @@
     "@mantine/notifications": "^6.0.21",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "^1.8.5",
-    "@sjcrh/proteinpaint-client": "^2.30.2",
+    "@sjcrh/proteinpaint-client": "^2.30.5",
     "@tanstack/react-table": "^8.9.3",
     "filesize": "^8.0.7",
     "minisearch": "^3.0.4",
