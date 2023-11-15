@@ -2,9 +2,8 @@ import { Divider } from "@mantine/core";
 import { FacetChart } from "../charts/FacetChart";
 import { GeneFrequencyChart } from "../charts/GeneFrequencyChart";
 import { divider_style } from "./style";
-import { ReactNode } from "react";
 
-const Charts: ReactNode = () => {
+const Charts = () => {
   return (
     <article className="prose font-montserrat text-primary-content prose-md">
       <p className="prose font-medium text-2xl">Charts</p>

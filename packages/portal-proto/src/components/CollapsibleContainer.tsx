@@ -21,7 +21,7 @@ export interface CollapsibleContainerProps {
   readonly ExtraControl?: ReactNode;
 }
 
-export const CollapsibleContainer: React.FC<CollapsibleContainerProps> = (
+export const CollapsibleContainer = (
   props: PropsWithChildren<CollapsibleContainerProps>,
 ) => {
   const {

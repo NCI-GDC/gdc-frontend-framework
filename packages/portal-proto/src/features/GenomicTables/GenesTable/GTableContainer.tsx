@@ -17,7 +17,7 @@ import {
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
 import { Loader, Text, LoadingOverlay } from "@mantine/core";
 import isEqual from "lodash/isEqual";
@@ -43,6 +43,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
 import { convertDateToString } from "@/utils/date";
+import { useDeepCompareCallback } from "use-deep-compare";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: Record<string, string>;
@@ -115,7 +116,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   }, [response.isLoading]);
 
-  const generateFilters = useCallback(
+  const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
       let caseSetCreationFilters = buildCohortGqlOperator(

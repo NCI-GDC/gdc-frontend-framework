@@ -141,25 +141,29 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
   useEffect(() => {
-    getTopSSM({
-      pageSize: 1,
-      offset: 0,
-      searchTerm: searchTermsForGene.geneId,
-      geneSymbol: searchTermsForGene.geneSymbol,
-      genomicFilters: genomicFilters,
-      cohortFilters: cohortFilters,
-      caseFilter: caseFilter,
-    });
+    if (searchTermsForGene) {
+      const { geneId = "", geneSymbol = "" } = searchTermsForGene;
+      getTopSSM({
+        pageSize: 1,
+        offset: 0,
+        searchTerm: geneId,
+        geneSymbol: geneSymbol,
+        genomicFilters: genomicFilters,
+        cohortFilters: cohortFilters,
+        caseFilter: caseFilter,
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
   useEffect(() => {
     if (topSSM) {
-      const { ssm_id, consequence_type, aa_change } = topSSM;
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
         ssm_id,
         consequence_type
-          ? `${searchTermsForGene.geneSymbol} ${aa_change} ${humanify({
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
               term: consequence_type.replace("_variant", "").replace("_", " "),
             })}`
           : "",
