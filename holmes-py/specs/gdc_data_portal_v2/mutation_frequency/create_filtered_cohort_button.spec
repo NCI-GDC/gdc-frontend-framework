@@ -72,6 +72,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |CSMD3        |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |CSMD3 CNV Gain                       |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -89,6 +93,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Cnv Change         |=gain                |3                        |
   |Gene Id            |=CSMD3               |4                        |
 * Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
@@ -105,6 +110,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |ZFHX3        |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |ZFHX3 CNV Loss                       |1    |9      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -122,6 +131,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Cnv Change         |=loss                |3                        |
   |Gene Id            |=ZFHX3               |4                        |
 * Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
@@ -141,6 +151,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text      |row  |column |
   |-------------------|-----|-------|
   |chr1:g.6197725delT |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                                 |row  |column |
+  |---------------------------------------------|-----|-------|
+  |chr1:g.6197725delT Affected Cases in Cohort  |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -157,6 +171,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-------------------|-------------------------------------|-------------------------|
   |SSM ID             |78066279-06cf-5b55-bc10-10eeba4ec015 |2                        |
 * Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
