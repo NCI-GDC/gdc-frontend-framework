@@ -122,7 +122,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           <p className="text-sm pt-1">Maximum 100 characters</p>
         )}
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           onClick={() =>

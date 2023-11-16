@@ -269,7 +269,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           />
         )}
       </div>
-      <ButtonContainer>
+      <ButtonContainer data-testid="modal-button-container">
         {LeftButton && (
           <div className="mr-auto">
             <LeftButton

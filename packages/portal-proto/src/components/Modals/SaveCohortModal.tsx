@@ -99,7 +99,7 @@ const SaveCohortModal = ({
               You cannot undo this action.
             </p>
           </div>
-          <ModalButtonContainer>
+          <ModalButtonContainer data-testid="modal-button-container">
             <Button
               variant="outline"
               className={"bg-white"}

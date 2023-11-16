@@ -99,7 +99,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           sortByName
         />
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           onClick={() =>
