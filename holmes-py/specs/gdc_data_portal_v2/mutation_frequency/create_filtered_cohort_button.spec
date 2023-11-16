@@ -34,6 +34,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |PTEN         |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |PTEN SSM Affected Cases in Cohort    |1    |6      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -50,6 +54,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-------------------|---------------------|-------------------------|
   |Ssm Id is          |exists               |3                        |
   |Gene               |PTEN                 |4                        |
+* Verify the "Cohort Bar Case Count" is "Equal" to the button label "PTEN SSM Affected Cases in Cohort"
 * Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
