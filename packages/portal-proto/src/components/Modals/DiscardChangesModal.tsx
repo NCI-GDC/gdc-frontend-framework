@@ -29,7 +29,7 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
       <p>Are you sure you want to permanently discard the unsaved changes?</p>
       <p className="text-sm">You cannot undo this action.</p>
     </div>
-    <ModalButtonContainer>
+    <ModalButtonContainer data-testid="modal-button-container">
       <FunctionButton onClick={onClose}>Cancel</FunctionButton>
       <DarkFunctionButton
         onClick={() => {

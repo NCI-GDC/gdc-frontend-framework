@@ -25,7 +25,7 @@ class ClearStoreErrorBoundary extends Component<
             An unexpected error has occurred. Your saved cohorts are being
             recovered, but your cart and sets may be lost.
           </p>
-          <ModalButtonContainer>
+          <ModalButtonContainer data-testid="modal-button-container">
             <DarkFunctionButton
               onClick={async () => {
                 await persistor.purge();

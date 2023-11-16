@@ -229,7 +229,10 @@ export const SelectCohortsModal = ({
               disablePageSize={true}
             />
           </div>
-          <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
+          <div
+            data-testid="modal-button-container"
+            className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
+          >
             <FunctionButton onClick={onClose}>Cancel</FunctionButton>
             <DarkFunctionButton
               disabled={!checkedValue}
