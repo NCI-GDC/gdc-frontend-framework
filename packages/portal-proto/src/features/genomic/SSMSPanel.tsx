@@ -106,6 +106,7 @@ export const SSMSPanel = ({
               ? [comparativeSurvival.name]
               : []
           }
+          tableTooltip
         />
       </div>
       <div ref={targetRef}>

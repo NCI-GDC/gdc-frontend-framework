@@ -36,7 +36,7 @@ interface UserFlowVariedPagesProps {
   readonly isContextBarSticky?: boolean;
 }
 
-export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
+export const UserFlowVariedPages = ({
   headerElements,
   indexPath = "/",
   Options,

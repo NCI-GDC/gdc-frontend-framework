@@ -90,6 +90,7 @@ export const GenesPanel = ({
                 : []
             }
             field="gene.symbol"
+            tableTooltip
           />
         </Grid.Col>
       </Grid>

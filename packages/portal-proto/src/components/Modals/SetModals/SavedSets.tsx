@@ -137,7 +137,10 @@ const SavedSets: React.FC<SavedSetsProps> = ({
             <div className="h-[100px] w-[100px] rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon className="text-primary-darkest" size={40} />
             </div>
-            <p className="uppercase mt-2 mb-4 text-primary-darkest">
+            <p
+              data-testid="text-no-saved-sets-available"
+              className="uppercase mt-2 mb-4 text-primary-darkest"
+            >
               No Saved Sets Available
             </p>
             <div className="w-80 text-center">{createSetsInstructions}</div>
@@ -159,7 +162,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           </>
         )}
       </div>
-      <ButtonContainer>
+      <ButtonContainer data-testid="modal-button-container">
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>

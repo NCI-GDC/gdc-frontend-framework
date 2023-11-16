@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Link href="/manage_sets" passHref>
             <Button
               unstyled
-              data-testid="manageSetsLink"
+              data-testid="button-header-manage-sets"
               className={`p-1 rounded-md hover:bg-primary-lightest ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
