@@ -64,6 +64,49 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "PTEN SSM Affected Cases in Cohort" should be the active cohort
 
+## Genes - SSM Affected Cases in Cohort: With Active Filters
+* Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
+* "Blank - Mutation Frequency" should be the active cohort
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Consequence Type |3_prime_UTR_variant                  |
+* Search the table for "APC"
+* Wait for table body text to appear
+  |expected_text|row  |column |
+  |-------------|-----|-------|
+  |APC          |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |APC SSM Affected Cases in Cohort    |1    |6      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |6     |
+* Name the cohort "APC SSM Affected Cases in Cohort" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |APC SSM Affected Cases in Cohort has been created |Remove Modal        |
+* Switch cohort to "APC SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
+* "APC SSM Affected Cases in Cohort" should be the active cohort
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections           |position in filter area  |
+  |-------------------|---------------------|-------------------------|
+  |Consequence Type   |3_prime_UTR_variant  |3                        |
+  |Ssm Id is          |exists               |4                        |
+  |Gene               |APC                  |5                        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "APC SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Select "Save" from the Cohort Bar
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
+* "APC SSM Affected Cases in Cohort" should be the active cohort
+
 ## Genes - CNV Gain
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort

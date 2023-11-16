@@ -106,7 +106,6 @@ def verify_compared_statistics_are_equal_or_not_equal(statistic_1, statistic_2, 
     second_statistic_string = data_store.spec[f"{statistic_2}"]
     second_statistic_string = APP.shared.strip_string_for_comparison(second_statistic_string)
 
-    print(f"First stat {first_statistic_string}, second stat {second_statistic_string} ")
     equal_or_not_equal = equal_or_not_equal.lower()
     if equal_or_not_equal == "equal":
         assert first_statistic_string == second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does NOT match"
