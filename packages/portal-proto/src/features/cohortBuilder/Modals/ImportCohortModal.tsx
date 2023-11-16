@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { useCreateCaseSetFromValuesMutation } from "@gff/core";
+import {
+  useCoreDispatch,
+  hideModal,
+  useCreateCaseSetFromValuesMutation,
+} from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
@@ -14,6 +18,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   ids,
   disabled,
 }: SubmitButtonProps) => {
+  const coreDispatch = useCoreDispatch();
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
 
   useEffect(() => {
@@ -28,7 +33,10 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <>
       {showSaveCohort && (
         <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
+          onClose={() => {
+            setShowSaveCohort(false);
+            coreDispatch(hideModal());
+          }}
           setAsCurrent
           filters={{
             mode: "and",
