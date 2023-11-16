@@ -130,6 +130,14 @@ class BasePage:
         bdd_input_string = str(bdd_input_int)
         return bdd_input_string
 
+    def strip_string_for_comparison(self, string_to_strip):
+        """Takes a string and strips it down for comparison"""
+        # Some create filtered cohort buttons have a denominator,
+        # and we are only interested in the numerator for comparison.
+        string_to_strip = string_to_strip.split("/")[0]
+        string_to_strip = string_to_strip.replace(',', '')
+        return string_to_strip
+
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()

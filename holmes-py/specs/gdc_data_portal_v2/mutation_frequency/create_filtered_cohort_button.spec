@@ -11,9 +11,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * On GDC Data Portal V2 app
 * Navigate to "Home" from "Header" "section"
 * Collect these data portal statistics for comparison
-  |category       |
-  |---------------|
-  |Cases          |
+  |category       |name_to_store_statistic  |
+  |---------------|-------------------------|
+  |Cases          |Home Page Cases Count    |
 
 ## Navigate to Mutation Frequency App
 * Navigate to "Analysis" from "Header" "section"
@@ -54,8 +54,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-------------------|---------------------|-------------------------|
   |Ssm Id is          |exists               |3                        |
   |Gene               |PTEN                 |4                        |
-* Verify the "Cohort Bar Case Count" is "Equal" to the button label "PTEN SSM Affected Cases in Cohort"
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "PTEN SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -87,7 +88,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-------------------|---------------------|-------------------------|
   |Cnv Change         |=gain                |3                        |
   |Gene Id            |=CSMD3               |4                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -119,7 +121,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |-------------------|---------------------|-------------------------|
   |Cnv Change         |=loss                |3                        |
   |Gene Id            |=ZFHX3               |4                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -153,7 +156,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |facet_name         |selections                           |position in filter area  |
   |-------------------|-------------------------------------|-------------------------|
   |SSM ID             |78066279-06cf-5b55-bc10-10eeba4ec015 |2                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|

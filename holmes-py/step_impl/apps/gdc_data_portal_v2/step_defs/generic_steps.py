@@ -87,80 +87,31 @@ def verify_text_on_page(text, source, target_type):
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"
 
-@step("Verify the <source> is <equal_or_not_equal> to the home page count for <home_page_category>")
-def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_category):
+@step("Verify <statistic_1> and <statistic_2> are <equal_or_not_equal>")
+def verify_compared_statistics_are_equal_or_not_equal(statistic_1, statistic_2, equal_or_not_equal):
     """
-    verify_counts_match_home_page_count compares the specified home page statistic to another
-    specified statistic somewhere else in the data portal. Asserts if they are equal
-    or not equal based on spec file input.
+    verify_compared_statistics_are_equal_or_not_equal compares two previously stored statistics to one another.
+    Asserts if they are equal or not equal based on spec file input.
 
-    :param source: The function being executed to get a statistic somewhere in the data portal
+    :param statistic_1: The first statistic to compare. It is the name it is stored under in data_store.spec
+    :param statistic_2: The second statistic to compare. It is the name it is stored under in data_store.spec
     :param equal_or_not_equal: If the compared statistics should be equal or not
-    :param home_page_category: Name of the home page category we are comparing with
     :return: N/A
     """
-    sources = {
-        "Cohort Bar Case Count": APP.shared.get_cohort_bar_case_count()
-    }
+    # Get first statistic to compare
+    first_statistic_string = data_store.spec[f"{statistic_1}"]
+    first_statistic_string = APP.shared.strip_string_for_comparison(first_statistic_string)
 
-    # Get the statistic from somewhere in the data portal
-    count_from_page = sources.get(source)
-    # Turn it into an 'int' for comparison
-    count_from_page = count_from_page.replace(',', '')
-    count_from_page_int = int(count_from_page)
+    # Get second statistic to compare
+    second_statistic_string = data_store.spec[f"{statistic_2}"]
+    second_statistic_string = APP.shared.strip_string_for_comparison(second_statistic_string)
 
-    # From storage after previously running the test "store_home_page_data_portal_statistics"
-    # Get the category statistic from the data portal summary on the home page
-    count_from_home_page_statistics = data_store.spec[f"{home_page_category} count"]
-    # Turn it into an 'int' for comparison
-    count_from_home_page_statistics = count_from_home_page_statistics.replace(',', '')
-    count_from_home_page_statistics_int = int(count_from_home_page_statistics)
-
+    print(f"First stat {first_statistic_string}, second stat {second_statistic_string} ")
     equal_or_not_equal = equal_or_not_equal.lower()
     if equal_or_not_equal == "equal":
-        assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
+        assert first_statistic_string == second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does NOT match"
     elif equal_or_not_equal == "not equal":
-        assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
-
-@step("Verify the <source> is <equal_or_not_equal> to the button label <button_label>")
-def verify_counts_match_button_label(source, equal_or_not_equal, button_label):
-    """
-    verify_counts_match_button_label compares the specified button label statistic to another
-    specified statistic somewhere else in the data portal. Asserts if they are equal
-    or not equal based on spec file input.
-
-    :param source: The function being executed to get a statistic somewhere in the data portal
-    :param equal_or_not_equal: If the compared statistics should be equal or not
-    :param button_label: Name of the home page category we are comparing with
-    :return: N/A
-    """
-    sources = {
-        "Cohort Bar Case Count": APP.shared.get_cohort_bar_case_count()
-    }
-
-    # Get the statistic from somewhere in the data portal
-    count_from_page = sources.get(source)
-    # Turn it into an 'int' for comparison
-    count_from_page = count_from_page.replace(',', '')
-    count_from_page_int = int(count_from_page)
-
-    # From storage after previously running the test "store_home_page_data_portal_statistics"
-    # Get the category statistic from the data portal summary on the home page
-    count_from_home_page_statistics = data_store.spec[f"{button_label} button label"]
-    # Turn it into an 'int' for comparison
-    print(count_from_home_page_statistics)
-    count_from_home_page_statistics = count_from_home_page_statistics.split("/")[0]
-    print(count_from_home_page_statistics)
-    count_from_home_page_statistics = count_from_home_page_statistics.replace(',', '')
-    print(count_from_home_page_statistics)
-    count_from_home_page_statistics_int = int(count_from_home_page_statistics)
-
-    equal_or_not_equal = equal_or_not_equal.lower()
-    if equal_or_not_equal == "equal":
-        assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
-    elif equal_or_not_equal == "not equal":
-        assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
-
+        assert first_statistic_string != second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does match when it should NOT"
 
 @step("Close the modal")
 def close_the_modal():
@@ -400,10 +351,13 @@ def store_home_page_data_portal_statistics(table):
      """
         Stores data portal summary statistics for use in future tests.
         Pairs with the test 'verify_counts_match_home_page_count'
+
+        v[0] - The name of the home page statistic to collect
+        v[1] - The name the statistic will be stored under
      """
      for k, v in enumerate(table):
         category_statistic = APP.home_page.get_data_portal_summary_statistic(v[0])
-        data_store.spec[f"{v[0]} count"] = category_statistic
+        data_store.spec[f"{v[1]}"] = category_statistic
 
 @step("Collect button labels in table for comparison <table>")
 def store_button_labels_in_tables_for_comparison(table):
@@ -417,7 +371,15 @@ def store_button_labels_in_tables_for_comparison(table):
      """
      for k, v in enumerate(table):
         table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
-        data_store.spec[f"{v[0]} button label"] = table_body_text_by_row_column
+        data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
+
+@step("Collect Cohort Bar Case Count for comparison")
+def store_cohort_bar_case_count_for_comparison():
+     """
+        Stores current cohort bar case count for comparison in future tests.
+        Pairs with the test 'verify_counts_match_button_label'
+     """
+     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
