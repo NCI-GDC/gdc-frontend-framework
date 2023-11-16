@@ -1,12 +1,11 @@
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
 import InputEntityList from "./InputEntityList";
-import { MantineProvider } from "@mantine/core";
-import tailwindConfig from "tailwind.config";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButton";
 import SaveSetButton from "../SaveSetButton";
+import { render } from "test-utils";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());
@@ -22,34 +21,24 @@ jest.spyOn(core, "fetchGdcEntities").mockResolvedValue({
 const createSet = jest.fn();
 const createSetHook = jest.fn().mockReturnValue([createSet, {}]);
 
-const themeColors = Object.fromEntries(
-  Object.entries(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors,
-  ).map(([key, values]) => [key, Object.values(values)]),
-) as any;
-
 const renderInputEntityList = () => {
   return render(
-    <MantineProvider theme={{ colors: themeColors }}>
-      <UserInputContext.Provider value={[false, jest.fn()]}>
-        <InputEntityList
-          inputInstructions="do stuff to have stuff happen"
-          identifierToolTip="ids"
-          textInputPlaceholder="ex. TCGA"
-          entityType="ssms"
-          entityLabel="mutation"
-          hooks={{
-            updateFilters: jest.fn(),
-            createSet: createSetHook,
-            getExistingFilters: jest.fn(),
-          }}
-          LeftButton={SaveSetButton}
-          RightButton={UpdateCohortButton}
-        />
-      </UserInputContext.Provider>
-    </MantineProvider>,
+    <UserInputContext.Provider value={[false, jest.fn()]}>
+      <InputEntityList
+        inputInstructions="do stuff to have stuff happen"
+        identifierToolTip="ids"
+        textInputPlaceholder="ex. TCGA"
+        entityType="ssms"
+        entityLabel="mutation"
+        hooks={{
+          updateFilters: jest.fn(),
+          createSet: createSetHook,
+          getExistingFilters: jest.fn(),
+        }}
+        LeftButton={SaveSetButton}
+        RightButton={UpdateCohortButton}
+      />
+    </UserInputContext.Provider>,
   );
 };
 
