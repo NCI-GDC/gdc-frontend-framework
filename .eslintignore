@@ -4,3 +4,4 @@ setupTests.ts
 holmes-py/**/*
 Dockerfile
 README.md
+docs/**/*.md
