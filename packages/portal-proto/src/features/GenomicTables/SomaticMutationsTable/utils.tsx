@@ -74,15 +74,16 @@ export const useGenerateSMTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`Select ${Object.keys(
-              table.getRowModel().rows.map(
+            aria-label={`Select ${table
+              .getRowModel()
+              .rows.map(
                 ({
                   original: {
                     protein_change: { symbol, aaChange },
                   },
                 }) => `${symbol} ${aaChange}`,
-              ),
-            ).join(", ")} mutation rows`}
+              )
+              .join(", ")} mutation rows`}
             aria-checked={table.getIsAllRowsSelected()}
             {...{
               checked: table.getIsAllRowsSelected(),
