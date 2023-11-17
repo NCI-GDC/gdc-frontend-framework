@@ -64,11 +64,13 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select ${Object.keys(
+              table.getRowModel().rows.map(({ original }) => original.case_id),
+            ).join(", ")} case rows`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -77,7 +79,7 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-label={`Select the ${row.id} case row`}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),

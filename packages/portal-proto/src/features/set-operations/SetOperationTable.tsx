@@ -92,7 +92,7 @@ export const SetOperationTable = ({
               input: "checked:bg-accent checked:border-accent",
             }}
             value={row.original.operationKey}
-            aria-label="checkbox for selecting table row"
+            aria-label={`Select the ${row.original.operationKey} row`}
             {...{
               checked: selectedSets[row.original.operationKey],
               onChange: (e) => {

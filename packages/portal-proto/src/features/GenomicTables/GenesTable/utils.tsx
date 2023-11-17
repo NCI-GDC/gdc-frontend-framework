@@ -56,7 +56,11 @@ export const useGenerateGenesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`checkbox for selecting genes table rows currently displayed`}
+            aria-label={`Select ${Object.keys(
+              table
+                .getRowModel()
+                .rows.map(({ original: { symbol } }) => symbol),
+            ).join(", ")} gene rows`}
             aria-checked={table.getIsAllRowsSelected()}
             {...{
               checked: table.getIsAllRowsSelected(),
@@ -70,7 +74,7 @@ export const useGenerateGenesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`checkbox for selecting genes table row ${row.id}`}
+            aria-label={`Select the ${row.original.symbol} gene row`}
             aria-checked={row.getIsSelected()}
             {...{
               checked: row.getIsSelected(),

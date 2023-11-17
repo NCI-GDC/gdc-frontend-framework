@@ -377,7 +377,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                                   e.currentTarget.checked,
                                 )
                               }
-                              aria-label={`checkbox for selecting ${field}`}
+                              aria-label={`Select ${field}`}
                               aria-checked={
                                 !!(
                                   selectedEnums && selectedEnums.includes(value)

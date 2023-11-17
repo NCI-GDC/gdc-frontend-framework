@@ -173,8 +173,9 @@ const ProjectsTable: React.FC = () => {
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`checkbox for selecting projects table rows currently displayed`}
-            aria-checked={table.getIsAllRowsSelected()}
+            aria-label={`Select ${Object.keys(
+              table.getRowModel().rowsById,
+            ).join(", ")} project rows`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -187,7 +188,7 @@ const ProjectsTable: React.FC = () => {
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`checkbox for selecting projects table row ${row.id}`}
+            aria-label={`Select the ${row.id} project row`}
             aria-checked={row.getIsSelected()}
             {...{
               checked: row.getIsSelected(),
