@@ -246,6 +246,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `cohort.${convertDateToString(new Date())}.tsv`,
         filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         fields: [
+          "case_id",
           "submitter_id",
           "primary_site",
           "disease_type",
