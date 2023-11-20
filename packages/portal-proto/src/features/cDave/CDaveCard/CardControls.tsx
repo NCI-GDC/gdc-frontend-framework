@@ -1,4 +1,3 @@
-import { flatten } from "lodash";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
@@ -15,17 +14,15 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { convertDateToString } from "@/utils/date";
 import {
   CategoricalBins,
-  ContinuousCustomBinnedData,
   CustomInterval,
   DisplayData,
   NamedFromTo,
   SelectedFacet,
 } from "../types";
-import { DEMO_COHORT_FILTERS, MISSING_KEY } from "../constants";
+import { DEMO_COHORT_FILTERS } from "../constants";
 import {
+  createFiltersFromSelectedValues,
   formatPercent,
-  isInterval,
-  parseContinuousBucket,
   useDataDimension,
 } from "../utils";
 import { useMemo } from "react";
@@ -82,94 +79,16 @@ const CardControls: React.FC<CardControlsProps> = ({
     isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
   );
 
-  const filters: FilterSet = useMemo(() => {
-    if (continuous) {
-      return {
-        mode: "and",
-        root: {
-          [field]: {
-            operator: "or",
-            operands: selectedFacets.map((facet) => {
-              const customBin =
-                customBinnedData &&
-                !isInterval(customBinnedData as ContinuousCustomBinnedData)
-                  ? (customBinnedData as NamedFromTo[]).find(
-                      (bin) => bin.name === facet.value,
-                    )
-                  : undefined;
-              const [from, to] = customBin
-                ? [customBin.from, customBin.to]
-                : parseContinuousBucket(facet.value);
-              return {
-                operator: "and",
-                operands: [
-                  {
-                    field,
-                    operator: ">=",
-                    operand: from,
-                  },
-                  {
-                    field,
-                    operator: "<",
-                    operand: to,
-                  },
-                ],
-                field,
-              };
-            }),
-          },
-        },
-      };
-    } else {
-      const facetValues = customBinnedData
-        ? flatten(
-            selectedFacets.map(
-              (facet) => customBinnedData[facet.value as string],
-            ),
-          )
-        : selectedFacets.map((facet) => facet.value);
-      const hasMissingValue = facetValues.find((v) => v === MISSING_KEY);
-      if (hasMissingValue) {
-        const restOfFacets = facetValues.filter((v) => v !== MISSING_KEY);
-        return {
-          mode: "and",
-          root: {
-            [field]:
-              restOfFacets.length > 0
-                ? {
-                    operator: "or",
-                    operands: [
-                      {
-                        operator: "includes",
-                        operands: restOfFacets,
-                        field,
-                      },
-                      {
-                        operator: "missing",
-                        field,
-                      },
-                    ],
-                  }
-                : {
-                    operator: "missing",
-                    field,
-                  },
-          },
-        };
-      }
-
-      return {
-        mode: "and",
-        root: {
-          [field]: {
-            operator: "includes",
-            operands: facetValues,
-            field,
-          },
-        },
-      };
-    }
-  }, [continuous, customBinnedData, field, selectedFacets]);
+  const filters: FilterSet = useMemo(
+    () =>
+      createFiltersFromSelectedValues(
+        continuous,
+        field,
+        selectedFacets,
+        customBinnedData,
+      ),
+    [continuous, field, selectedFacets, customBinnedData],
+  );
 
   return (
     <>
