@@ -151,7 +151,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         caseFilter: { mode: "", root: {} } as FilterSet,
       });
     }
-  }, [searchTermsForGene, genomicFilters, cohortFilters, getTopSSM]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTermsForGene, genomicFilters, cohortFilters]);
 
   useEffect(() => {
     if (topSSM) {
