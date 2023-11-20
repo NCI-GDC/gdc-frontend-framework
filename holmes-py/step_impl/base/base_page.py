@@ -39,6 +39,8 @@ class GenericLocators:
 
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
+    DATA_TESTID_TEXT_IDENT = lambda data_testid: f'[data-testid="text-{data_testid}"]'
+    DATA_TESTID_LINK_IDENT = lambda data_testid: f'[data-testid="link-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
@@ -262,6 +264,17 @@ class BasePage:
             return False
         return True
 
+    def is_message_id_text_present(self, message_id, text):
+        message_id = self.normalize_button_identifier(message_id)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(message_id)
+        try:
+            self.wait_until_locator_is_visible(locator)
+            message_text = self.get_text(locator)
+            message_text == text
+        except:
+            return False
+        return True
+
     def is_cohort_bar_case_count_present(self, case_count):
         locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)
         try:
@@ -332,6 +345,12 @@ class BasePage:
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text with a CSS tag of 'a'"""
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
+    def click_link_data_testid(self, link_data_testid):
+        """Clicks a link with a data-testid"""
+        link_data_testid = self.normalize_button_identifier(link_data_testid)
+        locator = GenericLocators.DATA_TESTID_LINK_IDENT(link_data_testid)
         self.click(locator)
 
     def click_radio_button(self, radio_name):

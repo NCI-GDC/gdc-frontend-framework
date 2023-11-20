@@ -12,6 +12,7 @@ class HeaderSectionLocators:
     REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
+    MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"
 
 class HeaderSection(BasePage):
 
@@ -46,3 +47,5 @@ class HeaderSection(BasePage):
             self.wait_for_loading_spinner_table_to_detatch()
         elif page_to_load == "home":
             self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
+        elif page_to_load == "manage-sets":
+            self.wait_for_selector(HeaderSectionLocators.MANAGE_SETS_WAIT_FOR_ELEMENT)
