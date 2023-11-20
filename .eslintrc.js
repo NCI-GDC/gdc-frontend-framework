@@ -21,9 +21,16 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["jsx-a11y", "react", "react-hooks", "@typescript-eslint"],
+  plugins: [
+    "jsx-a11y",
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "eslint-plugin-tsdoc",
+  ],
   ignorePatterns: ["*.svg"],
   rules: {
+    //"tsdoc/syntax": "warn", TODO enable and fix almost every file
     // disable these because we're using React 17+ with the jsx transform
     // need to reverify these rules
     "@next/next/no-sync-scripts": "off",
