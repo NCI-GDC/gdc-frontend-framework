@@ -69,8 +69,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const prevTopGeneSSMS = usePrevious(topGeneSSMS);
   const prevAppMode = usePrevious(appMode);
 
-  // random change
-
   useEffect(() => {
     if (
       topGeneSSMS.length &&
@@ -193,7 +191,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       setSearchTermsForGeneId({ geneId: geneId, geneSymbol: geneSymbol });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cohortFilters, genomicFilters],
+    [],
   );
 
   // clear local filters when cohort changes or tabs change
