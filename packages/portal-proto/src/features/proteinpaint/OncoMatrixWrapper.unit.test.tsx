@@ -14,6 +14,10 @@ jest.mock("@gff/core", () => ({
   useUserDetails: jest.fn(() => userDetails),
   useCoreDispatch: jest.fn(() => () => null),
   PROTEINPAINT_API: "host:port/basepath",
+  useCreateCaseSetFromValuesMutation: jest.fn(() => [
+    () => null,
+    { isSuccess: true },
+  ]),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({

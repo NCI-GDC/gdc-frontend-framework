@@ -59,12 +59,21 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   const [input, setInput] = useState("");
   const [tokens, setTokens] = useState<string[]>([]);
   const [matched, setMatched] = useState<MatchResults[]>([]);
-  const [isUnintialized, setIsUnitialized] = useState(true);
+  const [isNotInitialized, setIsNotInitialized] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
+
+  const resetState = () => {
+    setInput("");
+    setIsNotInitialized(true);
+    setMatched([]);
+    setFile(null);
+    setScreenReaderMessage("");
+    setTokens([]);
+  };
 
   const {
     mappedToFields,
@@ -79,7 +88,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     () =>
       debounce((queryTokens: string[]) => {
         if (queryTokens.length > 0) {
-          setIsUnitialized(false);
+          setIsNotInitialized(false);
           setIsFetching(true);
 
           const response = fetchGdcEntities(
@@ -254,7 +263,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             aria-details={screenReaderMessage}
           />
         </div>
-        {isUnintialized ? null : isFetching ? (
+        {isNotInitialized ? null : isFetching ? (
           <div className="flex h-32 items-center pl-4 gap-1 text-sm">
             <Loader size={12} />
             <p>validating {entityLabel}s</p>
@@ -288,12 +297,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
         />
         <DiscardChangesButton
           disabled={input === ""}
-          action={() => {
-            setInput("");
-            setFile(null);
-            setScreenReaderMessage("");
-            setTokens([]);
-          }}
+          action={resetState}
           label={"Clear"}
         />
         <RightButton

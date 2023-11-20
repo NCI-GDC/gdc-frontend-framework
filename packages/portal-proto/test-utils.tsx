@@ -9,19 +9,21 @@ import {
   DashboardDownloadContext,
 } from "src/utils/contexts";
 import store from "@/app/store";
+import tailwindConfig from "tailwind.config";
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+  const themeColors = Object.fromEntries(
+    Object.entries(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors,
+    ).map(([key, values]) => [key, Object.values(values)]),
+  ) as any;
+
   return (
     <CoreProvider>
       <Provider store={store}>
-        <MantineProvider
-          theme={{
-            colors: {
-              primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-              base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            },
-          }}
-        >
+        <MantineProvider theme={{ colors: themeColors }}>
           <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
             <SummaryModalContext.Provider
               value={{
