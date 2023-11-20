@@ -287,6 +287,13 @@ def verify_table_body_tooltips_text(table):
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
 
+@step("Verify the table <table_name> is displaying this information <table>")
+def verify_table_is_displaying_text(table_name, table):
+    """Verifies the table is displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text(table_name,v[0])
+        assert is_table_text_present, f"The table '{table_name}' is NOT displaying '{v[0]}'"
+
 @step("Verify the button <button_name> is disabled")
 def verify_button_is_disabled(button_name:str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
@@ -404,6 +411,12 @@ def click_data_testid(data_testid: str):
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):
     """Clicks specified data-testid button"""
+    APP.shared.click_button_data_testid(data_testid)
+
+@step("Select button <data_testid>")
+def click_button_with_data_testid(data_testid: str):
+    """Normalizes identifier, and clicks specified data-testid button"""
+    data_testid = APP.shared.normalize_button_identifier(data_testid)
     APP.shared.click_button_data_testid(data_testid)
 
 @step("Select <button_text_name>")
@@ -526,6 +539,11 @@ def select_table_value_by_row_column(table):
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
     APP.shared.send_text_into_search_bar(text, aria_label)
+
+@step("Enter <text> in the text box <text_box_name>")
+def send_text_into_text_box(text: str, text_box_name: str):
+    """Sends text into a data-testid text box"""
+    APP.shared.send_text_into_text_box(text, text_box_name)
 
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):
