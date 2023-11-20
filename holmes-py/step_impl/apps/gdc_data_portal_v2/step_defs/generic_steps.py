@@ -163,6 +163,7 @@ def upload_file(file_name:str, extension:str, folder_name:str, source:str, butto
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
+        "Manage Sets Import": APP.manage_sets_page.click_browse_import_set
     }
     driver = WebDriver.page
     with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
@@ -348,6 +349,12 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
+@step("Validate the message <message_id> displays the text <expected_text>")
+def validate_message_id_text_is_present_on_the_page(message_id:str, expected_text: str):
+    """Verifies if specified data-testid message displays expected text"""
+    is_text_present = APP.shared.is_message_id_text_present(message_id, expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
 @step("Collect these data portal statistics for comparison <table>")
 def store_home_page_data_portal_statistics(table):
      """
@@ -403,6 +410,11 @@ def click_button_with_data_testid(data_testid: str):
 def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
     APP.shared.click_button_with_displayed_text_name(button_text_name)
+
+@step("Select the link <link_data_testid>")
+def click_link_data_testid(link_data_testid: str):
+    """Clicks a link with a data-testid"""
+    APP.shared.click_link_data_testid(link_data_testid)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
