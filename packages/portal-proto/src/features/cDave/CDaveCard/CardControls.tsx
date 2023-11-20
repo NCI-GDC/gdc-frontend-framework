@@ -21,8 +21,14 @@ import {
   NamedFromTo,
   SelectedFacet,
 } from "../types";
-import { DEMO_COHORT_FILTERS } from "../constants";
-import { formatPercent, isInterval, useDataDimension } from "../utils";
+import { DEMO_COHORT_FILTERS, MISSING_KEY } from "../constants";
+import {
+  formatPercent,
+  isInterval,
+  parseContinuousBucket,
+  useDataDimension,
+} from "../utils";
+import { useMemo } from "react";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -76,11 +82,12 @@ const CardControls: React.FC<CardControlsProps> = ({
     isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
   );
 
-  const filters: FilterSet = {
-    mode: "and",
-    root: {
-      [field]: continuous
-        ? {
+  const filters: FilterSet = useMemo(() => {
+    if (continuous) {
+      return {
+        mode: "and",
+        root: {
+          [field]: {
             operator: "or",
             operands: selectedFacets.map((facet) => {
               const customBin =
@@ -92,7 +99,7 @@ const CardControls: React.FC<CardControlsProps> = ({
                   : undefined;
               const [from, to] = customBin
                 ? [customBin.from, customBin.to]
-                : facet.value.split("-");
+                : parseContinuousBucket(facet.value);
               return {
                 operator: "and",
                 operands: [
@@ -110,20 +117,59 @@ const CardControls: React.FC<CardControlsProps> = ({
                 field,
               };
             }),
-          }
-        : {
+          },
+        },
+      };
+    } else {
+      const facetValues = customBinnedData
+        ? flatten(
+            selectedFacets.map(
+              (facet) => customBinnedData[facet.value as string],
+            ),
+          )
+        : selectedFacets.map((facet) => facet.value);
+      const hasMissingValue = facetValues.find((v) => v === MISSING_KEY);
+      if (hasMissingValue) {
+        const restOfFacets = facetValues.filter((v) => v !== MISSING_KEY);
+        return {
+          mode: "and",
+          root: {
+            [field]:
+              restOfFacets.length > 0
+                ? {
+                    operator: "or",
+                    operands: [
+                      {
+                        operator: "includes",
+                        operands: restOfFacets,
+                        field,
+                      },
+                      {
+                        operator: "missing",
+                        field,
+                      },
+                    ],
+                  }
+                : {
+                    operator: "missing",
+                    field,
+                  },
+          },
+        };
+      }
+
+      return {
+        mode: "and",
+        root: {
+          [field]: {
             operator: "includes",
-            operands: customBinnedData
-              ? flatten(
-                  selectedFacets.map(
-                    (facet) => customBinnedData[facet.value as string],
-                  ),
-                )
-              : selectedFacets.map((facet) => facet.value),
+            operands: facetValues,
             field,
           },
-    },
-  };
+        },
+      };
+    }
+  }, [continuous, customBinnedData, field, selectedFacets]);
 
   return (
     <>
