@@ -64,7 +64,7 @@ const createCaseSetMutation = `mutation createSet(
 ) {
   sets {
     create {
-      repository {
+      explore {
         case(input: $input) {
           set_id
           size

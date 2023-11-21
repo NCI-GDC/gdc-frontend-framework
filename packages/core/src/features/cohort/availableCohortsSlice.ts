@@ -128,7 +128,7 @@ export const buildCaseSetMutationQuery = (
   parameters: string,
   query: string,
 ): string => `
-mutation mutationsCreateRepositoryCaseSetMutation(
+mutation mutationsCreateExploreCaseSetMutation(
   ${parameters}
 ) {
   sets {
@@ -260,7 +260,7 @@ const setIdQueryFactory = async (
         $filters: FiltersArgument
     ) {
         viewer {
-          repository {
+          explore {
             cases {
              hits(filters: $filters, first: 50000) {
                edges {
