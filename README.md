@@ -182,6 +182,16 @@ mkcert localhost
 local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 ```
 
+### Documentation
+
+Run build-docs to generate documentation for "portal-proto" and "core" packages:
+
+```bash
+npm run build-docs
+```
+
+After generation documentation can be found in the [docs folder](/docs/)
+
 ## Project Structure
 
 This project is a monorepo managed by [lerna](https://lerna.js.org). It is composed of the following packages:
