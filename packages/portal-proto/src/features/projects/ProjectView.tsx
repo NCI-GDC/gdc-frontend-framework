@@ -80,7 +80,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Cases = (
-    <span className="flex items-center gap-0.5">
+    <span className="flex items-center gap-2">
       <div className="text-[1rem] xl:text-xl">
         <FaUser />
       </div>
@@ -93,7 +93,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Files = (
-    <span className="flex items-center gap-0.5">
+    <span className="flex items-center gap-2">
       <div className="text-[1rem] xl:text-xl">
         <FaFile />
       </div>
@@ -106,7 +106,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Annotations = (
-    <span className="flex items-center gap-0.5">
+    <span className="flex items-center gap-2">
       <div className="text-[1rem] xl:text-xl">
         <FaEdit />
       </div>
@@ -359,7 +359,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           </div>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-[1rem] text-sm text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
+          <div className="flex items-center gap-2 text-[1rem] text-sm 2xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
             Total of {Cases} {Files} {Annotations}
           </div>
         }
