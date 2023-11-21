@@ -8,6 +8,7 @@ class ManageSetsLocators:
     BUTTON_SET_MENU_OPTIONS = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text={dropdown_option}'
 
     BUTTON_IN_SET_ROW = lambda button_to_select, set_name: f'[data-testid="table-manage-sets"] >> td:has-text("{set_name}") >> .. >> [data-testid="button-{button_to_select}"]'
+    BUTTON_DOWNLOAD_IN_SET_ROW = lambda set_name: f'[data-testid="table-manage-sets"] >> td:has-text("{set_name}") >> .. >> [data-testid="button-download-set"]'
     CHECKBOX_IN_SET_ROW = lambda set_name: f'[data-testid="table-manage-sets"] >> td:has-text("{set_name}") >> .. >> [data-testid="checkbox-select-set"]'
     ITEM_LIST_BUTTON_IN_SET_ROW = lambda set_name: f'[data-testid="table-manage-sets"] >> td:has-text("{set_name}") >> .. >> [data-testid="text-set-count"]'
 
@@ -38,6 +39,11 @@ class ManageSetsPage(BasePage):
         button_to_select = self.normalize_button_identifier(button_to_select)
         self.click(ManageSetsLocators.BUTTON_IN_SET_ROW(button_to_select,set_name))
 
+    def click_checkbox_on_set_row_in_manage_sets(self, set_name):
+        "Identifies the row based on set name, then clicks the checkbox to select it"
+        locator = ManageSetsLocators.CHECKBOX_IN_SET_ROW(set_name)
+        self.click(locator)
+
     def click_item_list_on_set_row_in_manage_sets(self, set_name):
         "Identifies the row based on set name, then clicks the item/set list button"
         locator = ManageSetsLocators.ITEM_LIST_BUTTON_IN_SET_ROW(set_name)
@@ -46,4 +52,9 @@ class ManageSetsPage(BasePage):
     def click_close_set_panel(self):
         "Closes the set panel (the panel that opens when user clicks on item/set list button"
         locator = ManageSetsLocators.BUTTON_CLOSE_SET_PANEL
+        self.click(locator)
+
+    def click_on_download_for_set(self, set_name):
+        "Identifies the row based on set name, then clicks the download button"
+        locator = ManageSetsLocators.BUTTON_DOWNLOAD_IN_SET_ROW(set_name)
         self.click(locator)

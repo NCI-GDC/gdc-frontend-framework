@@ -17,6 +17,10 @@ def name_cohort(set_dropdown_option: str):
 def select_button_on_set_row_in_manage_sets(button_to_select:str, set_name:str):
     APP.manage_sets_page.click_button_on_set_row_in_manage_sets(button_to_select,set_name )
 
+@step("Select checkbox for set <set_name> on Manage Sets page")
+def select_checkbox_on_set_row_in_manage_sets(set_name:str):
+    APP.manage_sets_page.click_checkbox_on_set_row_in_manage_sets(set_name)
+
 @step("Select item list for set <set_name> on Manage Sets page")
 def select_item_list_on_set_row_in_manage_sets(set_name:str):
     APP.manage_sets_page.click_item_list_on_set_row_in_manage_sets(set_name)
@@ -24,6 +28,3 @@ def select_item_list_on_set_row_in_manage_sets(set_name:str):
 @step("Close set panel")
 def click_close_set_panel():
     APP.manage_sets_page.click_close_set_panel()
-
-# @step("View item list for set <set_name> on Manage Sets page")
-# def

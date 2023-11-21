@@ -133,7 +133,8 @@ def download_file_at_file_table(file:str, source:str):
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
-        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button
+        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Manage Sets": APP.manage_sets_page.click_on_download_for_set
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
@@ -298,6 +299,11 @@ def verify_table_is_displaying_text(table_name, table):
 def verify_button_is_disabled(button_name:str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
     assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
+@step("Verify the button <button_name> is enabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled==False, f"The button '{button_name}' is disabled when it should NOT be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
