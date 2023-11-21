@@ -177,7 +177,7 @@ function VerticalTable<TData>({
     handleChange({ newSearch: "" });
   };
 
-  const tooltipContainer = search?.tooltip
+  const TooltipContainer = search?.tooltip
     ? (children) => (
         <Tooltip
           multiline
@@ -238,7 +238,7 @@ function VerticalTable<TData>({
                   aria-label="Table Search Input"
                   classNames={{
                     input: `border-base-lighter focus:border-2 focus:border-primary${
-                      tooltipContainer ? " focus:rounded-b-none" : ""
+                      TooltipContainer ? " focus:rounded-b-none" : ""
                     }`,
                     wrapper: "w-72 h-8",
                   }}
@@ -256,7 +256,7 @@ function VerticalTable<TData>({
                   ref={inputRef}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
-                  inputContainer={tooltipContainer}
+                  inputContainer={TooltipContainer}
                 />
               )}
               {showControls && (
