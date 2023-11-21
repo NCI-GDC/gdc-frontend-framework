@@ -15,9 +15,9 @@ It filters the root property of the FilterSet object and returns a
 new FilterSet object that only contains filters with field names
 that start with the specified prefix.
 
- @param {FilterSet} fs - The FilterSet object to filter
- @param {string} prefix - The prefix to filter by
- @returns {FilterSet} - A new FilterSet object that only contains filters with field names that start with the specified prefix
+ @param fs - The FilterSet object to filter
+ @param prefix - The prefix to filter by
+ @returns - A new FilterSet object that only contains filters with field names that start with the specified prefix
  */
 export const extractFiltersWithPrefixFromFilterSet = (
   fs: FilterSet | undefined,

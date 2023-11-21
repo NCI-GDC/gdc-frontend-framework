@@ -6,8 +6,6 @@ import NextImage, { ImageProps } from "next/image";
  * difference is that this wrapper is aware of the basePath.  If the
  * basePath is set, then it prepends the basePath to the image source
  * path.
- * @param props
- * @returns
  */
 export const Image = (props: ImageProps): JSX.Element => {
   const { src } = props;

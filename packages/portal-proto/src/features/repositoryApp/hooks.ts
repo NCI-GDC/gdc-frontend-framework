@@ -49,7 +49,7 @@ import {
 /**
  * Selector for the facet values (if any) from the current cohort
  * @param field - field name to find filter for
- * @return Value of Filters or undefined
+ * @returns Value of Filters or undefined
  */
 export const useRepositoryEnumValues = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>
@@ -84,11 +84,11 @@ type updateEnumFiltersFunc = (
 ) => void;
 /**
  * Adds an enumeration filter to cohort filters
- * @param dispatch CoreDispatch instance
- * @param enumerationFilters values to update
- * @param field field to update
- * @param updateFilter action to update a filter's operands
- * @param removeFilter action to remove a filter
+ * @param dispatch - CoreDispatch instance
+ * @param enumerationFilters - values to update
+ * @param field - field to update
+ * @param updateFilter - action to update a filter's operands
+ * @param removeFilter - action to remove a filter
  */
 // TODO: this is can be used for all Enum Facets and needs be moved to facets/hooks
 export const updateEnumerationFilters: updateEnumFiltersFunc = (

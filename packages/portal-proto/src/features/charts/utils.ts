@@ -105,8 +105,8 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
 
 /**
  * handles a request to save a chart as SVG.
- * @param ref reference to the chart div
- * @param filename name of file to save to, extension should be included e.g. chart1.svg
+ * @param ref - reference to the chart div
+ * @param filename - name of file to save to, extension should be included e.g. chart1.svg
  */
 export const handleDownloadSVG = async (
   ref: MutableRefObject<HTMLElement>,
@@ -121,8 +121,8 @@ export const handleDownloadSVG = async (
 
 /**
  * handles a request to save a chart as a PNG image with a white background.
- * @param ref reference to the chart div
- * @param filename name of file to save to, extension should be included e.g. chart1.png
+ * @param ref - reference to the chart div
+ * @param filename - name of file to save to, extension should be included e.g. chart1.png
  */
 export const handleDownloadPNG = async (
   ref: MutableRefObject<HTMLElement>,

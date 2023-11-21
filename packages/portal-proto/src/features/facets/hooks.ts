@@ -54,7 +54,7 @@ export const extractValue = (op: Operation): EnumOperandValue => {
 /**
  * Selector for the facet values (if any) from the current cohort
  * @param field - field name to find filter for
- * @return Value of Filters or undefined
+ * @returns Value of Filters or undefined
  */
 const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
@@ -137,7 +137,7 @@ export const useEnumFacet = (
  * Fetch multiple enum facets via a single API call. Does not return any value but initiates the
  * fetch for each field.
  * @param docType - "cases", "files", etc
- * @param indexType = "explore" | "repository"
+ * @param indexType - "explore" | "repository"
  * @param fields - list of fields.
  */
 export const useEnumFacets = (
@@ -196,9 +196,9 @@ type UpdateEnumFiltersFunc = (
 
 /**
  * Adds an enumeration filter to cohort filters
- * @param dispatch CoreDispatch instance
- * @param enumerationFilters values to update
- * @param field field to update
+ * @param dispatch - CoreDispatch instance
+ * @param enumerationFilters - values to update
+ * @param field - field to update
  */
 export const updateEnumFilters: UpdateEnumFiltersFunc = (
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
