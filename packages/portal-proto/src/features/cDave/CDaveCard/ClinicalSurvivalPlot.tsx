@@ -131,6 +131,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
             downloadFileName={`${field
               .split(".")
               .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
+            tableTooltip
           />
         )}
       </div>

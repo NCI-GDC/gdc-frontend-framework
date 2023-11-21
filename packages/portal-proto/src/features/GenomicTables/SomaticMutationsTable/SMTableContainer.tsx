@@ -16,6 +16,7 @@ import {
   addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
   getSSMTestedCases,
+  useGetSsmTableDataMutation,
 } from "@gff/core";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { Loader, LoadingOverlay, Text } from "@mantine/core";
@@ -23,7 +24,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { filtersToName, humanify, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -139,6 +140,40 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     caseFilter: caseFilter,
   });
   /* SM Table Call end */
+  const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
+
+  useEffect(() => {
+    if (searchTermsForGene) {
+      const { geneId = "", geneSymbol = "" } = searchTermsForGene;
+      getTopSSM({
+        pageSize: 1,
+        offset: 0,
+        searchTerm: geneId,
+        geneSymbol: geneSymbol,
+        genomicFilters: genomicFilters,
+        cohortFilters: cohortFilters,
+        caseFilter: { mode: "", root: {} } as FilterSet,
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTermsForGene, genomicFilters, cohortFilters]);
+
+  useEffect(() => {
+    if (topSSM) {
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+      handleSurvivalPlotToggled(
+        ssm_id,
+        consequence_type
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+              term: consequence_type.replace("_variant", "").replace("_", " "),
+            })}`
+          : "",
+        "gene.ssm.ssm_id",
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topSSM]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();

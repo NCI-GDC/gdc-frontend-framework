@@ -80,6 +80,9 @@ tags: gdc-data-portal-v2, end-to-end, regression
 ## Repository Page
 When the filters are fixed add tests for them - PEAR-1350
 * Navigate to "Downloads" from "Header" "section"
+* Pause "4" seconds
+* Wait for table loading spinner
+* Wait for cohort bar case count loading spinner
 * Verify cohort case count equals repository table case count
 
 ## File Summary Page

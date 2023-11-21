@@ -10,10 +10,12 @@ jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   selectCurrentCohortFilterSet: jest.fn(() => filter),
   buildCohortGqlOperator: jest.fn(() => filter),
+  addNewCohortWithFilterAndMessage: jest.fn(() => null),
   useUserDetails: jest.fn(() => userDetails),
   useCoreDispatch: jest.fn(() => () => null),
   setActiveCohort: jest.fn(() => null),
   PROTEINPAINT_API: "host:port/basepath",
+  useCreateCaseSetFromValuesMutation: () => [() => null, { isSuccess: true }],
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({

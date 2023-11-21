@@ -13,6 +13,7 @@ import { renderPlot } from "@oncojs/survivalplot";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Box, Menu, Tooltip, Loader } from "@mantine/core";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
@@ -325,6 +326,7 @@ export interface SurvivalPlotProps {
   readonly height?: number;
   readonly field?: string;
   readonly downloadFileName?: string;
+  readonly tableTooltip?: boolean;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
@@ -336,6 +338,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   height = 380,
   field,
   downloadFileName = "survival-plot",
+  tableTooltip = false,
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -579,16 +582,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div>
           <Tooltip
             label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
-                </div>
-              )
+              <div>
+                Value shows 0.00e+0 because the
+                <br />
+                P-Value is extremely low and goes beyond
+                <br />
+                the precision inherent in the code
+              </div>
             }
+            disabled={pValue !== 0}
           >
             <div className="text-xs font-content">
               {isNumber(pValue) &&
@@ -596,6 +598,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </div>
           </Tooltip>
         </div>
+        {tableTooltip && (
+          <div className="text-xs font-content">
+            Use the Survival buttons <SurvivalIcon className="inline-block" />{" "}
+            in the table below to change the survival plot
+          </div>
+        )}
         <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
