@@ -100,10 +100,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState(
     searchTermsForGene?.geneId ?? "",
   );
-  const [
-    downloadMutationsFrequencyJSONActive,
-    setDownloadMutationsFrequencyJSONActive,
-  ] = useState(false);
+
   const [
     downloadMutationsFrequencyTSVActive,
     setDownloadMutationsFrequencyTSVActive,
@@ -155,7 +152,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         caseFilter: { mode: "", root: {} } as FilterSet,
       });
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters]);
 
@@ -324,36 +320,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
-  const handleJSONDownload = () => {
-    setDownloadMutationsFrequencyJSONActive(true);
-    download({
-      endpoint: "ssms",
-      method: "POST",
-      params: {
-        filters: buildCohortGqlOperator(contextSensitiveFilters) ?? {},
-        filename: `mutations.${convertDateToString(new Date())}.json`,
-        attachment: true,
-        format: "JSON",
-        pretty: true,
-        fields: [
-          "genomic_dna_change",
-          "mutation_subtype",
-          "consequence.transcript.consequence_type",
-          "consequence.transcript.annotation.vep_impact",
-          "consequence.transcript.annotation.sift_impact",
-          "consequence.transcript.annotation.polyphen_impact",
-          "consequence.transcript.is_canonical",
-          "consequence.transcript.gene.gene_id",
-          "consequence.transcript.gene.symbol",
-          "consequence.transcript.aa_change",
-          "ssm_id",
-        ].join(","),
-      },
-      dispatch,
-      done: () => setDownloadMutationsFrequencyJSONActive(false),
-    });
-  };
-
   const handleTSVDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
 
@@ -517,18 +483,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   zIndex={10}
                   customDataTestId="button-save-edit-mutation-set"
                 />
-                <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton
-                    onClick={handleJSONDownload}
-                    data-testid="button-json-mutation-frequency"
-                  >
-                    {downloadMutationsFrequencyJSONActive ? (
-                      <Loader size="sm" />
-                    ) : (
-                      "JSON"
-                    )}
-                  </FunctionButton>
-                </ButtonTooltip>
+
                 {caseFilter || geneSymbol ? (
                   <ButtonTooltip label="Export current view" comingSoon={true}>
                     <FunctionButton data-testid="button-tsv-mutation-frequency">
