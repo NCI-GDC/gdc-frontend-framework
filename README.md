@@ -182,7 +182,7 @@ mkcert localhost
 local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 ```
 
-### Documentation
+## Documentation
 
 Run build-docs to generate documentation for "portal-proto" and "core" packages:
 
