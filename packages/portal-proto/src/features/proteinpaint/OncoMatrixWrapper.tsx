@@ -9,17 +9,16 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
   useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
 } from "./sjpp-types";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 const basepath = PROTEINPAINT_API;
 
@@ -41,24 +40,22 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const [name, setName] = useState(undefined);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
-  const [pickedCases, setPickedCases] = useState([]);
-  const onCreateSet = useCallback(
-    () => createSet({ values: pickedCases }),
-    [createSet, pickedCases],
-  );
+  const [newCohortFilters, setNewCohortFilters] =
+    useState<FilterSet>(undefined);
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
-      setPickedCases(cases);
-      setShowCreateCohort(true);
+      if (cases.length > 1) {
+        createSet({ values: cases });
+      }
     },
-    [createSet, pickedCases],
+    [createSet],
   );
 
+  // a set for the new cohort is created, now show the save cohort modal
   useEffect(() => {
     if (response.isSuccess) {
       const filters: FilterSet = {
@@ -71,16 +68,10 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
           },
         },
       };
-      // create the cohort
-      coreDispatch(
-        addNewCohortWithFilterAndMessage({
-          filters: filters,
-          message: "newCasesCohort",
-          name,
-        }),
-      );
+      setNewCohortFilters(filters);
+      setShowSaveCohort(true);
     }
-  }, [response.isSuccess, name, coreDispatch, response.data]);
+  }, [response.isSuccess, coreDispatch, response.data]);
 
   useEffect(
     () => {
@@ -132,17 +123,10 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showCreateCohort && (
-        <CreateCohortModal // Show the modal, create cohort when create button is clicked
-          // this will call the create set mutation in the parent component
-          // and add the cohort to the store
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            setName(newName);
-            if (pickedCases.length > 1) {
-              onCreateSet();
-            }
-          }}
+      {showSaveCohort && newCohortFilters && (
+        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+          onClose={() => setShowSaveCohort(false)}
+          filters={newCohortFilters}
         />
       )}
     </div>

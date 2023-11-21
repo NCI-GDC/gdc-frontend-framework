@@ -102,6 +102,7 @@ const SaveCohortModal = ({
               ]),
             );
           }
+          coreDispatch(fetchCohortCaseCounts(payload.id));
         }
 
         onClose();
