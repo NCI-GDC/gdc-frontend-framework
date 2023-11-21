@@ -30,7 +30,7 @@ module.exports = {
   ],
   ignorePatterns: ["*.svg"],
   rules: {
-    //"tsdoc/syntax": "warn", TODO enable and fix almost every file
+    "tsdoc/syntax": "warn",
     // disable these because we're using React 17+ with the jsx transform
     // need to reverify these rules
     "@next/next/no-sync-scripts": "off",

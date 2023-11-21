@@ -14,7 +14,7 @@ export interface RangeBuckets extends Stats {
  * Returns true if aggregation object contains both a range and a stats member.
  * Is a typescript validating function for RangeBucket type
  * @param aggregation - object to test
- * @return true if object has the members needed for RangeBucket
+ * @returns true if object has the members needed for RangeBucket
  */
 export const isRangeBucketsAggregation = (
   aggregation: unknown,

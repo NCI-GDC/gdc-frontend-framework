@@ -11,11 +11,11 @@ export interface MatchResults {
 
 /**
   Parses through the API response to figure out what fields our matched values correspond to
-  @param data: API response for the matches
-  @param mappedToFields: fields we mapped to
-  @param submittedIdentifierFields: fields that we accept from the user
-  @param outputField: field used for creating set
-  @param tokens: the list of identifiers the user input
+  @param data - API response for the matches
+  @param mappedToFields - fields we mapped to
+  @param submittedIdentifierFields - fields that we accept from the user
+  @param outputField - field used for creating set
+  @param tokens - the list of identifiers the user input
 **/
 
 export const getMatchedIdentifiers = (
@@ -54,13 +54,13 @@ export const getMatchedIdentifiers = (
 
 /**
  * Recursively looks through API response to match values input by user to their API fields
- * @param object: object we are recursively searching through
- * @param submittedIdentifierFields: fields that we accept from the user
- * @param mappedToFields: fields we mapped to
- * @param outputField: field used for creating set
- * @param tokens: the list of identifiers the user input
- * @param path: accumulator for the path we are currently searching on, i.e. "samples.sample_id"
- * @param results: object of matches we find
+ * @param object - object we are recursively searching through
+ * @param submittedIdentifierFields - fields that we accept from the user
+ * @param mappedToFields - fields we mapped to
+ * @param outputField - field used for creating set
+ * @param tokens - the list of identifiers the user input
+ * @param path - accumulator for the path we are currently searching on, i.e. "samples.sample_id"
+ * @param results - object of matches we find
  */
 
 const findAllIdentifiers = (

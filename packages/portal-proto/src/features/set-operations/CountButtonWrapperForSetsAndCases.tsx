@@ -64,9 +64,6 @@ interface CountButtonWrapperForSetProps {
 
 /**
  * CountButtonWrapperForSet: handles the count button to create sets for mutations, or genes.
- * @param count
- * @param filters
- * @param entityType
  */
 const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
   count,
@@ -127,8 +124,6 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 
 /**
  * CountButtonWrapperForCohort: handles the count button to create case sets for cohorts.
- * @param count
- * @param filters
  */
 const CountButtonWrapperForCohort: React.FC<CountButtonWrapperForSetProps> = ({
   count,

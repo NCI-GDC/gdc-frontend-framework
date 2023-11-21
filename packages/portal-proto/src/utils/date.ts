@@ -1,5 +1,5 @@
 /**
- * Converts a date into a string of YYYY-MM-DD padding 0 for months and days < 10.
+ * Converts a date into a string of YYYY-MM-DD padding 0 for months and days \< 10.
  * Note the use of UTC to ensure the GMT timezone.
  * @param d - date to convert
  */
