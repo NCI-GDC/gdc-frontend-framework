@@ -239,7 +239,6 @@ const buildRanges = (
  * @param numBuckets - number of buckets to create
  * @param units - units such as days or percent
  * @param minimum - start value of range
- * @returns [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>]
  */
 export const buildRangeBuckets = (
   numBuckets: number,

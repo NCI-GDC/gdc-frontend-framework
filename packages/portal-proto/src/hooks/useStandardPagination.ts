@@ -6,8 +6,6 @@ import { useDeepCompareEffect } from "use-deep-compare";
 /**
  * For use with the VerticalTable component or other paginated tables,
  * manages state for pages and for column sorting. Only for client-side pagination
- * @param fullData
- * @returns
  */
 function useStandardPagination<TData>(
   fullData: TData[],
