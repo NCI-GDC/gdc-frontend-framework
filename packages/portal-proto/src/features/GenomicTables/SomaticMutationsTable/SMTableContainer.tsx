@@ -41,7 +41,6 @@ import {
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 
@@ -75,6 +74,14 @@ export interface SMTableContainerProps {
    *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
    */
   searchTermsForGene?: { geneId?: string; geneSymbol?: string };
+  /**
+   *  This is required for TSV download SMTable in Gene summary page
+   */
+  gene_id?: string;
+  /**
+   *  This is required for TSV download SMTable in Case summary page
+   */
+  case_id?: string;
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
@@ -93,6 +100,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   isModal = false,
   tableTitle = undefined,
   searchTermsForGene,
+  gene_id,
+  case_id,
 }: SMTableContainerProps) => {
   /* States for table */
   const [pageSize, setPageSize] = useState(10);
@@ -105,6 +114,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     downloadMutationsFrequencyTSVActive,
     setDownloadMutationsFrequencyTSVActive,
   ] = useState(false);
+
+  const [
+    downloadMutationsFrequencyTSVGeneActive,
+    setDownloadMutationsFrequencyTSVGeneActive,
+  ] = useState(false);
+  const [
+    downloadMutationsFrequencyTSVCaseActive,
+    setDownloadMutationsFrequencyTSVCaseActive,
+  ] = useState(false);
+
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
   const [mutationID, setMutationID] = useState(undefined);
@@ -320,6 +339,38 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
+  const handleTSVGeneDownload = () => {
+    setDownloadMutationsFrequencyTSVGeneActive(true);
+    download({
+      endpoint: "/analysis/top_ssms_by_gene",
+      method: "POST",
+      params: {
+        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        case_filters: getSSMTestedCases(cohortFilters),
+        gene_id,
+        attachment: true,
+        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+      },
+      dispatch,
+      done: () => setDownloadMutationsFrequencyTSVGeneActive(false),
+    });
+  };
+
+  const handleTSVCaseDownload = () => {
+    setDownloadMutationsFrequencyTSVCaseActive(true);
+    download({
+      endpoint: "/analysis/top_ssms_by_case",
+      method: "POST",
+      params: {
+        case_id,
+        attachment: true,
+        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+      },
+      dispatch,
+      done: () => setDownloadMutationsFrequencyTSVCaseActive(false),
+    });
+  };
+
   const handleTSVDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
 
@@ -485,11 +536,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 />
 
                 {caseFilter || geneSymbol ? (
-                  <ButtonTooltip label="Export current view" comingSoon={true}>
-                    <FunctionButton data-testid="button-tsv-mutation-frequency">
-                      TSV
-                    </FunctionButton>
-                  </ButtonTooltip>
+                  <FunctionButton
+                    data-testid="button-tsv-mutation-frequency"
+                    onClick={
+                      caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
+                    }
+                  >
+                    {downloadMutationsFrequencyTSVCaseActive ||
+                    downloadMutationsFrequencyTSVGeneActive ? (
+                      <Loader size="sm" />
+                    ) : (
+                      "TSV"
+                    )}
+                  </FunctionButton>
                 ) : (
                   <FunctionButton
                     onClick={handleTSVDownload}
