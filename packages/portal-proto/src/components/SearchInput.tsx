@@ -227,7 +227,8 @@ export const SearchInput: React.FC = () => {
         aria-expanded={dropdownOpen}
         aria-controls={comboboxId}
         aria-activedescendant={
-          activedescendant && `${comboboxItemId}${activedescendant}`
+          typeof activedescendant !== "undefined" &&
+          `${comboboxItemId}${activedescendant}`
         }
         icon={<SearchIcon size={24} />}
         placeholder="Search"
