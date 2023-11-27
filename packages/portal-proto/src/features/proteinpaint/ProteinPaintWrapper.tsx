@@ -56,7 +56,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       setPickedCases(cases);
       setShowCreateCohort(true);
     },
-    [createSet, pickedCases],
+    [],
   );
 
   useEffect(() => {

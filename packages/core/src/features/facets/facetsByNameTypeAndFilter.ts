@@ -17,9 +17,9 @@ import {
 
 /**
  *
- * @param facetName Name of the facet
- * @param filterType Either "files" or "cases"
- * @param filters any filters associated with the call
+ * @param facetName - Name of the facet
+ * @param filterType - Either "files" or "cases"
+ * @param filters - any filters associated with the call
  */
 export const fetchFacetByNameTypeAndFilter = createAsyncThunk<
   GdcApiResponse<unknown>,

@@ -40,6 +40,15 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Select "Save"
 * Is text "Set has been saved." present on the page
 
+## Validate Buttons Are Disabled
+* Verify the button "Export Selected Set" is disabled
+* Verify the button "Delete Selected Set" is disabled
+
+## Validate Buttons Are Enabled
+* Select checkbox for set "Gene Set CSV" on Manage Sets page
+* Verify the button "Export Selected Set" is enabled
+* Verify the button "Delete Selected Set" is enabled
+
 ## Validate Message Text
 * Validate the message "Warning Banner" displays the text "Please be aware that your custom sets are deleted during each new GDC data release. You can export and re-upload them on this page."
 * Validate the message "Manage Sets Description" displays the text "Create gene and mutation sets using the Create Set button or from the Mutation Frequency app."

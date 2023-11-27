@@ -10,11 +10,10 @@ import {
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
-  GqlIntersection,
   UnionOrIntersection,
   Union,
 } from "../gdcapi/filters";
-import { appendFilterToOperation } from "./utils";
+import { appendFilterToOperation, getSSMTestedCases } from "./utils";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
 import { DataStatus } from "src/dataAccess";
@@ -247,10 +246,6 @@ const generateFilter = ({
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
-  const gqlCohortIntersection =
-    cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
-      ? (cohortFiltersGQl as GqlIntersection).content
-      : [];
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -278,22 +273,7 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: {
-      content: [
-        ...[
-          {
-            content: {
-              field: "available_variation_data",
-              value: ["ssm"],
-            },
-            op: "in",
-          },
-        ],
-        // For case filter only use cohort filter and not genomic filter
-        ...gqlCohortIntersection,
-      ],
-      op: "and",
-    },
+    ssmCaseFilter: getSSMTestedCases(cohortFilters),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
