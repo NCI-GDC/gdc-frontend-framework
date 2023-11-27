@@ -27,6 +27,7 @@ class GenericLocators:
 
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
+    TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
@@ -46,6 +47,7 @@ class GenericLocators:
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
+    TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
     TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
@@ -332,6 +334,15 @@ class BasePage:
         text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
         return self.is_visible(text_no_active_filter_locator)
 
+    def is_table_displaying_text(self, table_id, table_text):
+        table_id = self.normalize_button_identifier(table_id)
+        table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
+        try:
+            self.wait_until_locator_is_visible(table_text_locator)
+        except:
+            return False
+        return True
+
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
         self.click(locator)
@@ -434,6 +445,13 @@ class BasePage:
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
+    def send_text_into_text_box(self, text_to_send, text_box_id):
+        """Sends text into data-testid textbox"""
+        text_box_id = self.normalize_button_identifier(text_box_id)
+        locator = GenericLocators.TEXT_BOX_IDENT(text_box_id)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
