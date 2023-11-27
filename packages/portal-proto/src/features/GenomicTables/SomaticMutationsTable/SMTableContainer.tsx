@@ -138,6 +138,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
+  const previousSearchTerm = usePrevious(searchTerm);
+  const previousTopSSM = usePrevious(topSSM);
+
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -155,7 +158,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
   useEffect(() => {
-    if (topSSM) {
+    if (
+      (!isEqual(searchTerm, previousSearchTerm) ||
+        !isEqual(topSSM, previousTopSSM)) &&
+      topSSM
+    ) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
         ssm_id,
@@ -167,8 +174,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM]);
+  }, [searchTerm, previousSearchTerm, topSSM, previousTopSSM]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
