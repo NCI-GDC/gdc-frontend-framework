@@ -140,6 +140,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const previousSearchTerm = usePrevious(searchTerm);
   const previousTopSSM = usePrevious(topSSM);
+  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
 
   useEffect(() => {
     if (searchTermsForGene) {
@@ -159,8 +160,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   useEffect(() => {
     if (
-      (!isEqual(searchTerm, previousSearchTerm) ||
-        !isEqual(topSSM, previousTopSSM)) &&
+      (!isEqual(topSSM, previousTopSSM) ||
+        !isEqual(searchTerm, previousSearchTerm)) &&
       topSSM
     ) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
@@ -174,7 +175,50 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-  }, [searchTerm, previousSearchTerm, topSSM, previousTopSSM]);
+  }, [topSSM, previousTopSSM, searchTerm, previousSearchTerm]);
+
+  useEffect(() => {
+    if (
+      data?.ssms &&
+      topSSM &&
+      (isEqual(topSSM, previousTopSSM) ||
+        !isEqual(searchTerm, previousSearchTerm)) &&
+      !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot)
+    ) {
+      if (
+        !data.ssms
+          .map(({ ssm_id }) => ssm_id)
+          .includes(selectedSurvivalPlot.symbol)
+      ) {
+        if (searchTerm !== searchTermsForGene.geneSymbol) {
+          getTopSSM({
+            pageSize: 1,
+            offset: 0,
+            searchTerm: searchTerm,
+            geneSymbol: searchTermsForGene.geneSymbol,
+            genomicFilters: genomicFilters,
+            cohortFilters: cohortFilters,
+            caseFilter: caseFilter,
+          });
+        } else {
+          const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+          handleSurvivalPlotToggled(
+            ssm_id,
+            consequence_type
+              ? `${
+                  searchTermsForGene?.geneSymbol ?? ""
+                } ${aa_change} ${humanify({
+                  term: consequence_type
+                    .replace("_variant", "")
+                    .replace("_", " "),
+                })}`
+              : "",
+            "gene.ssm.ssm_id",
+          );
+        }
+      }
+    }
+  }, [selectedSurvivalPlot, previousSelectedSurvivalPlot, topSSM, data]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
