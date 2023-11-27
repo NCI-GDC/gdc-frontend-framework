@@ -38,7 +38,6 @@ import { HandleChangeInput } from "@/components/Table/types";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
@@ -74,8 +73,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [downloadMutatedGenesJSONActive, setDownloadMutatedGenesJSONActive] =
-    useState(false);
+
   const [downloadMutatedGenesTSVActive, setDownloadMutatedGenesTSVActive] =
     useState(false);
   const dispatch = useCoreDispatch();
@@ -326,32 +324,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         } as FilterSet)
       : joinFilters(cohortFilters, genomicFilters);
 
-  const handleJSONDownload = async () => {
-    const tableFilters =
-      buildCohortGqlOperator(joinFilters(cohortFilters, genomicFilters)) ?? {};
-    setDownloadMutatedGenesJSONActive(true);
-    await download({
-      endpoint: "genes",
-      method: "POST",
-      params: {
-        filters: tableFilters,
-        attachment: true,
-        format: "JSON",
-        pretty: true,
-        fields: [
-          "biotype",
-          "symbol",
-          "cytoband",
-          "name",
-          "gene_id",
-          "is_cancer_gene_census",
-        ].join(","),
-      },
-      dispatch,
-      done: () => setDownloadMutatedGenesJSONActive(false),
-    });
-  };
-
   const handleTSVDownload = async () => {
     setDownloadMutatedGenesTSVActive(true);
     await download({
@@ -502,14 +474,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               zIndex={10}
               customDataTestId="button-save-edit-gene-set"
             />
-            <ButtonTooltip label="Export All Except #Cases and #Mutations">
-              <FunctionButton
-                onClick={handleJSONDownload}
-                data-testid="button-json-mutation-frequency"
-              >
-                {downloadMutatedGenesJSONActive ? <Loader size="sm" /> : "JSON"}
-              </FunctionButton>
-            </ButtonTooltip>
             <FunctionButton
               onClick={handleTSVDownload}
               data-testid="button-tsv-mutation-frequency"

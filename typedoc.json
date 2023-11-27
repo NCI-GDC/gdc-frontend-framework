@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "GDC Frontend Framework",
+  //"entryPoints": ["packages/*"], //do all packages
+  "entryPoints": ["packages/portal-proto", "packages/core"],
+  "entryPointStrategy": "packages"
+  // Potentially useful for debugging
+  //"logLevel": "Verbose"
+}

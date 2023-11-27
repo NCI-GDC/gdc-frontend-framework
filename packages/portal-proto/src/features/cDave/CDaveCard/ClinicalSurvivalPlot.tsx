@@ -12,7 +12,7 @@ import SurvivalPlot, {
   SurvivalPlotTypes,
 } from "@/features/charts/SurvivalPlot";
 import { convertDateToString } from "@/utils/date";
-import { isInterval } from "../utils";
+import { isInterval, parseContinuousBucket } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
 
@@ -79,7 +79,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
                 });
               }
             } else {
-              const [fromValue, toValue] = value.split("-");
+              const [fromValue, toValue] = parseContinuousBucket(value);
 
               content.push({
                 op: ">=",
