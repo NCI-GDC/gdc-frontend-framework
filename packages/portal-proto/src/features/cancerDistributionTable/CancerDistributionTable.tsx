@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { LoadingOverlay } from "@mantine/core";
 import Link from "next/link";
 import {
   useGetProjectsQuery,
   FilterSet,
   useCreateCaseSetFromFiltersMutation,
   buildCohortGqlOperator,
-  addNewCohortWithFilterAndMessage,
-  useCoreDispatch,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
@@ -15,8 +12,7 @@ import {
   calculatePercentageAsNumber,
   statusBooleansToDataStatus,
 } from "src/utils";
-import { CohortCreationButton } from "@/components/CohortCreationButton/";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import CohortCreationButton from "@/components/CohortCreationButton";
 import {
   ExpandedState,
   Row,
@@ -29,7 +25,6 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import {
   CancerDistributionDataType,
   CancerDistributionTableProps,
-  CreateSSMCohortParams,
   handleJSONDownload,
   handleTSVDownload,
 } from "./utils";
@@ -48,13 +43,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   isGene,
   contextFilters,
 }: CancerDistributionTableProps) => {
-  const coreDispatch = useCoreDispatch();
-  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
-  const [loading, setLoading] = useState(false);
-  const [createCohortParams, setCreateCohortParams] = useState<
-    CreateSSMCohortParams | undefined
-  >(undefined);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -72,14 +61,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ],
     size: data?.projects.length,
   });
-
-  useEffect(() => {
-    if (response.isLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [response.isLoading]);
 
   const projectsById = useMemo(
     () =>
@@ -159,249 +140,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [],
   );
 
-  const cancerDistributionTableColumns = useDeepCompareMemo(
-    () => [
-      cancerDistributionTableColumnHelper.accessor("project", {
-        id: "project",
-        header: "Project",
-        cell: ({ getValue }) => (
-          <Link href={`/projects/${getValue()}`}>
-            <a className="text-utility-link underline">{getValue()}</a>
-          </Link>
-        ),
-        enableSorting: false,
-      }),
-      cancerDistributionTableColumnHelper.accessor("disease_type", {
-        id: "disease_type",
-        header: "Disease Type",
-        cell: ({ row, getValue }) => (
-          <ExpandRowComponent
-            value={getValue()}
-            title="Disease Types"
-            isRowExpanded={row.getIsExpanded()}
-            isColumnExpanded={expandedColumnId === "disease_type"}
-          />
-        ),
-      }),
-      cancerDistributionTableColumnHelper.accessor("primary_site", {
-        id: "primary_site",
-        header: "Primary Site",
-        cell: ({ row, getValue }) => (
-          <ExpandRowComponent
-            value={getValue()}
-            title="Primary Sites"
-            isRowExpanded={row.getIsExpanded()}
-            isColumnExpanded={expandedColumnId === "primary_site"}
-          />
-        ),
-      }),
-      cancerDistributionTableColumnHelper.accessor("ssm_percent", {
-        id: "#_ssm_affected_cases",
-        header: () => (
-          <HeaderTooltip
-            title="# SSM Affected Cases"
-            tooltip={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
-        / # Cases tested for Simple Somatic Mutations in the Project`}
-          />
-        ),
-        cell: ({ row }) => (
-          <CohortCreationButton
-            numCases={row.original.ssm_affected_cases.numerator || 0}
-            handleClick={() => {
-              setCreateCohortParams({
-                project: row.original.project,
-                id: id,
-                mode: "SSM",
-                gene: undefined,
-                filter: undefined,
-              });
-              setShowCreateCohort(true);
-            }}
-            label={
-              <NumeratorDenominator
-                numerator={row.original.ssm_affected_cases.numerator || 0}
-                denominator={row.original.ssm_affected_cases.denominator || 0}
-                boldNumerator
-              />
-            }
-          />
-        ),
-        meta: {
-          sortingFn: (rowA, rowB) => {
-            if (rowA.ssm_percent > rowB.ssm_percent) {
-              return 1;
-            }
-            if (rowA.ssm_percent < rowB.ssm_percent) {
-              return -1;
-            }
-            return 0;
-          },
-        },
-        enableSorting: true,
-      }),
-      ...(isGene
-        ? [
-            cancerDistributionTableColumnHelper.accessor("cnv_gains_percent", {
-              id: "#_cnv_gains",
-              header: () => (
-                <HeaderTooltip
-                  title="# CNV Gains"
-                  tooltip={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
-                  / # Cases tested for Copy Number Variation in the Project
-                  `}
-                />
-              ),
-              cell: ({ row }) => (
-                <CohortCreationButton
-                  numCases={row.original.cnv_gains.numerator || 0}
-                  handleClick={() => {
-                    setCreateCohortParams({
-                      project: row.original.project,
-                      id: id,
-                      mode: "CNV",
-                      gene: undefined,
-                      filter: "Gain",
-                    });
-                    setShowCreateCohort(true);
-                  }}
-                  label={
-                    <NumeratorDenominator
-                      numerator={row.original.cnv_gains.numerator || 0}
-                      denominator={row.original.cnv_gains.denominator || 0}
-                      boldNumerator
-                    />
-                  }
-                />
-              ),
-              meta: {
-                sortingFn: (rowA, rowB) => {
-                  if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
-                    return 1;
-                  }
-                  if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
-                    return -1;
-                  }
-                  return 0;
-                },
-              },
-              enableSorting: true,
-            }),
-            cancerDistributionTableColumnHelper.accessor("cnv_losses_percent", {
-              id: "#_cnv_losses",
-              header: () => (
-                <HeaderTooltip
-                  title="# CNV Losses"
-                  tooltip={`# Cases tested for CNV in the Project affected by CNV loss event in ${symbol}
-                  / # Cases tested for Copy Number Variation in the Project
-                  `}
-                />
-              ),
-              cell: ({ row }) => (
-                <CohortCreationButton
-                  numCases={row.original.cnv_losses.numerator || 0}
-                  handleClick={() => {
-                    setCreateCohortParams({
-                      project: row.original.project,
-                      id: id,
-                      mode: "CNV",
-                      gene: undefined,
-                      filter: "Loss",
-                    });
-                    setShowCreateCohort(true);
-                  }}
-                  label={
-                    <NumeratorDenominator
-                      numerator={row.original.cnv_losses.numerator || 0}
-                      denominator={row.original.cnv_losses.denominator || 0}
-                      boldNumerator
-                    />
-                  }
-                />
-              ),
-              meta: {
-                sortingFn: (rowA, rowB) => {
-                  if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
-                    return 1;
-                  }
-                  if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
-                    return -1;
-                  }
-                  return 0;
-                },
-              },
-              enableSorting: true,
-            }),
-            cancerDistributionTableColumnHelper.accessor("num_mutations", {
-              id: "#_mutations",
-              header: () => (
-                <HeaderTooltip
-                  title="# Mutations"
-                  tooltip={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
-                />
-              ),
-              enableSorting: true,
-              cell: ({ row }) => row.original.num_mutations.toLocaleString(),
-              meta: {
-                sortingFn: (rowA, rowB) => {
-                  if (rowA.num_mutations > rowB.num_mutations) {
-                    return 1;
-                  }
-                  if (rowA.num_mutations < rowB.num_mutations) {
-                    return -1;
-                  }
-                  return 0;
-                },
-              },
-            }),
-          ]
-        : []),
-    ],
-    [cancerDistributionTableColumnHelper, expandedColumnId, id, isGene, symbol],
-  );
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    handleSortByChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-    updatedFullData,
-  } = useStandardPagination(formattedData, cancerDistributionTableColumns);
-
-  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
-
-  const handleExpand = (
-    row: Row<CancerDistributionDataType>,
-    columnId: string,
-  ) => {
-    if (
-      Object.keys(expanded).length > 0 &&
-      row.original.project === expandedRowId &&
-      columnId === expandedColumnId
-    ) {
-      setExpanded({});
-    } else if ((row.original[columnId] as string[]).length > 1) {
-      setExpanded({ [row.original.project]: true });
-      setExpandedColumnId(columnId);
-      setExpandedRowId(row.original.project);
-    }
-  };
-
   const createSSMAffectedFilters = useCallback(
     async (project: string, id: string): Promise<FilterSet> => {
       return await createSet({
@@ -461,27 +199,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [contextFilters, createSet, isGene],
   );
 
-  const createSSMAffectedFiltersCohort = async (
-    name: string,
-    project: string,
-    id: string,
-  ) => {
-    const mainFilter = await createSSMAffectedFilters(project, id);
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: mainFilter,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
-
   const createCNVGainLossFilters = useCallback(
-    async (
-      project: string,
-      gene: string,
-      filter: "Loss" | "Gain",
-    ): Promise<FilterSet> => {
+    async (project: string, filter: "Loss" | "Gain"): Promise<FilterSet> => {
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
       })
@@ -517,46 +236,238 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [contextFilters, createSet, id],
   );
 
-  const createCNVGainLossCohort = async (
-    name: string,
-    project: string,
-    gene: string,
-    filter: "Loss" | "Gain",
-  ) => {
-    const mainFilter = await createCNVGainLossFilters(project, gene, filter);
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: mainFilter,
-        name,
-        message: "newCasesCohort",
+  const cancerDistributionTableColumns = useDeepCompareMemo(
+    () => [
+      cancerDistributionTableColumnHelper.accessor("project", {
+        id: "project",
+        header: "Project",
+        cell: ({ getValue }) => (
+          <Link href={`/projects/${getValue()}`}>
+            <a className="text-utility-link underline">{getValue()}</a>
+          </Link>
+        ),
+        enableSorting: false,
       }),
-    );
+      cancerDistributionTableColumnHelper.accessor("disease_type", {
+        id: "disease_type",
+        header: "Disease Type",
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Disease Types"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "disease_type"}
+          />
+        ),
+      }),
+      cancerDistributionTableColumnHelper.accessor("primary_site", {
+        id: "primary_site",
+        header: "Primary Site",
+        cell: ({ row, getValue }) => (
+          <ExpandRowComponent
+            value={getValue()}
+            title="Primary Sites"
+            isRowExpanded={row.getIsExpanded()}
+            isColumnExpanded={expandedColumnId === "primary_site"}
+          />
+        ),
+      }),
+      cancerDistributionTableColumnHelper.accessor("ssm_percent", {
+        id: "#_ssm_affected_cases",
+        header: () => (
+          <HeaderTooltip
+            title="# SSM Affected Cases"
+            tooltip={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
+        / # Cases tested for Simple Somatic Mutations in the Project`}
+          />
+        ),
+        cell: ({ row }) => (
+          <CohortCreationButton
+            numCases={row.original.ssm_affected_cases.numerator || 0}
+            filtersCallback={async () =>
+              createSSMAffectedFilters(row.original.project, id)
+            }
+            label={
+              <NumeratorDenominator
+                numerator={row.original.ssm_affected_cases.numerator || 0}
+                denominator={row.original.ssm_affected_cases.denominator || 0}
+                boldNumerator
+              />
+            }
+          />
+        ),
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            if (rowA.ssm_percent > rowB.ssm_percent) {
+              return 1;
+            }
+            if (rowA.ssm_percent < rowB.ssm_percent) {
+              return -1;
+            }
+            return 0;
+          },
+        },
+        enableSorting: true,
+      }),
+      ...(isGene
+        ? [
+            cancerDistributionTableColumnHelper.accessor("cnv_gains_percent", {
+              id: "#_cnv_gains",
+              header: () => (
+                <HeaderTooltip
+                  title="# CNV Gains"
+                  tooltip={`# Cases tested for CNV in the Project affected by CNV gain event in ${symbol}
+                  / # Cases tested for Copy Number Variation in the Project
+                  `}
+                />
+              ),
+              cell: ({ row }) => (
+                <CohortCreationButton
+                  numCases={row.original.cnv_gains.numerator || 0}
+                  filtersCallback={async () =>
+                    createCNVGainLossFilters(row.original.project, "Gain")
+                  }
+                  label={
+                    <NumeratorDenominator
+                      numerator={row.original.cnv_gains.numerator || 0}
+                      denominator={row.original.cnv_gains.denominator || 0}
+                      boldNumerator
+                    />
+                  }
+                />
+              ),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
+                    return 1;
+                  }
+                  if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
+              enableSorting: true,
+            }),
+            cancerDistributionTableColumnHelper.accessor("cnv_losses_percent", {
+              id: "#_cnv_losses",
+              header: () => (
+                <HeaderTooltip
+                  title="# CNV Losses"
+                  tooltip={`# Cases tested for CNV in the Project affected by CNV loss event in ${symbol}
+                  / # Cases tested for Copy Number Variation in the Project
+                  `}
+                />
+              ),
+              cell: ({ row }) => (
+                <CohortCreationButton
+                  numCases={row.original.cnv_losses.numerator || 0}
+                  filtersCallback={async () =>
+                    createCNVGainLossFilters(row.original.project, "Loss")
+                  }
+                  label={
+                    <NumeratorDenominator
+                      numerator={row.original.cnv_losses.numerator || 0}
+                      denominator={row.original.cnv_losses.denominator || 0}
+                      boldNumerator
+                    />
+                  }
+                />
+              ),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
+                    return 1;
+                  }
+                  if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
+              enableSorting: true,
+            }),
+            cancerDistributionTableColumnHelper.accessor("num_mutations", {
+              id: "#_mutations",
+              header: () => (
+                <HeaderTooltip
+                  title="# Mutations"
+                  tooltip={`# Unique Simple Somatic Mutations observed in ${symbol} in the Project`}
+                />
+              ),
+              enableSorting: true,
+              cell: ({ row }) => row.original.num_mutations.toLocaleString(),
+              meta: {
+                sortingFn: (rowA, rowB) => {
+                  if (rowA.num_mutations > rowB.num_mutations) {
+                    return 1;
+                  }
+                  if (rowA.num_mutations < rowB.num_mutations) {
+                    return -1;
+                  }
+                  return 0;
+                },
+              },
+            }),
+          ]
+        : []),
+    ],
+    [
+      cancerDistributionTableColumnHelper,
+      expandedColumnId,
+      id,
+      isGene,
+      symbol,
+      createCNVGainLossFilters,
+      createSSMAffectedFilters,
+    ],
+  );
+
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    handleSortByChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+    updatedFullData,
+  } = useStandardPagination(formattedData, cancerDistributionTableColumns);
+
+  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
+  const handleExpand = (
+    row: Row<CancerDistributionDataType>,
+    columnId: string,
+  ) => {
+    if (
+      Object.keys(expanded).length > 0 &&
+      row.original.project === expandedRowId &&
+      columnId === expandedColumnId
+    ) {
+      setExpanded({});
+    } else if ((row.original[columnId] as string[]).length > 1) {
+      setExpanded({ [row.original.project]: true });
+      setExpandedColumnId(columnId);
+      setExpandedRowId(row.original.project);
+    }
   };
 
   return (
     <>
-      {loading && <LoadingOverlay visible />}
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            if (createCohortParams.mode === "SSM") {
-              createSSMAffectedFiltersCohort(
-                newName,
-                createCohortParams.project,
-                createCohortParams.id,
-              );
-            } else {
-              createCNVGainLossCohort(
-                newName,
-                createCohortParams.project,
-                createCohortParams.gene,
-                createCohortParams.filter,
-              );
-            }
-          }}
-        />
-      )}
       <VerticalTable
         data={displayedData}
         columns={cancerDistributionTableColumns}

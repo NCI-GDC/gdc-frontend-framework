@@ -44,10 +44,10 @@ import {
   setActiveCohort,
   useCurrentCohortCounts,
   fetchCohortCaseCounts,
+  selectHasUnsavedCohorts,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
@@ -135,12 +135,8 @@ const CohortManager: React.FC = () => {
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
   const counts = useCurrentCohortCounts();
-  // Cohort specific actions
-  const newCohort = useCallback(
-    (customName: string) => {
-      coreDispatch(addNewCohort(customName));
-    },
-    [coreDispatch],
+  const hasUnsavedCohorts = useCoreSelector((state) =>
+    selectHasUnsavedCohorts(state),
   );
 
   const discardChanges = useCallback(
@@ -199,7 +195,6 @@ const CohortManager: React.FC = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -380,15 +375,6 @@ const CohortManager: React.FC = () => {
         />
       )}
 
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={async (newName: string) => {
-            newCohort(newName);
-          }}
-        />
-      )}
-
       {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
         <CaseSetModal
@@ -496,13 +482,18 @@ const CohortManager: React.FC = () => {
               </span>
             </Tooltip>
             <Tooltip
-              label="Create New Unsaved Cohort"
+              label={
+                hasUnsavedCohorts
+                  ? "There is already an unsaved cohort"
+                  : "Create New Unsaved Cohort"
+              }
               position="bottom"
               withArrow
             >
               <CohortGroupButton
-                onClick={() => setShowCreateCohort(true)}
+                onClick={() => coreDispatch(addNewCohort())}
                 data-testid="addButton"
+                disabled={hasUnsavedCohorts}
               >
                 <AddIcon size="1.5em" aria-label="Add cohort" />
               </CohortGroupButton>

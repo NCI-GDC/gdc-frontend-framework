@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -8,17 +9,17 @@ import {
   setActiveCohortList,
   Cohort,
   removeCohort,
-  addNewCohort,
   NullCountsData,
 } from "@gff/core";
 
 export const useSetupInitialCohorts = (): boolean => {
+  const [fetched, setFetched] = useState(false);
   const {
     data: cohortsListData,
     isSuccess,
-    isFetching,
     isError,
-  } = useGetCohortsByContextIdQuery();
+  } = useGetCohortsByContextIdQuery(null, { skip: fetched });
+
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
@@ -27,64 +28,46 @@ export const useSetupInitialCohorts = (): boolean => {
     .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
     .map((c) => c.id);
 
-  const [isFetchingAll, setIsFetchingAll] = useState(false);
+  useDeepCompareEffect(() => {
+    if ((isSuccess || isError) && !fetched) {
+      const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
+        const existingCohort = cohorts.find((c) => c.id === data.id);
+        return existingCohort?.modified
+          ? existingCohort
+          : {
+              id: data.id,
+              name: data.name,
+              filters: buildGqlOperationToFilterSet(data.filters),
+              caseSet: {
+                ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
+              },
+              counts: {
+                ...NullCountsData,
+              },
+              modified_datetime: data.modified_datetime,
+              saved: true,
+              modified: false,
+            };
+      });
 
-  useEffect(() => {
-    if (isFetching) {
-      setIsFetchingAll(true);
-    } else {
-      setIsFetchingAll(false);
-    }
-  }, [isFetching]);
-
-  useEffect(() => {
-    // If cohortsListData is undefined that means either user doesn't have any cohorts saved as of now
-    // or call to fetch the cohort list errored out. We need to create a default cohort for them.
-    if (isSuccess || isError) {
-      if (cohortsListData === undefined || cohortsListData.length === 0) {
-        if (cohorts.length === 0) {
-          coreDispatch(addNewCohort("New Unsaved Cohort"));
-        }
-      } else {
-        const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
-          const existingCohort = cohorts.find((c) => c.id === data.id);
-          return existingCohort?.modified
-            ? existingCohort
-            : {
-                id: data.id,
-                name: data.name,
-                filters: buildGqlOperationToFilterSet(data.filters),
-                caseSet: {
-                  ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
-                },
-                counts: {
-                  ...NullCountsData,
-                },
-                modified_datetime: data.modified_datetime,
-                saved: true,
-                modified: false,
-              };
-        });
-        // TODO determine if setActiveCohortList is really needed
-
-        coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
-      }
+      coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // A saved cohort that's not present in the API response has been deleted in another session
       for (const id of outdatedCohortsIds) {
         coreDispatch(removeCohort({ currentID: id }));
       }
-    }
 
-    /* eslint-disable react-hooks/exhaustive-deps */
+      setFetched(true);
+    }
   }, [
-    coreDispatch,
-    JSON.stringify(cohortsListData),
+    cohortsListData,
     isSuccess,
     isError,
-    JSON.stringify(outdatedCohortsIds),
-    JSON.stringify(cohorts.map((cohort) => cohort.id)),
+    cohorts,
+    fetched,
+    setFetched,
+    coreDispatch,
+    outdatedCohortsIds,
   ]);
-  /* eslint-enable */
 
-  return isFetchingAll;
+  return fetched;
 };

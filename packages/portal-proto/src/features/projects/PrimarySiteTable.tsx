@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useGetProjectsPrimarySitesAllQuery } from "@gff/core";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
+import CohortCreationButton from "@/components/CohortCreationButton";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
   ColumnOrderState,
@@ -75,10 +75,10 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
         id: "cases",
         header: "Cases",
         cell: ({ row }) => (
-          <CohortCreationButtonWrapper
+          <CohortCreationButton
             label={row.original.cases?.toLocaleString()}
             numCases={row.original.cases}
-            caseFilters={{
+            filters={{
               mode: "and",
               root: {
                 "cases.project.project_id": {
