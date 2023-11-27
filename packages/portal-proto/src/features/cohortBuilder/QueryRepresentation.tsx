@@ -345,7 +345,7 @@ interface QueryElementProps {
   field: string;
 }
 
-export const QueryElement: React.FC<QueryElementProps> = ({
+export const QueryElement = ({
   field,
   children,
 }: PropsWithChildren<QueryElementProps>) => {

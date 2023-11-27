@@ -11,9 +11,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * On GDC Data Portal V2 app
 * Navigate to "Home" from "Header" "section"
 * Collect these data portal statistics for comparison
-  |category       |
-  |---------------|
-  |Cases          |
+  |category       |name_to_store_statistic  |
+  |---------------|-------------------------|
+  |Cases          |Home Page Cases Count    |
 
 ## Navigate to Mutation Frequency App
 * Navigate to "Analysis" from "Header" "section"
@@ -34,6 +34,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |PTEN         |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |PTEN SSM Affected Cases in Cohort    |1    |6      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -48,15 +52,60 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Ssm Id is          |exists               |2                        |
-  |Gene               |PTEN                 |3                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+  |Ssm Id is          |exists               |3                        |
+  |Gene               |PTEN                 |4                        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "PTEN SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "PTEN SSM Affected Cases in Cohort" should be the active cohort
+
+## Genes - SSM Affected Cases in Cohort: With Active Filters
+* Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
+* "Blank - Mutation Frequency" should be the active cohort
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Consequence Type |3_prime_UTR_variant                  |
+* Search the table for "APC"
+* Wait for table body text to appear
+  |expected_text|row  |column |
+  |-------------|-----|-------|
+  |APC          |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |APC SSM Affected Cases in Cohort    |1    |6      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |6     |
+* Name the cohort "APC SSM Affected Cases in Cohort" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                          |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------|--------------------|
+  |Create           |APC SSM Affected Cases in Cohort has been created |Remove Modal        |
+* Switch cohort to "APC SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
+* "APC SSM Affected Cases in Cohort" should be the active cohort
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections           |position in filter area  |
+  |-------------------|---------------------|-------------------------|
+  |Consequence Type   |3_prime_UTR_variant  |3                        |
+  |Ssm Id is          |exists               |4                        |
+  |Gene               |APC                  |5                        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "APC SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Select "Save" from the Cohort Bar
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Save             |Cohort has been saved                      |Remove Modal        |
+* "APC SSM Affected Cases in Cohort" should be the active cohort
 
 ## Genes - CNV Gain
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
@@ -66,6 +115,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |CSMD3        |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |CSMD3 CNV Gain                       |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -80,9 +133,11 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=gain                |2                        |
-  |Gene Id            |=CSMD3               |3                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+  |Cnv Change         |=gain                |3                        |
+  |Gene Id            |=CSMD3               |4                        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -98,6 +153,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |ZFHX3        |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |ZFHX3 CNV Loss                       |1    |9      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -112,9 +171,11 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=loss                |2                        |
-  |Gene Id            |=ZFHX3               |3                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+  |Cnv Change         |=loss                |3                        |
+  |Gene Id            |=ZFHX3               |4                        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -133,6 +194,10 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text      |row  |column |
   |-------------------|-----|-------|
   |chr1:g.6197725delT |1    |4      |
+* Collect button labels in table for comparison
+  |button_label                                 |row  |column |
+  |---------------------------------------------|-----|-------|
+  |chr1:g.6197725delT Affected Cases in Cohort  |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -148,7 +213,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |facet_name         |selections                           |position in filter area  |
   |-------------------|-------------------------------------|-------------------------|
   |SSM ID             |78066279-06cf-5b55-bc10-10eeba4ec015 |2                        |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|

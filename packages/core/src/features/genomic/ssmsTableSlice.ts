@@ -10,11 +10,10 @@ import {
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
-  GqlIntersection,
   UnionOrIntersection,
   Union,
 } from "../gdcapi/filters";
-import { appendFilterToOperation } from "./utils";
+import { appendFilterToOperation, getSSMTestedCases } from "./utils";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
 import { DataStatus } from "src/dataAccess";
@@ -231,6 +230,12 @@ export interface SsmsTableState {
   readonly error?: string;
 }
 
+export interface TopSsm {
+  ssm_id: string;
+  aa_change: string;
+  consequence_type: string;
+}
+
 const generateFilter = ({
   pageSize,
   offset,
@@ -241,10 +246,6 @@ const generateFilter = ({
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
-  const gqlCohortIntersection =
-    cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
-      ? (cohortFiltersGQl as GqlIntersection).content
-      : [];
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -272,22 +273,7 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: {
-      content: [
-        ...[
-          {
-            content: {
-              field: "available_variation_data",
-              value: ["ssm"],
-            },
-            op: "in",
-          },
-        ],
-        // For case filter only use cohort filter and not genomic filter
-        ...gqlCohortIntersection,
-      ],
-      op: "and",
-    },
+    ssmCaseFilter: getSSMTestedCases(cohortFilters),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
@@ -338,6 +324,26 @@ const generateFilter = ({
 
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
+    getSsmTableData: builder.mutation<TopSsm, SsmsTableRequestParameters>({
+      query: (request: SsmsTableRequestParameters) => ({
+        graphQLQuery: SSMSTableGraphQLQuery,
+        graphQLFilters: generateFilter(request),
+      }),
+      transformResponse: (response: { data: ssmtableResponse }) => {
+        const { consequence, ssm_id } = response?.data?.viewer?.explore?.ssms
+          ?.hits?.edges?.[0]?.node ?? { consequence: {}, ssm_id: "" };
+        const { aa_change, consequence_type } = consequence?.hits?.edges?.[0]
+          ?.node?.transcript ?? { aa_change: "", consequence_type: "" };
+        return {
+          ssm_id,
+          aa_change,
+          consequence_type,
+        };
+      },
+      transformErrorResponse: (response: { status: string | number }) => {
+        return response.status;
+      },
+    }),
     getSssmTableData: builder.query({
       query: (request: SsmsTableRequestParameters) => ({
         graphQLQuery: SSMSTableGraphQLQuery,
@@ -384,5 +390,6 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
   }),
 });
 
-export const { useGetSssmTableDataQuery } = smtableslice;
+export const { useGetSssmTableDataQuery, useGetSsmTableDataMutation } =
+  smtableslice;
 export const ssmsTableReducer: Reducer = smtableslice.reducer as Reducer;

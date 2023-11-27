@@ -32,7 +32,6 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -67,7 +66,9 @@ export const ContextualCasesView: React.FC = () => {
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
-  const [cohortTableDownloadActive, setCohortTableDownloadActive] =
+  const [cohortTableJSONDownloadActive, setCohortTableJSONDownloadActive] =
+    useState(false);
+  const [cohortTableTSVDownloadActive, setCohortTableTSVDownloadActive] =
     useState(false);
   /* download active end */
 
@@ -235,8 +236,41 @@ export const ContextualCasesView: React.FC = () => {
         }
       : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
 
+  const handleTSVDownload = async () => {
+    setCohortTableTSVDownloadActive(true);
+    await download({
+      endpoint: "cases",
+      method: "POST",
+      params: {
+        attachment: true,
+        filename: `cohort.${convertDateToString(new Date())}.tsv`,
+        filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        fields: [
+          "case_id",
+          "submitter_id",
+          "primary_site",
+          "disease_type",
+          "project.project_id",
+          "project.program.name",
+          "demographic.gender",
+          "demographic.race",
+          "demographic.ethnicity",
+          "demographic.days_to_death",
+          "demographic.vital_status",
+          "diagnoses.primary_diagnosis",
+          "diagnoses.age_at_diagnosis",
+          "summary.file_count",
+          "summary.experimental_strategies.experimental_strategy",
+        ],
+        format: "tsv",
+      },
+      dispatch,
+      done: () => setCohortTableTSVDownloadActive(false),
+    });
+  };
+
   const handleJSONDownload = () => {
-    setCohortTableDownloadActive(true);
+    setCohortTableJSONDownloadActive(true);
     download({
       endpoint: "cases",
       method: "POST",
@@ -266,7 +300,7 @@ export const ContextualCasesView: React.FC = () => {
         ].join(","),
         size: caseCounts,
       },
-      done: () => setCohortTableDownloadActive(false),
+      done: () => setCohortTableJSONDownloadActive(false),
     });
   };
 
@@ -419,13 +453,17 @@ export const ContextualCasesView: React.FC = () => {
               color="primary"
               className="bg-base-max"
             >
-              {cohortTableDownloadActive ? <Loader /> : "JSON"}
+              {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
             </Button>
-            <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary" className="bg-base-max">
-                TSV
-              </Button>
-            </ButtonTooltip>
+
+            <Button
+              variant="outline"
+              color="primary"
+              className="bg-base-max"
+              onClick={handleTSVDownload}
+            >
+              {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
+            </Button>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${

@@ -92,14 +92,16 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton
-            onClick={() => {
-              clearFilters(field);
-            }}
-            aria-label="clear selection"
-          >
-            <UndoIcon size="1.15em" className={controlsIconStyle} />
-          </FacetIconButton>
+          <Tooltip label="Clear selection">
+            <FacetIconButton
+              onClick={() => {
+                clearFilters(field);
+              }}
+              aria-label="clear selection"
+            >
+              <UndoIcon size="1.15em" className={controlsIconStyle} />
+            </FacetIconButton>
+          </Tooltip>
         </div>
       </FacetHeader>
       <div className="p-2">

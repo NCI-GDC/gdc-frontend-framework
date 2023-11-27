@@ -13,16 +13,18 @@ import {
   buildCohortGqlOperator,
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
-  addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
+  getSSMTestedCases,
+  useGetSsmTableDataMutation,
 } from "@gff/core";
-import { useEffect, useState, useCallback, useContext, useMemo } from "react";
-import { Loader, LoadingOverlay, Text } from "@mantine/core";
+import { useEffect, useState, useContext, useMemo } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
+import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { filtersToName, humanify, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -40,7 +42,6 @@ import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 
 export interface SMTableContainerProps {
@@ -77,16 +78,14 @@ export interface SMTableContainerProps {
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot = {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
-
+  handleSurvivalPlotToggled = undefined,
   geneSymbol = undefined,
   projectId = undefined,
   genomicFilters = { mode: "and", root: {} },
   cohortFilters = { mode: "and", root: {} },
   caseFilter = undefined,
-  handleSsmToggled = () => null,
-  toggledSsms = [],
+  handleSsmToggled = undefined,
+  toggledSsms = undefined,
   isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
@@ -98,17 +97,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [searchTerm, setSearchTerm] = useState(
     searchTermsForGene?.geneId ?? "",
   );
-  const [
-    downloadMutationsFrequencyJSONActive,
-    setDownloadMutationsFrequencyJSONActive,
-  ] = useState(false);
+
   const [
     downloadMutationsFrequencyTSVActive,
     setDownloadMutationsFrequencyTSVActive,
   ] = useState(false);
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
-  const [mutationID, setMutationID] = useState(undefined);
   const combinedFilters = joinFilters(genomicFilters, cohortFilters);
   const geneFilter: FilterSet = {
     mode: "and",
@@ -138,19 +133,44 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     caseFilter: caseFilter,
   });
   /* SM Table Call end */
+  const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
+
+  useEffect(() => {
+    if (searchTermsForGene) {
+      const { geneId = "", geneSymbol = "" } = searchTermsForGene;
+      getTopSSM({
+        pageSize: 1,
+        offset: 0,
+        searchTerm: geneId,
+        geneSymbol: geneSymbol,
+        genomicFilters: genomicFilters,
+        cohortFilters: cohortFilters,
+        caseFilter: { mode: "", root: {} } as FilterSet,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTermsForGene, genomicFilters, cohortFilters]);
+
+  useEffect(() => {
+    if (topSSM) {
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+      handleSurvivalPlotToggled(
+        ssm_id,
+        consequence_type
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+              term: consequence_type.replace("_variant", "").replace("_", " "),
+            })}`
+          : "",
+        "gene.ssm.ssm_id",
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topSSM]);
 
   /* Create Cohort*/
-  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (response.isLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [response.isLoading]);
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const generateFilters = useCallback(
+  const generateFilters = useDeepCompareCallback(
     async (ssmId: string) => {
       return await createSet({
         filters: buildCohortGqlOperator(combinedFilters),
@@ -176,19 +196,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     },
     [combinedFilters, createSet],
   );
-
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const createCohort = async (name: string) => {
-    const mainFilter = await generateFilters(mutationID);
-    dispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: mainFilter,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
-
   /* Create Cohort end  */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
@@ -250,8 +257,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     geneSymbol,
     setEntityMetadata,
     projectId,
-    setMutationID,
-    setShowCreateCohort,
+    generateFilters,
   });
 
   const getRowId = (originalRow: SomaticMutation) => {
@@ -288,36 +294,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
-  const handleJSONDownload = () => {
-    setDownloadMutationsFrequencyJSONActive(true);
-    download({
-      endpoint: "ssms",
-      method: "POST",
-      params: {
-        filters: buildCohortGqlOperator(contextSensitiveFilters) ?? {},
-        filename: `mutations.${convertDateToString(new Date())}.json`,
-        attachment: true,
-        format: "JSON",
-        pretty: true,
-        fields: [
-          "genomic_dna_change",
-          "mutation_subtype",
-          "consequence.transcript.consequence_type",
-          "consequence.transcript.annotation.vep_impact",
-          "consequence.transcript.annotation.sift_impact",
-          "consequence.transcript.annotation.polyphen_impact",
-          "consequence.transcript.is_canonical",
-          "consequence.transcript.gene.gene_id",
-          "consequence.transcript.gene.symbol",
-          "consequence.transcript.aa_change",
-          "ssm_id",
-        ].join(","),
-      },
-      dispatch,
-      done: () => setDownloadMutationsFrequencyJSONActive(false),
-    });
-  };
-
   const handleTSVDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
 
@@ -326,7 +302,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: buildCohortGqlOperator(combinedFilters) ?? {},
+        case_filters: getSSMTestedCases(cohortFilters),
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -381,7 +357,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               </p>
             </div>
           )}
-          {loading && <LoadingOverlay visible />}
           {showSaveModal && (
             <SaveSelectionAsSetModal
               filters={buildCohortGqlOperator(setFilters)}
@@ -435,14 +410,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />
           )}
-          {showCreateCohort && (
-            <CreateCohortModal
-              onClose={() => setShowCreateCohort(false)}
-              onActionClick={(newName: string) => {
-                createCohort(newName);
-              }}
-            />
-          )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable
@@ -481,18 +448,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   zIndex={10}
                   customDataTestId="button-save-edit-mutation-set"
                 />
-                <ButtonTooltip label="Export All Except #Cases">
-                  <FunctionButton
-                    onClick={handleJSONDownload}
-                    data-testid="button-json-mutation-frequency"
-                  >
-                    {downloadMutationsFrequencyJSONActive ? (
-                      <Loader size="sm" />
-                    ) : (
-                      "JSON"
-                    )}
-                  </FunctionButton>
-                </ButtonTooltip>
+
                 {caseFilter || geneSymbol ? (
                   <ButtonTooltip label="Export current view" comingSoon={true}>
                     <FunctionButton data-testid="button-tsv-mutation-frequency">

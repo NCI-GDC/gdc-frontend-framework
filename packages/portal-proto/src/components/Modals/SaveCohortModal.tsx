@@ -12,6 +12,9 @@ import {
   useAddCohortMutation,
   fetchCohortCaseCounts,
   FilterSet,
+  setCohort,
+  buildGqlOperationToFilterSet,
+  NullCountsData,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -21,11 +24,13 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
+  setAsCurrent,
 }: {
-  initialName: string;
+  initialName?: string;
   onClose: () => void;
-  cohortId: string;
+  cohortId?: string;
   filters: FilterSet;
+  setAsCurrent?: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
@@ -46,23 +51,60 @@ const SaveCohortModal = ({
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
       .then((payload) => {
-        coreDispatch(copyCohort({ sourceId: prevCohort, destId: payload.id }));
-        // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-        // which does not exist will cause this
-        // Therefore, copy the unsaved cohort to the new cohort id received from
-        // the BE.
-        coreDispatch(
-          setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-        );
-        coreDispatch(
-          removeCohort({
-            shouldShowMessage: false,
-            currentID: prevCohort,
-          }),
-        );
-        coreDispatch(setCurrentCohortId(payload.id));
-        coreDispatch(updateCohortName(newName));
-        coreDispatch(fetchCohortCaseCounts(payload.id));
+        if (prevCohort) {
+          coreDispatch(
+            copyCohort({
+              sourceId: prevCohort,
+              destId: payload.id,
+              saved: true,
+            }),
+          );
+          // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+          // which does not exist will cause this
+          // Therefore, copy the unsaved cohort to the new cohort id received from
+          // the BE.
+          coreDispatch(
+            setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
+          );
+          coreDispatch(
+            removeCohort({
+              shouldShowMessage: false,
+              currentID: prevCohort,
+            }),
+          );
+          coreDispatch(setCurrentCohortId(payload.id));
+          coreDispatch(updateCohortName(newName));
+          coreDispatch(fetchCohortCaseCounts(payload.id));
+        } else {
+          coreDispatch(
+            setCohort({
+              id: payload.id,
+              name: payload.name,
+              filters: buildGqlOperationToFilterSet(payload.filters),
+              caseSet: { status: "uninitialized" },
+              counts: {
+                ...NullCountsData,
+              },
+              modified_datetime: payload.modified_datetime,
+              saved: true,
+              modified: false,
+            }),
+          );
+          if (setAsCurrent) {
+            coreDispatch(setCurrentCohortId(payload.id));
+            coreDispatch(
+              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+            );
+          } else {
+            coreDispatch(
+              setCohortMessage([
+                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+              ]),
+            );
+          }
+          coreDispatch(fetchCohortCaseCounts(payload.id));
+        }
+
         onClose();
       })
       .catch((e: FetchBaseQueryError) => {
@@ -99,7 +141,7 @@ const SaveCohortModal = ({
               You cannot undo this action.
             </p>
           </div>
-          <ModalButtonContainer>
+          <ModalButtonContainer data-testid="modal-button-container">
             <Button
               variant="outline"
               className={"bg-white"}
@@ -130,7 +172,7 @@ const SaveCohortModal = ({
             saveAction(name, false);
             setEnteredName(name);
           }}
-          descriptionMessage={"Provide a name to save your current cohort."}
+          descriptionMessage={"Provide a name to save the cohort."}
           closeOnAction={false}
           loading={isLoading}
         />

@@ -1,19 +1,27 @@
 import { render } from "@testing-library/react";
 import { OncoMatrixWrapper } from "./OncoMatrixWrapper";
+import { MantineProvider } from "@mantine/core";
 
 const filter = {};
 let runpparg,
   userDetails,
   isDemoMode = false;
 
+const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
+const nullFunction = () => null;
+
 jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
-  addNewCohortWithFilterAndMessage: jest.fn(() => null),
+  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
   useUserDetails: jest.fn(() => userDetails),
-  useCoreDispatch: jest.fn(() => () => null),
+  useCoreDispatch: jest.fn(() => nullFunction()),
   PROTEINPAINT_API: "host:port/basepath",
+  useCreateCaseSetFromValuesMutation: () => [
+    nullFunction,
+    resultsCreateCaseSet,
+  ],
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
@@ -29,7 +37,18 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
 }));
 
 test("OncoMatrix arguments", () => {
-  const { unmount, rerender } = render(<OncoMatrixWrapper />);
+  const { unmount, rerender } = render(
+    <MantineProvider
+      theme={{
+        colors: {
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        },
+      }}
+    >
+      <OncoMatrixWrapper />
+    </MantineProvider>,
+  );
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -39,7 +58,18 @@ test("OncoMatrix arguments", () => {
   expect(runpparg.launchGdcMatrix).toEqual(true);
   expect(runpparg.filter0).toEqual(filter);
   isDemoMode = true;
-  rerender(<OncoMatrixWrapper />);
+  rerender(
+    <MantineProvider
+      theme={{
+        colors: {
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        },
+      }}
+    >
+      <OncoMatrixWrapper />
+    </MantineProvider>,
+  );
   expect(runpparg.filter0).not.toEqual(filter);
   unmount();
 });

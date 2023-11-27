@@ -2,14 +2,19 @@ import {
   buildCreateApi,
   coreModule,
   reactHooksModule,
-} from "@reduxjs/toolkit/dist/query/react";
+  CreateApi,
+  ApiModules,
+} from "@reduxjs/toolkit/query/react";
 import { useCoreSelector, useCoreStore, useCoreDispatch } from "./hooks";
 
-export const coreCreateApi = buildCreateApi(
-  coreModule(),
-  reactHooksModule({
-    useSelector: useCoreSelector as any,
-    useStore: useCoreStore as any,
-    useDispatch: useCoreDispatch,
-  }),
-);
+const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
+  buildCreateApi(
+    coreModule(),
+    reactHooksModule({
+      useSelector: useCoreSelector as any,
+      useStore: useCoreStore as any,
+      useDispatch: useCoreDispatch,
+    }),
+  );
+
+export { coreCreateApi };

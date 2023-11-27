@@ -14,7 +14,7 @@ interface ButtonTooltipPros {
  * @param width - width of the tooltip. Default: "auto"
  * @param comingSoon - temporary flag to indicate button's functionality is pending
  */
-export const ButtonTooltip: React.FC<ButtonTooltipPros> = ({
+export const ButtonTooltip = ({
   children,
   label,
   width = "auto",

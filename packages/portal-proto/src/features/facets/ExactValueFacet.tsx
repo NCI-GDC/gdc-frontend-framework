@@ -120,23 +120,27 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton
-            onClick={() => clearFilters(field)}
-            aria-label="clear selection"
-          >
-            <UndoIcon size="1.15em" className={controlsIconStyle} />
-          </FacetIconButton>
-          {dismissCallback ? (
+          <Tooltip label="Clear selection">
             <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                dismissCallback(field);
-              }}
-              aria-label="Remove the facet"
+              onClick={() => clearFilters(field)}
+              aria-label="clear selection"
             >
-              <CloseIcon size="1.25em" className={controlsIconStyle} />
+              <UndoIcon size="1.15em" className={controlsIconStyle} />
             </FacetIconButton>
-          ) : null}
+          </Tooltip>
+          {dismissCallback && (
+            <Tooltip label="Remove the facet">
+              <FacetIconButton
+                onClick={() => {
+                  clearFilters(field);
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon size="1.25em" className={controlsIconStyle} />
+              </FacetIconButton>
+            </Tooltip>
+          )}
         </div>
       </FacetHeader>
       <div className="flex flex-nowrap items-center p-2">

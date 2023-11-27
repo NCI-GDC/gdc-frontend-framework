@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import partial from "lodash/partial";
 import { LoadingOverlay } from "@mantine/core";
@@ -52,6 +53,20 @@ export const SSMSPanel = ({
    * Get the mutations in cohort
    */
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
+  const toggledMutations = useDeepCompareMemo(
+    () => currentMutations,
+    [currentMutations],
+  );
+  const handleSsmToggled = useCallback(
+    () =>
+      partial(
+        handleGeneAndSSmToggled,
+        toggledMutations,
+        "ssms.ssm_id",
+        "mutationID",
+      ),
+    [handleGeneAndSSmToggled, toggledMutations],
+  );
 
   /* Scroll for gene search */
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
@@ -91,6 +106,7 @@ export const SSMSPanel = ({
               ? [comparativeSurvival.name]
               : []
           }
+          tableTooltip
         />
       </div>
       <div ref={targetRef}>
@@ -99,13 +115,8 @@ export const SSMSPanel = ({
           handleSurvivalPlotToggled={handleSurvivalPlotToggled}
           genomicFilters={genomicFilters}
           cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-          handleSsmToggled={partial(
-            handleGeneAndSSmToggled,
-            currentMutations,
-            "ssms.ssm_id",
-            "mutationID",
-          )}
-          toggledSsms={currentMutations}
+          handleSsmToggled={handleSsmToggled}
+          toggledSsms={toggledMutations}
           isDemoMode={isDemoMode}
           isModal={true}
           searchTermsForGene={searchTermsForGene}

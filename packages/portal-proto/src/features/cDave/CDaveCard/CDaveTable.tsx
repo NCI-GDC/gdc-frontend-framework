@@ -1,5 +1,6 @@
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
 import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { DataDimension, DisplayData, SelectedFacet } from "../types";
 import { formatPercent, useDataDimension } from "../utils";
@@ -31,8 +32,32 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   setSelectedFacets,
   dataDimension,
 }: CDaveTableProps) => {
-  const rowSelectId = `row_select_${fieldName.replaceAll(" ", "_")}`; // define row select id for aria-labelledby
   const displayDataDimension = useDataDimension(field);
+
+  const validData = useDeepCompareMemo(
+    () => displayedData.filter(({ count }) => count > 0),
+    [displayedData],
+  );
+
+  const allSelected = useDeepCompareMemo(
+    () =>
+      validData.length > 0 &&
+      validData.every(({ key }) =>
+        selectedFacets.map((facet) => facet.value).includes(key),
+      ),
+    [selectedFacets, validData],
+  );
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedFacets([]);
+    } else {
+      setSelectedFacets(
+        validData.map(({ key, count }) => ({ value: key, numCases: count })),
+      );
+    }
+  };
+
   return (
     <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
@@ -41,10 +66,17 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
       >
         <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
           <tr>
-            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
-              <span className="pl-2" id={rowSelectId}>
-                Select
-              </span>
+            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1 pl-2">
+              <Checkbox
+                color="accent"
+                size="xs"
+                aria-label={`${
+                  allSelected ? "Unselect" : "Select"
+                } all the rows of ${fieldName} table`}
+                checked={allSelected}
+                onChange={toggleSelectAll}
+                disabled={validData.length === 0}
+              />
             </th>
             {survival && (
               <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
@@ -90,7 +122,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     color="accent"
                     size="xs"
                     className="pt-1"
-                    aria-labelledby={rowSelectId}
+                    aria-label={`Select ${displayName}`}
                     disabled={count === 0}
                     checked={selectedFacets
                       .map((facet) => facet.value)
@@ -139,6 +171,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                               : "bg-base-lightest text-base-contrast-lightest"
                           } ml-2`}
                           disabled={survivalDisabled}
+                          aria-label={`Toggle survival plot for ${displayName}`}
                           onClick={() =>
                             survivalSelected
                               ? setSelectedSurvivalPlots(
