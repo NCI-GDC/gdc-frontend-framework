@@ -28,7 +28,7 @@ type DateRangeFacetProps = Omit<
 >;
 
 /**
- * Converts a date into a string of YYYY/MM/DD padding 0 for months and days < 10.
+ * Converts a date into a string of YYYY/MM/DD padding 0 for months and days \< 10.
  * @param d - date to convert
  */
 const convertDateToString = (d: Date | null): string | undefined => {

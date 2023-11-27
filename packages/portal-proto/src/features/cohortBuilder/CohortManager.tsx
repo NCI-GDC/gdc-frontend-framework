@@ -92,8 +92,6 @@ transition-colors
 
 /**
  * If removeList is empty, the function removes all params from url.
- * @param  router
- * @param  removeList
  */
 const removeQueryParamsFromRouter = (
   router: NextRouter,
@@ -120,10 +118,8 @@ const removeQueryParamsFromRouter = (
 
 /**
  * Component for selecting, adding, saving, removing, and deleting cohorts
- * @param cohorts: array of Cohort
- * @param onSelectionChanged
- * @param startingId: the selected id
- * @constructor
+ * @param cohorts - array of Cohort
+ * @param startingId - the selected id
  */
 const CohortManager: React.FC = () => {
   const [exportCohortPending, setExportCohortPending] = useState(false);

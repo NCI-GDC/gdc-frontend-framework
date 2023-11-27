@@ -84,10 +84,10 @@ interface PopupContentProps {
 
 /**
  * PopupContent is the content that appears when a user hovers over a body part
- * @param label the name of the body part
- * @param caseCount the number of cases that have data for this body part
- * @param fileCount the number of files that have data for this body part
- * @param setSize a function that sets the size of the popup
+ * @param label - the name of the body part
+ * @param caseCount - the number of cases that have data for this body part
+ * @param fileCount - the number of files that have data for this body part
+ * @param setSize - a function that sets the size of the popup
  */
 const PopupContent = ({
   label,

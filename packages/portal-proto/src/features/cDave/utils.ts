@@ -201,9 +201,8 @@ export const qnorm = (p: number): number => {
 
 /**
  * Parses response data that either be or simple object or can be nested in arrays up to two levels deep depending on the field
- * @param data response data from request
- * @param field
- * @returns flattened list of ids and values
+ * @param data - response data from request
+ * @returns - flattened list of ids and values
  */
 export const parseNestedQQResponseData = (
   data: readonly Record<string, any>[],

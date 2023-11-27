@@ -29,8 +29,8 @@ import { isEqual } from "lodash";
  * manages: as an Object where the key is the field name
  * and the value is the Filter Operation
  *
- * @member root - root Objects of all of the filters
- * @member mode: Root level set operation for the filters
+ * @param root - root Objects of all of the filters
+ * @param mode - Root level set operation for the filters
  */
 export interface FilterSet {
   readonly root: Record<string, Operation>;
@@ -124,11 +124,12 @@ export class EnumValueExtractorHandler
 /**
  * Build Cohort Gql Operator from Filter Set
  *
- * @parm {object} - FilterSet it has special code for ids with joinOrToAll that will join each or filter with all other filters as a separate and linked by an or statement
- * @returns {object} GqlOperation
+ * @param fs - FilterSet it has special code for ids with joinOrToAll that will join each or filter with all other filters as a separate and linked by an or statement
  *
  * @example
- * // Here's an example with joinOrToAll IN:
+ * Here's an example with joinOrToAll
+ * ```json
+ * //IN:
  * {
  *   "mode": "and",
  *   "root": {
@@ -205,6 +206,7 @@ export class EnumValueExtractorHandler
  *     }
  *   ]
  * }
+ * ```
  */
 export const buildCohortGqlOperator = (
   fs: FilterSet | undefined,

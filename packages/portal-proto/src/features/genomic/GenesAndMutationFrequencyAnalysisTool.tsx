@@ -102,9 +102,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * plot for the currentCohort plus whatever local filters are selected for the "top"
    * gene or mutation.
    * If comparativeSurvival is set, then it will show two separate plots.
-   * @param symbol symbol (Gene or SSMS) to compare
-   * @param name used as the label for the symbol in the Survival Plot
-   * @param field  which gene or ssms field the symbol applied to
+   * @param symbol - symbol (Gene or SSMS) to compare
+   * @param name - used as the label for the symbol in the Survival Plot
+   * @param field - which gene or ssms field the symbol applied to
    */
   const handleSurvivalPlotToggled = useDeepCompareCallback(
     (symbol: string, name: string, field: string) => {

@@ -75,7 +75,7 @@ export interface AliasedFieldQuery {
 /**
  * Builds a GraphQL request for a set of Fields. This is an improvement on the above
  * as it requested the number of GDC API requests.
- * @param facetNames - array of { facetNames, and optionally an alias}
+ * @param facetNames - array of \{ facetNames, and optionally an alias\}
  * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
  * @param index - which GraphQL index to query
  * @param useCaseFilters - whether to use case filters or not
