@@ -59,22 +59,6 @@ const transformSsmsSetResponse = (
   return response.data.sets.create.explore.ssm.set_id;
 };
 
-const createCaseSetMutation = `mutation createSet(
-  $input: CreateSetInput
-) {
-  sets {
-    create {
-      repository {
-        case(input: $input) {
-          set_id
-          size
-        }
-      }
-    }
-  }
-}
-`;
-
 const createCaseSetExploreMutation = `mutation createSet(
   $input: CreateSetInput
 ) {
@@ -147,7 +131,7 @@ export const createSetSlice = graphqlAPISlice
       }),
       createCaseSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
-          graphQLQuery: createCaseSetMutation,
+          graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {
             input: {
               filters: {
@@ -246,7 +230,7 @@ export const createSetMutationFactory = async (
       setId = transformSsmsSetResponse(response);
       break;
     case "cases.case_id":
-      response = await graphqlAPI(createCaseSetMutation, filters);
+      response = await graphqlAPI(createCaseSetExploreMutation, filters);
       setId = transformCaseSetResponse(response);
       break;
   }

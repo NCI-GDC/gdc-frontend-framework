@@ -1,7 +1,6 @@
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import partial from "lodash/partial";
 import React, { useCallback } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { emptySurvivalPlot } from "@/features/genomic/types";
@@ -53,8 +52,13 @@ export const GenesPanel = ({
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const toggledGenes = useDeepCompareMemo(() => currentGenes, [currentGenes]);
   const handleGeneToggled = useCallback(
-    () =>
-      partial(handleGeneAndSSmToggled, toggledGenes, "genes.gene_id", "geneID"),
+    (idAndSymbol: Record<string, any>) =>
+      handleGeneAndSSmToggled(
+        toggledGenes,
+        "genes.gene_id",
+        "geneID",
+        idAndSymbol,
+      ),
     [handleGeneAndSSmToggled, toggledGenes],
   );
 

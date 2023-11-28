@@ -141,7 +141,6 @@ mutation mutationsCreateRepositoryCaseSetMutation(
 }`;
 
 export interface CreateCaseSetProps {
-  readonly caseSetId?: string; // pass a caseSetId to use instead of cohort id
   readonly pendingFilters?: FilterSet;
   readonly modified?: boolean; // to control cohort modification flag
   readonly cohortId?: string; // if set update this cohort instead of the current cohort
@@ -155,7 +154,7 @@ export const createCaseSet = createAsyncThunk<
   "cohort/createCaseSet",
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async ({ caseSetId, pendingFilters = undefined, cohortId }, thunkAPI) => {
+  async ({ pendingFilters = undefined, cohortId }, thunkAPI) => {
     // select a cohort by id if passed in, otherwise use the current cohort
     const cohort = cohortId
       ? cohortSelectors.selectById(thunkAPI.getState(), cohortId)
@@ -175,7 +174,6 @@ export const createCaseSet = createAsyncThunk<
     return graphqlAPI(graphQL, {
       inputFilters: {
         filters: buildCohortGqlOperator(dividedFilters.withPrefix),
-        set_id: `genes-ssms-${caseSetId ?? cohort.id}`, // use case set id if passed in, otherwise use cohort id
       },
     });
   },
@@ -380,8 +378,6 @@ const handleFiltersForSet = createAsyncThunk<
     if (requiresCaseSet) {
       thunkAPI.dispatch(
         createCaseSet({
-          // NOTE: this will use the current cohort
-          caseSetId: currentCohort?.id,
           pendingFilters: updatedFilters,
           modified: true,
         }),
