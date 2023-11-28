@@ -104,6 +104,7 @@ export const SearchInput: React.FC = () => {
       hash: result.id,
     });
     setDropdownOpen(false);
+    setActivedescendant(undefined);
   };
 
   const toggleCategory = (selected: boolean, cat: string) => {
@@ -391,6 +392,7 @@ export const SearchInput: React.FC = () => {
                             onClick={() => clickResult(result)}
                             id={`${comboboxItemId}${index}`}
                             {...extraAttributes}
+                            aria-label={result.name}
                           >
                             <div className="p-2 leading-5">
                               <b>
