@@ -16,7 +16,7 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
+import { useFocusWithin } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
 import { SearchResult } from "minisearch";
@@ -43,9 +43,11 @@ export const SearchInput: React.FC = () => {
   const [page, setPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const ref = useClickOutside(() => {
-    setDropdownOpen(false);
-    setActivedescendant(undefined);
+  const { ref } = useFocusWithin({
+    onBlur: () => {
+      setDropdownOpen(false);
+      setActivedescendant(undefined);
+    },
   });
 
   const miniSearch = useFacetSearch();
@@ -227,8 +229,9 @@ export const SearchInput: React.FC = () => {
         aria-expanded={dropdownOpen}
         aria-controls={comboboxId}
         aria-activedescendant={
-          typeof activedescendant !== "undefined" &&
-          `${comboboxItemId}${activedescendant}`
+          typeof activedescendant === "undefined"
+            ? null
+            : `${comboboxItemId}${activedescendant}`
         }
         icon={<SearchIcon size={24} />}
         placeholder="Search"
@@ -277,40 +280,41 @@ export const SearchInput: React.FC = () => {
             </p>
           ) : (
             <>
-              <P>Related Categories</P>
-              <ul
-                className="flex flex-wrap gap-1 my-2 gap-y-0"
+              <div
                 role="group"
                 aria-label="Filter Results by Related Categories"
                 aria-controls={comboboxlistId}
               >
-                {uniq(searchResults.map((result) => result.category)).map(
-                  (cat) => {
-                    const selected = filteredCategories.includes(cat);
-                    return (
-                      <li key={cat}>
-                        <button
-                          onClick={() => toggleCategory(selected, cat)}
-                          aria-checked={selected}
-                          role="checkbox"
-                        >
-                          <Badge
-                            className={`cursor-pointer capitalize text-sm font-normal ${
-                              selected
-                                ? "text-white bg-primary-dark hover: "
-                                : "text-primary-dark border-solid border-primary-dark hover:text-white hover:bg-primary-dark"
-                            }`}
-                            color="white"
-                            leftSection={selected ? <CheckIcon /> : undefined}
+                <P>Related Categories</P>
+                <ul className="flex flex-wrap gap-1 my-2 gap-y-0">
+                  {uniq(searchResults.map((result) => result.category)).map(
+                    (cat) => {
+                      const selected = filteredCategories.includes(cat);
+                      return (
+                        <li key={cat}>
+                          <button
+                            onClick={() => toggleCategory(selected, cat)}
+                            aria-checked={selected}
+                            role="checkbox"
                           >
-                            {cat}
-                          </Badge>
-                        </button>
-                      </li>
-                    );
-                  },
-                )}
-              </ul>
+                            <Badge
+                              className={`cursor-pointer capitalize text-sm font-normal ${
+                                selected
+                                  ? "text-white bg-primary-dark hover: "
+                                  : "text-primary-dark border-solid border-primary-dark hover:text-white hover:bg-primary-dark"
+                              }`}
+                              color="white"
+                              leftSection={selected ? <CheckIcon /> : undefined}
+                            >
+                              {cat}
+                            </Badge>
+                          </button>
+                        </li>
+                      );
+                    },
+                  )}
+                </ul>
+              </div>
               <P>
                 Showing {(page - 1) * PAGE_SIZE + 1} -{" "}
                 {page * PAGE_SIZE > filteredResults.length
@@ -319,7 +323,12 @@ export const SearchInput: React.FC = () => {
                 out of {filteredResults.length} for: <b>{searchTerm}</b>
               </P>
 
-              <ul className="mb-4" id={comboboxlistId}>
+              <ul
+                className="mb-4"
+                id={comboboxlistId}
+                tabIndex={0} // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
+                aria-label={`List with ${filteredResults.length} items use arrow keys to navigate. Showing page ${page}`}
+              >
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result, index) => {
@@ -332,7 +341,7 @@ export const SearchInput: React.FC = () => {
                       activedescendant === index
                         ? {
                             $focus: true,
-                            "aria-selected": "true",
+                            "aria-selected": true,
                             ref: selectedItemRef,
                           }
                         : {};
@@ -378,9 +387,8 @@ export const SearchInput: React.FC = () => {
                           opened={activedescendant === index ? true : undefined}
                         >
                           <BtnWithHoverCallout
-                            role="option"
-                            onClick={() => clickResult(result)}
                             tabIndex={-1}
+                            onClick={() => clickResult(result)}
                             id={`${comboboxItemId}${index}`}
                             {...extraAttributes}
                           >
@@ -418,6 +426,7 @@ export const SearchInput: React.FC = () => {
                 classNames={{ control: "border-0" }}
                 getItemProps={() => ({ tabIndex: "-1" })}
                 getControlProps={() => ({ tabIndex: "-1" })}
+                aria-hidden
               />
             </>
           )}
