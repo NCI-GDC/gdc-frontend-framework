@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
-import partial from "lodash/partial";
 import { LoadingOverlay } from "@mantine/core";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import { emptySurvivalPlot } from "@/features/genomic/types";
@@ -58,12 +57,12 @@ export const SSMSPanel = ({
     [currentMutations],
   );
   const handleSsmToggled = useCallback(
-    () =>
-      partial(
-        handleGeneAndSSmToggled,
+    (idAndSymbol: Record<string, any>) =>
+      handleGeneAndSSmToggled(
         toggledMutations,
         "ssms.ssm_id",
         "mutationID",
+        idAndSymbol,
       ),
     [handleGeneAndSSmToggled, toggledMutations],
   );

@@ -903,7 +903,13 @@ const slice = createSlice({
             : divideFilterSetByPrefix(filters, REQUIRES_CASE_SET_FILTERS)
                 .withoutPrefix.root;
 
-        const caseSetIds = processCaseSetResponse(data);
+        const results = processCaseSetResponse(data);
+
+        const caseSetIds = {
+          genes: Object.values(results)[0],
+          ssms: Object.values(results)[0],
+        };
+        // console.log("caseSetIds", caseSetIds);
         const caseSetIntersection = buildCaseSetFilters(caseSetIds);
         const caseSetFilters: FilterSet = {
           mode: "and",
