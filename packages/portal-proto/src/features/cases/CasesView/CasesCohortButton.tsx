@@ -30,7 +30,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   numCases,
   fetchingCases = false,
 }: CasesCohortButtonProps) => {
-  // coreDispatch(addNewCohort())
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
@@ -56,8 +55,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                       onClick: () => {
                         if (numCases > 1) {
                           onCreateSet();
-                        } else if (numCases === 1) {
-                          console.log("");
                         }
                         setShowSaveCohort(true);
                       },
@@ -113,7 +110,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
               "cases.case_id": {
                 operator: "includes",
                 field: "cases.case_id",
-                operands: [`set_id:${response.data}`],
+                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
               },
             },
           }}
