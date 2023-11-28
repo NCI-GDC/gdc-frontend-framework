@@ -1,4 +1,3 @@
-import { flatten } from "lodash";
 import { Button } from "@mantine/core";
 import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
@@ -15,14 +14,18 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { convertDateToString } from "@/utils/date";
 import {
   CategoricalBins,
-  ContinuousCustomBinnedData,
   CustomInterval,
   DisplayData,
   NamedFromTo,
   SelectedFacet,
 } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
-import { formatPercent, isInterval, useDataDimension } from "../utils";
+import {
+  createFiltersFromSelectedValues,
+  formatPercent,
+  useDataDimension,
+} from "../utils";
+import { useMemo } from "react";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -76,54 +79,16 @@ const CardControls: React.FC<CardControlsProps> = ({
     isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
   );
 
-  const filters: FilterSet = {
-    mode: "and",
-    root: {
-      [field]: continuous
-        ? {
-            operator: "or",
-            operands: selectedFacets.map((facet) => {
-              const customBin =
-                customBinnedData &&
-                !isInterval(customBinnedData as ContinuousCustomBinnedData)
-                  ? (customBinnedData as NamedFromTo[]).find(
-                      (bin) => bin.name === facet.value,
-                    )
-                  : undefined;
-              const [from, to] = customBin
-                ? [customBin.from, customBin.to]
-                : facet.value.split("-");
-              return {
-                operator: "and",
-                operands: [
-                  {
-                    field,
-                    operator: ">=",
-                    operand: from,
-                  },
-                  {
-                    field,
-                    operator: "<",
-                    operand: to,
-                  },
-                ],
-                field,
-              };
-            }),
-          }
-        : {
-            operator: "includes",
-            operands: customBinnedData
-              ? flatten(
-                  selectedFacets.map(
-                    (facet) => customBinnedData[facet.value as string],
-                  ),
-                )
-              : selectedFacets.map((facet) => facet.value),
-            field,
-          },
-    },
-  };
+  const filters: FilterSet = useMemo(
+    () =>
+      createFiltersFromSelectedValues(
+        continuous,
+        field,
+        selectedFacets,
+        customBinnedData,
+      ),
+    [continuous, field, selectedFacets, customBinnedData],
+  );
 
   return (
     <>
