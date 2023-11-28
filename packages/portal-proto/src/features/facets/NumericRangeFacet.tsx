@@ -120,7 +120,7 @@ const ClassifyRangeType = (
 
 /**
  * Create a list of radio buttons where each line
- * represents bucket for a range > "from" <= "to"
+ * represents bucket for a range \> "from" \<= "to"
  * @param field - facet managed by this component
  * @param valueLabel - string representing the datatype of values (e.g. "Cases")
  * @param selected - which range, if any, is selected
@@ -170,6 +170,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             sortType={sortType}
             valueLabel={valueLabel}
             setSort={setSortType}
+            field={field}
           />
         </>
       ) : null}
@@ -186,10 +187,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                       rangeLabelsAndValues[b].value
               : (a, b) =>
                   sortType.direction === "dsc"
-                    ? rangeLabelsAndValues[a].from -
-                      rangeLabelsAndValues[b].from
-                    : rangeLabelsAndValues[b].from -
-                      rangeLabelsAndValues[a].from,
+                    ? rangeLabelsAndValues[b].from -
+                      rangeLabelsAndValues[a].from
+                    : rangeLabelsAndValues[a].from -
+                      rangeLabelsAndValues[b].from,
           )
           .map((rangeKey, i) => {
             return (
@@ -246,9 +247,8 @@ interface FromToProps {
  * @param changedCallback - function called when FromTo values change
  * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
  * @param useClearFilter - hook to clear (e.x. reset)  field (facet) filters
- * @param clearValues: prop set to true to clear FromTo input fields
+ * @param clearValues - prop set to true to clear FromTo input fields
  * @param useUpdateFacetFilters - hook to update facet filters with new values
- * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
   field,
@@ -835,32 +835,39 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
           </Tooltip>
           <div className="flex flex-row">
             {rangeDatatype !== "range" && (
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-label="Flip between form and chart"
-              >
-                <FlipIcon size="1.45em" className={controlsIconStyle} />
-              </FacetIconButton>
+              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
+                <FacetIconButton
+                  onClick={toggleFlip}
+                  aria-pressed={!isFacetView}
+                  aria-label="chart view"
+                >
+                  <FlipIcon size="1.45em" className={controlsIconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             )}
-            <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                setClearValues(true);
-              }}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.15em" />
-            </FacetIconButton>
-            {dismissCallback ? (
+            <Tooltip label="Clear selection">
               <FacetIconButton
                 onClick={() => {
                   clearFilters(field);
-                  dismissCallback(field);
+                  setClearValues(true);
                 }}
-                aria-label="Remove the facet"
+                aria-label="clear selection"
               >
-                <CloseIcon size="1.25em" />
+                <UndoIcon size="1.15em" />
               </FacetIconButton>
+            </Tooltip>
+            {dismissCallback ? (
+              <Tooltip label="Remove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="Remove the facet"
+                >
+                  <CloseIcon size="1.25em" />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </FacetHeader>

@@ -162,7 +162,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           </>
         )}
       </div>
-      <ButtonContainer>
+      <ButtonContainer data-testid="modal-button-container">
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>

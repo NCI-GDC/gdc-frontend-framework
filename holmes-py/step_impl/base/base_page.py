@@ -27,6 +27,7 @@ class GenericLocators:
 
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
 
+    TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
@@ -39,11 +40,14 @@ class GenericLocators:
 
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
     DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
+    DATA_TESTID_TEXT_IDENT = lambda data_testid: f'[data-testid="text-{data_testid}"]'
+    DATA_TESTID_LINK_IDENT = lambda data_testid: f'[data-testid="link-{data_testid}"]'
 
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
 
+    TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
     TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
@@ -127,6 +131,14 @@ class BasePage:
         bdd_input_int -= 1
         bdd_input_string = str(bdd_input_int)
         return bdd_input_string
+
+    def strip_string_for_comparison(self, string_to_strip):
+        """Takes a string and strips it down for comparison"""
+        # Some create filtered cohort buttons have a denominator,
+        # and we are only interested in the numerator for comparison.
+        string_to_strip = string_to_strip.split("/")[0]
+        string_to_strip = string_to_strip.replace(',', '')
+        return string_to_strip
 
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
@@ -262,6 +274,17 @@ class BasePage:
             return False
         return True
 
+    def is_message_id_text_present(self, message_id, text):
+        message_id = self.normalize_button_identifier(message_id)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(message_id)
+        try:
+            self.wait_until_locator_is_visible(locator)
+            message_text = self.get_text(locator)
+            message_text == text
+        except:
+            return False
+        return True
+
     def is_cohort_bar_case_count_present(self, case_count):
         locator = GenericLocators.COHORT_BAR_CASE_COUNT(case_count)
         try:
@@ -311,6 +334,15 @@ class BasePage:
         text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
         return self.is_visible(text_no_active_filter_locator)
 
+    def is_table_displaying_text(self, table_id, table_text):
+        table_id = self.normalize_button_identifier(table_id)
+        table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
+        try:
+            self.wait_until_locator_is_visible(table_text_locator)
+        except:
+            return False
+        return True
+
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
         self.click(locator)
@@ -332,6 +364,12 @@ class BasePage:
     def click_button_ident_a_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text with a CSS tag of 'a'"""
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
+    def click_link_data_testid(self, link_data_testid):
+        """Clicks a link with a data-testid"""
+        link_data_testid = self.normalize_button_identifier(link_data_testid)
+        locator = GenericLocators.DATA_TESTID_LINK_IDENT(link_data_testid)
         self.click(locator)
 
     def click_radio_button(self, radio_name):
@@ -407,6 +445,13 @@ class BasePage:
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
         locator = GenericLocators.SEARCH_BAR_ARIA_IDENT(aria_label)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
+    def send_text_into_text_box(self, text_to_send, text_box_id):
+        """Sends text into data-testid textbox"""
+        text_box_id = self.normalize_button_identifier(text_box_id)
+        locator = GenericLocators.TEXT_BOX_IDENT(text_box_id)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 

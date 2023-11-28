@@ -87,40 +87,30 @@ def verify_text_on_page(text, source, target_type):
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"
 
-@step("Verify the <source> is <equal_or_not_equal> to the home page count for <home_page_category>")
-def verify_counts_match_home_page_count(source, equal_or_not_equal, home_page_category):
+@step("Verify <statistic_1> and <statistic_2> are <equal_or_not_equal>")
+def verify_compared_statistics_are_equal_or_not_equal(statistic_1, statistic_2, equal_or_not_equal):
     """
-    verify_counts_match_home_page_count compares the specified home page statistic to another
-    specified statistic somewhere else in the data portal. Asserts if they are equal
-    or not equal based on spec file input.
+    verify_compared_statistics_are_equal_or_not_equal compares two previously stored statistics to one another.
+    Asserts if they are equal or not equal based on spec file input.
 
-    :param source: The function being executed to get a statistic somewhere in the data portal
+    :param statistic_1: The first statistic to compare. It is the name it is stored under in data_store.spec
+    :param statistic_2: The second statistic to compare. It is the name it is stored under in data_store.spec
     :param equal_or_not_equal: If the compared statistics should be equal or not
-    :param home_page_category: Name of the home page category we are comparing with
     :return: N/A
     """
-    sources = {
-        "Cohort Bar Case Count": APP.shared.get_cohort_bar_case_count()
-    }
+    # Get first statistic to compare
+    first_statistic_string = data_store.spec[f"{statistic_1}"]
+    first_statistic_string = APP.shared.strip_string_for_comparison(first_statistic_string)
 
-    # Get the statistic from somewhere in the data portal
-    count_from_page = sources.get(source)
-    # Turn it into an 'int' for comparison
-    count_from_page = count_from_page.replace(',', '')
-    count_from_page_int = int(count_from_page)
-
-    # From storage after previously running the test "store_home_page_data_portal_statistics"
-    # Get the category statistic from the data portal summary on the home page
-    count_from_home_page_statistics = data_store.spec[f"{home_page_category} count"]
-    # Turn it into an 'int' for comparison
-    count_from_home_page_statistics = count_from_home_page_statistics.replace(',', '')
-    count_from_home_page_statistics_int = int(count_from_home_page_statistics)
+    # Get second statistic to compare
+    second_statistic_string = data_store.spec[f"{statistic_2}"]
+    second_statistic_string = APP.shared.strip_string_for_comparison(second_statistic_string)
 
     equal_or_not_equal = equal_or_not_equal.lower()
     if equal_or_not_equal == "equal":
-        assert count_from_page_int == count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' does NOT match the home page statistic '{count_from_home_page_statistics}'"
+        assert first_statistic_string == second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does NOT match"
     elif equal_or_not_equal == "not equal":
-        assert count_from_page_int != count_from_home_page_statistics_int, f"The {source} count '{count_from_page}' matches the home page statistic '{count_from_home_page_statistics}' when they should not"
+        assert first_statistic_string != second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does match when it should NOT"
 
 @step("Close the modal")
 def close_the_modal():
@@ -133,7 +123,8 @@ def download_file_at_file_table(file:str, source:str):
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
-        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button
+        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Manage Sets": APP.manage_sets_page.click_on_download_for_set
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
@@ -163,6 +154,7 @@ def upload_file(file_name:str, extension:str, folder_name:str, source:str, butto
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
+        "Manage Sets Import": APP.manage_sets_page.click_browse_import_set
     }
     driver = WebDriver.page
     with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
@@ -286,10 +278,22 @@ def verify_table_body_tooltips_text(table):
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
 
+@step("Verify the table <table_name> is displaying this information <table>")
+def verify_table_is_displaying_text(table_name, table):
+    """Verifies the table is displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text(table_name,v[0])
+        assert is_table_text_present, f"The table '{table_name}' is NOT displaying '{v[0]}'"
+
 @step("Verify the button <button_name> is disabled")
 def verify_button_is_disabled(button_name:str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
     assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
+@step("Verify the button <button_name> is enabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled==False, f"The button '{button_name}' is disabled when it should NOT be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
@@ -348,15 +352,46 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
 
+@step("Validate the message <message_id> displays the text <expected_text>")
+def validate_message_id_text_is_present_on_the_page(message_id:str, expected_text: str):
+    """Verifies if specified data-testid message displays expected text"""
+    is_text_present = APP.shared.is_message_id_text_present(message_id, expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
 @step("Collect these data portal statistics for comparison <table>")
 def store_home_page_data_portal_statistics(table):
      """
         Stores data portal summary statistics for use in future tests.
         Pairs with the test 'verify_counts_match_home_page_count'
+
+        v[0] - The name of the home page statistic to collect
+        v[1] - The name the statistic will be stored under
      """
      for k, v in enumerate(table):
         category_statistic = APP.home_page.get_data_portal_summary_statistic(v[0])
-        data_store.spec[f"{v[0]} count"] = category_statistic
+        data_store.spec[f"{v[1]}"] = category_statistic
+
+@step("Collect button labels in table for comparison <table>")
+def store_button_labels_in_tables_for_comparison(table):
+     """
+        Stores button label text for comparison in future tests.
+        Pairs with the test 'verify_counts_match_button_label'
+
+        v[0] - The name of how the label will be stored
+        v[1] - The row of the table
+        v[2] - The column of the table
+     """
+     for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
+        data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
+
+@step("Collect Cohort Bar Case Count for comparison")
+def store_cohort_bar_case_count_for_comparison():
+     """
+        Stores current cohort bar case count for comparison in future tests.
+        Pairs with the test 'verify_counts_match_button_label'
+     """
+     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -399,10 +434,21 @@ def click_button_with_data_testid(data_testid: str):
     """Clicks specified data-testid button"""
     APP.shared.click_button_data_testid(data_testid)
 
+@step("Select button <data_testid>")
+def click_button_with_data_testid(data_testid: str):
+    """Normalizes identifier, and clicks specified data-testid button"""
+    data_testid = APP.shared.normalize_button_identifier(data_testid)
+    APP.shared.click_button_data_testid(data_testid)
+
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
     APP.shared.click_button_with_displayed_text_name(button_text_name)
+
+@step("Select the link <link_data_testid>")
+def click_link_data_testid(link_data_testid: str):
+    """Clicks a link with a data-testid"""
+    APP.shared.click_link_data_testid(link_data_testid)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
@@ -514,6 +560,11 @@ def select_table_value_by_row_column(table):
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
     APP.shared.send_text_into_search_bar(text, aria_label)
+
+@step("Enter <text> in the text box <text_box_name>")
+def send_text_into_text_box(text: str, text_box_name: str):
+    """Sends text into a data-testid text box"""
+    APP.shared.send_text_into_text_box(text, text_box_name)
 
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):

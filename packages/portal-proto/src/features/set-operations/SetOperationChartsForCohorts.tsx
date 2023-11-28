@@ -21,7 +21,7 @@ import { SetOperationsThree } from "./SetOperationsThree";
  * This component handles the case when the user has selected cohorts for set operations.
  * It will render the selection panel if the user has not selected cohorts yet.
  * Otherwise, it will render the set operations for the selected cohorts
- * @param selectedEntities: the selected cohorts
+ * @param selectedEntities - the selected cohorts
  */
 const SetOperationChartsForCohorts = ({
   selectedEntities,

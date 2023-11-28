@@ -25,7 +25,6 @@ interface FacetExpanderProps {
  * @param remainingValues - number of remaining values when compact "show 4"
  * @param isGroupExpanded - true if expanded, false if compact
  * @param onShowChanged - callback to call when the expand/compact button is clicked
- * @constructor
  */
 const FacetExpander: React.FC<FacetExpanderProps> = ({
   remainingValues,

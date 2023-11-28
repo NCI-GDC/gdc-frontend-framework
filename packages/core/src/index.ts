@@ -38,6 +38,7 @@ export * from "./features/genomic/genomicFilters";
 export * from "./features/genomic/topGenesSSMSSlice";
 export * from "./features/genomic/geneSymbolSlice";
 export * from "./features/genomic/ssmsConsequenceTableSlice";
+export * from "./features/genomic/utils";
 export * from "./features/cancerDistribution";
 export * from "./features/subrows";
 export * from "./features/tables";

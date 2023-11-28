@@ -31,19 +31,19 @@ import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 /**
  *  Enumeration facet filters handle display and selection of
  *  enumerated fields.
- * @param field filter this FacetCard manages
- * @param hooks object defining the hooks required by this facet component
- * @param valueLabel label for the values column (e.g. "Cases" "Projects")
- * @param description describes information about the facet
- * @param facetName name of the Facet in human-readable form
- * @param showSearch if the search icon show be displayed
- * @param showFlip if the flip icon should be displayed
- * @param startShowingData set = false to show the chart by default
- * @param showPercent show the percentage
- * @param hideIfEmpty if facet has no data, do not render
- * @param dismissCallback if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
- * @param width set the width of the facet
- * @param header object containing the components to use for the header
+ * @param field - filter this FacetCard manages
+ * @param hooks - object defining the hooks required by this facet component
+ * @param valueLabel - label for the values column (e.g. "Cases" "Projects")
+ * @param description - describes information about the facet
+ * @param facetName - name of the Facet in human-readable form
+ * @param showSearch - if the search icon show be displayed
+ * @param showFlip - if the flip icon should be displayed
+ * @param startShowingData - set = false to show the chart by default
+ * @param showPercent - show the percentage
+ * @param hideIfEmpty - if facet has no data, do not render
+ * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
+ * @param width - set the width of the facet
+ * @param header - object containing the components to use for the header
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
@@ -69,7 +69,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState<SortType>({
     type: "alpha",
-    direction: "dsc",
+    direction: "asc",
   });
   const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
@@ -220,11 +220,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             .sort(
               sortType.type === "value"
                 ? ([, a], [, b]) =>
-                    sortType.direction === "dsc" ? a - b : b - a
+                    sortType.direction === "dsc" ? b - a : a - b
                 : ([a], [b]) =>
                     sortType.direction === "dsc"
-                      ? a.localeCompare(b)
-                      : b.localeCompare(a),
+                      ? b.localeCompare(a)
+                      : a.localeCompare(b),
             )
             .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
         ),
@@ -264,34 +264,43 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           </Tooltip>
           <div className="flex flex-row">
             {showSearch ? (
-              <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                <SearchIcon size="1.45em" className={header.iconStyle} />
-              </FacetIconButton>
+              <Tooltip label="Search values">
+                <FacetIconButton onClick={toggleSearch} aria-label="Search">
+                  <SearchIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
             {showFlip ? (
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-label="Flip between form and chart"
-              >
-                <FlipIcon size="1.45em" className={header.iconStyle} />
-              </FacetIconButton>
+              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
+                <FacetIconButton
+                  onClick={toggleFlip}
+                  aria-pressed={!isFacetView}
+                  aria-label="chart view"
+                >
+                  <FlipIcon size="1.45em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
-            <FacetIconButton
-              onClick={() => clearFilters(field)}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.25em" className={header.iconStyle} />
-            </FacetIconButton>
-            {dismissCallback ? (
+            <Tooltip label="Clear selection">
               <FacetIconButton
-                onClick={() => {
-                  clearFilters(field);
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
+                onClick={() => clearFilters(field)}
+                aria-label="clear selection"
               >
-                <CloseIcon size="1.25em" className={header.iconStyle} />
+                <UndoIcon size="1.25em" className={header.iconStyle} />
               </FacetIconButton>
+            </Tooltip>
+            {dismissCallback ? (
+              <Tooltip label="Remove the facet">
+                <FacetIconButton
+                  onClick={() => {
+                    clearFilters(field);
+                    dismissCallback(field);
+                  }}
+                  aria-label="remove the facet"
+                >
+                  <CloseIcon size="1.25em" className={header.iconStyle} />
+                </FacetIconButton>
+              </Tooltip>
             ) : null}
           </div>
         </header.Panel>
@@ -334,6 +343,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 sortType={sortType}
                 valueLabel={valueLabel}
                 setSort={setSortType}
+                field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
               <div className={facetChartData.cardStyle}>
