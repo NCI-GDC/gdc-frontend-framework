@@ -209,7 +209,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           }
         });
     },
-    [contextFilters, createSet, isGene],
+    [createSet, isGene],
   );
 
   const createCNVGainLossFilters = useCallback(
@@ -448,12 +448,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     ],
     [
       cancerDistributionTableColumnHelper,
-      expandedColumnId,
-      id,
       isGene,
+      expandedColumnId,
       symbol,
-      createCNVGainLossFilters,
       createSSMAffectedFilters,
+      id,
+      contextFilters,
+      genomicFilters,
+      createCNVGainLossFilters,
     ],
   );
 
