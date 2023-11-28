@@ -47,7 +47,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
 }: CancerDistributionTableProps) => {
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const contextFilters = processFilters(genomicFilters, cohortFilters);
+  const contextFilters = useDeepCompareMemo(
+    () => processFilters(genomicFilters, cohortFilters),
+    [cohortFilters, genomicFilters],
+  );
 
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -145,7 +148,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   );
 
   const createSSMAffectedFilters = useCallback(
-    async (project: string, id: string): Promise<FilterSet> => {
+    async (
+      project: string,
+      id: string,
+      contextFilters: FilterSet,
+      genomicFilters: FilterSet = undefined,
+    ): Promise<FilterSet> => {
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
       })
@@ -174,6 +182,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   field: "ssms.ssm_id",
                   operator: "exists",
                 },
+                ...genomicFilters?.root,
               },
             };
           } else {
@@ -204,7 +213,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   );
 
   const createCNVGainLossFilters = useCallback(
-    async (project: string, filter: "Loss" | "Gain"): Promise<FilterSet> => {
+    async (
+      project: string,
+      filter: "Loss" | "Gain",
+      contextFilters: FilterSet,
+      genomicFilters: FilterSet = undefined,
+    ): Promise<FilterSet> => {
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
       })
@@ -233,11 +247,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 operator: "=",
                 operand: filter,
               },
+              ...genomicFilters?.root,
             },
           };
         });
     },
-    [contextFilters, createSet, id],
+    [createSet, id],
   );
 
   const cancerDistributionTableColumns = useDeepCompareMemo(
@@ -289,7 +304,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           <CohortCreationButton
             numCases={row.original.ssm_affected_cases.numerator || 0}
             filtersCallback={async () =>
-              createSSMAffectedFilters(row.original.project, id)
+              createSSMAffectedFilters(
+                row.original.project,
+                id,
+                contextFilters,
+                genomicFilters,
+              )
             }
             label={
               <NumeratorDenominator
@@ -329,7 +349,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 <CohortCreationButton
                   numCases={row.original.cnv_gains.numerator || 0}
                   filtersCallback={async () =>
-                    createCNVGainLossFilters(row.original.project, "Gain")
+                    createCNVGainLossFilters(
+                      row.original.project,
+                      "Gain",
+                      contextFilters,
+                      genomicFilters,
+                    )
                   }
                   label={
                     <NumeratorDenominator
@@ -367,7 +392,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 <CohortCreationButton
                   numCases={row.original.cnv_losses.numerator || 0}
                   filtersCallback={async () =>
-                    createCNVGainLossFilters(row.original.project, "Loss")
+                    createCNVGainLossFilters(
+                      row.original.project,
+                      "Loss",
+                      contextFilters,
+                      genomicFilters,
+                    )
                   }
                   label={
                     <NumeratorDenominator
