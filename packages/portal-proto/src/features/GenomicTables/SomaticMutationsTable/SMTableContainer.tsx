@@ -164,13 +164,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-  }, [
-    data,
-    searchTerm,
-    topSSM,
-    handleSurvivalPlotToggled,
-    searchTermsForGene?.geneSymbol,
-  ]);
+  }, [topSSM, handleSurvivalPlotToggled, searchTermsForGene?.geneSymbol]);
 
   useDeepCompareEffect(() => {
     if (
