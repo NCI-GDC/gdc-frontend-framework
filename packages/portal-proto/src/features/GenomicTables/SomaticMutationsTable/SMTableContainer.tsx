@@ -116,12 +116,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   ] = useState(false);
 
   const [
-    downloadMutationsFrequencyTSVGeneActive,
-    setDownloadMutationsFrequencyTSVGeneActive,
-  ] = useState(false);
-  const [
-    downloadMutationsFrequencyTSVCaseActive,
-    setDownloadMutationsFrequencyTSVCaseActive,
+    downloadMutationsFrequencyTSVGeneCaseActive,
+    setDownloadMutationsFrequencyTSVGeneCaseActive,
   ] = useState(false);
 
   const dispatch = useCoreDispatch();
@@ -340,7 +336,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       : contextSensitiveFilters;
 
   const handleTSVGeneDownload = () => {
-    setDownloadMutationsFrequencyTSVGeneActive(true);
+    setDownloadMutationsFrequencyTSVGeneCaseActive(true);
     download({
       endpoint: "/analysis/top_ssms_by_gene",
       method: "POST",
@@ -352,12 +348,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
       dispatch,
-      done: () => setDownloadMutationsFrequencyTSVGeneActive(false),
+      done: () => setDownloadMutationsFrequencyTSVGeneCaseActive(false),
     });
   };
 
   const handleTSVCaseDownload = () => {
-    setDownloadMutationsFrequencyTSVCaseActive(true);
+    setDownloadMutationsFrequencyTSVGeneCaseActive(true);
     download({
       endpoint: "/analysis/top_ssms_by_case",
       method: "POST",
@@ -367,7 +363,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
       dispatch,
-      done: () => setDownloadMutationsFrequencyTSVCaseActive(false),
+      done: () => setDownloadMutationsFrequencyTSVGeneCaseActive(false),
     });
   };
 
@@ -542,8 +538,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
                     }
                   >
-                    {downloadMutationsFrequencyTSVCaseActive ||
-                    downloadMutationsFrequencyTSVGeneActive ? (
+                    {downloadMutationsFrequencyTSVGeneCaseActive ? (
                       <Loader size="sm" />
                     ) : (
                       "TSV"
