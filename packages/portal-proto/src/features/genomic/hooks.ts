@@ -186,7 +186,7 @@ export const useGenesFacets = (
  * returns the values of a field. Assumes required field
  * is of type Includes. Returns an empty array if filter is undefined or not
  * of type Includes.
- * @param field to get values of
+ * @param field - to get values of
  */
 export const useSelectFilterContent = (field: string): Array<string> => {
   const filter = useCoreSelector((state) =>

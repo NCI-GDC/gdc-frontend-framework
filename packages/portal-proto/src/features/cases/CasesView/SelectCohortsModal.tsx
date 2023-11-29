@@ -1,19 +1,17 @@
 import FunctionButton from "@/components/FunctionButton";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
   useCoreSelector,
   selectAvailableCohorts,
   FilterSet,
-  addNewCohortWithFilterAndMessage,
-  useCoreDispatch,
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
   graphqlAPI,
 } from "@gff/core";
-import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
+import { Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -32,12 +30,14 @@ export const SelectCohortsModal = ({
   withOrWithoutCohort: WithOrWithoutCohortType;
   pickedCases: readonly string[];
 }): JSX.Element => {
-  const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [checkedValue, setCheckedValue] = useState("");
   const cohortFilter = useCoreSelector((state) =>
     selectCohortFilterSetById(state, checkedValue),
   );
+  const [saveCohortFilters, setSaveCohortFilters] = useState<
+    FilterSet | undefined
+  >(undefined);
   const [loading, setLoading] = useState(false);
 
   const isWithCohort = withOrWithoutCohort === "with";
@@ -95,7 +95,7 @@ export const SelectCohortsModal = ({
     }
   };
 
-  const createCohortFromCases = async (customName: string) => {
+  const createCohortFromCases = async () => {
     let resCases: string[];
     setLoading(true);
 
@@ -153,7 +153,7 @@ export const SelectCohortsModal = ({
     );
     const setId = response.data.sets.create.repository.case.set_id;
 
-    const pickedCasesfilters: FilterSet = {
+    setSaveCohortFilters({
       mode: "and",
       root: {
         "cases.case_id": {
@@ -162,89 +162,80 @@ export const SelectCohortsModal = ({
           operands: [`set_id:${setId}`],
         },
       },
-    };
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: pickedCasesfilters,
-        message: "newCasesCohort",
-        name: customName,
-      }),
-    );
+    });
     setLoading(false);
   };
 
-  const title = `create new cohort: existing cohort ${
+  const title = `save new cohort: existing cohort ${
     isWithCohort ? "with" : "without"
   } selected cases`;
 
-  const description = `Select an existing cohort, then click Submit. This will create a new
+  const description = `Select an existing cohort, then click Submit. This will save a new
     cohort that contains all the cases from your selected cohort ${
       isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
-  const [showCreateCohort, setShowCreateCohorts] = useState(false);
+  const [showSaveCohort, setShowSaveCohorts] = useState(false);
   return (
     <>
-      {loading ? (
-        <LoadingOverlay data-testid="loading-spinner" visible />
-      ) : (
-        <Modal
-          opened={opened}
-          onClose={onClose}
-          withCloseButton
-          title={title}
-          classNames={{
-            content: "p-0 drop-shadow-lg",
-            body: "flex flex-col justify-between min-h-[300px]",
-          }}
-          size="xl"
-          zIndex={400}
+      <Modal
+        opened={opened}
+        onClose={onClose}
+        withCloseButton
+        title={title}
+        classNames={{
+          content: "p-0 drop-shadow-lg",
+          body: "flex flex-col justify-between min-h-[300px]",
+        }}
+        size="xl"
+        zIndex={400}
+      >
+        {showSaveCohort && (
+          <SaveCohortModal
+            onClose={() => {
+              setShowSaveCohorts(false);
+              onClose();
+            }}
+            filters={saveCohortFilters}
+          />
+        )}
+
+        <div className="px-4">
+          <Text className="text-xs mb-4 block">{description}</Text>
+
+          <VerticalTable
+            data={displayedData}
+            columns={cohortListTableColumn}
+            status="fulfilled"
+            pagination={{
+              page,
+              pages,
+              size,
+              from,
+              total,
+              label: "cohorts",
+            }}
+            handleChange={handleChange}
+            disablePageSize={true}
+          />
+        </div>
+        <div
+          data-testid="modal-button-container"
+          className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
         >
-          {showCreateCohort && (
-            <CreateCohortModal
-              onClose={() => setShowCreateCohorts(false)}
-              onActionClick={async (newName: string) => {
-                await createCohortFromCases(newName);
-                onClose();
-              }}
-            />
-          )}
-
-          <div className="px-4">
-            <Text className="text-xs mb-4 block">{description}</Text>
-
-            <VerticalTable
-              data={displayedData}
-              columns={cohortListTableColumn}
-              status="fulfilled"
-              pagination={{
-                page,
-                pages,
-                size,
-                from,
-                total,
-                label: "cohorts",
-              }}
-              handleChange={handleChange}
-              disablePageSize={true}
-            />
-          </div>
-          <div
-            data-testid="modal-button-container"
-            className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
+          <FunctionButton onClick={onClose}>Cancel</FunctionButton>
+          <DarkFunctionButton
+            disabled={!checkedValue}
+            loading={loading}
+            onClick={async () => {
+              await createCohortFromCases();
+              setShowSaveCohorts(true);
+            }}
           >
-            <FunctionButton onClick={onClose}>Cancel</FunctionButton>
-            <DarkFunctionButton
-              disabled={!checkedValue}
-              onClick={() => {
-                setShowCreateCohorts(true);
-              }}
-            >
-              Submit
-            </DarkFunctionButton>
-          </div>
-        </Modal>
-      )}
+            Submit
+          </DarkFunctionButton>
+        </div>
+      </Modal>
     </>
   );
 };

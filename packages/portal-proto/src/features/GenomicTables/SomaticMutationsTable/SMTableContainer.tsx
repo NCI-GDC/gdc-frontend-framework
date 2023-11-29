@@ -13,13 +13,13 @@ import {
   buildCohortGqlOperator,
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
-  addNewCohortWithFilterAndMessage,
   GDCSsmsTable,
   getSSMTestedCases,
   useGetSsmTableDataMutation,
 } from "@gff/core";
-import { useEffect, useState, useCallback, useContext, useMemo } from "react";
-import { Loader, LoadingOverlay, Text } from "@mantine/core";
+import { useEffect, useState, useContext, useMemo } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
+import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -41,7 +41,6 @@ import {
 import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 
 export interface SMTableContainerProps {
@@ -86,16 +85,14 @@ export interface SMTableContainerProps {
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   selectedSurvivalPlot = {},
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleSurvivalPlotToggled = (_1: string, _2: string, _3: string) => null,
-
+  handleSurvivalPlotToggled = undefined,
   geneSymbol = undefined,
   projectId = undefined,
   genomicFilters = { mode: "and", root: {} },
   cohortFilters = { mode: "and", root: {} },
   caseFilter = undefined,
-  handleSsmToggled = () => null,
-  toggledSsms = [],
+  handleSsmToggled = undefined,
+  toggledSsms = undefined,
   isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
@@ -115,14 +112,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setDownloadMutationsFrequencyTSVActive,
   ] = useState(false);
 
-  const [
-    downloadMutationsFrequencyTSVGeneCaseActive,
-    setDownloadMutationsFrequencyTSVGeneCaseActive,
-  ] = useState(false);
-
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
-  const [mutationID, setMutationID] = useState(undefined);
   const combinedFilters = joinFilters(genomicFilters, cohortFilters);
   const geneFilter: FilterSet = {
     mode: "and",
@@ -187,17 +178,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [topSSM]);
 
   /* Create Cohort*/
-  const [createSet, response] = useCreateCaseSetFromFiltersMutation();
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (response.isLoading) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [response.isLoading]);
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const generateFilters = useCallback(
+  const generateFilters = useDeepCompareCallback(
     async (ssmId: string) => {
       return await createSet({
         filters: buildCohortGqlOperator(combinedFilters),
@@ -223,19 +206,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     },
     [combinedFilters, createSet],
   );
-
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-  const createCohort = async (name: string) => {
-    const mainFilter = await generateFilters(mutationID);
-    dispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: mainFilter,
-        name,
-        message: "newCasesCohort",
-      }),
-    );
-  };
-
   /* Create Cohort end  */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
@@ -297,8 +267,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     geneSymbol,
     setEntityMetadata,
     projectId,
-    setMutationID,
-    setShowCreateCohort,
+    generateFilters,
   });
 
   const getRowId = (originalRow: SomaticMutation) => {
@@ -336,7 +305,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       : contextSensitiveFilters;
 
   const handleTSVGeneDownload = () => {
-    setDownloadMutationsFrequencyTSVGeneCaseActive(true);
+    setDownloadMutationsFrequencyTSVActive(true);
     download({
       endpoint: "/analysis/top_ssms_by_gene",
       method: "POST",
@@ -348,12 +317,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
       dispatch,
-      done: () => setDownloadMutationsFrequencyTSVGeneCaseActive(false),
+      done: () => setDownloadMutationsFrequencyTSVActive(false),
     });
   };
 
   const handleTSVCaseDownload = () => {
-    setDownloadMutationsFrequencyTSVGeneCaseActive(true);
+    setDownloadMutationsFrequencyTSVActive(true);
     download({
       endpoint: "/analysis/top_ssms_by_case",
       method: "POST",
@@ -363,7 +332,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
       dispatch,
-      done: () => setDownloadMutationsFrequencyTSVGeneCaseActive(false),
+      done: () => setDownloadMutationsFrequencyTSVActive(false),
     });
   };
 
@@ -430,7 +399,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               </p>
             </div>
           )}
-          {loading && <LoadingOverlay visible />}
           {showSaveModal && (
             <SaveSelectionAsSetModal
               filters={buildCohortGqlOperator(setFilters)}
@@ -484,14 +452,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               removeFromSetHook={useRemoveFromSsmSetMutation}
             />
           )}
-          {showCreateCohort && (
-            <CreateCohortModal
-              onClose={() => setShowCreateCohort(false)}
-              onActionClick={(newName: string) => {
-                createCohort(newName);
-              }}
-            />
-          )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable
@@ -538,7 +498,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
                     }
                   >
-                    {downloadMutationsFrequencyTSVGeneCaseActive ? (
+                    {downloadMutationsFrequencyTSVActive ? (
                       <Loader size="sm" />
                     ) : (
                       "TSV"

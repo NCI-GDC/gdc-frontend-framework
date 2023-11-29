@@ -120,7 +120,7 @@ const ClassifyRangeType = (
 
 /**
  * Create a list of radio buttons where each line
- * represents bucket for a range > "from" <= "to"
+ * represents bucket for a range \> "from" \<= "to"
  * @param field - facet managed by this component
  * @param valueLabel - string representing the datatype of values (e.g. "Cases")
  * @param selected - which range, if any, is selected
@@ -247,9 +247,8 @@ interface FromToProps {
  * @param changedCallback - function called when FromTo values change
  * @param units - string representation of unit: "days" | "years" | "year", "percent" | "numeric"
  * @param useClearFilter - hook to clear (e.x. reset)  field (facet) filters
- * @param clearValues: prop set to true to clear FromTo input fields
+ * @param clearValues - prop set to true to clear FromTo input fields
  * @param useUpdateFacetFilters - hook to update facet filters with new values
- * @constructor
  */
 const FromTo: React.FC<FromToProps> = ({
   field,

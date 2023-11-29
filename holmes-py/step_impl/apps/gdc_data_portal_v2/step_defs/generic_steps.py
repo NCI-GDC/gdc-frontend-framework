@@ -123,7 +123,8 @@ def download_file_at_file_table(file:str, source:str):
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
-        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button
+        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Manage Sets": APP.manage_sets_page.click_on_download_for_set
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
@@ -277,10 +278,22 @@ def verify_table_body_tooltips_text(table):
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
 
+@step("Verify the table <table_name> is displaying this information <table>")
+def verify_table_is_displaying_text(table_name, table):
+    """Verifies the table is displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text(table_name,v[0])
+        assert is_table_text_present, f"The table '{table_name}' is NOT displaying '{v[0]}'"
+
 @step("Verify the button <button_name> is disabled")
 def verify_button_is_disabled(button_name:str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
     assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
+@step("Verify the button <button_name> is enabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled==False, f"The button '{button_name}' is disabled when it should NOT be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
@@ -421,6 +434,12 @@ def click_button_with_data_testid(data_testid: str):
     """Clicks specified data-testid button"""
     APP.shared.click_button_data_testid(data_testid)
 
+@step("Select button <data_testid>")
+def click_button_with_data_testid(data_testid: str):
+    """Normalizes identifier, and clicks specified data-testid button"""
+    data_testid = APP.shared.normalize_button_identifier(data_testid)
+    APP.shared.click_button_data_testid(data_testid)
+
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
@@ -541,6 +560,11 @@ def select_table_value_by_row_column(table):
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
     APP.shared.send_text_into_search_bar(text, aria_label)
+
+@step("Enter <text> in the text box <text_box_name>")
+def send_text_into_text_box(text: str, text_box_name: str):
+    """Sends text into a data-testid text box"""
+    APP.shared.send_text_into_text_box(text, text_box_name)
 
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):

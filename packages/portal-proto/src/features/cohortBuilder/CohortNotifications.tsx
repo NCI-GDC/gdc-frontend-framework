@@ -19,6 +19,18 @@ export const NewCohortNotification: React.FC<CohortNotificationProps> = ({
   );
 };
 
+export const SavedCohortNotification: React.FC<CohortNotificationProps> = ({
+  cohortName,
+}: CohortNotificationProps) => {
+  return (
+    <>
+      <p>
+        <b>{cohortName}</b> has been saved. This is now your current cohort.
+      </p>
+    </>
+  );
+};
+
 export interface CohortWithSetOptionNotificationProps
   extends CohortNotificationProps {
   readonly cohortId: string;
@@ -47,6 +59,29 @@ export const NewCohortNotificationWithSetAsCurrent: React.FC<
   );
 };
 
+export const SavedCohortNotificationWithSetAsCurrent: React.FC<
+  CohortWithSetOptionNotificationProps
+> = ({ cohortName, cohortId }: CohortWithSetOptionNotificationProps) => {
+  const coreDispatch = useCoreDispatch();
+
+  return (
+    <>
+      <p>
+        <b>{cohortName}</b> has been saved.
+        <Button
+          variant="white"
+          onClick={() => {
+            coreDispatch(setActiveCohort(cohortId));
+            cleanNotifications();
+          }}
+        >
+          Set this as your current cohort.
+        </Button>
+      </p>
+    </>
+  );
+};
+
 export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
   cohortName,
 }: CohortNotificationProps) => {
@@ -59,7 +94,7 @@ export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
   );
 };
 
-export const SavedCohortNotification: React.FC = () => {
+export const SavedCurrentCohortNotification: React.FC = () => {
   return (
     <>
       <p>Cohort has been saved.</p>
