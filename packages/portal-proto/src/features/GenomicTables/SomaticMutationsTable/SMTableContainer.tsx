@@ -167,7 +167,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-  }, [data, searchTerm, previousSearchTerm, topSSM, previousTopSSM]);
+  }, [
+    data,
+    searchTerm,
+    previousSearchTerm,
+    topSSM,
+    previousTopSSM,
+    handleSurvivalPlotToggled,
+    searchTermsForGene?.geneSymbol,
+  ]);
 
   useEffect(() => {
     if (
@@ -189,7 +197,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-  }, [selectedSurvivalPlot, data?.ssms, topSSM]);
+  }, [
+    selectedSurvivalPlot,
+    previousSelectedSurvivalPlot,
+    data?.ssms,
+    topSSM,
+    searchTerm,
+    previousSearchTerm,
+    handleSurvivalPlotToggled,
+    searchTermsForGene?.geneSymbol,
+  ]);
 
   /* Create Cohort*/
   const [createSet] = useCreateCaseSetFromFiltersMutation();
