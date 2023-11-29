@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 /**
  * Debugging utility hook for figuring out why a component or hook is rendering/changing. Prints
  * out the properties that changed. Credit: https://stackoverflow.com/a/51082563
- * @param props
+ * @param props - The props to check for changes
  */
 const useTraceUpdate = (props: any) => {
   const prev = useRef(props);
