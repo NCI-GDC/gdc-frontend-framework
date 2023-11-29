@@ -141,7 +141,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const previousSearchTerm = usePrevious(searchTerm);
   const previousTopSSM = usePrevious(topSSM);
   const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
-
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -159,10 +158,34 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
   useEffect(() => {
+    if (!isEqual(topSSM, previousTopSSM) && topSSM) {
+      console.log(
+        "huh",
+        topSSM,
+        selectedSurvivalPlot,
+        previousSelectedSurvivalPlot,
+      );
+      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+      handleSurvivalPlotToggled(
+        ssm_id,
+        consequence_type
+          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+              term: consequence_type.replace("_variant", "").replace("_", " "),
+            })}`
+          : "",
+        "gene.ssm.ssm_id",
+      );
+    }
+  }, [data, searchTerm, previousSearchTerm, topSSM, previousTopSSM]);
+
+  useEffect(() => {
     if (
-      (!isEqual(topSSM, previousTopSSM) ||
-        !isEqual(searchTerm, previousSearchTerm)) &&
-      topSSM
+      topSSM &&
+      !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
+      isEqual(searchTerm, previousSearchTerm) &&
+      !data?.ssms
+        .map(({ ssm_id }) => ssm_id)
+        .includes(selectedSurvivalPlot.symbol)
     ) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
@@ -175,50 +198,119 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         "gene.ssm.ssm_id",
       );
     }
-  }, [topSSM, previousTopSSM, searchTerm, previousSearchTerm]);
+  }, [selectedSurvivalPlot, data?.ssms, topSSM]);
 
-  useEffect(() => {
-    if (
-      data?.ssms &&
-      topSSM &&
-      (isEqual(topSSM, previousTopSSM) ||
-        !isEqual(searchTerm, previousSearchTerm)) &&
-      !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot)
-    ) {
-      if (
-        !data.ssms
-          .map(({ ssm_id }) => ssm_id)
-          .includes(selectedSurvivalPlot.symbol)
-      ) {
-        if (searchTerm !== searchTermsForGene.geneSymbol) {
-          getTopSSM({
-            pageSize: 1,
-            offset: 0,
-            searchTerm: searchTerm,
-            geneSymbol: searchTermsForGene.geneSymbol,
-            genomicFilters: genomicFilters,
-            cohortFilters: cohortFilters,
-            caseFilter: caseFilter,
-          });
-        } else {
-          const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-          handleSurvivalPlotToggled(
-            ssm_id,
-            consequence_type
-              ? `${
-                  searchTermsForGene?.geneSymbol ?? ""
-                } ${aa_change} ${humanify({
-                  term: consequence_type
-                    .replace("_variant", "")
-                    .replace("_", " "),
-                })}`
-              : "",
-            "gene.ssm.ssm_id",
-          );
-        }
-      }
-    }
-  }, [selectedSurvivalPlot, previousSelectedSurvivalPlot, topSSM, data]);
+  // useEffect(() => {
+  //   if (topSSM && isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) && !isEqual(topSSM, previousTopSSM)) {
+  //     const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+  //     handleSurvivalPlotToggled(
+  //       ssm_id,
+  //       consequence_type
+  //         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+  //           term: consequence_type.replace("_variant", "").replace("_", " "),
+  //         })}`
+  //         : "",
+  //       "gene.ssm.ssm_id",
+  //     );
+  //   }
+  // }, [topSSM, searchTerm, previousSearchTerm, previousSelectedSurvivalPlot, selectedSurvivalPlot]);
+
+  // useEffect(() => {
+  //   if (searchTermsForGene) {
+  //     const { geneId = "", geneSymbol = "" } = searchTermsForGene;
+  //     getTopSSM({
+  //       pageSize: 1,
+  //       offset: 0,
+  //       searchTerm: geneId,
+  //       geneSymbol: geneSymbol,
+  //       genomicFilters: genomicFilters,
+  //       cohortFilters: cohortFilters,
+  //       caseFilter: caseFilter,
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
+
+  // useEffect(() => {
+  //   if (
+  //     !isEqual(topSSM, previousTopSSM) &&
+  //     topSSM
+  //   ) {
+  //     const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+  //     handleSurvivalPlotToggled(
+  //       ssm_id,
+  //       consequence_type
+  //         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+  //           term: consequence_type.replace("_variant", "").replace("_", " "),
+  //         })}`
+  //         : "",
+  //       "gene.ssm.ssm_id",
+  //     );
+  //   }
+  // }, [topSSM, previousTopSSM, searchTerm, previousSearchTerm]);
+
+  // useEffect(() => {
+  //   if (
+  //     data?.ssms &&
+  //     topSSM &&
+  //     !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot)
+  //   ) {
+  //     if (
+  //       (!data.ssms
+  //         .map(({ ssm_id }) => ssm_id)
+  //         .includes(selectedSurvivalPlot.symbol))
+  //     ) {
+  //       console.log('data.ssms', data.ssms, 'topSSM', topSSM, 'previousTopSSM', previousTopSSM);
+  //       console.log('searchTerm', searchTerm, 'previousSearchTerm', previousSearchTerm);
+  //       if (searchTerm !== searchTermsForGene.geneSymbol) {
+  //       getTopSSM({
+  //         pageSize: 1,
+  //         offset: 0,
+  //         searchTerm: searchTerm,
+  //         geneSymbol: searchTermsForGene.geneSymbol,
+  //         genomicFilters: genomicFilters,
+  //         cohortFilters: cohortFilters,
+  //         caseFilter: caseFilter,
+  //       });
+  //       } else {
+  //         console.log('hi', topSSM, 'data', data);
+  //         const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+  //         handleSurvivalPlotToggled(
+  //           ssm_id,
+  //           consequence_type
+  //             ? `${
+  //                 searchTermsForGene?.geneSymbol ?? ""
+  //               } ${aa_change} ${humanify({
+  //                 term: consequence_type
+  //                   .replace("_variant", "")
+  //                   .replace("_", " "),
+  //               })}`
+  //             : "",
+  //           "gene.ssm.ssm_id",
+  //         );
+  //       }
+  //     }
+  //   }
+  // }, [selectedSurvivalPlot, previousSelectedSurvivalPlot, topSSM, data]);
+
+  // useEffect(() => {
+  //   if (data?.ssms && topSSM?.ssm_id !== data?.ssms?.[0]?.ssm_id && !isEqual(searchTerm, previousSearchTerm)) {
+  //     const { ssms } = data;
+  //     handleSurvivalPlotToggled(
+  //       ssms[0].ssm_id,
+  //       ssms[0].consequence[0].transcript.consequence_type
+  //         ? `${
+  //             searchTermsForGene?.geneSymbol ?? ""
+  //           } ${ssms[0].consequence[0].transcript.aa_change} ${humanify({
+  //             term: ssms[0].consequence[0].transcript.consequence_type
+  //               .replace("_variant", "")
+  //               .replace("_", " "),
+  //           })}`
+  //         : "",
+  //       "gene.ssm.ssm_id",
+  //     );
+  //   }
+  // }, [data]);
 
   /* Create Cohort*/
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
