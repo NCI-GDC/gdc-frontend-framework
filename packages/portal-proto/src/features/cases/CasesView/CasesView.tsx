@@ -244,7 +244,8 @@ export const ContextualCasesView: React.FC = () => {
       params: {
         attachment: true,
         filename: `cohort.${convertDateToString(new Date())}.tsv`,
-        filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters:
+          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         fields: [
           "case_id",
           "submitter_id",
@@ -277,7 +278,8 @@ export const ContextualCasesView: React.FC = () => {
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
-        filters: buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters:
+          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         attachment: true,
         pretty: true,
         format: "JSON",
