@@ -5,6 +5,7 @@ import {
   qnorm,
   toDisplayName,
   parseNestedQQResponseData,
+  createFiltersFromSelectedValues,
 } from "./utils";
 
 describe("filterUsefulFacets", () => {
@@ -269,5 +270,265 @@ describe("parseNestedResponseData", () => {
         value: 22645,
       },
     ]);
+  });
+});
+
+describe("createFiltersFromSelectedValues", () => {
+  it("with negative continuous values", () => {
+    const filters = createFiltersFromSelectedValues(
+      true,
+      "demographic.days_to_birth",
+      [
+        {
+          value: "-32612.0--31470.4",
+          numCases: 6,
+        },
+        {
+          value: "-31470.4--30328.8",
+          numCases: 8,
+        },
+      ],
+      undefined,
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "demographic.days_to_birth": {
+          operator: "or",
+          operands: [
+            {
+              operator: "and",
+              operands: [
+                {
+                  field: "demographic.days_to_birth",
+                  operator: ">=",
+                  operand: "-32612.0",
+                },
+                {
+                  field: "demographic.days_to_birth",
+                  operator: "<",
+                  operand: "-31470.4",
+                },
+              ],
+              field: "demographic.days_to_birth",
+            },
+            {
+              operator: "and",
+              operands: [
+                {
+                  field: "demographic.days_to_birth",
+                  operator: ">=",
+                  operand: "-31470.4",
+                },
+                {
+                  field: "demographic.days_to_birth",
+                  operator: "<",
+                  operand: "-30328.8",
+                },
+              ],
+              field: "demographic.days_to_birth",
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it("with continuous custom intervals", () => {
+    const filters = createFiltersFromSelectedValues(
+      true,
+      "diagnoses.age_at_diagnosis",
+      [
+        {
+          value: "5000.0-10000.0",
+          numCases: 17,
+        },
+      ],
+      {
+        interval: 5000,
+        min: 0,
+        max: 30000,
+      },
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "diagnoses.age_at_diagnosis": {
+          operator: "or",
+          operands: [
+            {
+              operator: "and",
+              operands: [
+                {
+                  field: "diagnoses.age_at_diagnosis",
+                  operator: ">=",
+                  operand: "5000.0",
+                },
+                {
+                  field: "diagnoses.age_at_diagnosis",
+                  operator: "<",
+                  operand: "10000.0",
+                },
+              ],
+              field: "diagnoses.age_at_diagnosis",
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it("with named bins", () => {
+    const filters = createFiltersFromSelectedValues(
+      true,
+      "diagnoses.age_at_diagnosis",
+      [
+        {
+          value: "bin a",
+          numCases: 17,
+        },
+      ],
+      [
+        {
+          from: 5000,
+          to: 10000,
+          name: "bin a",
+        },
+      ],
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "diagnoses.age_at_diagnosis": {
+          operator: "or",
+          operands: [
+            {
+              operator: "and",
+              operands: [
+                {
+                  field: "diagnoses.age_at_diagnosis",
+                  operator: ">=",
+                  operand: 5000,
+                },
+                {
+                  field: "diagnoses.age_at_diagnosis",
+                  operator: "<",
+                  operand: 10000,
+                },
+              ],
+              field: "diagnoses.age_at_diagnosis",
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it("with categorical values", () => {
+    const filters = createFiltersFromSelectedValues(
+      false,
+      "demographic.ethnicity",
+      [
+        {
+          value: "not hispanic or latino",
+          numCases: 6179,
+        },
+      ],
+      undefined,
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "demographic.ethnicity": {
+          operator: "includes",
+          operands: ["not hispanic or latino"],
+          field: "demographic.ethnicity",
+        },
+      },
+    });
+  });
+
+  it("with missing values", () => {
+    const filters = createFiltersFromSelectedValues(
+      false,
+      "diagnoses.treatments.therapeutic_agents",
+      [
+        {
+          value: "_missing",
+          numCases: 100,
+        },
+        {
+          value: "etoposide",
+          numCases: 20,
+        },
+      ],
+      undefined,
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "diagnoses.treatments.therapeutic_agents": {
+          operator: "or",
+          operands: [
+            {
+              operator: "includes",
+              operands: ["etoposide"],
+              field: "diagnoses.treatments.therapeutic_agents",
+            },
+            {
+              operator: "missing",
+              field: "diagnoses.treatments.therapeutic_agents",
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  it("with custom bins", () => {
+    const filters = createFiltersFromSelectedValues(
+      false,
+      "demographic.ethnicity",
+      [
+        {
+          value: "selected value 1",
+          numCases: 5788,
+        },
+        {
+          value: "not hispanic or latino",
+          numCases: 6179,
+        },
+      ],
+      {
+        "not hispanic or latino": 6179,
+        "hispanic or latino": 172,
+        "selected value 1": {
+          "not allowed to collect": 287,
+          unknown: 1106,
+          "not reported": 4395,
+        },
+      },
+    );
+
+    expect(filters).toEqual({
+      mode: "and",
+      root: {
+        "demographic.ethnicity": {
+          operator: "includes",
+          operands: [
+            "not allowed to collect",
+            "unknown",
+            "not reported",
+            "not hispanic or latino",
+          ],
+          field: "demographic.ethnicity",
+        },
+      },
+    });
   });
 });

@@ -3,8 +3,6 @@ import {
   AnnotationDefaults,
   ProjectDefaults,
   useCoreDispatch,
-  FilterSet,
-  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
@@ -16,7 +14,6 @@ import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import download from "src/utils/download";
 import PrimarySiteTable from "./PrimarySiteTable";
 import {
@@ -25,6 +22,7 @@ import {
   formatDataForSummary,
   getAnnotationsLinkParams,
 } from "./utils";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -43,27 +41,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-
-  const createCohortFromProjects = (name: string) => {
-    const filters: FilterSet = {
-      mode: "and",
-      root: {
-        "cases.project.project_id": {
-          operator: "includes",
-          field: "cases.project.project_id",
-          operands: [projectData.project_id],
-        },
-      },
-    };
-    dispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        name,
-        message: "newProjectsCohort",
-      }),
-    );
-  };
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
 
   const addLinkValue = () => (
     <span className="text-base-lightest">
@@ -259,24 +237,31 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         leftElement={
           <div className="flex gap-4">
             <Tooltip
-              label={`Create a new unsaved cohort of ${projectData.project_id} cases`}
+              label={`Save a new cohort of ${projectData.project_id} cases`}
               withArrow
             >
               <Button
                 color="primary"
                 variant="outline"
                 className="bg-base-max border-primary font-medium text-sm"
-                onClick={() => setShowCreateCohort(true)}
+                onClick={() => setShowSaveCohort(true)}
               >
-                Create New Cohort
+                Save New Cohort
               </Button>
             </Tooltip>
-            {showCreateCohort && (
-              <CreateCohortModal
-                onClose={() => setShowCreateCohort(false)}
-                onActionClick={(newName: string) => {
-                  createCohortFromProjects(newName);
+            {showSaveCohort && (
+              <SaveCohortModal
+                filters={{
+                  mode: "and",
+                  root: {
+                    "cases.project.project_id": {
+                      operator: "includes",
+                      field: "cases.project.project_id",
+                      operands: [projectData.project_id],
+                    },
+                  },
                 }}
+                onClose={() => setShowSaveCohort(false)}
               />
             )}
             <DropdownWithIcon

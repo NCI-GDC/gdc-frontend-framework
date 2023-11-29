@@ -60,6 +60,8 @@ import {
   useCurrentCohortCounts,
   getCohortFilterForAPI,
   selectAllCohorts,
+  selectHasUnsavedCohorts,
+  selectUnsavedCohortName,
 } from "./availableCohortsSlice";
 
 import {
@@ -154,4 +156,6 @@ export {
   selectAllCohorts,
   fetchCohortCaseCounts,
   extractFiltersWithPrefixFromFilterSet,
+  selectHasUnsavedCohorts,
+  selectUnsavedCohortName,
 };

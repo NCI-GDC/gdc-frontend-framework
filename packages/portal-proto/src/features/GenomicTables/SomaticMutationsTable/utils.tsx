@@ -1,5 +1,5 @@
 import { humanify } from "@/utils/index";
-import { SSMSData } from "@gff/core";
+import { SSMSData, FilterSet } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
@@ -13,7 +13,7 @@ import {
   SMTableProteinChange,
   SMTableSurvival,
 } from "./TableComponents";
-import { CohortCreationButton } from "@/components/CohortCreationButton";
+import CohortCreationButton from "@/components/CohortCreationButton";
 import {
   IoIosArrowDropdownCircle as DownIcon,
   IoIosArrowDropupCircle as UpIcon,
@@ -44,8 +44,7 @@ export const useGenerateSMTableColumns = ({
   geneSymbol,
   setEntityMetadata,
   projectId,
-  setMutationID,
-  setShowCreateCohort,
+  generateFilters,
 }: {
   toggledSsms: string[];
   isDemoMode: boolean;
@@ -59,10 +58,12 @@ export const useGenerateSMTableColumns = ({
   geneSymbol: string;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   projectId: string;
-  setMutationID: Dispatch<SetStateAction<string>>;
-  setShowCreateCohort: Dispatch<SetStateAction<boolean>>;
+  generateFilters: (ssmId: string) => Promise<FilterSet>;
 }): ColumnDef<SomaticMutation>[] => {
-  const SMTableColumnHelper = createColumnHelper<SomaticMutation>();
+  const SMTableColumnHelper = useMemo(
+    () => createColumnHelper<SomaticMutation>(),
+    [],
+  );
 
   const SMTableDefaultColumns = useMemo<ColumnDef<SomaticMutation>[]>(
     () => [
@@ -109,7 +110,9 @@ export const useGenerateSMTableColumns = ({
               ),
               cell: ({ row }) => (
                 <SMTableCohort
-                  isToggledSsm={toggledSsms.includes(row.original.mutation_id)}
+                  isToggledSsm={(toggledSsms || []).includes(
+                    row.original.mutation_id,
+                  )}
                   mutationID={row.original.mutation_id}
                   isDemoMode={isDemoMode}
                   cohort={row.original.cohort}
@@ -228,10 +231,9 @@ export const useGenerateSMTableColumns = ({
               />
             }
             numCases={row.original["#_affected_cases_in_cohort"].numerator}
-            handleClick={() => {
-              setMutationID(row.original.mutation_id);
-              setShowCreateCohort(true);
-            }}
+            filtersCallback={async () =>
+              generateFilters(row.original.mutation_id)
+            }
           />
         ),
       }),
@@ -287,8 +289,7 @@ export const useGenerateSMTableColumns = ({
       isModal,
       projectId,
       setEntityMetadata,
-      setMutationID,
-      setShowCreateCohort,
+      generateFilters,
       toggledSsms,
     ],
   );
