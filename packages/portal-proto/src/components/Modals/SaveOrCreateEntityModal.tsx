@@ -162,7 +162,6 @@ export const SaveOrCreateEntityBody = ({
             onClick={() => {
               if (form.validate().hasErrors) return;
               onActionClick((form?.values?.name || "").trim());
-              form.reset();
               if (closeOnAction) {
                 onClose();
               }

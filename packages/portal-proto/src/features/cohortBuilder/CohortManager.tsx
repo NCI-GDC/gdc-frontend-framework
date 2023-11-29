@@ -55,6 +55,7 @@ import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import { convertDateToString } from "src/utils/date";
 import ImportCohortModal from "./Modals/ImportCohortModal";
 import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -195,6 +196,7 @@ const CohortManager: React.FC = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showSaveAsCohort, setShowSaveAsCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -374,7 +376,15 @@ const CohortManager: React.FC = () => {
           filters={filters}
         />
       )}
-
+      {showSaveAsCohort && (
+        <SaveCohortModal
+          initialName={cohortName}
+          onClose={() => setShowSaveAsCohort(false)}
+          cohortId={cohortId}
+          filters={filters}
+          saveAs
+        />
+      )}
       {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
         <CaseSetModal
@@ -466,19 +476,31 @@ const CohortManager: React.FC = () => {
           </div>
 
           <div className="flex justify-center items-center gap-4">
-            <Tooltip label="Save Cohort" position="bottom" withArrow>
-              <span>
-                <CohortGroupButton
-                  onClick={() => {
-                    !currentCohort?.saved
-                      ? setShowSaveCohort(true)
-                      : setShowUpdateCohort(true);
-                  }}
-                  disabled={currentCohort?.saved && !cohortModified}
-                  data-testid="saveButton"
-                >
-                  <SaveIcon size="1.5em" aria-label="Save cohort" />
-                </CohortGroupButton>
+            <Tooltip label="Save Cohort" position="top" withArrow>
+              <span className="h-12">
+                <DropdownWithIcon
+                  dropdownElements={[
+                    {
+                      onClick: () => {
+                        !currentCohort?.saved
+                          ? setShowSaveCohort(true)
+                          : setShowUpdateCohort(true);
+                      },
+                      title: "Save",
+                      disabled: currentCohort?.saved && !cohortModified,
+                    },
+                    {
+                      onClick: () => setShowSaveAsCohort(true),
+                      title: "Save As",
+                      disabled: !currentCohort?.saved,
+                    },
+                  ]}
+                  customDataTestId="saveButton"
+                  LeftIcon={<SaveIcon size="1.5em" aria-label="Save cohort" />}
+                  TargetButtonChildren=""
+                  fullHeight
+                  disableTargetWidth
+                />
               </span>
             </Tooltip>
             <Tooltip

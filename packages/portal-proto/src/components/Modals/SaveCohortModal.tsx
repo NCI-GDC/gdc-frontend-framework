@@ -15,35 +15,61 @@ import {
   setCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
+  useLazyGetCohortByIdQuery,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 
+/**
+ * SaveCohortModal handles saving a user's cohort
+ * @param initialName - populates inital value of name field
+ * @param onClose - callback triggered when modal closes
+ * @param cohortId - id of existing cohort we are saving, if undefined we are not saving a cohort that already exists
+ * @param filters - the filters associated with the cohort
+ * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
+ * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
+ */
 const SaveCohortModal = ({
   initialName = "",
   onClose,
   cohortId,
   filters,
-  setAsCurrent,
+  setAsCurrent = false,
+  saveAs = false,
 }: {
   initialName?: string;
   onClose: () => void;
   cohortId?: string;
   filters: FilterSet;
   setAsCurrent?: boolean;
+  saveAs?: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
+    let saveAsFilters = undefined;
+
+    if (saveAs) {
+      // Should use the saved filters of the existing cohort and discard any local changes
+      await fetchSavedFilters(cohortId)
+        .unwrap()
+        .then((payload) => {
+          saveAsFilters = payload.filters;
+        });
+    }
+
     const addBody = {
       name: newName,
       type: "static",
       filters:
-        Object.keys(filters.root).length > 0
+        saveAsFilters !== undefined
+          ? saveAsFilters
+          : Object.keys(filters.root).length > 0
           ? buildCohortGqlOperator(filters)
           : {},
     };
@@ -51,7 +77,7 @@ const SaveCohortModal = ({
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
       .then((payload) => {
-        if (prevCohort) {
+        if (prevCohort && !saveAs) {
           coreDispatch(
             copyCohort({
               sourceId: prevCohort,
@@ -123,7 +149,13 @@ const SaveCohortModal = ({
     <Modal
       opened
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
-      title={showReplaceCohort ? "Replace Existing Cohort" : "Save Cohort"}
+      title={
+        showReplaceCohort
+          ? "Replace Existing Cohort"
+          : saveAs
+          ? "Save Cohort As"
+          : "Save Cohort"
+      }
       size={"md"}
       classNames={{
         content: "p-0",
@@ -172,7 +204,11 @@ const SaveCohortModal = ({
             saveAction(name, false);
             setEnteredName(name);
           }}
-          descriptionMessage={"Provide a name to save the cohort."}
+          descriptionMessage={
+            saveAs
+              ? "Provide a name to save your current cohort as a new cohort"
+              : "Provide a name to save the cohort."
+          }
           closeOnAction={false}
           loading={isLoading}
         />
