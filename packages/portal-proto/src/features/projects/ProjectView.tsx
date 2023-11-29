@@ -58,8 +58,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Cases = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaUser />
       </div>
 
@@ -71,8 +71,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Files = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaFile />
       </div>
 
@@ -84,14 +84,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Annotations = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaEdit />
       </div>
-
       <span>
-        {addLinkValue()}{" "}
-        {projectData.annotation.count > 1 ? "Annotations" : "Annotation"}
+        <span className="font-bold">{addLinkValue()} </span>
+        {`Annotation${projectData.annotation.count === 1 ? `` : `s`}`}
       </span>
     </span>
   );
@@ -235,7 +234,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
         leftElement={
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <Tooltip
               label={`Save a new cohort of ${projectData.project_id} cases`}
               withArrow
@@ -345,7 +344,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           </div>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-[1rem] xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+          <div className="flex items-center gap-2 text-sm 2xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
             Total of {Cases} {Files} {Annotations}
           </div>
         }
