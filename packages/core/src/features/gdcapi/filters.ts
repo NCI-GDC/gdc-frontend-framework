@@ -212,6 +212,7 @@ export interface GqlMissing {
   readonly op: "is";
   readonly content: {
     readonly field: string;
+    readonly value: "MISSING";
   };
 }
 
@@ -368,6 +369,7 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
     op: "is",
     content: {
       field: op.field,
+      value: "MISSING",
     },
   });
   handleExists = (op: Exists): GqlExists => ({

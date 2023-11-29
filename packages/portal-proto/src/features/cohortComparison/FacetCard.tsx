@@ -11,7 +11,7 @@ import { calculatePercentageAsNumber, humanify } from "src/utils";
 import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
 import PValue from "./PValue";
-import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
+import CohortCreationButton from "@/components/CohortCreationButton";
 import { CohortComparisonType } from "./CohortComparison";
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
@@ -238,10 +238,10 @@ export const FacetCard: React.FC<FacetCardProps> = ({
               >
                 <td className="pl-2">{value}</td>
                 <td>
-                  <CohortCreationButtonWrapper
+                  <CohortCreationButton
                     numCases={cohort1Value}
                     label={cohort1Value?.toLocaleString() || "--"}
-                    caseFilters={
+                    filters={
                       formattedData[0][idx].filter === undefined ||
                       cohorts.primary_cohort.filter === undefined
                         ? undefined
@@ -256,10 +256,10 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                   {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
                 </td>
                 <td>
-                  <CohortCreationButtonWrapper
+                  <CohortCreationButton
                     numCases={cohort2Value}
                     label={cohort2Value?.toLocaleString() || "--"}
-                    caseFilters={
+                    filters={
                       formattedData[1][idx].filter === undefined ||
                       cohorts.comparison_cohort.filter === undefined
                         ? undefined

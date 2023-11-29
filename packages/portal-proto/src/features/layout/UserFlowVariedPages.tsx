@@ -18,8 +18,10 @@ import {
   DiscardChangesCohortNotification,
   ErrorCohortNotification,
   NewCohortNotification,
-  SavedCohortNotification,
+  SavedCurrentCohortNotification,
   NewCohortNotificationWithSetAsCurrent,
+  SavedCohortNotification,
+  SavedCohortNotificationWithSetAsCurrent,
 } from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
@@ -82,7 +84,30 @@ export const UserFlowVariedPages = ({
           }
           if (cmdAndParam[0] === "savedCohort") {
             showNotification({
-              message: <SavedCohortNotification />,
+              message: <SavedCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCohortSetCurrent") {
+            showNotification({
+              message: (
+                <SavedCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCurrentCohort") {
+            showNotification({
+              message: <SavedCurrentCohortNotification />,
               classNames: {
                 description: "flex flex-col content-center text-center",
               },

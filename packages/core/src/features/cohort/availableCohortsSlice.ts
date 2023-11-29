@@ -34,6 +34,8 @@ import {
   NullCountsData,
 } from "./cohortCountsQuery";
 
+const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
+
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
@@ -508,7 +510,7 @@ const getCurrentCohort = (
     return state.currentCohort;
   }
 
-  const unsavedCohort = newCohort({ customName: "New Unsaved Cohort" });
+  const unsavedCohort = newCohort({ customName: UNSAVED_COHORT_NAME });
   return unsavedCohort.id;
 };
 
@@ -516,7 +518,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): EntityId => {
   if (state.cohort.availableCohorts.currentCohort) {
     return state.cohort.availableCohorts.currentCohort;
   }
-  const unsavedCohort = newCohort({ customName: "New Unsaved Cohort" });
+  const unsavedCohort = newCohort({ customName: UNSAVED_COHORT_NAME });
   return unsavedCohort.id;
 };
 
@@ -530,6 +532,7 @@ interface NewCohortParams {
 interface CopyCohortParams {
   sourceId: string;
   destId: string;
+  saved: boolean;
 }
 
 /**
@@ -575,8 +578,10 @@ const slice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
-    addNewCohort: (state, action?: PayloadAction<string>) => {
-      const cohort = newCohort({ customName: action?.payload });
+    addNewCohort: (state, action?: PayloadAction<string | undefined>) => {
+      const cohort = newCohort({
+        customName: action?.payload ?? UNSAVED_COHORT_NAME,
+      });
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id ?? getCurrentCohort(state);
       state.message = [`newCohort|${cohort.name}|${cohort.id}`];
@@ -592,6 +597,13 @@ const slice = createSlice({
         filters: action.payload.filters,
         customName: action.payload.name,
       });
+      const selector = cohortsAdapter.getSelectors();
+      const unsavedCohort = selector
+        .selectAll(state)
+        .find((cohort) => !cohort.saved);
+      if (unsavedCohort !== undefined) {
+        cohortsAdapter.removeOne(state, unsavedCohort.id);
+      }
       cohortsAdapter.addOne(state, cohort); // Note: does not set the current cohort
       if (action.payload.makeCurrent === true) {
         state.currentCohort = cohort.id;
@@ -605,6 +617,7 @@ const slice = createSlice({
           ...sourceCohort,
           id: action.payload.destId,
           modified: false,
+          saved: action.payload.saved,
         };
         cohortsAdapter.addOne(state, destCohort);
       }
@@ -641,7 +654,7 @@ const slice = createSlice({
       if (selector.selectAll(state).length === 0) {
         cohortsAdapter.addOne(
           state,
-          newCohort({ customName: "New Unsaved Cohort" }),
+          newCohort({ customName: UNSAVED_COHORT_NAME }),
         );
         const selector = cohortsAdapter.getSelectors();
         const createdCohort = selector.selectAll(state)[0];
@@ -1263,6 +1276,12 @@ export const selectCohortCountsByName = (
   cohortSelectors.selectById(state, cohortId)?.counts[name] ??
   NullCountsData[name];
 
+export const selectHasUnsavedCohorts = (state: CoreState): boolean =>
+  cohortSelectors.selectAll(state).filter((c) => !c.saved).length >= 1;
+
+export const selectUnsavedCohortName = (state: CoreState): string | undefined =>
+  cohortSelectors.selectAll(state).find((c) => !c.saved)?.name;
+
 /**
  * --------------------------------------------------------------------------
  *  Cohort Hooks
@@ -1270,20 +1289,24 @@ export const selectCohortCountsByName = (
  **/
 
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
-  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
+  return useCoreSelector((state: CoreState) =>
+    selectCurrentCohortFilterSet(state),
+  );
 };
 
 export const useCurrentCohortWithGeneAndSsmCaseSet = ():
   | FilterSet
   | undefined => {
-  return useCoreSelector((state) =>
+  return useCoreSelector((state: CoreState) =>
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 };
 
 export const useCurrentCohortCounts =
   (): CoreDataSelectorResponse<CountsData> => {
-    return useCoreSelector((state) => selectCohortCountsResults(state));
+    return useCoreSelector((state: CoreState) =>
+      selectCohortCountsResults(state),
+    );
   };
 
 /**
@@ -1406,10 +1429,15 @@ export const setActiveCohortList =
   (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
     // set the list of all cohorts
-    await dispatch(setCohortList(cohorts));
+    dispatch(setCohortList(cohorts));
+
+    const availableCohorts = selectAllCohorts(getState());
+    if (Object.keys(availableCohorts).length === 0) {
+      dispatch(addNewCohort());
+    }
+
     const cohortId = selectCurrentCohortId(getState());
     const cohort = selectCurrentCohort(getState());
-
     // have to request counts for all cohorts loaded from the backend
     cohorts.forEach((cohort) => {
       dispatch(fetchCohortCaseCounts(cohort.id));

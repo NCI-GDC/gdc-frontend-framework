@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
@@ -105,7 +106,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    * @param name - used as the label for the symbol in the Survival Plot
    * @param field - which gene or ssms field the symbol applied to
    */
-  const handleSurvivalPlotToggled = useCallback(
+  const handleSurvivalPlotToggled = useDeepCompareCallback(
     (symbol: string, name: string, field: string) => {
       if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
         // remove toggle and plot topmost
