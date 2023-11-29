@@ -55,8 +55,9 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                       onClick: () => {
                         if (numCases > 1) {
                           onCreateSet();
+                        } else {
+                          setShowSaveCohort(true);
                         }
-                        setShowSaveCohort(true);
                       },
                     },
                     {
