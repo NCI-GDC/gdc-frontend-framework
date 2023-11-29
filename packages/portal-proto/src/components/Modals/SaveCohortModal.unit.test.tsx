@@ -187,12 +187,14 @@ describe("SaveCohortModal", () => {
     const mockMutation = jest.fn().mockReturnValue({
       unwrap: jest.fn().mockResolvedValue({
         id: "2",
+        name: "my new cohort",
       }),
     });
     jest
       .spyOn(core, "useAddCohortMutation")
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
     const setCurrentCohortMock = jest.spyOn(core, "setCurrentCohortId");
+    const addCohortToStoreMock = jest.spyOn(core, "setCohort");
 
     const { getByText } = render(
       <SaveCohortModal
@@ -214,6 +216,14 @@ describe("SaveCohortModal", () => {
     await userEvent.click(getByText("Save"));
 
     expect(setCurrentCohortMock).not.toBeCalled;
+    expect(addCohortToStoreMock).toBeCalledWith(
+      expect.objectContaining({
+        id: "2",
+        name: "my new cohort",
+        saved: true,
+        modified: false,
+      }),
+    );
   });
 
   test("save new cohort and set as current", async () => {
