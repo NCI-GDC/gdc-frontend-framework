@@ -18,7 +18,7 @@ import {
   useGetSsmTableDataMutation,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -135,9 +135,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
-  const previousSearchTerm = usePrevious(searchTerm);
-  const previousTopSSM = usePrevious(topSSM);
-  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -154,8 +151,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
-  useEffect(() => {
-    if (!isEqual(topSSM, previousTopSSM) && topSSM) {
+  useDeepCompareCallback(() => {
+    if (topSSM) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       handleSurvivalPlotToggled(
         ssm_id,
@@ -170,18 +167,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   }, [
     data,
     searchTerm,
-    previousSearchTerm,
     topSSM,
-    previousTopSSM,
     handleSurvivalPlotToggled,
     searchTermsForGene?.geneSymbol,
   ]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (
       topSSM &&
-      !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
-      isEqual(searchTerm, previousSearchTerm) &&
+      selectedSurvivalPlot &&
+      searchTerm &&
       !data?.ssms
         .map(({ ssm_id }) => ssm_id)
         .includes(selectedSurvivalPlot.symbol)
@@ -199,11 +194,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [
     selectedSurvivalPlot,
-    previousSelectedSurvivalPlot,
-    data?.ssms,
+    data,
     topSSM,
     searchTerm,
-    previousSearchTerm,
     handleSurvivalPlotToggled,
     searchTermsForGene?.geneSymbol,
   ]);
