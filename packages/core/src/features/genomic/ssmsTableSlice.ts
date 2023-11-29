@@ -273,7 +273,7 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: getSSMTestedCases(cohortFilters),
+    ssmCaseFilter: getSSMTestedCases(cohortFilters, geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
