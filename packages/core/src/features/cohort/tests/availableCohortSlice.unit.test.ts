@@ -1073,7 +1073,7 @@ mutation mutationsCreateRepositoryCaseSetMutation(
         }),
       );
       expect(spyFetch).toBeCalledWith(`${GDC_APP_API_AUTH}/graphql`, {
-        body: '{"query":"\\nmutation mutationsCreateRepositoryCaseSetMutation(\\n  $inputFilters: CreateSetInput\\n) {\\n  sets {\\n    create {\\n      explore {\\n       case (input: $inputFilters) { set_id size }\\n    }\\n  }\\n }\\n}","variables":{"inputFilters":{}}}',
+        body: '{"query":"\\nmutation mutationsCreateRepositoryCaseSetMutation(\\n  $inputFilters: CreateSetInput\\n) {\\n  sets {\\n    create {\\n      explore {\\n       case (input: $inputFilters) { set_id size }\\n    }\\n  }\\n }\\n}","variables":{"inputFilters":{"set_id":"genes-ssms-000-000-000-1"}}}',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
