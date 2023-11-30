@@ -164,6 +164,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         : "";
       handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topSSM, searchTermsForGene?.geneSymbol]);
 
   useDeepCompareEffect(() => {
