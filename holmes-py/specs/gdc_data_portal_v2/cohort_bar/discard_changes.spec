@@ -11,9 +11,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * On GDC Data Portal V2 app
 * Navigate to "Home" from "Header" "section"
 * Collect these data portal statistics for comparison
-  |category       |
-  |---------------|
-  |Cases          |
+  |category       |name_to_store_statistic  |
+  |---------------|-------------------------|
+  |Cases          |Home Page Cases Count    |
 
 ## Discard Changes on Unsaved Cohort
 * Navigate to "Cohort" from "Header" "section"
@@ -45,7 +45,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
-* Verify the "Cohort Bar Case Count" is "Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be disabled in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter does not have these filters
@@ -79,7 +80,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
-* Verify the "Cohort Bar Case Count" is "Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be disabled in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter does not have these filters
@@ -113,7 +115,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Igcccg Stage       |good prognosis       |2                        |
   |Project            |TCGA-TGCT            |3                        |
 * Is text "Changes not saved" present on the page
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Discard" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -131,11 +134,13 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name         |selections           |
   |-------------------|---------------------|
   |Project            |TCGA-TGCT            |
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 
 ## Discard Changes from Clear All Filters
 * Clear active cohort filters
-* Verify the "Cohort Bar Case Count" is "Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * Is text "Changes not saved" present on the page
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
@@ -149,7 +154,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
 * "Discard" should be disabled in the Cohort Bar
-* Verify the "Cohort Bar Case Count" is "Not Equal" to the home page count for "Cases"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |

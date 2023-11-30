@@ -70,7 +70,7 @@ export interface TableProps<TData> {
   /**
    * Optional
    * If provided, allows you to override the default behavior of determining whether a row can be expanded.
-   * Default to make all rows expandable: getRowCanExpand={() => true}
+   * Default to make all rows expandable: getRowCanExpand=\{() =\> true\}
    */
   getRowCanExpand?: (row: Row<TData>) => boolean;
   /*

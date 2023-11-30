@@ -277,6 +277,7 @@ const GeneView = ({
               <div className="mt-14">
                 <SMTableContainer
                   geneSymbol={data.genes.symbol}
+                  gene_id={gene_id}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}
                   isModal={isModal}

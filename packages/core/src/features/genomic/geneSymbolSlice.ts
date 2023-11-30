@@ -8,7 +8,7 @@ import { useCoreDispatch, useCoreSelector } from "../../hooks";
 import { useEffect } from "react";
 
 /**
- * Slice used to retrieve and cache GeneIds -> Gene Symbols.
+ * Slice used to retrieve and cache GeneIds -\> Gene Symbols.
  */
 
 const GeneSymbolQuery = `

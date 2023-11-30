@@ -3,8 +3,6 @@ import {
   AnnotationDefaults,
   ProjectDefaults,
   useCoreDispatch,
-  FilterSet,
-  addNewCohortWithFilterAndMessage,
 } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
@@ -16,7 +14,6 @@ import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
 import download from "src/utils/download";
 import PrimarySiteTable from "./PrimarySiteTable";
 import {
@@ -25,6 +22,7 @@ import {
   formatDataForSummary,
   getAnnotationsLinkParams,
 } from "./utils";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -43,27 +41,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
-
-  const createCohortFromProjects = (name: string) => {
-    const filters: FilterSet = {
-      mode: "and",
-      root: {
-        "cases.project.project_id": {
-          operator: "includes",
-          field: "cases.project.project_id",
-          operands: [projectData.project_id],
-        },
-      },
-    };
-    dispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: filters,
-        name,
-        message: "newProjectsCohort",
-      }),
-    );
-  };
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
 
   const addLinkValue = () => (
     <span className="text-base-lightest">
@@ -80,8 +58,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Cases = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaUser />
       </div>
 
@@ -93,8 +71,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Files = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaFile />
       </div>
 
@@ -106,14 +84,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Annotations = (
-    <span className="flex items-center gap-1">
-      <div className="text-[1rem] xl:text-2xl">
+    <span className="flex items-center gap-0.5">
+      <div className="text-sm 2xl:text-xl">
         <FaEdit />
       </div>
-
       <span>
-        {addLinkValue()}{" "}
-        {projectData.annotation.count > 1 ? "Annotations" : "Annotation"}
+        <span className="font-bold">{addLinkValue()} </span>
+        {`Annotation${projectData.annotation.count === 1 ? `` : `s`}`}
       </span>
     </span>
   );
@@ -257,26 +234,33 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
         leftElement={
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <Tooltip
-              label={`Create a new unsaved cohort of ${projectData.project_id} cases`}
+              label={`Save a new cohort of ${projectData.project_id} cases`}
               withArrow
             >
               <Button
                 color="primary"
                 variant="outline"
                 className="bg-base-max border-primary font-medium text-sm"
-                onClick={() => setShowCreateCohort(true)}
+                onClick={() => setShowSaveCohort(true)}
               >
-                Create New Cohort
+                Save New Cohort
               </Button>
             </Tooltip>
-            {showCreateCohort && (
-              <CreateCohortModal
-                onClose={() => setShowCreateCohort(false)}
-                onActionClick={(newName: string) => {
-                  createCohortFromProjects(newName);
+            {showSaveCohort && (
+              <SaveCohortModal
+                filters={{
+                  mode: "and",
+                  root: {
+                    "cases.project.project_id": {
+                      operator: "includes",
+                      field: "cases.project.project_id",
+                      operands: [projectData.project_id],
+                    },
+                  },
                 }}
+                onClose={() => setShowSaveCohort(false)}
               />
             )}
             <DropdownWithIcon
@@ -360,7 +344,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           </div>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-[1rem] xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+          <div className="flex items-center gap-2 text-sm 2xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
             Total of {Cases} {Files} {Annotations}
           </div>
         }

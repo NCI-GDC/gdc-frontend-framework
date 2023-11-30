@@ -488,6 +488,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         <div className="mb-16">
           <SMTableContainer
             projectId={data.project.project_id}
+            case_id={case_id}
             cohortFilters={projectFilter}
             caseFilter={caseFilter}
             tableTitle="Most Frequent Somatic Mutations"

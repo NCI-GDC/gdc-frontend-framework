@@ -1,16 +1,25 @@
-import { useRouter } from "next/router";
-import { omitBy, some, capitalize, isNumber } from "lodash";
-import { NumericFromTo, Buckets, Stats, DAYS_IN_YEAR } from "@gff/core";
+import { omitBy, some, capitalize, isNumber, flatten } from "lodash";
+import {
+  NumericFromTo,
+  Buckets,
+  Stats,
+  DAYS_IN_YEAR,
+  FilterSet,
+} from "@gff/core";
 import {
   CAPITALIZED_TERMS,
   SPECIAL_CASE_FIELDS,
   DATA_DIMENSIONS,
+  MISSING_KEY,
 } from "./constants";
 import {
   CustomInterval,
   DataDimension,
   DisplayData,
   NamedFromTo,
+  SelectedFacet,
+  CategoricalBins,
+  ContinuousCustomBinnedData,
 } from "./types";
 
 export const filterUsefulFacets = (
@@ -125,10 +134,7 @@ export const isInterval = (
 };
 
 export const useDataDimension = (field: string): boolean => {
-  // TODO - remove feature flag
-  const router = useRouter();
-  const yearToggleFlag = router?.query?.featureFlag === "yearToggle";
-  return yearToggleFlag && DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
+  return DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
 };
 
 export const formatValue = (value: number): number => {
@@ -147,6 +153,102 @@ export const convertDataDimension = (
   }
 
   return value;
+};
+
+export const createFiltersFromSelectedValues = (
+  continuous: boolean,
+  field: string,
+  selectedFacets: SelectedFacet[],
+  customBinnedData: CategoricalBins | NamedFromTo[] | CustomInterval,
+): FilterSet => {
+  if (continuous) {
+    return {
+      mode: "and",
+      root: {
+        [field]: {
+          operator: "or",
+          operands: selectedFacets.map((facet) => {
+            const customBin =
+              customBinnedData &&
+              !isInterval(customBinnedData as ContinuousCustomBinnedData)
+                ? (customBinnedData as NamedFromTo[]).find(
+                    (bin) => bin.name === facet.value,
+                  )
+                : undefined;
+            const [from, to] = customBin
+              ? [customBin.from, customBin.to]
+              : parseContinuousBucket(facet.value);
+            return {
+              operator: "and",
+              operands: [
+                {
+                  field,
+                  operator: ">=",
+                  operand: from,
+                },
+                {
+                  field,
+                  operator: "<",
+                  operand: to,
+                },
+              ],
+              field,
+            };
+          }),
+        },
+      },
+    };
+  } else {
+    const facetValues = customBinnedData
+      ? flatten(
+          selectedFacets.map((facet) =>
+            customBinnedData?.[facet.value] instanceof Object
+              ? Object.keys(customBinnedData[facet.value as string])
+              : facet.value,
+          ),
+        )
+      : selectedFacets.map((facet) => facet.value);
+    const hasMissingValue = facetValues.find((v) => v === MISSING_KEY);
+    if (hasMissingValue) {
+      const restOfFacets = facetValues.filter((v) => v !== MISSING_KEY);
+      return {
+        mode: "and",
+        root: {
+          [field]:
+            restOfFacets.length > 0
+              ? {
+                  operator: "or",
+                  operands: [
+                    {
+                      operator: "includes",
+                      operands: restOfFacets,
+                      field,
+                    },
+                    {
+                      operator: "missing",
+                      field,
+                    },
+                  ],
+                }
+              : {
+                  operator: "missing",
+                  field,
+                },
+        },
+      };
+    }
+
+    return {
+      mode: "and",
+      root: {
+        [field]: {
+          operator: "includes",
+          operands: facetValues,
+          field,
+        },
+      },
+    };
+  }
 };
 
 /**
@@ -201,9 +303,8 @@ export const qnorm = (p: number): number => {
 
 /**
  * Parses response data that either be or simple object or can be nested in arrays up to two levels deep depending on the field
- * @param data response data from request
- * @param field
- * @returns flattened list of ids and values
+ * @param data - response data from request
+ * @returns - flattened list of ids and values
  */
 export const parseNestedQQResponseData = (
   data: readonly Record<string, any>[],

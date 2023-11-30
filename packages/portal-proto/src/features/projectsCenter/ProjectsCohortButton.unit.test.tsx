@@ -1,11 +1,8 @@
 import { showNotification } from "@mantine/notifications";
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
-import { MantineProvider } from "@mantine/core";
-import * as mantine_form from "@mantine/form";
-import { mantineFormNoErrorObj } from "__mocks__/sharedMockData";
 
 jest.mock("@mantine/notifications");
 const mockedShowNotification = showNotification as jest.Mock<
@@ -21,10 +18,10 @@ describe("<ProjectCohortButton />", () => {
 
     const { getByText } = render(<ProjectsCohortButton pickedProjects={[]} />);
 
-    expect(getByText("Create New Cohort")).toBeInTheDocument();
+    expect(getByText("Save New Cohort")).toBeInTheDocument();
   });
 
-  it("should render 2 project  Create New Cohort button", () => {
+  it("should render 2 project  Save New Cohort button", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
 
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
@@ -32,53 +29,56 @@ describe("<ProjectCohortButton />", () => {
     const { getByRole } = render(
       <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />,
     );
-    expect(getByRole("button").textContent).toBe("2 Create New Cohort");
+    expect(getByRole("button").textContent).toBe("2 Save New Cohort");
   });
 
   it("dispatch an add cohort action", async () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue(["cohort1", "cohort2"]);
+    jest.spyOn(core, "useCoreDispatch").mockImplementation(() => jest.fn());
 
-    const mockDispatch = jest.fn();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-    jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
+    const mockMutation = jest.fn().mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        id: "1",
+        name: "My New Cohort",
+        filters: {},
+        modified_datetime: "",
+      }),
+    });
+    jest
+      .spyOn(core, "useAddCohortMutation")
+      .mockReturnValue([mockMutation, { isLoading: false } as any]);
 
     const { getByRole, getByTestId } = render(
-      <MantineProvider
-        theme={{
-          colors: {
-            primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          },
-        }}
-      >
-        <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />
-      </MantineProvider>,
+      <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />,
     );
 
     await userEvent.click(
       getByRole("button", {
-        name: "2 Create New Cohort",
+        name: "2 Save New Cohort",
       }),
     );
 
     // this button is in SaveOrCreateCohortModal
+    await userEvent.type(getByTestId("input-field"), "New Cohort");
     await userEvent.click(getByTestId("action-button"));
-    expect(mockDispatch).toBeCalledWith({
-      payload: {
+    expect(mockMutation).toBeCalledWith({
+      cohort: {
         filters: {
-          mode: "and",
-          root: {
-            "cases.project.project_id": {
-              field: "cases.project.project_id",
-              operands: ["TCGA", "FM"],
-              operator: "includes",
+          op: "and",
+          content: [
+            {
+              content: {
+                field: "cases.project.project_id",
+                value: ["TCGA", "FM"],
+              },
+              op: "in",
             },
-          },
+          ],
         },
-        message: "newProjectsCohort",
-        name: "",
+        type: "static",
+        name: "New Cohort",
       },
-      type: "cohort/availableCohorts/addNewCohortWithFilterAndMessage",
+      delete_existing: false,
     });
   });
 });
