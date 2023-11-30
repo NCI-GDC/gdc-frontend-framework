@@ -135,6 +135,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
+  const previousSearchTerm = usePrevious(searchTerm);
+  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
+
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -151,52 +154,42 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
-  useDeepCompareCallback(() => {
+  useDeepCompareEffect(() => {
     if (topSSM) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-      handleSurvivalPlotToggled(
-        ssm_id,
-        consequence_type
-          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-              term: consequence_type.replace("_variant", "").replace("_", " "),
-            })}`
-          : "",
-        "gene.ssm.ssm_id",
-      );
+      const description = consequence_type
+        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+            term: consequence_type.replace("_variant", "").replace("_", " "),
+          })}`
+        : "";
+      handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
     }
-  }, [
-    data,
-    searchTerm,
-    topSSM,
-    handleSurvivalPlotToggled,
-    searchTermsForGene?.geneSymbol,
-  ]);
+  }, [topSSM, searchTermsForGene?.geneSymbol]);
 
   useDeepCompareEffect(() => {
-    if (
+    const shouldHandleSurvivalPlot =
       topSSM &&
-      selectedSurvivalPlot &&
-      searchTerm &&
+      !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
+      isEqual(searchTerm, previousSearchTerm) &&
       !data?.ssms
         .map(({ ssm_id }) => ssm_id)
-        .includes(selectedSurvivalPlot.symbol)
-    ) {
+        .includes(selectedSurvivalPlot.symbol);
+    if (shouldHandleSurvivalPlot) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-      handleSurvivalPlotToggled(
-        ssm_id,
-        consequence_type
-          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-              term: consequence_type.replace("_variant", "").replace("_", " "),
-            })}`
-          : "",
-        "gene.ssm.ssm_id",
-      );
+      const description = consequence_type
+        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+            term: consequence_type.replace("_variant", "").replace("_", " "),
+          })}`
+        : "";
+      handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
     }
   }, [
     selectedSurvivalPlot,
+    previousSelectedSurvivalPlot,
     data,
     topSSM,
     searchTerm,
+    previousSearchTerm,
     handleSurvivalPlotToggled,
     searchTermsForGene?.geneSymbol,
   ]);
