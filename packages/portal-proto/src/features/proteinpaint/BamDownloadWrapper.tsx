@@ -14,10 +14,9 @@ const basepath = PROTEINPAINT_API;
 
 interface PpProps {
   basepath?: string;
-  stream2download?: boolean;
 }
 
-export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
+export const BamDownloadWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
   );
@@ -101,11 +100,11 @@ interface BamArg {
   host: string;
   gdcbamslice: GdcBamSlice;
   filter0: FilterSet;
+  stream2download?: boolean;
 }
 
 type GdcBamSlice = {
   hideTokenInput: boolean;
-  stream2download?: boolean;
 };
 
 function getBamTrack(props: PpProps, filter0: any) {
@@ -115,7 +114,6 @@ function getBamTrack(props: PpProps, filter0: any) {
     host: props.basepath || (basepath as string),
     gdcbamslice: {
       hideTokenInput: true,
-      stream2download: props.stream2download || false,
     },
     filter0,
   };

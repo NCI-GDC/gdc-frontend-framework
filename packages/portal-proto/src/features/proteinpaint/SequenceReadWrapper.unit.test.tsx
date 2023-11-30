@@ -29,7 +29,10 @@ test("Sequence Read arguments - logged in", () => {
   expect(runpparg.nobox).toEqual(true);
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
-  expect(runpparg.gdcbamslice).toEqual({ hideTokenInput: true });
+  expect(runpparg.gdcbamslice).toEqual({
+    hideTokenInput: true,
+    stream2download: false,
+  });
   expect(runpparg.filter0).toEqual({ test: 1 });
   expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(
     `display: none`,

@@ -44,3 +44,7 @@ export function getFilters(arg: SelectSamplesCallBackArg): FilterSet {
     },
   };
 }
+
+export type RxComponentCallbacks = {
+  [eventName: string]: () => void;
+};

@@ -13,10 +13,12 @@ import {
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
+import { LoadingOverlay } from "@mantine/core";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
+  RxComponentCallbacks,
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
@@ -41,6 +43,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const [newCohortFilters, setNewCohortFilters] =
     useState<FilterSet>(undefined);
@@ -73,6 +76,18 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const matrixCallbacks: RxComponentCallbacks = {
+    "postRender.gdcOncoMatrix": () => setIsLoading(false),
+    "error.gdcOncoMatrix": () => setIsLoading(false),
+  };
+
+  const appCallbacks: RxComponentCallbacks = {
+    "preDispatch.gdcPlotApp": () => {
+      setIsLoading(true);
+    },
+    "error.gdcPlotApp": () => setIsLoading(false),
+  };
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
@@ -84,6 +99,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
+      setIsLoading(true);
 
       if (ppRef.current) {
         ppRef.current.update({ filter0: prevData.current.filter0 });
@@ -91,7 +107,13 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
-        const data = getMatrixTrack(props, prevData.current.filter0, callback);
+        const data = getMatrixTrack(
+          props,
+          prevData.current.filter0,
+          callback,
+          matrixCallbacks,
+          appCallbacks,
+        );
         if (!data) return;
 
         const arg = Object.assign(
@@ -129,6 +151,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
           filters={newCohortFilters}
         />
       )}
+      <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
     </div>
   );
 };
@@ -149,17 +172,25 @@ interface MatrixArg {
 }
 
 interface MatrixArgOpts {
+  app: MatrixArgOptsApp;
   matrix: MatrixArgOptsMatrix;
+}
+
+interface MatrixArgOptsApp {
+  callbacks?: RxComponentCallbacks;
 }
 
 interface MatrixArgOptsMatrix {
   allow2selectSamples?: SelectSamples;
+  callbacks?: RxComponentCallbacks;
 }
 
 function getMatrixTrack(
   props: PpProps,
   filter0: any,
   callback?: SelectSamplesCallback,
+  matrixCallbacks?: RxComponentCallbacks,
+  appCallbacks?: RxComponentCallbacks,
 ) {
   const defaultFilter = null;
 
@@ -170,6 +201,9 @@ function getMatrixTrack(
     launchGdcMatrix: true,
     filter0: filter0 || defaultFilter,
     opts: {
+      app: {
+        callbacks: appCallbacks,
+      },
       matrix: {
         allow2selectSamples: {
           buttonText: "Create Cohort",
@@ -182,6 +216,7 @@ function getMatrixTrack(
           ],
           callback,
         },
+        callbacks: matrixCallbacks,
       },
     },
   };
