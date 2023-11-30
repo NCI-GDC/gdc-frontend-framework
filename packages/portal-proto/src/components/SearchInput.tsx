@@ -328,7 +328,6 @@ export const SearchInput: React.FC = () => {
                 className="mb-4"
                 id={comboboxlistId}
                 tabIndex={0} // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
-                aria-label={`List with ${filteredResults.length} items use arrow keys to navigate. Showing page ${page}`}
               >
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
