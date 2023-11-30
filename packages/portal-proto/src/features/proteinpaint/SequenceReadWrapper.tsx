@@ -14,6 +14,7 @@ const basepath = PROTEINPAINT_API;
 
 interface PpProps {
   basepath?: string;
+  stream2download?: boolean;
 }
 
 export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
@@ -104,6 +105,7 @@ interface BamArg {
 
 type GdcBamSlice = {
   hideTokenInput: boolean;
+  stream2download?: boolean;
 };
 
 function getBamTrack(props: PpProps, filter0: any) {
