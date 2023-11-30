@@ -162,6 +162,17 @@ export const REGISTERED_APPS = [
     optimizeRules: ["data format = BAM"],
   },
   {
+    name: "BAM Download Prototype",
+    icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,
+    tags: ["sequenceAnalysis"],
+    hasDemo: false,
+    countsField: "sequenceReadCaseCount",
+    description: "Download a BAM slice.",
+    id: "BamDownloadApp",
+    noDataTooltip: "Current cohort does not have available BAMs for download.",
+    optimizeRules: ["data format = BAM"],
+  },
+  {
     name: "ProteinPaint",
     icon: (
       <ProteinPaintIcon

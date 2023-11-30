@@ -16,7 +16,7 @@ interface PpProps {
   basepath?: string;
 }
 
-export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
+export const BamDownloadWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(
     useCoreSelector(selectCurrentCohortFilters),
   );
@@ -100,6 +100,7 @@ interface BamArg {
   host: string;
   gdcbamslice: GdcBamSlice;
   filter0: FilterSet;
+  stream2download?: boolean;
 }
 
 type GdcBamSlice = {
@@ -113,7 +114,6 @@ function getBamTrack(props: PpProps, filter0: any) {
     host: props.basepath || (basepath as string),
     gdcbamslice: {
       hideTokenInput: true,
-      stream2download: props.stream2download || false,
     },
     filter0,
   };
