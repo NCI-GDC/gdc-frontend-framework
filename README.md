@@ -1,6 +1,5 @@
 # GDC Frontend Framework
 
-
 ## Installation
 
 ### Prerequisites
