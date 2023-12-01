@@ -5,7 +5,7 @@ import re
 
 from datetime import datetime as dt
 
-from getgauge.python import step, before_spec, after_spec, data_store
+from getgauge.python import step, before_spec, after_spec, before_suite, data_store
 
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
@@ -17,10 +17,27 @@ from ....base.utility import Utility
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
 
-@before_spec
+@before_suite
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
+
+@before_suite
+def navigate_to_app():
+    APP.navigate()
+    APP.warning_modal.accept_warning()
+
+@before_suite
+def setup_test_run():
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.cohort_bar.click_cohort_bar_button("Save")
+    APP.shared.send_text_into_search_bar("First Cohort", "Input field for new cohort name")
+    APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+    APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
+    time.sleep(1)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @after_spec
 def setup_next_spec_run():
@@ -351,6 +368,7 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Validate the message <message_id> displays the text <expected_text>")
 def validate_message_id_text_is_present_on_the_page(message_id:str, expected_text: str):
