@@ -324,11 +324,7 @@ export const SearchInput: React.FC = () => {
                 out of {filteredResults.length} for: <b>{searchTerm}</b>
               </P>
 
-              <ul
-                className="mb-4"
-                id={comboboxlistId}
-                tabIndex={0} // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
-              >
+              <ul className="mb-4" id={comboboxlistId}>
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result, index) => {
