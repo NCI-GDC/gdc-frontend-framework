@@ -390,7 +390,7 @@ const handleFiltersForSet = createAsyncThunk<
   },
 );
 
-export const REQUIRES_CASE_SET_FILTERS = ["genes.", "ssms."];
+export const REQUIRES_CASE_SET_FILTERS = [];
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
