@@ -495,7 +495,6 @@ const CohortManager: React.FC = () => {
                       disabled: !currentCohort?.saved,
                     },
                   ]}
-                  customDataTestId="saveButton"
                   LeftIcon={<SaveIcon size="1.5em" aria-label="Save cohort" />}
                   TargetButtonChildren=""
                   fullHeight
