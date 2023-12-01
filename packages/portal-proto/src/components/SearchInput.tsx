@@ -391,7 +391,7 @@ export const SearchInput: React.FC = () => {
                             onClick={() => clickResult(result)}
                             id={`${comboboxItemId}${index}`}
                             {...extraAttributes}
-                            aria-label={result.name}
+                            aria-label={`${result.name} Category: ${result.category}`}
                           >
                             <div className="p-2 leading-5">
                               <b>
