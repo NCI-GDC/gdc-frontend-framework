@@ -9,6 +9,13 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@step("Navigate to Analysis Center via URL")
+def navigate_to_analsis_center_via_url():
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
 @step("Validate featured tools navigation")
 def navigation_bar_icon_check():
     Result = APP.analysis_center_page.featured_tools_navigation_check()
