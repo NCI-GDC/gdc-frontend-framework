@@ -7,22 +7,22 @@ This guide will detail the process of developing applications for the GDC Portal
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Overview of an Application](#overview-of-an-application)
-- [Local vs Global Filters](#local-vs-global-filters)
-- [Cohorts and Filters](#cohorts-and-filters)
-- Local vs Global Filters
-- Querying the API
-  - Cohorts
-  - Filters
+  - [Overview of an Application](#overview-of-an-application)
+  - [Local vs Global Filters](#local-vs-global-filters)
+  - [Cohorts and Filters](#cohorts-and-filters)
+- Using the Portal Application API
   - Case Information
   - File Information
   - Sets: Gene, SSMS, and Case
   - Creating cohorts
   - Creating Sets
+  - Count Information
+  - Component Library
 - Application Development
   - Local Filters
   - Local State
   - Persisting State
+  - Source code layout
 - Sample Application
 - [Appendix](#appendix)
   - Using selectors and hooks
@@ -47,7 +47,7 @@ The GDC Portal also provides a framework for developing applications that can be
 
 Applications are High Order Components (HOC) that are rendered in the Analysis Center. The portal major functions
 like Project, Downloads, and Protein Paint are all applications. Each application handles a specific task and can be used to 
-refine and analyze cohorts. Applications have access to all of the current cohort information and can use that information
+refine and analyze cohorts. Applications have access to all the current cohort information and can use that information
 to query the GDC API for additional information. 
 
 Local and Cohort filters are available to applications. Local filters are filters that are specific to the application, and 
@@ -56,17 +56,21 @@ most common. For example in the Mutation Frequency application, the local filter
 below the local filters are highlighted in yellow. These filter are used to refine the input cohort allowing users to 
 drill down to specific genes and mutation types of interest in the cohort.
 
-![Mutation Frequency](./images/mutation_frequency.png)
+![Mutation Frequency](./images/mutation_frequency_app.png)
 
 ### Local vs Global Filters
 
-Application input can be anything including a single cohort or multiple cohorts. Application then can either add filter 
-to refine the cohort by adding filters, create additional cohorts, or display the data in a visualization.
+A Portal application's input can be anything including a single cohort or multiple cohorts. Application then can either add filter 
+to refine the cohort by adding filters, create additional cohorts, or display the data in a visualization. Applications typlically 
+have:
+* local filters that are used to refine the data displayed in the application.
+* UI components that are used to display the data in the application.
+* State that is used to store the data displayed in the application.
+* Actions that are used to update the state of the application.
 
+Applications can also create new cohorts. These cohorts can be used by other Portal applications.
 
-
-add Figure of FLow through an Application
-
+![Structure of an Application](./images/application_structure.png)
 
 ## Cohorts and Filters
 
@@ -94,7 +98,7 @@ interface FilterSet {
   root: Record<string,Operation >; // map of filter name to filter operation
 }
 ```
-Operation is a GDC filter as described in [GDC API Guide](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query) :
+Operation are GDC API filters described in [GDC API Guide](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query). These are:
 * Equals
 * NotEquals
 * LessThan
@@ -109,13 +113,93 @@ Operation is a GDC filter as described in [GDC API Guide](https://docs.gdc.cance
 * Intersection
 * Union
 
+The `root` field is a map of filter name (as defined in the GDC API) to filter operation. The filter operation can be either a single operation
+or a `FilterSet` object. The `op` field will eventually support either `and` or `or`, however at this time only `and` is supported. The `and` operator is used to combine filters using the `and` operator. The `or` operator is used to combine
+filters using the `or` operator. The `FilterSet` object is converted to the appropriate format for the GDC API when the cohort is saved.
+When using the GDC REST API, the FilterSet can be converted into the appropriate format using the `filterSetToOperation` function. 
+When using the GDC GraphQL API, the FilterSet can be using the `convertFilterSetToGraphQL` function. The API guide will provide information
+on what format the filters should be in for the API. Also as the code is in TypeScript, the IDE will provide information on the format as well.
+
+
+### Getting Cohort Information
 
 The current active cohort can be accessed via the selector `selectCurrentCohort`. This selector returns the current cohort,
-which is the cohort that is currently being displayed in the Cohort Management Bar. 
+which is the cohort that is currently being displayed in the Cohort Management Bar. Accessing the current cohort is done via the
+selector:
 
-Add example of getting the cohort from the @gff/core
+```typescript
+import {useCoreSelector,  selectCurrentCohort } from '@gff/core';
 
-Add example of FilterSet
+const currentCohort = useSelector(selectCurrentCohort);
+```
+
+By using the selector, the component/application will be updated when the cohort changes. There are also selectors for getting a particular field from the cohort. For example, to get the cohort name, the selector `selectCurrentCohortName` can be used. The selectors are:
+
+```typescript
+selectCurrentCohort
+selectCurrentCohortName
+selectCurrentCohortId
+selectCurrentCohortFilters
+selectCurrentCohortModified
+selectCurrentCohortModifiedDatetime
+selectCurrentCohortSaved
+selectCurrentCohortCounts
+```
+The current active filters can be accessed via the selector `selectCurrentCohortFilters`. This selector returns the current filters,
+which are the filters that are currently being displayed in the Cohort Management Bar. Accessing the current filters is done via the
+selector:
+
+```typescript
+import {useCoreSelector,  selectCurrentFilters } from '@gff/core';
+
+const currentFilters = useSelector(selectCurrentCohortFilters);
+```
+
+By using the selector, the application will be updated when the filters change. The filters are returned as a `FilterSet` object described above.
+
+All the cohorts can be selected using the selector `selectAllCohorts`. This selector returns all the cohorts in the store. Accessing all the cohorts is done via the selector:
+
+```typescript 
+import {useCoreSelector,  selectAllCohorts } from '@gff/core';
+  
+const allCohorts = useSelector(selectAllCohorts);
+```
+# Using the Portal Application API
+
+The GDC Portal provides a number of hooks for querying the GDC API. These hooks are located in the `@gff/core` package.
+The hooks are designed to work in a manner similar to the RTL Query hooks. The hooks take arguments and return a object.
+The object contains the data and the status of the query. The status of the query is stored in the `isSuccess` variable.
+The @gff/core package also provides a set of selector that return values stored in the core redux store: `CoreStore`.
+
+There are a number of hooks and selectors that are available for querying the GDC API, a subset of which are shown below:
+
+![hooks and selectors](./images/hooks_and_selectors.png)
+
+[comment]: <> (TODO: Add more hooks and selectors)
+
+
+# Application Development
+
+## Getting started
+
+The GDC Portal V2 is a monorepo that contains all the code for the GDC Portal. The monorepo is managed using [lerna](https://lerna.js.org) and [npm]().
+The monorepo contains the following packages:
+
+* `@gff/core` - contains the core components and hooks for the GDC Portal.
+* `@gff/portal-proto` - contains the UI components and application framework (using NextJS) for the GDC Portal.
+
+Note that the UI components are located in the `@gff/portal-proto` package will be refactored into a separate package in the future, and 
+`@gff/portal-proto` will be renamed to `@gff/portal`.
+
+You can get started by cloning the repo and following the instructions in the [README.md](https://github.com/NCI-GDC/gdc-frontend-framework/blob/develop/README.md) file.
+
+
+## Source code layout
+
+![source code layout](./images/app_source_code_layout_fig.png)
+
+# Sample Application
+
 
 # Appendix
 
@@ -123,7 +207,7 @@ Add example of FilterSet
 
 Although a complete guide to react hooks and selectors are out of scope for this document, we will provide a brief overview 
 of how to use them for application development. For more information on hooks and selectors please see the 
-[React Hooks](https://reactjs.org/docs/hooks-intro.html. As we are using Redux-toolkit, we will be using the calls 
+[React Hooks](https://reactjs.org/docs/hooks-intro.html). As we are using Redux-toolkit, we will be using the calls 
 describe in the [Redux Toolkit](https://redux-toolkit.js.org/tutorials/typescript) documentation.
 
 ### Selectors
