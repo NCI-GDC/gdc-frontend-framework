@@ -287,7 +287,7 @@ export const SearchInput: React.FC = () => {
                 aria-controls={comboboxlistId}
               >
                 <P>Related Categories</P>
-                <ul className="flex flex-wrap gap-1 my-2 gap-y-0">
+                <ul className="flex flex-wrap gap-x-1 my-2">
                   {uniq(searchResults.map((result) => result.category)).map(
                     (cat) => {
                       const selected = filteredCategories.includes(cat);
@@ -384,7 +384,7 @@ export const SearchInput: React.FC = () => {
                             tooltip: "text-black drop-shadow-md rounded-none",
                           }}
                           offset={17}
-                          opened={activedescendant === index ? true : undefined}
+                          opened={activedescendant === index}
                         >
                           <BtnWithHoverCallout
                             tabIndex={-1}
