@@ -29,11 +29,18 @@ def navigate_to_app():
 
 @before_suite
 def setup_test_run():
+    """
+    Before the start of tests this function will run once. When accessing the data portal for the
+    first time, an unsaved cohort will be created. There can only be one unsaved cohort in the
+    data portal at a time. That means the user cannot create another cohort (in the cohort bar), until
+    the initial one has been saved. This function saves that initial cohort so subsequent tests can run, as some
+    depend on a starting condition that they be able to create a cohort.
+    """
     APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.cohort_bar.click_cohort_bar_button("Save")
-    APP.shared.send_text_into_search_bar("First Cohort", "Input field for new cohort name")
+    APP.shared.send_text_into_search_bar("never_use_this_cohort_name", "Input field for new cohort name")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
     time.sleep(1)
@@ -42,7 +49,7 @@ def setup_test_run():
 @after_spec
 def setup_next_spec_run():
     """
-    After each spec file's execution, this function will run. The intention is to
+    After each spec file's execution this function will run. The intention is to
     clear the active cohort filters and setup the next spec run.
 
     First, we go to the analysis center. If a test found a bug in the data portal the next test
