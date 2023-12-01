@@ -94,7 +94,7 @@ interface FilterSet {
   root: Record<string,Operation >; // map of filter name to filter operation
 }
 ```
-Operation is a GDC filter as described in [](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query) :
+Operation is a GDC filter as described in [GDC API Guide](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query) :
 * Equals
 * NotEquals
 * LessThan
