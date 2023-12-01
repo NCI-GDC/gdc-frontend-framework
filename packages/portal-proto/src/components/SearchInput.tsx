@@ -384,7 +384,7 @@ export const SearchInput: React.FC = () => {
                             tooltip: "text-black drop-shadow-md rounded-none",
                           }}
                           offset={17}
-                          opened={activedescendant === index}
+                          opened={activedescendant === index ? true : undefined} // this is to preserve default mouse behavior
                         >
                           <BtnWithHoverCallout
                             tabIndex={-1}
