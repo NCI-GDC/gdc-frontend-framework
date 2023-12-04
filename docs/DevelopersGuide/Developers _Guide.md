@@ -705,13 +705,108 @@ export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
 
 ## Component Library
 
+As a developer you will likely want to use the components provided by the GDC Portal. The GDC Portal provides a number of components
+that make it easy to develop applications for the GDC Portal. These components are located in the `@gff/portal-proto` package. 
+In a number of components, the GDC Portal uses the [Mantine](https://mantine.dev/) component library but base components
+and encapulates call to the GDC API so that you do not have to. 
+
 ### Buttons
 
-### Tooltips
+The GDC Portal provides a number of buttons that can be used for various purposes. These buttons are located in the `@gff/portal-proto` package.
+The buttons are:
+
+* `DownloadButton` - a button that can be used to download data from the GDC API.
+* `SaveCohortButton` - a button that can be used to save a cohort.
+
+The `DownloadButton` component is used in the repository application to download data from the GDC API. The `DownloadButton` component takes a number of arguments:
+
+```tsx
+
+<DownloadButton
+        inactiveText={`Download ${numFilesCanAccess} Authorized File${
+                numFilesCanAccess !== 1 ? "s" : ""
+        }`}
+        activeText=""
+        disabled={
+                numFilesCanAccess === 0 ||
+                (user.username && dbGapList.length > 0 && !checked)
+        }
+        endpoint="data"
+        extraParams={{
+          ids: (filesByCanAccess?.true || []).map((file) => file.file_id),
+          annotations: true,
+          related_files: true,
+        }}
+        method="POST"
+        setActive={setActive}
+/>
+
+```
+
+The parameters for the DownloadButton are defined in the Portal V2 SDK API documentation. The `DownloadButton` component will take care of
+calling the GDC API and downloading the data. The `DownloadButton` component will also provide status that can be used with
+a progress bar or spinner to display the progress of the download.
+
+The `SaveCohortButton` component is used in the repository application to save a cohort.
+![img.png](images/create_cohort_button.png)
+The `SaveCohortButton` component takes a number of arguments:
+
+```tsx
+
+<CohortCreationButton
+        numCases={cohort1Count}
+        label={cohort1Count.toLocaleString()}
+        filtersCallback={async () =>
+                generateFilters(caseSetIds[0], caseSetIds[1])
+        }
+/>
+```
+
+The CohortCreationButton component will show the number of selected cases and will create a new saved cohort 
+when the button is clicked. The `filtersCallback` is a function that returns the filters for the cohort. 
 
 ### Modals
 
+Modals are used to show transitory information or obtain information from the user. The GDC Portal provides a number of 
+modals that can be used for various purposes. One such modal is the `SaveCohortModal` component mentioned previously.
+
+![img.png](images/save_cohort_modal.png)
+
+* `SaveCohortModal` - a modal that can be used to save a cohort.
+* Various modals for displaying information on Sets:
+  * `CaseSetModal`
+  * `GeneSetModal`
+  * `MutationSetModal`
+* `SaveOrCreateEntityModal` - a modal that can be used to save or create a new entity.
+
+The modals are documented in the Portal V2 SDK API documentation.
+
 ### Charts
+
+Basic charts are provided for use in application, although applications are free to use any charting library they wish. 
+The charts provided are:
+
+* `BarChart` - a bar chart
+
+  ![Bar Chart](images/primary_site.png)
+
+* `Cancer Distribution` - a cancer distribution chart
+    
+  ![cancer distribution](images/most-frequently-mutated-genes-bar-chart.png)
+
+* `BoxPlot` - a box plot
+  
+  ![box plot](images/age_at_diagnosis-box-plot-2023-12-04.png)
+
+* `QQPlot` - a QQ plot
+  
+  ![qq plot](images/age_at_diagnosis-qq-plot-2023-12-04.png)
+
+* `SurvivalPlot` - a survival plot
+  
+  ![survival plot](images/survival_plot.png)
+
+The charts are documented in the Portal V2 SDK API documentation.
 
 ### Facets
 
