@@ -484,8 +484,72 @@ number of functions for creating a new cohort. It is highly recommended that app
 SaveCohortModal components to create a new cohort. The Button and SaveCohortModal components are located in 
 the `@gff/portal-proto` package.
 
+To create a cohort using the SaveCohortModal component the follow code can be used:
+
+```tsx
+import React, { useState } from "react";
+import { Button, Tooltip } from "@mantine/core";
+import { CountsIcon } from "@/components/tailwindComponents";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+
+const ProjectsCohortButton = ({ pickedProjects }: { pickedProjects: string[];  }): JSX.Element => {
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
+
+  return (
+          <>
+            <Tooltip label="Save a new cohort of cases in selected project(s)" withArrow  > 
+            <span>
+              <Button
+                variant="outline"
+                color="primary"
+                disabled={pickedProjects.length == 0}
+                leftIcon={
+                  pickedProjects.length ? (
+                          <CountsIcon $count={pickedProjects.length}>
+                                  {pickedProjects.length}{" "}
+                          </CountsIcon>
+                ) : null
+                }
+                onClick={() => setShowSaveCohort(true)}
+                className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary">
+                Save New Cohort
+              </Button>
+            </span>
+          </Tooltip>
+          {showSaveCohort && ( 
+            <SaveCohortModal onClose={() => setShowSaveCohort(false)}
+              filters={{
+              mode: "and",
+                      root: {
+                "cases.project.project_id": {
+                  operator: "includes",
+                          field: "cases.project.project_id",
+                          operands: pickedProjects,
+                },
+              },
+            }} 
+            />
+          )}
+    </>
+);};
+````
+In summary the above code flow is:
+
+1. The ProjectsCohortButton component renders a button with the label "Save New Cohort".
+2. When the button is clicked, it sets the state variable `showSaveCohort` to true, which triggers the rendering of the `SaveCohortModal` component.
+3. The `SaveCohortModal` component passed:
+   * an onClose function that sets the showSaveCohort state variable to false. 
+   * a filters prop, which is an object defining the filters for the cohort based on the selected projects.
+4. The `SaveCohortModal` will use the passed filter to create, name and save the cohort when the save button is clicked. 
+
+Additional details on the `SaveCohortModal` component can be found in the [Component Library](#component-library) section.
+
 
 ## Altering a cohort
+
+Altering a cohort is done by dispatching actions o add, remove, or clear filters. The following actions are available 
+for altering a cohort:
+
 
 ## Count Information
 
