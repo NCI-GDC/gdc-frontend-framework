@@ -153,16 +153,16 @@ const currentCohort = useSelector(selectCurrentCohort);
 
 By using the selector, the component/application will be updated when the cohort changes. There are also selectors for getting a particular field from the cohort. For example, to get the cohort name, the selector `selectCurrentCohortName` can be used. The selectors are:
 
-```typescript
-selectCurrentCohort
-selectCurrentCohortName
-selectCurrentCohortId
-selectCurrentCohortFilters
-selectCurrentCohortModified
-selectCurrentCohortModifiedDatetime
-selectCurrentCohortSaved
-selectCurrentCohortCounts
-```
+
+* `selectCurrentCohort`
+* `selectCurrentCohortName`
+* `selectCurrentCohortId`
+* `selectCurrentCohortFilters`
+* `selectCurrentCohortModified`
+* `selectCurrentCohortModifiedDatetime`
+* `selectCurrentCohortSaved`
+* `selectCurrentCohortCounts`
+
 The current active filters can be accessed via the selector `selectCurrentCohortFilters`. This selector returns the current filters,
 which are the filters that are currently being displayed in the Cohort Management Bar. Accessing the current filters is done via the
 selector:
@@ -416,12 +416,12 @@ The GDC Portal provides a number of hooks for creating and querying set informat
 
 a set can be created using one of the following hooks:
 
-* useCreateGeneSetFromValuesMutation
-* useCreateSsmsSetFromValuesMutation
-* useCreateCaseSetFromValuesMutation
-* useCreateGeneSetFromFiltersMutation
-* useCreateSsmsSetFromFiltersMutation
-* useCreateCaseSetFromFiltersMutation
+* `useCreateGeneSetFromValuesMutation`
+* `useCreateSsmsSetFromValuesMutation`
+* `useCreateCaseSetFromValuesMutation`
+* `useCreateGeneSetFromFiltersMutation`
+* `useCreateSsmsSetFromFiltersMutation`
+* `useCreateCaseSetFromFiltersMutation`
 
 The will create a set from either a list of values or a filter set. The create from Values hooks take a single 
 parameter `values` which is a array of values, while the create from filters hooks take one required parameter `filters`
@@ -453,29 +453,29 @@ As the above hook are Redux Toolkit Query hooks, namely mutation hooks, they ret
  ```
 
 Once a set is created it can be altered using the following hooks:
-* useAppendToGeneSetMutation
-* useAppendToSsmSetMutation
-* useRemoveFromGeneSetMutation
-* useRemoveFromSsmSetMutation
+* `useAppendToGeneSetMutation`
+* `useAppendToSsmSetMutation`
+* `useRemoveFromGeneSetMutation`
+* `useRemoveFromSsmSetMutation`
 
 Set can be managed using the following actions:
 
-* addSet
-* removeSet
-* updateSet
+* `addSet`
+* `removeSet`
+* `updateSet`
 
 The following selectors are available for getting set information:
 
-* selectAllSets
-* selectSetById
-* selectSetByName
-* selectSetByType
+* `selectAllSets`
+* `selectSetById`
+* `selectSetByName`
+* `selectSetByType`
 
 Finally  the following hooks are available for querying set size:
 
-* useGeneSetCountsQuery
-* useSsmSetCountsQuery
-* useCaseSetCountsQuery
+* `useGeneSetCountsQuery`
+* `useSsmSetCountsQuery`
+* `useCaseSetCountsQuery`
 
 ## Creating a cohort
 
@@ -542,16 +542,166 @@ In summary the above code flow is:
    * a filters prop, which is an object defining the filters for the cohort based on the selected projects.
 4. The `SaveCohortModal` will use the passed filter to create, name and save the cohort when the save button is clicked. 
 
-Additional details on the `SaveCohortModal` component can be found in the [Component Library](#component-library) section.
+Additional details on the `SaveCohortModal` component can be found in the [Component Library](#component-library) section as
+well as buttons to create a saved cohort.
 
 
 ## Altering a cohort
 
 Altering a cohort is done by dispatching actions o add, remove, or clear filters. The following actions are available 
-for altering a cohort:
+for altering the current cohort:
+
+* `updateCohortFilter`
+* `removeCohortFilter`
+* `clearCohortFilters`
+
+Note that all of these operation are applied to the current cohort. The current cohort is the cohort that is currently
+being displayed in the Cohort Management Bar. The current cohort can be accessed via the `selectCurrentCohort` selector.
+The current cohort's filters can be accessed via the `selectCurrentCohortFilters` selector.
+
+#### Updating, removing, and clearing filters
+
+to update the current selected cohort's filter, the `updateCohortFilter` action can be used. The `updateCohortFilter` action takes two arguments:
+```typescript
+
+interface UpdateFilterParams {
+  field: string;
+  operation: Operation;
+}
+
+```
+where `field` is the field to update and `operation` is the operation to apply to the field. For example to update the 
+`cases.project.project_id` field to include the project `TCGA-ACC` the following code can be used:
+
+```typescript
+import { useCoreDispatch, updateCohortFilter } from '@gff/core';
+
+const coreDispatch = useCoreDispatch();
+
+coreDispatch(updateCohortFilter({
+  field: "cases.project.project_id",
+  operation: {
+    op: "in",
+    content: {
+      field: "cases.project.project_id",
+      value: ["TCGA-ACC"],
+    },
+  },
+}));
+```
+
+This will update the current cohort's filter to include the project `TCGA-ACC`. The `removeCohortFilter` action can be used to remove a filter from the current cohort. The `removeCohortFilter` action takes a single argument:
+```typescript
+
+interface RemoveFilterParams {
+  field: string;
+}
+
+```
+where `field` is the field to remove. For example to remove the `cases.project.project_id` field from the current cohort's filter the following code can be used:
+
+```typescript
+import { useCoreDispatch, removeCohortFilter } from '@gff/core';
+
+const coreDispatch = useCoreDispatch();
+
+coreDispatch(removeCohortFilter({
+  field: "cases.project.project_id",
+}));
+```
+
+This will remove the `cases.project.project_id` field from the current cohort's filter. The `clearCohortFilters` action can be used to clear all the filters from the current cohort. The `clearCohortFilters` action takes no arguments. For example to clear all the filters from the current cohort the following code can be used:
+
+```typescript
+import { useCoreDispatch, clearCohortFilters } from '@gff/core';
+
+const coreDispatch = useCoreDispatch();
+
+coreDispatch(clearCohortFilters());
+```
+
+This will clear all the filters from the current cohort.
+
+#### Updating the cohort name
+
+The cohort name can be updated using the `updateCohortName` action. The `updateCohortName` action takes a single argument:
+```typescript 
+  
+interface UpdateCohortNameParams {
+  name: string;
+}
+
+```
+where `name` is the new name for the cohort. For example to update the current cohort's name to `My Cohort` the following code can be used:
+
+```typescript
+import { useCoreDispatch, updateCohortName } from '@gff/core';
+
+const coreDispatch = useCoreDispatch();
+
+coreDispatch(updateCohortName({
+  name: "My Cohort",
+}));
+```
+
+This will update the current cohort's name to `My Cohort`.
+
+#### Setting the current cohort
+
+The current cohort can be set using the `setCurrentCohort` action. The `setCurrentCohort` action takes a single argument:
+```typescript
+
+interface SetCurrentCohortParams {
+  cohortId: string;
+}
+
+```
+where `cohortId` is the id of the cohort to set as the current cohort. For example to set the cohort with id `1234` as the current cohort the following code can be used:
+
+```typescript
+import { useCoreDispatch, setCurrentCohort } from '@gff/core';
+
+const coreDispatch = useCoreDispatch();
+
+coreDispatch(setCurrentCohort({
+  cohortId: "1234",
+}));
+``` 
+
+This will set the cohort with id `1234` as the current cohort.
 
 
 ## Count Information
+
+Counts information can be queried using the `useTotalCounts` hook. This hook takes a number of arguments:
+
+```typescript
+import { useTotalCounts } from "@gff/core";
+
+const { data, isFetching, isSuccess, isError } = useTotalCounts();
+```
+
+this will return the total counts for the GDC. The data in the response is of the form:
+
+```typescript
+interface TotalCounts {
+  counts: {
+    caseCounts: number;
+    fileCounts: number;
+    genesCounts: number;
+    mutationCounts: number;
+    repositoryCaseCounts: number;
+    projectsCounts: number;
+    primarySiteCounts: number;
+  },
+  status: DataStatus;
+}
+```
+where `DataStatus` is defined as:
+
+```typescript
+export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
+```
 
 ## Component Library
 
