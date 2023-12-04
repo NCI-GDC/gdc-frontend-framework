@@ -16,6 +16,7 @@ import {
   buildGqlOperationToFilterSet,
   NullCountsData,
   useLazyGetCohortByIdQuery,
+  discardCohortChanges,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -52,14 +53,18 @@ const SaveCohortModal = ({
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
-    let saveAsFilters = undefined;
 
     if (saveAs) {
-      // Should use the saved filters of the existing cohort and discard any local changes
+      // Should discard local changes from current cohort when saving as
       await fetchSavedFilters(cohortId)
         .unwrap()
         .then((payload) => {
-          saveAsFilters = payload.filters;
+          coreDispatch(
+            discardCohortChanges({
+              filters: buildGqlOperationToFilterSet(payload.filters),
+              showMessage: false,
+            }),
+          );
         });
     }
 
@@ -67,9 +72,7 @@ const SaveCohortModal = ({
       name: newName,
       type: "static",
       filters:
-        saveAsFilters !== undefined
-          ? saveAsFilters
-          : Object.keys(filters.root).length > 0
+        Object.keys(filters.root).length > 0
           ? buildCohortGqlOperator(filters)
           : {},
     };
@@ -116,17 +119,24 @@ const SaveCohortModal = ({
               modified: false,
             }),
           );
-          if (setAsCurrent) {
+          if (saveAs) {
             coreDispatch(setCurrentCohortId(payload.id));
             coreDispatch(
-              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
             );
           } else {
-            coreDispatch(
-              setCohortMessage([
-                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
-              ]),
-            );
+            if (setAsCurrent) {
+              coreDispatch(setCurrentCohortId(payload.id));
+              coreDispatch(
+                setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+              );
+            } else {
+              coreDispatch(
+                setCohortMessage([
+                  `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+                ]),
+              );
+            }
           }
           coreDispatch(fetchCohortCaseCounts(payload.id));
         }

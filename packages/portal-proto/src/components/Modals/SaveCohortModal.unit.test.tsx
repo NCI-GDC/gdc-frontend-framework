@@ -79,21 +79,30 @@ describe("SaveCohortModal", () => {
     expect(setCurrentCohortMock).toBeCalledWith("2");
   });
 
-  test("save as cohort uses the existing cohort's saved filters", async () => {
+  test("save as cohort discards unsaved changes from current cohort", async () => {
     const mockRetrieveFilters = jest.fn().mockReturnValue({
       unwrap: jest.fn().mockResolvedValue({
         filters: {
-          content: {
-            field: "cases.primary_site",
-            value: ["bronchus and lung"],
-          },
-          op: "in",
+          op: "and",
+          content: [
+            {
+              content: {
+                field: "cases.primary_site",
+                value: ["bronchus and lung"],
+              },
+              op: "in",
+            },
+          ],
         },
       }),
     });
     jest
       .spyOn(core, "useLazyGetCohortByIdQuery")
       .mockReturnValue([mockRetrieveFilters] as any);
+    const mockDiscardChanges = jest.fn();
+    jest
+      .spyOn(core, "discardCohortChanges")
+      .mockImplementation(mockDiscardChanges);
     const mockMutation = jest.fn().mockReturnValue({
       unwrap: jest.fn().mockResolvedValue({
         id: "2",
@@ -123,16 +132,34 @@ describe("SaveCohortModal", () => {
 
     await userEvent.type(getByText("Name"), "my new cohort");
     await userEvent.click(getByText("Save"));
+    expect(mockDiscardChanges).toBeCalledWith({
+      filters: {
+        root: {
+          "cases.primary_site": {
+            field: "cases.primary_site",
+            operands: ["bronchus and lung"],
+            operator: "includes",
+          },
+        },
+        mode: "and",
+      },
+      showMessage: false,
+    });
     expect(mockMutation).toBeCalledWith({
       cohort: {
         name: "my new cohort",
         type: "static",
         filters: {
-          content: {
-            field: "cases.primary_site",
-            value: ["bronchus and lung"],
-          },
-          op: "in",
+          op: "and",
+          content: [
+            {
+              content: {
+                field: "projects.program.name",
+                value: ["TCGA"],
+              },
+              op: "in",
+            },
+          ],
         },
       },
       delete_existing: false,

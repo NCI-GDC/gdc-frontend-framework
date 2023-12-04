@@ -142,7 +142,7 @@ const CohortManager: React.FC = () => {
 
   const discardChanges = useCallback(
     (filters: FilterSet | undefined) => {
-      coreDispatch(discardCohortChanges(filters));
+      coreDispatch(discardCohortChanges({ filters, showMessage: true }));
     },
     [coreDispatch],
   );
@@ -495,7 +495,13 @@ const CohortManager: React.FC = () => {
                       disabled: !currentCohort?.saved,
                     },
                   ]}
-                  LeftIcon={<SaveIcon size="1.5em" aria-label="Save cohort" />}
+                  LeftIcon={
+                    <SaveIcon
+                      size="1.5em"
+                      aria-label="Save cohort"
+                      className="-mr-2.5"
+                    />
+                  }
                   TargetButtonChildren=""
                   fullHeight
                   disableTargetWidth
