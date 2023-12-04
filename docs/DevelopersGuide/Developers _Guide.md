@@ -2,7 +2,13 @@
 
 ## Introduction
 
-This guide will detail the process of developing applications for the GDC Portal Version 2.0.
+This guide will detail the process of developing applications for the GDC Portal Version 2.0. It describes the
+structure of the GDC Portal, how to use the GDC Portal API, and how to develop applications for the GDC Portal.
+
+The GDC Portal is designed to support the development of applications that allow for analysis, visualization,
+and refinement of cohorts. The GDC Portal is built on top of the [GDC API](https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/),
+which provides access to the GDC data. The GDC Portal provides a framework for developing applications that
+can be used to analyze and visualize data from the GDC. 
 
 ## Table of Contents
 
@@ -11,24 +17,33 @@ This guide will detail the process of developing applications for the GDC Portal
   - [Local vs Global Filters](#local-vs-global-filters)
   - [Cohorts and Filters](#cohorts-and-filters)
 - Using the Portal Application API
-  - Case Information
-  - File Information
+  - [Case Information](#case-information)
+  - [File Information](#file-information)
   - Sets: Gene, SSMS, and Case
   - Creating cohorts
-  - Creating Sets
+  - Altering Cohorts
   - Count Information
   - Component Library
+    - Buttons
+    - Tooltips
+    - VerticalTable
 - Application Development
   - Local Filters
   - Local State
   - Persisting State
   - Source code layout
 - Sample Application
+  - Project center overview
+  - Local filters
+  - Local Store
+  - Project Table
+  - Creating a new cohort
+  - Registration
 - [Appendix](#appendix)
-  - Using selectors and hooks
+  - [Using selectors and hooks](#using-selectors-and-hooks)
     - Selectors
     - Hooks
-  - Querying the GDC API
+  - [Querying the GDC API Directly)](#querying-the-gdc-api-directly)
 
 ## Introduction
 
@@ -175,7 +190,224 @@ There are a number of hooks and selectors that are available for querying the GD
 
 ![hooks and selectors](./images/hooks_and_selectors.png)
 
-[comment]: <> (TODO: Add more hooks and selectors)
+## Case Information
+
+The GDC Portal provides a number of hooks for querying case information. These hooks are located in the `@gff/core` package.
+Cases can be queries using several different methods. The 'useAllCases' hook returns all the cases in the GDC and can be filters
+by the current cohort as shown below:
+
+```typescript
+import { useCoreSelector, useAllCases } from '@gff/core';
+
+...
+
+const [pageSize, setPageSize] = useState(10);
+const [offset, setOffset] = useState(0);
+const [searchTerm, setSearchTerm] = useState<string>("");
+const [sortBy, setSortBy] = useState<SortBy[]>([]);
+const cohortFilters = useCoreSelector((state) =>
+        selectCurrentCohortFilters(state),
+);
+
+
+const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
+  fields: [
+    "case_id",
+    "submitter_id",
+    "primary_site",
+    "disease_type",
+    "project.project_id",
+    "project.program.name",
+    "demographic.gender",
+    "demographic.race",
+    "demographic.ethnicity",
+    "demographic.days_to_death",
+    "demographic.vital_status",
+    "diagnoses.primary_diagnosis",
+    "diagnoses.age_at_diagnosis",
+    "summary.file_count",
+    "summary.data_categories.data_category",
+    "summary.data_categories.file_count",
+    "summary.experimental_strategies.experimental_strategy",
+    "summary.experimental_strategies.file_count",
+    "files.file_id",
+    "files.access",
+    "files.acl",
+    "files.file_name",
+    "files.file_size",
+    "files.state",
+    "files.data_type",
+  ],
+  size: pageSize,
+  filters: cohortFilters,
+  from: offset * pageSize,
+  sortBy: sortBy,
+  searchTerm,
+});
+
+```
+The `useAllCases` hook takes a number of arguments:
+* `fields` - the fields to return from the GDC API
+* `size` - the number of cases to return
+* `filters` - the filters to apply to the cases
+* `from` - the starting index of the cases to return
+* `sortBy` - the fields to sort the cases by
+* `searchTerm` - the search term to use to search the cases
+
+This call is used in the Table view tab of the Cohort Management Bar. 
+
+Information for a single case can be queried using the `useCaseSummary` hook. This call is used in the caseView page: 
+[portal.gdc.cancer.gov/cases/5693302a-4548-4c0b-8725-0cb7c67bc4f8](https://portal.gdc.cancer.gov/cases/5693302a-4548-4c0b-8725-0cb7c67bc4f8)
+
+
+```typescript
+
+
+
+  const { data, isFetching } = useCaseSummary({
+  filters: {
+    content: {
+      field: "case_id",
+      value: case_id,
+    },
+    op: "=",
+  },
+  fields: [
+    "files.access",
+    "files.acl",
+    "files.data_type",
+    "files.file_name",
+    "files.file_size",
+    "files.file_id",
+    "files.data_format",
+    "files.state",
+    "files.created_datetime",
+    "files.updated_datetime",
+    "files.submitter_id",
+    "files.data_category",
+    "files.type",
+    "files.md5sum",
+    "case_id",
+    "submitter_id",
+    "project.name",
+    "disease_type",
+    "project.project_id",
+    "primary_site",
+    "project.program.name",
+    "summary.file_count",
+    "summary.data_categories.file_count",
+    "summary.data_categories.data_category",
+    "summary.experimental_strategies.experimental_strategy",
+    "summary.experimental_strategies.file_count",
+    "demographic.ethnicity",
+    "demographic.demographic_id",
+    "demographic.gender",
+    "demographic.race",
+    "demographic.submitter_id",
+    "demographic.days_to_birth",
+    "demographic.days_to_death",
+    "demographic.vital_status",
+    "diagnoses.submitter_id",
+    "diagnoses.diagnosis_id",
+    "diagnoses.classification_of_tumor",
+    "diagnoses.age_at_diagnosis",
+    "diagnoses.days_to_last_follow_up",
+    "diagnoses.days_to_last_known_disease_status",
+    "diagnoses.days_to_recurrence",
+    "diagnoses.last_known_disease_status"]
+  });
+```
+The `useCaseSummary` hook takes a number of arguments:
+* `fields` - the fields to return from the GDC API
+* `filters` - the filters to apply to the cases and where the caseId is passed in
+
+## File Information
+
+Similar to the case information, the GDC Portal provides a number of hooks for querying file information. These hooks are located in the `@gff/core` package.
+To get a list of file associated with a cohort, the `useGetFilesQuery` hook can be used. This call is used in the repository application. The repository application is used to display the files associated with a cohort. The `useGetFilesQuery` hook takes a number of arguments:
+
+```typescript
+
+import {
+  useCoreDispatch,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  joinFilters,
+  useFilesSize,
+} from "@gff/core";
+
+...
+
+const coreDispatch = useCoreDispatch();
+const [sortBy, setSortBy] = useState<SortBy[]>([]); // states to handle table sorting and pagination
+const [pageSize, setPageSize] = useState(20);
+const [offset, setOffset] = useState(0);
+
+const repositoryFilters = useAppSelector((state) => selectFilters(state)); // as this is a app get the repository filters from the app state (local filters)
+const cohortFilters = useCoreSelector((state) =>    // get the cohort filters from the core state (global filters)
+        selectCurrentCohortFilters(state),
+);
+
+const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
+  case_filters: buildCohortGqlOperator(cohortFilters),
+  filters: buildCohortGqlOperator(repositoryFilters),
+  expand: [
+    "annotations", //annotations
+    "cases.project", //project_id
+    "cases",
+  ],
+  size: pageSize,
+  from: offset * pageSize,
+  sortBy: sortBy,
+});
+
+```
+
+The `useGetFilesQuery` hook takes a number of arguments:
+* `case_filters` - the filters to apply to the cases
+* `filters` - the filters to apply to the files
+* `expand` - the fields to expand
+* `size` - the number of files to return
+* `from` - the starting index of the files to return
+* `sortBy` - the fields to sort the files by
+
+Note this hook was designed to take global filters (e.x the current cohort as `case_filters`) and local filter (the repository filters). 
+
+Information for a single file can be queried using the `useFileSummary` hook. This call is used in the fileView page [portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b](https://portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b)
+
+```typescript
+
+ const { data: { files } = {}, isFetching } = useGetFilesQuery({
+  filters: {
+    op: "=",
+    content: {
+      field: "file_id",
+      value: setCurrentFile,
+    },
+  },
+  expand: [
+    "cases",
+    "cases.annotations",
+    "cases.project",
+    "cases.samples",
+    "cases.samples.portions",
+    "cases.samples.portions.analytes",
+    "cases.samples.portions.slides",
+    "cases.samples.portions.analytes.aliquots",
+    "associated_entities",
+    "analysis",
+    "analysis.input_files",
+    "analysis.metadata.read_groups",
+    "downstream_analyses",
+    "downstream_analyses.output_files",
+    "index_files",
+  ],
+});
+```
+The `useFileSummary` hook takes a number of arguments:
+* `filters` - the filters to apply to the cases and where the file uuid is passed in
+* `expand` - the fields to expand
 
 
 # Application Development
@@ -256,4 +488,4 @@ where `data` is the data returned from the query, `isSuccess` is a boolean indic
 is a boolean indicating if the query is currently loading, `isError` is a boolean indicating if the query resulted in an error,
 and `error` is the error returned from the query.
 
-## Querying the GDC API
+## Querying the GDC API Directly
