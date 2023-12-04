@@ -23,7 +23,8 @@ const GeneCancerDistributionTable: React.FC<
       isSuccess={isSuccess}
       symbol={symbol}
       id={gene}
-      contextFilters={contextFilters}
+      genomicFilters={genomicFilters}
+      cohortFilters={cohortFilters}
       isGene
     />
   );

@@ -83,15 +83,14 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 
 /**
  * Trigger a download by attaching an iFrame to the document with the parameters of the request as fields in a form
- * @param endpoint endpoint to be attached with  GDC AUTH API
- * @param params body to be attached with post request
- * @param method Request Method: GET, PUT, POST
- * @param dispatch dispatch send from the parent component to dispatch Modals
- * @param done callback function to be called after the download has been initiated
- * @param Modal400 Modal for 400 error
- * @param Modal403 Modal for 403 error
- * @param customErrorMessage custom mesage to be passed for 400 errors
- * @return Promise<void>
+ * @param endpoint - endpoint to be attached with  GDC AUTH API
+ * @param params - body to be attached with post request
+ * @param method - Request Method: GET, PUT, POST
+ * @param dispatch - dispatch send from the parent component to dispatch Modals
+ * @param done - callback function to be called after the download has been initiated
+ * @param Modal400 - Modal for 400 error
+ * @param Modal403 - Modal for 403 error
+ * @param customErrorMessage - custom mesage to be passed for 400 errors
  */
 
 const download = async ({

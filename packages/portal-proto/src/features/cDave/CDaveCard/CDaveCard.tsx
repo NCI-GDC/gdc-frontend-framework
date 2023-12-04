@@ -15,6 +15,7 @@ import {
   GqlOperation,
 } from "@gff/core";
 import SegmentedControl from "@/components/SegmentedControl";
+import { DownloadProgressContext } from "@/utils/contexts";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes, DataDimension } from "../types";
@@ -42,6 +43,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   cohortFilters,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
+  const [downloadInProgress, setDownloadInProgress] = useState(false);
   const { scrollIntoView, targetRef } = useScrollIntoView();
   const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
@@ -141,13 +143,13 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                 DATA_DIMENSIONS?.[field]?.unit,
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
-              disabled={noData}
+              disabled={noData || downloadInProgress}
             />
           )}
           <SegmentedControl
             data={chartButtons}
             onChange={(c) => setChartType(c as ChartTypes)}
-            disabled={noData}
+            disabled={noData || downloadInProgress}
           />
           <Tooltip
             label={"Remove Card"}
@@ -166,29 +168,33 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
           </Tooltip>
         </div>
       </div>
-      {noData ? (
-        <div className="h-[32.1rem] w-full flex flex-col justify-start">
-          <p className="mx-auto my-2">No data for this property</p>
-        </div>
-      ) : continuous ? (
-        <ContinuousData
-          initialData={(data as Stats)?.stats}
-          field={field}
-          fieldName={fieldName}
-          chartType={chartType}
-          noData={noData}
-          cohortFilters={cohortFilters}
-          dataDimension={dataDimension}
-        />
-      ) : (
-        <CategoricalData
-          initialData={(data as Buckets)?.buckets}
-          field={field}
-          fieldName={fieldName}
-          chartType={chartType}
-          noData={noData}
-        />
-      )}
+      <DownloadProgressContext.Provider
+        value={{ downloadInProgress, setDownloadInProgress }}
+      >
+        {noData ? (
+          <div className="h-[32.1rem] w-full flex flex-col justify-start">
+            <p className="mx-auto my-2">No data for this property</p>
+          </div>
+        ) : continuous ? (
+          <ContinuousData
+            initialData={(data as Stats)?.stats}
+            field={field}
+            fieldName={fieldName}
+            chartType={chartType}
+            noData={noData}
+            cohortFilters={cohortFilters}
+            dataDimension={dataDimension}
+          />
+        ) : (
+          <CategoricalData
+            initialData={(data as Buckets)?.buckets}
+            field={field}
+            fieldName={fieldName}
+            chartType={chartType}
+            noData={noData}
+          />
+        )}
+      </DownloadProgressContext.Provider>
     </Card>
   );
 };

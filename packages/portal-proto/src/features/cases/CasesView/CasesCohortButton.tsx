@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import {
-  useCoreDispatch,
-  FilterSet,
-  addNewCohortWithFilterAndMessage,
   useCreateCaseSetFromValuesMutation,
   useCreateCaseSetFromFiltersMutation,
   GqlOperation,
@@ -13,7 +10,7 @@ import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
-import CreateCohortModal from "@/components/Modals/CreateCohortModal";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Tooltip } from "@mantine/core";
@@ -33,39 +30,20 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   numCases,
   fetchingCases = false,
 }: CasesCohortButtonProps) => {
-  const [name, setName] = useState(undefined);
-  const coreDispatch = useCoreDispatch();
-
-  useEffect(() => {
-    if (response.isSuccess) {
-      const filters: FilterSet = {
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            operator: "includes",
-            field: "cases.case_id",
-            operands: [`set_id:${response.data}`],
-          },
-        },
-      };
-      coreDispatch(
-        addNewCohortWithFilterAndMessage({
-          filters: filters,
-          message: "newCasesCohort",
-          name,
-        }),
-      );
-    }
-  }, [response.isSuccess, name, coreDispatch, response.data]);
-
   const [openSelectCohorts, setOpenSelectCohorts] = useState(false);
-  const [showCreateCohort, setShowCreateCohort] = useState(false);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
 
+  useEffect(() => {
+    if (response.isSuccess) {
+      setShowSaveCohort(true);
+    }
+  }, [response.isSuccess]);
+
   return (
     <>
-      <Tooltip label="Create a new unsaved cohort based on selection">
+      <Tooltip label="Save a new cohort based on selection">
         <span>
           <DropdownWithIcon
             dropdownElements={
@@ -75,7 +53,11 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                     {
                       title: "Only Selected Cases",
                       onClick: () => {
-                        setShowCreateCohort(true);
+                        if (numCases > 1) {
+                          onCreateSet();
+                        } else {
+                          setShowSaveCohort(true);
+                        }
                       },
                     },
                     {
@@ -94,9 +76,9 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                     },
                   ]
             }
-            TargetButtonChildren="Create New Cohort"
+            TargetButtonChildren="Save New Cohort"
             disableTargetWidth={true}
-            targetButtonDisabled={numCases == 0}
+            targetButtonDisabled={numCases === 0}
             LeftIcon={
               numCases ? (
                 <CountsIcon $count={numCases}>
@@ -120,14 +102,18 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
           pickedCases={cases}
         />
       )}
-      {showCreateCohort && (
-        <CreateCohortModal
-          onClose={() => setShowCreateCohort(false)}
-          onActionClick={(newName: string) => {
-            setName(newName);
-            if (numCases > 1) {
-              onCreateSet();
-            }
+      {showSaveCohort && (
+        <SaveCohortModal
+          onClose={() => setShowSaveCohort(false)}
+          filters={{
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                operator: "includes",
+                field: "cases.case_id",
+                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
+              },
+            },
           }}
         />
       )}

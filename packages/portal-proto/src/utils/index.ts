@@ -130,9 +130,9 @@ export const fileInCart = (cart: CartFile[], newId: string): boolean =>
 
 /**
  *
- * @param givenObjects Array of given objects
- * @param property Property (string) which we want to base the comparison on
- * @returns the array of given objects (@param givenObject) in ascending order based on the (@param property)
+ * @param givenObjects - Array of given objects
+ * @param property - Property (string) which we want to base the comparison on
+ * @returns the array of given objects (\@param givenObject) in ascending order based on the (\@param property)
  */
 export const sortByPropertyAsc = <T>(
   givenObjects: Array<T>,
@@ -227,7 +227,7 @@ export const processFilters = (
 const MAX_VALUE_COUNT = 6;
 /**
  * Creates a name for a filter set based on it's contents
- * @param filters
+ * @param filters -
  * @returns a name with up to 6 filters, grouped by field
  */
 export const filtersToName = (filters: FilterSet): string => {
@@ -253,9 +253,9 @@ export const filtersToName = (filters: FilterSet): string => {
 
 /**
  * convert hooks 3 boolean status to DataStatus
- * @param isFetching
- * @param isSuccess
- * @param isError
+ * @param isFetching -
+ * @param isSuccess -
+ * @param isError -
  */
 
 export const statusBooleansToDataStatus = (

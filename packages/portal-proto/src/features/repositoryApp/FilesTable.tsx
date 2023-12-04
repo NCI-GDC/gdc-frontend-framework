@@ -501,6 +501,8 @@ const FilesTables: React.FC = () => {
         handleChange={handleChange}
         search={{
           enabled: true,
+          tooltip:
+            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
         }}
         showControls={true}
         setColumnVisibility={setColumnVisibility}

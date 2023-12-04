@@ -10,7 +10,7 @@ import {
 } from "@gff/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
-import { CohortCreationButtonWrapper } from "@/components/CohortCreationButton/";
+import CohortCreationButton from "@/components/CohortCreationButton";
 
 const survivalDataCompletenessFilters: readonly GqlOperation[] = [
   {
@@ -114,25 +114,33 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     caseSetIds,
   );
-  const [createPrimarySurvivalCaseSet, survivalPrimaryCaseSetResponse] =
-    useCreateCaseSetFromFiltersMutation();
-  const [createComparisonSurvivalCaseSet, survivalComparisonCaseSetResponse] =
-    useCreateCaseSetFromFiltersMutation();
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
   const { data, isUninitialized, isFetching, isError } =
     useGetSurvivalPlotQuery({
       filters: [filters.cohort1, filters.cohort2],
     });
 
-  useEffect(() => {
-    createPrimarySurvivalCaseSet({
-      filters: makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
-    });
-
-    createComparisonSurvivalCaseSet({
-      filters: makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
-    });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const generateFilters = async (
+    primarySetId: string,
+    comparisonSetId: string,
+  ) => {
+    return await createSet({
+      filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
+    })
+      .unwrap()
+      .then((setId) => {
+        return {
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              field: "cases.case_id",
+              operands: [`set_id:${setId}`],
+              operator: "includes",
+            },
+          },
+        } as FilterSet;
+      });
+  };
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
@@ -194,48 +202,22 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                 <tr>
                   <td className="pl-2">Overall Survival Analysis</td>
                   <td>
-                    <CohortCreationButtonWrapper
-                      numCases={
-                        survivalPrimaryCaseSetResponse.isSuccess
-                          ? cohort1Count
-                          : undefined
-                      }
+                    <CohortCreationButton
+                      numCases={cohort1Count}
                       label={cohort1Count.toLocaleString()}
-                      caseFilters={{
-                        mode: "and",
-                        root: {
-                          "cases.case_id": {
-                            field: "cases.case_id",
-                            operands: [
-                              `set_id:${survivalPrimaryCaseSetResponse.data}`,
-                            ],
-                            operator: "includes",
-                          },
-                        },
-                      }}
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[0], caseSetIds[1])
+                      }
                     />
                   </td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
                   <td>
-                    <CohortCreationButtonWrapper
-                      numCases={
-                        survivalComparisonCaseSetResponse.isSuccess
-                          ? cohort2Count
-                          : undefined
-                      }
+                    <CohortCreationButton
+                      numCases={cohort2Count}
                       label={cohort2Count.toLocaleString()}
-                      caseFilters={{
-                        mode: "and",
-                        root: {
-                          "cases.case_id": {
-                            field: "cases.case_id",
-                            operands: [
-                              `set_id:${survivalComparisonCaseSetResponse.data}`,
-                            ],
-                            operator: "includes",
-                          },
-                        },
-                      }}
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[1], caseSetIds[0])
+                      }
                     />
                   </td>
                   <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>

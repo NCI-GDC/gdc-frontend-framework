@@ -11,7 +11,7 @@ import { FilterSet, GeneRowInfo } from "@gff/core";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { CohortCreationButton } from "@/components/CohortCreationButton";
+import CohortCreationButton from "@/components/CohortCreationButton";
 import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
@@ -24,9 +24,7 @@ export const useGenerateGenesTableColumns = ({
   isDemoMode,
   setEntityMetadata,
   genomicFilters,
-  setColumnType,
-  setGeneID,
-  setShowCreateCohort,
+  generateFilters,
   handleMutationCountClick,
 }: {
   handleSurvivalPlotToggled: (
@@ -39,12 +37,13 @@ export const useGenerateGenesTableColumns = ({
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   genomicFilters: FilterSet;
-  setColumnType: Dispatch<SetStateAction<columnFilterType>>;
-  setGeneID: Dispatch<SetStateAction<string>>;
-  setShowCreateCohort: Dispatch<SetStateAction<boolean>>;
+  generateFilters: (
+    type: columnFilterType,
+    geneId: string,
+  ) => Promise<FilterSet>;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
 }): ColumnDef<Gene>[] => {
-  const genesTableColumnHelper = createColumnHelper<Gene>();
+  const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
   const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
     () => [
@@ -189,11 +188,9 @@ export const useGenerateGenesTableColumns = ({
               />
             }
             numCases={row.original["#_ssm_affected_cases_in_cohort"].numerator}
-            handleClick={() => {
-              setColumnType("ssmaffected");
-              setGeneID(row.original.gene_id);
-              setShowCreateCohort(true);
-            }}
+            filtersCallback={async () =>
+              generateFilters("ssmaffected", row.original.gene_id)
+            }
           />
         ),
       }),
@@ -258,11 +255,9 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              handleClick={() => {
-                setColumnType("cnvgain");
-                setGeneID(row.original.gene_id);
-                setShowCreateCohort(true);
-              }}
+              filtersCallback={async () =>
+                generateFilters("cnvgain", row.original.gene_id)
+              }
             />
           );
         },
@@ -292,11 +287,9 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              handleClick={() => {
-                setColumnType("cnvloss");
-                setGeneID(row.original.gene_id);
-                setShowCreateCohort(true);
-              }}
+              filtersCallback={async () =>
+                generateFilters("cnvloss", row.original.gene_id)
+              }
             />
           );
         },
@@ -349,10 +342,8 @@ export const useGenerateGenesTableColumns = ({
       handleMutationCountClick,
       isDemoMode,
       toggledGenes,
+      generateFilters,
       handleSurvivalPlotToggled,
-      setColumnType,
-      setGeneID,
-      setShowCreateCohort,
     ],
   );
 

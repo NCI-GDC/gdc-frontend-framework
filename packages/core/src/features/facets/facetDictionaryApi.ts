@@ -47,8 +47,8 @@ export const trimFirstFieldNameToTitle = (
  * Converts a GDC filter name to a title,
  * For example files.input.experimental_strategy will get converted to Experimental Strategy
  * if sections == 2 then the output would be Input Experimental Strategy
- * @param fieldName input filter expected to be: string.firstpart_secondpart
- * @param sections number of "sections" string.string.string to got back from the end of the field
+ * @param fieldName - input filter expected to be: string.firstpart_secondpart
+ * @param sections - number of "sections" string.string.string to got back from the end of the field
  */
 
 export const fieldNameToTitle = (fieldName: string, sections = 1): string => {

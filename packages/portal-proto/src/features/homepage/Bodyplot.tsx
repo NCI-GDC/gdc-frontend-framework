@@ -2,13 +2,76 @@ import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
 import { useMouse } from "@mantine/hooks";
-import { Text } from "@mantine/core";
+import { Modal, Text } from "@mantine/core";
 import {
   useBodyplotCountsQuery,
   FilterSet,
   BodyplotDataElement,
   HUMAN_BODY_MAPPINGS,
+  useCoreSelector,
+  selectHasUnsavedCohorts,
+  selectUnsavedCohortName,
 } from "@gff/core";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import FunctionButton from "@/components/FunctionButton";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+
+const createCohort = (site: string) => {
+  const key = site.replace(/-/g, " ");
+  const e = HUMAN_BODY_MAPPINGS[key];
+  Router.push({
+    pathname: "/analysis_page",
+    query: {
+      app: "",
+      operation: "createCohort",
+      filters: JSON.stringify(buildBodyplotFilter(e)),
+      name: site,
+    },
+  });
+};
+
+interface ExploreCohortModalProps {
+  readonly opened: boolean;
+  readonly setOpened: (opened: boolean) => void;
+  readonly site: string;
+}
+
+const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
+  opened,
+  setOpened,
+  site,
+}: ExploreCohortModalProps) => {
+  const hasUnsavedCohorts = useCoreSelector((state) =>
+    selectHasUnsavedCohorts(state),
+  );
+
+  const unsavedCohortName = useCoreSelector((state) =>
+    selectUnsavedCohortName(state),
+  );
+
+  return (
+    <Modal
+      opened={opened}
+      onClose={() => setOpened(false)}
+      title="Explore Cohort"
+    >
+      <p className="p-4">
+        Explore this <b>{site}</b> cohort in the Analysis Center?{" "}
+        {hasUnsavedCohorts && (
+          <>
+            This will replace the <b>{unsavedCohortName}</b> cohort.{" "}
+          </>
+        )}
+      </p>
+      <ModalButtonContainer>
+        <FunctionButton onClick={() => setOpened(false)}>No</FunctionButton>
+        <DarkFunctionButton onClick={() => createCohort(site)}>
+          Yes
+        </DarkFunctionButton>
+      </ModalButtonContainer>
+    </Modal>
+  );
+};
 
 const SCALE_CASE_COUNT = 1000;
 
@@ -21,10 +84,10 @@ interface PopupContentProps {
 
 /**
  * PopupContent is the content that appears when a user hovers over a body part
- * @param label the name of the body part
- * @param caseCount the number of cases that have data for this body part
- * @param fileCount the number of files that have data for this body part
- * @param setSize a function that sets the size of the popup
+ * @param label - the name of the body part
+ * @param caseCount - the number of cases that have data for this body part
+ * @param fileCount - the number of files that have data for this body part
+ * @param setSize - a function that sets the size of the popup
  */
 const PopupContent = ({
   label,
@@ -86,6 +149,8 @@ const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
  */
 export const Bodyplot = (): JSX.Element => {
   const [extents, setExtents] = useState([0, 0]);
+  const [createCohortModalOpen, setCreateCohortModalOpen] = useState(false);
+  const [selectedSite, setSelectedSite] = useState(undefined);
   const [bodyplotTooltipContent, setBodyplotTooltipContent] =
     useState(undefined);
 
@@ -106,19 +171,7 @@ export const Bodyplot = (): JSX.Element => {
 
   const bodyplotRef = useRef(undefined);
   const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
-  const clickHandler = useCallback((data: { key: string }) => {
-    const key = data.key.replace(/-/g, " ");
-    const e = HUMAN_BODY_MAPPINGS[key];
-    Router.push({
-      pathname: "/analysis_page",
-      query: {
-        app: "",
-        operation: "createCohort",
-        filters: JSON.stringify(buildBodyplotFilter(e)),
-        name: data.key,
-      },
-    });
-  }, []);
+
   const mouseOutHandler = useCallback(
     () => setBodyplotTooltipContent(undefined),
     [],
@@ -139,12 +192,15 @@ export const Bodyplot = (): JSX.Element => {
         tickInterval: 1,
         offsetLeft: root ? root.offsetLeft : 0,
         offsetTop: root ? root.offsetTop : 0,
-        clickHandler: (e) => clickHandler(e),
+        clickHandler: (e) => {
+          setSelectedSite(e.key);
+          setCreateCohortModalOpen(true);
+        },
         mouseOverHandler: setBodyplotTooltipContent,
         mouseOutHandler: mouseOutHandler,
       });
     }
-  }, [clickHandler, mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
     <div ref={mouseRef} className="relative">
@@ -163,6 +219,13 @@ export const Bodyplot = (): JSX.Element => {
           />
         )}
       </div>
+      {createCohortModalOpen && (
+        <ExploreCohortModal
+          opened
+          setOpened={setCreateCohortModalOpen}
+          site={selectedSite}
+        />
+      )}
       <div id="human-body-root" ref={bodyplotRef}></div>
     </div>
   );
