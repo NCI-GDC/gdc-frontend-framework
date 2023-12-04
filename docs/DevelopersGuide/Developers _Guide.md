@@ -16,16 +16,19 @@ can be used to analyze and visualize data from the GDC.
   - [Overview of an Application](#overview-of-an-application)
   - [Local vs Global Filters](#local-vs-global-filters)
   - [Cohorts and Filters](#cohorts-and-filters)
-- Using the Portal Application API
+- [Using the Portal Application API](#using-the-portal-application-api)
   - [Case Information](#case-information)
   - [File Information](#file-information)
-  - Sets: Gene, SSMS, and Case
-  - Creating cohorts
-  - Altering Cohorts
+  - [Sets: Gene, SSMS, and Case](#sets-gene-ssms-and-case)
+  - [Creating a cohort](#creating-a-cohort)
+  - Altering a cohort
   - Count Information
   - Component Library
     - Buttons
     - Tooltips
+    - Modals
+    - Charts
+    - Facets
     - VerticalTable
 - Application Development
   - Local Filters
@@ -41,9 +44,9 @@ can be used to analyze and visualize data from the GDC.
   - Registration
 - [Appendix](#appendix)
   - [Using selectors and hooks](#using-selectors-and-hooks)
-    - Selectors
-    - Hooks
-  - [Querying the GDC API Directly)](#querying-the-gdc-api-directly)
+    - [Selectors](#selectors)
+    - [Hooks](#hooks)
+  - Querying the GDC API Directly
 
 ## Introduction
 
@@ -262,8 +265,6 @@ Information for a single case can be queried using the `useCaseSummary` hook. Th
 
 ```typescript
 
-
-
   const { data, isFetching } = useCaseSummary({
   filters: {
     content: {
@@ -327,7 +328,6 @@ Similar to the case information, the GDC Portal provides a number of hooks for q
 To get a list of file associated with a cohort, the `useGetFilesQuery` hook can be used. This call is used in the repository application. The repository application is used to display the files associated with a cohort. The `useGetFilesQuery` hook takes a number of arguments:
 
 ```typescript
-
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -377,7 +377,6 @@ Note this hook was designed to take global filters (e.x the current cohort as `c
 Information for a single file can be queried using the `useFileSummary` hook. This call is used in the fileView page [portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b](https://portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b)
 
 ```typescript
-
  const { data: { files } = {}, isFetching } = useGetFilesQuery({
   filters: {
     op: "=",
@@ -408,6 +407,101 @@ Information for a single file can be queried using the `useFileSummary` hook. Th
 The `useFileSummary` hook takes a number of arguments:
 * `filters` - the filters to apply to the cases and where the file uuid is passed in
 * `expand` - the fields to expand
+
+## Sets: Gene, SSMS, and Case
+
+Sets are supported by the GDC API and use to create an entity the represents a set of items as a `set_id`. Sets can be 
+gene sets, SSM sets, or case sets. All GDC API's support passing sets as a filter parameter. 
+The GDC Portal provides a number of hooks for creating and querying set information.
+
+a set can be created using one of the following hooks:
+
+* useCreateGeneSetFromValuesMutation
+* useCreateSsmsSetFromValuesMutation
+* useCreateCaseSetFromValuesMutation
+* useCreateGeneSetFromFiltersMutation
+* useCreateSsmsSetFromFiltersMutation
+* useCreateCaseSetFromFiltersMutation
+
+The will create a set from either a list of values or a filter set. The create from Values hooks take a single 
+parameter `values` which is a array of values, while the create from filters hooks take one required parameter `filters`
+which is a filter set or JSON object. Both calls return the created `set_id` if the set was successfully created.
+
+As the above hook are Redux Toolkit Query hooks, namely mutation hooks, they return a tuple of the form:
+`[mutationHook, response]` which is a function to call the mutation and the response from the mutation. The mutation hook can be use like:
+
+```typescript
+ const [createSet, response] = createSetHook();
+
+  const handleCreateSet = async () => {
+    const { data } = await createSet({
+      variables: {
+        values: ["TP53", "KRAS", "EGFR"],
+      },
+    });
+    if (response.isSuccess) {
+      dispatch(
+        addSet({
+          setType,
+          setName: form.values.name.trim(),
+          setId: response.data as string,
+        }),
+      );
+    }
+    ;
+  }
+ ```
+
+Once a set is created it can be altered using the following hooks:
+* useAppendToGeneSetMutation
+* useAppendToSsmSetMutation
+* useRemoveFromGeneSetMutation
+* useRemoveFromSsmSetMutation
+
+Set can be managed using the following actions:
+
+* addSet
+* removeSet
+* updateSet
+
+The following selectors are available for getting set information:
+
+* selectAllSets
+* selectSetById
+* selectSetByName
+* selectSetByType
+
+Finally  the following hooks are available for querying set size:
+
+* useGeneSetCountsQuery
+* useSsmSetCountsQuery
+* useCaseSetCountsQuery
+
+## Creating a cohort
+
+Depending on what your application does, you may want to create a new cohort. Although the GDC Portal SDK provides a 
+number of functions for creating a new cohort. It is highly recommended that application use the provided Button and
+SaveCohortModal components to create a new cohort. The Button and SaveCohortModal components are located in 
+the `@gff/portal-proto` package.
+
+
+## Altering a cohort
+
+## Count Information
+
+## Component Library
+
+### Buttons
+
+### Tooltips
+
+### Modals
+
+### Charts
+
+### Facets
+
+### VerticalTable
 
 
 # Application Development
@@ -451,6 +545,7 @@ accessing the state of the GDC Portal. Selectors are functions that take the sta
 import {useCoreSelector,  selectCurrentCohort } from '@gff/core';
 
 const currentCohort = useSelector(selectCurrentCohort);
+
 ```
 
 The selector will return the current value of the item in the store. Consult the GDC V2 API documentation for a complete
