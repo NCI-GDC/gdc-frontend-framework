@@ -128,6 +128,10 @@ export interface TableProps<TData> {
      * default search term if any
      */
     defaultSearchTerm?: string;
+    /**
+     * optional tooltip to display under search bar
+     */
+    tooltip?: string;
   };
   /**
    * Column sorting
@@ -194,6 +198,10 @@ export interface TableProps<TData> {
    * optional function is used to derive a unique ID for any given row
    */
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
+  /**
+   * optional used to properly set z-index of table elements (e.g. tooltips)
+   */
+  baseZIndex?: number;
 }
 
 export interface HandleChangeInput {

@@ -160,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={`px-1 ml-1 ${
                     router.pathname === "/cart"
                       ? "bg-white text-secondary"
-                      : "bg-accent"
+                      : "bg-accent-vivid"
                   }`}
                   radius="xs"
                 >
