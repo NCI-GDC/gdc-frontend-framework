@@ -18,7 +18,13 @@ import {
   useState,
 } from "react";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { LoadingOverlay, Pagination, Select, TextInput } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Pagination,
+  Select,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
@@ -55,9 +61,11 @@ function VerticalTable<TData>({
   setExpanded,
   getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
     uuidv4(),
+  baseZIndex = 0,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
+  const [searchFocused, setSearchFocused] = useState(false);
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
   const liveRegionRef = useRef(null); // Reference to the Live Region
@@ -169,6 +177,25 @@ function VerticalTable<TData>({
     handleChange({ newSearch: "" });
   };
 
+  const TooltipContainer = search?.tooltip
+    ? (children) => (
+        <Tooltip
+          multiline
+          label={search.tooltip}
+          position="bottom-start"
+          opened={searchFocused}
+          zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
+          offset={0}
+          classNames={{
+            tooltip:
+              "w-72 border border-base-lighter absolute bg-white p-2 text-nci-gray text-sm  overflow-wrap break-all rounded-b rounded-t-none font-content",
+          }}
+        >
+          {children}
+        </Tooltip>
+      )
+    : undefined;
+
   const handleSorting = (
     header: Header<TData, unknown>,
     headerName: ReactNode | JSX.Element,
@@ -210,8 +237,9 @@ function VerticalTable<TData>({
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
                   classNames={{
-                    input:
-                      "border-base-lighter focus:border-2 focus:border-primary",
+                    input: `border-base-lighter focus:border-2 focus:border-primary${
+                      TooltipContainer ? " focus:rounded-b-none" : ""
+                    }`,
                     wrapper: "w-72 h-8",
                   }}
                   size="sm"
@@ -226,6 +254,9 @@ function VerticalTable<TData>({
                   value={searchTerm}
                   onChange={handleInputChange}
                   ref={inputRef}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  inputContainer={TooltipContainer}
                 />
               )}
               {showControls && (

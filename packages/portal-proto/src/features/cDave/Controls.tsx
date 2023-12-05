@@ -317,6 +317,7 @@ const Controls: React.FC<ControlPanelProps> = ({
               <CloseIcon onClick={() => setSearchTerm("")}></CloseIcon>
             )
           }
+          aria-label="Search fields"
         />
         <p
           data-testid="text-fields-with-values"
