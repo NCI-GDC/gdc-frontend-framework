@@ -154,6 +154,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
+  // TODO Refactor this to use one useEffect instead of two (see PEAR-1657)
   useDeepCompareEffect(() => {
     if (topSSM) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
