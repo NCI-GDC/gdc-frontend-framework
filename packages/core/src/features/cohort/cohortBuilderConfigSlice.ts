@@ -48,7 +48,6 @@ const slice = createSlice({
     },
     resetCohortBuilderToDefault: () => initialState,
   },
-  extraReducers: {},
 });
 
 export const cohortBuilderConfigReducer = slice.reducer;

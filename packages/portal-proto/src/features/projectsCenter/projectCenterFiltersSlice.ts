@@ -44,7 +44,6 @@ const slice = createSlice({
       return { filters: { mode: "and", root: {} } };
     },
   },
-  extraReducers: {},
 });
 
 export const projectCenterFiltersReducer = slice.reducer;
