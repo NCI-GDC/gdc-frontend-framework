@@ -9,6 +9,7 @@ import { useElementSize } from "@mantine/hooks";
 import {
   VictoryBar,
   VictoryChart,
+  VictoryContainer,
   VictoryTheme,
   Bar,
   VictoryAxis,
@@ -196,6 +197,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       theme={VictoryTheme.material}
       width={width}
       height={height}
+      containerComponent={<VictoryContainer role="figure" />}
     >
       <VictoryAxis
         tickLabelComponent={
