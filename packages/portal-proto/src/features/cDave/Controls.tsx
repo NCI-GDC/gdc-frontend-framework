@@ -282,7 +282,6 @@ const Controls: React.FC<ControlPanelProps> = ({
       className={`${
         controlsExpanded ? "w-80 bg-base-max shadow-md overflow-y-scroll" : ""
       } pl-4 pt-2 flex flex-col min-h-[560px] max-h-screen`}
-      role="complementary"
     >
       <Tooltip
         withArrow
