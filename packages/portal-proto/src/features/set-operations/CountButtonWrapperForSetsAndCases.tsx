@@ -149,7 +149,7 @@ const CountButtonWrapperForSetsAndCases: React.FC<
     return (
       <CohortCreationButton
         numCases={count}
-        label={count.toLocaleString()}
+        label={count?.toLocaleString()}
         filtersCallback={createCohort}
       />
     );
