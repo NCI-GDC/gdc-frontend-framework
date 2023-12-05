@@ -21,15 +21,17 @@ can be used to analyze and visualize data from the GDC.
   - [File Information](#file-information)
   - [Sets: Gene, SSMS, and Case](#sets-gene-ssms-and-case)
   - [Creating a cohort](#creating-a-cohort)
-  - Altering a cohort
-  - Count Information
-  - Component Library
-    - Buttons
-    - Tooltips
-    - Modals
-    - Charts
-    - Facets
-    - VerticalTable
+  - [Altering a cohort](#altering-a-cohort)
+    - [Updating, removing, and clearing filters](#updating-removing-and-clearing-filters)
+    - [Updating the cohort name](#updating-the-cohort-name)
+    - [Setting the current cohort](#setting-the-current-cohort)
+  - [Count Information](#count-information)
+  - [Component Library](#component-library)
+    - [Buttons](#buttons)
+    - [Modals](#modals)
+    - [Charts](#charts)
+    - [Facets](#facets)
+    - [VerticalTable](#verticaltable)
 - Application Development
   - Local Filters
   - Local State
@@ -790,32 +792,111 @@ The charts provided are:
 
   ![Bar Chart](images/primary_site.png)
 
+The `BarChart` component (based on Plotly) is passed data in the form:
+
+```typescript
+import { PlotData } from "plotly.js";
+
+
+export interface BarChartData {
+  datasets: Partial<PlotData>[];
+  yAxisTitle?: string;
+  tickvals?: number[];
+  ticktext?: string[];
+  label_text?: string[] | number[];
+  title?: string;
+  filename?: string;
+}
+```
+
+Where `datasets` is an array of PlotData objects, which at the minimum contain the `x` and `y` fields. 
+
+The `yAxisTitle` is the title for the y axis, the `tickvals` and `ticktext` are the tick values and text for 
+the x axis, the `label_text` is the text for the labels, the `title` is the title for the chart, 
+and the `filename` is the filename to use when downloading the chart.
+
+Note that BarChart needs to be imported as a dynamic component:
+
+```tsx
+import dynamic from "next/dynamic";
+
+const BarChart = dynamic(() => import("@/components/charts/BarChart"), {
+  ssr: false,
+});
+```
+
 * `Cancer Distribution` - a cancer distribution chart
     
   ![cancer distribution](images/most-frequently-mutated-genes-bar-chart.png)
 
-* `BoxPlot` - a box plot
-  
-  ![box plot](images/age_at_diagnosis-box-plot-2023-12-04.png)
+The `CancerDistribution` component (based on Plotly) is different as it passed the Gene Symbol 
+and optionally cohort and gene filters.
 
-* `QQPlot` - a QQ plot
-  
-  ![qq plot](images/age_at_diagnosis-qq-plot-2023-12-04.png)
+```typescript
+interface CNVPlotProps {
+  readonly gene: string;
+  readonly height?: number;
+  readonly genomicFilters?: FilterSet;
+  readonly cohortFilters?: FilterSet;
+}
+```
 
-* `SurvivalPlot` - a survival plot
-  
-  ![survival plot](images/survival_plot.png)
-
-The charts are documented in the Portal V2 SDK API documentation.
+These charts, and others are documented in the Portal V2 SDK API documentation.
 
 ### Facets
 
 Facet components are provided for use in building local filters for your application. There are two types of facet components:
 
-* `EnumFacet` - a facet that is used to filter on a 
+* `EnumFacet` - a facet that is used to filter on a enum field
+* `DateFacet` - a facet that is used to filter on a date field
+* `NumericRangeFacet` - a facet that is used to filter on a range field
+* `PercentileFacet` - a facet that is used to filter on a percentile field
+* 'AgeRangeFacet' - a facet that is used to filter on a age range field
+* `TextFacet` - a facet that is used to filter on a text field
+* `BooleanFacet` - a facet that is used to filter on a boolean field
+
+![img.png](images/components/enum_facet.png)
+*Enum Facet*
+
+![img.png](images/components/numeric_range_facet.png)
+*Range Facet*
+
+![date_range_facet.png](images%2Fcomponents%2Fdate_range_facet.png)
+*Date Range Facet*
+
+![number_range.png](images%2Fcomponents%2Fnumber_range.png)
+*Number Range Facet*
+
+![percentile_facet.png](images%2Fcomponents%2Fpercentile_facet.png)
+*Percentile Facet*
+
+![age_range_facet.png](images%2Fcomponents%2Fage_range_facet.png)
+*Age Range Facet*
+
+![exact_value_facet.png](images%2Fcomponents%2Fexact_value_facet.png)
+*Exact Value Facet*
+
+![toggle_facet.png](images%2Fcomponents%2Ftoggle_facet.png)
+*Toggle Facet*
+
+
+The facet components are documented in the Portal V2 SDK API documentation. As these component are passes data fetcher
+and filter management hooks, they can be used for both cohort and local filters in an application.
 
 ### VerticalTable
 
+The VerticalTable component is used to display data in a table format. The VerticalTable component is a Mantine component
+implementing react table version 8. The VerticalTable component has a number of parameters, the most important
+being data, columns, and filters. The data is the data to display in the table, the columns are the columns to display
+in the table, and is where the fields of the data tp be rendered are.
+The table has support for searching, sorting, and pagination. It can be configure
+to render a number of different types of columns, including text, numeric, and date. The table can also be configured
+to use React components for rendering columns.
+The Vertical Table is used for most of the table views in the GDC Portal. There are a number of examples of its use and 
+is documented in the Portal V2 SDK API documentation.
+
+![vertical_table.png](images%2Fcomponents%2Fvertical_table.png)
+*Vertical Table*
 
 # Application Development
 
@@ -838,6 +919,8 @@ You can get started by cloning the repo and following the instructions in the [R
 ![source code layout](./images/app_source_code_layout_fig.png)
 
 # Sample Application
+
+## Project Center
 
 
 # Appendix
