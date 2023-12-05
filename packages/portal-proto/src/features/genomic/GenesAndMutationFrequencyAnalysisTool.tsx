@@ -191,6 +191,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       setAppMode("ssms");
       setSearchTermsForGeneId({ geneId: geneId, geneSymbol: geneSymbol });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
