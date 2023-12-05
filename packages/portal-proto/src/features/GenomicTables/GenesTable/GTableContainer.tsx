@@ -456,6 +456,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         search={{
           enabled: true,
           defaultSearchTerm: searchTerm,
+          tooltip: "e.g. TP53, ENSG00000141510, 17p13.1, tumor protein p53",
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
