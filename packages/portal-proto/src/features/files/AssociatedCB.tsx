@@ -182,6 +182,7 @@ const AssociatedCB = ({
       status="fulfilled"
       search={{
         enabled: true,
+        tooltip: "e.g. TCGA-AR-A24Z, TCGA-AR-A24Z-10A-01D-A167-09",
       }}
       additionalControls={
         <div className="mt-3.5">
@@ -189,6 +190,7 @@ const AssociatedCB = ({
         </div>
       }
       handleChange={handleChange}
+      baseZIndex={300}
     />
   );
 };
