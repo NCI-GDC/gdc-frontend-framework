@@ -34,7 +34,6 @@ export const PopupIconButton = forwardRef<
             height={18}
             layout="fixed"
             aria-hidden="true"
-            alt="open in a modal icon"
           />
         }
         ref={ref}
