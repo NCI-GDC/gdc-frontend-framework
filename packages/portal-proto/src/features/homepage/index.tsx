@@ -132,20 +132,23 @@ const Homepage = (): JSX.Element => {
                 {
                   src: "/homepage/slide1-SurvivalP.jpg",
                   title: "Survival Plot",
+                  alt: "graph of survival plot",
                 },
                 {
                   src: "/homepage/slide1-MutationF.jpg",
                   title: "Mutation Frequency",
+                  alt: "graph of mutation frequency",
                 },
                 {
                   src: "/homepage/slide1-ProteinP.jpg",
                   title: "ProteinPaint",
+                  alt: "feature of protein paint",
                 },
               ].map((obj, index) => (
                 <li className="flex flex-col w-[220px]" key={index}>
                   <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
                     <Image
-                      alt={obj.title}
+                      alt={obj.alt}
                       src={obj.src}
                       width={220}
                       height={164}
