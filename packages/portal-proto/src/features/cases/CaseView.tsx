@@ -492,6 +492,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             cohortFilters={projectFilter}
             caseFilter={caseFilter}
             tableTitle="Most Frequent Somatic Mutations"
+            inModal={isModal}
           />
         </div>
       </div>
