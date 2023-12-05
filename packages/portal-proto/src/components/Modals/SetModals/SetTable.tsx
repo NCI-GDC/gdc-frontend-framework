@@ -32,7 +32,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
 
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage}>
-      <span>
+      <span role="button" tabIndex={0}>
         {multiselect ? (
           <Checkbox
             value={setId}
@@ -46,7 +46,6 @@ const SelectCell: React.FC<SelectCellProps> = ({
                 : setSelectedSets([...selectedSets, set])
             }
             aria-label={`Select the ${set[0]} set`}
-            aria-checked={selected}
           />
         ) : (
           <Radio
@@ -55,7 +54,6 @@ const SelectCell: React.FC<SelectCellProps> = ({
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
             aria-label={`Select the ${set[0]} set`}
-            aria-checked={selected}
           />
         )}
       </span>

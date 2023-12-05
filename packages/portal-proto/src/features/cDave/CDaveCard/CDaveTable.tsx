@@ -123,9 +123,6 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                     size="xs"
                     className="pt-1"
                     aria-label={`Select ${displayName}`}
-                    aria-checked={selectedFacets
-                      .map((facet) => facet.value)
-                      .includes(key)}
                     disabled={count === 0}
                     checked={selectedFacets
                       .map((facet) => facet.value)

@@ -189,7 +189,6 @@ const ProjectsTable: React.FC = () => {
               input: "checked:bg-accent checked:border-accent",
             }}
             aria-label={`Select the ${row.id} project row`}
-            aria-checked={row.getIsSelected()}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),

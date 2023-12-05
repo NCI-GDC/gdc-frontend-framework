@@ -85,7 +85,6 @@ export const useGenerateSMTableColumns = ({
                 }) => `${symbol} ${aaChange}`,
               )
               .join(", ")} mutation rows`}
-            aria-checked={table.getIsAllRowsSelected()}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -101,7 +100,6 @@ export const useGenerateSMTableColumns = ({
             aria-label={`Select the ${row.original.protein_change.symbol} ${
               row.original.protein_change?.aaChange ?? ""
             } mutation row`}
-            aria-checked={row.getIsSelected()}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
