@@ -810,6 +810,10 @@ The charts are documented in the Portal V2 SDK API documentation.
 
 ### Facets
 
+Facet components are provided for use in building local filters for your application. There are two types of facet components:
+
+* `EnumFacet` - a facet that is used to filter on a 
+
 ### VerticalTable
 
 
