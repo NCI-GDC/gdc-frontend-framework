@@ -2,6 +2,7 @@ import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { Tooltip } from "@mantine/core";
 
 interface DropdownWithIconProps {
   /**
@@ -70,56 +71,65 @@ export const DropdownWithIcon = ({
   customDataTestId = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
-    <Menu
-      width={!disableTargetWidth && "target"}
-      {...(customPosition && { position: customPosition })}
-      data-testid={customDataTestId ?? "menu-elem"}
-      zIndex={zIndex}
-    >
-      <Menu.Target>
-        <Button
-          variant="outline"
-          color="primary"
-          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
-          {...(LeftIcon && { leftIcon: LeftIcon })}
-          rightIcon={RightIcon}
-          disabled={targetButtonDisabled}
-          classNames={{
-            rightIcon: "border-l pl-1 -mr-2",
-          }}
-        >
-          {TargetButtonChildren}
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown
-        data-testid="dropdown-menu-options"
-        className="border-1 border-secondary"
+    <>
+      <Menu
+        width={!disableTargetWidth && "target"}
+        {...(customPosition && { position: customPosition })}
+        data-testid={customDataTestId ?? "menu-elem"}
+        zIndex={zIndex}
       >
-        {menuLabelText && (
-          <>
-            <Menu.Label
-              className={menuLabelCustomClass ?? "font-bold"}
-              data-testid="menu-label"
-            >
-              {menuLabelText}
-            </Menu.Label>
-            <Menu.Divider />
-          </>
-        )}
-        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
-          <Menu.Item
-            onClick={() => {
-              onClick && onClick();
+        <Menu.Target>
+          <Button
+            variant="outline"
+            color="primary"
+            className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+            {...(LeftIcon && { leftIcon: LeftIcon })}
+            rightIcon={RightIcon}
+            disabled={targetButtonDisabled}
+            classNames={{
+              rightIcon: "border-l pl-1 -mr-2",
             }}
-            key={`${title}-${idx}`}
-            data-testid={`${title}-${idx}`}
-            icon={icon && icon}
-            disabled={disabled}
           >
-            {title}
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
+            <div>
+              <Tooltip
+                disabled={targetButtonDisabled}
+                label="Save a new cohort based on selection"
+              >
+                <div>{TargetButtonChildren}</div>
+              </Tooltip>
+            </div>
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown
+          data-testid="dropdown-menu-options"
+          className="border-1 border-secondary"
+        >
+          {menuLabelText && (
+            <>
+              <Menu.Label
+                className={menuLabelCustomClass ?? "font-bold"}
+                data-testid="menu-label"
+              >
+                {menuLabelText}
+              </Menu.Label>
+              <Menu.Divider />
+            </>
+          )}
+          {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
+            <Menu.Item
+              onClick={() => {
+                onClick && onClick();
+              }}
+              key={`${title}-${idx}`}
+              data-testid={`${title}-${idx}`}
+              icon={icon && icon}
+              disabled={disabled}
+            >
+              {title}
+            </Menu.Item>
+          ))}
+        </Menu.Dropdown>
+      </Menu>
+    </>
   );
 };

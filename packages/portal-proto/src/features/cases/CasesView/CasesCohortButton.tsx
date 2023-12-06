@@ -13,7 +13,6 @@ import {
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
-import { Tooltip } from "@mantine/core";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
@@ -43,57 +42,55 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
 
   return (
     <>
-      <Tooltip label="Save a new cohort based on selection">
-        <span>
-          <DropdownWithIcon
-            dropdownElements={
-              fetchingCases
-                ? [{ title: "Loading..." }]
-                : [
-                    {
-                      title: "Only Selected Cases",
-                      onClick: () => {
-                        if (numCases > 1) {
-                          onCreateSet();
-                        } else {
-                          setShowSaveCohort(true);
-                        }
-                      },
+      <span>
+        <DropdownWithIcon
+          dropdownElements={
+            fetchingCases
+              ? [{ title: "Loading..." }]
+              : [
+                  {
+                    title: "Only Selected Cases",
+                    onClick: () => {
+                      if (numCases > 1) {
+                        onCreateSet();
+                      } else {
+                        setShowSaveCohort(true);
+                      }
                     },
-                    {
-                      title: " Existing Cohort With Selected Cases",
-                      onClick: () => {
-                        setWithOrWithoutCohort("with");
-                        setOpenSelectCohorts(true);
-                      },
+                  },
+                  {
+                    title: " Existing Cohort With Selected Cases",
+                    onClick: () => {
+                      setWithOrWithoutCohort("with");
+                      setOpenSelectCohorts(true);
                     },
-                    {
-                      title: " Existing Cohort Without Selected Cases",
-                      onClick: () => {
-                        setWithOrWithoutCohort("without");
-                        setOpenSelectCohorts(true);
-                      },
+                  },
+                  {
+                    title: " Existing Cohort Without Selected Cases",
+                    onClick: () => {
+                      setWithOrWithoutCohort("without");
+                      setOpenSelectCohorts(true);
                     },
-                  ]
-            }
-            TargetButtonChildren="Save New Cohort"
-            disableTargetWidth={true}
-            targetButtonDisabled={numCases === 0}
-            LeftIcon={
-              numCases ? (
-                <CountsIcon $count={numCases}>
-                  {numCases.toLocaleString()}
-                </CountsIcon>
-              ) : null
-            }
-            menuLabelText={`${numCases.toLocaleString()}
+                  },
+                ]
+          }
+          TargetButtonChildren="Save New Cohort"
+          disableTargetWidth={true}
+          targetButtonDisabled={numCases === 0}
+          LeftIcon={
+            numCases ? (
+              <CountsIcon $count={numCases}>
+                {numCases.toLocaleString()}
+              </CountsIcon>
+            ) : null
+          }
+          menuLabelText={`${numCases.toLocaleString()}
         ${numCases > 1 ? " Cases" : " Case"}`}
-            menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
-            customPosition="bottom-start"
-            zIndex={100}
-          />
-        </span>
-      </Tooltip>
+          menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+          customPosition="bottom-start"
+          zIndex={100}
+        />
+      </span>
       {openSelectCohorts && (
         <SelectCohortsModal
           opened
