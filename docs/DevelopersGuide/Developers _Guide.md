@@ -927,7 +927,8 @@ The user can create a new saved cohort by selecting projects and clicking the "S
 a modal that will allow the user to name the cohort and save it. The Project application is a good example of how to use
 the GDC Portal SDK to create an application.
 
-#TODO: add image of application layout
+![projects_app_parts_outlined.png](images%2Fprojects_app_parts_outlined.png)
+*Major Sections of an Application*
 
 ## Local State
 
