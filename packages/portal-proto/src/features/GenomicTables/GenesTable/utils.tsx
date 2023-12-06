@@ -310,8 +310,8 @@ export const useGenerateGenesTableColumns = ({
               disabled={disabled}
               handleOnClick={() => {
                 handleMutationCountClick(
-                  row?.original?.gene_id,
-                  row?.original?.symbol,
+                  row?.original?.gene_id ?? "",
+                  row?.original?.symbol ?? "",
                 );
               }}
               count={count !== 0 ? parseInt(count.replace(/,/g, ""), 10) : 0}
