@@ -33,7 +33,7 @@ can be used to analyze and visualize data from the GDC.
     - [Facets](#facets)
     - [VerticalTable](#verticaltable)
 - [Application Development](#application-development)
-  - Getting Started
+  - [Getting Started]
   - Local State
   - Persisting State
   - Local Hooks
@@ -53,12 +53,11 @@ can be used to analyze and visualize data from the GDC.
 The GDC Portal is designed to support the development of applications that allow for analysis, visualization,
 and refinement of cohorts. The GDC Portal is built on top of the [GDC API](https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/),
 which provides access to the GDC data. The GDC Portal provides a framework for developing applications that
-can be used to analyze and visualize data from the GDC. The GDC Portal is built on top of the [React](https://reactjs.org/)
-framework, and uses the [Redux](https://redux.js.org/) library for state management. The GDC Portal uses
+can be used to analyze and visualize data from the GDC. The GDC Portal is built on top of the [React](https://reactjs.org/) framework and uses the [Redux](https://redux.js.org/) library for state management. The GDC Portal uses
 NextJS to provide server-side rendering of React components. Mantine.dev is the base component library used
 and styling is done with [TailwindCSS](https://tailwindcss.com/).
 
-The GDC Portal contains a Analysis Center where application are displayed for users to use with their cohorts.
+The GDC Portal contains an Analysis Center where applications are displayed for users to use with their cohorts.
 The GDC Portal also provides a framework for developing applications that can be used to analyze and visualize data from the GDC.
 
 ## Overview of an Application
@@ -68,18 +67,16 @@ like Project, Downloads, and Protein Paint are all applications. Each applicatio
 refine and analyze cohorts. Applications have access to all the current cohort information and can use that information
 to query the GDC API for additional information. 
 
-Local and Cohort filters are available to applications. Local filters are filters that are specific to the application, and 
-are used to refine the data that is displayed in the application. Local filters are those available from the GDC API, and are typically not the
+Local and Cohort filters are available to applications. Local filters are filters that are specific to the application and are used to refine the data that is displayed in the application. Local filters are those available from the GDC API and are typically not the
 most common. For example in the Mutation Frequency application, the local filters are the gene and mutation type filters. In the figure
-below the local filters are highlighted in yellow. These filter are used to refine the input cohort allowing users to 
+below the local filters are highlighted in yellow. These filters are used to refine the input cohort allowing users to 
 drill down to specific genes and mutation types of interest in the cohort.
 
 ![Mutation Frequency](./images/mutation_frequency_app.png)
 
 ### Local vs Global Filters
 
-A Portal application's input can be anything including a single cohort or multiple cohorts. Application then can either add filter 
-to refine the cohort by adding filters, create additional cohorts, or display the data in a visualization. Applications typlically 
+A Portal application's input can be anything including a single cohort or multiple cohorts. The application then can either add filters to refine the cohort by adding filters, create additional cohorts, or display the data in a visualization. Applications typically 
 have:
 * local filters that are used to refine the data displayed in the application.
 * UI components that are used to display the data in the application.
@@ -92,7 +89,7 @@ Applications can also create new cohorts. These cohorts can be used by other Por
 
 ## Cohorts and Filters
 
-From a application perspective, a cohort is a Object containing the following information:
+From an application perspective, a cohort is an Object containing the following information:
 ```typescript
 interface Cohort {
   id: string;        // unique id for cohort
@@ -108,7 +105,7 @@ interface Cohort {
 
 Likely the most important part of the cohort is the `filters` field. The `filters` field contains the active filters for the cohort.
 The `filters` field is a `FilterSet` object. The `FilterSet` object contains the active filters for the cohort. When calling either the
-GDC API or GDC GraphQL API the filterset is converted to the appropriate format for the API. The `FilterSet` object is of the form:
+GDC API or GDC GraphQL API the `FilterSet`` is converted to the appropriate format for the API. The `FilterSet` object is of the form:
 
 ```typescript
 interface FilterSet {
@@ -116,7 +113,7 @@ interface FilterSet {
   root: Record<string,Operation >; // map of filter name to filter operation
 }
 ```
-Operation are GDC API filters described in [GDC API Guide](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query). These are:
+Operation are GDC API filters described in the [GDC API Guide](https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/#filters-specifying-the-query). These are:
 * Equals
 * NotEquals
 * LessThan
@@ -131,8 +128,8 @@ Operation are GDC API filters described in [GDC API Guide](https://docs.gdc.canc
 * Intersection
 * Union
 
-The `root` field is a map of filter name (as defined in the GDC API) to filter operation. The filter operation can be either a single operation
-or a `FilterSet` object. The `op` field will eventually support either `and` or `or`, however at this time only `and` is supported. The `and` operator is used to combine filters using the `and` operator. The `or` operator is used to combine
+The `root` field is a map of filter names (as defined in the GDC API) to filter operation. The filter operation can be either a single operation
+or a `FilterSet` object. The `op` field will eventually support either `and` or `or`, however at this time only `and` is supported. The `and`operator is used to combine filters using the `and` operator. The `or` operator is used to combine
 filters using the `or` operator. The `FilterSet` object is converted to the appropriate format for the GDC API when the cohort is saved.
 When using the GDC REST API, the FilterSet can be converted into the appropriate format using the `filterSetToOperation` function. 
 When using the GDC GraphQL API, the FilterSet can be using the `convertFilterSetToGraphQL` function. The API guide will provide information
@@ -185,9 +182,9 @@ const allCohorts = useSelector(selectAllCohorts);
 # Using the Portal Application API
 
 The GDC Portal provides a number of hooks for querying the GDC API. These hooks are located in the `@gff/core` package.
-The hooks are designed to work in a manner similar to the RTL Query hooks. The hooks take arguments and return a object.
+The hooks are designed to work in a manner similar to the RTL Query hooks. The hooks take arguments and return an object.
 The object contains the data and the status of the query. The status of the query is stored in the `isSuccess` variable.
-The @gff/core package also provides a set of selector that return values stored in the core redux store: `CoreStore`.
+The @gff/core package also provides a set of selectors that return values stored in the core redux store: `CoreStore`.
 
 There are a number of hooks and selectors that are available for querying the GDC API, a subset of which are shown below:
 
@@ -195,9 +192,8 @@ There are a number of hooks and selectors that are available for querying the GD
 
 ## Case Information
 
-The GDC Portal provides a number of hooks for querying case information. These hooks are located in the `@gff/core` package.
-Cases can be queries using several different methods. The 'useAllCases' hook returns all the cases in the GDC and can be filters
-by the current cohort as shown below:
+The GDC Portal provides several hooks for querying case information. These hooks are located in the `@gff/core` package.
+Cases can be queried using several different methods. The 'useAllCases' hook returns all the cases in the GDC and can be filtered by the current cohort as shown below:
 
 ```typescript
 import { useCoreSelector, useAllCases } from '@gff/core';
@@ -325,7 +321,7 @@ The `useCaseSummary` hook takes a number of arguments:
 ## File Information
 
 Similar to the case information, the GDC Portal provides a number of hooks for querying file information. These hooks are located in the `@gff/core` package.
-To get a list of file associated with a cohort, the `useGetFilesQuery` hook can be used. This call is used in the repository application. The repository application is used to display the files associated with a cohort. The `useGetFilesQuery` hook takes a number of arguments:
+To get a list of files associated with a cohort, the `useGetFilesQuery` hook can be used. This call is used in the repository application. The repository application is used to display the files associated with a cohort. The `useGetFilesQuery` hook takes a number of arguments:
 
 ```typescript
 import {
@@ -372,9 +368,9 @@ The `useGetFilesQuery` hook takes a number of arguments:
 * `from` - the starting index of the files to return
 * `sortBy` - the fields to sort the files by
 
-Note this hook was designed to take global filters (e.x the current cohort as `case_filters`) and local filter (the repository filters). 
+Note this hook was designed to take global filters (e.x the current cohort as `case_filters`) and local filters (the repository filters). 
 
-Information for a single file can be queried using the `useFileSummary` hook. This call is used in the fileView page [portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b](https://portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b)
+Information for a single file can be queried using the `useFileSummary` hook. This call is used in the `File Summary View` page [portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b](https://portal.gdc.cancer.gov/files/0b5a9e7e-8e2e-4b7a-9b7e-ff5d9c5b2b2b)
 
 ```typescript
  const { data: { files } = {}, isFetching } = useGetFilesQuery({
@@ -404,14 +400,14 @@ Information for a single file can be queried using the `useFileSummary` hook. Th
   ],
 });
 ```
-The `useFileSummary` hook takes a number of arguments:
+The `useFileSummary` hook takes several arguments:
 * `filters` - the filters to apply to the cases and where the file uuid is passed in
 * `expand` - the fields to expand
 
 ## Sets: Gene, SSMS, and Case
 
-Sets are supported by the GDC API and use to create an entity the represents a set of items as a `set_id`. Sets can be 
-gene sets, SSM sets, or case sets. All GDC API's support passing sets as a filter parameter. 
+Sets are supported by the GDC API and are used to create an entity that represents a set of items as a `set_id`. Sets can be 
+gene sets, SSM sets, or case sets. All GDC APIs support passing sets as a filter parameter. 
 The GDC Portal provides a number of hooks for creating and querying set information.
 
 a set can be created using one of the following hooks:
@@ -423,12 +419,12 @@ a set can be created using one of the following hooks:
 * `useCreateSsmsSetFromFiltersMutation`
 * `useCreateCaseSetFromFiltersMutation`
 
-The will create a set from either a list of values or a filter set. The create from Values hooks take a single 
-parameter `values` which is a array of values, while the create from filters hooks take one required parameter `filters`
+These functions will create a set from either a list of values or a filter set. The create from Values hooks take a single 
+parameter `values` which is an array of values, while the create from filters hooks take one required parameter `filters`
 which is a filter set or JSON object. Both calls return the created `set_id` if the set was successfully created.
 
-As the above hook are Redux Toolkit Query hooks, namely mutation hooks, they return a tuple of the form:
-`[mutationHook, response]` which is a function to call the mutation and the response from the mutation. The mutation hook can be use like:
+As the above hooks are Redux Toolkit Query hooks, namely mutation hooks, they return a tuple of the form:
+`[mutationHook, response]` which is a function to call the mutation and the response from the mutation. The mutation hook can be used like:
 
 ```typescript
  const [createSet, response] = createSetHook();
@@ -458,7 +454,7 @@ Once a set is created it can be altered using the following hooks:
 * `useRemoveFromGeneSetMutation`
 * `useRemoveFromSsmSetMutation`
 
-Set can be managed using the following actions:
+Sets can be managed using the following actions:
 
 * `addSet`
 * `removeSet`
@@ -471,7 +467,7 @@ The following selectors are available for getting set information:
 * `selectSetByName`
 * `selectSetByType`
 
-Finally  the following hooks are available for querying set size:
+Finally, the following hooks are available for querying set size:
 
 * `useGeneSetCountsQuery`
 * `useSsmSetCountsQuery`
@@ -480,60 +476,12 @@ Finally  the following hooks are available for querying set size:
 ## Creating a cohort
 
 Depending on what your application does, you may want to create a new cohort. Although the GDC Portal SDK provides a 
-number of functions for creating a new cohort. It is highly recommended that application use the provided Button and
+number of functions for creating a new cohort. It is highly recommended that the application use the provided Button and
 SaveCohortModal components to create a new cohort. The Button and SaveCohortModal components are located in 
 the `@gff/portal-proto` package.
 
-To create a cohort using the SaveCohortModal component the follow code can be used:
-
-```tsx
-import React, { useState } from "react";
-import { Button, Tooltip } from "@mantine/core";
-import { CountsIcon } from "@/components/tailwindComponents";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
-
-const ProjectsCohortButton = ({ pickedProjects }: { pickedProjects: string[];  }): JSX.Element => {
-  const [showSaveCohort, setShowSaveCohort] = useState(false);
-
-  return (
-          <>
-            <Tooltip label="Save a new cohort of cases in selected project(s)" withArrow  > 
-            <span>
-              <Button
-                variant="outline"
-                color="primary"
-                disabled={pickedProjects.length == 0}
-                leftIcon={
-                  pickedProjects.length ? (
-                          <CountsIcon $count={pickedProjects.length}>
-                                  {pickedProjects.length}{" "}
-                          </CountsIcon>
-                ) : null
-                }
-                onClick={() => setShowSaveCohort(true)}
-                className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary">
-                Save New Cohort
-              </Button>
-            </span>
-          </Tooltip>
-          {showSaveCohort && ( 
-            <SaveCohortModal onClose={() => setShowSaveCohort(false)}
-              filters={{
-              mode: "and",
-                      root: {
-                "cases.project.project_id": {
-                  operator: "includes",
-                          field: "cases.project.project_id",
-                          operands: pickedProjects,
-                },
-              },
-            }} 
-            />
-          )}
-    </>
-);};
-````
-In summary the above code flow is:
+To create a cohort using the SaveCohortModal component the following code can be used:
+In summary, the above code flow is:
 
 1. The ProjectsCohortButton component renders a button with the label "Save New Cohort".
 2. When the button is clicked, it sets the state variable `showSaveCohort` to true, which triggers the rendering of the `SaveCohortModal` component.
@@ -555,7 +503,7 @@ for altering the current cohort:
 * `removeCohortFilter`
 * `clearCohortFilters`
 
-Note that all of these operation are applied to the current cohort. The current cohort is the cohort that is currently
+Note that all of these operations are applied to the current cohort. The current cohort is the cohort that is currently
 being displayed in the Cohort Management Bar. The current cohort can be accessed via the `selectCurrentCohort` selector.
 The current cohort's filters can be accessed via the `selectCurrentCohortFilters` selector.
 
@@ -632,7 +580,7 @@ interface UpdateCohortNameParams {
 }
 
 ```
-where `name` is the new name for the cohort. For example to update the current cohort's name to `My Cohort` the following code can be used:
+where `name` is the new name for the cohort. For example, to update the current cohort's name to `My Cohort` the following code can be used:
 
 ```typescript
 import { useCoreDispatch, updateCohortName } from '@gff/core';
@@ -668,7 +616,7 @@ coreDispatch(setCurrentCohort({
 }));
 ``` 
 
-This will set the cohort with id `1234` as the current cohort.
+This will set the cohort with ID `1234` as the current cohort.
 
 
 ## Count Information
@@ -707,8 +655,7 @@ export type DataStatus = "uninitialized" | "pending" | "fulfilled" | "rejected";
 
 As a developer you will likely want to use the components provided by the GDC Portal. The GDC Portal provides a number of components
 that make it easy to develop applications for the GDC Portal. These components are located in the `@gff/portal-proto` package. 
-In a number of components, the GDC Portal uses the [Mantine](https://mantine.dev/) component library but base components
-and encapulates call to the GDC API so that you do not have to. 
+In several components, the GDC Portal uses the [Mantine](https://mantine.dev/) component library but base components and encapsulates calls to the GDC API so that you do not have to. 
 
 ### Buttons
 
@@ -767,7 +714,7 @@ when the button is clicked. The `filtersCallback` is a function that returns the
 
 ### Modals
 
-Modals are used to show transitory information or obtain information from the user. The GDC Portal provides a number of 
+Modals are used to show transitory information or obtain information from the user. The GDC Portal provides many
 modals that can be used for various purposes. One such modal is the `SaveCohortModal` component mentioned previously.
 
 ![img.png](images/save_cohort_modal.png)
@@ -779,11 +726,11 @@ modals that can be used for various purposes. One such modal is the `SaveCohortM
   * `MutationSetModal`
 * `SaveOrCreateEntityModal` - a modal that can be used to save or create a new entity.
 
-The modals are documented in the Portal V2 SDK API documentation.
+These modals and others, are documented in the Portal V2 SDK API documentation.
 
 ### Charts
 
-Basic charts are provided for use in application, although applications are free to use any charting library they wish. 
+Basic charts are provided for use in your application, although applications are free to use any charting library they wish. 
 The charts provided are:
 
 * `BarChart` - a bar chart
@@ -809,8 +756,8 @@ export interface BarChartData {
 
 Where `datasets` is an array of PlotData objects, which at the minimum contain the `x` and `y` fields. 
 
-The `yAxisTitle` is the title for the y axis, the `tickvals` and `ticktext` are the tick values and text for 
-the x axis, the `label_text` is the text for the labels, the `title` is the title for the chart, 
+The `yAxisTitle` is the title for the y-axis, the `tickvals` and `ticktext` are the tick values and text for 
+the x-axis, the `label_text` is the text for the labels, the `title` is the title for the chart, 
 and the `filename` is the filename to use when downloading the chart.
 
 Note that BarChart needs to be imported as a dynamic component:
@@ -839,18 +786,18 @@ interface CNVPlotProps {
 }
 ```
 
-These charts, and others are documented in the Portal V2 SDK API documentation.
+These charts and others are documented in the Portal V2 SDK API documentation.
 
 ### Facets
 
 Facet components are provided for use in building local filters for your application. There are two types of facet components:
 
-* `EnumFacet` - a facet that is used to filter on a enum field
-* `DateFacet` - a facet that is used to filter on a date field
+* `EnumFacet` - a facet that is used to filter on an enum field
+* `DateFacet` - a facet that is used to filter a date field
 * `NumericRangeFacet` - a facet that is used to filter on a range field
 * `PercentileFacet` - a facet that is used to filter on a percentile field
-* 'AgeRangeFacet' - a facet that is used to filter on a age range field
-* `TextFacet` - a facet that is used to filter on a text field
+* 'AgeRangeFacet' - a facet that is used to filter on an age range field
+* `TextFacet` - a facet that is used to filter a text field
 * `BooleanFacet` - a facet that is used to filter on a boolean field
 
 ![img.png](images/components/enum_facet.png)
@@ -878,7 +825,7 @@ Facet components are provided for use in building local filters for your applica
 *Toggle Facet*
 
 
-The facet components are documented in the Portal V2 SDK API documentation. As these component are passes data fetcher
+The facet components are documented in the Portal V2 SDK API documentation. As these components are passed data fetcher
 and filter management hooks, they can be used for both cohort and local filters in an application.
 
 ### VerticalTable
@@ -887,8 +834,7 @@ The VerticalTable component is used to display data in a table format. The Verti
 implementing react table version 8. The VerticalTable component has a number of parameters, the most important
 being data, columns, and filters. The data is the data to display in the table, the columns are the columns to display
 in the table, and is where the fields of the data tp be rendered are.
-The table has support for searching, sorting, and pagination. It can be configure
-to render a number of different types of columns, including text, numeric, and date. The table can also be configured
+The table has support for searching, sorting, and pagination. It can be configured to render many different types of columns, including text, numeric, and date. The table can also be configured
 to use React components for rendering columns.
 The Vertical Table is used for most of the table views in the GDC Portal. There are a number of examples of its use and 
 is documented in the Portal V2 SDK API documentation.
@@ -906,22 +852,21 @@ The monorepo contains the following packages:
 * `@gff/core` - contains the core components and hooks for the GDC Portal.
 * `@gff/portal-proto` - contains the UI components and application framework (using NextJS) for the GDC Portal.
 
-Note that the UI components are located in the `@gff/portal-proto` package will be refactored into a separate package in the future, and 
+Note that the UI components located in the `@gff/portal-proto` package will be refactored into a separate package in the future, and 
 `@gff/portal-proto` will be renamed to `@gff/portal`.
 
 You can get started by cloning the repo and following the instructions in the [README.md](https://github.com/NCI-GDC/gdc-frontend-framework/blob/develop/README.md) file.
 
 ## Application Layout
 
-A typical application will have the following layout. The main section of the application is the are where 
-components like tables, graphs, and other components are displayed. Local filters are displayed on the left side and
-depending on the numbers of the will scroll vertically. This is a typical layout but other layouts are possible, like 
+A typical application will have the following layout. The main section of the application is the area where components like tables, graphs, and other components are displayed. Local filters are displayed on the left side and
+depending on the numbers will scroll vertically. This is a typical layout but other layouts are possible, like 
 in the case of Protein Paint. Applications are encouraged to use vertical space as much as possible, as horizontal
 scrolling can be a poor user experience.
 
 This section will describe parts of the Project application and how it is structured. The Project application is a
 simple application that displays a table of projects and allows the user to filter the projects by a number of filters.
-As the local filtere are selected the table display is updated, but the cohort is not changes (e.i cohort filters are not
+As the local filters are selected the table display is updated, but the cohort is not changed (e.i cohort filters are not
 updated). The Project application is located in the `@gff/portal-proto` package in the `src/features/projectsCenter` directory.
 The user can create a new saved cohort by selecting projects and clicking the "Save New Cohort" button. This will open
 a modal that will allow the user to name the cohort and save it. The Project application is a good example of how to use
@@ -932,18 +877,18 @@ the GDC Portal SDK to create an application.
 
 ## Local State
 
-Depending on the application, it may be necessary to maintain local state. For example, in the Projects application,
+Depending on the application, it may be necessary to maintain the local state. For example, in the Projects application,
 the selected local filters, in this case, represented as Enumeration Facets, are stored in the local state. This allows
 the application to remember the selected filters when the user navigates away from the page and then returns. Persisting
 the state uses [Redux Toolkit] and [Redux Persist] to store the state in local storage. While the CoreState is managed
 by the portal core, the local state is managed by the application. Using a separate store for the local state allows
 the application to manage the state without having to worry about affecting the core state. 
 
-The Portal core provides a number of functions to assist in creation and persisting the redux store and will create
-the handlers like AppState, AppDispatch, and AppSelector. The AppState is the type of the local state, the AppDispatch
+The Portal core provides a number of functions to assist in the creation and persisting of the redux store and will create
+handlers such as AppState, AppDispatch, and AppSelector. The AppState is the type of the local state, the AppDispatch
 is the type of the dispatch function, and the AppSelector is the type of the selector function. 
 
-An application can create all of the thm using the `createAppStore` function:
+An application can create all of the them using the `createAppStore` function:
 
 ```typescript
 import { createAppStore } from "@gff/core";
@@ -973,7 +918,7 @@ The name of the application is used to create the local storage key for the appl
 application and is used to create the local storage key. The `AppStore` is the local store, the `AppContext` is the
 local context, the `useAppSelector` is the selector hook, and the `useAppDispatch` is the dispatch hook. 
 
-Since you know have a local store, you can create a slice for the local state. The slice is a standard Redux Toolkit
+Since you now have a local store, you can create a slice for the local state. The slice is a standard Redux Toolkit
 slice and will contain the reducer, actions, and selectors for the local state.
 
 ## Persisting the local state
@@ -1122,9 +1067,7 @@ export const useClearProjectsFacetFilters = (): ClearFacetFiltersFunction => {
 };
 ```
 
-Note that the dispatch function is the `useAppDispatch` hook returned by the `createAppStore` function. 
-
-The user selected local filters can be retrieved using the `useProjectsFilters` hook created by combining the 
+Note that the dispatch function is the `useAppDispatch` hook returned by the `createAppStore` function. The user-selected local filters can be retrieved using the `useProjectsFilters` hook created by combining the 
 `useAppSelector` hook and the `selectFilters selector`:
 
 ```typescript
@@ -1135,10 +1078,10 @@ export const useProjectsFilters = (): FilterSet => {
 ## Creating a new cohort
 
 The project application allows users to create a new cohort from the selected projects. The cohort is created using the
-`SaveCohortModal` component. The `SaveCohortModal` component is passed the current cohort filters and the local project
+`SaveCohortModal` component. The `SaveCohortModal` component passes the current cohort filters and the local project
 filters to create a new saved cohort. In the case of the project application, the `SaveCohortModal` component is used
 in a button component. The button component is passed the selected projects and the `SaveCohortModal` component is
-rendered when the button is clicked. The `SaveCohortModal` component is passed the current cohort filters and the local
+rendered when the button is clicked. The `SaveCohortModal` component passes the current cohort filters and the local
 project filters to create a new saved cohort. The `SaveCohortModal` component is used in the project application as:
 
 ```tsx
@@ -1221,8 +1164,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
 ### Application Registration
 
-An application needs to be "registered" in order to be used in the GDC Portal. Registration is done by adding the application
-using `createGdcAppWithOwnStore`function. If the app is not using its own store, then the `createGdcApp` function can be used.
+An application needs to be "registered" to be used in the GDC Portal. Registration is done by adding the application
+using `createGdcAppWithOwnStore`function. If the app is not using its store, then the `createGdcApp` function can be used.
 
 ```typescript
 import { createGdcAppWithOwnStore } from "@gff/core";
@@ -1257,7 +1200,7 @@ can be used.
 
 The other registration needed for your app is in 
 [packages/portal-proto/src/features/user-flow/workflow/registeredApps.tsx](https://github.com/NCI-GDC/gdc-frontend-framework/blob/f9ab9710450172978f5f588558cbdaa2d2301418/packages/portal-proto/src/features/user-flow/workflow/registeredApps.tsx) 
-This file contains an array of registered applications. For example the enty for the Project Center is:
+This file contains an array of registered applications. For example the entry for the Project Center is:
 
 ```tsx
 import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
@@ -1312,10 +1255,9 @@ While you are free to structure your application code as you with, the following
 
 ## Using selectors and hooks
 
-Although a complete guide to react hooks and selectors are out of scope for this document, we will provide a brief overview 
+Although a complete guide to react hooks and selectors is out of the scope of this document, we will provide a brief overview 
 of how to use them for application development. For more information on hooks and selectors please see the 
-[React Hooks](https://reactjs.org/docs/hooks-intro.html). As we are using Redux-toolkit, we will be using the calls 
-describe in the [Redux Toolkit](https://redux-toolkit.js.org/tutorials/typescript) documentation.
+[React Hooks](https://reactjs.org/docs/hooks-intro.html). As we are using Redux-toolkit, we will be using the calls described in the [Redux Toolkit](https://redux-toolkit.js.org/tutorials/typescript) documentation.
 
 ### Selectors
 
@@ -1390,7 +1332,7 @@ export interface GdcApiRequest {
 }
 ```
 
-There is also support for the GraphQL API. The `fetchGdcGraphQL` function takes a number of arguments:
+There is also support for the GraphQL API. The `fetchGdcGraphQL` function takes two arguments:
 
 ```typescript
 export const graphqlAPI = async <T>(
