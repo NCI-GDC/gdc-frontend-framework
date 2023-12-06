@@ -33,20 +33,21 @@ can be used to analyze and visualize data from the GDC.
     - [Facets](#facets)
     - [VerticalTable](#verticaltable)
 - [Application Development](#application-development)
-  - [Getting Started]
-  - Local State
-  - Persisting State
-  - Local Hooks
-  - Creating a new cohort
-  - Registration
-  - Source code layout
-  - Testing
+  - [Getting Started](#getting-started)
+  - [Application Layout](#application-layout)
+  - [Local State](#local-state)
+  - [Persisting the local State](#persisting-the-local-state)
+  - [Application Hooks](#application-hooks)
+  - [Creating a new cohort](#creating-a-new-cohort)
+  - [Application Registration](#application-registration)
+  - [Source code layout](#source-code-layout)
+
 
 - [Appendix](#appendix)
   - [Using selectors and hooks](#using-selectors-and-hooks)
     - [Selectors](#selectors)
     - [Hooks](#hooks)
-  - Querying the GDC API Directly
+  - [Querying the GDC API Directly](#querying-the-gdc-api-directly)
 
 ## Introduction
 
@@ -800,28 +801,39 @@ Facet components are provided for use in building local filters for your applica
 * `TextFacet` - a facet that is used to filter a text field
 * `BooleanFacet` - a facet that is used to filter on a boolean field
 
-![img.png](images/components/enum_facet.png)
+<img src="images/components/enum_facet.png" alt="Enum Facet Component" width="800" height="auto">
+
 *Enum Facet*
 
-![img.png](images/components/numeric_range_facet.png)
+<img src="images/components/numeric_range_facet.png" alt="Range Facet Component" width="600" height="auto">
+
 *Range Facet*
 
-![date_range_facet.png](images%2Fcomponents%2Fdate_range_facet.png)
+<img src="images/components/date_range_facet.png" alt="Date Range Facet Component" width="600" height="auto">
+
 *Date Range Facet*
 
-![number_range.png](images%2Fcomponents%2Fnumber_range.png)
+
+<img src="images/components/number_range.png" alt="Number Range Facet Component" width="600" height="auto">
+
 *Number Range Facet*
 
-![percentile_facet.png](images%2Fcomponents%2Fpercentile_facet.png)
+<img src="images/components/percentile_facet.png" alt="Percent Range Facet Component" width="600" height="auto">
+
 *Percentile Facet*
 
-![age_range_facet.png](images%2Fcomponents%2Fage_range_facet.png)
+
+<img src="images/components/age_range_facet.png" alt="Age Range Facet Component" width="600" height="auto">
+
 *Age Range Facet*
 
-![exact_value_facet.png](images%2Fcomponents%2Fexact_value_facet.png)
+
+<img src="images/components/exact_value_facet.png" alt="Exact Value Facet Component" width="600" height="auto">
+
 *Exact Value Facet*
 
-![toggle_facet.png](images%2Fcomponents%2Ftoggle_facet.png)
+<img src="images/components/toggle_facet.png" alt="Boolean Toggle Facet Component" width="600" height="auto">
+
 *Toggle Facet*
 
 
