@@ -32,18 +32,16 @@ can be used to analyze and visualize data from the GDC.
     - [Charts](#charts)
     - [Facets](#facets)
     - [VerticalTable](#verticaltable)
-- Application Development
-  - Local Filters
+- [Application Development](#application-development)
+  - Getting Started
   - Local State
   - Persisting State
-  - Source code layout
-- Sample Application
-  - Project center overview
-  - Local filters
-  - Local Store
-  - Project Table
+  - Local Hooks
   - Creating a new cohort
   - Registration
+  - Source code layout
+  - Testing
+
 - [Appendix](#appendix)
   - [Using selectors and hooks](#using-selectors-and-hooks)
     - [Selectors](#selectors)
@@ -900,7 +898,7 @@ is documented in the Portal V2 SDK API documentation.
 
 # Application Development
 
-## Getting started
+## Getting Started
 
 The GDC Portal V2 is a monorepo that contains all the code for the GDC Portal. The monorepo is managed using [lerna](https://lerna.js.org) and [npm]().
 The monorepo contains the following packages:
@@ -913,14 +911,222 @@ Note that the UI components are located in the `@gff/portal-proto` package will 
 
 You can get started by cloning the repo and following the instructions in the [README.md](https://github.com/NCI-GDC/gdc-frontend-framework/blob/develop/README.md) file.
 
+## Application Layout
+
+A typical application will have the following layout. The main section of the application is the are where 
+components like tables, graphs, and other components are displayed. Local filters are displayed on the left side and
+depending on the numbers of the will scroll vertically. This is a typical layout but other layouts are possible, like 
+in the case of Protein Paint. Applications are encouraged to use vertical space as much as possible, as horizontal
+scrolling can be a poor user experience.
+
+
+#TODO: add image of application layout
+
+## Local State
+
+Depending on the application, it may be necessary to maintain local state. For example, in the Projects application,
+the selected local filters, in this case, represented as Enumeration Facets, are stored in the local state. This allows
+the application to remember the selected filters when the user navigates away from the page and then returns. Persisting
+the state uses [Redux Toolkit] and [Redux Persist] to store the state in local storage. While the CoreState is managed
+by the portal core, the local state is managed by the application. Using a separate store for the local state allows
+the application to manage the state without having to worry about affecting the core state. 
+
+The Portal core provides a number of functions to assist in creation and persisting the redux store and will create
+the handlers like AppState, AppDispatch, and AppSelector. The AppState is the type of the local state, the AppDispatch
+is the type of the dispatch function, and the AppSelector is the type of the selector function. 
+
+An application can create all of the thm using the `createAppStore` function:
+
+```typescript
+import { createAppStore } from "@gff/core";
+import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
+
+const PROJECT_APP_NAME = "ProjectCenter";
+
+// create the store, context and selector for the ProjectsCenter
+// Note the project app has a local store and context which isolates
+// the filters and other store/cache values
+
+const reducers = combineReducers({  
+  projectApp: projectCenterFiltersReducer, // Your application might have more that one reducer
+});
+
+export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
+        createAppStore({
+          reducers: reducers,
+          name: PROJECT_APP_NAME,
+          version: "0.0.1",
+        });
+
+export type AppState = ReturnType<typeof reducers>;
+```
+Call this function will create the local store given the reducers and the name, and version of the application.
+The name of the application is used to create the local storage key for the application. The `id` is the id of the
+application and is used to create the local storage key. The `AppStore` is the local store, the `AppContext` is the
+local context, the `useAppSelector` is the selector hook, and the `useAppDispatch` is the dispatch hook. 
+
+Since you know have a local store, you can create a slice for the local state. The slice is a standard Redux Toolkit
+slice and will contain the reducer, actions, and selectors for the local state.
+
+## Persisting the local state
+
+If is desirable to persist the local state. This can be done using the `persistReducer` function from the
+[redux-persist](https://github.com/rt2zz/redux-persist) package. Any reducer can be persisted by creating a
+persisted store and passing the reducer to the `persistReducer` function. For example, the `createAppStore` function
+can be modified to persist the local filter state as:
+
+
+
+```typescript #title="src/appApi.ts"
+import { combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { createAppStore } from "@gff/core";
+import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
+
+const PROJECT_APP_NAME = "ProjectCenter";
+
+const persistConfig = {
+  key: PROJECT_APP_NAME,
+  version: 1,
+  storage,
+  whitelist: ["projectApp"],
+};
+
+// create the store, context and selector for the ProjectsCenter
+// Note the project app has a local store and context which isolates
+// the filters and other store/cache values
+
+const reducers = combineReducers({
+  projectApp: projectCenterFiltersReducer,
+});
+
+export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
+  createAppStore({
+    reducers: persistReducer(persistConfig, reducers),
+    name: PROJECT_APP_NAME,
+    version: "0.0.1",
+  });
+
+export type AppState = ReturnType<typeof reducers>;
+
+```
+
+For example, the ProjectCenterFiltersSlice which handles the local filters, is defined as:
+
+```typescript
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Operation, FilterSet } from "@gff/core";
+import { AppState } from "./appApi";
+
+export interface ProjectCenterFiltersState {
+  readonly filters: FilterSet;
+}
+
+const initialState: ProjectCenterFiltersState = {
+  filters: { mode: "and", root: {} },
+};
+
+const slice = createSlice({
+  name: "projectCenter/filters",
+  initialState,
+  reducers: {
+    updateProjectFilter: (
+            state,
+            action: PayloadAction<{ field: string; operation: Operation }>,
+    ) => {
+      return {
+        ...state,
+        filters: {
+          mode: "and",
+          root: {
+            ...state.filters.root,
+            [action.payload.field]: action.payload.operation,
+          },
+        },
+      };
+    },
+    removeProjectFilter: (state, action: PayloadAction<string>) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [action.payload]: _, ...updated } = state.filters.root;
+      return {
+        ...state,
+        filters: {
+          mode: "and",
+          root: updated,
+        },
+      };
+    },
+    clearProjectFilters: () => {
+      return { filters: { mode: "and", root: {} } };
+    },
+  },
+  extraReducers: {},
+});
+
+export const projectCenterFiltersReducer = slice.reducer;
+export const { updateProjectFilter, removeProjectFilter, clearProjectFilters } =
+        slice.actions;
+
+export const selectFilters = (state: AppState): FilterSet | undefined =>
+        state.projectApp.filters;
+
+export const selectProjectFiltersByName = (
+        state: AppState,
+        name: string,
+): Operation | undefined => {
+  return state.projectApp.filters.root[name];
+};
+```
+
+The above code creates a slice for the local state. The slice contains the reducer and the actions for the local state.
+
+The reducer is `projectCenterFiltersReducer` and the actions are `updateProjectFilter`, `removeProjectFilter`, and `clearProjectFilters`.
+The selectors are `selectFilters` and `selectProjectFiltersByName`. The `selectFilters` selector returns the filters for the
+application, while the `selectProjectFiltersByName` selector returns the filter for a given name.
+
+The above can be used to define hooks for use in the local filter EnumFacet component. For example, the `useProjectFiltersByName` hook is
+implemented as:
+
+```typescript
+export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+
+  return (field: string, operation: Operation) => {
+    dispatch(updateProjectFilter({ field: field, operation: operation }));
+  };
+};
+```
+
+Clearing the local filters is done using the `clearProjectFilters` action:
+
+```typescript
+export const useClearProjectsFacetFilters = (): ClearFacetFiltersFunction => {
+  const dispatch = useAppDispatch();
+  // clear the filters for this facet
+
+  return () => {
+    dispatch(clearProjectFilters());
+  };
+};
+```
+
+Note that the dispatch function is the `useAppDispatch` hook returned by the `createAppStore` function. 
+
+The user selected local filters can be retrieved using the `useProjectsFilters` hook created by combining the 
+`useAppSelector` hook and the `selectFilters selector`:
+
+```typescript
+export const useProjectsFilters = (): FilterSet => {
+  return useAppSelector((state) => selectFilters(state));
+};
+```
 
 ## Source code layout
 
 ![source code layout](./images/app_source_code_layout_fig.png)
 
-# Sample Application
-
-## Project Center
 
 
 # Appendix
