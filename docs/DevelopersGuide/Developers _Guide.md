@@ -919,6 +919,13 @@ depending on the numbers of the will scroll vertically. This is a typical layout
 in the case of Protein Paint. Applications are encouraged to use vertical space as much as possible, as horizontal
 scrolling can be a poor user experience.
 
+This section will describe parts of the Project application and how it is structured. The Project application is a
+simple application that displays a table of projects and allows the user to filter the projects by a number of filters.
+As the local filtere are selected the table display is updated, but the cohort is not changes (e.i cohort filters are not
+updated). The Project application is located in the `@gff/portal-proto` package in the `src/features/projectsCenter` directory.
+The user can create a new saved cohort by selecting projects and clicking the "Save New Cohort" button. This will open
+a modal that will allow the user to name the cohort and save it. The Project application is a good example of how to use
+the GDC Portal SDK to create an application.
 
 #TODO: add image of application layout
 
@@ -1012,7 +1019,7 @@ export type AppState = ReturnType<typeof reducers>;
 
 ```
 
-For example, the ProjectCenterFiltersSlice which handles the local filters, is defined as:
+For example, the `projectCenterFiltersSlice.ts` which handles the local filters, is defined as:
 
 ```typescript
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -1085,6 +1092,8 @@ The reducer is `projectCenterFiltersReducer` and the actions are `updateProjectF
 The selectors are `selectFilters` and `selectProjectFiltersByName`. The `selectFilters` selector returns the filters for the
 application, while the `selectProjectFiltersByName` selector returns the filter for a given name.
 
+## Application Hooks
+
 The above can be used to define hooks for use in the local filter EnumFacet component. For example, the `useProjectFiltersByName` hook is
 implemented as:
 
@@ -1122,11 +1131,180 @@ export const useProjectsFilters = (): FilterSet => {
   return useAppSelector((state) => selectFilters(state));
 };
 ```
+## Creating a new cohort
+
+The project application allows users to create a new cohort from the selected projects. The cohort is created using the
+`SaveCohortModal` component. The `SaveCohortModal` component is passed the current cohort filters and the local project
+filters to create a new saved cohort. In the case of the project application, the `SaveCohortModal` component is used
+in a button component. The button component is passed the selected projects and the `SaveCohortModal` component is
+rendered when the button is clicked. The `SaveCohortModal` component is passed the current cohort filters and the local
+project filters to create a new saved cohort. The `SaveCohortModal` component is used in the project application as:
+
+```tsx
+import React, { useState } from "react";
+import { Button, Tooltip } from "@mantine/core";
+import { CountsIcon } from "@/components/tailwindComponents";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+
+const ProjectsCohortButton = ({ pickedProjects, }: { pickedProjects: string[]; }): JSX.Element => {
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
+
+  return (
+          <>
+            <Tooltip
+                    label="Save a new cohort of cases in selected project(s)"
+                    withArrow
+            >
+        <span>
+          <Button
+                  data-testid="button-create-new-cohort-projects-table"
+                  variant="outline"
+                  color="primary"
+                  disabled={pickedProjects.length == 0}
+                  leftIcon={
+                    pickedProjects.length ? (
+                            <CountsIcon $count={pickedProjects.length}>
+                              {pickedProjects.length}{" "}
+                            </CountsIcon>
+                    ) : null
+                  }
+                  onClick={() => setShowSaveCohort(true)}
+                  className="border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          >
+            Save New Cohort
+          </Button>
+        </span>
+            </Tooltip>
+            {showSaveCohort && (
+                    <SaveCohortModal
+                            onClose={() => setShowSaveCohort(false)}
+                            filters={{
+                              mode: "and",
+                              root: {
+                                "cases.project.project_id": {
+                                  operator: "includes",
+                                  field: "cases.project.project_id",
+                                  operands: pickedProjects,
+                                },
+                              },
+                            }}
+                    />
+            )}
+          </>
+  );
+};
+
+export default ProjectsCohortButton;
+```
+
+This custom button component used the state variable `showSaveCohort` to determine if the `SaveCohortModal` component needs to be shown.
+The `SaveCohortModal` component is passed the current list of projects selected by the user and handles the creation of the cohort and saving it. 
+
+### Application Demo
+
+In addition to a application that works on cohorts, an application can have a demo. This demo can be used to show the
+application's functionality. The demo is shown when the demo button is clicked. The demo button is shown when the
+application is registered with `hasDemo: false,` as described in the [Application Registration](#application-registration) section.
+
+The application can determine if the demo button should be shown by using the `useHasDemo` hook. The `useHasDemo` hook
+returns a boolean indicating if the demo button should be shown. The demo button can be shown using the following code:
+
+```tsx
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+
+const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
+  const isDemoMode = useIsDemoApp();
+  ...
+
+```
+
+### Application Registration
+
+An application needs to be "registered" in order to be used in the GDC Portal. Registration is done by adding the application
+using `createGdcAppWithOwnStore`function. If the app is not using its own store, then the `createGdcApp` function can be used.
+
+```typescript
+import { createGdcAppWithOwnStore } from "@gff/core";
+import { AppContext, AppStore, id } from "@/features/projectsCenter/appApi";
+import { ProjectsCenter } from "@/features/projectsCenter/ProjectsCenter";
+
+export default createGdcAppWithOwnStore({
+  App: ProjectsCenter,
+  id: id,
+  name: "Projects Center",
+  version: "v1.0.0",
+  requiredEntityTypes: [],
+  store: AppStore,
+  context: AppContext,
+});
+
+export const ProjectsCenterAppId: string = id;
+```
+The above code registers the application with the GDC Portal. The `createGdcAppWithOwnStore` function takes a number of arguments:
+
+* `App`: React.ComponentType - the application component
+* `id`: string - the id of the application
+* `name`: string - the name of the application
+* `version`: string - the version of the application
+* `requiredEntityTypes`: string[] - the required entity types for the application
+* `store`: Store - the store for the application
+* `context`: Context - the context for the application
+
+The required entity types are the entity types that the application requires to function. For example, the Mutation Frequency application
+requires the `ssms` entity type. While this value is not currently used, it will be used in the future to determine if the application
+can be used. 
+
+The other registration needed for your app is in 
+[packages/portal-proto/src/features/user-flow/workflow/registeredApps.tsx](https://github.com/NCI-GDC/gdc-frontend-framework/blob/f9ab9710450172978f5f588558cbdaa2d2301418/packages/portal-proto/src/features/user-flow/workflow/registeredApps.tsx) 
+This file contains an array of registered applications. For example the enty for the Project Center is:
+
+```tsx
+import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
+
+...
+{
+  name: "Projects",
+          icon: (
+          <ProjectsIcon
+                  width={64}
+                  height={64}
+                  viewBox="0 -20 128 128"
+                  role="img"
+                  aria-label="Projects icon"
+          />
+          ),
+  tags: [],
+          hasDemo: false,
+          id: "Projects",
+          countsField: "repositoryCaseCount",
+          description:"View the Projects available within the GDC and select them for further exploration and analysis.",
+},
+...
+```
+
+The above code registers the Project Center application with the GDC Portal. The members of the object are:
+
+*`name` is the name of the application
+*`icon` is the icon as an SVH file, it size and position can be adjusted using the `width`, `height`, and `viewBox` properties
+*`tags` are the tags for the application used for searching (which is not currently active)
+*`hasDemo` is a boolean indicating if the application has a demo, if so the demo button will be shown
+*`id` is the id of the application and needs to match the id of the application registered in the `createGdcAppWithOwnStore` function
+*`countsField` is the field to use for the counts in the application, this is used to determine if the application can be used
+*`description` is the description of the application
+*`noDataTooltip` is the tooltip to show if the application has no data
+
+When the app is registered, it will be available in the GDC Portal. The application can be accessed by clicking on the app card.
+The visual elements of the card are:
+
+![application_card.png](images%2Fapplication_card.png)
+*Application Card and it's elements*
 
 ## Source code layout
 
-![source code layout](./images/app_source_code_layout_fig.png)
+While you are free to structure your application code as you with, the following is a recommended layout for your application's source code:
 
+![source code layout](./images/app_source_code_layout_fig.png)
+*Application source code layout*
 
 
 # Appendix
@@ -1186,3 +1364,40 @@ is a boolean indicating if the query is currently loading, `isError` is a boolea
 and `error` is the error returned from the query.
 
 ## Querying the GDC API Directly
+
+There may be cases where you need to query the GDC API directly. The GDC Portal provides a number of functions for querying
+the GDC API. These functions are located in the `@gff/core` package. The functions are:
+* `fetchGdcProjects` - fetches project data
+* `fetchGdcAnnotations` - fetches annotation data
+* `fetchGdcSsms` - fetches ssms data
+* `fetchGdcCases` - fetches cases data
+* `fetchGdcFiles` - fetches files data
+
+which are wrappers around `fetchGdcEntities` function. The `fetchGdcEntities` function takes a number of arguments:
+
+```typescript
+export interface GdcApiRequest {
+  readonly filters?: GqlOperation;
+  readonly case_filters?: GqlOperation;
+  readonly fields?: ReadonlyArray<string>;
+  readonly expand?: ReadonlyArray<string>;
+  readonly format?: "JSON" | "TSV" | "XML";
+  readonly size?: number;
+  readonly from?: number;
+  readonly sortBy?: ReadonlyArray<SortBy>;
+  readonly facets?: ReadonlyArray<string>;
+}
+```
+
+There is also support for the GraphQL API. The `fetchGdcGraphQL` function takes a number of arguments:
+
+```typescript
+export const graphqlAPI = async <T>(
+  query: string,
+  variables: Record<string, unknown>,
+): Promise<GraphQLApiResponse<T>> => 
+```
+    
+where `query` is the GraphQL query and `variables` are the variables for the query. 
+    
+
