@@ -86,6 +86,7 @@ export const SetOperationTable = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
+          // todo: aria label checked status out of sync w/ checked value
           <Checkbox
             size="xs"
             classNames={{
@@ -93,14 +94,12 @@ export const SetOperationTable = ({
             }}
             value={row.original.operationKey}
             aria-label={`Select the ${row.original.operationKey} row`}
-            {...{
-              checked: selectedSets[row.original.operationKey],
-              onChange: (e) => {
-                setSelectedSets({
-                  ...selectedSets,
-                  [e.target.value]: !selectedSets[e.target.value],
-                });
-              },
+            checked={selectedSets[row.original.operationKey]}
+            onChange={(e) => {
+              setSelectedSets({
+                ...selectedSets,
+                [e.target.value]: !selectedSets[e.target.value],
+              });
             }}
           />
         ),
@@ -154,6 +153,7 @@ export const SetOperationTable = ({
 
   return (
     <VerticalTable
+      aria-hidden="true"
       data={setOperationTableData}
       columns={setOperationTableColumns}
       enableRowSelection={true}

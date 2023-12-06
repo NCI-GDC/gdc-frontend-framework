@@ -50,14 +50,15 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
           chartData={chartData}
           onClickHandler={onClickHandler}
         />
-        <div className="w-full ml-2 mt-2 mb-4 relative">
+        <div aria-hidden="true" className="w-full ml-2 mt-2 mb-4 relative">
           <SetOperationsSummaryTable
             sets={sets}
             countHook={countHook}
             entityType={entityType}
           />
-          <div className="m-8" />
+          <div aria-hidden="true" className="m-8" />
           <SetOperationTable
+            aria-hidden="true"
             data={data}
             selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}

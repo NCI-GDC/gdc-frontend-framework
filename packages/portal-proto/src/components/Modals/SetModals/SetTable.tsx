@@ -32,7 +32,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
 
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage}>
-      <span role="button" tabIndex={0}>
+      <span>
         {multiselect ? (
           <Checkbox
             value={setId}
@@ -45,7 +45,6 @@ const SelectCell: React.FC<SelectCellProps> = ({
                   )
                 : setSelectedSets([...selectedSets, set])
             }
-            aria-label={`Select the ${set[0]} set`}
           />
         ) : (
           <Radio
@@ -53,7 +52,6 @@ const SelectCell: React.FC<SelectCellProps> = ({
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
-            aria-label={`Select the ${set[0]} set`}
           />
         )}
       </span>
@@ -107,14 +105,16 @@ const SetTable: React.FC<SetTableProps> = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <SelectCell
-            count={counts?.[row.original.set[0]] || 0}
-            set={row.original.set}
-            multiselect={multiselect}
-            shouldDisable={shouldDisable}
-            selectedSets={selectedSets}
-            setSelectedSets={setSelectedSets}
-          />
+          <span aria-label={`Select ${row.original.set[0]}`}>
+            <SelectCell
+              count={counts?.[row.original.set[0]] || 0}
+              set={row.original.set}
+              multiselect={multiselect}
+              shouldDisable={shouldDisable}
+              selectedSets={selectedSets}
+              setSelectedSets={setSelectedSets}
+            />
+          </span>
         ),
       }),
       setTableColumnHelper.accessor("name", {

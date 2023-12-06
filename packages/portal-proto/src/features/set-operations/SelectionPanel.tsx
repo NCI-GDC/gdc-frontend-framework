@@ -90,6 +90,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
     >
       <span>
         <Checkbox
+          aria-label={`Select the ${entityType} set operation row`}
           classNames={{
             input: "checked:bg-accent checked:border-accent",
           }}
@@ -103,7 +104,6 @@ const SelectCell: React.FC<SelectCellProps> = ({
             );
             setSelectedEntityType(entityType);
           }}
-          aria-label={`Select the ${setId} Set Operation row`}
         />
       </span>
     </Tooltip>
@@ -264,18 +264,25 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           );
 
           return (
-            <SelectCell
-              setId={row.original.setId}
-              name={row.original.name}
-              disabled={disabled}
-              count={row.original.count}
-              entityType={row.original.entity_type as SetOperationEntityType}
-              selectedEntities={selectedEntities}
-              selectedEntityType={selectedEntityType}
-              setSelectedEntities={setSelectedEntities}
-              setSelectedEntityType={setSelectedEntityType}
-              key={`${entityTypes}-select-${row.original.setId}`}
-            />
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label={`Select ${row.original.setId} bla`}
+            >
+              <SelectCell
+                aria-hidden="true"
+                setId={row.original.setId}
+                name={row.original.name}
+                disabled={disabled}
+                count={row.original.count}
+                entityType={row.original.entity_type as SetOperationEntityType}
+                selectedEntities={selectedEntities}
+                selectedEntityType={selectedEntityType}
+                setSelectedEntities={setSelectedEntities}
+                setSelectedEntityType={setSelectedEntityType}
+                key={`${entityTypes}-select-${row.original.setId}`}
+              />
+            </span>
           );
         },
       }),
@@ -406,7 +413,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           </Link>
           ).
         </p>
-        <div className="w-3/4">
+        <div aria-hidden="true" className="w-3/4">
           <VerticalTable
             data={displayedData}
             columns={setSelectionPanelColumns}
