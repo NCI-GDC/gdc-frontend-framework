@@ -2,6 +2,7 @@ import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
+import ErrorMessage from "../ErrorMessage";
 
 interface SaveOrCreateEntityModalProps {
   entity: string;
@@ -13,6 +14,7 @@ interface SaveOrCreateEntityModalProps {
   onNameChange?: (name: string) => boolean;
   descriptionMessage?: string;
   additionalDuplicateMessage?: string;
+  disallowedNames?: string[];
 }
 export const SaveOrCreateEntityModal = ({
   entity,
@@ -24,6 +26,7 @@ export const SaveOrCreateEntityModal = ({
   onNameChange,
   descriptionMessage,
   additionalDuplicateMessage,
+  disallowedNames = [],
 }: SaveOrCreateEntityModalProps): JSX.Element => {
   return (
     <Modal
@@ -42,6 +45,7 @@ export const SaveOrCreateEntityModal = ({
         onNameChange={onNameChange}
         descriptionMessage={descriptionMessage}
         additionalDuplicateMessage={additionalDuplicateMessage}
+        disallowedNames={disallowedNames}
       />
     </Modal>
   );
@@ -58,6 +62,7 @@ interface SaveOrCreateEntityBodyProps {
   additionalDuplicateMessage?: string;
   closeOnAction?: boolean;
   loading?: boolean;
+  disallowedNames?: string[];
 }
 
 export const SaveOrCreateEntityBody = ({
@@ -71,11 +76,12 @@ export const SaveOrCreateEntityBody = ({
   additionalDuplicateMessage,
   closeOnAction = true,
   loading = false,
+  disallowedNames = [],
 }: SaveOrCreateEntityBodyProps): JSX.Element => {
   const validationMessages = {
     emptyField: "Please fill out this field.",
     invalidName: (value: string) =>
-      `${value} is not a valid name for a saved cohort. Please try another name.`,
+      `${value} is not a valid name for a saved ${entity}. Please try another name.`,
   };
 
   const form = useForm({
@@ -86,7 +92,7 @@ export const SaveOrCreateEntityBody = ({
       name: (value) => {
         if (value.length === 0) {
           return validationMessages.emptyField;
-        } else if (value.toLowerCase() === "unsaved_cohort") {
+        } else if (disallowedNames.includes(value.trim().toLowerCase())) {
           return validationMessages.invalidName(value);
         }
         return null;
@@ -99,10 +105,7 @@ export const SaveOrCreateEntityBody = ({
 
   const validationError = form.errors.name;
   const error = validationError && (
-    <span className="mt-1">
-      <WarningIcon className="inline mr-0.5" />
-      {validationError}
-    </span>
+    <ErrorMessage message={validationError as string} />
   );
 
   const description =
@@ -127,12 +130,7 @@ export const SaveOrCreateEntityBody = ({
 
   return (
     <>
-      <Box
-        sx={() => ({
-          fontFamily: '"Noto", "sans-serif"',
-          padding: "5px 25px 20px 10px",
-        })}
-      >
+      <Box className="font-content mt-1 mr-6 mb-5 ml-3">
         <p className="mb-2 text-sm font-content">
           {descriptionMessage && descriptionMessage}
         </p>
@@ -142,19 +140,14 @@ export const SaveOrCreateEntityBody = ({
           placeholder={`New ${upperFirst(entity)} Name`}
           aria-label={`Input field for new ${entity} name`}
           description={description}
-          styles={() => ({
-            description: {
-              marginTop: "5px",
-            },
-            input: {
-              fontFamily: "Noto Sans, sans-serif",
-            },
-          })}
+          classNames={{
+            description: "mt-1",
+            input:
+              "font-content data-[invalid=true]:text-[#AD2B4A] data-[invalid=true]:border-[#AD2B4A]",
+            error: "text-[#AD2B4A]",
+          }}
           data-autofocus
           maxLength={100}
-          errorProps={{
-            color: "#AD2B4A",
-          }}
           error={error}
           inputWrapperOrder={["label", "input", "error", "description"]}
           {...inputProps}
@@ -174,11 +167,7 @@ export const SaveOrCreateEntityBody = ({
         <Group position="right">
           <Button
             variant="outline"
-            styles={() => ({
-              root: {
-                backgroundColor: "white",
-              },
-            })}
+            classNames={{ root: "bg-base-max" }}
             color="secondary"
             onClick={onClose}
           >

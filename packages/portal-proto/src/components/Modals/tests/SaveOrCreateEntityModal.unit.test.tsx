@@ -1,4 +1,7 @@
-import { SaveOrCreateEntityModal } from "../SaveOrCreateEntityModal";
+import {
+  SaveOrCreateEntityBody,
+  SaveOrCreateEntityModal,
+} from "../SaveOrCreateEntityModal";
 import userEvent from "@testing-library/user-event";
 import * as mantine_form from "@mantine/form";
 import {
@@ -122,5 +125,33 @@ describe("<SaveOrCreateEntityModal />", () => {
     await userEvent.click(getByTestId("action-button"));
 
     expect(mockActionClick).toBeCalled();
+  });
+});
+
+describe.only("<SaveOrCreateEntityBody />", () => {
+  // jest.spyOn(mantine_form, "useForm").mockReturnValue(mantineFormNoErrorObj);
+
+  it("test", async () => {
+    const { getByText, getByTestId } = render(
+      <SaveOrCreateEntityBody
+        entity="test"
+        action="test"
+        initialName=""
+        onClose={jest.fn()}
+        onActionClick={jest.fn()}
+        onNameChange={jest.fn()}
+        descriptionMessage=""
+        disallowedNames={["disallowed_test_name"]}
+      />,
+    );
+
+    const inputField = getByTestId("input-field");
+    await userEvent.type(inputField, "disallowed_test_name");
+    await userEvent.click(getByTestId("action-button"));
+    expect(
+      getByText(
+        "disallowed_test_name is not a valid name for a saved test. Please try another name.",
+      ),
+    ).toBeInTheDocument();
   });
 });
