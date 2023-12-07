@@ -260,8 +260,12 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               <DarkFunctionButton size="xs">Browse</DarkFunctionButton>
             }
             rightSectionWidth={80}
-            aria-details={screenReaderMessage}
+            aria-describedby="file-upload-screen-reader-msg"
+            placeholder="Upload file"
           />
+          <span className="sr-only" id="file-upload-screen-reader-msg">
+            {screenReaderMessage}
+          </span>
         </div>
         {isNotInitialized ? null : isFetching ? (
           <div className="flex h-32 items-center pl-4 gap-1 text-sm">

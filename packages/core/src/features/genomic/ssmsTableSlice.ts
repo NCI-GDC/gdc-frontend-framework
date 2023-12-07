@@ -378,7 +378,6 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
             }),
           };
         });
-
         return {
           ssmsTotal,
           cases,

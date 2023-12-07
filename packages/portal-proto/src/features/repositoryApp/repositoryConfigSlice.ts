@@ -28,7 +28,6 @@ const slice = createSlice({
     },
     resetToDefault: () => initialState,
   },
-  extraReducers: {},
 });
 
 export const repositoryConfigReducer = slice.reducer;
