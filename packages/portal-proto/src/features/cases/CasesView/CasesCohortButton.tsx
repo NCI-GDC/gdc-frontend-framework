@@ -89,6 +89,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
           menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
           customPosition="bottom-start"
           zIndex={100}
+          tooltip={"Save a new cohort based on selection"}
         />
       </span>
       {openSelectCohorts && (

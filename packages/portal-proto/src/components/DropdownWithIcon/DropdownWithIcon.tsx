@@ -55,6 +55,10 @@ interface DropdownWithIconProps {
    * custom test id
    */
   customDataTestId?: string;
+  /**
+   * optional tooltip
+   */
+  tooltip?: string;
 }
 
 export const DropdownWithIcon = ({
@@ -69,6 +73,7 @@ export const DropdownWithIcon = ({
   customPosition,
   zIndex = undefined,
   customDataTestId = undefined,
+  tooltip = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <>
@@ -92,8 +97,8 @@ export const DropdownWithIcon = ({
           >
             <div>
               <Tooltip
-                disabled={targetButtonDisabled}
-                label="Save a new cohort based on selection"
+                disabled={targetButtonDisabled || !tooltip}
+                label={tooltip}
               >
                 <div>{TargetButtonChildren}</div>
               </Tooltip>
