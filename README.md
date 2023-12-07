@@ -184,7 +184,8 @@ local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key local
 
 ## Documentation
 
-Run build-docs to generate documentation for "portal-proto" and "core" packages:
+Run build-docs to generate documentation for "portal-proto" and "core" packages, and
+to create a PDF of the [Developer Guide](docs/DevelopersGuide/Developers_Guide.md).
 
 ```bash
 npm run build-docs

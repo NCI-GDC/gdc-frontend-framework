@@ -21,7 +21,7 @@
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
     "start": "lerna run --parallel start",
-    "build-docs": "typedoc"
+    "build-docs": "typedoc && md-to-pdf docs/DevelopersGuide/Developers_Guide.md"
   },
   "lint-staged": {
     "**/*": [
@@ -76,6 +76,7 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^7.0.4",
     "lerna": "^5.0.0",
+    "md-to-pdf": "^5.2.4",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2",
     "typedoc": "^0.25.3"
