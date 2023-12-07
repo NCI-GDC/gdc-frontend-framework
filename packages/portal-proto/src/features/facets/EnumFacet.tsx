@@ -183,7 +183,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               acc.push([curr, 0]); // count will be 0
             }
             return acc;
-          }, [])
+          }, [] as Array<[string, number]>)
         : [];
 
       const remainingValues = tempFilteredData.length - maxValuesToDisplay;
