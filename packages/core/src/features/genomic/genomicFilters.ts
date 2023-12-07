@@ -47,7 +47,6 @@ const slice = createSlice({
       return { ...state, root: initialState.root };
     },
   },
-  extraReducers: {},
 });
 
 export const genomicFilterReducer = slice.reducer;

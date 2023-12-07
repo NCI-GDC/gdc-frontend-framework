@@ -18,7 +18,7 @@ import {
   useGetSsmTableDataMutation,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -70,6 +70,10 @@ export interface SMTableContainerProps {
    */
   isModal?: boolean;
   /*
+   * boolean used to determine if being called in a modal
+   */
+  inModal?: boolean;
+  /*
    *  This is being sent from GenesAndMutationFrequencyAnalysisTool when mutation count is clicked in genes table
    */
   searchTermsForGene?: { geneId?: string; geneSymbol?: string };
@@ -95,6 +99,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = undefined,
   isDemoMode = false,
   isModal = false,
+  inModal = false,
   tableTitle = undefined,
   searchTermsForGene,
   gene_id,
@@ -145,6 +150,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
+  const previousSearchTerm = usePrevious(searchTerm);
+  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
+
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -155,27 +163,56 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
-        caseFilter: { mode: "", root: {} } as FilterSet,
+        caseFilter: caseFilter,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTermsForGene, genomicFilters, cohortFilters]);
+  }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
-  useEffect(() => {
+  // TODO Refactor this to use one useEffect instead of two (see PEAR-1657)
+  useDeepCompareEffect(() => {
     if (topSSM) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-      handleSurvivalPlotToggled(
-        ssm_id,
-        consequence_type
+      const description = consequence_type
+        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
+            term: consequence_type.replace("_variant", "").replace("_", " "),
+          })}`
+        : "";
+      handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topSSM, searchTermsForGene?.geneSymbol]);
+
+  useDeepCompareEffect(
+    () => {
+      const shouldHandleSurvivalPlot =
+        topSSM &&
+        !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
+        isEqual(searchTerm, previousSearchTerm) &&
+        !data?.ssms
+          .map(({ ssm_id }) => ssm_id)
+          .includes(selectedSurvivalPlot.symbol);
+      if (shouldHandleSurvivalPlot) {
+        const { ssm_id, consequence_type, aa_change = "" } = topSSM;
+        const description = consequence_type
           ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
               term: consequence_type.replace("_variant", "").replace("_", " "),
             })}`
-          : "",
-        "gene.ssm.ssm_id",
-      );
-    }
+          : "";
+        handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM]);
+    [
+      selectedSurvivalPlot,
+      previousSelectedSurvivalPlot,
+      data,
+      topSSM,
+      searchTerm,
+      previousSearchTerm,
+      searchTermsForGene?.geneSymbol,
+    ],
+  );
 
   /* Create Cohort*/
   const [createSet] = useCreateCaseSetFromFiltersMutation();
@@ -527,6 +564,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             search={{
               enabled: true,
               defaultSearchTerm: searchTerm,
+              tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
             pagination={pagination}
             showControls={true}
@@ -545,6 +583,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             expanded={expanded}
             setExpanded={handleExpand}
             getRowId={getRowId}
+            baseZIndex={inModal ? 300 : 0}
           />
         </>
       )}

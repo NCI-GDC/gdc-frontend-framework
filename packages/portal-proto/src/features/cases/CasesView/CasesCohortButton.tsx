@@ -55,8 +55,9 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                       onClick: () => {
                         if (numCases > 1) {
                           onCreateSet();
+                        } else {
+                          setShowSaveCohort(true);
                         }
-                        setShowSaveCohort(true);
                       },
                     },
                     {
@@ -77,7 +78,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
             }
             TargetButtonChildren="Save New Cohort"
             disableTargetWidth={true}
-            targetButtonDisabled={numCases == 0}
+            targetButtonDisabled={numCases === 0}
             LeftIcon={
               numCases ? (
                 <CountsIcon $count={numCases}>
@@ -110,7 +111,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
               "cases.case_id": {
                 operator: "includes",
                 field: "cases.case_id",
-                operands: [`set_id:${response.data}`],
+                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
               },
             },
           }}
