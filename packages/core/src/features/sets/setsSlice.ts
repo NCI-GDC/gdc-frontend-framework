@@ -67,7 +67,6 @@ const slice = createSlice({
       return state;
     },
   },
-  extraReducers: {},
 });
 
 export const setsReducer = slice.reducer;
