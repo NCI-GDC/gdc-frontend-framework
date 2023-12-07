@@ -167,7 +167,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   useDeepCompareEffect(() => {
     if (isSuccess && data) {
       // get all the data except the missing and empty values
-      const tempFlteredData = Object.entries(data)
+      const tempFilteredData = Object.entries(data)
         .filter((entry) => entry[0] != "_missing" && entry[0] != "")
         .filter((entry) =>
           searchTerm === ""
@@ -179,23 +179,23 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       // therefore we need to add them to the data
       const selectedEnumNotInData = selectedEnums
         ? selectedEnums.reduce((acc, curr) => {
-            if (!tempFlteredData.find((x) => x[0] === curr)) {
+            if (!tempFilteredData.find((x) => x[0] === curr)) {
               acc.push([curr, 0]); // count will be 0
             }
             return acc;
           }, [])
         : [];
 
-      const remainingValues = tempFlteredData.length - maxValuesToDisplay;
+      const remainingValues = tempFilteredData.length - maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
       const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
-        tempFlteredData.length,
+        tempFilteredData.length,
       );
 
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
-        filteredData: [...tempFlteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
-        filteredDataObj: Object.fromEntries(tempFlteredData),
+        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
+        filteredDataObj: Object.fromEntries(tempFilteredData),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
