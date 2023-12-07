@@ -16,7 +16,6 @@ import {
   LoadingOverlay,
   SimpleGrid,
   TextInput,
-  Title,
   Stack,
   UnstyledButton,
 } from "@mantine/core";
@@ -90,7 +89,6 @@ const FacetList: React.FC<FacetListProps> = ({
 
 interface FacetSelectionProps {
   readonly facetType: FacetDefinitionType;
-  readonly title: string;
   readonly facets: Record<string, FacetDefinition>;
   readonly handleFilterSelected: (_: string) => void;
   readonly handleFilteredWithValuesChanged: (_: boolean) => void;
@@ -98,7 +96,6 @@ interface FacetSelectionProps {
 
 const FacetSelectionPanel = ({
   facets,
-  title,
   handleFilterSelected,
   handleFilteredWithValuesChanged,
 }: FacetSelectionProps) => {
@@ -126,7 +123,6 @@ const FacetSelectionPanel = ({
 
   return (
     <div className="flex flex-col" data-testid="section-file-filter-search">
-      <Title order={3}>{title}</Title>
       <TextInput
         label="Search for a property"
         placeholder="search"
@@ -172,7 +168,6 @@ const FacetSelectionPanel = ({
 };
 
 interface FacetSelectionModalProps {
-  readonly title: string;
   readonly facetType: FacetDefinitionType;
   readonly usedFacets: ReadonlyArray<string>;
   readonly handleFilterSelected: (string) => void;
@@ -182,13 +177,11 @@ interface FacetSelectionModalProps {
  * Top Level Facet Selection Panel. This component handles getting the available Facets using the supplied selector (useFacetSelector)
  * The Facets are either Case or File and are set by the facetType parameter. If a user picks a facet it will call handleFilterSelected
  * passing the full name of the selected Facet
- * @param title - Title to show
  * @param facetType - cases or files
  * @param useFacets - list of filter currently in use, those filters are not shown in the list
  * @param handleFilterSelected - function which handled when a filter is selected
  */
 const FacetSelection = ({
-  title,
   facetType,
   usedFacets,
   handleFilterSelected,
@@ -275,7 +268,6 @@ const FacetSelection = ({
 
   return (
     <FacetSelectionPanel
-      title={title}
       facets={currentFacets}
       facetType={facetType}
       handleFilterSelected={handleFilterSelected}
