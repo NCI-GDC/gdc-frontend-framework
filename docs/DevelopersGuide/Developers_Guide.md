@@ -1253,6 +1253,7 @@ When the app is registered, it will be available in the GDC Portal. The applicat
 The visual elements of the card are:
 
 ![application_card.png](images%2Fapplication_card.png)
+
 *Application Card and it's elements*
 
 ## Source code layout
@@ -1260,6 +1261,7 @@ The visual elements of the card are:
 While you are free to structure your application code as you with, the following is a recommended layout for your application's source code:
 
 ![source code layout](./images/app_source_code_layout_fig.png)
+
 *Application source code layout*
 
 
