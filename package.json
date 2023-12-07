@@ -21,7 +21,7 @@
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
     "start": "lerna run --parallel start",
-    "build-docs": "typedoc && md-to-pdf docs/DevelopersGuide/Developers_Guide.md"
+    "build-docs": "typedoc"
   },
   "lint-staged": {
     "**/*": [
@@ -77,9 +77,7 @@
     "husky": "^7.0.4",
     "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
-    "md-to-pdf": "^5.2.4",
     "prettier": "^2.3.2",
-    "puppeteer": "^21.6.0",
     "typedoc": "^0.25.3"
   },
   "engines": {
