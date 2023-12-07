@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
 import {
@@ -15,6 +16,9 @@ import {
   setCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
+  useCoreSelector,
+  selectAvailableCohorts,
+  useGetCohortsByContextIdQuery,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -34,8 +38,39 @@ const SaveCohortModal = ({
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
+  const [cohortReplaced, setCohortReplaced] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const {
+    data: cohortsListData,
+    isSuccess: cohortListSuccess,
+    isLoading: cohortListLoading,
+  } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
+
+  useDeepCompareEffect(() => {
+    if (cohortListSuccess && cohortReplaced) {
+      // Remove replaced cohort
+      const updatedCohortIds = (cohortsListData || []).map(
+        (cohort) => cohort.id,
+      );
+      const outdatedCohortsIds = cohorts
+        .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
+        .map((c) => c.id);
+      for (const id of outdatedCohortsIds) {
+        coreDispatch(removeCohort({ currentID: id }));
+      }
+
+      onClose();
+    }
+  }, [
+    cohortListSuccess,
+    cohortReplaced,
+    cohortsListData,
+    cohorts,
+    coreDispatch,
+    onClose,
+  ]);
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
@@ -105,7 +140,12 @@ const SaveCohortModal = ({
           coreDispatch(fetchCohortCaseCounts(payload.id));
         }
 
-        onClose();
+        // Need to wait for request removing outdated cohorts to finish when replacing cohort
+        if (replace) {
+          setCohortReplaced(true);
+        } else {
+          onClose();
+        }
       })
       .catch((e: FetchBaseQueryError) => {
         if (
@@ -157,6 +197,7 @@ const SaveCohortModal = ({
                 saveAction(enteredName, true);
               }}
               data-testid="replace-cohort-button"
+              loading={isLoading || cohortListLoading}
             >
               Replace
             </Button>
