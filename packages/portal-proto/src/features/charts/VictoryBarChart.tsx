@@ -126,9 +126,12 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       domainPadding={60}
       padding={chartPadding}
       containerComponent={
-        chartRef ? (
-          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
-        ) : undefined
+        <VictoryContainer
+          containerRef={
+            chartRef ? (ref) => (chartRef.current = ref) : undefined
+          }
+          role="figure"
+        />
       }
     >
       {chartLabel && (
