@@ -110,7 +110,7 @@ describe("<SaveOrCreateEntityBody />", () => {
     expect(mockActionClick).toBeCalled();
   });
 
-  it("disallowed names are not accepted - VERSION 1", async () => {
+  it("disallowed names are not accepted - all lower cased", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
       <SaveOrCreateEntityBody
@@ -136,7 +136,7 @@ describe("<SaveOrCreateEntityBody />", () => {
     expect(mockActionClick).not.toBeCalled();
   });
 
-  it("disallowed names are not accepted - VERSION 2", async () => {
+  it("disallowed names are not accepted - name with whitespaces", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
       <SaveOrCreateEntityBody
@@ -162,7 +162,7 @@ describe("<SaveOrCreateEntityBody />", () => {
     expect(mockActionClick).not.toBeCalled();
   });
 
-  it("disallowed names are not accepted - VERSION 3", async () => {
+  it("disallowed names are not accepted - name with lower and upper case chars", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
       <SaveOrCreateEntityBody
@@ -188,7 +188,7 @@ describe("<SaveOrCreateEntityBody />", () => {
     expect(mockActionClick).not.toBeCalled();
   });
 
-  it("disallowed names are not accepted - VERSION 4", async () => {
+  it("disallowed names are not accepted - name with all upper case chars", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
       <SaveOrCreateEntityBody
