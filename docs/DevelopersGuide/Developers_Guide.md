@@ -1,4 +1,4 @@
-# GDC Portal Developer Guide
+# GDC Portal V4 Application Developer Guide
 
 ## Introduction
 
