@@ -1356,4 +1356,3 @@ export const graphqlAPI = async <T>(
 ```
 
 where `query` is the GraphQL query and `variables` are the variables for the query.
-
