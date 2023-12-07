@@ -508,7 +508,7 @@ Note that all of these operations are applied to the current cohort. The current
 being displayed in the Cohort Management Bar. The current cohort can be accessed via the `selectCurrentCohort` selector.
 The current cohort's filters can be accessed via the `selectCurrentCohortFilters` selector.
 
-#### Updating, removing, and clearing filters
+### Updating, removing, and clearing filters
 
 to update the current selected cohort's filter, the `updateCohortFilter` action can be used. The `updateCohortFilter` action takes two arguments:
 ```typescript
