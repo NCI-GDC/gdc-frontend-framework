@@ -31,7 +31,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
 
   return (
-    <Tooltip label={disabledMessage} disabled={!disabledMessage}>
+    <Tooltip label={disabledMessage} disabled={!disabledMessage} zIndex={400}>
       <span>
         {multiselect ? (
           <Checkbox
