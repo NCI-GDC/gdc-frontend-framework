@@ -223,6 +223,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     searchTerm,
     calcCardStyle,
     calcNumberOfBarsToDisplay,
+    selectedEnums,
   ]);
 
   useDeepCompareEffect(() => {
