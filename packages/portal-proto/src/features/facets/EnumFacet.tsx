@@ -195,7 +195,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
         filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
-        filteredDataObj: Object.fromEntries(tempFilteredData),
+        filteredDataObj: Object.fromEntries([
+          ...tempFilteredData,
+          ...selectedEnumNotInData,
+        ]),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
