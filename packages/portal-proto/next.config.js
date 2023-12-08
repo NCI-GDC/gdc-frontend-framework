@@ -14,13 +14,17 @@ const basePath = "/v2";
 
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
+  // do not try to run if NEXT_PUBLIC_BUILD_SHORT_SHA exists
+  if (process.env.NEXT_PUBLIC_BUILD_SHORT_SHA) {
+    return "";
+  }
   try {
     return require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
       .execSync("git rev-parse --short HEAD")
       .toString()
       .trim();
   } catch (error) {
-    console.error(error);
+    console.debug(error);
     return "";
   }
 };
