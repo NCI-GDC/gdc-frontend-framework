@@ -27,6 +27,12 @@ interface HighlightProps {
   search: string;
   text: string;
 }
+
+/**
+ * Highlight text in a string using color bg-accent-warm
+ * @param search - the text to search for
+ * @param text - the text to highlight
+ */
 const Highlight = ({ search, text }: HighlightProps): JSX.Element => (
   <span>{internalHighlight(search, text)}</span>
 );

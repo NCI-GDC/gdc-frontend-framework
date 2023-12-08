@@ -1,10 +1,15 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "name": "GDC Frontend Framework",
+  "name": "GDC Portal V2 SDK",
   //"entryPoints": ["packages/*"], //do all packages
   "entryPoints": ["packages/portal-proto", "packages/core"],
   "entryPointStrategy": "packages",
-  "out": "docs/api"
+  "out": "docs/api",
+  "navigation": {
+    "includeCategories": false,
+    "includeGroups": true
+  },
+  "categorizeByGroup": true
   // Potentially useful for debugging
   //"logLevel": "Verbose"
 }
