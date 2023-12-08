@@ -90,6 +90,16 @@ export const buildCasesTableSearchFilters = (
   return undefined;
 };
 
+/**
+ * The request for fetching all cases from the GDC API
+ * @property filters - A FilterSet object
+ * @property fields - An array of fields to return
+ * @property size - The number of cases to return
+ * @property from - The offset from which to return cases
+ * @property sortBy - An array of fields to sort by
+ * @property searchTerm - A string to search for in the case_id and submitter_id fields
+ * @category Cases
+ */
 interface FetchAllCasesRequestProps {
   filters?: FilterSet;
   fields?: ReadonlyArray<string>;
@@ -98,6 +108,7 @@ interface FetchAllCasesRequestProps {
   readonly sortBy?: ReadonlyArray<SortBy>;
   searchTerm?: string;
 }
+
 export const fetchAllCases = createAsyncThunk<
   CasesResponse,
   FetchAllCasesRequestProps,
@@ -258,6 +269,17 @@ export const selectAllCasesData = (
   return state.cases.allCasesData;
 };
 
+/**
+ * A Hook to fetch all cases from the GDC API
+ * @param filters - A FilterSet object
+ * @param fields - An array of fields to return
+ * @param size - The number of cases to return
+ * @param from - The offset from which to return cases
+ * @param sortBy - An array of fields to sort by
+ * @returns - A CoreDataSelectorResponse object containing the data, status, and error
+ * @category Cases
+ * @category Hooks
+ */
 export const useAllCases = createUseCoreDataHook(
   fetchAllCases,
   selectAllCasesData,

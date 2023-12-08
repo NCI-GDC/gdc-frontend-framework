@@ -76,6 +76,19 @@ export type gdcEndpoint =
   | "ssm_occurrences"
   | "ssms";
 
+/**
+ * The request for requesting data from the GDC API
+ * @property filters - A FilterSet object
+ * @property fields - An array of fields to return
+ * @property size - The number of cases to return
+ * @property from - The offset from which to return cases
+ * @property sortBy - An array of fields to sort by
+ * @property facets - An array of fields to facet by
+ * @property expand - An array of fields to expand
+ * @property format - The format of the response
+ * @property pretty - Whether to pretty print the response
+ * @category GDC API
+ */
 export interface GdcApiRequest {
   readonly filters?: GqlOperation;
   readonly case_filters?: GqlOperation;

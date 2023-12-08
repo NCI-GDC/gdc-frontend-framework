@@ -1,4 +1,4 @@
 {
-  "entryPoints": ["src/*"],
+  "entryPoints": ["src/components/*", "src/app/*"],
   "entryPointStrategy": "expand"
 }

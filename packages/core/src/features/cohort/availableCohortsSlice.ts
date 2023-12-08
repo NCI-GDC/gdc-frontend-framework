@@ -52,6 +52,17 @@ export interface CohortStoredSets {
 
 /**
  * A Cohort is a collection of filters that can be used to query the GDC API.
+ * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
+ * @see https://redux-toolkit.js.org/api/createEntityAdapter
+ *
+ * @property id - the id of the cohort
+ * @property name - the name of the cohort
+ * @property filters - the filters for the cohort
+ * @property caseSet - the caseSet for the cohort
+ * @property sets - the sets for the cohort
+ * @property modified - flag indicating if the cohort has been modified
+ * @property modified_datetime - the last time the cohort was modified
+ * @property saved - flag indicating if the cohort has been saved
  * @category Cohort
  */
 
@@ -553,21 +564,22 @@ interface CopyCohortParams {
  *
  *
  * The slice exports the following actions:
- * setCohortList() - set saved cohort to the adapter that comes from the server
- * addNewCohort() - create a new cohort
- * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
- * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
- * updateCohortName(name:string): changes the current cohort's name
- * updateCohortFilter(filters: FilterSet): update the filters for this cohort
- * removeCohortFilter(filter:string): removes the filter from the cohort
- * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
- * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
- * clearCaseSet(): resets the caseSet member to all GDC
- * removeCohort(): removes the current cohort
- * setCohortMessage(): sets the current cohort message
- * clearCohortMessage(): clears the current message by setting it to undefined
- * addNewCohortGroups(): adds groups of filters to the current cohort
- * removeCohortGroup(): removes a group of filters from the current cohort
+ * * setCohortList() - set saved cohort to the adapter that comes from the server
+ * * addNewCohort() - create a new cohort
+ * * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
+ * * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
+ * * updateCohortName(name:string): changes the current cohort's name
+ * * updateCohortFilter(filters: FilterSet): update the filters for this cohort
+ * * removeCohortFilter(filter:string): removes the filter from the cohort
+ * * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
+ * * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
+ * * clearCaseSet(): resets the caseSet member to all GDC
+ * * removeCohort(): removes the current cohort
+ * * setCohortMessage(): sets the current cohort message
+ * * clearCohortMessage(): clears the current message by setting it to undefined
+ * * addNewCohortGroups(): adds groups of filters to the current cohort
+ * * removeCohortGroup(): removes a group of filters from the current cohort
+ * @category Cohort
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",

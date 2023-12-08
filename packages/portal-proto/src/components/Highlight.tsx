@@ -1,6 +1,5 @@
 // credit to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/uikit/Highlight.js
 // This is only used in BioTree
-
 import React from "react";
 
 export const internalHighlight = (
@@ -23,6 +22,12 @@ export const internalHighlight = (
   return <span>{foundText}</span>;
 };
 
+/**
+ * Props for Highlight component
+ * @property search - the text to search for
+ * @property text - the text to highlight
+ * @interface HighlightProps
+ */
 interface HighlightProps {
   search: string;
   text: string;
