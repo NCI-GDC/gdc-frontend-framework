@@ -118,10 +118,10 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-2 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
+            className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
@@ -132,10 +132,10 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="button-header-manage-sets"
-              className={`p-1 rounded-md hover:bg-primary-lightest ${
+              className={`p-1 pr-2 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
-                  : ""
+                  : "hover:bg-primary-lightest"
               }`}
             >
               <div className="flex items-center gap-1 font-heading">
@@ -148,8 +148,10 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="cartLink"
-              className={`p-1 rounded-md hover:bg-primary-lightest ${
-                router.pathname === "/cart" ? "bg-secondary text-white" : ""
+              className={`p-1 rounded-md ${
+                router.pathname === "/cart"
+                  ? "bg-secondary text-white"
+                  : "hover:bg-primary-lightest"
               }`}
             >
               <div className="flex items-center gap-1 font-heading">
@@ -284,7 +286,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 data-testid="extraButton"
                 aria-label="GDC apps button"
-                className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
+                className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
                 <p className="font-heading">GDC Apps</p>
