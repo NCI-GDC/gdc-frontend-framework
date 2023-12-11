@@ -1,6 +1,6 @@
 import {
   Cohort,
-  addNewCohort,
+  addNewEmptyCohort,
   updateCohortName,
   setCurrentCohortId,
   selectCurrentCohortId,
@@ -10,7 +10,7 @@ import {
   removeCohortFilter,
   removeCohort,
   availableCohortsReducer,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
   divideCurrentCohortFilterSetFilterByPrefix,
   divideFilterSetByPrefix,
   buildCaseSetGQLQueryAndVariablesFromFilters,
@@ -402,7 +402,7 @@ describe("add, update, and remove cohort", () => {
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       { ids: [], entities: {}, currentCohort: "", message: undefined },
-      addNewCohort("test"),
+      addNewEmptyCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
@@ -410,7 +410,7 @@ describe("add, update, and remove cohort", () => {
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
-          name: "test",
+          name: "Unsaved_Cohort",
           filters: { mode: "and", root: {} },
           id: "000-000-000-1",
           caseSet: {
@@ -454,7 +454,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      addNewCohortWithFilterAndMessage({
+      addNewUnsavedCohort({
         filters: {
           mode: "and",
           root: {
@@ -467,6 +467,7 @@ describe("add, update, and remove cohort", () => {
         },
         message: "newProjectsCohort",
         name: "New Cohort 2",
+        replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
@@ -544,7 +545,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      addNewCohort("test"),
+      addNewEmptyCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
@@ -750,7 +751,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      addNewCohortWithFilterAndMessage({
+      addNewUnsavedCohort({
         filters: {
           mode: "and",
           root: {
@@ -763,7 +764,7 @@ describe("add, update, and remove cohort", () => {
         },
         message: "newProjectsCohort",
         name: "New Cohort 2",
-        makeCurrent: true,
+        replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
@@ -840,7 +841,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      addNewCohortWithFilterAndMessage({
+      addNewUnsavedCohort({
         filters: {
           mode: "and",
           root: {
@@ -853,7 +854,7 @@ describe("add, update, and remove cohort", () => {
         },
         message: "newProjectsCohort",
         name: "New Cohort 2",
-        makeCurrent: true,
+        replace: true,
       }),
     );
     expect(availableCohorts).toEqual({

@@ -16,7 +16,7 @@ import tw from "tailwind-styled-components";
 import saveAs from "file-saver";
 import {
   selectAvailableCohorts,
-  addNewCohort,
+  addNewEmptyCohort,
   removeCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
@@ -37,7 +37,7 @@ import {
   useGetCasesQuery,
   Operation,
   updateActiveCohortFilter,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
   showModal,
   DataStatus,
   setCohort,
@@ -225,10 +225,10 @@ const CohortManager: React.FC = () => {
         createCohortFilters as string,
       ) as FilterSet;
       coreDispatch(
-        addNewCohortWithFilterAndMessage({
+        addNewUnsavedCohort({
           filters: cohortFilters,
           name: (createCohortName as string).replace(/-/g, " "),
-          makeCurrent: true,
+          replace: true,
           message: "newCohort",
         }),
       );
@@ -491,9 +491,9 @@ const CohortManager: React.FC = () => {
               withArrow
             >
               <CohortGroupButton
-                onClick={() => coreDispatch(addNewCohort())}
+                onClick={() => coreDispatch(addNewEmptyCohort())}
                 data-testid="addButton"
-                disabled={hasUnsavedCohorts}
+                //disabled={hasUnsavedCohorts}
               >
                 <AddIcon size="1.5em" aria-label="Add cohort" />
               </CohortGroupButton>

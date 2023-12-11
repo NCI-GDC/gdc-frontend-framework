@@ -14,8 +14,8 @@ import {
 
 import {
   Cohort,
-  addNewCohort,
-  addNewCohortWithFilterAndMessage,
+  addNewEmptyCohort,
+  addNewUnsavedCohort,
   removeCohort,
   updateCohortName,
   setCohort,
@@ -98,8 +98,8 @@ export {
   joinFilters,
   buildCohortGqlOperator,
   filterSetToOperation,
-  addNewCohort,
-  addNewCohortWithFilterAndMessage,
+  addNewEmptyCohort,
+  addNewUnsavedCohort,
   removeCohort,
   updateCohortName,
   setCohort,
