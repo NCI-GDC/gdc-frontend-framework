@@ -317,6 +317,18 @@ export enum SurvivalPlotTypes {
   cohortComparison = "cohortComparison",
 }
 
+/**
+ * Props for SurvivalPlot
+ * @property data - data to be plotted
+ * @property names - names of the data to be plotted
+ * @property plotType - type of the plot
+ * @property title - title of the plot
+ * @property hideLegend - whether to hide the legend
+ * @property height - height of the plot
+ * @property field - field of the plot
+ * @property downloadFileName - name of the file to download
+ * @property tableTooltip - whether to show the table tooltip
+ */
 export interface SurvivalPlotProps {
   readonly data: Survival;
   readonly names?: ReadonlyArray<string>;
@@ -329,6 +341,19 @@ export interface SurvivalPlotProps {
   readonly tableTooltip?: boolean;
 }
 
+/**
+ * Survival plot component
+ * @param data - data to be plotted
+ * @param names - names of the data to be plotted
+ * @param plotType - type of the plot
+ * @param title - title of the plot
+ * @param hideLegend - whether to hide the legend
+ * @param height - height of the plot
+ * @param field - field of the plot
+ * @param downloadFileName - name of the file to download
+ * @param tableTooltip - whether to show the table tooltip
+ * @category Charts
+ */
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],

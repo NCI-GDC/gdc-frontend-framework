@@ -1,4 +1,4 @@
 {
   "entryPoints": ["src/components/index.ts"],
-  "categoryOrder": ["Buttons", "Facets", "Modals", "Tables", "*"]
+  "categoryOrder": ["Buttons", "Facets", "Modals", "Charts", "Table", "*"]
 }

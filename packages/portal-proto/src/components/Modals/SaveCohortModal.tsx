@@ -19,6 +19,15 @@ import {
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 
+/**
+ * Save cohort modal component
+ * @param initialName - initial name of the cohort
+ * @param onClose - callback function to close the modal
+ * @param cohortId - id of the cohort
+ * @param filters - filters to save
+ * @param setAsCurrent - whether to set the cohort as current
+ * @category Modals
+ */
 const SaveCohortModal = ({
   initialName = "",
   onClose,

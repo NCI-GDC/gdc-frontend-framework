@@ -41,10 +41,10 @@ export const IconWrapper = tw.span`
  * Props for the CohortCreationButton component
  * @category Buttons
  * @interface
- * @property {ReactNode} label - the text label
- * @property {number} numCases - the number of cases in the cohort
- * @property {FilterSet} filters - the filters to use for the cohort
- * @property {() => Promise<FilterSet>} filtersCallback - a callback to create the filters
+ * @property label - the text label
+ * @property numCases - the number of cases in the cohort
+ * @property filters - the filters to use for the cohort
+ * @property filtersCallback - a callback to create the filters
  */
 interface CohortCreationButtonProps {
   readonly label: ReactNode;
