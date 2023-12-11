@@ -29,7 +29,7 @@ stages:
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/node:16-alpine3.15
+image: docker.osdc.io/node:16.20.2-alpine3.17
 
 variables:
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
@@ -44,7 +44,7 @@ workflow:
 Linting:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -53,7 +53,7 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - npm run format:check
@@ -62,7 +62,7 @@ Prettier Checks:
 Build and test core and portal:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
