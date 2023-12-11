@@ -186,10 +186,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           }, [] as Array<[string, number]>)
         : [];
 
-      const remainingValues = tempFilteredData.length - maxValuesToDisplay;
+      const remainingValues =
+        tempFilteredData.length +
+        selectedEnumNotInData.length -
+        maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
       const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
-        tempFilteredData.length,
+        tempFilteredData.length + selectedEnumNotInData.length,
       );
 
       setFacetChartData((prevFacetChartData) => ({
