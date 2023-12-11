@@ -12,7 +12,7 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
-import { ReactNode, useContext, useEffect } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -23,6 +23,8 @@ import {
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
+import { FiPlayCircle as PlayIcon } from "react-icons/fi";
+import { VscFeedback as FeebackIcon } from "react-icons/vsc";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
 import saveAs from "file-saver";
@@ -45,6 +47,7 @@ import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
+import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
@@ -73,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
-
+  const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
@@ -118,10 +121,28 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-2 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
+          <a
+            href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
+            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <PlayIcon size="24px" />
+            Video Guides
+          </a>
+          <Button
+            variant="subtle"
+            data-testid="button-header-send-feeback"
+            className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-1"
+            leftIcon={<FeebackIcon size="24px" />}
+            onClick={() => setOpenFeedbackModal(true)}
+          >
+            Send Feedback
+          </Button>
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
+            className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
@@ -132,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="button-header-manage-sets"
-              className={`p-1 pr-2 rounded-md ${
+              className={`p-1 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
                   : "hover:bg-primary-lightest"
@@ -410,6 +431,10 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-grow">
         <Options />
       </div>
+      <SendFeedbackModal
+        opened={openFeedbackModal}
+        onClose={() => setOpenFeedbackModal(false)}
+      />
       {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
