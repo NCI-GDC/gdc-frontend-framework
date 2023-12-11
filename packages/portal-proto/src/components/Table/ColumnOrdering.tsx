@@ -88,7 +88,9 @@ function ColumnOrdering<TData>({
             variant="outline"
             size="lg"
             onClick={() => setShowColumnMenu((o) => !o)}
-            aria-label="show column change menu button"
+            aria-label={`${
+              showColumnMenu ? "close" : "show"
+            } column change menu button`}
             color="primary"
             data-testid="button-column-selector-box"
             className={`${
@@ -118,7 +120,11 @@ function ColumnOrdering<TData>({
                   data-testid="restore-default-icon"
                   aria-label="restore default column ordering button"
                 >
-                  <RevertIcon className="text-primary" size="1rem" />
+                  <RevertIcon
+                    className="text-primary"
+                    size="1rem"
+                    aria-label="Undo icon"
+                  />
                 </ActionIcon>
               </span>
             </Tooltip>
@@ -220,6 +226,7 @@ function DraggableColumnItem<TData>({
     >
       <div
         {...attributes}
+        role={undefined}
         className="flex justify-between items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move gap-4"
       >
         <div className="flex gap-2 items-center">

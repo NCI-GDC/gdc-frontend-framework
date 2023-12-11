@@ -41,7 +41,6 @@ const slice = createSlice({
       return { mode: "and", root: initialState.root };
     },
   },
-  extraReducers: {},
 });
 
 export const geneFrequencyFiltersReducer = slice.reducer;
