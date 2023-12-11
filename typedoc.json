@@ -3,7 +3,8 @@
   "name": "GDC Frontend Framework",
   //"entryPoints": ["packages/*"], //do all packages
   "entryPoints": ["packages/portal-proto", "packages/core"],
-  "entryPointStrategy": "packages"
+  "entryPointStrategy": "packages",
+  "out": "docs/api"
   // Potentially useful for debugging
   //"logLevel": "Verbose"
 }
