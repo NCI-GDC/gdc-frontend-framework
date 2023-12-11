@@ -4,7 +4,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
 import {
   removeCohort,
-  copyCohort,
+  copyToSavedCohort,
   setCohortMessage,
   buildCohortGqlOperator,
   setCurrentCohortId,
@@ -13,7 +13,7 @@ import {
   useAddCohortMutation,
   fetchCohortCaseCounts,
   FilterSet,
-  setCohort,
+  addNewSavedCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
   useCoreSelector,
@@ -88,7 +88,7 @@ const SaveCohortModal = ({
       .then((payload) => {
         if (prevCohort) {
           coreDispatch(
-            copyCohort({
+            copyToSavedCohort({
               sourceId: prevCohort,
               destId: payload.id,
             }),
@@ -111,7 +111,7 @@ const SaveCohortModal = ({
           coreDispatch(fetchCohortCaseCounts(payload.id));
         } else {
           coreDispatch(
-            setCohort({
+            addNewSavedCohort({
               id: payload.id,
               name: payload.name,
               filters: buildGqlOperationToFilterSet(payload.filters),

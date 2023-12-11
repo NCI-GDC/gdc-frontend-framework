@@ -537,10 +537,7 @@ const checkForUnsavedCohorts = (
         unsavedCohorts.map((c) => c.id),
       );
     } else {
-      console.error(
-        "There is a limit of one unsaved cohort for a user. Please create a saved cohort or replace the current unsaved cohort",
-      );
-      throw "";
+      throw "There is a limit of one unsaved cohort at a time for a user. Please create a saved cohort or replace the current unsaved cohort";
     }
   }
 };
@@ -549,7 +546,7 @@ interface NewUnsavedCohortParams {
   filters: FilterSet; // set the filters for the new cohort
   message: string; // set message to show when cohort is created
   name: string; // set the name for the new cohort
-  replace: boolean; // Replace the current unsaved cohort if there is one
+  replace?: boolean; // Replace the current unsaved cohort if there is one
 }
 
 interface CopyCohortParams {
@@ -600,7 +597,7 @@ const slice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
-    addNewEmptyCohort: (state) => {
+    addNewDefaultUnsavedCohort: (state) => {
       const cohort = newCohort({
         customName: UNSAVED_COHORT_NAME,
       });
@@ -609,9 +606,12 @@ const slice = createSlice({
       state.currentCohort = cohort.id;
       state.message = [`newCohort|${cohort.name}|${cohort.id}`];
     },
-    setCohort: (state, action: PayloadAction<Cohort>) => {
-      checkForUnsavedCohorts(state, false);
-      cohortsAdapter.setOne(state, action.payload);
+    addNewSavedCohort: (state, action: PayloadAction<Cohort>) => {
+      cohortsAdapter.setOne(state, {
+        ...action.payload,
+        modified: false,
+        saved: true,
+      });
     },
     addNewUnsavedCohort: (
       state,
@@ -621,12 +621,12 @@ const slice = createSlice({
         filters: action.payload.filters,
         customName: action.payload.name,
       });
-      checkForUnsavedCohorts(state, action.payload.replace);
+      checkForUnsavedCohorts(state, action.payload?.replace || false);
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
       state.message = [`${action.payload.message}|${cohort.name}|${cohort.id}`];
     },
-    copyCohort: (state, action: PayloadAction<CopyCohortParams>) => {
+    copyToSavedCohort: (state, action: PayloadAction<CopyCohortParams>) => {
       const sourceCohort = state.entities[action.payload.sourceId];
       if (sourceCohort) {
         const destCohort = {
@@ -1042,11 +1042,11 @@ const slice = createSlice({
 export const availableCohortsReducer = slice.reducer;
 
 export const {
-  addNewEmptyCohort,
+  addNewDefaultUnsavedCohort,
   addNewUnsavedCohort,
   removeCohort,
   updateCohortName,
-  setCohort,
+  addNewSavedCohort,
   setCurrentCohortId,
   updateCohortFilter,
   removeCohortFilter,
@@ -1054,7 +1054,7 @@ export const {
   clearCaseSet,
   clearCohortMessage,
   setCohortList,
-  copyCohort,
+  copyToSavedCohort,
   discardCohortChanges,
   setCohortMessage,
   addNewCohortSet,
@@ -1449,7 +1449,7 @@ export const setActiveCohortList =
 
     const availableCohorts = selectAllCohorts(getState());
     if (Object.keys(availableCohorts).length === 0) {
-      dispatch(addNewEmptyCohort());
+      dispatch(addNewDefaultUnsavedCohort());
     }
 
     const cohortId = selectCurrentCohortId(getState());

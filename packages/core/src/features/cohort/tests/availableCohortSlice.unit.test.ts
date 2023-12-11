@@ -1,6 +1,6 @@
 import {
   Cohort,
-  addNewEmptyCohort,
+  addNewDefaultUnsavedCohort,
   updateCohortName,
   setCurrentCohortId,
   selectCurrentCohortId,
@@ -402,11 +402,11 @@ describe("add, update, and remove cohort", () => {
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       { ids: [], entities: {}, currentCohort: "", message: undefined },
-      addNewEmptyCohort(),
+      addNewDefaultUnsavedCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: ["newCohort|test|000-000-000-1"],
+      message: ["newCohort|Unsaved_Cohorts|000-000-000-1"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -471,7 +471,7 @@ describe("add, update, and remove cohort", () => {
       }),
     );
     expect(availableCohorts).toEqual({
-      currentCohort: "000-000-000-1",
+      currentCohort: "000-000-000-2",
       message: ["newProjectsCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
@@ -520,7 +520,7 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should add new cohort to available cohorts when we have existing cohorts", () => {
+  test("should add new cohort to available cohorts when we have existing saved cohorts", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
@@ -545,7 +545,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      addNewEmptyCohort(),
+      addNewDefaultUnsavedCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
@@ -585,6 +585,60 @@ describe("add, update, and remove cohort", () => {
       },
     });
   });
+
+  test.todo(
+    "should throw error when adding new unsaved cohort if one already exists",
+    () => {
+      const availableCohorts = availableCohortsReducer(
+        {
+          currentCohort: "000-000-000-1",
+          message: undefined,
+          ids: ["000-000-000-1"],
+          entities: {
+            "000-000-000-1": {
+              name: "New Cohort",
+              filters: { mode: "and", root: {} },
+              id: "000-000-000-1",
+              caseSet: {
+                status: "uninitialized",
+                caseSetIds: undefined,
+                filters: undefined,
+              },
+              counts: {
+                ...NullCountsData,
+              },
+              modified: false,
+              modified_datetime: "2020-11-01T00:00:00.000Z",
+              saved: false,
+            },
+          },
+        },
+        addNewDefaultUnsavedCohort(),
+      );
+
+      expect(availableCohorts).toEqual({
+        currentCohort: "000-000-000-3",
+        message: ["newCohort|test|000-000-000-3"],
+        ids: ["000-000-000-1", "000-000-000-3"],
+        entities: {
+          "000-000-000-1": {
+            name: "New Cohort",
+            filters: { mode: "and", root: {} },
+            id: "000-000-000-1",
+            caseSet: {
+              status: "uninitialized",
+            },
+            counts: {
+              ...NullCountsData,
+            },
+            modified: false,
+            modified_datetime: "2020-11-01T00:00:00.000Z",
+            saved: true,
+          },
+        },
+      });
+    },
+  );
 
   test("should update cohort with new name", () => {
     const availableCohorts = availableCohortsReducer(

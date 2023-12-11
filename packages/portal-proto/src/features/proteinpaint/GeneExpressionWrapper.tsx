@@ -9,7 +9,7 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
   useCoreDispatch,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
@@ -49,7 +49,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       const filters = getFilters(arg);
       coreDispatch(
         // TODO: option to edit a cohort using ImportCohortModal???
-        addNewCohortWithFilterAndMessage({
+        addNewUnsavedCohort({
           filters,
           message: "newCasesCohort",
           // TODO: improve cohort name constructor

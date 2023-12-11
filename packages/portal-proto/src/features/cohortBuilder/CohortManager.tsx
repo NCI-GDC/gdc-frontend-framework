@@ -16,7 +16,7 @@ import tw from "tailwind-styled-components";
 import saveAs from "file-saver";
 import {
   selectAvailableCohorts,
-  addNewEmptyCohort,
+  addNewDefaultUnsavedCohort,
   removeCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
@@ -40,11 +40,11 @@ import {
   addNewUnsavedCohort,
   showModal,
   DataStatus,
-  setCohort,
   setActiveCohort,
   useCurrentCohortCounts,
   fetchCohortCaseCounts,
   selectHasUnsavedCohorts,
+  addNewSavedCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -354,10 +354,8 @@ const CohortManager: React.FC = () => {
                     status: counts.status,
                   },
                   modified_datetime: response.modified_datetime,
-                  saved: true,
-                  modified: false,
                 };
-                coreDispatch(setCohort(cohort));
+                coreDispatch(addNewSavedCohort(cohort));
               })
               .catch(() =>
                 coreDispatch(setCohortMessage(["error|saving|allId"])),
@@ -491,9 +489,9 @@ const CohortManager: React.FC = () => {
               withArrow
             >
               <CohortGroupButton
-                onClick={() => coreDispatch(addNewEmptyCohort())}
+                onClick={() => coreDispatch(addNewDefaultUnsavedCohort())}
                 data-testid="addButton"
-                //disabled={hasUnsavedCohorts}
+                disabled={hasUnsavedCohorts}
               >
                 <AddIcon size="1.5em" aria-label="Add cohort" />
               </CohortGroupButton>
