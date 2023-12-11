@@ -12,6 +12,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center
 * Navigate to "Cohort" from "Header" "section"
 
 ## Validate 0 Cases Tooltip
+* Pause "5" seconds
 * Wait for cohort bar case count loading spinner
 * Search in a filter card from "Demographic" tab on the Cohort Builder page
   |facet_name       |label                |text  |
@@ -21,9 +22,9 @@ tags: gdc-data-portal-v2, navigation, analysis-center
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |
+* Pause "5" seconds
 * Wait for cohort bar case count loading spinner
-* Pause "2" seconds
-* Navigate to Analysis Center via URL
+* Navigate to "Analysis" from "Header" "section"
 * Validate analysis tool tooltip
   |tool_name                |tooltip_description                                                        |
   |-------------------------|---------------------------------------------------------------------------|
