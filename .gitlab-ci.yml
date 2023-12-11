@@ -9,7 +9,7 @@ include:
 
 .default_rules: &default_rules
   rules:
-    - if: $RUN_UI_TESTS_ONLY != "true"'
+    - if: $RUN_UI_TESTS_ONLY != "true"
 
 .services:
   stage: deploy
@@ -140,6 +140,8 @@ Build UI tests Docker image:
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $RUN_UI_TESTS_ONLY == "true"'
 
 .trigger_ui_tests:
   stage: .trigger_ui_tests
