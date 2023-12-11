@@ -25,7 +25,7 @@ describe("banner notfication reducer", () => {
   test("adds new notifications", () => {
     const state = bannerReducer(
       [
-        { id: 1, dismissed: false, components: ["PORTAL"] },
+        { id: 1, dismissed: false, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
         type: fetchNotifications.fulfilled,
@@ -38,37 +38,43 @@ describe("banner notfication reducer", () => {
   test("excludes irrelevant notifications", () => {
     const state = bannerReducer(
       [
-        { id: 1, dismissed: false, components: ["PORTAL"] },
+        { id: 1, dismissed: false, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
         type: fetchNotifications.fulfilled,
         payload: [
-          { id: 1, dismissed: false, components: ["PORTAL"] },
+          { id: 1, dismissed: false, components: ["PORTAL_V2"] },
           { id: 2, components: ["OTHER"] },
+          { id: 3, components: ["PORTAL"] },
+          { id: 4, components: ["LEGACY_API"] },
+          { id: 5, components: ["LEGACY_PORTAL"] },
+          { id: 6, components: ["SUBMISSION"] },
+          { id: 7, components: ["SUBMISSION_API"] },
+          { id: 8, components: ["DOCUMENTATION"] },
         ],
       },
     );
     expect(state).toEqual([
-      { id: 1, dismissed: false, components: ["PORTAL"] },
+      { id: 1, dismissed: false, components: ["PORTAL_V2"] },
     ]);
   });
 
   test("keeps notifications as dismissed", () => {
     const state = bannerReducer(
       [
-        { id: 1, dismissed: true, components: ["PORTAL"] },
+        { id: 1, dismissed: true, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
         type: fetchNotifications.fulfilled,
         payload: [
           { id: 2, components: ["API"] },
-          { id: 1, components: ["PORTAL"] },
+          { id: 1, components: ["PORTAL_V2"] },
         ],
       },
     );
     expect(state).toEqual([
       { id: 2, dismissed: false, components: ["API"] },
-      { id: 1, dismissed: true, components: ["PORTAL"] },
+      { id: 1, dismissed: true, components: ["PORTAL_V2"] },
     ]);
   });
 });
