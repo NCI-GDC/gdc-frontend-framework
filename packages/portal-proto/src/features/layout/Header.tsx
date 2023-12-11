@@ -121,10 +121,10 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-            className="flex items-center gap-1 hover:rounded-md hover:bg-primary-lightest"
+            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="subtle"
             data-testid="button-header-send-feeback"
-            className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-0"
+            className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-1"
             leftIcon={<FeebackIcon size="24px" />}
             onClick={() => setOpenFeedbackModal(true)}
           >
@@ -142,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Button>
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1 rounded-md hover:bg-primary-lightest"
+            className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
@@ -153,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="button-header-manage-sets"
-              className={`rounded-md ${
+              className={`p-1 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
                   : "hover:bg-primary-lightest"
@@ -169,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Button
               unstyled
               data-testid="cartLink"
-              className={`rounded-md ${
+              className={`p-1 rounded-md ${
                 router.pathname === "/cart"
                   ? "bg-secondary text-white"
                   : "hover:bg-primary-lightest"
