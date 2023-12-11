@@ -821,21 +821,26 @@ const slice = createSlice({
     },
     discardCohortChanges: (
       state,
-      action: PayloadAction<FilterSet | undefined>,
+      action: PayloadAction<{
+        filters: FilterSet | undefined;
+        showMessage: boolean;
+      }>,
     ) => {
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
         changes: {
-          filters: action.payload || { mode: "and", root: {} },
+          filters: action.payload.filters || { mode: "and", root: {} },
           modified: false,
           modified_datetime: new Date().toISOString(),
         },
       });
-      state.message = [
-        `discardChanges|${state.entities[getCurrentCohort(state)]?.name}|${
-          state.currentCohort
-        }`,
-      ];
+      if (action.payload.showMessage) {
+        state.message = [
+          `discardChanges|${state.entities[getCurrentCohort(state)]?.name}|${
+            state.currentCohort
+          }`,
+        ];
+      }
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
@@ -1438,7 +1443,7 @@ export const discardActiveCohortChanges =
         modified: false,
         cohortId: cohortId,
       });
-    } else dispatch(discardCohortChanges(filters));
+    } else dispatch(discardCohortChanges({ filters, showMessage: true }));
   };
 
 export const setActiveCohortList =

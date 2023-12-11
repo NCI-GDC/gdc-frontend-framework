@@ -45,7 +45,10 @@ interface DropdownWithIconProps {
    *    custom position for Menu
    */
   customPosition?: FloatingPosition;
-
+  /**
+   *    whether the dropdown should fill the height of its parent
+   */
+  fullHeight?: boolean;
   /**
    *   custom z-index for Menu, defaults to undefined
    */
@@ -66,6 +69,7 @@ export const DropdownWithIcon = ({
   menuLabelText,
   menuLabelCustomClass,
   customPosition,
+  fullHeight,
   zIndex = undefined,
   customDataTestId = undefined,
 }: DropdownWithIconProps): JSX.Element => {
@@ -86,6 +90,7 @@ export const DropdownWithIcon = ({
           disabled={targetButtonDisabled}
           classNames={{
             rightIcon: "border-l pl-1 -mr-2",
+            root: fullHeight ? "h-full" : undefined,
           }}
         >
           {TargetButtonChildren}
