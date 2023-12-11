@@ -17,10 +17,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Select "Submit"
 * Name the cohort "organoid" in the Cohort Bar section
 * Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |organoid                                   |Keep Modal          |
-* Set as current cohort
+  |Action to Perform|Text to validate in modal                                 |Keep or Remove Modal|
+  |-----------------|----------------------------------------------------------|--------------------|
+  |Save             |organoid has been saved. This is now your current cohort. |Remove Modal        |
 * The cohort bar case count should be "70"
 * Clear active cohort filters
 * The cohort bar case count should be "86,513"
@@ -31,9 +30,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Select "Submit"
 * Name the cohort "data portal v1" in the Cohort Bar section
 * Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |data portal v1                             |Remove Modal        |
+  |Action to Perform|Text to validate in modal                                        |Keep or Remove Modal|
+  |-----------------|-----------------------------------------------------------------|--------------------|
+  |Save             |data portal v1 has been saved. This is now your current cohort.  |Remove Modal        |
 
 ## Import Cohort with all Case Identifiers
 * Select "Upload" from the Cohort Bar
@@ -41,6 +40,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Select "Submit"
 * Name the cohort "cases list" in the Cohort Bar section
 * Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |cases list                                 |Remove Modal        |
+  |Action to Perform|Text to validate in modal                                    |Keep or Remove Modal|
+  |-----------------|-------------------------------------------------------------|--------------------|
+  |Save             |cases list has been saved. This is now your current cohort.  |Remove Modal        |
