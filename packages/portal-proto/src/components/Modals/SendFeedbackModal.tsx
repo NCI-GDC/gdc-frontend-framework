@@ -41,6 +41,7 @@ const SendFeedbackModal = ({
                       copied ? "text-nci-green" : "text-accent-vivid"
                     }`}
                     onClick={copy}
+                    aria-label="Copy email to clipboard"
                   >
                     <CopyIcon />
                   </ActionIcon>
