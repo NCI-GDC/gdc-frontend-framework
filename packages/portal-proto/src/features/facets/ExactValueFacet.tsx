@@ -26,9 +26,10 @@ const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ["includes", "excludes"].includes(op.operator);
 
 /**
- * Extracts the operands if the operation is Includes or Excludes. Returns an empty Array
+ * Extracts the operands if the operation isIncludes or Excludes. Returns an empty Array
  * if filter is not the correct type.
  * @param operation - filters to extract values from
+ * @category Facets
  */
 const extractValues = (
   operation?: Operation,

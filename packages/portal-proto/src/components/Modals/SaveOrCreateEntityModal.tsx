@@ -3,6 +3,20 @@ import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 
+/**
+ * Modal to save or create an entity
+ * @param entity - the entity to save or create
+ * @param action - the action to perform
+ * @param initialName - the initial name of the entity
+ * @param opened - whether the modal is opened
+ * @param onClose - callback for closing the modal
+ * @param onActionClick - callback for clicking the action button
+ * @param onNameChange    - callback for changing the name
+ * @param descriptionMessage  - message to display in the description
+ * @param additionalDuplicateMessage  - additional message to display if the name is a duplicate
+ * @category Modals
+ */
+
 export const SaveOrCreateEntityModal = ({
   entity,
   action = "Save",

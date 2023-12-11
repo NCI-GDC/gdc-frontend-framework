@@ -44,6 +44,7 @@ import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width - set the width of the facet
  * @param header - object containing the components to use for the header
+ * @category Facets
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
