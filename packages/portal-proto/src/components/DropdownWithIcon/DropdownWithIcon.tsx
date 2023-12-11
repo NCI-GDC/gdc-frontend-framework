@@ -56,7 +56,7 @@ interface DropdownWithIconProps {
    */
   customDataTestId?: string;
   /**
-   * optional tooltip
+   * optional tooltip (shows when disabled)
    */
   tooltip?: string;
 }
@@ -73,7 +73,7 @@ export const DropdownWithIcon = ({
   customPosition,
   zIndex = undefined,
   customDataTestId = undefined,
-  tooltip = undefined,
+  tooltip = "",
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <>
@@ -96,12 +96,15 @@ export const DropdownWithIcon = ({
             }}
           >
             <div>
-              <Tooltip
-                disabled={targetButtonDisabled || !tooltip}
-                label={tooltip}
-              >
+              {tooltip.length && !targetButtonDisabled ? (
+                <div>
+                  <Tooltip label={tooltip}>
+                    <div>{TargetButtonChildren}</div>
+                  </Tooltip>
+                </div>
+              ) : (
                 <div>{TargetButtonChildren}</div>
-              </Tooltip>
+              )}
             </div>
           </Button>
         </Menu.Target>
