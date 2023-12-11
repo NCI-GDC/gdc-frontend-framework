@@ -23,9 +23,8 @@ stages:
   - .pre
   - test
   - unit
-  - release
+  - build
   - "tag image"
-  - build_ui_tests_image
   - deploy
   - .trigger_ui_tests
 
@@ -80,7 +79,7 @@ Build and test core and portal:
   <<: *default_rules
 
 Build and push image:
-  stage: release
+  stage: build
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -132,7 +131,7 @@ Push tagged image:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
 Build UI tests Docker image:
-  stage: build_ui_tests_image
+  stage: build
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
