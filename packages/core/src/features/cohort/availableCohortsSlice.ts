@@ -568,9 +568,10 @@ interface CopyCohortParams {
  *
  * The slice exports the following actions:
  * setCohortList() - set saved cohort to the adapter that comes from the server
- * addNewEmptyCohort() - create a new empty cohort
+ * addNewDefaultUnsavedCohort - create a an instance of the default unsaved cohort
+ * addNewSavedCohort - add a saved cohort
  * addNewUnsavedCohort - create a new unsaved cohort with the passed filters and message id
- * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
+ * copyToSavedCohort - create a copy of the cohort with sourceId to a new cohort with destId
  * updateCohortName(name:string): changes the current cohort's name
  * updateCohortFilter(filters: FilterSet): update the filters for this cohort
  * removeCohortFilter(filter:string): removes the filter from the cohort
