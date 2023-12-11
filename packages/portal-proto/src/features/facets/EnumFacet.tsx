@@ -296,7 +296,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     clearFilters(field);
                     dismissCallback(field);
                   }}
-                  aria-label="remove the facet"
+                  aria-label="Remove the facet"
                 >
                   <CloseIcon size="1.25em" className={header.iconStyle} />
                 </FacetIconButton>

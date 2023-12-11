@@ -131,6 +131,7 @@ export const useGenerateCasesTableColumns = ({
                   }}
                   size="xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
+                  aria-label="Update cart"
                 />
               </Menu.Target>
               <Menu.Dropdown>

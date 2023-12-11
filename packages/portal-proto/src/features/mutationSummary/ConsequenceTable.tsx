@@ -27,7 +27,6 @@ import saveAs from "file-saver";
 import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
-import { ButtonTooltip } from "@/components/ButtonTooltip";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 
 export const ConsequenceTable = ({
@@ -364,14 +363,10 @@ export const ConsequenceTable = ({
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <ButtonTooltip label="Export All">
-            <FunctionButton onClick={handleJSONDownload}>
-              {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
-            </FunctionButton>
-          </ButtonTooltip>
-          <ButtonTooltip label="Export current view">
-            <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
-          </ButtonTooltip>
+          <FunctionButton onClick={handleJSONDownload}>
+            {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+          </FunctionButton>
+          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
         </div>
       }
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}

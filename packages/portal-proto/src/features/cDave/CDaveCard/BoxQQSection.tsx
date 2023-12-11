@@ -267,6 +267,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <div className="w-full h-72 basis-1/3" ref={boxPlotRef}>
           <BoxPlot
             data={formattedData}
+            field={fieldName}
             color={color}
             width={boundingRectBox.width}
             height={boundingRectBox.height}
@@ -275,6 +276,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
           <QQPlot
             chartValues={formattedQQValues}
+            field={fieldName}
             isLoading={isLoading}
             color={color}
             width={boundingRectQQ.width}
@@ -284,6 +286,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <OffscreenWrapper>
           <BoxPlot
             data={formattedData}
+            field={fieldName}
             color={color}
             width={boundingRectBox.width}
             height={boundingRectBox.height}
@@ -295,6 +298,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <OffscreenWrapper>
           <QQPlot
             chartValues={formattedQQValues}
+            field={fieldName}
             isLoading={isLoading}
             color={color}
             chartRef={qqDownloadChartRef}
