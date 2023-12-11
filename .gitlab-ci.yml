@@ -2,17 +2,16 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: 0.2.0
+    ref: feat/remove-ssh-keyscan
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
 
 .default_rules: &default_rules
   rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+    - if: $RUN_UI_TESTS_ONLY != "true"'
 
 .services:
-  allow_failure: true
   stage: deploy
   when: manual
   parallel:
@@ -153,11 +152,11 @@ Build UI tests Docker image:
     matrix:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
-trigger_ui_tests_yellow:
+trigger_ui_tests_orange:
   extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
-    APP_ENVIRONMENT: QA_YELLOW
+    APP_ENVIRONMENT: QA_ORANGE
   needs:
     - job: deploy_qa/uat
       artifacts: true
@@ -184,4 +183,4 @@ trigger_ui_tests_scheduled:
       when: always
   parallel:
     matrix:
-      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
+      - APP_ENVIRONMENT: ["QA_ORANGE", "QA_UAT"]

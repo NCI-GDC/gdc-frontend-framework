@@ -10,7 +10,7 @@ run_ui_tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
+    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_ORANGE --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
     - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge
     - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads
     - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs

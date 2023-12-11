@@ -151,13 +151,13 @@ Here's how to build/run this repo inside a Docker container.
  docker build -t holmes .
 ```
 
-2. Run the tests in the Docker container (in this example, tests would be run against qa yellow):
+2. Run the tests in the Docker container (in this example, tests would be run against qa orange):
 
 ```bash
 Copy code
-docker run --rm --env APP_ENVIRONMENT=qayellow --env browser="headless firefox" --env APP_ENVIRONMENT=QA_YELLOW .
+docker run --rm --env APP_ENVIRONMENT=qaorange --env browser="headless firefox" --env APP_ENVIRONMENT=QA_ORANGE.
 ```
-Set the environment variable APP_ENVIRONMENT to the desired test environment (e.g., QA_YELLOW, QA_UAT, PROD_UAT).
+Set the environment variable APP_ENVIRONMENT to the desired test environment (e.g., QA_ORANGE, QA_UAT, PROD_UAT).
 
 NOTE: The IS_DOCKER variable is used to indicate that tests are running within the Docker container, and is set to True within the Dockerfile
 
@@ -185,7 +185,7 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
+    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_ORANGE --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
     - docker cp holmes-py:/app/holmes-py/.gauge .gauge
     - docker cp holmes-py:/app/holmes-py/downloads downloads
     - docker cp holmes-py:/app/holmes-py/logs logs
