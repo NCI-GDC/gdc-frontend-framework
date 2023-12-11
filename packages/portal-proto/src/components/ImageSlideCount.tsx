@@ -11,10 +11,7 @@ const SlideCountsIcon = tw.div<{
     p.$count !== undefined && p.$count > 0
       ? "bg-accent-vivid"
       : "bg-base-lighter"}
-    ${(p: { $count?: number }) =>
-      p.$count !== undefined && p.$count > 0
-        ? "text-base-lightest"
-        : "text-base-max"}
+    text-base-max
     inline-flex
     items-center
     w-4

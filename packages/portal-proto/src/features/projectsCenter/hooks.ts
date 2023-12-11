@@ -108,7 +108,7 @@ export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
   };
 };
 
-//  Selector Hooks for getting repository filters by name
+//  Selector Hooks for getting project filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectProjectFiltersByName(state, field));
 };
@@ -118,7 +118,7 @@ export const useProjectsFilters = (): FilterSet => {
 };
 
 /**
- * removes the filter from the repository current/active filters
+ * removes the filter from the project current/active filters
  */
 export const useClearProjectsFilters = (): ClearFacetFunction => {
   const dispatch = useAppDispatch();

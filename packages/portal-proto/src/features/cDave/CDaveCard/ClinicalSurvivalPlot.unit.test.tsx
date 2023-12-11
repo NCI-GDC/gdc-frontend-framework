@@ -3,6 +3,17 @@ import * as router from "next/router";
 import * as core from "@gff/core";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 
+const mockSurvivalValue = {
+  data: {
+    overallStats: {
+      pValue: 0,
+    },
+    survivalData: {},
+  },
+  isLoading: false,
+  isError: false,
+} as any;
+
 describe("ClinicalSurvivalPlot", () => {
   beforeEach(() => {
     jest.spyOn(router, "useRouter").mockImplementation(
@@ -15,7 +26,9 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("creates filters for categorical data", () => {
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot
@@ -69,7 +82,9 @@ describe("ClinicalSurvivalPlot", () => {
           },
         },
       }));
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot
@@ -143,7 +158,9 @@ describe("ClinicalSurvivalPlot", () => {
         } as any),
     );
 
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot
@@ -209,7 +226,9 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("creates filters for custom binned data", () => {
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot
@@ -251,7 +270,9 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("creates filters for named from to", () => {
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot
@@ -311,7 +332,9 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("parses selected negative values", () => {
-    const survivalQuerySpy = jest.spyOn(core, "useGetSurvivalPlotQuery");
+    const survivalQuerySpy = jest
+      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mockReturnValue(mockSurvivalValue);
 
     render(
       <ClinicalSurvivalPlot

@@ -21,7 +21,7 @@ import { useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { HeaderTitle } from "@/components/tailwindComponents";
 
-const H3 = tw.h3`
+const H2 = tw.h2`
   font-heading
   text-md
   font-bold
@@ -87,7 +87,7 @@ const Cart: React.FC = () => {
             {!isCollapsed && (
               <div data-testid="download-info">
                 <div className="mb-2">
-                  <H3>Download Manifest:</H3>
+                  <H2>Download Manifest:</H2>
                   <P>
                     Download a manifest for use with the{" "}
                     <a
@@ -105,14 +105,14 @@ const Cart: React.FC = () => {
                 </div>
 
                 <div className="mb-2">
-                  <H3>Download Cart:</H3>
+                  <H2>Download Cart:</H2>
                   <P>
                     Download Files in your Cart directly from the Web Browser.
                   </P>
                 </div>
 
                 <div className="mb-2">
-                  <H3>Download Reference Files:</H3>
+                  <H2>Download Reference Files:</H2>
                   <P>
                     Download{" "}
                     <a

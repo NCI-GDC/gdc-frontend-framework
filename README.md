@@ -150,7 +150,7 @@ local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost
 ```
 
 4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010/v2`.
-5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be supressed in production.
+5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be suppressed in production.
 6. Now you can Login and use features that are available with Authentication.
 7. For developing 3rd party tools with its own server API endpoint or URL:
 
@@ -184,7 +184,9 @@ local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key local
 
 ## Documentation
 
-Run build-docs to generate documentation for "portal-proto" and "core" packages:
+Run build-docs to generate documentation for "portal-proto" and "core" packages
+For developing applications for the GDC Portal, please review
+[Developer Guide](docs/DevelopersGuide/Developers_Guide.md).
 
 ```bash
 npm run build-docs

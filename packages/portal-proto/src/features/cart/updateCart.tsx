@@ -13,6 +13,7 @@ import {
   useCoreDispatch,
   CartFile,
 } from "@gff/core";
+import { useEffect } from "react";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -64,9 +65,11 @@ const AddNotification: React.FC<AddNotificationProps> = ({
     currentCart.map((c) => c.file_id).includes(f.file_id),
   );
 
-  if (filesToAdd.length > 0) {
-    dispatch(addFilesToCart(filesToAdd));
-  }
+  useEffect(() => {
+    if (filesToAdd.length > 0) {
+      dispatch(addFilesToCart(filesToAdd));
+    }
+  }, [filesToAdd, dispatch]);
 
   if (files.length === 1) {
     if (filesToAdd.length === 1) {

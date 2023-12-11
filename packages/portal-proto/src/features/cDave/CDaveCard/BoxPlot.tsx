@@ -77,6 +77,7 @@ interface BoxPlotProps {
     readonly q1: number;
     readonly q3: number;
   };
+  readonly field: string;
   readonly color: string;
   readonly height: number;
   readonly width: number;
@@ -92,6 +93,7 @@ interface BoxPlotProps {
 
 const BoxPlot: React.FC<BoxPlotProps> = ({
   data,
+  field,
   color,
   height,
   width,
@@ -118,9 +120,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       minDomain={{ x: 1, y: data.min }}
       maxDomain={{ x: 1, y: data.max }}
       containerComponent={
-        chartRef ? (
-          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
-        ) : undefined
+        <VictoryContainer
+          containerRef={
+            chartRef ? (ref) => (chartRef.current = ref) : undefined
+          }
+          aria-labelledby={`${field}-box-plot-label`}
+        />
       }
     >
       <VictoryLabel
@@ -129,6 +134,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
         textAnchor="middle"
+        id={`${field}-box-plot-label`}
       />
       <VictoryAxis
         dependentAxis

@@ -52,6 +52,7 @@ export const getQ1Q3Line = (
 
 interface QQPlotProps {
   readonly chartValues: { id: string; x: number; y: number }[];
+  readonly field: string;
   readonly isLoading: boolean;
   readonly color: string;
   readonly height: number;
@@ -68,6 +69,7 @@ interface QQPlotProps {
 
 const QQPlot: React.FC<QQPlotProps> = ({
   chartValues,
+  field,
   isLoading,
   height,
   width,
@@ -100,9 +102,12 @@ const QQPlot: React.FC<QQPlotProps> = ({
       minDomain={{ x: xMin, y: yMin < 0 ? yMin : 0 }}
       maxDomain={{ x: xMax, y: yMax }}
       containerComponent={
-        chartRef ? (
-          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
-        ) : undefined
+        <VictoryContainer
+          containerRef={
+            chartRef ? (ref) => (chartRef.current = ref) : undefined
+          }
+          aria-labelledby={`${field}-qq-plot-label`}
+        />
       }
     >
       <VictoryLabel
@@ -111,6 +116,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
         textAnchor="middle"
+        id={`${field}-qq-plot-label`}
       />
       <VictoryAxis
         label="Theoretical Normal Quantiles"

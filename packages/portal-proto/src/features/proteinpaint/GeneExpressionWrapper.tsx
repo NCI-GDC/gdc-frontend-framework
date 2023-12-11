@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, FC } from "react";
+import { useEffect, useRef, useCallback, useState, FC } from "react";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -13,11 +13,13 @@ import {
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
+import { LoadingOverlay } from "@mantine/core";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
   getFilters,
+  RxComponentCallbacks,
 } from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
@@ -40,6 +42,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  // TODO: use the CreatCohortModal, similar to how it's done in OncoMatrix
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
       const filters = getFilters(arg);
@@ -56,6 +60,11 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     [coreDispatch],
   );
 
+  const callbacks: RxComponentCallbacks = {
+    "postRender.gdcGeneExpression": () => setIsLoading(false),
+    "error.gdcGeneExpression": () => setIsLoading(false),
+  };
+
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
@@ -67,6 +76,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
+      setIsLoading(true);
 
       if (ppRef.current) {
         ppRef.current.update({ filter0: prevData.current.filter0 });
@@ -78,6 +88,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
           props,
           prevData.current.filter0,
           callback,
+          callbacks,
         );
         if (!data) return;
 
@@ -110,6 +121,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
+      <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
     </div>
   );
 };
@@ -135,12 +147,14 @@ interface GeneExpressionArgOpts {
 
 interface GeneExpressionArgHierCluster {
   allow2selectSamples?: SelectSamples;
+  callbacks: RxComponentCallbacks;
 }
 
 function getGeneExpressionTrack(
   props: PpProps,
   filter0: any,
   callback?: SelectSamplesCallback,
+  callbacks?: RxComponentCallbacks,
 ) {
   const defaultFilter = null;
 
@@ -163,6 +177,7 @@ function getGeneExpressionTrack(
           ],
           callback,
         },
+        callbacks,
       },
     },
   };
