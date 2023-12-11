@@ -18,7 +18,11 @@ export const LoginButton = ({
   const dispatch = useCoreDispatch();
   return (
     <Button
-      className="flex items-center text-primary-darkest text-sm font-medium gap-1 font-heading p-1 hover:rounded-md hover:bg-primary-lightest"
+      className={`${
+        fromHeader
+          ? "font-medium text-primary-darkest p-1 pr-2 hover:bg-primary-lightest"
+          : "hover:bg-primary-darker"
+      }`}
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();
