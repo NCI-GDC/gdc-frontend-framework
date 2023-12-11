@@ -15,17 +15,20 @@ import {
   setCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
+  useLazyGetCohortByIdQuery,
+  discardCohortChanges,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 
 /**
- * Save cohort modal component
- * @param initialName - initial name of the cohort
- * @param onClose - callback function to close the modal
- * @param cohortId - id of the cohort
- * @param filters - filters to save
- * @param setAsCurrent - whether to set the cohort as current
+ * SaveCohortModal handles saving a user's cohort
+ * @param initialName - populates inital value of name field
+ * @param onClose - callback triggered when modal closes
+ * @param cohortId - id of existing cohort we are saving, if undefined we are not saving a cohort that already exists
+ * @param filters - the filters associated with the cohort
+ * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
+ * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
  * @category Modals
  */
 const SaveCohortModal = ({
@@ -33,21 +36,39 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
-  setAsCurrent,
+  setAsCurrent = false,
+  saveAs = false,
 }: {
   initialName?: string;
   onClose: () => void;
   cohortId?: string;
   filters: FilterSet;
   setAsCurrent?: boolean;
+  saveAs?: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
+
+    if (saveAs) {
+      // Should discard local changes from current cohort when saving as
+      await fetchSavedFilters(cohortId)
+        .unwrap()
+        .then((payload) => {
+          coreDispatch(
+            discardCohortChanges({
+              filters: buildGqlOperationToFilterSet(payload.filters),
+              showMessage: false,
+            }),
+          );
+        });
+    }
+
     const addBody = {
       name: newName,
       type: "static",
@@ -60,7 +81,7 @@ const SaveCohortModal = ({
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
       .then((payload) => {
-        if (prevCohort) {
+        if (prevCohort && !saveAs) {
           coreDispatch(
             copyCohort({
               sourceId: prevCohort,
@@ -99,17 +120,24 @@ const SaveCohortModal = ({
               modified: false,
             }),
           );
-          if (setAsCurrent) {
+          if (saveAs) {
             coreDispatch(setCurrentCohortId(payload.id));
             coreDispatch(
-              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
             );
           } else {
-            coreDispatch(
-              setCohortMessage([
-                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
-              ]),
-            );
+            if (setAsCurrent) {
+              coreDispatch(setCurrentCohortId(payload.id));
+              coreDispatch(
+                setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+              );
+            } else {
+              coreDispatch(
+                setCohortMessage([
+                  `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+                ]),
+              );
+            }
           }
           coreDispatch(fetchCohortCaseCounts(payload.id));
         }
@@ -128,11 +156,51 @@ const SaveCohortModal = ({
       });
   };
 
+  const UpdateBody = () => (
+    <>
+      <div className="p-4">
+        <p className="font-content text-sm">
+          A saved cohort with same name already exists. Are you sure you want to
+          replace it?
+        </p>
+        <p className="text-xs font-content mt-1">
+          You cannot undo this action.
+        </p>
+      </div>
+      <ModalButtonContainer data-testid="modal-button-container">
+        <Button
+          variant="outline"
+          className={"bg-white"}
+          color="secondary"
+          onClick={() => setShowReplaceCohort(false)}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant={"filled"}
+          color="secondary"
+          onClick={() => {
+            saveAction(enteredName, true);
+          }}
+          data-testid="replace-cohort-button"
+        >
+          Replace
+        </Button>
+      </ModalButtonContainer>
+    </>
+  );
+
   return (
     <Modal
       opened
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
-      title={showReplaceCohort ? "Replace Existing Cohort" : "Save Cohort"}
+      title={
+        showReplaceCohort
+          ? "Replace Existing Cohort"
+          : saveAs
+          ? "Save Cohort As"
+          : "Save Cohort"
+      }
       size={"md"}
       classNames={{
         content: "p-0",
@@ -140,37 +208,7 @@ const SaveCohortModal = ({
       }}
     >
       {showReplaceCohort ? (
-        <>
-          <div className="p-4">
-            <p className="font-content text-sm">
-              A saved cohort with same name already exists. Are you sure you
-              want to replace it?
-            </p>
-            <p className="text-xs font-content mt-1">
-              You cannot undo this action.
-            </p>
-          </div>
-          <ModalButtonContainer data-testid="modal-button-container">
-            <Button
-              variant="outline"
-              className={"bg-white"}
-              color="secondary"
-              onClick={() => setShowReplaceCohort(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant={"filled"}
-              color="secondary"
-              onClick={() => {
-                saveAction(enteredName, true);
-              }}
-              data-testid="replace-cohort-button"
-            >
-              Replace
-            </Button>
-          </ModalButtonContainer>
-        </>
+        <UpdateBody />
       ) : (
         <SaveOrCreateEntityBody
           entity="cohort"
@@ -181,9 +219,14 @@ const SaveCohortModal = ({
             saveAction(name, false);
             setEnteredName(name);
           }}
-          descriptionMessage={"Provide a name to save the cohort."}
+          descriptionMessage={
+            saveAs
+              ? "Provide a name to save your current cohort as a new cohort"
+              : "Provide a name to save the cohort."
+          }
           closeOnAction={false}
           loading={isLoading}
+          disallowedNames={["unsaved_cohort"]}
         />
       )}
     </Modal>

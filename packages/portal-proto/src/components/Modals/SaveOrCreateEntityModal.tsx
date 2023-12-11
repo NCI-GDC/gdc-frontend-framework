@@ -2,21 +2,20 @@ import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
+import ErrorMessage from "../ErrorMessage";
 
-/**
- * Modal to save or create an entity
- * @param entity - the entity to save or create
- * @param action - the action to perform
- * @param initialName - the initial name of the entity
- * @param opened - whether the modal is opened
- * @param onClose - callback for closing the modal
- * @param onActionClick - callback for clicking the action button
- * @param onNameChange    - callback for changing the name
- * @param descriptionMessage  - message to display in the description
- * @param additionalDuplicateMessage  - additional message to display if the name is a duplicate
- * @category Modals
- */
-
+interface SaveOrCreateEntityModalProps {
+  entity: string;
+  action?: string;
+  initialName?: string;
+  opened: boolean;
+  onClose: () => void;
+  onActionClick: (name: string) => void;
+  onNameChange?: (name: string) => boolean;
+  descriptionMessage?: string;
+  additionalDuplicateMessage?: string;
+  disallowedNames?: string[];
+}
 export const SaveOrCreateEntityModal = ({
   entity,
   action = "Save",
@@ -27,17 +26,8 @@ export const SaveOrCreateEntityModal = ({
   onNameChange,
   descriptionMessage,
   additionalDuplicateMessage,
-}: {
-  entity: string;
-  action?: string;
-  initialName?: string;
-  opened: boolean;
-  onClose: () => void;
-  onActionClick: (name: string) => void;
-  onNameChange?: (name: string) => boolean;
-  descriptionMessage?: string;
-  additionalDuplicateMessage?: string;
-}): JSX.Element => {
+  disallowedNames = [],
+}: SaveOrCreateEntityModalProps): JSX.Element => {
   return (
     <Modal
       title={`${upperFirst(action)} ${upperFirst(entity)}`}
@@ -55,10 +45,25 @@ export const SaveOrCreateEntityModal = ({
         onNameChange={onNameChange}
         descriptionMessage={descriptionMessage}
         additionalDuplicateMessage={additionalDuplicateMessage}
+        disallowedNames={disallowedNames}
       />
     </Modal>
   );
 };
+
+interface SaveOrCreateEntityBodyProps {
+  entity: string;
+  action?: string;
+  initialName?: string;
+  onClose: () => void;
+  onActionClick: (name: string) => void;
+  onNameChange?: (name: string) => boolean;
+  descriptionMessage?: string;
+  additionalDuplicateMessage?: string;
+  closeOnAction?: boolean;
+  loading?: boolean;
+  disallowedNames?: string[];
+}
 
 export const SaveOrCreateEntityBody = ({
   entity,
@@ -71,33 +76,37 @@ export const SaveOrCreateEntityBody = ({
   additionalDuplicateMessage,
   closeOnAction = true,
   loading = false,
-}: {
-  entity: string;
-  action?: string;
-  initialName?: string;
-  onClose: () => void;
-  onActionClick: (name: string) => void;
-  onNameChange?: (name: string) => boolean;
-  descriptionMessage?: string;
-  additionalDuplicateMessage?: string;
-  closeOnAction?: boolean;
-  loading?: boolean;
-}): JSX.Element => {
+  disallowedNames = [],
+}: SaveOrCreateEntityBodyProps): JSX.Element => {
+  const validationMessages = {
+    emptyField: "Please fill out this field.",
+    invalidName: (value: string) =>
+      `${value} is not a valid name for a saved ${entity}. Please try another name.`,
+  };
+
   const form = useForm({
     initialValues: {
       name: initialName,
     },
-
     validate: {
-      name: (value) =>
-        value.length === 0 ? (
-          <span style={{ marginTop: "5px" }}>
-            <WarningIcon style={{ display: "inline", marginRight: "2px" }} />
-            Please fill out this field.
-          </span>
-        ) : null,
+      name: (value) => {
+        if (value.length === 0) {
+          return validationMessages.emptyField;
+        } else if (disallowedNames.includes(value.trim().toLowerCase())) {
+          return validationMessages.invalidName(value);
+        }
+        return null;
+      },
     },
   });
+
+  // ignoring this error object as new one is being defined below
+  const { error: _, ...inputProps } = form.getInputProps("name");
+
+  const validationError = form.errors.name;
+  const error = validationError && (
+    <ErrorMessage message={validationError as string} />
+  );
 
   const description =
     Object.keys(form.errors).length === 0 &&
@@ -111,14 +120,17 @@ export const SaveOrCreateEntityBody = ({
       <span>Maximum 100 characters</span>
     ));
 
+  const handleActionClick = () => {
+    if (form.validate().hasErrors) return;
+    onActionClick((form?.values?.name || "").trim());
+    if (closeOnAction) {
+      onClose();
+    }
+  };
+
   return (
     <>
-      <Box
-        sx={() => ({
-          fontFamily: '"Noto", "sans-serif"',
-          padding: "5px 25px 20px 10px",
-        })}
-      >
+      <Box className="font-content mt-1 mr-6 mb-5 ml-3">
         <p className="mb-2 text-sm font-content">
           {descriptionMessage && descriptionMessage}
         </p>
@@ -128,21 +140,17 @@ export const SaveOrCreateEntityBody = ({
           placeholder={`New ${upperFirst(entity)} Name`}
           aria-label={`Input field for new ${entity} name`}
           description={description}
-          styles={() => ({
-            description: {
-              marginTop: "5px",
-            },
-            input: {
-              fontFamily: "Noto Sans, sans-serif",
-            },
-          })}
+          classNames={{
+            description: "mt-1",
+            input:
+              "font-content data-[invalid=true]:text-[#AD2B4A] data-[invalid=true]:border-[#AD2B4A]",
+            error: "text-[#AD2B4A]",
+          }}
           data-autofocus
           maxLength={100}
-          errorProps={{
-            color: "#AD2B4A",
-          }}
+          error={error}
           inputWrapperOrder={["label", "input", "error", "description"]}
-          {...form.getInputProps("name")}
+          {...inputProps}
           aria-required
           data-testid="input-field"
         />
@@ -159,28 +167,17 @@ export const SaveOrCreateEntityBody = ({
         <Group position="right">
           <Button
             variant="outline"
-            styles={() => ({
-              root: {
-                backgroundColor: "white",
-              },
-            })}
+            classNames={{ root: "bg-base-max" }}
             color="secondary"
             onClick={onClose}
           >
             Cancel
           </Button>
           <Button
-            variant={"filled"}
+            variant="filled"
             color="secondary"
             aria-label={`Save button to add a ${entity}`}
-            onClick={() => {
-              if (form.validate().hasErrors) return;
-              onActionClick((form?.values?.name || "").trim());
-              form.reset();
-              if (closeOnAction) {
-                onClose();
-              }
-            }}
+            onClick={handleActionClick}
             data-testid="action-button"
             loading={loading}
           >

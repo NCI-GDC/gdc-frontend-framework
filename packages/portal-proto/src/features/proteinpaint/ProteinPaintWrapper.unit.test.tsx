@@ -23,6 +23,7 @@ jest.mock("@gff/core", () => ({
     nullFunction,
     resultsCreateCaseSet,
   ],
+  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({

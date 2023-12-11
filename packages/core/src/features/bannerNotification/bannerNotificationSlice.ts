@@ -62,7 +62,7 @@ const slice = createSlice({
       const newNotifications = action.payload
         .filter(
           (notification) =>
-            notification.components.includes("PORTAL") ||
+            notification.components.includes("PORTAL_V2") ||
             notification.components.includes("API") ||
             notification.components.includes("LOGIN"),
         )
