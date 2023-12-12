@@ -258,14 +258,12 @@ export const MultipleImageViewer = ({
                       variant="pills"
                       value={activeTab.toString()}
                       onTabChange={onTabChange}
+                      keepMounted={false}
                       classNames={{
                         root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
-                        tab: "bg-white hover:bg-primary",
                         tabsList:
-                          "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap pt-1",
-                        tabLabel:
-                          "text-xs text-primary-content-darkest px-2 font-medium group-hover:text-primary-contrast",
-                        panel: "max-h-screen-60vh overflow-y-auto mt-1",
+                          "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap py-1 w-1/2",
+                        panel: "max-h-screen-60vh overflow-y-auto mt-1 w-1/2",
                       }}
                       styles={(theme) => ({
                         tab: {
@@ -290,41 +288,16 @@ export const MultipleImageViewer = ({
                               data-testid={edge}
                               key={edge}
                               value={index.toString()}
-                              className={`mx-2 mt-1 ${
+                              className={`mx-2 mt-1 hover:bg-primary-dark [&>span]:hover:text-primary-contrast ${
                                 activeTab.toString() === index.toString()
-                                  ? "bg-primary-dark [&>div]:text-primary-contrast [&>div]:font-bold"
-                                  : ""
+                                  ? "bg-primary-dark [&>span]:text-primary-contrast [&>span]:font-bold"
+                                  : "[&>span]:text-black [&>span]:font-medium"
                               } truncate ...`}
                             >
                               {edge}
                             </Tabs.Tab>
                           );
                         })}
-
-                        <div className="sticky bottom-0 text-center bg-base-lightest p-3 mt-auto">
-                          {shouldShowMoreButton && (
-                            <Button
-                              data-testid="show-more-image-viewer"
-                              onClick={() => {
-                                setCasesOffSet((o) => o + 10);
-                                setShowMorePressed(true);
-                              }}
-                              size="xs"
-                              classNames={{
-                                root: "bg-primary hover:bg-primary-dark",
-                              }}
-                              aria-label="show 10 more cases"
-                            >
-                              Show More
-                            </Button>
-                          )}
-
-                          <Text data-testid="showing-image-viewer" size="sm">
-                            Showing{" "}
-                            <strong>{Object.keys(data?.edges).length}</strong>{" "}
-                            of <strong>{data?.total}</strong>
-                          </Text>
-                        </div>
                       </Tabs.List>
                       {Object.keys(data?.edges).map((edge, index) => {
                         return (
@@ -354,6 +327,29 @@ export const MultipleImageViewer = ({
                         );
                       })}
                     </Tabs>
+                    <div className="text-center bg-base-lightest py-3 w-1/2">
+                      {shouldShowMoreButton && (
+                        <Button
+                          data-testid="show-more-image-viewer"
+                          onClick={() => {
+                            setCasesOffSet((o) => o + 10);
+                            setShowMorePressed(true);
+                          }}
+                          classNames={{
+                            root: "bg-primary hover:bg-primary-dark",
+                          }}
+                          aria-label="show 10 more cases"
+                        >
+                          Show More
+                        </Button>
+                      )}
+
+                      <Text data-testid="showing-image-viewer" size="sm">
+                        Showing{" "}
+                        <strong>{Object.keys(data?.edges).length}</strong> of{" "}
+                        <strong>{data?.total}</strong>
+                      </Text>
+                    </div>
                   </div>
                 )}
 

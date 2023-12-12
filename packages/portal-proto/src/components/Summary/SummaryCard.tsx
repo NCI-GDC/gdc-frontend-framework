@@ -21,7 +21,9 @@ export const SummaryCard = ({
           title.length === 0 && !message && "mb-7"
         } flex justify-between`}
       >
-        <HeaderTitle>{title}</HeaderTitle>
+        <HeaderTitle className={`${!title && "invisible"}`}>
+          {title}
+        </HeaderTitle>
         {message && <div className="text-sm">{message}</div>}
       </div>
 

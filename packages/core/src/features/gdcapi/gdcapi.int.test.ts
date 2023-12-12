@@ -143,6 +143,7 @@ describe("GDC API", () => {
           { field: "primary_site", direction: "asc" },
           { field: "case_id", direction: "desc" },
         ],
+        from: 1,
       });
 
       expect(cases.data.hits.length).toEqual(10);
