@@ -86,14 +86,13 @@ Build and push image:
     - apk add bash
   script:
     - |
-      set -x
       docker build \
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA" \
       --label "org.opencontainers.image.created=$(date -Iseconds)" \
-      --label "org.opencontainers.image.version=$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA"}" \
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA" \
       --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" \
       --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" \
-      -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
+      -t "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA" .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
   <<: *default_rules
 
