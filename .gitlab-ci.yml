@@ -139,6 +139,7 @@ Build UI tests Docker image:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $RUN_UI_TESTS_ONLY == "true"'
+    - when: manual
 
 .trigger_ui_tests:
   stage: .trigger_ui_tests
