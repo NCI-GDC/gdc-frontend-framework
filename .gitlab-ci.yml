@@ -29,7 +29,7 @@ stages:
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/node:18.19-alpine3.19
+image: docker.osdc.io/node:16.20.2-alpine3.17
 
 variables:
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
