@@ -36,6 +36,7 @@ tags: cohort-selections
   |facet_name       |action                 |
   |-----------------|-----------------------|
   |Morphology       |Sort Cases numerically |
+  |Morphology       |Sort Cases numerically |
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
@@ -51,12 +52,12 @@ tags: cohort-selections
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |action                       |
   |-----------------|-----------------------------|
-  |Morphology       |Flip between form and chart  |
+  |Morphology       |chart view                   |
   |Morphology       |clear selection              |
   |Morphology       |Search                       |
-  |Morphology       |Flip between form and chart  |
+  |Morphology       |chart view                   |
 * Search in a filter card from "General Diagnosis" tab on the Cohort Builder page
-  |facet_name       |label               |text  |
+  |facet_name       |label                |text  |
   |-----------------|---------------------|------|
   |Morphology       |search values        |9950/3|
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
@@ -101,7 +102,7 @@ tags: cohort-selections
 * Select the following radio buttons
   |radio_id                                           |
   |---------------------------------------------------|
-  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_3 |
+  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_1 |
 * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
