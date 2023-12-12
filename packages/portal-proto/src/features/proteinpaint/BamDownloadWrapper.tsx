@@ -77,7 +77,7 @@ export const BamDownloadWrapper: FC<PpProps> = (props: PpProps) => {
       >
         <b>Access alert</b>
         <hr />
-        <p>Please login to access the Sequence Read visualization tool.</p>
+        <p>Please login to access the BAM Slicing Download Tool.</p>
       </div>
       <div
         ref={divRef}
