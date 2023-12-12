@@ -70,12 +70,12 @@ export const useGenerateSMTableColumns = ({
       SMTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select ${table
+          <>
+            <label
+              hidden
+              htmlFor="mutationsSelectAll"
+              id="mutationsSelectAll"
+            >{`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
               .getRowModel()
               .rows.map(
                 ({
@@ -84,27 +84,39 @@ export const useGenerateSMTableColumns = ({
                   },
                 }) => `${symbol} ${aaChange}`,
               )
-              .join(", ")} mutation rows`}
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
+              .join(", ")} mutation rows`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="mutationsSelectAll"
+              {...{
+                checked: table.getIsAllRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              }}
+            />
+          </>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select the ${row.original.protein_change.symbol} ${
+          <>
+            <label hidden htmlFor="mutationSelect" id="mutationSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } the ${row.original.protein_change.symbol} ${
               row.original.protein_change?.aaChange ?? ""
-            } mutation row`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+            } mutation row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="mutationSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
         enableHiding: false,
       }),

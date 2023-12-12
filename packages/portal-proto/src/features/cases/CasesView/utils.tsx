@@ -59,33 +59,43 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select ${table
-              .getRowModel()
-              .rows.map(({ original }) => original.case_id)
-              .join(", ")} case rows`}
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="casesSelectAll" id="casesSelectAll">
+              {`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
+                .getRowModel()
+                .rows.map(({ original }) => original.project)
+                .join(", ")} case rows`}{" "}
+            </label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="casesSelectAll"
+              {...{
+                checked: table.getIsAllRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              }}
+            />
+          </>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select the ${row.id} case row`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="caseSelect" id="caseSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } the ${row?.original?.project ?? ""} case row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="caseSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
       }),
       casesDataColumnHelper.display({

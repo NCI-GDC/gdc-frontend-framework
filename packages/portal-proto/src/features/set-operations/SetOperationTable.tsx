@@ -86,22 +86,30 @@ export const SetOperationTable = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          // todo: aria label checked status out of sync w/ checked value
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            value={row.original.operationKey}
-            aria-label={`Select the ${row.original.operationKey} row`}
-            checked={selectedSets[row.original.operationKey]}
-            onChange={(e) => {
-              setSelectedSets({
-                ...selectedSets,
-                [e.target.value]: !selectedSets[e.target.value],
-              });
-            }}
-          />
+          <>
+            <label
+              hidden
+              htmlFor="setOperationSelect"
+              id="setOperationSelect"
+            >{`${
+              !selectedSets[row.original.operationKey] ? `Select` : `Unselect`
+            } the ${row.original.operationKey} row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              value={row.original.operationKey}
+              aria-labelledby="setOperationSelect"
+              checked={selectedSets[row.original.operationKey]}
+              onChange={(e) => {
+                setSelectedSets({
+                  ...selectedSets,
+                  [e.target.value]: !selectedSets[e.target.value],
+                });
+              }}
+            />
+          </>
         ),
       },
       setOperationTableColumnsHelper.accessor("setOperation", {

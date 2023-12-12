@@ -211,32 +211,47 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
       manageSetsTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-            data-testid="checkbox-select-all-sets"
-            aria-label="Select all the rows of the table"
-          />
+          <>
+            <label
+              hidden
+              htmlFor="manageSetsSelectAll"
+              id="manageSetsSelectAll"
+            >{`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
+              .getRowModel()
+              .rows.map(({ original: { setName } }) => setName)
+              .join(", ")} set rows of the table`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              {...{
+                checked: table.getIsAllRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              }}
+              data-testid="checkbox-select-all-sets"
+              aria-labelledby="manageSetsSelectAll"
+            />
+          </>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            data-testid="checkbox-select-set"
-            aria-label={`Select/deselect ${row.original.setName}`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="manageSetSelect" id="manageSetSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } the ${row.original.setName} set row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              data-testid="checkbox-select-set"
+              aria-labelledby="manageSetSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
         enableHiding: false,
       }),

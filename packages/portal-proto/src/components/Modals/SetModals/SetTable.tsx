@@ -32,9 +32,21 @@ const SelectCell: React.FC<SelectCellProps> = ({
 
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage} zIndex={400}>
+      <label
+        hidden
+        htmlFor={
+          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+        }
+        id={
+          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+        }
+      >
+        {`${selected ? `Select` : `Unselect`} ${setId} fdsfdsfsd`}
+      </label>
       <span>
         {multiselect ? (
           <Checkbox
+            aria-labelledby="setOperationCheckboxSelect"
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -48,6 +60,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
+            aria-labelledby="setOperationRadioSelect"
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -105,16 +118,14 @@ const SetTable: React.FC<SetTableProps> = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <span aria-label={`Select ${row.original.set[0]}`}>
-            <SelectCell
-              count={counts?.[row.original.set[0]] || 0}
-              set={row.original.set}
-              multiselect={multiselect}
-              shouldDisable={shouldDisable}
-              selectedSets={selectedSets}
-              setSelectedSets={setSelectedSets}
-            />
-          </span>
+          <SelectCell
+            count={counts?.[row.original.set[0]] || 0}
+            set={row.original.set}
+            multiselect={multiselect}
+            shouldDisable={shouldDisable}
+            selectedSets={selectedSets}
+            setSelectedSets={setSelectedSets}
+          />
         ),
       }),
       setTableColumnHelper.accessor("name", {

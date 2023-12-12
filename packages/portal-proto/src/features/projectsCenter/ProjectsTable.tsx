@@ -168,32 +168,44 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select ${Object.keys(
-              table.getRowModel().rowsById,
-            ).join(", ")} project rows`}
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="projectsSelectAll" id="projectsSelectAll">
+              {`${
+                table.getIsAllRowsSelected() ? `Select` : `Unselect`
+              } ${Object.keys(table.getRowModel().rowsById).join(
+                ", ",
+              )} project rows`}
+            </label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="projectsSelectAll"
+              {...{
+                checked: table.getIsAllRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              }}
+            />
+          </>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select the ${row.id} project row`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="projectSelect" id="projectSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } the ${row.id} project row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="projectSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
         enableHiding: false,
       }),

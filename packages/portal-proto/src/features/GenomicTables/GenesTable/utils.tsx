@@ -50,33 +50,45 @@ export const useGenerateGenesTableColumns = ({
       genesTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select ${table
-              .getRowModel()
-              .rows.map(({ original: { symbol } }) => symbol)
-              .join(", ")} gene rows`}
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="genesSelectAll" id="genesSelectAll">
+              {table.getIsAllRowsSelected() ? `Select` : `Unselect`}{" "}
+              {table
+                .getRowModel()
+                .rows.map(({ original: { symbol } }) => symbol)
+                .join(", ")}{" "}
+              gene rows
+            </label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="genesSelectAll"
+              {...{
+                checked: table.getIsAllRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              }}
+            />
+          </>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select the ${row.original.symbol} gene row`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="geneSelect" id="geneSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } the ${row.original.symbol} gene row`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="geneSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
         enableHiding: false,
       }),

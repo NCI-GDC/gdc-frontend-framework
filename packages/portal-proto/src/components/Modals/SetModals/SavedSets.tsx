@@ -78,17 +78,22 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`Select/deselect ${row.original.setId}`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <>
+            <label hidden htmlFor="savedSetSelect" id="savedSetSelect">{`${
+              row.getIsSelected() ? `Select` : `Unselect`
+            } ${row.original.setId}`}</label>
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-labelledby="savedSetSelect"
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+            />
+          </>
         ),
       }),
       savedSetsTableColumnHelper.accessor("name", {

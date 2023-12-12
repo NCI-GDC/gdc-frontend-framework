@@ -89,8 +89,13 @@ const SelectCell: React.FC<SelectCellProps> = ({
       }
     >
       <span>
+        <label hidden htmlFor="selectPanel" id="selectPanel">{`${
+          !selectedEntities.map((e) => e.id).includes(setId)
+            ? `Select`
+            : `Unselect`
+        } the ${entityType} set operation row`}</label>
         <Checkbox
-          aria-label={`Select the ${entityType} set operation row`}
+          aria-labelledby="selectPanel"
           classNames={{
             input: "checked:bg-accent checked:border-accent",
           }}
@@ -264,13 +269,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           );
 
           return (
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label={`Select ${row.original.setId} bla`}
-            >
+            <span aria-labelledby={`Select ${row.original.setId} bla`}>
               <SelectCell
-                aria-hidden="true"
                 setId={row.original.setId}
                 name={row.original.name}
                 disabled={disabled}
