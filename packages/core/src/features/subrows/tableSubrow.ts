@@ -33,7 +33,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                     ) {
                         explore {
                             cases {
-                              denominators: aggregations(filters: $filters_case) {
+                              denominators: aggregations(case_filters: $filters_case) {
                                 project__project_id {
                                     buckets {
                                         key
@@ -41,7 +41,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                                     }
                                 }
                               }
-                                numerators: aggregations(filters: $filters_gene) {
+                                numerators: aggregations(case_filters: $filters_gene) {
                                     project__project_id {
                                         buckets {
                                             doc_count
@@ -90,7 +90,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
-        const { cases } = response?.data?.explore;
+        const { cases } = response?.data?.explore ?? {};
         const {
           numerators: {
             project__project_id: { buckets: nBuckets = [] },
@@ -118,7 +118,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                 ) {
                   explore {
                     cases {
-                      denominators: aggregations(filters: $filters_case) {
+                      denominators: aggregations(case_filters: $filters_case) {
                         project__project_id {
                             buckets {
                                 key
@@ -126,7 +126,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
                             }
                         }
                       }
-                      numerators: aggregations(filters: $filters_mutation) {
+                      numerators: aggregations(case_filters: $filters_mutation) {
                         project__project_id {
                           buckets {
                             doc_count
@@ -175,7 +175,7 @@ export const tableSubrowApiSlice = graphqlAPISlice.injectEndpoints({
       transformResponse: (
         response: GraphQLApiResponse<SubrowResponse>,
       ): TableSubrowData[] => {
-        const { cases } = response?.data?.explore;
+        const { cases } = response?.data?.explore ?? {};
         const {
           numerators: {
             project__project_id: { buckets: nBuckets = [] },

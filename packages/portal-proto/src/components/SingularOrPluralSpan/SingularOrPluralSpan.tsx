@@ -5,10 +5,11 @@ export const SingularOrPluralSpan = ({
   count: number;
   title: string;
 }): JSX.Element => {
-  const updatedTitle = count > 1 ? `${title}s` : title;
+  const updatedTitle = count === 1 ? title : `${title}s`;
   return (
-    <span>
-      {count.toLocaleString()} {updatedTitle}
-    </span>
+    <div className="flex gap-1">
+      <span className="font-bold">{count.toLocaleString()}</span>
+      {updatedTitle}
+    </div>
   );
 };

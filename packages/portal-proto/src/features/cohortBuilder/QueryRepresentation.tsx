@@ -57,6 +57,7 @@ flex truncate ... px-2 py-1 bg-base-max h-full
 
 const QueryFieldLabel = tw.div`
 bg-accent-cool-content-lightest
+rounded-l-md
 text-base-darkest
 uppercase
 px-2
@@ -71,9 +72,9 @@ flex
 flex-row
 items-center
 font-heading
-shadow-md
 font-medium
 text-sm
+rounded-md
 border-[1.5px]
 mr-1
 mb-2
@@ -87,6 +88,7 @@ flex-row
 items-stretch
 h-full
 bg-white
+rounded-md
 `;
 
 type RangeOperation =
@@ -165,7 +167,7 @@ const IncludeExcludeQueryElement: React.FC<
             field,
           });
         }}
-        className="ml-1 my-auto"
+        className="ml-1 my-auto hover:bg-accent-darker hover:text-white"
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
         aria-expanded={expanded}
       >
@@ -193,7 +195,7 @@ const IncludeExcludeQueryElement: React.FC<
                   variant="filled"
                   color="accent-cool"
                   size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0"
+                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
                   rightSection={<RemoveButton value={value} />}
                   onClick={() => {
                     const newOperands = operands.filter((o) => o !== x);
@@ -266,6 +268,17 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
     );
   };
 
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol([
+    operation.operand.toString(),
+  ]);
+
+  let value = "";
+  if (operation.field === "genes.gene_id") {
+    value = isSuccess ? geneSymbolDict[operation.operand] ?? "..." : "...";
+  } else {
+    value = operation.operand.toString();
+  }
+
   return (
     <>
       {showLabel ? (
@@ -278,7 +291,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
         >
           {operation.operator}
         </button>
-        <QueryRepresentationText>{operation.operand}</QueryRepresentationText>
+        <QueryRepresentationText>{value}</QueryRepresentationText>
       </div>
     </>
   );
@@ -332,7 +345,7 @@ interface QueryElementProps {
   field: string;
 }
 
-export const QueryElement: React.FC<QueryElementProps> = ({
+export const QueryElement = ({
   field,
   children,
 }: PropsWithChildren<QueryElementProps>) => {
@@ -368,7 +381,7 @@ export const QueryElement: React.FC<QueryElementProps> = ({
       </button>
       -- */}
       <button
-        className="bg-accent p-0 m-0 h-full round-r-lg text-white"
+        className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >

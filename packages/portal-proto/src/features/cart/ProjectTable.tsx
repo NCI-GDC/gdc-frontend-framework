@@ -1,6 +1,6 @@
 import { CartAggregation } from "@gff/core";
 import fileSize from "filesize";
-import { ScrollableTableWithFixedHeader } from "@/components/ScrollableTableWithFixedHeader";
+import { ScrollableTableWithFixedHeader } from "@/components/ScrollableTableWithFixedHeader/ScrollableTableWithFixedHeader";
 
 const columnListOrder = ["Project", "Cases", "Files", "File Size"];
 
@@ -13,8 +13,8 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 }: ProjectTableProps) => {
   const tableData = projectData.map((project) => ({
     key: project.key,
-    case_count: project.case_count,
-    doc_count: project.doc_count,
+    case_count: project.case_count?.toLocaleString(),
+    doc_count: project.doc_count?.toLocaleString(),
     file_size: fileSize(project.file_size),
   }));
 

@@ -1,42 +1,43 @@
-import { useState } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
-import { truncateString } from "src/utils";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
+import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
+import { convertDateToString } from "@/utils/date";
+import {
+  DashboardDownloadContext,
+  DownloadProgressContext,
+} from "@/utils/contexts";
 import VictoryBarChart from "../../charts/VictoryBarChart";
-import { CategoricalBins } from "../types";
 import { COLOR_MAP } from "../constants";
-import { flattenBinnedData } from "../utils";
+import { toDisplayName } from "../utils";
+import { DisplayData } from "../types";
 
 const formatBarChartData = (
-  data: Record<string, number>,
+  data: DisplayData,
   yTotal: number,
   displayPercent: boolean,
-  continuous: boolean,
 ) => {
-  const mappedData = Object.entries(data || {}).map(([key, value]) => ({
-    x: truncateString(key, 8),
-    fullName: key,
+  const mappedData = data.map(({ displayName, key, count }) => ({
+    x: key,
+    fullName: displayName,
     key,
-    y: displayPercent ? (value / yTotal) * 100 : value,
-    yCount: value,
+    y: displayPercent ? (count / yTotal) * 100 : count,
+    yCount: count,
     yTotal,
   }));
 
-  return continuous
-    ? mappedData
-    : mappedData.sort((a, b) => b.yCount - a.yCount);
+  return mappedData;
 };
 
 interface HistogramProps {
-  readonly data: Record<string, number>;
+  readonly data: DisplayData;
   readonly yTotal: number;
   readonly isFetching: boolean;
   readonly noData: boolean;
   readonly field: string;
-  readonly fieldName: string;
-  readonly continuous: boolean;
-  readonly customBinnedData?: CategoricalBins;
+  readonly hideYTicks?: boolean;
 }
 
 const CDaveHistogram: React.FC<HistogramProps> = ({
@@ -44,23 +45,34 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   yTotal,
   isFetching,
   field,
-  continuous,
   noData,
-  customBinnedData = null,
+  hideYTicks = false,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
-  const barChartData = formatBarChartData(
-    customBinnedData !== null ? flattenBinnedData(customBinnedData) : data,
-    yTotal,
-    displayPercent,
-    continuous,
+  const downloadChartRef = useRef<HTMLElement>();
+  const { downloadInProgress, setDownloadInProgress } = useContext(
+    DownloadProgressContext,
   );
+
+  const barChartData = formatBarChartData(data, yTotal, displayPercent);
 
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
       ?.DEFAULT;
   const hideXTicks = barChartData.length > 20;
-  const hideYTicks = continuous && barChartData.every((d) => d.yCount === 0);
+  const fieldName = toDisplayName(field);
+  const downloadFileName = `${field
+    .split(".")
+    .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
+  const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
+
+  const { dispatch } = useContext(DashboardDownloadContext);
+  useEffect(() => {
+    const charts = [{ filename: downloadFileName, chartRef: downloadChartRef }];
+
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [dispatch, downloadFileName]);
 
   return (
     <>
@@ -75,17 +87,19 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
           <div className="flex flex-row justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
-              className="px-2"
+              className="px-2 flex flex-row gap-2"
               onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
               <Radio
+                data-testid="radio-number-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="counts"
                 label="# of Cases"
                 color="nci-blue"
               />
               <Radio
+                data-testid="radio-percent-of-cases"
                 classNames={{ label: "font-heading pl-1" }}
                 value="percent"
                 label="% of Cases"
@@ -101,29 +115,65 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   position={"left"}
                 >
                   <ActionIcon
+                    data-testid="button-histogram-download"
                     variant="outline"
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    <DownloadIcon className="text-primary" />
+                    {downloadInProgress ? (
+                      <Loader size={16} />
+                    ) : (
+                      <DownloadIcon className="text-primary" />
+                    )}
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item>SVG (Coming soon)</Menu.Item>
-                <Menu.Item>PNG (Coming soon)</Menu.Item>
-                <Menu.Item>JSON (Coming soon)</Menu.Item>
+                <Menu.Item
+                  onClick={async () => {
+                    setDownloadInProgress(true);
+                    await handleDownloadSVG(
+                      downloadChartRef,
+                      `${downloadFileName}.svg`,
+                    );
+                    setDownloadInProgress(false);
+                  }}
+                >
+                  SVG
+                </Menu.Item>
+                <Menu.Item
+                  onClick={async () => {
+                    setDownloadInProgress(true);
+                    await handleDownloadPNG(
+                      downloadChartRef,
+                      `${downloadFileName}.png`,
+                    );
+                    setDownloadInProgress(false);
+                  }}
+                >
+                  PNG
+                </Menu.Item>
+                <Menu.Item
+                  component="a"
+                  href={`data:text/json;charset=utf-8, ${encodeURIComponent(
+                    JSON.stringify(jsonData, null, 2),
+                  )}`}
+                  download={`${downloadFileName}.json`}
+                >
+                  JSON
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </div>
           <div className="h-64">
             <VictoryBarChart
               data={barChartData}
+              title={`${fieldName} histogram`}
               color={color}
               yLabel={displayPercent ? "% of Cases" : "# of Cases"}
               width={900}
-              height={500}
+              height={400}
               hideXTicks={hideXTicks}
               hideYTicks={hideYTicks}
               xLabel={
@@ -131,8 +181,28 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   ? "Mouse over the histogram to see x-axis labels"
                   : undefined
               }
+              truncateLabels
             />
           </div>
+          <OffscreenWrapper>
+            <VictoryBarChart
+              data={barChartData.map((d) => ({ ...d, x: d.fullName }))}
+              color={color}
+              yLabel={displayPercent ? "% of Cases" : "# of Cases"}
+              chartLabel={fieldName}
+              width={1200}
+              height={900}
+              chartPadding={{ left: 150, right: 300, bottom: 400, top: 50 }}
+              hideXTicks={hideXTicks}
+              hideYTicks={hideYTicks}
+              xLabel={
+                hideXTicks
+                  ? "For the list of histogram values, download the seperate TSV file"
+                  : undefined
+              }
+              chartRef={downloadChartRef}
+            />
+          </OffscreenWrapper>
         </>
       )}
     </>

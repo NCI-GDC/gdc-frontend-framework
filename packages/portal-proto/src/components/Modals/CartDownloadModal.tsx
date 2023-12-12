@@ -27,7 +27,6 @@ const CartDownloadModal = ({
   return (
     <BaseModal
       title={<Text size="xl">Access Alert</Text>}
-      closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
       onClose={() => setActive(false)}
@@ -106,12 +105,6 @@ const CartDownloadModal = ({
             related_files: true,
           }}
           method="POST"
-          options={{
-            headers: {
-              "Content-Type": "application/json",
-            },
-            method: "POST",
-          }}
           setActive={setActive}
         />
         {!user.username && <LoginButton />}

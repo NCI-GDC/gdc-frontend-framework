@@ -1,13 +1,6 @@
-import { useState, useContext } from "react";
-import { capitalize } from "lodash";
+import { useState, useContext, useEffect, useMemo, useCallback } from "react";
+import { capitalize, isEqual } from "lodash";
 import fileSize from "filesize";
-import {
-  VerticalTable,
-  HandleChangeInput,
-  Columns,
-  filterColumnCells,
-} from "../shared/VerticalTable";
-import { downloadTSV } from "../shared/TableUtils";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
 import {
@@ -20,6 +13,11 @@ import {
   GdcFile,
   Operation,
   useGetFilesQuery,
+  usePrevious,
+  SortBy,
+  AccessType,
+  FileCaseType,
+  FileAnnontationsType,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -33,30 +31,62 @@ import {
   useRemoveRepositoryFacetFilter,
   useUpdateRepositoryFacetFilter,
 } from "@/features/repositoryApp/hooks";
-import { getAnnotationsLinkParamsFromFiles } from "../shared/utils";
 import { SummaryModalContext } from "src/utils/contexts";
+import {
+  ColumnDef,
+  ColumnOrderState,
+  SortingState,
+  VisibilityState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
+import { downloadTSV } from "@/components/Table/utils";
+import {
+  getAnnotationsLinkParamsFromFiles,
+  statusBooleansToDataStatus,
+} from "src/utils";
+
+export type FilesTableDataType = {
+  file: GdcFile;
+  file_uuid: string;
+  access: AccessType;
+  file_name: string;
+  project: string;
+  cases: FileCaseType;
+  data_category: string;
+  data_type: string;
+  data_format: string;
+  experimental_strategy?: string;
+  platform: string;
+  file_size: string;
+  annotations: FileAnnontationsType;
+};
 
 const FilesTables: React.FC = () => {
-  //This if for hanadling pagination changes
+  const coreDispatch = useCoreDispatch();
+  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const [sortBy, setSortBy] = useState<SortBy[]>([]);
+  const [pageSize, setPageSize] = useState(20);
+  const [offset, setOffset] = useState(0);
+
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const cohortGqlOperator = buildCohortGqlOperator(allFilters);
+  const prevAllFilters = usePrevious(allFilters);
 
-  const [sortBy, setSortBy] = useState([]);
-  const [pageSize, setPageSize] = useState(20);
-  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    if (!isEqual(prevAllFilters, allFilters)) {
+      setPageSize(20);
+      setOffset(0);
+    }
+  }, [prevAllFilters, allFilters]);
 
-  const coreDispatch = useCoreDispatch();
-  const {
-    data: { files, pagination } = {},
-    isFetching,
-    isError,
-    isSuccess,
-  } = useGetFilesQuery({
-    filters: cohortGqlOperator,
+  const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
+    case_filters: buildCohortGqlOperator(cohortFilters),
+    filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
       "annotations", //annotations
       "cases.project", //project_id
@@ -67,150 +97,14 @@ const FilesTables: React.FC = () => {
     sortBy: sortBy,
   });
 
-  const columnListOrder: Columns[] = [
-    {
-      id: "cart",
-      columnName: "Cart",
-      visible: true,
-      arrangeable: false,
-      disableSortBy: true,
-    },
-    { id: "file_id", columnName: "File UUID", visible: false },
-    { id: "access", columnName: "Access", visible: true },
-    { id: "file_name", columnName: "File Name", visible: true },
-    { id: "cases", columnName: "Cases", visible: true, disableSortBy: true },
-    { id: "project_id", columnName: "Project", visible: true },
-    { id: "data_category", columnName: "Data Category ", visible: true },
-    { id: "data_type", columnName: "Data Type", visible: false },
-    { id: "data_format", columnName: "Data Format", visible: true },
-    {
-      id: "experimental_strategy",
-      columnName: "Experimental Strategy",
-      visible: false,
-    },
-    { id: "platform", columnName: "Platform", visible: false },
-    { id: "file_size", columnName: "File Size", visible: true },
-    {
-      id: "annotations",
-      columnName: "Annotations",
-      visible: true,
-      disableSortBy: true,
-    },
-  ];
-  const [columns, setColumns] = useState(columnListOrder);
-  const [columnCells, setColumnCells] = useState(
-    filterColumnCells(columnListOrder),
-  );
-
-  let formattedTableData = [],
-    tempPagination = {
-      count: undefined,
-      from: undefined,
-      page: undefined,
-      pages: undefined,
-      size: undefined,
-      sort: undefined,
-      total: undefined,
-    };
-
-  const { setEntityMetadata } = useContext(SummaryModalContext);
-
-  if (!isFetching && isSuccess) {
-    tempPagination = pagination;
-    formattedTableData = files.map((file: GdcFile) => ({
-      cart: <SingleItemAddToCartButton file={file} iconOnly />,
-      file_id: (
-        <PopupIconButton
-          handleClick={() =>
-            setEntityMetadata({
-              entity_type: "file",
-              entity_id: file.file_id,
-            })
-          }
-          label={file.file_id}
-          customStyle="text-utility-link underline font-content text-left"
-        />
-      ),
-      access: <FileAccessBadge access={file.access} />,
-      file_name: (
-        <PopupIconButton
-          handleClick={() =>
-            setEntityMetadata({
-              entity_type: "file",
-              entity_id: file.file_id,
-            })
-          }
-          label={file.file_name}
-          customStyle="text-utility-link underline font-content text-left"
-        />
-      ),
-      cases: (
-        <PopupIconButton
-          handleClick={() => {
-            if (file.cases?.length === 0) return;
-            setEntityMetadata({
-              entity_type: file.cases?.length === 1 ? "case" : "file",
-              entity_id:
-                file.cases?.length === 1
-                  ? file.cases?.[0].case_id
-                  : file.file_id,
-            });
-          }}
-          label={file.cases?.length.toLocaleString() || 0}
-          customAriaLabel={`Open ${
-            file.cases?.length === 1 ? "case" : "file"
-          } information in modal`}
-          customStyle={`font-content ${
-            file.cases?.length > 0
-              ? "text-utility-link underline"
-              : "cursor-default"
-          }`}
-        />
-      ),
-      project_id: (
-        <PopupIconButton
-          handleClick={() =>
-            setEntityMetadata({
-              entity_type: "project",
-              entity_id: file.project_id,
-            })
-          }
-          label={file.project_id}
-          customStyle="text-utility-link underline font-content"
-        />
-      ),
-      data_category: file.data_category,
-      data_type: file.data_type,
-      data_format: file.data_format,
-      experimental_strategy: file.experimental_strategy || "--",
-      platform: file.platform || "--",
-      file_size: fileSize(file.file_size),
-      annotations: (
-        <span className="font-content">
-          {getAnnotationsLinkParamsFromFiles(file) ? (
-            <Link href={getAnnotationsLinkParamsFromFiles(file)} passHref>
-              <a
-                className="text-utility-link underline font-content"
-                target="_blank"
-              >
-                {file.annotations.length}
-              </a>
-            </Link>
-          ) : (
-            file?.annotations?.length ?? 0
-          )}
-        </span>
-      ),
-    }));
-  }
-
-  const sortByActions = (sortByObj) => {
-    const tempSortBy = sortByObj.map((sortObj) => {
+  const sortByActions = (sortByObj: SortingState) => {
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
       let tempSortId = sortObj.id;
       // map sort ids to api ids
-      if (sortObj.id === "project_id") {
-        //cases.project.project_id = project_id
+      if (sortObj.id === "project") {
         tempSortId = "cases.project.project_id";
+      } else if (sortObj.id === "file_uuid") {
+        tempSortId = "file_id";
       }
       return {
         field: tempSortId,
@@ -240,20 +134,212 @@ const FilesTables: React.FC = () => {
 
   const updateFilter = useUpdateRepositoryFacetFilter();
   const removeFilter = useRemoveRepositoryFacetFilter();
-  const newSearchActions = (searchTerm: string) => {
-    //TODO if lots of calls fast last call might not be displayed
-    if (searchTerm.length > 0)
-      updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
-    else {
-      removeFilter("joinOrToAllfilesSearch");
-    }
-  };
+  const newSearchActions = useCallback(
+    (searchTerm: string) => {
+      //TODO if lots of calls fast last call might not be displayed
+      if (searchTerm.length > 0)
+        updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
+      else {
+        removeFilter("joinOrToAllfilesSearch");
+      }
+    },
+    [removeFilter, updateFilter],
+  );
+
+  const [formattedTableData, tempPagination] = useMemo(() => {
+    if (!isFetching && isSuccess) {
+      return [
+        data?.files.map((file: GdcFile) => ({
+          file: file,
+          file_uuid: file.file_id,
+          access: file.access,
+          file_name: file.file_name,
+          cases: file.cases,
+          project: file.project_id,
+          data_category: file.data_category,
+          data_type: file.data_type,
+          data_format: file.data_format,
+          experimental_strategy: file.experimental_strategy || "--",
+          platform: file.platform || "--",
+          file_size: fileSize(file.file_size),
+          annotations: file.annotations,
+        })) as FilesTableDataType[],
+        data?.pagination,
+      ];
+    } else
+      return [
+        [] as FilesTableDataType[],
+        {
+          count: undefined,
+          from: undefined,
+          page: undefined,
+          pages: undefined,
+          size: undefined,
+          sort: undefined,
+          total: undefined,
+        },
+      ];
+  }, [isFetching, isSuccess, data?.files, data?.pagination]);
+
+  const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
+  const filesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
+    () => [
+      filesTableColumnHelper.display({
+        id: "cart",
+        header: "Cart",
+        cell: ({ row }) => (
+          <SingleItemAddToCartButton file={row.original.file} iconOnly />
+        ),
+      }),
+      filesTableColumnHelper.accessor("file_uuid", {
+        id: "file_uuid",
+        header: "File UUID",
+        cell: ({ getValue }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "file",
+                entity_id: getValue(),
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content text-left"
+          />
+        ),
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("access", {
+        id: "access",
+        header: "Access",
+        cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("file_name", {
+        id: "file_name",
+        header: "File Name",
+        cell: ({ getValue, row }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "file",
+                entity_id: row.original.file_uuid,
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content text-left"
+          />
+        ),
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.display({
+        id: "cases",
+        header: "Cases",
+        cell: ({ row }) => (
+          <PopupIconButton
+            handleClick={() => {
+              if (row.original.cases?.length === 0) return;
+              setEntityMetadata({
+                entity_type: row.original.cases?.length === 1 ? "case" : "file",
+                entity_id:
+                  row.original.cases?.length === 1
+                    ? row.original.cases?.[0].case_id
+                    : row.original.file_uuid,
+              });
+            }}
+            label={row.original.cases?.length.toLocaleString() || 0}
+            customAriaLabel={`Open ${
+              row.original.cases?.length === 1 ? "case" : "file"
+            } information in modal`}
+            customStyle={`font-content ${
+              row.original.cases?.length > 0
+                ? "text-utility-link underline"
+                : "cursor-default"
+            }`}
+          />
+        ),
+      }),
+      filesTableColumnHelper.accessor("project", {
+        id: "project",
+        header: "Project",
+        cell: ({ getValue }) => (
+          <PopupIconButton
+            handleClick={() =>
+              setEntityMetadata({
+                entity_type: "project",
+                entity_id: getValue(),
+              })
+            }
+            label={getValue()}
+            customStyle="text-utility-link underline font-content"
+          />
+        ),
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("data_category", {
+        id: "data_category",
+        header: "Data Category",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("data_type", {
+        id: "data_type",
+        header: "Data Type",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("data_format", {
+        id: "data_format",
+        header: "Data Format",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("experimental_strategy", {
+        id: "experimental_strategy",
+        header: "Experimental Strategy",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("platform", {
+        id: "platform",
+        header: "Platform",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.accessor("file_size", {
+        id: "file_size",
+        header: "File Size",
+        enableSorting: true,
+      }),
+      filesTableColumnHelper.display({
+        id: "annotations",
+        header: "Annotations",
+        cell: ({ row }) => (
+          <span className="font-content">
+            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
+              <Link
+                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
+                passHref
+              >
+                <a
+                  className="text-utility-link underline font-content"
+                  target="_blank"
+                >
+                  {row.original.annotations.length}
+                </a>
+              </Link>
+            ) : (
+              row.original?.annotations?.length ?? 0
+            )}
+          </span>
+        ),
+      }),
+    ],
+    [filesTableColumnHelper, setEntityMetadata],
+  );
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  useEffect(() => {
+    sortByActions(sorting);
+  }, [sorting]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
-      case "sortBy":
-        sortByActions(obj.sortBy);
-        break;
       case "newPageSize":
         setOffset(0);
         setPageSize(parseInt(obj.newPageSize));
@@ -265,10 +351,6 @@ const FilesTables: React.FC = () => {
         setOffset(0);
         newSearchActions(obj.newSearch);
         break;
-      case "newHeadings":
-        setColumnCells(filterColumnCells(obj.newHeadings));
-        setColumns(obj.newHeadings);
-        break;
     }
   };
 
@@ -276,12 +358,6 @@ const FilesTables: React.FC = () => {
     await download({
       endpoint: "files",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       params: {
         filters: buildCohortGqlOperator(allFilters) ?? {},
         size: 10000,
@@ -306,49 +382,52 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
-      queryParams: `?${new URLSearchParams({
-        annotations: "true",
-        related_files: "true",
-      }).toString()}`,
     });
   };
 
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    filesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    file_uuid: false,
+    data_type: false,
+    experimental_strategy: false,
+    platform: false,
+  });
+
   const handleDownloadTSV = () => {
-    downloadTSV(
-      files,
-      columnCells,
-      `files-table.${convertDateToString(new Date())}.tsv`,
-      {
+    downloadTSV<FilesTableDataType>({
+      tableData: formattedTableData,
+      columnOrder,
+      columnVisibility,
+      columns: filesTableDefaultColumns,
+      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      option: {
         blacklist: ["cart"],
         overwrite: {
-          access: {
-            composer: (file) => capitalize(file.access),
-          },
           cases: {
             composer: (file) => file.cases?.length.toLocaleString() || 0,
           },
-          file_size: {
-            composer: (file) => fileSize(file.file_size),
+          access: {
+            composer: (file) => capitalize(file.access),
           },
           annotations: {
             composer: (file) => file.annotations?.length || 0,
           },
-          experimental_strategy: {
-            composer: (file) => file.experimental_strategy || "--",
-          },
-          platform: {
-            composer: (file) => file.platform || "--",
-          },
         },
       },
-    );
+    });
   };
 
   //update everything that uses table component
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize(cohortGqlOperator);
+  const fileSizeSliceData = useFilesSize({
+    cohortFilters: buildCohortGqlOperator(cohortFilters),
+    localFilters: buildCohortGqlOperator(repositoryFilters),
+    allFilters: buildCohortGqlOperator(allFilters),
+  });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
       output: "object",
@@ -361,69 +440,80 @@ const FilesTables: React.FC = () => {
     totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
+  const Stats = () => (
+    <div className="flex gap-1 text-xl items-center">
+      <div>
+        Total of{" "}
+        <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
+        {tempPagination?.total > 1 || tempPagination?.total === 0
+          ? "Files"
+          : "File"}
+      </div>
+      <div>
+        <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+        <strong className="mr-1">{totalCaseCount}</strong>
+        {fileSizeSliceData?.data?.total_case_count > 1 ||
+        fileSizeSliceData?.data?.total_case_count === 0
+          ? "Cases"
+          : "Case"}
+      </div>
+      <div>
+        <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+        {totalFileSize}
+      </div>
+    </div>
+  );
+
   return (
-    <VerticalTable
-      additionalControls={
-        <div className="flex gap-2 items-center">
-          <div className="flex gap-2">
-            <FunctionButton
-              onClick={handleDownloadJSON}
-              data-testid="button-json-files-table"
-            >
-              JSON
-            </FunctionButton>
-            <FunctionButton
-              onClick={handleDownloadTSV}
-              data-testid="button-tsv-files-table"
-            >
-              TSV
-            </FunctionButton>
-          </div>
-          <div className="flex gap-1 text-xl">
-            <div>
-              Total of{" "}
-              <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-              {tempPagination?.total > 1 || tempPagination?.total === 0
-                ? "Files"
-                : "File"}
+    <>
+      <div className="flex justify-end Custom-Repo-Width:hidden">
+        <Stats />
+      </div>
+      <VerticalTable
+        additionalControls={
+          <div className="flex gap-2 items-center justify-between mr-2">
+            <div className="flex gap-2">
+              <FunctionButton
+                onClick={handleDownloadJSON}
+                data-testid="button-json-files-table"
+              >
+                JSON
+              </FunctionButton>
+              <FunctionButton
+                onClick={handleDownloadTSV}
+                data-testid="button-tsv-files-table"
+              >
+                TSV
+              </FunctionButton>
             </div>
-            <div>
-              <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
-              <strong className="mr-1">{totalCaseCount}</strong>
-              {fileSizeSliceData?.data?.total_case_count > 1 ||
-              fileSizeSliceData?.data?.total_case_count === 0
-                ? "Cases"
-                : "Case"}
-            </div>
-            <div>
-              <MdSave className="ml-2 mr-1 mb-1 inline-block" />
-              {totalFileSize}
+            <div className="hidden Custom-Repo-Width:block">
+              <Stats />
             </div>
           </div>
-        </div>
-      }
-      tableData={formattedTableData}
-      columns={columns}
-      columnSorting={"manual"}
-      selectableRow={false}
-      pagination={{
-        ...tempPagination,
-        label: "files",
-      }}
-      status={
-        isFetching
-          ? "pending"
-          : isSuccess
-          ? "fulfilled"
-          : isError
-          ? "rejected"
-          : "uninitialized"
-      }
-      handleChange={handleChange}
-      search={{
-        enabled: true,
-      }}
-    />
+        }
+        data={formattedTableData}
+        columns={filesTableDefaultColumns}
+        pagination={{
+          ...tempPagination,
+          label: "files",
+        }}
+        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+        handleChange={handleChange}
+        search={{
+          enabled: true,
+          tooltip:
+            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
+        }}
+        showControls={true}
+        setColumnVisibility={setColumnVisibility}
+        columnVisibility={columnVisibility}
+        columnOrder={columnOrder}
+        columnSorting="manual"
+        sorting={sorting}
+        setSorting={setSorting}
+        setColumnOrder={setColumnOrder}
+      />
+    </>
   );
 };
 

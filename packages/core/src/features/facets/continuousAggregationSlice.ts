@@ -7,17 +7,7 @@ import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
-import { GqlOperation } from "../gdcapi/filters";
-
-export interface NumericFromTo {
-  readonly from: number;
-  readonly to: number;
-}
-
-export interface RangeOperation {
-  readonly op: "range";
-  readonly ranges: ReadonlyArray<NumericFromTo>;
-}
+import { GqlOperation, NumericFromTo } from "../gdcapi/filters";
 
 export const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
@@ -32,11 +22,11 @@ export const buildContinuousAggregationRangeOnlyQuery = (
 
   // TODO update filters to case_filters
   return `
-  query ContinuousAggregationQuery($filters: FiltersArgument, $filters2: FiltersArgument) {
+  query ContinuousAggregationQuery($caseFilters: FiltersArgument, $filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
     ${indexType} {
       ${itemType} {
-        aggregations(filters: $filters) {
+        aggregations(case_filters: $caseFilters, filters: $filters) {
           ${queriedFacet} {
            stats {
                 Min : min
@@ -95,7 +85,8 @@ export const fetchFacetContinuousAggregation = createAsyncThunk<
       field,
     );
     const filtersGQL = {
-      filters: overrideFilters ?? filters ?? {},
+      caseFilters: overrideFilters ?? filters ?? {},
+      filters: {},
       filters2: { op: "range", content: [{ ranges: ranges }] },
     };
 
@@ -148,7 +139,4 @@ export const selectRangeFacets = (
 export const selectRangeFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const ranges = state.facetsGQL.ranges;
-  return ranges[field];
-};
+): FacetBuckets => state.facetsGQL.ranges[field];

@@ -71,8 +71,7 @@ interface GeneFrequencyChartProps {
   readonly title?: string;
   readonly maxBins?: number;
   readonly orientation?: string;
-  readonly isDemoMode?: boolean;
-  readonly overwritingDemoFilter?: FilterSet;
+  readonly cohortFilters?: FilterSet;
 }
 
 export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
@@ -82,24 +81,36 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   title = "Distribution of Most Frequently Mutated Genes",
   maxBins = 20,
   orientation = "v",
-  isDemoMode = false,
-  overwritingDemoFilter,
+  cohortFilters = undefined,
 }: GeneFrequencyChartProps) => {
   const { data, isSuccess } = useGeneFrequencyChart({
     pageSize: maxBins,
     offset: 0,
     genomicFilters: genomicFilters,
-    isDemoMode: isDemoMode,
-    overwritingDemoFilter: overwritingDemoFilter,
+    cohortFilters: cohortFilters,
   });
+
+  const jsonData = data?.geneCounts?.map((gene) => ({
+    label: gene.symbol,
+    value: (gene.numCases / data.casesTotal) * 100,
+  }));
 
   return (
     <div className="relative pr-2 border-r-2">
       {title ? (
-        <ChartTitleBar title={title} divId={CHART_NAME} filename={CHART_NAME} />
+        <ChartTitleBar
+          title={title}
+          divId={CHART_NAME}
+          filename={CHART_NAME}
+          jsonData={jsonData}
+        />
       ) : null}
-      <div className="w-100 h-100">
-        <LoadingOverlay visible={!isSuccess} />
+      <div className="w-100 h-100 relative">
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={!isSuccess}
+          zIndex={1}
+        />
         <BarChart
           data={processChartData(data)}
           marginBottom={marginBottom}

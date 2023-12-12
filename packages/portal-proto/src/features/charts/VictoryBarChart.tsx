@@ -1,3 +1,4 @@
+import { truncateString } from "@/utils/index";
 import { Box, Tooltip } from "@mantine/core";
 import React, { useState } from "react";
 import {
@@ -8,6 +9,7 @@ import {
   VictoryLabelProps,
   VictoryTooltip,
   Bar,
+  VictoryContainer,
 } from "victory";
 
 interface BarChartTooltipProps {
@@ -27,8 +29,8 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
         <Tooltip
           label={
             <>
-              {datum.fullName}: {datum.yCount.toLocaleString()} (
-              {(datum.yCount / datum.yTotal).toLocaleString(undefined, {
+              {datum?.fullName}: {datum?.yCount.toLocaleString()} (
+              {(datum?.yCount / datum?.yTotal).toLocaleString(undefined, {
                 style: "percent",
                 minimumFractionDigits: 2,
               })}
@@ -46,16 +48,19 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
   );
 };
 
-const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
-  text,
+const BarChartLabel: React.FC<
+  VictoryLabelProps & { index?: number; truncateLabels?: boolean }
+> = ({
   x,
   y,
   style,
   angle,
   data,
   index,
-}: VictoryLabelProps & { index?: number }) => {
+  truncateLabels,
+}: VictoryLabelProps & { index?: number; truncateLabels?: boolean }) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const label = data?.[index]?.fullName || "";
 
   return (
     <g>
@@ -68,7 +73,7 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
         onMouseOver={() => setShowTooltip(true)}
         onMouseOut={() => setShowTooltip(false)}
       >
-        {text}
+        {truncateLabels ? truncateString(label, 8) : label}
       </text>
       {showTooltip && (
         <BarChartTooltip x={x + 20} y={y - 20} datum={data[index]} />
@@ -79,32 +84,62 @@ const BarChartLabel: React.FC<VictoryLabelProps & { index?: number }> = ({
 
 interface VictoryBarChartProps {
   readonly data: any;
+  readonly title?: string;
   readonly color: string;
   readonly yLabel?: string;
   readonly xLabel?: string;
+  readonly chartLabel?: string;
   readonly width?: number;
   readonly height?: number;
+  readonly chartPadding?: {
+    left?: number;
+    right?: number;
+    top?: number;
+    bottom?: number;
+  };
   readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
+  readonly chartRef?: React.MutableRefObject<HTMLElement>;
+  readonly truncateLabels?: boolean;
 }
 
 const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   data,
+  title,
   color,
   yLabel,
   xLabel,
+  chartLabel,
   width = 400,
   height = 400,
+  chartPadding = { left: 80, right: 80, bottom: 80, top: 10 },
   hideYTicks = false,
   hideXTicks = false,
+  chartRef = undefined,
+  truncateLabels = false,
 }: VictoryBarChartProps) => {
   return (
     <VictoryChart
+      title={title}
       width={width}
       height={height}
       domainPadding={60}
-      padding={{ left: 80, right: 80, bottom: 80, top: 10 }}
+      padding={chartPadding}
+      containerComponent={
+        chartRef ? (
+          <VictoryContainer containerRef={(ref) => (chartRef.current = ref)} />
+        ) : undefined
+      }
     >
+      {chartLabel && (
+        <VictoryLabel
+          dy={20}
+          dx={(width + chartPadding.left - chartPadding.right) / 2}
+          text={chartLabel}
+          textAnchor="middle"
+          style={{ fontSize: 28, fontFamily: "Noto Sans" }}
+        />
+      )}
       <VictoryAxis
         dependentAxis
         label={yLabel}
@@ -121,7 +156,13 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
           tickLabels: { angle: 45, fontSize: 25, fontFamily: "Noto Sans" },
           axisLabel: { fontSize: 25, fontFamily: "Noto Sans" },
         }}
-        tickLabelComponent={hideXTicks ? <></> : <BarChartLabel data={data} />}
+        tickLabelComponent={
+          hideXTicks ? (
+            <></>
+          ) : (
+            <BarChartLabel data={data} truncateLabels={truncateLabels} />
+          )
+        }
         label={xLabel}
       />
       <VictoryBar

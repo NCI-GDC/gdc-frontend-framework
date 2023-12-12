@@ -6,10 +6,10 @@ import AdditionalCohortSelection from "./AdditionalCohortSelection";
 jest.spyOn(core, "selectAvailableCohorts").mockImplementation(
   () =>
     [
-      { id: "1", name: "Lung", caseCount: 100 },
-      { id: "2", name: "Brain", caseCount: 0 },
-      { id: "3", name: "Lung", caseCount: 100 },
-      { id: "4", name: "Skin", caseCount: 1000 },
+      { id: "1", name: "Lung", counts: { caseCount: 100 } },
+      { id: "2", name: "Brain", counts: { caseCount: 0 } },
+      { id: "3", name: "Lung", counts: { caseCount: 100 } },
+      { id: "4", name: "Skin", counts: { caseCount: 1000 } },
     ] as any,
 );
 

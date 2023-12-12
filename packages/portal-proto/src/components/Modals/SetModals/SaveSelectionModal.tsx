@@ -15,7 +15,6 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
-import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
@@ -91,12 +90,12 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       title={`Save ${max.toLocaleString()} ${setTypeLabel}${
         max > 1 ? "s" : ""
       } as a new set`}
-      closeButtonLabel="close"
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        close: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <NumberInput
@@ -123,7 +122,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           <p className="text-sm pt-1">Maximum 100 characters</p>
         )}
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           onClick={() =>

@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.5.0",
+  "version": "2.11.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,8 @@
     "prepare": "husky install",
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
-    "start": "lerna run --parallel start"
+    "start": "lerna run --parallel start",
+    "build-docs": "typedoc"
   },
   "lint-staged": {
     "**/*": [
@@ -37,7 +38,6 @@
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
     "@reactour/tour": "^2.9.0",
-    "@tanstack/react-table": "8.5.13",
     "classnames": "^2.3.1",
     "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
@@ -47,16 +47,15 @@
     "json-server": "^0.17.0",
     "lodash": "^4.17.21",
     "qs": "^6.11.0",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-cookie": "^4.1.1",
-    "react-dnd": "^15.1.1",
-    "react-dnd-html5-backend": "^15.1.2",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.2.0",
     "react-table": "^7.7.12",
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
     "tinycolor2": "^1.4.2",
-    "url-join": "^5.0.0"
+    "url-join": "^5.0.0",
+    "use-deep-compare": "^1.1.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
@@ -66,20 +65,22 @@
     "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",
     "@types/react-table": "^7.7.12",
-    "@typescript-eslint/eslint-plugin": "^4.28.3",
-    "@typescript-eslint/parser": "^4.28.3",
-    "eslint": "^7.30.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^7.0.4",
     "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "typedoc": "^0.25.3"
   },
   "engines": {
-    "npm": ">=7.0.0"
+    "npm": ">=8.0.0"
   }
 }

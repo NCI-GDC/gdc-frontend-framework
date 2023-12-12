@@ -35,12 +35,14 @@ export interface CreateGdcAppOptions {
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
 }
 
-export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
+export const createGdcApp = (
+  options: CreateGdcAppOptions,
+): (() => React.JSX.Element) => {
   const { App, name, version, requiredEntityTypes } = options;
 
   // create a stable id for this app
   const nameVersion = `${name}::${version}`;
-  const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
+  const id = createAppID(name, version);
 
   // need to create store and provider.
   // return a component representing this app
@@ -58,7 +60,7 @@ export const createGdcApp = (options: CreateGdcAppOptions): React.ReactNode => {
     },
   });
 
-  const GdcAppWrapper: React.FC = () => {
+  const GdcAppWrapper = () => {
     useEffect(() => {
       document.title = `GDC - ${name}`;
     });
@@ -112,6 +114,9 @@ export interface CreateGDCAppStore {
   readonly reducers: (...args: any) => any;
 }
 
+export const createAppID = (name: string, version: string): string =>
+  uuidv5(`${name}::${version}`, GDC_APP_NAMESPACE);
+
 // ----------------------------------------------------------------------------------------
 // Apps with Local Storage
 //
@@ -121,7 +126,7 @@ export const createAppStore = (
 ): Record<any, any> => {
   const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
-  const id = uuidv5(nameVersion, GDC_APP_NAMESPACE);
+  const id = createAppID(name, version);
 
   const store = configureStore({
     reducer: reducers,
@@ -171,7 +176,7 @@ export interface CreateGdcAppWithOwnStoreOptions<
 
 export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
-): React.ReactNode => {
+): (() => React.JSX.Element) => {
   const { App, id, name, version, requiredEntityTypes, store, context } =
     options;
 
@@ -184,7 +189,7 @@ export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
   // this will be used to build page3
   // click app link
 
-  const GdcAppWrapper: React.FC = () => {
+  const GdcAppWrapper = () => {
     useEffect(() => {
       document.title = `GDC - ${name}`;
     });

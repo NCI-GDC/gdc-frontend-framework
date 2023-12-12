@@ -14,15 +14,14 @@ import {
   FilterSet,
   isIncludes,
 } from "@gff/core";
-import {
-  VerticalTable,
-  HandleChangeInput,
-} from "@/features/shared/VerticalTable";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import DiscardChangesButton from "../DiscardChangesButton";
 import { UserInputContext } from "../UserInputModal";
+import { createColumnHelper } from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;
@@ -47,7 +46,6 @@ const SavedSets: React.FC<SavedSetsProps> = ({
   facetField,
   existingFiltersHook,
 }: SavedSetsProps) => {
-  const [selectedSets, setSelectedSets] = useState<string[]>([]);
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const { data: counts, isSuccess } = countHook({
@@ -60,33 +58,50 @@ const SavedSets: React.FC<SavedSetsProps> = ({
 
   const tableData = useMemo(() => {
     return Object.entries(sets).map(([setId, name]) => ({
-      select: (
-        <Checkbox
-          value={setId}
-          checked={selectedSets.includes(setId)}
-          onChange={() =>
-            selectedSets.includes(setId)
-              ? setSelectedSets(selectedSets.filter((id) => id !== setId))
-              : setSelectedSets([...selectedSets, setId])
-          }
-        />
-      ),
+      setId,
       name,
       count: isSuccess ? (counts?.[setId] || 0).toLocaleString() : "...",
     }));
-  }, [sets, selectedSets, counts, isSuccess]);
+  }, [sets, counts, isSuccess]);
 
-  const columns = useMemo(() => {
-    return [
-      { columnName: "Select", id: "select", visible: true },
-      { columnName: "Name", id: "name", visible: true },
-      {
-        columnName: `# ${upperFirst(setTypeLabel)}s`,
+  const savedSetsTableColumnHelper = createColumnHelper<typeof tableData[0]>();
+
+  const getRowId = (originalRow: typeof tableData[0]) => {
+    return originalRow.setId;
+  };
+  const [rowSelection, setRowSelection] = useState({});
+  const selectedSets = Object.entries(rowSelection)?.map(([setId]) => setId);
+
+  const savedSetsColumns = useMemo(
+    () => [
+      savedSetsTableColumnHelper.display({
+        id: "select",
+        header: "Select",
+        cell: ({ row }) => (
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select/deselect ${row.original.setId}`}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        ),
+      }),
+      savedSetsTableColumnHelper.accessor("name", {
+        id: "name",
+        header: "Name",
+      }),
+      savedSetsTableColumnHelper.accessor("count", {
         id: "count",
-        visible: true,
-      },
-    ];
-  }, [setTypeLabel]);
+        header: `# ${upperFirst(setTypeLabel)}s`,
+      }),
+    ],
+    [savedSetsTableColumnHelper, setTypeLabel],
+  );
 
   useEffect(() => {
     if (selectedSets.length === 0) {
@@ -119,10 +134,13 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       <div className="p-4">
         {Object.keys(sets).length === 0 ? (
           <div className="flex flex-col items-center">
-            <div className="h-[100px] w-[100px] rounded-[50%] bg-[#e0e9f0] flex justify-center items-center">
+            <div className="h-[100px] w-[100px] rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon className="text-primary-darkest" size={40} />
             </div>
-            <p className="uppercase mt-2 mb-4 text-primary-darkest">
+            <p
+              data-testid="text-no-saved-sets-available"
+              className="uppercase mt-2 mb-4 text-primary-darkest"
+            >
               No Saved Sets Available
             </p>
             <div className="w-80 text-center">{createSetsInstructions}</div>
@@ -131,17 +149,20 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           <>
             <p className="text-sm mb-2">{selectSetInstructions}</p>
             <VerticalTable
-              tableData={displayedData}
-              columns={columns}
-              selectableRow={false}
-              showControls={false}
+              data={displayedData}
+              columns={savedSetsColumns}
               handleChange={handleTableChange}
+              status={isSuccess ? "fulfilled" : "pending"}
+              enableRowSelection={true}
               pagination={{ ...paginationProps, label: `${setTypeLabel} sets` }}
+              setRowSelection={setRowSelection}
+              rowSelection={rowSelection}
+              getRowId={getRowId}
             />
           </>
         )}
       </div>
-      <ButtonContainer>
+      <ButtonContainer data-testid="modal-button-container">
         <DarkFunctionButton className="mr-auto" disabled>
           Save Set
         </DarkFunctionButton>
@@ -152,7 +173,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         />
         <DiscardChangesButton
           disabled={selectedSets.length === 0}
-          action={() => setSelectedSets([])}
+          action={() => setRowSelection({})}
           label="Clear"
         />
         <DarkFunctionButton
@@ -163,7 +184,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
               operator: "includes",
               operands: [
                 ...(existingOperation && isIncludes(existingOperation)
-                  ? existingOperation?.operands
+                  ? existingOperation?.operands ?? []
                   : []),
                 ...selectedSets.map((id) => `set_id:${id}`),
               ],

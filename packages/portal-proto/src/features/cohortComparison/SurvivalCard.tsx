@@ -4,9 +4,78 @@ import {
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
   FilterSet,
+  GqlOperation,
+  useCreateCaseSetFromFiltersMutation,
+  GqlIntersection,
 } from "@gff/core";
-import SurvivalPlot from "../charts/SurvivalPlot";
+import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
+import CohortCreationButton from "@/components/CohortCreationButton";
+
+const survivalDataCompletenessFilters: readonly GqlOperation[] = [
+  {
+    op: "or",
+    content: [
+      {
+        op: "and",
+        content: [
+          {
+            op: ">",
+            content: {
+              field: "demographic.days_to_death",
+              value: 0,
+            },
+          },
+        ],
+      },
+      {
+        op: "and",
+        content: [
+          {
+            op: ">",
+            content: {
+              field: "diagnoses.days_to_last_follow_up",
+              value: 0,
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    op: "not",
+    content: { field: "demographic.vital_status" },
+  },
+];
+
+export const makeSurvivalCaseFilters = (
+  primaryCohortSetId: string,
+  comparisonCohortSetId: string,
+): GqlIntersection => ({
+  op: "and",
+  content: [
+    ...survivalDataCompletenessFilters,
+    {
+      op: "and",
+      content: [
+        {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [`set_id:${primaryCohortSetId}`],
+          },
+        },
+        {
+          op: "excludeifany",
+          content: {
+            field: "cases.case_id",
+            value: `set_id:${comparisonCohortSetId}`,
+          },
+        },
+      ],
+    },
+  ],
+});
 
 const tooltipLabel = (
   <>
@@ -31,24 +100,47 @@ interface SurvivalCardProps {
     };
   };
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
-  readonly caseIds: string[][];
+  readonly caseSetIds: string[];
 }
 
 const SurvivalCard: React.FC<SurvivalCardProps> = ({
   counts,
   cohorts,
   setSurvivalPlotSelectable,
-  caseIds,
+  caseSetIds,
 }: SurvivalCardProps) => {
   const filters = makeIntersectionFilters(
     buildCohortGqlOperator(cohorts?.primary_cohort.filter),
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
-    caseIds,
+    caseSetIds,
   );
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
   const { data, isUninitialized, isFetching, isError } =
     useGetSurvivalPlotQuery({
       filters: [filters.cohort1, filters.cohort2],
     });
+
+  const generateFilters = async (
+    primarySetId: string,
+    comparisonSetId: string,
+  ) => {
+    return await createSet({
+      filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
+    })
+      .unwrap()
+      .then((setId) => {
+        return {
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              field: "cases.case_id",
+              operands: [`set_id:${setId}`],
+              operator: "includes",
+            },
+          },
+        } as FilterSet;
+      });
+  };
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
@@ -75,7 +167,11 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
           ) : isFetching || isUninitialized ? (
             <Loader />
           ) : (
-            <SurvivalPlot data={data} hideLegend />
+            <SurvivalPlot
+              plotType={SurvivalPlotTypes.cohortComparison}
+              data={data}
+              hideLegend
+            />
           )}
           <div className="font-heading mt-[1.5rem]">
             <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
@@ -91,19 +187,39 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   <th>
                     # Cases S<sub>1</sub>
                   </th>
-                  <th>%</th>
+                  <th>
+                    % Cases S<sub>1</sub>
+                  </th>
                   <th>
                     # Cases S<sub>2</sub>
                   </th>
-                  <th>%</th>
+                  <th>
+                    % Cases S<sub>2</sub>
+                  </th>
                 </tr>
               </thead>
               <tbody className="font-content text-md">
                 <tr>
                   <td className="pl-2">Overall Survival Analysis</td>
-                  <td>{cohort1Count.toLocaleString()}</td>
+                  <td>
+                    <CohortCreationButton
+                      numCases={cohort1Count}
+                      label={cohort1Count.toLocaleString()}
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[0], caseSetIds[1])
+                      }
+                    />
+                  </td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
-                  <td>{cohort2Count.toLocaleString()}</td>
+                  <td>
+                    <CohortCreationButton
+                      numCases={cohort2Count}
+                      label={cohort2Count.toLocaleString()}
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[1], caseSetIds[0])
+                      }
+                    />
+                  </td>
                   <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
                 </tr>
               </tbody>

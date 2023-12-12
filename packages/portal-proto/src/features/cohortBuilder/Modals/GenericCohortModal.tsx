@@ -24,7 +24,6 @@ export const GenericCohortModal = ({
       padding={0}
       radius="md"
       onClose={onClose}
-      zIndex={400}
     >
       <Box
         sx={() => ({
@@ -75,7 +74,14 @@ export const GenericCohortModal = ({
           >
             Cancel
           </Button>
-          <Button variant={"filled"} color="secondary" onClick={onActionClick}>
+          <Button
+            variant={"filled"}
+            color="secondary"
+            onClick={() => {
+              onActionClick();
+              onClose();
+            }}
+          >
             {actionText}
           </Button>
         </Group>

@@ -87,6 +87,8 @@ export interface Union {
   readonly operands: ReadonlyArray<Operation>;
 }
 
+export type UnionOrIntersection = Union | Intersection;
+
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;
   handleNotEquals: (op: NotEquals) => T;
@@ -210,6 +212,7 @@ export interface GqlMissing {
   readonly op: "is";
   readonly content: {
     readonly field: string;
+    readonly value: "MISSING";
   };
 }
 
@@ -253,6 +256,16 @@ export interface GqlIntersection {
 export interface GqlUnion {
   readonly op: "or";
   readonly content: ReadonlyArray<GqlOperation>;
+}
+
+export interface NumericFromTo {
+  readonly from: number;
+  readonly to: number;
+}
+
+export interface GqlRange {
+  readonly op: "range";
+  readonly content: ReadonlyArray<{ ranges: NumericFromTo[] }>;
 }
 
 export interface GqlOperationHandler<T> {
@@ -356,6 +369,7 @@ export class ToGqlOperationHandler implements OperationHandler<GqlOperation> {
     op: "is",
     content: {
       field: op.field,
+      value: "MISSING",
     },
   });
   handleExists = (op: Exists): GqlExists => ({

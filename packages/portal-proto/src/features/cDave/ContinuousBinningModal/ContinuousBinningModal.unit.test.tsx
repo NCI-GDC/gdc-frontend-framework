@@ -8,21 +8,23 @@ describe("<ContinuousBinningModal />", () => {
     const { getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
       />,
     );
 
-    expect(getByText("Create Custom Bins: Gender")).toBeInTheDocument();
+    expect(
+      getByText("Create Custom Bins: Age At Diagnoses"),
+    ).toBeInTheDocument();
   });
 
   it("show available values and bin size", () => {
     const { getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -45,7 +47,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -77,7 +79,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText, getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -94,7 +96,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -110,7 +112,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getAllByLabelText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={[
@@ -137,7 +139,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText, getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -159,7 +161,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText, getAllByLabelText, getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
@@ -183,7 +185,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={mockSave}
         customBins={null}
@@ -211,7 +213,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={mockSave}
         customBins={null}
@@ -232,13 +234,14 @@ describe("<ContinuousBinningModal />", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={null}
       />,
     );
 
+    expect(getByLabelText("reset bins")).toBeDisabled();
     const input = getByLabelText("A set interval of");
     await userEvent.clear(input);
     await userEvent.type(input, ".75");
@@ -249,12 +252,32 @@ describe("<ContinuousBinningModal />", () => {
     expect(input).toHaveDisplayValue("0.5");
   });
 
+  it("reset button available when starting with custom bins", async () => {
+    const { getByLabelText } = render(
+      <ContinuousBinningModal
+        setModalOpen={jest.fn()}
+        field={"diagnoses.age_at_diagnoses"}
+        stats={{ min: 0, max: 1 } as Statistics}
+        updateBins={jest.fn()}
+        customBins={{ interval: 5, min: 0, max: 10 }}
+      />,
+    );
+
+    const input = getByLabelText("A set interval of");
+    const resetButton = getByLabelText("reset bins");
+    expect(resetButton).toBeEnabled();
+    await userEvent.click(resetButton);
+
+    expect(input).toHaveDisplayValue("0.5");
+    expect(resetButton).toBeDisabled();
+  });
+
   it("can save changes to custom bins", async () => {
     const saveBins = jest.fn();
     const { getAllByLabelText, getByRole } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={saveBins}
         customBins={[
@@ -279,7 +302,7 @@ describe("<ContinuousBinningModal />", () => {
     const { getAllByLabelText, getByText } = render(
       <ContinuousBinningModal
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={[

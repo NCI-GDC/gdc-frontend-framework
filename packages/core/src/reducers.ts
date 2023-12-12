@@ -21,7 +21,6 @@ import {
 } from "./features/projects/projectsPrimarySiteSlice";
 import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
-import { oncoGridReducer } from "./features/oncoGrid/oncoGridSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
@@ -62,7 +61,6 @@ import {
   endpointSliceReducerPath,
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
-import { selectedCasesReducer } from "./features/cases/selectedCasesSlice";
 import { sessionStorage } from "./storage-persist";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
@@ -84,7 +82,6 @@ export const reducers = combineReducers({
   annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
-  oncogrid: oncoGridReducer,
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,
@@ -110,7 +107,6 @@ export const reducers = combineReducers({
   [endpointSliceReducerPath]: endpointReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
-  selectedCases: selectedCasesReducer,
 });
 
 export type CoreState = ReturnType<typeof reducers>;

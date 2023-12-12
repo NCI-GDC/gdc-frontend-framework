@@ -25,11 +25,12 @@ export const buildGraphGLBucketQuery = (
 
   if (docType == "projects")
     return `
-    query QueryBucketCounts($filters_0: FiltersArgument!) {
+    query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {
              ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters
+                filters:$filters
                 aggregations_filter_themselves: false
               ) {
                   ${queriedFacet} {
@@ -43,12 +44,13 @@ export const buildGraphGLBucketQuery = (
        }
      }`;
   else
-    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
+    return `query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters
+                filters:$filters
                 aggregations_filter_themselves: false
               ) {
                 ${queriedFacet} {
@@ -73,14 +75,16 @@ export interface AliasedFieldQuery {
 /**
  * Builds a GraphQL request for a set of Fields. This is an improvement on the above
  * as it requested the number of GDC API requests.
- * @param facetNames - array of { facetNames, and optionally an alias}
+ * @param facetNames - array of \{ facetNames, and optionally an alias\}
  * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
  * @param index - which GraphQL index to query
+ * @param useCaseFilters - whether to use case filters or not
  */
 export const buildGraphGLBucketsQuery = (
   facetNames: ReadonlyArray<AliasedFieldQuery>,
   docType: GQLDocType,
   index: GQLIndexType = "explore",
+  useCaseFilters = false,
 ): string => {
   const queriedFacets = facetNames.map((facet: AliasedFieldQuery) => {
     return facet.alias !== undefined
@@ -92,11 +96,12 @@ export const buildGraphGLBucketsQuery = (
 
   if (docType == "projects")
     return `
-    query QueryBucketCounts($filters_0: FiltersArgument!) {
+    query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {
              ${docType} {
               aggregations(
-                filters: $filters_0
+                case_filters: $caseFilters,
+                filters:$filters,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets
@@ -109,12 +114,15 @@ export const buildGraphGLBucketsQuery = (
         }
      }`;
   else
-    return `query QueryBucketCounts($filters_0: FiltersArgument!) {
+    return `query QueryBucketCounts(${
+      useCaseFilters ? "$case_filters: FiltersArgument, " : ""
+    }$filters: FiltersArgument) {
       viewer {
           ${index} {
             ${docType} {
               aggregations(
-                filters: $filters_0
+                ${useCaseFilters ? "case_filters: $case_filters," : ""}
+                filters:$filters,
                 aggregations_filter_themselves: false
               ) {
                  ${queriedFacets

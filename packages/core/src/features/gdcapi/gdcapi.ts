@@ -626,9 +626,16 @@ export const endpointSlice = coreCreateApi({
   refetchOnReconnect: true,
   endpoints: (builder) => ({
     getGenes: builder.query({
-      query: (request: GdcApiRequest) => ({
+      query: ({
+        request,
+        fetchAll,
+      }: {
+        request: GdcApiRequest;
+        fetchAll?: boolean;
+      }) => ({
         request,
         endpoint: "genes",
+        fetchAll,
       }),
       transformResponse: (response) => response.data.hits,
     }),
@@ -640,17 +647,35 @@ export const endpointSlice = coreCreateApi({
       transformResponse: (response) => response.data.hits,
     }),
     getSsms: builder.query({
-      query: (request: GdcApiRequest) => ({
+      query: ({
+        request,
+        fetchAll,
+      }: {
+        request: GdcApiRequest;
+        fetchAll?: boolean;
+      }) => ({
         request,
         endpoint: "ssms",
+        fetchAll,
+      }),
+      transformResponse: (response) => response.data.hits,
+    }),
+    getCaseSsms: builder.query({
+      query: (request: GdcApiRequest) => ({
+        request,
+        endpoint: "case_ssms",
       }),
       transformResponse: (response) => response.data.hits,
     }),
   }),
 });
 
-export const { useGetGenesQuery, useGetCasesQuery, useGetSsmsQuery } =
-  endpointSlice;
+export const {
+  useGetGenesQuery,
+  useGetCasesQuery,
+  useGetSsmsQuery,
+  useGetCaseSsmsQuery,
+} = endpointSlice;
 export const endpointSliceMiddleware = endpointSlice.middleware as Middleware;
 export const endpointSliceReducerPath: string = endpointSlice.reducerPath;
 export const endpointReducer: Reducer = endpointSlice.reducer as Reducer;

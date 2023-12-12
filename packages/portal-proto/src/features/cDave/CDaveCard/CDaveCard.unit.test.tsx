@@ -1,7 +1,17 @@
-import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import * as core from "@gff/core";
 import * as facetHooks from "../../facets/hooks";
+import * as router from "next/router";
+import { render } from "test-utils";
 import CDaveCard from "./CDaveCard";
+
+jest.spyOn(router, "useRouter").mockImplementation(
+  () =>
+    ({
+      pathname: "",
+      query: {},
+    } as any),
+);
 
 describe("CDaveCard", () => {
   it("enum result with data", () => {
@@ -27,7 +37,9 @@ describe("CDaveCard", () => {
     );
 
     expect(
-      getByRole("row", { name: "Select male 1,000 (66.67%)" }),
+      getByRole("row", {
+        name: "Select male male 1,000 (66.67%)",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -76,7 +88,9 @@ describe("CDaveCard", () => {
     );
 
     expect(
-      getByRole("row", { name: "Select missing 1,000 (66.67%)" }),
+      getByRole("row", {
+        name: "Select missing missing 1,000 (66.67%)",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -108,11 +122,15 @@ describe("CDaveCard", () => {
 
   it("continuous result with data", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "diagnosis.days_to_treatment_start",
+      field: "exposures.cigarettes_per_day",
       type: "long",
     });
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
-      data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
+      data: { "0.0-12.0": 10, "12.0-24.0": 90 },
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+    jest.spyOn(core, "useGetContinuousDataStatsQuery").mockReturnValue({
       isFetching: false,
       isSuccess: true,
     } as any);
@@ -120,7 +138,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 100 } } as any}
-        field={"diagnosis.days_to_treatment_start"}
+        field={"exposures.cigarettes_per_day"}
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
@@ -128,16 +146,20 @@ describe("CDaveCard", () => {
     );
 
     expect(
-      getByRole("row", { name: "Select 7201 to <12255.8 10 (10.00%)" }),
+      getByRole("row", {
+        name: "Select 0 to <12 0 to <12 10 (10.00%)",
+      }),
     ).toBeInTheDocument();
     expect(
-      getByRole("row", { name: "Select 12255.8 to <17310.6 90 (90.00%)" }),
+      getByRole("row", {
+        name: "Select 12 to <24 12 to <24 90 (90.00%)",
+      }),
     ).toBeInTheDocument();
   });
 
   it("continuous result with negative bucket", () => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "diagnosis.days_to_treatment_start",
+      field: "exposures.cigarettes_per_day",
       type: "long",
     });
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
@@ -145,11 +167,15 @@ describe("CDaveCard", () => {
       isFetching: false,
       isSuccess: true,
     } as any);
+    jest.spyOn(core, "useGetContinuousDataStatsQuery").mockReturnValue({
+      isFetching: false,
+      isSuccess: true,
+    } as any);
 
     const { getByRole } = render(
       <CDaveCard
         data={{ stats: { count: 38 } } as any}
-        field="diagnosis.days_to_treatment_start"
+        field="exposures.cigarettes_per_day"
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
@@ -157,6 +183,49 @@ describe("CDaveCard", () => {
     );
 
     expect(getByRole("cell", { name: "-28 to <166.8" })).toBeInTheDocument();
+  });
+
+  it("continuous result with toggled value bucket", async () => {
+    jest.spyOn(core, "useCoreSelector").mockReturnValue({
+      field: "diagnoses.treatments.days_to_treatment_start",
+      type: "long",
+    });
+    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
+      data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+    jest.spyOn(core, "useGetContinuousDataStatsQuery").mockReturnValue({
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+    jest.spyOn(router, "useRouter").mockImplementation(
+      () =>
+        ({
+          pathname: "",
+          query: { featureFlag: "yearToggle" },
+        } as any),
+    );
+
+    const { getByRole, getByLabelText } = render(
+      <CDaveCard
+        data={{ stats: { count: 38 } } as any}
+        field="diagnoses.treatments.days_to_treatment_start"
+        updateFields={jest.fn()}
+        initialDashboardRender
+        cohortFilters={undefined}
+      />,
+    );
+
+    expect(getByRole("cell", { name: "19.72 to <33.55" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "33.55 to <47.39" })).toBeInTheDocument();
+
+    await userEvent.click(getByLabelText("Days"));
+
+    expect(getByRole("cell", { name: "7201 to <12255.8" })).toBeInTheDocument();
+    expect(
+      getByRole("cell", { name: "12255.8 to <17310.6" }),
+    ).toBeInTheDocument();
   });
 
   it("continuous result with no data", () => {

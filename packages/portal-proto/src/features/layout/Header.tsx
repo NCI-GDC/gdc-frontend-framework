@@ -30,6 +30,7 @@ import { cleanNotifications, showNotification } from "@mantine/notifications";
 import urlJoin from "url-join";
 import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { theme } from "tailwind.config";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import {
@@ -71,6 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
   Options = () => <div />,
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
+  const router = useRouter();
 
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -90,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
   return (
-    <div className="px-6 py-3 border-b border-gdc-grey-lightest flex flex-col">
+    <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
         href="#main"
         className="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
@@ -98,14 +100,17 @@ export const Header: React.FC<HeaderProps> = ({
         Skip Navigation
       </a>
       <div className="flex flex-row justify-between">
-        <LoadingOverlay visible={!(totalSuccess || dictSuccess)} />
+        <LoadingOverlay
+          data-testid="loading-spinner"
+          visible={!(totalSuccess || dictSuccess)}
+        />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
           <Link href={indexPath} data-testid="NIHLogoButton" passHref>
             <a className="block w-full h-full mt-2">
               <NIHLogo
                 layout="fill"
-                objectFit="contain"
-                data-testid="NIH_LOGO"
+                style={{ objectFit: "contain" }}
+                data-testid="button-header-home"
                 aria-label="NIH GDC Data Portal logo"
                 role="img"
               />
@@ -113,28 +118,50 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-4 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://portal.gdc.cancer.gov/annotations"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <button className="flex items-center gap-1 font-heading">
-            <OptionsIcon size="22px" className="rotate-90" />
-            Manage Sets
-          </button>
-          <Link href="/cart" passHref>
-            <Button unstyled data-testid="cartLink">
+          <Link href="/manage_sets" passHref>
+            <Button
+              unstyled
+              data-testid="button-header-manage-sets"
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
+                router.pathname === "/manage_sets"
+                  ? "bg-secondary text-white"
+                  : ""
+              }`}
+            >
               <div className="flex items-center gap-1 font-heading">
-                <CartIcon size="22px" className="text-primary-darkest" />
+                <OptionsIcon size="22px" className="rotate-90" />
+                Manage Sets
+              </div>
+            </Button>
+          </Link>
+          <Link href="/cart" passHref>
+            <Button
+              unstyled
+              data-testid="cartLink"
+              className={`p-1 rounded-md hover:bg-primary-lightest ${
+                router.pathname === "/cart" ? "bg-secondary text-white" : ""
+              }`}
+            >
+              <div className="flex items-center gap-1 font-heading">
+                <CartIcon size="22px" />
                 Cart
                 <Badge
                   variant="filled"
-                  className="px-1 ml-1 bg-accent"
+                  className={`px-1 ml-1 ${
+                    router.pathname === "/cart"
+                      ? "bg-white text-secondary"
+                      : "bg-accent-vivid"
+                  }`}
                   radius="xs"
                 >
                   {currentCart?.length || 0}
@@ -143,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </Link>
           {userInfo?.data?.username ? (
-            <Menu width={200} data-testid="userdropdown">
+            <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
                 <Button
                   rightIcon={<ArrowDropDownIcon size="2em" />}
@@ -257,7 +284,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 data-testid="extraButton"
                 aria-label="GDC apps button"
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
                 <p className="font-heading">GDC Apps</p>
@@ -365,11 +392,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-row justify-between">
         <div className="flex flex-row flex-wrap items-center divide-x divide-gray-300">
           {headerElements.map((element, i) => (
-            <div
-              key={i}
-              className={`${i === 0 ? "pr-2" : "pl-4"}`}
-              data-testid={`headerElement${i}`}
-            >
+            <div key={i} className={`${i === 0 ? "pr-2" : "pl-4"}`}>
               {typeof element === "string" ? (
                 <span className="font-semibold">{element}</span>
               ) : (

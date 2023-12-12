@@ -7,7 +7,6 @@ import {
   handleOperation,
   FilterSet,
   removeCohortFilter,
-  selectCurrentCohortFilters,
   fetchFacetByNameGQL,
   updateCohortFilter,
   useCoreDispatch,
@@ -20,12 +19,13 @@ import {
   selectFacetByDocTypeAndField,
   usePrevious,
   selectTotalCountsByName,
-  useCurrentCohortFilters,
   selectMultipleFacetsByDocTypeAndField,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortFiltersByNames,
   GqlOperation,
   buildCohortGqlOperator,
+  selectCurrentCohortGeneAndSSMCaseSet,
+  useCurrentCohortWithGeneAndSsmCaseSet,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -41,7 +41,9 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilters(state));
+  return useCoreSelector((state) =>
+    selectCurrentCohortGeneAndSSMCaseSet(state),
+  );
 };
 
 export const extractValue = (op: Operation): EnumOperandValue => {
@@ -52,7 +54,7 @@ export const extractValue = (op: Operation): EnumOperandValue => {
 /**
  * Selector for the facet values (if any) from the current cohort
  * @param field - field name to find filter for
- * @return Value of Filters or undefined
+ * @returns Value of Filters or undefined
  */
 const useCohortFacetFilterByName = (field: string): OperandValue => {
   const enumFilters: Operation = useCoreSelector((state) =>
@@ -88,7 +90,7 @@ export const useEnumFacet = (
   );
 
   const enumValues = useCohortFacetFilterByName(field);
-  const currentCohortFilters = useCurrentCohortFilters();
+  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -135,7 +137,7 @@ export const useEnumFacet = (
  * Fetch multiple enum facets via a single API call. Does not return any value but initiates the
  * fetch for each field.
  * @param docType - "cases", "files", etc
- * @param indexType = "explore" | "repository"
+ * @param indexType - "explore" | "repository"
  * @param fields - list of fields.
  */
 export const useEnumFacets = (
@@ -149,7 +151,7 @@ export const useEnumFacets = (
   const coreDispatch = useCoreDispatch();
 
   const enumValues = useEnumFiltersByNames(fields);
-  const currentCohortFilters = useCurrentCohortFilters();
+  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
   const cohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
@@ -194,9 +196,9 @@ type UpdateEnumFiltersFunc = (
 
 /**
  * Adds an enumeration filter to cohort filters
- * @param dispatch CoreDispatch instance
- * @param enumerationFilters values to update
- * @param field field to update
+ * @param dispatch - CoreDispatch instance
+ * @param enumerationFilters - values to update
+ * @param field - field to update
  */
 export const updateEnumFilters: UpdateEnumFiltersFunc = (
   dispatch: ThunkDispatch<any, undefined, AnyAction>,
@@ -266,6 +268,7 @@ export const useRangeFacet = (
     field,
     rangeCohortFilters,
     prevFilters,
+    prevRangeFilters,
     ranges,
     prevRanges,
     docType,

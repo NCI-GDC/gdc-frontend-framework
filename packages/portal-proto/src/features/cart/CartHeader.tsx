@@ -53,12 +53,6 @@ const downloadCart = (
     download({
       endpoint: "data",
       method: "POST",
-      options: {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      },
       dispatch,
       params: {
         ids: filesByCanAccess.true.map((file) => file.file_id),
@@ -78,12 +72,6 @@ const downloadManifest = (
   download({
     endpoint: "files",
     method: "POST",
-    options: {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
     dispatch,
     params: {
       filters: {
@@ -116,8 +104,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   const dispatch = useCoreDispatch();
   const { data: userDetails } = useUserDetails();
   const [downloadActive, setDownloadActive] = useState(false);
+  const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
+    useState(false);
+  const [clinicalJSONDownloadActive, setClinicalJSONDownloadActive] =
+    useState(false);
+  const [biospecimenTSVDownloadActive, setBiospecimenTSVDownloadActive] =
+    useState(false);
+  const [biospecimenJSONDownloadActive, setBiospecimenJSONDownloadActive] =
+    useState(false);
   const [metadataDownloadActive, setMetadataDownloadActive] = useState(false);
-  const [sampleSheetDownloadActice, setSampleSheetDownloadActive] =
+  const [sampleSheetDownloadActive, setSampleSheetDownloadActive] =
     useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
@@ -194,18 +190,124 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item icon={<DownloadIcon />}>
-              Clinical: TSV (Coming soon)
-            </Menu.Item>
-            <Menu.Item icon={<DownloadIcon />}>
-              Clinical: JSON (Coming soon)
-            </Menu.Item>
-            <Menu.Item icon={<DownloadIcon />}>
-              Biospecimen: TSV (Coming soon)
-            </Menu.Item>
-            <Menu.Item icon={<DownloadIcon />}>
-              Biospecimen: JSON (Coming soon)
-            </Menu.Item>
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              variant="subtle"
+              activeText="Processing"
+              inactiveText="Clinical: TSV"
+              preventClickEvent
+              showIcon={true}
+              endpoint="clinical_tar"
+              setActive={setClinicalTSVDownloadActive}
+              active={clinicalTSVDownloadActive}
+              filename={`clinical.cart.${new Date()
+                .toISOString()
+                .slice(0, 10)}.tar.gz`}
+              format="tsv"
+              method="POST"
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+            />
+
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              variant="subtle"
+              activeText="Processing"
+              inactiveText="Clinical: JSON"
+              preventClickEvent
+              showIcon={true}
+              endpoint="clinical_tar"
+              setActive={setClinicalJSONDownloadActive}
+              active={clinicalJSONDownloadActive}
+              filename={`clinical.cart.${new Date()
+                .toISOString()
+                .slice(0, 10)}.json`}
+              format="json"
+              method="POST"
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+            />
+
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              variant="subtle"
+              activeText="Processing"
+              inactiveText="Biospecimen: TSV"
+              preventClickEvent
+              showIcon={true}
+              endpoint="biospecimen_tar"
+              setActive={setBiospecimenTSVDownloadActive}
+              active={biospecimenTSVDownloadActive}
+              filename={`biospecimen.cart.${new Date()
+                .toISOString()
+                .slice(0, 10)}.tar.gz`}
+              format="tsv"
+              method="POST"
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+            />
+            <Menu.Item
+              component={DownloadButton}
+              classNames={{ inner: "font-normal" }}
+              variant="subtle"
+              activeText="Processing"
+              inactiveText="Biospecimen: JSON"
+              preventClickEvent
+              showIcon={true}
+              endpoint="biospecimen_tar"
+              setActive={setBiospecimenJSONDownloadActive}
+              active={biospecimenJSONDownloadActive}
+              filename={`biospecimen.cart.${new Date()
+                .toISOString()
+                .slice(0, 10)}.json`}
+              format="json"
+              method="POST"
+              filters={{
+                content: [
+                  {
+                    content: {
+                      field: "files.file_id",
+                      value: cart.map((file) => file.file_id),
+                    },
+                    op: "in",
+                  },
+                ],
+                op: "and",
+              }}
+            />
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
@@ -216,18 +318,12 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               showIcon={true}
               endpoint="files"
               setActive={setSampleSheetDownloadActive}
-              active={sampleSheetDownloadActice}
+              active={sampleSheetDownloadActive}
               filename={`gdc_sample_sheet.${new Date()
                 .toISOString()
                 .slice(0, 10)}.tsv`}
               format="tsv"
               method="POST"
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               fields={[
                 "file_id",
                 "file_name",
@@ -268,12 +364,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               filename={`metadata.cart.${new Date()
                 .toISOString()
                 .slice(0, 10)}.json`}
-              options={{
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }}
               method="POST"
               filters={{
                 content: [

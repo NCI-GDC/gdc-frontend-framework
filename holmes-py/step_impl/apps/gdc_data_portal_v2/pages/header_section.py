@@ -9,7 +9,10 @@ class HeaderSectionLocators:
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
     PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
-    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-add-a-file-filter']"
+    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
+    REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
+    HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
+    MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"
 
 class HeaderSection(BasePage):
 
@@ -19,7 +22,10 @@ class HeaderSection(BasePage):
     def navigate_to_main_pages(self, button_name:str):
         button_name = self.normalize_button_identifier(button_name)
         locator = HeaderSectionLocators.BUTTON_IDENT(button_name)
-        self.click(locator)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_until_locator_is_visible(locator)
+        self.click(locator, True)
         self.wait_for_page_to_load(button_name)
 
     # Pages in the data portal do not load instantaneously.
@@ -32,5 +38,14 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT)
         elif page_to_load == "cohort":
             self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
+            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "downloads":
+            # Repository page does not load quickly, and automation will move too fast at times
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
+            self.wait_for_selector(HeaderSectionLocators.REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT)
+            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+            self.wait_for_loading_spinner_table_to_detatch()
+        elif page_to_load == "home":
+            self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
+        elif page_to_load == "manage-sets":
+            self.wait_for_selector(HeaderSectionLocators.MANAGE_SETS_WAIT_FOR_ELEMENT)

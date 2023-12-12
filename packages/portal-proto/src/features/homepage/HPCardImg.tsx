@@ -1,4 +1,4 @@
-import { LinkProps } from "next/link";
+import Link, { LinkProps } from "next/link";
 import { HomepageButton } from "./index";
 import { Image } from "@/components/Image";
 
@@ -24,25 +24,25 @@ const HPCardImg = ({
   imgProps,
 }: HPCardImgProps): JSX.Element => {
   return (
-    <div className="bg-mid-pattern bg-top bg-no-repeat px-7">
-      <div className="max-w-screen-lg m-auto flex gap-5">
-        <div className="w-1/2 py-10">
-          <h2 className="font-heading font-bold text-2xl pb-5 text-summarybar-text tracking-tight">
-            {head}
-          </h2>
-          <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
-          <HomepageButton href={href}>{linkText}</HomepageButton>
-        </div>
-        <div className="w-1/2 relative h-[334px]">
-          <Image
-            alt={imgProps.alt}
-            src={imgProps.src}
-            height={imgProps.height}
-            width={imgProps.width}
-            layout="fixed"
-            objectPosition={imgProps.objectPosition}
-          />
-        </div>
+    <div className="max-w-screen-lg m-auto flex gap-5">
+      <div className="w-1/2 py-10">
+        <h2 className="font-heading font-bold text-2xl pb-5 text-summarybar-text tracking-tight">
+          {head}
+        </h2>
+        <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
+        <Link href={href} passHref>
+          <HomepageButton>{linkText}</HomepageButton>
+        </Link>
+      </div>
+      <div className="w-1/2 relative h-[334px]">
+        <Image
+          alt={imgProps.alt}
+          src={imgProps.src}
+          height={imgProps.height}
+          width={imgProps.width}
+          layout="fixed"
+          objectPosition={imgProps.objectPosition}
+        />
       </div>
     </div>
   );

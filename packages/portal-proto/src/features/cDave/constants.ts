@@ -1,3 +1,17 @@
+import { FilterSet } from "@gff/core";
+import { DataDimension } from "./types";
+
+export const DEMO_COHORT_FILTERS: FilterSet = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["TCGA-LGG"],
+    },
+  },
+};
+
 export const DEFAULT_FIELDS = [
   "demographic.gender",
   "demographic.race",
@@ -15,6 +29,14 @@ export const CONTINUOUS_FACET_TYPES = [
   "percent",
   "long",
   "double",
+];
+
+export const HIDE_QQ_BOX_FIELDS = [
+  "demographic.year_of_birth",
+  "demographic.year_of_death",
+  "diagnoses.year_of_diagnosis",
+  "exposures.tobacco_smoking_onset_year",
+  "exposures.tobacco_smoking_quit_year",
 ];
 
 export const COLOR_MAP = {
@@ -145,6 +167,34 @@ export const FACET_SORT = {
   ],
 };
 
+export const DATA_DIMENSIONS: Record<
+  string,
+  { unit: DataDimension; toggleValue?: DataDimension }
+> = {
+  "diagnoses.age_at_diagnosis": {
+    unit: "Days",
+    toggleValue: "Years",
+  },
+  "demographic.days_to_birth": { unit: "Days", toggleValue: "Years" },
+  "demographic.days_to_death": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_diagnosis": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_last_follow_up": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.days_to_last_known_disease_status": {
+    unit: "Days",
+    toggleValue: "Years",
+  },
+  "diagnoses.days_to_recurrence": { unit: "Days", toggleValue: "Years" },
+  "diagnoses.treatments.days_to_treatment_end": {
+    unit: "Days",
+    toggleValue: "Years",
+  },
+  "diagnoses.treatments.days_to_treatment_start": {
+    unit: "Days",
+    toggleValue: "Years",
+  },
+  "diagnoses.year_of_diagnosis": { unit: "Years" },
+};
+
 export const TABS = {
   demographic: "Demographic",
   diagnoses: "Diagnosis",
@@ -154,3 +204,4 @@ export const TABS = {
 
 export const SURVIVAL_PLOT_MIN_COUNT = 10;
 export const BUCKETS_MAX_COUNT = 500;
+export const MISSING_KEY = "_missing";

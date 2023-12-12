@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
@@ -65,7 +65,7 @@ const StyledFacetTabs = (props: TabsProps) => {
       styles={(theme) => ({
         tab: {
           ...theme.fn.focusStyles(),
-          padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+          padding: `${theme.spacing.xs} ${theme.spacing.md}`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
           fontFamily: theme.fontFamily,
@@ -122,7 +122,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2"
+      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 my-4 ml-4"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
@@ -183,19 +183,19 @@ const CustomFacetGroup = (): JSX.Element => {
   // handle the case where there are no custom filters
   return (
     <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
-      <LoadingOverlay visible={!isDictionaryReady} />
-      <Modal
-        size="lg"
-        opened={opened}
-        onClose={() => setOpened(false)}
-        zIndex={400}
-      >
-        <FacetSelection
-          title={"Add a Case Filter"}
-          facetType="cases"
-          handleFilterSelected={handleFilterSelected}
-          usedFacets={cohortBuilderFilters}
-        />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={!isDictionaryReady}
+      />
+      <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+        <div className="p-4">
+          <FacetSelection
+            title="Add a Custom Filter"
+            facetType="cases"
+            handleFilterSelected={handleFilterSelected}
+            usedFacets={cohortBuilderFilters}
+          />
+        </div>
       </Modal>
       {customFacetDefinitions.length == 0 ? (
         <Flex>
@@ -212,11 +212,11 @@ const CustomFacetGroup = (): JSX.Element => {
               No custom filters added
             </Text>
             <Button
+              data-testid="button-cohort-builder-add-a-custom-filter"
               variant="outline"
               onClick={() => setOpened(true)}
               aria-label="Add a Custom Filter"
               className="bg-base-lightest text-base-contrast-lightest"
-              data-testid="button-cohort-builder-add-a-custom-filter"
             >
               Add a Custom Filter
             </Button>
@@ -229,6 +229,7 @@ const CustomFacetGroup = (): JSX.Element => {
           facets={customFacetDefinitions}
         >
           <Button
+            data-testid="button-cohort-builder-add-a-custom-filter"
             variant="outline"
             className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
             onClick={() => setOpened(true)}
@@ -242,7 +243,6 @@ const CustomFacetGroup = (): JSX.Element => {
               weight={700}
               className="text-primary-contrast-lightest"
             >
-              {" "}
               Add a Custom Filter
             </Text>
           </Button>
@@ -280,44 +280,41 @@ export const FacetTabs = (): JSX.Element => {
     isEqual,
   );
   const router = useRouter();
+  const routerTab = router?.query?.tab;
+  const prevRouterTab = usePrevious(routerTab);
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const [activeTab, setActiveTab] = useState(
-    router?.query?.tab
-      ? (router.query.tab as string)
-      : Object.keys(tabsConfig)[0],
+    routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
 
   useEffect(() => {
-    if (
-      router !== null &&
-      activeTab !== undefined &&
-      activeTab !== router?.query?.tab
-    ) {
-      router.push({ query: { ...Router.query, tab: activeTab } }, undefined, {
-        scroll: false,
-      });
+    // Check if the change was initiated by the router
+    if (routerTab !== prevRouterTab) {
+      setActiveTab(routerTab as string);
+    } else {
+      // Change initiated by user interaction
+      if (activeTab !== routerTab) {
+        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+          scroll: false,
+        });
+      }
     }
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, routerTab, prevRouterTab]);
 
-  useEffect(() => {
-    if (router?.query?.tab && activeTab !== router.query.tab) {
-      setActiveTab(router.query.tab as string);
-    }
-  }, [router?.query?.tab, activeTab, setActiveTab]);
   return (
-    <div className="w-100 mt-2">
+    <div className="w-100">
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}
         onTabChange={setActiveTab}
         keepMounted={false}
         classNames={{
-          tab: "first:mt-2 last:mb-2 ml-2 sm:w-44 md:w-60 lg:w-80 data-active:text-primary-content-darkest data-active:border-primary-darkest text-primary-content-lightest font-medium data-active:border-primary-darker data-active:border-t-2 data-active:border-l-2 data-active:border-b-2 data-active:bg-base-max hover:bg-primary-darker active:shadow-lg",
+          tab: "pl-0 data-active:pl-4 ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1",
           tabsList:
-            "flex flex-col bg-primary-dark text-primary-contrast-dark w-64 border-r-2 border-primary-darkest",
+            "flex flex-col bg-primary-lightest text-primary-contrast-dark w-72 py-4",
           tabLabel: "text-left",
           root: "bg-base-max",
         }}
@@ -349,7 +346,6 @@ export const FacetTabs = (): JSX.Element => {
               key === "custom" ? [] : getFacetInfo(tabEntry.facets, facets);
             return (
               <Tabs.Panel key={key} value={key}>
-                {" "}
                 {key === "custom" ? (
                   <CustomFacetGroup />
                 ) : (

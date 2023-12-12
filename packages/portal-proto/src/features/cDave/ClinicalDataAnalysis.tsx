@@ -10,9 +10,9 @@ import {
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import Controls from "./Controls";
 import Dashboard from "./Dashboard";
-import { DEFAULT_FIELDS, FACET_SORT } from "./constants";
+import { DEFAULT_FIELDS, DEMO_COHORT_FILTERS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
-import { DemoText } from "../shared/tailwindComponents";
+import { DemoText } from "@/components/tailwindComponents";
 
 const ClinicalDataAnalysis: React.FC = () => {
   const isDemoMode = useIsDemoApp();
@@ -31,18 +31,7 @@ const ClinicalDataAnalysis: React.FC = () => {
 
   const cohortFilters = useCoreSelector((state) =>
     buildCohortGqlOperator(
-      isDemoMode
-        ? {
-            mode: "and",
-            root: {
-              "cases.project.project_id": {
-                operator: "includes",
-                field: "cases.project.project_id",
-                operands: ["TCGA-LGG"],
-              },
-            },
-          }
-        : selectCurrentCohortFilters(state),
+      isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
     ),
   );
   const {

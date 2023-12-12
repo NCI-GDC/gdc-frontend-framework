@@ -7,10 +7,14 @@ import {
   GqlOperation,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-
-import SurvivalPlot, { SurvivalPlotTypes } from "../../charts/SurvivalPlot";
-import { isInterval } from "../utils";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import SurvivalPlot, {
+  SurvivalPlotTypes,
+} from "@/features/charts/SurvivalPlot";
+import { convertDateToString } from "@/utils/date";
+import { isInterval, parseContinuousBucket } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
+import { DEMO_COHORT_FILTERS } from "../constants";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;
@@ -25,9 +29,12 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
   customBinnedData,
   continuous,
 }: ClinicalSurvivalPlotProps) => {
+  const isDemoMode = useIsDemoApp();
   const [plotType, setPlotType] = useState(undefined);
   const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(selectCurrentCohortFilters(state)),
+    buildCohortGqlOperator(
+      isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
+    ),
   );
 
   useEffect(() => {
@@ -72,7 +79,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
                 });
               }
             } else {
-              const [fromValue, toValue] = value.split(" to <");
+              const [fromValue, toValue] = parseContinuousBucket(value);
 
               content.push({
                 op: ">=",
@@ -121,6 +128,10 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
             field={field}
             names={selectedSurvivalPlots}
             plotType={plotType}
+            downloadFileName={`${field
+              .split(".")
+              .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
+            tableTooltip
           />
         )}
       </div>

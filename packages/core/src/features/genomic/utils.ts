@@ -1,4 +1,11 @@
-import { Intersection, Union } from "../gdcapi/filters";
+import { FilterSet, buildCohortGqlOperator } from "../cohort";
+import {
+  Intersection,
+  Union,
+  GqlIntersection,
+  GqlOperation,
+  GqlIncludes,
+} from "../gdcapi/filters";
 
 export const appendFilterToOperation = (
   filter: Intersection | Union | undefined,
@@ -11,4 +18,44 @@ export const appendFilterToOperation = (
   return { ...filter, operands: [...(filter?.operands || []), addition] } as
     | Intersection
     | Union;
+};
+
+export const getSSMTestedCases = (
+  cohortFilters: FilterSet,
+  geneSymbol?: string,
+): GqlOperation => {
+  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+
+  const gqlCohortIntersection =
+    cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
+      ? (cohortFiltersGQl as GqlIntersection).content
+      : [];
+
+  return {
+    content: [
+      ...[
+        {
+          content: {
+            field: "available_variation_data",
+            value: ["ssm"],
+          },
+          op: "in",
+        } as GqlIncludes,
+        ...(geneSymbol
+          ? [
+              {
+                content: {
+                  field: "genes.symbol",
+                  value: [geneSymbol],
+                },
+                op: "in",
+              } as GqlIncludes,
+            ]
+          : []),
+      ],
+      // For case filter only use cohort filter and not genomic filter
+      ...gqlCohortIntersection,
+    ],
+    op: "and",
+  };
 };

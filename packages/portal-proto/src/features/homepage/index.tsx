@@ -1,4 +1,3 @@
-import { NextLink } from "@mantine/next";
 import tw from "tailwind-styled-components";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
@@ -7,11 +6,12 @@ import HPCardImgAlt from "./HPCardImgAlt";
 import HPCardImg from "./HPCardImg";
 import { useTotalCounts } from "@gff/core";
 import { Image } from "@/components/Image";
+import Link from "next/link";
 
-export const HomepageButton = tw(NextLink)`
-bg-primary text-sm text-base-max border-base-light border-1
+export const HomepageButton = tw.a`
+bg-primary text-sm text-base-max border-base-light border-0
 hover:bg-primary-darker hover:text-primary-darker-contrast
-font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block
+font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
 `;
 
 const Homepage = (): JSX.Element => {
@@ -35,15 +35,16 @@ const Homepage = (): JSX.Element => {
             </p>
           </div>
 
-          <HomepageButton
+          <Link
             href={{
               pathname: "/analysis_page",
               query: { app: undefined },
             }}
             data-testid="button-homepage-explore-datasets"
+            passHref
           >
-            Explore Our Cancer Datasets
-          </HomepageButton>
+            <HomepageButton>Explore Our Cancer Datasets</HomepageButton>
+          </Link>
           <HorizontalSummaryTotalsPanel />
           <div className="py-10" />
         </div>
@@ -77,7 +78,7 @@ const Homepage = (): JSX.Element => {
       <HPCardImgAlt
         head="Access Harmonized Clinical and Genomic Data"
         body={
-          <p className="font-content">
+          <div className="font-content">
             <p>
               Harmonized clinical and genomic data allow for convenient
               cross-analysis and comparison.
@@ -94,82 +95,87 @@ const Homepage = (): JSX.Element => {
               sequencing reads, ranging from whole genome to single-cell RNA,
               and generate high-level derived data.
             </p>
-          </p>
+          </div>
         }
         linkText="Learn More About Our Harmonization Process"
         href="https://gdc.cancer.gov/about-data/gdc-data-processing"
         imgSrc="/homepage/genomic-clinical-data.jpg"
         imgAlt="Data Cloud"
       />
-      <HPCardImg
-        head="Visualize Genomic Alterations and Clinical Features"
-        body={
-          <p className="font-content font-medium">
-            Create and refine custom cohorts of cancer patients for in silico
-            studies using a variety of clinical and biospecimen filters in the
-            Cohort Builder.
-          </p>
-        }
-        linkText="Explore Cohort Builder"
-        href={{
-          pathname: "/analysis_page",
-          query: { app: "CohortBuilder" },
-        }}
-        imgProps={{
-          src: "/homepage/data-explorer.png",
-          alt: "Skewed representation of data explorer",
-          width: 696,
-          height: 469,
-          objectPosition: "top -54px right 94px",
-        }}
-      />
-      <div className="rounded-2xl shadow-[0px_0px_16px_#00000029] text-center mx-auto mb-10">
-        <div className="flex  m-8  max-w-screen-lg gap-14 items-center">
-          <ul className="flex gap-4 w-2/3">
-            {[
-              {
-                src: "/homepage/slide1-SurvivalP.jpg",
-                title: "Survival Plot",
-              },
-              {
-                src: "/homepage/slide1-MutationF.jpg",
-                title: "Mutation Frequency",
-              },
-              {
-                src: "/homepage/slide1-ProteinP.jpg",
-                title: "ProteinPaint",
-              },
-            ].map((obj, index) => (
-              <li className="flex flex-col w-[220px]" key={index}>
-                <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
-                  <Image
-                    alt={obj.title}
-                    src={obj.src}
-                    width={220}
-                    height={164}
-                    className="rounded-t-lg"
-                  />
-                </div>
-                <div className="bg-nci-purple text-primary-max text-center rounded-b-lg py-3">
-                  {obj.title}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="text-left">
-            <p className="font-content">
-              Analyze your custom cohorts by applying the GDC&apos;s collection
-              of tools for visualizing clinical features, genomic alterations,
-              and other cancer drivers.
+      <div className="bg-mid-pattern bg-cover">
+        <HPCardImg
+          head="Visualize Genomic Alterations and Clinical Features"
+          body={
+            <p className="font-content font-medium">
+              Create and refine custom cohorts of cancer patients for in silico
+              studies using a variety of clinical and biospecimen filters in the
+              Cohort Builder.
             </p>
-            <HomepageButton
-              href={{
-                pathname: "/analysis_page",
-                query: { app: undefined },
-              }}
-            >
-              Explore More Tools
-            </HomepageButton>
+          }
+          linkText="Explore Cohort Builder"
+          href={{
+            pathname: "/analysis_page",
+            query: { app: "CohortBuilder" },
+          }}
+          imgProps={{
+            src: "/homepage/data-explorer.png",
+            alt: "Skewed representation of data explorer",
+            width: 696,
+            height: 469,
+            objectPosition: "top -54px right 94px",
+          }}
+        />
+        <div className="mb-10 flex justify-center">
+          <div className="flex max-w-screen-lg gap-14 items-center bg-base-max p-6 rounded-2xl">
+            <ul className="flex gap-4 w-2/3">
+              {[
+                {
+                  src: "/homepage/slide1-SurvivalP.jpg",
+                  title: "Survival Plot",
+                  alt: "graph of survival plot",
+                },
+                {
+                  src: "/homepage/slide1-MutationF.jpg",
+                  title: "Mutation Frequency",
+                  alt: "graph of mutation frequency",
+                },
+                {
+                  src: "/homepage/slide1-ProteinP.jpg",
+                  title: "ProteinPaint",
+                  alt: "feature of protein paint",
+                },
+              ].map((obj, index) => (
+                <li className="flex flex-col w-[220px]" key={index}>
+                  <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
+                    <Image
+                      alt={obj.alt}
+                      src={obj.src}
+                      width={220}
+                      height={164}
+                      className="rounded-t-lg"
+                    />
+                  </div>
+                  <div className="bg-nci-purple text-primary-max text-center rounded-b-lg py-3">
+                    {obj.title}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="text-left">
+              <p className="font-content">
+                Analyze your custom cohorts by applying the GDC&apos;s
+                collection of tools for visualizing clinical features, genomic
+                alterations, and other cancer drivers.
+              </p>
+              <Link
+                href={{
+                  pathname: "/analysis_page",
+                  query: { app: undefined },
+                }}
+              >
+                <HomepageButton>Explore More Tools</HomepageButton>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -181,7 +187,7 @@ const Homepage = (): JSX.Element => {
           </>
         }
         body={
-          <p className="font-content">
+          <div className="font-content">
             <p>
               Seamlessly download clinical, biospecimen, and genomic data from
               your cohorts for further analysis.
@@ -197,7 +203,7 @@ const Homepage = (): JSX.Element => {
               are looking for somatic variants, gene expression data, slide
               images, or even files generated from a specific workflow.
             </p>
-          </p>
+          </div>
         }
         linkText="Explore Repository"
         href={{
@@ -222,7 +228,7 @@ const Homepage = (): JSX.Element => {
         }
         linkText="Contact Us"
         href="https://gdc.cancer.gov/support"
-        mainClassName="bg-btm-pattern bg-center bg-cover"
+        mainClassName="bg-center bg-cover"
       />
     </div>
   );

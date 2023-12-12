@@ -1,8 +1,20 @@
+import { GqlOperation } from "../gdcapi/filters";
 import {
   GraphQLApiResponse,
   graphqlAPISlice,
   graphqlAPI,
 } from "../gdcapi/gdcgraphql";
+
+interface CreateSetValueArgs {
+  values: readonly string[];
+}
+
+interface CreateSetFilterArgs {
+  filters?: GqlOperation | Record<string, never>;
+  size?: number;
+  score?: string;
+  set_id?: string;
+}
 
 const createGeneSetMutation = `mutation createSet(
   $input: CreateSetInput
@@ -63,6 +75,22 @@ const createCaseSetMutation = `mutation createSet(
 }
 `;
 
+const createCaseSetExploreMutation = `mutation createSet(
+  $input: CreateSetInput
+) {
+  sets {
+    create {
+      explore {
+        case(input: $input) {
+          set_id
+          size
+        }
+      }
+    }
+  }
+}
+`;
+
 const transformCaseSetResponse = (
   response: GraphQLApiResponse<any>,
 ): string => {
@@ -73,7 +101,7 @@ export const createSetSlice = graphqlAPISlice
   .enhanceEndpoints({ addTagTypes: ["geneSets", "ssmsSets", "caseSets"] })
   .injectEndpoints({
     endpoints: (builder) => ({
-      createGeneSetFromValues: builder.mutation({
+      createGeneSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
@@ -95,7 +123,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformGeneSetResponse,
       }),
-      createSsmsSetFromValues: builder.mutation({
+      createSsmsSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
@@ -117,7 +145,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformSsmsSetResponse,
       }),
-      createCaseSetFromValues: builder.mutation({
+      createCaseSetFromValues: builder.mutation<string, CreateSetValueArgs>({
         query: ({ values }) => ({
           graphQLQuery: createCaseSetMutation,
           graphQLFilters: {
@@ -139,7 +167,7 @@ export const createSetSlice = graphqlAPISlice
         }),
         transformResponse: transformCaseSetResponse,
       }),
-      createGeneSetFromFilters: builder.mutation({
+      createGeneSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
@@ -151,11 +179,14 @@ export const createSetSlice = graphqlAPISlice
           },
         }),
         transformResponse: transformGeneSetResponse,
-        invalidatesTags: (_result, _error, arg) => [
-          { type: "geneSets", id: arg?.set_id },
-        ],
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "geneSets", id: arg?.set_id }];
+          }
+          return [];
+        },
       }),
-      createSsmsSetFromFilters: builder.mutation({
+      createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ filters, size, score, set_id }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
@@ -168,9 +199,33 @@ export const createSetSlice = graphqlAPISlice
           },
         }),
         transformResponse: transformSsmsSetResponse,
-        invalidatesTags: (_result, _error, arg) => [
-          { type: "ssmsSets", id: arg?.set_id },
-        ],
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "ssmsSets", id: arg?.set_id }];
+          }
+          return [];
+        },
+      }),
+      createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
+        query: ({ filters, size, score, set_id }) => ({
+          graphQLQuery: createCaseSetExploreMutation,
+          graphQLFilters: {
+            input: {
+              filters: filters ?? {},
+              set_id,
+              size,
+              score,
+            },
+          },
+        }),
+        transformResponse: (response) =>
+          response.data.sets.create.explore.case.set_id,
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "caseSets", id: arg?.set_id }];
+          }
+          return [];
+        },
       }),
     }),
   });
@@ -205,4 +260,5 @@ export const {
   useCreateCaseSetFromValuesMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateCaseSetFromFiltersMutation,
 } = createSetSlice;

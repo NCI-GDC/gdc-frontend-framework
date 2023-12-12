@@ -1,14 +1,18 @@
+import Cookies from "universal-cookie";
 import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
-import { includes, isPlainObject, reduce } from "lodash";
+import { includes, isPlainObject, reduce, uniqueId } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
 
+const hashString = (s: string) =>
+  s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
+
 const getBody = (iframe: HTMLIFrameElement) => {
-  const document = iframe.contentWindow || iframe.contentDocument;
-  return (document as Window).document.body || (document as Document).body;
+  const document = iframe?.contentWindow || iframe?.contentDocument;
+  return (document as Window)?.document?.body || (document as Document)?.body;
 };
 
 const toHtml = (key: string, value: any) =>
@@ -44,6 +48,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
 };
 
 /*
+TODO - handle slow download notification PEAR-624
 const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
   <>
     <div>
@@ -77,47 +82,52 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
 */
 
 /**
- * @param endpoint endpoint to be attached with  GDC AUTH API
- * @param params body to be attached with post request
- * @param method Request Method: GET, PUT, POST
- * @param dispatch dispatch send from the parent component to dispatch Modals
- * @param options options object provided to fetch, see here for possible values: https://developer.mozilla.org/en-US/docs/Web/API/fetch
- * @param queryParams body to be attached with POST request or url params with GET request
- * @param done callback function to be called after the download has been initiated
- * @param Modal400 Modal for 400 error
- * @param Modal403 Modal for 403 error
- * @param customErrorMessage custom mesage to be passed for 400 errors
- * @return Promise<void>
+ * Trigger a download by attaching an iFrame to the document with the parameters of the request as fields in a form
+ * @param endpoint - endpoint to be attached with  GDC AUTH API
+ * @param params - body to be attached with post request
+ * @param method - Request Method: GET, PUT, POST
+ * @param dispatch - dispatch send from the parent component to dispatch Modals
+ * @param done - callback function to be called after the download has been initiated
+ * @param Modal400 - Modal for 400 error
+ * @param Modal403 - Modal for 403 error
+ * @param customErrorMessage - custom mesage to be passed for 400 errors
  */
 
 const download = async ({
   endpoint,
   params,
   method,
-  options,
   dispatch,
-  queryParams,
   done,
   Modal400 = Modals.GeneralErrorModal,
   Modal403 = Modals.NoAccessModal,
   customErrorMessage,
-  form = false,
+  hideNotification = false,
 }: {
   endpoint: string;
   params: Record<string, any>;
   method: string;
-  options: Record<string, any>;
   dispatch: CoreDispatch;
-  queryParams?: string;
   done?: () => void;
-  altMessage?: boolean;
   Modal403?: Modals;
   Modal400?: Modals;
   customErrorMessage?: string;
-  form?: boolean;
+  hideNotification?: boolean;
 }): Promise<void> => {
-  let canceled = false;
-  const controller = new AbortController();
+  const cookies = new Cookies();
+
+  /* Create a cookie with a unique identifer to attach to request. Response from server will use the set-cookie header
+    to remove the cookie when the response is received (aka the download starts). This will only work on when the FE and BE
+    are on the same domain.
+  */
+  const downloadToken = uniqueId(`${+new Date()}-`);
+  const cookieKey = navigator.cookieEnabled
+    ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
+    : null;
+
+  if (cookieKey) {
+    cookies.set(cookieKey, downloadToken);
+  }
 
   // place notification in timeout to avoid flicker on fast calls
   const showNotificationTimeout = setTimeout(
@@ -126,9 +136,8 @@ const download = async ({
         message: (
           <DownloadNotification
             onClick={() => {
-              controller.abort();
+              iFrame.remove();
               cleanNotifications();
-              canceled = true;
               if (done) {
                 done();
               }
@@ -138,6 +147,7 @@ const download = async ({
         styles: () => ({
           root: {
             textAlign: "center",
+            display: hideNotification && "none",
           },
           closeButton: {
             color: "black",
@@ -151,7 +161,12 @@ const download = async ({
   ); // set to 100 as that is perceived as instant
 
   const fields = reduce(
-    params,
+    {
+      ...params,
+      downloadCookieKey: cookieKey,
+      downloadCookiePath: "/",
+      attachment: true,
+    },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);
       return (
@@ -170,50 +185,67 @@ const download = async ({
   // page and downloads in the background
   document.body.appendChild(iFrame);
 
-  // TODO - handle slow download notification PEAR-624
-  /*
-  const slowDownloadNotificationPoll = async () => {
-    let attempts = 0;
-
+  const pollForDownloadResult = async () => {
     const executePoll = async (resolve: (value?: unknown) => void) => {
-      attempts++;
-      if (!downloadResolved && !controller.signal.aborted) {
-        if (attempts === 6) {
-          showNotification({
-            message: (
-              <SlowDownloadNotification
-                onClick={() => {
-                  cleanNotifications();
-                  cancel = true;
-                  if (done) {
-                    done();
-                  }
-                }}
-              />
-            ),
-            styles: () => ({
-              root: {
-                textAlign: "center",
-              },
-              closeButton: {
-                color: "black",
-                "&:hover": {
-                  backgroundColor: theme.extend.colors["gdc-grey"].lighter,
-                },
-              },
-            }),
-          });
+      // Request has been canceled
+      const body = getBody(iFrame);
+      if (body === undefined) {
+        resolve();
+        return;
+      }
+
+      const content = body?.textContent;
+      // Download has started
+      if (!cookies.get(cookieKey)) {
+        clearTimeout(showNotificationTimeout);
+        cleanNotifications();
+        if (done) {
+          done();
+        }
+        resolve();
+      } else {
+        const requestError =
+          iFrame.contentWindow.document.getElementsByTagName("form").length ===
+            0 && content !== "";
+        if (requestError) {
+          clearTimeout(showNotificationTimeout);
+          cleanNotifications();
+
+          const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
+            content,
+          )?.[1];
+          if (
+            errorMessage === "internal server error" ||
+            errorMessage === undefined
+          ) {
+            dispatch(showModal({ modal: Modal400, message: errorMessage }));
+          } else if (
+            errorMessage ===
+            "Your token is invalid or expired. Please get a new token from GDC Data Portal."
+          ) {
+            dispatch(showModal({ modal: Modal403, message: errorMessage }));
+          } else {
+            dispatch(
+              showModal({
+                modal: Modal400,
+                message: customErrorMessage || errorMessage,
+              }),
+            );
+          }
+
+          if (done) {
+            done();
+          }
           resolve();
         } else {
           setTimeout(executePoll, 1000, resolve);
         }
-      } else {
-        resolve();
       }
     };
 
     return new Promise(executePoll);
-  };*/
+  };
+
   const addFormAndSubmit = () => {
     //do all of this together for FireFox support
     const form = document.createElement("form");
@@ -226,102 +258,9 @@ const download = async ({
     form.submit();
   };
 
-  const handleDownloadResponse = async (res: Response) => {
-    clearTimeout(showNotificationTimeout);
-    cleanNotifications();
-    if (!canceled && res.ok) {
-      addFormAndSubmit();
-      setTimeout(() => {
-        if (done) {
-          done();
-        }
-      }, 1000);
-      return;
-    }
-    if (done) {
-      done();
-    }
-    let errorMessage;
-    try {
-      const body = await res.json();
-      errorMessage = body.message;
-    } catch (error) {
-      errorMessage = undefined;
-    }
-
-    if (res.status === 404 || res.status === 500) {
-      dispatch(showModal({ modal: Modal400, message: errorMessage }));
-      return;
-    }
-
-    if (res.status === 403) {
-      dispatch(showModal({ modal: Modal403, message: errorMessage }));
-      return;
-    }
-    if (res.status === 400) {
-      dispatch(
-        showModal({
-          modal: Modal400,
-          message: customErrorMessage || errorMessage,
-        }),
-      );
-      return;
-    }
-  };
-
-  const replacer = (_: string, value: any) => {
-    if (typeof value === "boolean") {
-      return value ? "True" : "False";
-    }
-    return value;
-  };
-
-  const signal = controller.signal;
-  if (form) {
-    addFormAndSubmit();
-    setTimeout(() => {
-      if (done) {
-        done();
-      }
-    }, 1000);
-  } else {
-    if ((options?.method || "GET") === "POST") {
-      const body = JSON.stringify(
-        {
-          ...params,
-          ...(params.filters
-            ? { filters: JSON.stringify(params.filters) }
-            : {}),
-        },
-        replacer,
-      );
-      fetch(
-        `${GDC_APP_API_AUTH}/${endpoint}${
-          queryParams ? `?${queryParams}` : ""
-        }`,
-        {
-          ...options,
-          body,
-          signal,
-        },
-      ).then(handleDownloadResponse);
-    } else {
-      if (queryParams === undefined) {
-        queryParams = Object.keys(params)
-          .map((key) => key + "=" + params[key])
-          .join("&");
-      }
-      fetch(
-        `${GDC_APP_API_AUTH}/${endpoint}${
-          queryParams ? `?${queryParams}` : ""
-        }`,
-        {
-          ...options,
-          signal,
-        },
-      ).then(handleDownloadResponse);
-    }
-  }
+  addFormAndSubmit();
+  await pollForDownloadResult();
+  iFrame.remove();
 };
 
 export default download;

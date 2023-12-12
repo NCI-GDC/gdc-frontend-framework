@@ -28,7 +28,7 @@ export const match = (query: string, entity: Record<string, any>): boolean =>
     );
   });
 
-export const search = (
+export const searchForStringInNode = (
   query: string,
   entity: { node: Record<string, any> },
 ): any[] => {

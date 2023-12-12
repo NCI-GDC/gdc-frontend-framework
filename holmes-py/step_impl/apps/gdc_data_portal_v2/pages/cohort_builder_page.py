@@ -9,12 +9,12 @@ class CohortBuilderPageLocators:
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
-    FACET_GROUP_IDENT = lambda group_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]'
-    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/..//input[@data-testid="checkbox-{selection}"]'
-    FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@aria-label="{action}"]'
-    FACET_GROUP_TEXT_AREA_IDENT = lambda group_name, area: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//input[@aria-label="{area}"]'
-    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//button[@data-testid="{more_or_less}"]'
-    FACET_GROUP_NAMED_OBJECT_IDENT = lambda group_name, object_name: f'//div[@data-testid="title-cohort-builder-facet-groups"]/div[contains(.,"{group_name}")]/.//div >> text="{object_name}"'
+    FACET_GROUP_IDENT = lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}")'
+    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+    FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    FACET_GROUP_TEXT_AREA_IDENT = lambda group_name, area: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> input[aria-label="{area}"]'
+    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+    FACET_GROUP_NAMED_OBJECT_IDENT = lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
 
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
@@ -27,7 +27,6 @@ class CohortBuilderPageLocators:
     QUERY_EXPRESSION_TEXT = lambda text: f'div:text("{text}")'
 
     ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = '//input[@aria-label="show only properties with values"]'
-    SPINNER_IDENT = f'[repeatcount="indefinite"]'
 
 class CohortBuilderPage(BasePage):
 
@@ -46,8 +45,11 @@ class CohortBuilderPage(BasePage):
     # Checks to see if specified facet card is present
     def check_facet_card_presence(self, facet_group_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_IDENT(facet_group_name)
-        result = self.is_visible(locator)
-        return result
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
 
     # Adds a custom filter from the Custom Filters tab
     def add_custom_filter(self, facet_to_add):
@@ -95,7 +97,8 @@ class CohortBuilderPage(BasePage):
     def click_only_show_properties_with_values_checkbox(self):
         locator = CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
         self.click(locator)
-        self.wait_until_locator_is_detached(CohortBuilderPageLocators.SPINNER_IDENT)
+        self.wait_for_loading_spinner_to_be_visible()
+        self.wait_for_loading_spinner_to_detatch()
 
     # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):

@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
-import partial from "lodash/partial";
 import { LoadingOverlay } from "@mantine/core";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { SMTableContainer } from "@/components/expandableTables/somaticMutations/SMTableContainer";
 import { emptySurvivalPlot } from "@/features/genomic/types";
 import {
   useGeneAndSSMPanelData,
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
+import { useScrollIntoView } from "@mantine/hooks";
+import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
   ssr: false,
 });
@@ -45,20 +46,50 @@ export const SSMSPanel = ({
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival);
+  } = useGeneAndSSMPanelData(comparativeSurvival, false);
 
   /**
    * Get the mutations in cohort
    */
   const currentMutations = useSelectFilterContent("ssms.ssm_id");
+  const toggledMutations = useDeepCompareMemo(
+    () => currentMutations,
+    [currentMutations],
+  );
+  const handleSsmToggled = useCallback(
+    (idAndSymbol: Record<string, any>) =>
+      handleGeneAndSSmToggled(
+        toggledMutations,
+        "ssms.ssm_id",
+        "mutationID",
+        idAndSymbol,
+      ),
+    [handleGeneAndSSmToggled, toggledMutations],
+  );
+
+  /* Scroll for gene search */
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 500,
+    duration: 1000,
+  });
+
+  useEffect(() => {
+    // should happen only on mount
+    if (searchTermsForGene) scrollIntoView();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  /* Scroll for gene search end */
 
   return (
     <div className="flex flex-col w-100 mx-6 mb-8">
-      <div className="bg-base-max">
+      <div className="bg-base-max relative">
         <LoadingOverlay
+          data-testid="loading-spinner"
           visible={
             survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
           }
+          zIndex={0}
         />
         <SurvivalPlot
           plotType={SurvivalPlotTypes.mutation}
@@ -74,24 +105,22 @@ export const SSMSPanel = ({
               ? [comparativeSurvival.name]
               : []
           }
+          tableTooltip
         />
       </div>
-      <SMTableContainer
-        selectedSurvivalPlot={comparativeSurvival}
-        handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-        genomicFilters={genomicFilters}
-        cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-        handleSsmToggled={partial(
-          handleGeneAndSSmToggled,
-          currentMutations,
-          "ssms.ssm_id",
-          "mutationID",
-        )}
-        toggledSsms={currentMutations}
-        isDemoMode={isDemoMode}
-        isModal={true}
-        searchTermsForGene={searchTermsForGene}
-      />
+      <div ref={targetRef}>
+        <SMTableContainer
+          selectedSurvivalPlot={comparativeSurvival}
+          handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+          genomicFilters={genomicFilters}
+          cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+          handleSsmToggled={handleSsmToggled}
+          toggledSsms={toggledMutations}
+          isDemoMode={isDemoMode}
+          isModal={true}
+          searchTermsForGene={searchTermsForGene}
+        />
+      </div>
     </div>
   );
 };

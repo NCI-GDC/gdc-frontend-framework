@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer, useRef } from "react";
-import { ActionIcon } from "@mantine/core";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -16,7 +15,6 @@ const QueryExpressionContainer = tw.div`
   flex
   items-center
   bg-white
-  shadow-[0_-2px_6px_0_rgba(0,0,0,0.16)]
   border-secondary-darkest
   border-1
   border-l-4
@@ -157,7 +155,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
         value={[expandedState[currentCohortId], setExpandedState]}
       >
         <div className="flex flex-col w-full bg-primary">
-          <div className="flex flex-row py-2 items-center border-secondary-darkest border-b-1">
+          <div
+            data-testid="text-cohort-filters-top-row"
+            className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
+          >
             <OverflowTooltippedLabel
               label={currentCohortName}
               className="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px]"
@@ -166,10 +167,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             </OverflowTooltippedLabel>
             <>
               <button
-                data-testid="clear-all-cohort-filters"
-                className={`text-sm font-montserrat pl-2 ${
+                data-testid="button-clear-all-cohort-filters"
+                className={`text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md ${
                   noFilters
-                    ? "cursor-not-allowed text-secondary-contrast-darkest"
+                    ? "hidden"
                     : "cursor-pointer text-secondary-contrast-darkest"
                 }`}
                 onClick={clearAllFilters}
@@ -178,8 +179,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 Clear All
               </button>
               <div className="display flex gap-2 ml-auto mr-3">
-                <ActionIcon
-                  variant={allQueryExpressionsCollapsed ? "filled" : "outline"}
+                <button
+                  data-testid="button-expand-collapse-cohort-queries"
                   color="white"
                   onClick={() =>
                     allQueryExpressionsCollapsed
@@ -194,46 +195,59 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   }
                   aria-label="Expand/collapse all queries"
                   aria-expanded={!allQueryExpressionsCollapsed}
+                  className={`${
+                    allQueryExpressionsCollapsed
+                      ? "text-primary"
+                      : "text-base-max"
+                  } disabled:pointer-events-none hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest flex gap-0 items-center border-1 border-white rounded-md w-7 h-7 ${
+                    allQueryExpressionsCollapsed ? "bg-white" : "bg-transparent"
+                  }`}
                   disabled={noFilters}
                 >
                   {allQueryExpressionsCollapsed ? (
                     <>
-                      <LeftArrowIcon size={20} className="text-primary" />
-                      <RightArrowIcon size={20} className="text-primary" />
+                      <LeftArrowIcon size={16} />
+                      <RightArrowIcon size={16} />
                     </>
                   ) : (
                     <>
-                      <RightArrowIcon size={20} className="text-white" />
-                      <LeftArrowIcon size={20} className="text-white" />
+                      <RightArrowIcon size={16} />
+                      <LeftArrowIcon size={16} />
                     </>
                   )}
-                </ActionIcon>
-                <ActionIcon
-                  variant={filtersSectionCollapsed ? "outline" : "filled"}
-                  color={filtersSectionCollapsed ? "white" : "white"}
+                </button>
+                <button
+                  data-testid="button-expand-collapse-cohort-filters-section"
+                  color="white"
                   onClick={() =>
                     setFiltersSectionCollapsed(!filtersSectionCollapsed)
                   }
                   aria-label="Expand/collapse filters section"
                   aria-expanded={!filtersSectionCollapsed}
                   disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                  className={`data-disabled:bg-gray-300`}
+                  className={`text-base-max disabled:pointer-events-none disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:hover:bg-base-max hover:bg-primary-darkest hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center ${
+                    filtersSectionCollapsed ? "" : "bg-white"
+                  }`}
                 >
                   {filtersSectionCollapsed ? (
                     <>
-                      <DownArrowIcon size={30} className="text-white" />
+                      <DownArrowIcon size={30} className="" />
                     </>
                   ) : (
                     <>
-                      <UpArrowIcon size={30} className="text-primary" />
+                      <UpArrowIcon
+                        size={30}
+                        className="text-primary hover:text-white "
+                      />
                     </>
                   )}
-                </ActionIcon>
+                </button>
               </div>
             </>
           </div>
           <div
-            className={`flex flex-wrap bg-base-max w-full p-2 pb-0 overflow-x-hidden ${
+            data-testid="text-cohort-filters"
+            className={`flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden ${
               filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
             }`}
             style={
@@ -244,7 +258,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             ref={filtersRef}
           >
             {noFilters ? (
-              <p className="pb-2 font-content">No filters currently applied.</p>
+              <p
+                data-testid="text-no-active-cohort-filter"
+                className="font-content"
+              >
+                No filters currently applied.
+              </p>
             ) : (
               Object.keys(filters.root).map((k) => {
                 return convertFilterToComponent(filters.root[k]);

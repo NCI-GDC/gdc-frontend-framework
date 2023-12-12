@@ -20,7 +20,6 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import SetTable from "./SetTable";
-import { modalStyles } from "../styles";
 
 interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
@@ -79,12 +78,12 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
       title={`Remove ${removeFromCount.toLocaleString()} ${setTypeLabel}${
         removeFromCount > 1 ? "s" : ""
       } from an existing set`}
-      closeButtonLabel="close"
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        content: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <SetTable
@@ -100,7 +99,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           sortByName
         />
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           onClick={() =>

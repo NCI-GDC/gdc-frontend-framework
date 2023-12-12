@@ -4,22 +4,37 @@ import {
   SetStateAction,
   useContext,
   useLayoutEffect,
-  useRef,
   useState,
+  useEffect,
+  useRef,
 } from "react";
 import { Survival, SurvivalElement } from "@gff/core";
 import { renderPlot } from "@oncojs/survivalplot";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { Box, Menu, Tooltip } from "@mantine/core";
+import { Box, Menu, Tooltip, Loader } from "@mantine/core";
+import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";
 import { useMouse, useResizeObserver } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { handleDownloadSVG, handleDownloadPNG } from "./utils";
-import { entityMetadataType, SummaryModalContext } from "src/utils/contexts";
-import { DownloadButton } from "@/features/shared/tailwindComponents";
+import {
+  entityMetadataType,
+  SummaryModalContext,
+  DownloadProgressContext,
+} from "src/utils/contexts";
+import { DashboardDownloadContext } from "@/utils/contexts";
+import { DownloadButton } from "@/components/tailwindComponents";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
+
 // based on schemeCategory10
 // 4.5:1 colour contrast for normal text
+interface SurvivalPlotLegend {
+  key: string;
+  style?: Record<string, string | number>;
+  value: string | JSX.Element;
+}
+
 const textColors = [
   "#1F77B4",
   "#BD5800",
@@ -176,7 +191,7 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
             <div className="text-gdc-survival-0 font-content">
               S<sub>1</sub>
               {` (N = ${getCaseCount(results2.length > 0)})`}
-              {plotType === "mutation" && (
+              {["mutation", "gene"].includes(plotType) && (
                 <span>
                   {" - "}
                   {name}
@@ -192,11 +207,11 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
             <div className="text-gdc-survival-1 font-content">
               S<sub>2</sub>
               {` (N = ${getCaseCount(results2.length === 0)})`}
-              {plotType === "mutation" && (
+              {["mutation", "gene"].includes(plotType) && (
                 <span>
                   {" - "}
                   {name}
-                  {" Mutated Cases"}
+                  {` Mutated ${plotType === "gene" ? `(SSM/CNV)` : ``} Cases`}
                 </span>
               )}
             </div>
@@ -225,7 +240,12 @@ const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
-            <span className="font-content">{`Not enough survival data for ${name}`}</span>
+            // displayed for ["genes", "mutation"] plotTypes
+            <span className="font-content">
+              {plotType !== "cohortComparison"
+                ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
+                : null}
+            </span>
           ),
         },
       ];
@@ -289,10 +309,12 @@ const buildManyLegend = (
 };
 
 export enum SurvivalPlotTypes {
+  gene = "gene",
   mutation = "mutation",
   categorical = "categorical",
   continuous = "continuous",
   overall = "overall",
+  cohortComparison = "cohortComparison",
 }
 
 export interface SurvivalPlotProps {
@@ -303,6 +325,8 @@ export interface SurvivalPlotProps {
   readonly hideLegend?: boolean;
   readonly height?: number;
   readonly field?: string;
+  readonly downloadFileName?: string;
+  readonly tableTooltip?: boolean;
 }
 
 const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
@@ -313,6 +337,8 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   hideLegend = false,
   height = 380,
   field,
+  downloadFileName = "survival-plot",
+  tableTooltip = false,
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -324,17 +350,32 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const pValue = data.overallStats.pValue;
   const plotData = data.survivalData;
 
-  const hasEnoughData =
-    plotType === SurvivalPlotTypes.mutation ||
-    plotType == SurvivalPlotTypes.categorical ||
-    plotType === SurvivalPlotTypes.continuous
-      ? enoughDataOnSomeCurves(plotData)
-      : enoughData(plotData);
+  const hasEnoughData = [
+    "gene",
+    "mutation",
+    "categorical",
+    "continuous",
+    "cohortComparison",
+  ].includes(plotType)
+    ? enoughDataOnSomeCurves(plotData)
+    : enoughData(plotData);
 
   const { setEntityMetadata } = useContext(SummaryModalContext);
+  const shouldPlot =
+    hasEnoughData &&
+    plotData
+      .map(({ donors }) => donors)
+      .every(({ length }) => length >= MINIMUM_CASES);
   // hook to call renderSurvivalPlot
+  const shouldUsePlotData =
+    (["gene", "mutation"].includes(plotType) && shouldPlot) ||
+    (["categorical", "continuous", "overall", "cohortComparison"].includes(
+      plotType,
+    ) &&
+      hasEnoughData);
+  const dataToUse = shouldUsePlotData ? plotData : [];
   const container = useSurvival(
-    hasEnoughData ? plotData : [],
+    dataToUse,
     xDomain,
     setXDomain,
     height,
@@ -346,14 +387,17 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     hasEnoughData ? plotData : [],
     xDomain,
     setXDomain,
-    height,
+    height > 380 ? height : 380,
     setSurvivalPlotLineTooltipContent,
   );
 
-  let legend;
+  let legend: SurvivalPlotLegend[];
   switch (plotType) {
     case SurvivalPlotTypes.overall:
       legend = buildOnePlotLegend(plotData, "Explorer");
+      break;
+    case SurvivalPlotTypes.gene:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
     case SurvivalPlotTypes.mutation:
       legend = buildTwoPlotLegend(plotData, names[0], plotType);
@@ -363,6 +407,9 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
     case SurvivalPlotTypes.continuous:
       legend = buildManyLegend(plotData, names, field, plotType);
+      break;
+    case SurvivalPlotTypes.cohortComparison:
+      legend = buildTwoPlotLegend(plotData, names[0], plotType);
       break;
   }
 
@@ -378,10 +425,10 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           2,
         ),
       ],
-      { type: "text/json" },
+      { type: "application/json" },
     );
 
-    saveAs(blob, "survival-plot.json");
+    saveAs(blob, `${downloadFileName}.json`);
   };
 
   const handleDownloadTSV = async () => {
@@ -429,34 +476,67 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
-    saveAs(blob, "survival-plot.tsv");
+    saveAs(blob, `${downloadFileName}.tsv`);
   };
+
+  const { dispatch } = useContext(DashboardDownloadContext);
+  useEffect(() => {
+    const charts = [{ filename: downloadFileName, chartRef: downloadRef }];
+
+    dispatch({ type: "add", payload: charts });
+    return () => dispatch({ type: "remove", payload: charts });
+  }, [dispatch, downloadFileName]);
+
+  const { downloadInProgress, setDownloadInProgress } = useContext(
+    DownloadProgressContext,
+  );
 
   return (
     <div className="flex flex-col">
       <div className="flex w-100 items-center justify-center flex-wrap">
         <div className="flex ml-auto text-montserrat text-lg">{title}</div>
         <div className="flex items-center ml-auto gap-1">
-          <Menu position="bottom-start" offset={1} transitionDuration={0}>
+          <Menu
+            position="bottom-start"
+            offset={1}
+            transitionProps={{ duration: 0 }}
+          >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
-                <DownloadButton aria-label="Download button with an icon">
-                  <DownloadIcon size="1.25em" />
+                <DownloadButton
+                  data-testid="button-download-survival-plot"
+                  aria-label="Download button with an icon"
+                >
+                  {downloadInProgress ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon size="1.25em" />
+                  )}
                 </DownloadButton>
               </Tooltip>
             </Menu.Target>
-            <Menu.Dropdown>
+            <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
               <Menu.Item
-                onClick={() =>
-                  handleDownloadSVG(downloadRef, "survival-plot.svg")
-                }
+                onClick={async () => {
+                  setDownloadInProgress(true);
+                  await handleDownloadSVG(
+                    downloadRef,
+                    `${downloadFileName}.svg`,
+                  );
+                  setDownloadInProgress(false);
+                }}
               >
                 SVG
               </Menu.Item>
               <Menu.Item
-                onClick={() =>
-                  handleDownloadPNG(downloadRef, "survival-plot.png")
-                }
+                onClick={async () => {
+                  setDownloadInProgress(true);
+                  await handleDownloadPNG(
+                    downloadRef,
+                    `${downloadFileName}.png`,
+                  );
+                  setDownloadInProgress(false);
+                }}
               >
                 PNG
               </Menu.Item>
@@ -467,6 +547,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           <Tooltip label="Reset Survival Plot Zoom">
             <DownloadButton
               onClick={() => setXDomain(undefined)}
+              data-testid="button-reset-survival-plot"
               aria-label="reset button with an icon"
             >
               <ResetIcon size="1.15rem"></ResetIcon>
@@ -488,7 +569,11 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           {!hideLegend &&
             legend?.map((x, idx) => {
               return (
-                <div key={`${x.key}-${idx}`} className="px-2">
+                <div
+                  data-testid="text-cases-with-survival-data"
+                  key={`${x.key}-${idx}`}
+                  className="px-2"
+                >
                   {x.value}
                 </div>
               );
@@ -497,16 +582,15 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div>
           <Tooltip
             label={
-              pValue === 0 && (
-                <div>
-                  Value shows 0.00e+0 because the
-                  <br />
-                  P-Value is extremely low and goes beyond
-                  <br />
-                  the precision inherent in the code
-                </div>
-              )
+              <div>
+                Value shows 0.00e+0 because the
+                <br />
+                P-Value is extremely low and goes beyond
+                <br />
+                the precision inherent in the code
+              </div>
             }
+            disabled={pValue !== 0}
           >
             <div className="text-xs font-content">
               {isNumber(pValue) &&
@@ -514,6 +598,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </div>
           </Tooltip>
         </div>
+        {tableTooltip && (
+          <div className="text-xs font-content">
+            Use the Survival buttons <SurvivalIcon className="inline-block" />{" "}
+            in the table below to change the survival plot
+          </div>
+        )}
         <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
           drag to zoom
         </div>
@@ -532,12 +622,12 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </Box>
         <div className="survival-plot" ref={container} />
       </div>
-      <div className="fixed top-0 -translate-y-full w-[700px] h-[500px]">
-        <div ref={downloadRef}>
-          <h2 className="text-montserrat text-center text-lg text-primary-content-dark">
+      <OffscreenWrapper>
+        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
+          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center font-montserrat">
             <div
               className={
                 [
@@ -564,7 +654,7 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </div>
           <div className="survival-plot" ref={containerForDownload} />
         </div>
-      </div>
+      </OffscreenWrapper>
     </div>
   );
 };

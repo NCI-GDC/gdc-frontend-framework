@@ -28,14 +28,16 @@ import {
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  selectCurrentCohortCaseCount,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
-  selectCurrentCohortFilterOrCaseSet,
+  selectCurrentCohortGeneAndSSMCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
   selectCohortMessage,
+  selectCohortById,
   clearCohortMessage,
   selectCurrentCohort,
   setCohortList,
@@ -50,7 +52,16 @@ import {
   setActiveCohortList,
   removeCohortSet,
   selectCohortFilterSetById,
+  selectCohortNameById,
   selectCurrentCohortFiltersByNames,
+  selectCohortCounts,
+  selectCohortCountsByName,
+  useCurrentCohortWithGeneAndSsmCaseSet,
+  useCurrentCohortCounts,
+  getCohortFilterForAPI,
+  selectAllCohorts,
+  selectHasUnsavedCohorts,
+  selectUnsavedCohortName,
 } from "./availableCohortsSlice";
 
 import {
@@ -64,15 +75,15 @@ import {
 } from "./cohortBuilderConfigSlice";
 
 import {
-  selectCohortCountsData,
-  selectCohortCounts,
-  selectCohortCountsByName,
-  useCohortCounts,
-  useFilteredCohortCounts,
   CountsData,
-} from "./countSlice";
+  NullCountsData,
+  fetchCohortCaseCounts,
+} from "./cohortCountsQuery";
 
-import { defaultCohortNameGenerator } from "./utils";
+import {
+  defaultCohortNameGenerator,
+  extractFiltersWithPrefixFromFilterSet,
+} from "./utils";
 
 export {
   Cohort,
@@ -100,23 +111,24 @@ export {
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
-  selectCohortCountsData,
   selectCohortCounts,
   selectCohortCountsByName,
-  useCohortCounts,
-  useFilteredCohortCounts,
+  useCurrentCohortCounts,
   selectCohortBuilderConfig,
   selectCohortBuilderConfigFilters,
   selectCohortBuilderConfigCategory,
   selectAvailableCohorts,
   selectCurrentCohortId,
   selectCurrentCohortName,
+  selectCurrentCohortCaseCount,
+  selectCohortById,
+  selectCohortNameById,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
   selectCurrentCohortGqlFilters,
-  selectCurrentCohortFilterOrCaseSet,
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
+  useCurrentCohortWithGeneAndSsmCaseSet,
   selectCurrentCohortModified,
   selectCohortMessage,
   clearCohortMessage,
@@ -136,6 +148,14 @@ export {
   removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
+  selectCurrentCohortGeneAndSSMCaseSet,
   CountsData,
+  NullCountsData,
   defaultCohortNameGenerator,
+  getCohortFilterForAPI,
+  selectAllCohorts,
+  fetchCohortCaseCounts,
+  extractFiltersWithPrefixFromFilterSet,
+  selectHasUnsavedCohorts,
+  selectUnsavedCohortName,
 };

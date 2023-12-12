@@ -12,21 +12,20 @@ import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
 import {
   buildCohortGqlOperator,
+  extractFiltersWithPrefixFromFilterSet,
   filterSetToOperation,
-  joinFilters,
   selectCurrentCohortFilterSet,
 } from "../cohort";
-import { mergeGenomicAndCohortFilters } from "./genomicFilters";
-import { selectCurrentCohortFilters } from "../cohort";
 import {
   convertFilterToGqlFilter,
-  Intersection,
   Union,
+  UnionOrIntersection,
 } from "../gdcapi/filters";
 import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
+            $caseFilters: FiltersArgument
             $genesTable_filters: FiltersArgument
             $genesTable_size: Int
             $genesTable_offset: Int
@@ -42,17 +41,17 @@ const GenesTableGraphQLQuery = `
             genesTableViewer: viewer {
               explore {
                 cases {
-                  hits(first: 0, filters: $ssmTested) {
+                  hits(first: 0, case_filters: $ssmTested) {
                     total
                   }
                 }
                 filteredCases: cases {
-                  hits(first: 0, filters: $geneCaseFilter) {
+                  hits(first: 0, case_filters: $geneCaseFilter) {
                     total
                   }
                 }
                 cnvCases: cases {
-                  hits(first: 0, filters: $cnvTested) {
+                  hits(first: 0, case_filters: $cnvTested) {
                     total
                   }
                 }
@@ -61,6 +60,7 @@ const GenesTableGraphQLQuery = `
                     first: $genesTable_size
                     offset: $genesTable_offset
                     filters: $genesTable_filters
+                    case_filters: $caseFilters
                     score: $score
                     sort: $sort
                   ) {
@@ -109,7 +109,7 @@ export interface GeneRowInfo {
   readonly case_cnv_gain: number;
   readonly case_cnv_loss: number;
   readonly cnv_case: number;
-  readonly cytoband: ReadonlyArray<string>;
+  readonly cytoband: Array<string>;
   readonly gene_id: string;
   readonly id: string;
   readonly is_cancer_gene_census: boolean;
@@ -170,48 +170,40 @@ export const fetchGenesTable = createAsyncThunk<
       offset,
       searchTerm,
       genomicFilters,
-      isDemoMode,
-      overwritingDemoFilter,
+      cohortFilters,
     }: GenomicTableProps,
-    thunkAPI,
   ): Promise<GraphQLApiResponse> => {
-    const cohortFilters = buildCohortGqlOperator(
-      selectCurrentCohortFilters(thunkAPI.getState()),
+    const caseFilters = buildCohortGqlOperator(cohortFilters);
+    const cohortFiltersContent = caseFilters?.content
+      ? Object(caseFilters?.content)
+      : [];
+
+    const searchFilters = buildGeneTableSearchFilters(searchTerm);
+
+    // get filters already applied
+    const baseFilters = filterSetToOperation(genomicFilters) as
+      | UnionOrIntersection
+      | undefined;
+
+    // filters for the genes table using local filters
+    const genesTableFilters = convertFilterToGqlFilter(
+      appendFilterToOperation(baseFilters, searchFilters),
     );
 
-    const demoOrCohort = isDemoMode
-      ? buildCohortGqlOperator(overwritingDemoFilter)
-      : cohortFilters;
-    const cohortFiltersContent = demoOrCohort?.content
-      ? Object(demoOrCohort?.content)
-      : [];
-    const geneAndCohortFilters = mergeGenomicAndCohortFilters(
-      thunkAPI.getState(),
-      genomicFilters,
-    );
-    const filters = isDemoMode
-      ? buildCohortGqlOperator(
-          joinFilters(overwritingDemoFilter, genomicFilters),
-        )
-      : buildCohortGqlOperator(geneAndCohortFilters);
-    const filterContents = filters?.content ? Object(filters?.content) : [];
-    const searchFilters = buildGeneTableSearchFilters(searchTerm);
-    const tableFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(
-        isDemoMode
-          ? (filterSetToOperation(
-              joinFilters(overwritingDemoFilter, genomicFilters),
-            ) as Union | Intersection | undefined)
-          : (filterSetToOperation(geneAndCohortFilters) as
-              | Union
-              | Intersection
-              | undefined),
-        searchFilters,
-      ),
+    const rawFilterContents =
+      baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
+    const filterContents = rawFilterContents ? Object(rawFilterContents) : [];
+
+    /**
+     * Only apply "genes." filters to the genes table's CNV gain and loss filters.
+     */
+    const onlyGenesFilters = buildCohortGqlOperator(
+      extractFiltersWithPrefixFromFilterSet(genomicFilters, "genes."),
     );
 
     const graphQlFilters = {
-      genesTable_filters: tableFilters ? tableFilters : {},
+      caseFilters: caseFilters ? caseFilters : {},
+      genesTable_filters: genesTableFilters ? genesTableFilters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",
@@ -296,6 +288,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
       cnvLossFilters: {
@@ -318,6 +313,9 @@ export const fetchGenesTable = createAsyncThunk<
             },
           ],
           ...cohortFiltersContent,
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
         ],
       },
     };
@@ -338,6 +336,7 @@ export const fetchGenesTable = createAsyncThunk<
       const counts = await fetchSmsAggregations({
         ids: geneIds,
         filters: filterContents,
+        caseFilters: caseFilters,
       });
       if (!counts.errors) {
         const countsData =

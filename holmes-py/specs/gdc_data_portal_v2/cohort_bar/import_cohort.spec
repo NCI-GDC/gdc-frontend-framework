@@ -16,10 +16,13 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Upload "organoid" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "organoid" in the Cohort Bar section
-* "Create" "organoid" and "keep modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Create           |organoid                                   |Keep Modal          |
 * Set as current cohort
 * The cohort bar case count should be "70"
-* Select "Clear All"
+* Clear active cohort filters
 * The cohort bar case count should be "86,513"
 
 ## Import Cohort from Data Portal V1 file
@@ -27,11 +30,17 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Upload "data portal v1 tcga chol" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "data portal v1" in the Cohort Bar section
-* "Create" "data portal v1" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Create           |data portal v1                             |Remove Modal        |
 
 ## Import Cohort with all Case Identifiers
 * Select "Upload" from the Cohort Bar
 * Upload "Cases List" "txt" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
 * Name the cohort "cases list" in the Cohort Bar section
-* "Create" "cases list" and "remove modal" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Create           |cases list                                 |Remove Modal        |

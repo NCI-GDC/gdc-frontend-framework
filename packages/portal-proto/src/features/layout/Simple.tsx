@@ -11,9 +11,7 @@ import { Footer } from "./Footer";
  * Top-level layout for GDC pages. This can be used to wrap every page.
  * @returns
  */
-export const SimpleLayout: React.FC<unknown> = ({
-  children,
-}: PropsWithChildren<unknown>) => {
+export const SimpleLayout = ({ children }: PropsWithChildren<unknown>) => {
   return (
     <div className="container mx-auto min-h-screen flex flex-col">
       <Head>
@@ -35,7 +33,7 @@ const Header: React.FC = () => {
           <Image
             src="/NIH_GDC_DataPortal-logo.svg"
             layout="fill"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
             alt="NCI GDC Data Portal logo"
           />
         </div>

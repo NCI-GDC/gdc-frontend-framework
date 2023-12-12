@@ -21,13 +21,13 @@ const defaultState = {
       "diagnoses.vital_status",
     ],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
   custom: {
     label: "Custom",
     facets: [],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
 };
 
@@ -43,13 +43,13 @@ const alteredConfig = {
       "case.test_facet",
     ],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
   custom: {
     label: "Custom",
     facets: [],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
 };
 
@@ -59,7 +59,7 @@ const alteredCustomConfig = {
     label: "Custom",
     facets: ["case.test_facet", "case.test_facet_other"],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
 };
 
@@ -75,13 +75,13 @@ const removeFacetTestState = {
       "example.facet_type",
     ],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
   additional: {
     label: "General",
     facets: ["example.facet_type", "case.test_facet"],
     docType: "cases",
-    index: "repository",
+    index: "explore",
   },
 };
 
@@ -159,13 +159,13 @@ describe("cohortConfig reducer", () => {
           "example.facet_type",
         ],
         docType: "cases",
-        index: "repository",
+        index: "explore",
       },
       additional: {
         label: "General",
         facets: ["case.test_facet"],
         docType: "cases",
-        index: "repository",
+        index: "explore",
       },
     };
 
@@ -203,7 +203,7 @@ describe("cohortConfig reducer", () => {
         "cases.diagnoses.tissue_or_organ_of_origin",
       ],
       docType: "cases",
-      index: "repository",
+      index: "explore",
     };
     const builderCommonConfig = selectCohortBuilderConfigCategory(
       state,
@@ -240,12 +240,16 @@ describe("cohortConfig reducer", () => {
       "cases.diagnoses.ann_arbor_clinical_stage",
       "cases.diagnoses.ann_arbor_pathologic_stage",
       "cases.diagnoses.cog_renal_stage",
+      "cases.diagnoses.enneking_msts_stage",
       "cases.diagnoses.figo_stage",
       "cases.diagnoses.igcccg_stage",
       "cases.diagnoses.inss_stage",
       "cases.diagnoses.iss_stage",
       "cases.diagnoses.masaoka_stage",
+      "cases.diagnoses.inpc_grade",
       "cases.diagnoses.tumor_grade",
+      "cases.diagnoses.who_cns_grade",
+      "cases.diagnoses.cog_neuroblastoma_risk_group",
       "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
       "cases.diagnoses.eln_risk_classification",
       "cases.diagnoses.international_prognostic_index",

@@ -1,7 +1,7 @@
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
-import { DownloadButton } from "@/features/shared/tailwindComponents";
+import { DownloadButton } from "@/components/tailwindComponents";
 import { JSONArray } from "@/features/types";
 
 interface ChartDownloadProps {
@@ -28,12 +28,15 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     <Menu width="auto">
       <Menu.Target>
         <Tooltip label="Download image or data">
-          <DownloadButton aria-label="Download button with an icon">
+          <DownloadButton
+            data-testid="button-download-image-or-data"
+            aria-label="Download button with an icon"
+          >
             <DownloadIcon size="1.25em" />
           </DownloadButton>
         </Tooltip>
       </Menu.Target>
-      <Menu.Dropdown>
+      <Menu.Dropdown data-testid="list-download-image-or-data-dropdown">
         <Menu.Item
           onClick={() => downloadImage("svg")}
           onKeyUp={(e) => e.key === "Enter" && downloadImage("svg")}

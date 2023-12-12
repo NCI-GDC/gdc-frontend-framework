@@ -38,6 +38,7 @@ describe("GDC API", () => {
         /**
          * The following code is pretty nasty. It's trying to verify that
          * the hit looks like:
+         * ```json
          * {
          *   "primary_site": "any_primary_site",
          *   "samples": [
@@ -46,6 +47,7 @@ describe("GDC API", () => {
          *     }
          *   ]
          * }
+         * ```
          *
          * The issue is that the hit type is `unknown`. So, we need to
          * use type guards to access each level of the object.
@@ -141,6 +143,7 @@ describe("GDC API", () => {
           { field: "primary_site", direction: "asc" },
           { field: "case_id", direction: "desc" },
         ],
+        from: 1,
       });
 
       expect(cases.data.hits.length).toEqual(10);

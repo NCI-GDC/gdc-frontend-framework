@@ -90,23 +90,14 @@ export const BAMSlicingModal = ({
         attachment: true,
       };
 
-      const regionsParam =
-        processedInput.regions.length > 1
-          ? processedInput.regions.map((key) => `region` + "=" + key).join("&")
-          : `region=${processedInput.regions[0]}`;
-
       download({
         params,
         endpoint: `slicing/view/${file.file_id}`,
         method: "POST",
         done: () => setActive(false),
         dispatch,
-        queryParams: regionsParam,
         customErrorMessage:
           " You have entered invalid coordinates. Please try again.",
-        options: {
-          method: "HEAD",
-        },
       });
     }
 
@@ -120,7 +111,6 @@ export const BAMSlicingModal = ({
         </Text>
       }
       size="60%"
-      closeButtonLabel="Cancel"
       openModal={openModal}
       buttons={[
         { title: "Cancel", dataTestId: "button-download-sliced-bam-cancel" },

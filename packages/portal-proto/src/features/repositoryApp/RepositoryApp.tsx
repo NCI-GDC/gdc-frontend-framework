@@ -48,7 +48,8 @@ const useCohortCentricFiles = () => {
 
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const { data: fileData } = useGetFilesQuery({
-    filters: buildCohortGqlOperator(allFilters),
+    case_filters: buildCohortGqlOperator(cohortFilters),
+    filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
       "annotations", //annotations
       "cases.project", //project_id
@@ -60,7 +61,8 @@ const useCohortCentricFiles = () => {
   const { data: imagesCount } = useImageCounts(allFilters);
 
   return {
-    allFilters,
+    caseFilters: cohortFilters,
+    localFilters: repositoryFilters,
     pagination: fileData?.pagination,
     repositoryFilters,
     imagesCount,
@@ -71,15 +73,20 @@ export const RepositoryApp = (): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const router = useRouter();
-  const { allFilters, pagination, repositoryFilters, imagesCount } =
-    useCohortCentricFiles();
+  const {
+    caseFilters,
+    localFilters,
+    pagination,
+    repositoryFilters,
+    imagesCount,
+  } = useCohortCentricFiles();
   const [
     getFileSizeSliceData, // This is the mutation trigger
     { isLoading: allFilesLoading }, // This is the destructured mutation result
   ] = useGetAllFilesMutation();
 
-  const getAllSelectedFiles = (callback, filters) => {
-    getFileSizeSliceData(filters)
+  const getAllSelectedFiles = (callback, caseFilters, localFilters) => {
+    getFileSizeSliceData({ caseFilters: caseFilters, filters: localFilters })
       .unwrap()
       .then((data: GdcFile[]) => {
         return mapGdcFileToCartFile(data);
@@ -100,7 +107,7 @@ export const RepositoryApp = (): JSX.Element => {
       },
       mode: "and",
     };
-    return buildCohortGqlOperator(joinFilters(allFilters, cartFilterSet));
+    return buildCohortGqlOperator(joinFilters(localFilters, cartFilterSet));
   };
   const [active, setActive] = useState(false);
 
@@ -111,7 +118,7 @@ export const RepositoryApp = (): JSX.Element => {
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex mt-4 mx-3">
+        <div className="flex mt-4 mx-4">
           <div className="w-1/4">
             <FileFacetPanel />
           </div>
@@ -120,7 +127,7 @@ export const RepositoryApp = (): JSX.Element => {
             data-testid="repository-table"
           >
             <div className="flex justify-end align-center">
-              <div className="flex justify-end gap-2 mb-6">
+              <div className="flex justify-end gap-2 mt-9 mb-4">
                 <DownloadButton
                   data-testid="button-manifest-files-table"
                   customStyle={`
@@ -144,16 +151,11 @@ export const RepositoryApp = (): JSX.Element => {
                   toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
                   endpoint="files"
                   method="POST"
-                  options={{
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  }}
                   extraParams={{
                     return_type: "manifest",
                   }}
-                  filters={buildCohortGqlOperator(allFilters)}
+                  caseFilters={buildCohortGqlOperator(caseFilters)}
+                  filters={buildCohortGqlOperator(localFilters)}
                   setActive={setActive}
                   active={active}
                 />
@@ -192,7 +194,8 @@ export const RepositoryApp = (): JSX.Element => {
                     } else {
                       getAllSelectedFiles(
                         addToCart,
-                        buildCohortGqlOperator(allFilters),
+                        buildCohortGqlOperator(caseFilters),
+                        buildCohortGqlOperator(localFilters),
                       );
                     }
                   }}
@@ -206,6 +209,7 @@ export const RepositoryApp = (): JSX.Element => {
                   onClick={() => {
                     getAllSelectedFiles(
                       removeFromCart,
+                      buildCohortGqlOperator(caseFilters),
                       buildCohortGqlOperatorWithCart(),
                     );
                   }}

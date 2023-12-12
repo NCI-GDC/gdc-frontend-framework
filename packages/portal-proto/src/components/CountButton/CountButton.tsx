@@ -1,15 +1,18 @@
-import { Badge, Tooltip } from "@mantine/core";
+import { Badge, Loader, Tooltip } from "@mantine/core";
+import React from "react";
 
 export const CountButton = ({
   tooltipLabel,
   disabled,
   handleOnClick,
   count,
+  loading = false,
 }: {
   tooltipLabel: string;
   disabled: boolean;
   handleOnClick: () => void;
   count: number;
+  loading?: boolean;
 }): JSX.Element => {
   return (
     <Tooltip label={tooltipLabel} withArrow>
@@ -26,7 +29,11 @@ export const CountButton = ({
             className={`${disabled ? "bg-base-lighter" : "bg-base-max"} w-20`}
             color={disabled ? "base" : "primary"}
           >
-            {count !== undefined ? count.toLocaleString() : undefined}
+            {loading ? (
+              <Loader size="xs" />
+            ) : count !== undefined ? (
+              count.toLocaleString()
+            ) : undefined}
           </Badge>
         </button>
       </span>

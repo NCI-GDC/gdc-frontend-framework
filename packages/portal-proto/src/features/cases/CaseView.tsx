@@ -10,6 +10,7 @@ import {
   Demographic,
   caseSummaryDefaults,
   FilterSet,
+  AccessType,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -22,32 +23,23 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import {
-  allFilesInCart,
-  calculatePercentageAsNumber,
-  fileInCart,
-  humanify,
-  sortByPropertyAsc,
-} from "src/utils";
-import { CategoryTableSummary } from "@/components/Summary/CategoryTableSummary";
+import { allFilesInCart, fileInCart, humanify } from "src/utils";
+import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import fileSize from "filesize";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { TableActionButtons } from "@/components/TableActionButtons";
-import {
-  PercentBar,
-  PercentBarComplete,
-  PercentBarLabel,
-} from "../shared/tailwindComponents";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
+  formatDataForDataCateogryTable,
+  formatDataForExpCateogryTable,
   getAnnotationsLinkParams,
   getSlideCountFromCaseSummary,
 } from "./utils";
-import { BasicTable } from "@/components/Tables/BasicTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
-import SMTableContainer from "@/components/expandableTables/somaticMutations/SMTableContainer";
-import { DEFAULT_MUTATION_TABLE_ORDER } from "../shared/mutationTableConfig";
+import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
+import { createColumnHelper } from "@tanstack/react-table";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -212,143 +204,77 @@ export const CaseView: React.FC<CaseViewProps> = ({
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);
   };
 
-  const formatDataForDataCateogryTable = () => {
-    const sortedDataCategories = sortByPropertyAsc(
-      data.summary.data_categories,
-      "data_category",
-    );
-
-    const rows = sortedDataCategories.map((data_c) => {
-      const fileCountPercentage = calculatePercentageAsNumber(
-        data_c.file_count,
-        filesCountTotal,
-      );
-
-      return {
-        data_category: data_c.data_category,
-        // TODO: Need to change it to Link after the href has been finalized
-        file_count: (
-          <div className="flex h-6">
-            <div className="basis-1/3 text-right">
-              {data_c.file_count.toLocaleString()}
-            </div>
-            <div className="basis-2/3 pl-1">
-              <PercentBar>
-                <PercentBarLabel>{`${fileCountPercentage.toFixed(
-                  2,
-                )}%`}</PercentBarLabel>
-                <PercentBarComplete
-                  style={{ width: `${fileCountPercentage}%` }}
-                />
-              </PercentBar>
-            </div>
-          </div>
-        ),
-      };
-    });
-
-    return {
-      headers: [
-        <div
-          key="case_summary_data_table_data_category"
-          className="text-sm leading-[18px]"
-        >
-          Data Category
-        </div>,
-        <div key="case_summary_data_table_file_header" className="flex">
-          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
-            Files
-          </div>
-          <div className="basis-2/3 pl-1 font-normal text-sm leading-[18px]">
-            (n={filesCountTotal.toLocaleString()})
-          </div>
-        </div>,
-      ],
-      tableRows: rows,
-    };
-  };
-
-  const formatDataForExpCateogryTable = () => {
-    const sortedExpCategories = sortByPropertyAsc(
-      data.summary.experimental_strategies,
-      "experimental_strategy",
-    );
-
-    const rows = sortedExpCategories.map((exp_c) => {
-      const fileCountPercentage = calculatePercentageAsNumber(
-        exp_c.file_count,
-        filesCountTotal,
-      );
-
-      return {
-        experimental_strategy: exp_c.experimental_strategy,
-        // TODO: Need to change it to Link after the href has been finalized
-        file_count: (
-          <div className="flex h-6">
-            <div className="basis-1/3 text-right">
-              {exp_c.file_count.toLocaleString()}
-            </div>
-            <div className="basis-2/3 pl-1">
-              <PercentBar>
-                <PercentBarLabel>{`${fileCountPercentage.toFixed(
-                  2,
-                )}%`}</PercentBarLabel>
-                <PercentBarComplete
-                  style={{ width: `${fileCountPercentage}%` }}
-                />
-              </PercentBar>
-            </div>
-          </div>
-        ),
-      };
-    });
-
-    return {
-      headers: [
-        <div
-          key="case_summary_data_exp_table_exp_title"
-          className="text-sm leading-[18px]"
-        >
-          Experimental Strategy
-        </div>,
-        <div key="case_summary_data_exp_table_file_header" className="flex">
-          <div className="basis-1/3 text-right font-bold text-sm leading-[18px]">
-            Files
-          </div>
-          <div className="basis-2/3 pl-1 font-normal text-sm leading-[18px]">
-            (n={filesCountTotal.toLocaleString()})
-          </div>
-        </div>,
-      ],
-      tableRows: rows,
-    };
-  };
-
   const supplementFilesRender = (files: caseFileType[]) => {
-    const rows = files.map((file) => {
-      const isOutputFileInCart = fileInCart(currentCart, file.file_id);
-      return {
-        access: <FileAccessBadge access={file.access} />,
-        file_name: (
-          <Link href={`/files/${file.file_id}`}>
-            <a className="text-utility-link underline">{file.file_name}</a>
-          </Link>
-        ),
+    type SupplementFilesDataType = {
+      access: AccessType;
+      file_id: string;
+      file_name: string;
+      data_format: string;
+      file_size: string;
+      file: caseFileType;
+    };
+
+    const supplementFilesTableData: SupplementFilesDataType[] = files.map(
+      (file) => ({
+        access: file.access,
+        file_id: file.file_id,
+        file_name: file.file_name,
         data_format: file.data_format,
         file_size: fileSize(file.file_size),
-        action: (
-          <TableActionButtons
-            isOutputFileInCart={isOutputFileInCart}
-            file={mapGdcFileToCartFile([file])}
-            downloadFile={mapFileData([file])[0]}
-          />
+        file: file,
+      }),
+    );
+
+    const supplementFilesTableColumnHelper =
+      createColumnHelper<SupplementFilesDataType>();
+
+    const supplementFilesTableColumns = [
+      supplementFilesTableColumnHelper.display({
+        id: "access",
+        header: "Access",
+        cell: ({ row }) => <FileAccessBadge access={row.original.access} />,
+      }),
+      supplementFilesTableColumnHelper.display({
+        id: "file_name",
+        header: "File Name",
+        cell: ({ row }) => (
+          <Link href={`/files/${row.original.file_id}`}>
+            <a className="text-utility-link underline">
+              {row.original.file_name}
+            </a>
+          </Link>
         ),
-      };
-    });
+      }),
+      supplementFilesTableColumnHelper.accessor("data_format", {
+        id: "data_format",
+        header: "Data Format",
+      }),
+      supplementFilesTableColumnHelper.accessor("file_size", {
+        id: "file_size",
+        header: "File Size",
+      }),
+      supplementFilesTableColumnHelper.display({
+        id: "action",
+        header: "Action",
+        cell: ({ row }) => {
+          const isOutputFileInCart = fileInCart(
+            currentCart,
+            row.original.file_id,
+          );
+          return (
+            <TableActionButtons
+              isOutputFileInCart={isOutputFileInCart}
+              file={mapGdcFileToCartFile([row.original.file])}
+              downloadFile={mapFileData([row.original.file])[0]}
+            />
+          );
+        },
+      }),
+    ];
 
     return {
-      headers: ["Access", "File Name", "Data Format", "File Size", "Action"],
-      tableRows: rows,
+      data: supplementFilesTableData,
+      columns: supplementFilesTableColumns,
     };
   };
 
@@ -489,15 +415,19 @@ export const CaseView: React.FC<CaseViewProps> = ({
               {data.summary.data_categories && (
                 <CategoryTableSummary
                   title="File Counts by Data Category"
-                  dataObject={data.summary.data_categories}
-                  tableData={formatDataForDataCateogryTable()}
+                  {...formatDataForDataCateogryTable(
+                    data.summary.data_categories,
+                    filesCountTotal,
+                  )}
                 />
               )}
               {data.summary.experimental_strategies && (
                 <CategoryTableSummary
                   title="File Counts by Experimental Strategy"
-                  dataObject={data.summary.experimental_strategies}
-                  tableData={formatDataForExpCateogryTable()}
+                  {...formatDataForExpCateogryTable(
+                    data.summary.experimental_strategies,
+                    filesCountTotal,
+                  )}
                 />
               )}
             </div>
@@ -518,6 +448,9 @@ export const CaseView: React.FC<CaseViewProps> = ({
             demographic={demographic}
             family_histories={family_histories}
             exposures={exposures}
+            case_id={case_id}
+            submitter_id={data?.submitter_id}
+            project_id={data?.project?.project_id}
           />
         </div>
 
@@ -528,12 +461,18 @@ export const CaseView: React.FC<CaseViewProps> = ({
                 Clinical Supplement File
               </h2>
             </div>
-            <BasicTable tableData={formatDataForClinicalFiles()} />
+            <VerticalTable {...formatDataForClinicalFiles()} />
           </div>
         )}
 
         <div ref={targetRef} id="biospecimen" className="mb-8">
-          <Biospecimen caseId={case_id} bioId={bio_id} isModal={isModal} />
+          <Biospecimen
+            caseId={case_id}
+            bioId={bio_id}
+            isModal={isModal}
+            submitter_id={data?.submitter_id}
+            project_id={data?.project?.project_id}
+          />
         </div>
         {biospecimenFilteredFiles?.length > 0 && (
           <div className="mb-16">
@@ -542,17 +481,18 @@ export const CaseView: React.FC<CaseViewProps> = ({
                 Biospecimen Supplement File
               </h2>
             </div>
-            <BasicTable tableData={formatDataForBioSpecimenFiles()} />
+            <VerticalTable {...formatDataForBioSpecimenFiles()} />
           </div>
         )}
 
         <div className="mb-16">
           <SMTableContainer
             projectId={data.project.project_id}
-            columnsList={DEFAULT_MUTATION_TABLE_ORDER}
+            case_id={case_id}
             cohortFilters={projectFilter}
             caseFilter={caseFilter}
             tableTitle="Most Frequent Somatic Mutations"
+            inModal={isModal}
           />
         </div>
       </div>

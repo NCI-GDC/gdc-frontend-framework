@@ -1,7 +1,7 @@
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
-
+from ....base.base_page import GenericLocators
 
 class RepositoryPageLocators:
     TITLE = lambda title_name: f'div[data-testid="{title_name}-title"]'
@@ -13,8 +13,6 @@ class RepositoryPageLocators:
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="section-file-filter-search"]>div>div>input'
 
-    MODAL_CLOSE = "[aria-label='button-close-modal']"
-
     IMAGE_VIEWER_IDENT = lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
@@ -22,8 +20,10 @@ class RepositoryPageLocators:
     IMAGE_VIEWER_SHOWING_NUMBER_OF_CASES = "[data-testid='showing-image-viewer']"
     IMAGE_VIEWER_SEARCH_FILTER = lambda search_filter: f'text="{search_filter}"'
 
-    IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="details-image-viewer"] >> text={field_name}'
-    IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="details-image-viewer"] >> text={field_name}{value} >> td'
+    IMAGE_VIEWER_DETAILS_FIELD = lambda field_name: f'[data-testid="table-image-viewer-details"] >> text={field_name}'
+    IMAGE_VIEWER_DETAILS_VALUE = lambda field_name, value: f'[data-testid="table-image-viewer-details"] >> text={field_name}{value} >> td'
+
+    TEXT_REPO_TABLE_CASE_COUNT = lambda case_count: f'div[class="flex justify-between"] >> text="{case_count}"'
 
 class RepositoryPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -80,8 +80,15 @@ class RepositoryPage(BasePage):
             )
         )
 
+    def compare_cohort_case_count_and_repo_table_case_count(self):
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        cohort_bar_case_count = self.get_text(GenericLocators.TEXT_COHORT_BAR_CASE_COUNT)
+        repo_table_case_count_locator = RepositoryPageLocators.TEXT_REPO_TABLE_CASE_COUNT(cohort_bar_case_count)
+        return self.is_visible(repo_table_case_count_locator)
+
     def get_text_on_modal(self, text):
-        modal_name = "Add a File Filter"
+        modal_name = "Add a Custom Filter"
         result = None
         try:
             result = self.get_text(
@@ -149,9 +156,6 @@ class RepositoryPage(BasePage):
         list_name = "file-filters"
         locator = f"{RepositoryPageLocators.LIST_IDENT(list_name)}//button//div[1]"
         self.driver.locator(locator).nth(nth).click()
-
-    def close_add_a_file_filter_modal(self):
-        self.driver.locator(RepositoryPageLocators.MODAL_CLOSE).click()
 
     def remove_slide_image_viewer_search_filter(self, search_filter:str):
         """Removes search filter on the slide image viewer page

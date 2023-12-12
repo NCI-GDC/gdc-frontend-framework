@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Popover, Tooltip } from "@mantine/core";
-import { DatePicker, RangeCalendar } from "@mantine/dates";
+import { DateInput, DatePicker } from "@mantine/dates";
 import {
   buildRangeOperator,
   extractRangeValues,
@@ -28,7 +28,7 @@ type DateRangeFacetProps = Omit<
 >;
 
 /**
- * Converts a date into a string of YYYY/MM/DD padding 0 for months and days < 10.
+ * Converts a date into a string of YYYY/MM/DD padding 0 for months and days \< 10.
  * @param d - date to convert
  */
 const convertDateToString = (d: Date | null): string | undefined => {
@@ -88,75 +88,79 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-1"
-      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
+        width ? width : "mx-0"
+      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
           label={description}
           position="bottom-start"
+          disabled={!description}
           multiline
           width={220}
           withArrow
-          transition="fade"
-          transitionDuration={200}
+          transitionProps={{ duration: 200, transition: "fade" }}
         >
           <FacetText>
             {facetName ? facetName : trimFirstFieldNameToTitle(field, true)}
           </FacetText>
         </Tooltip>
         <div className="flex flex-row">
-          <FacetIconButton
-            onClick={() => clearFilters(field)}
-            aria-label="clear selection"
-          >
-            <UndoIcon size="1.15em" className={controlsIconStyle} />
-          </FacetIconButton>
-          {dismissCallback ? (
+          <Tooltip label="Clear selection">
             <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                dismissCallback(field);
-              }}
-              aria-label="Remove the facet"
+              onClick={() => clearFilters(field)}
+              aria-label="clear selection"
             >
-              <CloseIcon size="1.25em" className={controlsIconStyle} />
+              <UndoIcon size="1.15em" className={controlsIconStyle} />
             </FacetIconButton>
-          ) : null}
+          </Tooltip>
+          {dismissCallback && (
+            <Tooltip label="Remove the facet">
+              <FacetIconButton
+                onClick={() => {
+                  clearFilters(field);
+                  dismissCallback(field);
+                }}
+                aria-label="Remove the facet"
+              >
+                <CloseIcon size="1.25em" className={controlsIconStyle} />
+              </FacetIconButton>
+            </Tooltip>
+          )}
         </div>
       </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2 ">
-        <DatePicker
-          allowFreeInput
+      <div className="flex flex-nowrap items-center p-2">
+        <DateInput
           clearable
           size="xs"
           placeholder="Since"
           className="px-1"
           maxDate={dateRangeValue[1]}
-          inputFormat="YYYY-MM-DD"
+          valueFormat="YYYY-MM-DD"
           onChange={(d: Date | null) =>
             setDateRangeValue([d, dateRangeValue[1]])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           value={dateRangeValue[0]}
           aria-label="Set the since value"
           icon={<CalendarIcon />}
-        ></DatePicker>
+        />
         <MinusIcon />
-        <DatePicker
-          allowFreeInput
+        <DateInput
           clearable
           size="xs"
           placeholder="Through"
           className="px-1"
-          inputFormat="YYYY-MM-DD"
+          valueFormat="YYYY-MM-DD"
           value={dateRangeValue[1]}
           minDate={dateRangeValue[0]}
           onChange={(d: Date | null) =>
             setDateRangeValue([dateRangeValue[0], d])
           }
+          classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           icon={<CalendarIcon />}
           aria-label="Set the through value"
-        ></DatePicker>
+        />
         <Popover
           position="bottom-end"
           withArrow
@@ -174,12 +178,13 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             </ActionIcon>
           </Popover.Target>
           <Popover.Dropdown>
-            <RangeCalendar
+            <DatePicker
               classNames={{
-                day: "data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
+                day: "hover:bg-primary hover:text-base-max data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
               }}
+              numberOfColumns={2}
+              type="range"
               allowSingleDateInRange={false}
-              amountOfMonths={2}
               value={dateRangeValue}
               onChange={(d: [Date | null, Date | null]) => setDateRangeValue(d)}
               aria-label="date range picker"

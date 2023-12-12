@@ -23,11 +23,11 @@ import { UserInputContext } from "@/components/Modals/UserInputModal";
 import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { getMatchedIdentifiers, MatchResults } from "./utils";
-import MatchTables from "./MatchTables";
-import SaveSetButton from "./SaveSetButton";
+import MatchTablesWrapper from "./MatchTablesWrapper";
 import fieldConfig from "./fieldConfig";
 
 export const MATCH_LIMIT = 50000;
+const parseTokens = (input: string) => input.trim().split(/[\s,]+/);
 
 interface InputEntityListProps {
   readonly inputInstructions: string;
@@ -40,7 +40,8 @@ interface InputEntityListProps {
     readonly createSet?: UseMutation<any>;
     readonly getExistingFilters?: () => FilterSet;
   };
-  readonly SubmitButton: React.ElementType;
+  readonly RightButton: React.ElementType;
+  readonly LeftButton?: React.ElementType;
 }
 
 const InputEntityList: React.FC<InputEntityListProps> = ({
@@ -50,24 +51,29 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   entityType,
   entityLabel,
   hooks,
-  SubmitButton,
+  RightButton,
+  LeftButton,
 }: InputEntityListProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [processingFile, setProcessingFile] = useState(false);
   const [input, setInput] = useState("");
   const [tokens, setTokens] = useState<string[]>([]);
   const [matched, setMatched] = useState<MatchResults[]>([]);
-  const [isUnintialized, setIsUnitialized] = useState(true);
+  const [isNotInitialized, setIsNotInitialized] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [screenReaderMessage, setScreenReaderMessage] = useState("");
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const dispatch = useCoreDispatch();
 
-  const setTokensDebounced = debounce(
-    (input) => setTokens(input.trim().split(/[\s,]+/)),
-    500,
-  );
+  const resetState = () => {
+    setInput("");
+    setIsNotInitialized(true);
+    setMatched([]);
+    setFile(null);
+    setScreenReaderMessage("");
+    setTokens([]);
+  };
 
   const {
     mappedToFields,
@@ -78,49 +84,55 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     facetField,
   } = fieldConfig[entityType];
 
-  useEffect(() => {
-    if (tokens.length > 0) {
-      setIsUnitialized(false);
-      setIsFetching(true);
+  const queryForMatchesDebounced = useMemo(
+    () =>
+      debounce((queryTokens: string[]) => {
+        if (queryTokens.length > 0) {
+          setIsNotInitialized(false);
+          setIsFetching(true);
 
-      const response = fetchGdcEntities(
-        entityType,
-        {
-          filters: {
-            op: "in",
-            content: {
-              field: searchField,
-              value: uniq(tokens.map((t) => t.toLowerCase())),
+          const response = fetchGdcEntities(
+            entityType,
+            {
+              filters: {
+                op: "in",
+                content: {
+                  field: searchField,
+                  value: uniq(queryTokens.map((t) => t.toLowerCase())),
+                },
+              },
+              fields: [...mappedToFields, ...matchAgainstIdentifiers],
+              size: 10000,
             },
-          },
-          fields: [...mappedToFields, ...matchAgainstIdentifiers],
-          size: 10000,
-        },
-        true,
-      );
+            true,
+          );
 
-      response.then((data) => {
-        setMatched(
-          getMatchedIdentifiers(
-            data.data.hits,
-            mappedToFields,
-            matchAgainstIdentifiers,
-            outputField,
-            tokens,
-          ),
-        );
+          response.then((data) => {
+            setMatched(
+              getMatchedIdentifiers(
+                data.data.hits,
+                mappedToFields,
+                matchAgainstIdentifiers,
+                outputField,
+                queryTokens,
+              ),
+            );
 
-        setIsFetching(false);
-      });
-    }
-  }, [
-    tokens,
-    mappedToFields,
-    matchAgainstIdentifiers,
-    outputField,
-    searchField,
-    entityType,
-  ]);
+            setIsFetching(false);
+          });
+        }
+
+        setTokens(queryTokens);
+      }, 1000),
+    [
+      mappedToFields,
+      matchAgainstIdentifiers,
+      outputField,
+      searchField,
+      entityType,
+      setTokens,
+    ],
+  );
 
   const unmatched = useMemo(() => {
     const unmatchedTokens = new Set(tokens.map((t) => t.toUpperCase()));
@@ -128,7 +140,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     const matchedIds = new Set(
       flatten(
         matched.map((m) =>
-          m.givenIdentifiers.map((i) => i.value.toUpperCase()),
+          m.submittedIdentifiers.map((i) => i.value.toUpperCase()),
         ),
       ),
     );
@@ -189,9 +201,10 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               label={identifierToolTip}
               events={{ hover: true, focus: true, touch: false }}
               withArrow
+              withinPortal={false}
             >
               <ActionIcon aria-label="accepted identifier info">
-                <InfoIcon size={16} className="text-primary-darkest" />
+                <InfoIcon size={16} className="text-accent" />
               </ActionIcon>
             </Tooltip>
           </div>
@@ -200,7 +213,8 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             value={input}
             onChange={(event) => {
               setInput(event.currentTarget.value);
-              setTokensDebounced(event.currentTarget.value);
+              const tokens = parseTokens(event.currentTarget.value);
+              queryForMatchesDebounced(tokens);
             }}
             minRows={5}
             id="identifier-input"
@@ -224,7 +238,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
                 setFile(file);
                 const contents = await file.text();
                 setInput(contents);
-                setTokens(contents.trim().split(/[\s,]+/));
+                queryForMatchesDebounced(parseTokens(contents));
                 setScreenReaderMessage("File successfully uploaded.");
                 setProcessingFile(false);
               }
@@ -233,7 +247,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               processingFile ? (
                 <Loader size="xs" />
               ) : file !== null ? (
-                <FileIcon className="text-primary-darkest" />
+                <FileIcon className="text-accent" />
               ) : undefined
             }
             label={<b>Or choose a file to upload</b>}
@@ -249,13 +263,13 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             aria-details={screenReaderMessage}
           />
         </div>
-        {isUnintialized ? null : isFetching ? (
-          <div className="flex items-center pl-4 gap-1 text-sm">
+        {isNotInitialized ? null : isFetching ? (
+          <div className="flex h-32 items-center pl-4 gap-1 text-sm">
             <Loader size={12} />
             <p>validating {entityLabel}s</p>
           </div>
         ) : (
-          <MatchTables
+          <MatchTablesWrapper
             matched={matched}
             unmatched={unmatched}
             numberInput={tokens.length}
@@ -264,14 +278,17 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           />
         )}
       </div>
-      <ButtonContainer>
-        {hooks.createSet && (
-          <SaveSetButton
-            disabled={matched.length === 0}
-            setValues={outputIds}
-            setType={entityType}
-            createSetHook={hooks.createSet}
-          />
+      <ButtonContainer data-testid="modal-button-container">
+        {LeftButton && (
+          <div className="mr-auto">
+            <LeftButton
+              disabled={matched.length === 0}
+              ids={outputIds}
+              hooks={hooks}
+              facetField={facetField}
+              setType={entityType}
+            />
+          </div>
         )}
         <DiscardChangesButton
           action={() => dispatch(hideModal())}
@@ -280,19 +297,15 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
         />
         <DiscardChangesButton
           disabled={input === ""}
-          action={() => {
-            setInput("");
-            setFile(null);
-            setScreenReaderMessage("");
-            setTokens([]);
-          }}
+          action={resetState}
           label={"Clear"}
         />
-        <SubmitButton
-          ids={outputIds}
+        <RightButton
           disabled={matched.length === 0}
+          ids={outputIds}
           hooks={hooks}
           facetField={facetField}
+          setType={entityType}
         />
       </ButtonContainer>
     </>

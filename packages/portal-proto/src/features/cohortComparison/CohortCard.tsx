@@ -2,7 +2,8 @@ import dynamic from "next/dynamic";
 import { Paper } from "@mantine/core";
 import { FIELD_LABELS } from "src/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
-import { FilterSet } from "@gff/core";
+import Link from "next/link";
+import { CohortComparisonType } from "./CohortComparison";
 const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
   ssr: false,
 });
@@ -12,18 +13,9 @@ interface CohortCardProps {
   readonly setSelectedCards: (cards: Record<string, boolean>) => void;
   readonly counts: number[];
   readonly options: Record<string, string>;
-  readonly cohorts?: {
-    primary_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
-    comparison_cohort: {
-      filter: FilterSet;
-      name: string;
-    };
-  };
+  readonly cohorts: CohortComparisonType;
   readonly survivalPlotSelectable: boolean;
-  readonly caseIds: string[][];
+  readonly caseSetIds: string[];
   readonly casesFetching: boolean;
 }
 
@@ -34,7 +26,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
   counts,
   cohorts,
   survivalPlotSelectable,
-  caseIds,
+  caseSetIds,
   casesFetching,
 }: CohortCardProps) => {
   return (
@@ -62,8 +54,25 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
-      {!casesFetching && caseIds.length !== 0 ? (
-        <CohortVennDiagram caseIds={caseIds} cohorts={cohorts} />
+      <div className="mt-2 flex justify-center">
+        <Link
+          href={{
+            pathname: "/analysis_page",
+            query: {
+              app: "SetOperations",
+              skipSelectionScreen: "true",
+              cohort1Id: cohorts.primary_cohort.id,
+              cohort2Id: cohorts.comparison_cohort.id,
+            },
+          }}
+          passHref
+        >
+          <a className="underline text-primary font-bold">Open Venn diagram</a>
+        </Link>
+      </div>
+
+      {!casesFetching && caseSetIds.length !== 0 ? (
+        <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
       ) : (
         <VennDiagram
           chartData={[

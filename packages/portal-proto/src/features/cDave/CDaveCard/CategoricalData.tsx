@@ -1,11 +1,18 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { Bucket } from "@gff/core";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import CardControls from "./CardControls";
-import { CategoricalBins, ChartTypes } from "../types";
-import { SURVIVAL_PLOT_MIN_COUNT } from "../constants";
+import CategoricalBinningModal from "../CategoricalBinningModal";
+import {
+  CategoricalBins,
+  ChartTypes,
+  DisplayData,
+  SelectedFacet,
+} from "../types";
+import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { flattenBinnedData } from "../utils";
 
 interface CategoricalDataProps {
@@ -25,55 +32,65 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
 }: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] =
     useState<CategoricalBins>(null);
+  const [binningModalOpen, setBinningModalOpen] = useState(false);
   const [selectedSurvivalPlots, setSelectedSurvivalPlots] = useState<string[]>(
     [],
   );
+  const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
   const resultData = useMemo(
     () =>
       Object.fromEntries(
         (initialData || []).map((d) => [
-          d.key === "_missing" ? "missing" : d.key,
+          d.key === MISSING_KEY ? "missing" : d.key,
           d.doc_count,
         ]),
       ),
     [initialData],
   );
 
-  useEffect(() => {
+  const displayedData: DisplayData = useDeepCompareMemo(
+    () =>
+      (customBinnedData !== null
+        ? flattenBinnedData(customBinnedData as CategoricalBins)
+        : (initialData || []).map(({ key, doc_count }) => ({
+            key,
+            displayName: key === MISSING_KEY ? "missing" : key,
+            count: doc_count,
+          }))
+      ).sort((a, b) => b.count - a.count),
+    [customBinnedData, initialData],
+  );
+
+  useDeepCompareEffect(() => {
     setSelectedSurvivalPlots(
-      Object.entries(
-        customBinnedData !== null
-          ? flattenBinnedData(customBinnedData as CategoricalBins)
-          : resultData,
-      )
+      displayedData
         .filter(
-          ([key, value]) =>
-            key !== "missing" && value >= SURVIVAL_PLOT_MIN_COUNT,
+          ({ key, count }) =>
+            key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
         )
-        .sort((a, b) => b[1] - a[1])
-        .map(([key]) => key)
+        .sort((a, b) => b.count - a.count)
+        .map(({ key }) => key)
         .slice(0, 2),
     );
 
     if (customBinnedData === null) {
-      setYTotal(Object.values(resultData).reduce((a, b) => a + b, 0));
+      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
     }
-  }, [customBinnedData, resultData]);
+
+    setSelectedFacets([]);
+  }, [customBinnedData, displayedData]);
 
   return (
     <>
       {chartType === "histogram" ? (
         <CDaveHistogram
           field={field}
-          fieldName={fieldName}
-          data={resultData}
+          data={displayedData}
           yTotal={yTotal}
           isFetching={false}
-          continuous={false}
           noData={noData}
-          customBinnedData={customBinnedData}
         />
       ) : (
         <ClinicalSurvivalPlot
@@ -85,21 +102,36 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
       )}
       <CardControls
         continuous={false}
-        field={fieldName}
-        results={resultData}
+        field={field}
+        fieldName={fieldName}
+        displayedData={displayedData}
+        yTotal={yTotal}
+        setBinningModalOpen={setBinningModalOpen}
         customBinnedData={customBinnedData}
         setCustomBinnedData={setCustomBinnedData}
+        selectedFacets={selectedFacets}
       />
       <CDaveTable
+        field={field}
         fieldName={fieldName}
-        data={resultData}
+        displayedData={displayedData}
         yTotal={yTotal}
-        customBinnedData={customBinnedData}
+        hasCustomBins={customBinnedData !== null}
         survival={chartType === "survival"}
         selectedSurvivalPlots={selectedSurvivalPlots}
         setSelectedSurvivalPlots={setSelectedSurvivalPlots}
-        continuous={false}
+        selectedFacets={selectedFacets}
+        setSelectedFacets={setSelectedFacets}
       />
+      {binningModalOpen && (
+        <CategoricalBinningModal
+          setModalOpen={setBinningModalOpen}
+          field={fieldName}
+          results={resultData}
+          updateBins={setCustomBinnedData}
+          customBins={customBinnedData}
+        />
+      )}
     </>
   );
 };

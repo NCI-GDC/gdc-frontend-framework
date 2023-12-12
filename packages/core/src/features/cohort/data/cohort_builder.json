@@ -11,7 +11,7 @@
         "cases.diagnoses.tissue_or_organ_of_origin"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "demographic": {
       "label": "Demographic",
@@ -23,7 +23,7 @@
         "cases.demographic.vital_status"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "general_diagnosis": {
       "label": "General Diagnosis",
@@ -35,7 +35,7 @@
         "cases.diagnoses.laterality"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "disease_status": {
       "label": "Disease Status and History",
@@ -47,7 +47,7 @@
         "cases.diagnoses.residual_disease"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "stage_classification": {
       "label": "Stage Classification",
@@ -57,6 +57,7 @@
         "cases.diagnoses.ann_arbor_clinical_stage",
         "cases.diagnoses.ann_arbor_pathologic_stage",
         "cases.diagnoses.cog_renal_stage",
+        "cases.diagnoses.enneking_msts_stage",
         "cases.diagnoses.figo_stage",
         "cases.diagnoses.igcccg_stage",
         "cases.diagnoses.inss_stage",
@@ -64,24 +65,29 @@
         "cases.diagnoses.masaoka_stage"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "grade_classification": {
       "label": "Grade Classification",
-      "facets": ["cases.diagnoses.tumor_grade"],
+      "facets": [
+        "cases.diagnoses.inpc_grade",
+        "cases.diagnoses.tumor_grade",
+        "cases.diagnoses.who_cns_grade"
+      ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "other_classification": {
       "label": "Other Classification",
       "facets": [
+        "cases.diagnoses.cog_neuroblastoma_risk_group",
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
         "cases.diagnoses.international_prognostic_index",
         "cases.diagnoses.wilms_tumor_histologic_subtype"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "treatment": {
       "label": "Treatment",
@@ -93,7 +99,7 @@
         "cases.diagnoses.treatments.treatment_type"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "exposure": {
       "label": "Exposure",
@@ -106,7 +112,7 @@
         "cases.exposures.tobacco_smoking_onset_year"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "biospecimen": {
       "label": "Biospecimen",
@@ -121,7 +127,7 @@
         "cases.samples.portions.analytes.aliquots.analyte_type"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "available_data": {
       "label": "Available Data",
@@ -135,13 +141,13 @@
         "files.access"
       ],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     },
     "custom": {
       "label": "Custom Filters",
       "facets": [],
       "docType": "cases",
-      "index": "repository"
+      "index": "explore"
     }
   }
 }

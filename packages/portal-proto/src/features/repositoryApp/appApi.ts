@@ -3,8 +3,10 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
+import { repositoryFacetsGQLReducer } from "./repositoryFacetSlice";
 import { createAppStore, AppDataSelectorResponse } from "@gff/core";
 import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
+import { repositoryRangeFacetsReducer } from "@/features/repositoryApp/repositoryRangeFacet";
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
@@ -12,6 +14,8 @@ const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
   filters: repositoryFiltersReducer,
   images: imageCountsReducer,
+  facetBuckets: repositoryFacetsGQLReducer,
+  facetRanges: repositoryRangeFacetsReducer,
 });
 
 const persistConfig = {
@@ -33,6 +37,8 @@ export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   });
 
 export type AppState = ReturnType<typeof downloadAppReducers>;
+
+export type AppDispatch = typeof AppStore.dispatch;
 
 export interface AppDataSelector<T> {
   (state: AppState): AppDataSelectorResponse<T>;

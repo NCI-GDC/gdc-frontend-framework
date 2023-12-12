@@ -5,6 +5,8 @@ import {
   FilterSet,
   joinFilters,
   isIncludes,
+  DataStatus,
+  GdcFile,
 } from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
@@ -50,6 +52,10 @@ export const capitalize = (original: string): string => {
     dbgap: "dbGaP",
     ecog: "ECOG",
     bmi: "BMI",
+    gdc: "GDC",
+    cnv: "CNV",
+    ssm: "SSM",
+    aa: "AA",
   };
 
   return original
@@ -124,9 +130,9 @@ export const fileInCart = (cart: CartFile[], newId: string): boolean =>
 
 /**
  *
- * @param givenObjects Array of given objects
- * @param property Property (string) which we want to base the comparison on
- * @returns the array of given objects (@param givenObject) in ascending order based on the (@param property)
+ * @param givenObjects - Array of given objects
+ * @param property - Property (string) which we want to base the comparison on
+ * @returns the array of given objects (\@param givenObject) in ascending order based on the (\@param property)
  */
 export const sortByPropertyAsc = <T>(
   givenObjects: Array<T>,
@@ -221,7 +227,7 @@ export const processFilters = (
 const MAX_VALUE_COUNT = 6;
 /**
  * Creates a name for a filter set based on it's contents
- * @param filters
+ * @param filters -
  * @returns a name with up to 6 filters, grouped by field
  */
 export const filtersToName = (filters: FilterSet): string => {
@@ -243,4 +249,43 @@ export const filtersToName = (filters: FilterSet): string => {
   }
 
   return filterValues.join(", ");
+};
+
+/**
+ * convert hooks 3 boolean status to DataStatus
+ * @param isFetching -
+ * @param isSuccess -
+ * @param isError -
+ */
+
+export const statusBooleansToDataStatus = (
+  isFetching: boolean,
+  isSuccess: boolean,
+  isError: boolean,
+): DataStatus => {
+  return isFetching
+    ? "pending"
+    : isSuccess
+    ? "fulfilled"
+    : isError
+    ? "rejected"
+    : "uninitialized";
+};
+
+export const getAnnotationsLinkParamsFromFiles = (
+  file: GdcFile,
+): string | null => {
+  // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
+  // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
+  // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758
+  const MAX_ANNOATATION_COUNT = 150;
+  if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
+    return null;
+
+  if (file?.annotations?.length === 1) {
+    return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
+  }
+  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
+    file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
+  ]}]},"op":"in"}],"op":"and"}`;
 };

@@ -9,9 +9,9 @@ interface RadioSquareButtonGroupProps {
 
 /**
  * RadioButtonGroup a horizontal layout of button which act as a radio group
- * @param items: list of button labels as strings
- * @param checkedItem: initial selected button
- * @param onSelected a function (string) to handle when the group's selected button changes
+ * @param items - list of button labels as strings
+ * @param checkedItem - initial selected button
+ * @param onSelected - a function (string) to handle when the group's selected button changes
  */
 const RadioButtonGroup: React.FC<RadioSquareButtonGroupProps> = ({
   items,

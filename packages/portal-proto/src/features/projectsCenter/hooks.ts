@@ -65,7 +65,14 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          filterSelector: selectProjectFilters,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          caseFilterSelector: (_ignored) => {
+            return {
+              mode: "and",
+              root: {},
+            };
+          },
+          localFilters: allFilters,
         }),
       );
     }
@@ -123,7 +130,7 @@ export const useClearProjectsFilters = (): ClearFacetFunction => {
 /**
  * Selector for the facet values (if any) from the current cohort
  * @param field - field name to find filter for
- * @return Value of Filters or undefined
+ * @returns Value of Filters or undefined
  */
 export const useProjectEnumValues = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>

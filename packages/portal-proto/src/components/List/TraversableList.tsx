@@ -39,7 +39,7 @@ interface Props<T> {
   onFocusList?: (index: number) => void;
 }
 
-export const TraversableList = <T extends unknown>({
+export const TraversableList = <T extends Record<string, any>>({
   data,
   onListBlur,
   onSelectItem,
@@ -116,7 +116,7 @@ export const TraversableList = <T extends unknown>({
     <>
       {data?.length > 0 ? (
         <ul
-          className="bg-base-lightest border-r-10 border-1 border-base absolute right-0 top-10 w-[512px] sm:left-0 md:left-0 lg:left-auto"
+          className="bg-base-lightest border-r-10 border-1 border-base absolute right-0 top-10 w-[512px] sm:left-0 md:left-0 lg:left-auto z-10"
           tabIndex={0}
           data-testid="list"
         >

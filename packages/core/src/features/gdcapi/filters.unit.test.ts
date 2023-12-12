@@ -117,6 +117,7 @@ const missing: Scenario = {
     op: "is",
     content: {
       field: "asdf",
+      value: "MISSING",
     },
   },
 };

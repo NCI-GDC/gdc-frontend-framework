@@ -715,6 +715,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        "Custom-Repo-Width": "1370px",
+      },
       colors: {
         /* These colors come from the NCI color palette. The palette defines
          * six primary and five secondary colors. The extended palette defines
@@ -783,7 +786,7 @@ module.exports = {
         cartDarkerOrange: "#C7501A",
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
-        emptyCartLighterColor: "#e0e9f0",
+        emptyIconLighterColor: "#e0e9f0",
       },
       minHeight: {
         "screen-60vh": "60vh",
@@ -824,9 +827,8 @@ module.exports = {
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {
-        "hero-pattern": "url(/v2/user-flow/hero-background.svg)",
+        "hero-pattern": "url(/v2/homepage/hero-background.svg)",
         "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
-        "btm-pattern": "url(/v2/homepage/hp-bg-btm.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
@@ -868,6 +870,9 @@ module.exports = {
       animation: {
         "slide-up": "slide-up 500ms ease-in-out ",
         "slide-down": "slide-down 500ms ease-in-out ",
+      },
+      lineHeight: {
+        0: "0px",
       },
     },
   },

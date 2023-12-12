@@ -1,6 +1,8 @@
 import json
 import tarfile
 import time
+import re
+
 from datetime import datetime as dt
 
 from getgauge.python import step, before_spec, after_spec, data_store
@@ -19,6 +21,24 @@ def pause_10_seconds(sleep_time):
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
+
+@after_spec
+def setup_next_spec_run():
+    """
+    After each spec file's execution, this function will run. The intention is to
+    clear the active cohort filters and setup the next spec run.
+
+    First, we go to the analysis center. If a test found a bug in the data portal the next test
+    may not execute correctly, because the previous test ended in an unexpected and difficult to get
+    out of place. Then, we check to see if there is the 'No filters currently applied' text is present.
+    If not, we click the 'Clear All' button to remove the active cohort filters.
+    Finally, we wait to see the the text confirming there are no active cohort filters present.
+    """
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    if not APP.shared.is_no_active_cohort_filter_text_present():
+        APP.shared.clear_active_cohort_filters()
 
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
@@ -40,9 +60,11 @@ def navigate_to_page_in_page(target, source, target_type):
             "app": APP.home_page.navigate_to_app
         },
         "Repository": {
-            "app": APP.repository_page.click_button,
+            "app": APP.repository_page.click_button
         },
-        "Analysis": {"app": APP.analysis_center_page.navigate_to_tool},
+        "Analysis": {
+            "app": APP.analysis_center_page.navigate_to_app
+        },
         "Cohort Builder": {
             "app": APP.cohort_builder_page.click_button
         }
@@ -54,7 +76,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a File Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
     }
     first_text = text.split(" ")[0]
     try:
@@ -65,23 +87,44 @@ def verify_text_on_page(text, source, target_type):
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"
 
+@step("Verify <statistic_1> and <statistic_2> are <equal_or_not_equal>")
+def verify_compared_statistics_are_equal_or_not_equal(statistic_1, statistic_2, equal_or_not_equal):
+    """
+    verify_compared_statistics_are_equal_or_not_equal compares two previously stored statistics to one another.
+    Asserts if they are equal or not equal based on spec file input.
 
-@step("Close <modal_name> modal")
-def close_modal(modal_name: str):
-    modals = {"Add a File Filter": APP.repository_page.close_add_a_file_filter_modal}
-    modals.get(modal_name)()
-    assert (
-        not APP.repository_page.get_file_filter_list_count()
-    ), f"Modal is still open.\nModal name: {modal_name}"
+    :param statistic_1: The first statistic to compare. It is the name it is stored under in data_store.spec
+    :param statistic_2: The second statistic to compare. It is the name it is stored under in data_store.spec
+    :param equal_or_not_equal: If the compared statistics should be equal or not
+    :return: N/A
+    """
+    # Get first statistic to compare
+    first_statistic_string = data_store.spec[f"{statistic_1}"]
+    first_statistic_string = APP.shared.strip_string_for_comparison(first_statistic_string)
 
+    # Get second statistic to compare
+    second_statistic_string = data_store.spec[f"{statistic_2}"]
+    second_statistic_string = APP.shared.strip_string_for_comparison(second_statistic_string)
+
+    equal_or_not_equal = equal_or_not_equal.lower()
+    if equal_or_not_equal == "equal":
+        assert first_statistic_string == second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does NOT match"
+    elif equal_or_not_equal == "not equal":
+        assert first_statistic_string != second_statistic_string, f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does match when it should NOT"
+
+@step("Close the modal")
+def close_the_modal():
+    APP.shared.click_close_modal_button()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file:str, source:str):
     sources = {
+        "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
-        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button
+        "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Manage Sets": APP.manage_sets_page.click_on_download_for_set
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
@@ -110,6 +153,8 @@ def upload_file(file_name:str, extension:str, folder_name:str, source:str, butto
     """
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
+        "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
+        "Manage Sets Import": APP.manage_sets_page.click_browse_import_set
     }
     driver = WebDriver.page
     with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
@@ -188,99 +233,281 @@ def verify_file_has_expected_field_names(file_type, field_name):
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
-        is_filter_visible = APP.home_page.is_filter_card_present(v[0])
+        is_filter_visible = APP.shared.is_filter_card_present(v[0])
         assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
 
 @step("Verify the page is showing <number_of_items_text>")
 def verify_showing_item_text(number_of_items_text):
     """Verifies the 'Showing' text at the bottom of tables has the correct text"""
-    showing_items_text = APP.home_page.get_showing_count_text()
+    showing_items_text = APP.shared.get_showing_count_text()
     assert f"{showing_items_text}" in showing_items_text, f"The page is NOT showing expected number of items - {number_of_items_text}"
+
+@step("Verify the table header text is correct <table>")
+def verify_table_header_text(table):
+    """Verifies the table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_header_text_by_column = APP.shared.get_table_header_text_by_column(v[1])
+        # Remove new lines from input
+        table_header_text_by_column = table_header_text_by_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_column = re.sub(' +', ' ', table_header_text_by_column)
+        assert f"{table_header_text_by_column}" == v[0], f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+
+@step("Verify the table body text is correct <table>")
+def verify_table_body_text(table):
+    """Verifies the table body has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
+        # Remove new lines from input
+        table_body_text_by_row_column = table_body_text_by_row_column.replace('\n', '')
+        # Remove unwanted additional spaces between words from input
+        table_body_text_by_row_column = re.sub(' +', ' ', table_body_text_by_row_column)
+        assert f"{table_body_text_by_row_column}" == v[0], f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+
+@step("Verify the table body tooltips are correct <table>")
+def verify_table_body_tooltips_text(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    """Verifies the table body has correct tooltips"""
+    for k, v in enumerate(table):
+        APP.shared.hover_table_body_by_row_column(v[1],v[2])
+        is_tooltip_text_present = APP.shared.is_text_present(v[0])
+        assert is_tooltip_text_present, f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
+
+@step("Verify the table <table_name> is displaying this information <table>")
+def verify_table_is_displaying_text(table_name, table):
+    """Verifies the table is displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text(table_name,v[0])
+        assert is_table_text_present, f"The table '{table_name}' is NOT displaying '{v[0]}'"
+
+@step("Verify the button <button_name> is disabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled, f"The button '{button_name}' is NOT disabled when it should be"
+
+@step("Verify the button <button_name> is enabled")
+def verify_button_is_disabled(button_name:str):
+    is_button_disabled = APP.shared.is_button_disabled(button_name)
+    assert is_button_disabled==False, f"The button '{button_name}' is disabled when it should NOT be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
     """Waits for specified data-testid to be present on the page"""
-    is_data_testid_visible = APP.home_page.wait_for_data_testid_to_be_visible(data_testid)
+    is_data_testid_visible = APP.shared.wait_for_data_testid_to_be_visible(data_testid)
     assert is_data_testid_visible, f"The data-testid '{data_testid}' is NOT present"
 
-# TO-DO: replace home_page function call with base_page.
-# All generic_step functions and related locators should
-# be put into base_page.py
+@step("Wait for loading spinner")
+def wait_for_loading_spinner_generic_to_appear_then_disappear():
+    """Waits for loading spinner to appear and disappear on the page"""
+    APP.shared.wait_for_loading_spinner_to_be_visible()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+
+@step("Wait for cohort bar case count loading spinner")
+def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
+    """Waits for cohort bar case count loading spinner to disappear on the page"""
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
+@step("Wait for table loading spinner")
+def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
+    """Waits for table loading spinner to disappear on the page"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+
+@step("Wait for table body text to appear <table>")
+def wait_for_table_body_text_to_appear(table):
+    """Waits for specified table body text to appear"""
+    # Wait for all possible loading spinners to detach before checking text
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        """
+        v[0] - Text
+        v[1] - Row
+        v[2] - Column
+        """
+        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        time.sleep(1)
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if expected text is on the page"""
-    is_text_present = APP.home_page.is_text_present(expected_text)
+    is_text_present = APP.shared.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
     """Verifies if text is no longer on the page as expected"""
-    is_text_not_present = APP.home_page.is_text_not_present(expected_text)
+    is_text_not_present = APP.shared.is_text_not_present(expected_text)
     assert is_text_not_present, f"The text '{expected_text}' is present when it should not"
 
 @step("Is modal with text <expected_text> present on the page and <action>")
 def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
-    is_text_present = APP.home_page.wait_for_text_in_temporary_message(expected_text,action)
+    is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
+
+@step("Validate the message <message_id> displays the text <expected_text>")
+def validate_message_id_text_is_present_on_the_page(message_id:str, expected_text: str):
+    """Verifies if specified data-testid message displays expected text"""
+    is_text_present = APP.shared.is_message_id_text_present(message_id, expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
+@step("Collect these data portal statistics for comparison <table>")
+def store_home_page_data_portal_statistics(table):
+     """
+        Stores data portal summary statistics for use in future tests.
+        Pairs with the test 'verify_counts_match_home_page_count'
+
+        v[0] - The name of the home page statistic to collect
+        v[1] - The name the statistic will be stored under
+     """
+     for k, v in enumerate(table):
+        category_statistic = APP.home_page.get_data_portal_summary_statistic(v[0])
+        data_store.spec[f"{v[1]}"] = category_statistic
+
+@step("Collect button labels in table for comparison <table>")
+def store_button_labels_in_tables_for_comparison(table):
+     """
+        Stores button label text for comparison in future tests.
+        Pairs with the test 'verify_counts_match_button_label'
+
+        v[0] - The name of how the label will be stored
+        v[1] - The row of the table
+        v[2] - The column of the table
+     """
+     for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_table_body_text_by_row_column(v[1],v[2])
+        data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
+
+@step("Collect Cohort Bar Case Count for comparison")
+def store_cohort_bar_case_count_for_comparison():
+     """
+        Stores current cohort bar case count for comparison in future tests.
+        Pairs with the test 'verify_counts_match_button_label'
+     """
+     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
     """Checks the cohort bar case count"""
-    is_case_count_present = APP.home_page.is_cohort_bar_case_count_present(case_count)
+    is_case_count_present = APP.shared.is_cohort_bar_case_count_present(case_count)
     assert is_case_count_present, f"The cohort bar is NOT displaying '{case_count}' cases"
 
 @step("The cart should have <correct_file_count> files")
 def is_cart_count_correct(correct_file_count: str):
     """Checks the cart file count in the upper-right corner of the data portal"""
-    is_cart_count_correct = APP.home_page.is_cart_count_correct(correct_file_count)
+    is_cart_count_correct = APP.shared.is_cart_count_correct(correct_file_count)
     assert is_cart_count_correct, f"The cart count is NOT displaying '{correct_file_count}'"
 
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
-    is_data_testid_present = APP.home_page.is_data_testid_present(data_testid)
+    is_data_testid_present = APP.shared.is_data_testid_present(data_testid)
     assert is_data_testid_present == False, f"The data-testid '{data_testid}' IS present"
 
 @step("Is checkbox checked <table>")
 def is_checkbox_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_enabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_enabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
         time.sleep(0.1)
 
 @step("Is checkbox not checked <table>")
 def is_checkbox_not_checked(table):
     for k, v in enumerate(table):
-        is_checkbox_disabeled = APP.home_page.is_facet_card_enum_checkbox_checked(v[0])
+        is_checkbox_disabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
         assert is_checkbox_disabeled == False, f"The checkbox '{v[0]}' IS checked when it is unexpected"
         time.sleep(0.1)
 
 @step("Select <data_testid> on page")
 def click_data_testid(data_testid: str):
     """Clicks specified data-testid"""
-    APP.home_page.click_data_testid(data_testid)
+    APP.shared.click_data_testid(data_testid)
 
 @step("Select <data_testid> a data-testid button")
 def click_button_with_data_testid(data_testid: str):
     """Clicks specified data-testid button"""
-    APP.home_page.click_button_data_testid(data_testid)
+    APP.shared.click_button_data_testid(data_testid)
+
+@step("Select button <data_testid>")
+def click_button_with_data_testid(data_testid: str):
+    """Normalizes identifier, and clicks specified data-testid button"""
+    data_testid = APP.shared.normalize_button_identifier(data_testid)
+    APP.shared.click_button_data_testid(data_testid)
 
 @step("Select <button_text_name>")
 def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
-    APP.home_page.click_button_with_displayed_text_name(button_text_name)
+    APP.shared.click_button_with_displayed_text_name(button_text_name)
+
+@step("Select the link <link_data_testid>")
+def click_link_data_testid(link_data_testid: str):
+    """Clicks a link with a data-testid"""
+    APP.shared.click_link_data_testid(link_data_testid)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
-        APP.home_page.click_radio_button(v[0])
+        APP.shared.click_radio_button(v[0])
         time.sleep(0.1)
+
+@step("Select create or save in cohort modal")
+def click_create_or_save_in_cohort_modal():
+    """Clicks 'Create' or 'Save' in cohort modal"""
+    APP.shared.click_create_or_save_button_in_cohort_modal()
+
+@step("Select or deselect these options from the table column selector <table>")
+def click_create_or_save_in_cohort_modal(table):
+    """
+    Clicks table column selector button.
+    In the column selector pop-up modal that appears, it clicks the specified switch.
+    """
+    APP.shared.click_column_selector_button()
+    for k, v in enumerate(table):
+        APP.shared.click_switch_for_column_selector(v[0])
+    APP.shared.click_column_selector_button()
+
+@step("Perform action and validate modal text <table>")
+def click_named_button_in_modal_and_wait_for_temp_message_text(table):
+    """
+    click_named_button_wait_for_message_text clicks a button by its displayed name in a modal,
+    validates text in a temporary pop-up modal message, and either clicks the 'x' to remove the temp message,
+    or does nothing to let the message persist.
+
+    :param v[0]: The name of the button to be clicked
+    :param v[1]: The text in the temporary message that we are waiting for
+    :param v[2]: Input of "Removal Modal" will remove the temp message, otherwise we let it persist
+    """
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    for k, v in enumerate(table):
+        APP.shared.click_button_in_modal_with_displayed_text_name(v[0])
+        is_cohort_message_present = APP.cohort_bar.wait_for_text_in_temporary_message(v[1], v[2])
+        assert is_cohort_message_present, f"The text '{v[1]}' is NOT present"
+        # Need to let the page load after our actions here.
+        # Automation moves too quickly in the cohort bar section.
+        time.sleep(1)
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
+@step("Clear active cohort filters")
+def clear_active_cohort_filters():
+    # Clicks the 'clear all' button in the cohort query area
+    APP.shared.clear_active_cohort_filters()
 
 @step("Undo Action")
 def click_undo_in_message():
     """Clicks 'undo' in a modal message"""
-    APP.home_page.click_undo_in_message()
+    APP.shared.click_undo_in_message()
+
+@step("Set this as your current cohort")
+def click_undo_in_message():
+    """Clicks 'Set this as your current cohort' in a modal message"""
+    APP.shared.click_set_as_current_cohort_in_message()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 # These 3 functions are for filter cards (like on projects or repository page).
 # The filter cards depend on a specific data-testid "filters-facets" that
@@ -289,17 +516,25 @@ def click_undo_in_message():
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
-        APP.repository_page.make_selection_within_filter_group(v[0], v[1])
+        APP.shared.make_selection_within_filter_group(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
 
 @step("Perform the following actions on a filter card <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
-        APP.repository_page.perform_action_within_filter_card(v[0], v[1])
+        APP.shared.perform_action_within_filter_card(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
 
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
-        APP.repository_page.click_show_more_less_within_filter_card(v[0], v[1])
+        APP.shared.click_show_more_less_within_filter_card(v[0], v[1])
 
 
 @step("Select value from table by row and column <table>")
@@ -309,12 +544,41 @@ def select_table_value_by_row_column(table):
     Row and Column indexing begins at '1'
     """
     for k, v in enumerate(table):
-        APP.home_page.select_table_by_row_column(v[0],v[1])
+        APP.shared.select_table_by_row_column(v[0],v[1])
+        time.sleep(1)
+        # In Mutation Frequency, selecting items in the table can take a
+        # long time to load. They can also load and spin at different times
+        # in different places (e.g the cohort case count, table, graphs, etc.)
+        # So we have an abundance of waits.
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):
     """Sends text into search bar based on its aria_label"""
-    APP.home_page.send_text_into_search_bar(text, aria_label)
+    APP.shared.send_text_into_search_bar(text, aria_label)
+
+@step("Enter <text> in the text box <text_box_name>")
+def send_text_into_text_box(text: str, text_box_name: str):
+    """Sends text into a data-testid text box"""
+    APP.shared.send_text_into_text_box(text, text_box_name)
+
+@step("Search the table for <text>")
+def send_text_into_table_search_bar(text: str):
+    """Sends text into a table search bar"""
+    APP.shared.send_text_into_table_search_bar(text)
+    time.sleep(1)
+    # In Mutation Frequency, searching in the table can take a
+    # long time to load. They can also load and spin at different times
+    # in different places (e.g the cohort case count, table, graphs, etc.)
+    # So we have an abundance of waits.
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.keyboard_press("Enter")
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Quick search for <text> and go to its page")
 def quick_search_and_click(text: str):
@@ -322,4 +586,41 @@ def quick_search_and_click(text: str):
     Sends text into the quick search bar in the upper-right corner of the data portal.
     Then clicks the result in the search result area. Best used with a UUID.
     """
-    APP.home_page.quick_search_and_click(text)
+    APP.shared.quick_search_and_click(text)
+
+@step("Quick search for <text>")
+def global_quick_search(text: str):
+    """
+    Sends text into the quick search bar in the upper-right corner of the data portal.
+    """
+    APP.shared.global_quick_search(text)
+
+@step("Validate the quick search bar result in position <result_in_list> of the result list has the abbreviation <abbreviation>")
+def validate_global_quick_search_result_abbreviation(result_in_list: str, abbreviation:str):
+    """
+    Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect.
+    """
+    APP.shared.validate_global_quick_search_result_abbreviation(result_in_list,abbreviation)
+
+@step("Select the quick search bar result in position <result_in_list>")
+def quick_search(result_in_list: str):
+    """
+    Specifies a result from the quick search bar result list. Clicks that result.
+    """
+    APP.shared.click_global_quick_search_result(result_in_list)
+
+@step("Name the cohort <cohort_name>")
+def name_cohort(cohort_name: str):
+    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+
+@step("These links on the <page_name> should take the user to correct page in a new tab <table>")
+def click_nav_item_check_text_in_new_tab(page_name: str, table):
+    """
+    Performs an action to open a new tab.
+    Then, checks for expected text on the new tab to indicate it opened correctly.
+    """
+    for k, v in enumerate(table):
+        new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
+        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab,v[1])
+        assert is_text_visible, f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
+        new_tab.close()

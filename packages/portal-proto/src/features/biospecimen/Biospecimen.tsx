@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
 import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
-import { Button, Input, LoadingOverlay } from "@mantine/core";
+import { Button, Input, Loader, LoadingOverlay } from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -10,27 +10,33 @@ import {
   selectCart,
 } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
-import { formatEntityInfo, search } from "./utils";
-import { trimEnd, find, flatten } from "lodash";
+import { formatEntityInfo, searchForStringInNode } from "./utils";
+import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
-import { HeaderTitle } from "../shared/tailwindComponents";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import download from "@/utils/download";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 interface BiospecimenProps {
-  caseId: string;
-  bioId: string;
-  isModal?: boolean;
+  readonly caseId: string;
+  readonly bioId: string;
+  readonly isModal?: boolean;
+  readonly project_id: string;
+  readonly submitter_id: string;
 }
 
 export const Biospecimen = ({
   caseId,
   bioId,
   isModal = false,
+  project_id,
+  submitter_id,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
-
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
@@ -59,9 +65,10 @@ export const Biospecimen = ({
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
     ) {
-      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) =>
-        search(searchText, e),
-      );
+      const escapedSearchText = escapeRegExp(searchText);
+      const founds = bioSpecimenData?.samples?.hits?.edges.map((e) => {
+        return searchForStringInNode(escapedSearchText, e);
+      });
       const flattened = flatten(founds);
       const foundNode = flattened[0]?.node;
 
@@ -111,11 +118,57 @@ export const Biospecimen = ({
     submitter_id: selectedEntity?.submitter_id,
   });
 
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [caseId],
+          },
+        },
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
     <div className="mt-14">
       {isBiospecimentDataFetching ? (
-        <LoadingOverlay visible data-testid="loading" />
+        <LoadingOverlay visible data-testid="loading-spinner" />
       ) : selectedEntity &&
         Object.keys(selectedEntity).length > 0 &&
         selectedType !== undefined ? (
@@ -127,16 +180,27 @@ export const Biospecimen = ({
           <DropdownWithIcon
             dropdownElements={[
               {
-                title: "TSV (Coming soon)",
+                title: "TSV",
                 icon: <DownloadIcon size={16} aria-label="download icon" />,
+                onClick: handleBiospeciemenTSVDownload,
               },
               {
-                title: "JSON (Coming soon)",
+                title: "JSON",
                 icon: <DownloadIcon size={16} aria-label="download icon" />,
+                onClick: handleBiospeciemenJSONDownload,
               },
             ]}
-            TargetButtonChildren="Download"
-            LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+            TargetButtonChildren={
+              biospecimenDownloadActive ? "Processing" : "Download"
+            }
+            LeftIcon={
+              biospecimenDownloadActive ? (
+                <Loader size={20} />
+              ) : (
+                <DownloadIcon size="1rem" aria-label="download icon" />
+              )
+            }
+            zIndex={5}
           />
 
           <div className="flex mt-2 gap-4">
@@ -211,7 +275,7 @@ export const Biospecimen = ({
                     setTotalNodeCount={setTotalNodeCount}
                     setExpandedCount={setExpandedCount}
                     query={searchText.toLocaleLowerCase().trim()}
-                    search={search}
+                    search={searchForStringInNode}
                   />
                 )}
             </div>

@@ -6,10 +6,10 @@ text-base-content
 font-heading
 data-[active]:font-bold
 data-[active]:border-4
-data-[active]:border-primary-darkest
+data-[active]:border-accent
 data-[active]:text-base-content-darkest
-[&_div]:flex
-[&_div]:items-center
+[&_span]:flex
+[&_span]:items-center
 `;
 
 export const StyledTabsList = tw(Tabs.List)`

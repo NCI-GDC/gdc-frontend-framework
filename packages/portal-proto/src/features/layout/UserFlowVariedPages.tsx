@@ -18,25 +18,31 @@ import {
   DiscardChangesCohortNotification,
   ErrorCohortNotification,
   NewCohortNotification,
-  SavedCohortNotification,
+  SavedCurrentCohortNotification,
   NewCohortNotificationWithSetAsCurrent,
+  SavedCohortNotification,
+  SavedCohortNotificationWithSetAsCurrent,
 } from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { useElementSize } from "@mantine/hooks";
+import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly Options?: React.FC<unknown>;
   readonly ContextBar?: ReactNode;
+  readonly isContextBarSticky?: boolean;
 }
 
-export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
+export const UserFlowVariedPages = ({
   headerElements,
   indexPath = "/",
   Options,
   children,
   ContextBar = undefined,
+  isContextBarSticky = false,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
 
@@ -78,7 +84,30 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
           }
           if (cmdAndParam[0] === "savedCohort") {
             showNotification({
-              message: <SavedCohortNotification />,
+              message: <SavedCohortNotification cohortName={cmdAndParam[1]} />,
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCohortSetCurrent") {
+            showNotification({
+              message: (
+                <SavedCohortNotificationWithSetAsCurrent
+                  cohortName={cmdAndParam[1]}
+                  cohortId={cmdAndParam[2]}
+                />
+              ),
+              classNames: {
+                description: "flex flex-col content-center text-center",
+              },
+              autoClose: 5000,
+            });
+          }
+          if (cmdAndParam[0] === "savedCurrentCohort") {
+            showNotification({
+              message: <SavedCurrentCohortNotification />,
               classNames: {
                 description: "flex flex-col content-center text-center",
               },
@@ -138,22 +167,36 @@ export const UserFlowVariedPages: React.FC<UserFlowVariedPagesProps> = ({
     }
   }, [cohortMessage, dispatch, currentCohortName]);
 
+  const { ref: headerRef, height: headerHeight } = useElementSize();
+
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
-      <header className="flex-none bg-base-max sticky top-0 z-[300]">
+      <header
+        className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
+        ref={headerRef}
+      >
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
         <Header {...{ headerElements, indexPath, Options }} />
-        {ContextBar ? ContextBar : null}
       </header>
-      <main
-        data-tour="full_page_content"
-        className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
-        id="main"
-      >
-        {children}
-      </main>
+      <ClearStoreErrorBoundary>
+        <div
+          className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
+          style={{
+            top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+          }}
+        >
+          {ContextBar ? ContextBar : null}
+        </div>
+        <main
+          data-tour="full_page_content"
+          className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
+          id="main"
+        >
+          {children}
+        </main>
+      </ClearStoreErrorBoundary>
       <Footer />
     </div>
   );

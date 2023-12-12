@@ -1,28 +1,22 @@
 import FunctionButton from "@/components/FunctionButton";
-import { SaveOrCreateCohortModal } from "@/components/Modals/SaveOrCreateCohortModal";
-import { modalStyles } from "@/components/Modals/styles";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import {
-  Columns,
-  HandleChangeInput,
-  VerticalTable,
-} from "@/features/shared/VerticalTable";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
   useCoreSelector,
   selectAvailableCohorts,
   FilterSet,
-  resetSelectedCases,
-  addNewCohortWithFilterAndMessage,
-  useCoreDispatch,
   selectCohortFilterSetById,
   fetchGdcCases,
   buildCohortGqlOperator,
   graphqlAPI,
 } from "@gff/core";
-import { LoadingOverlay, Modal, Radio, Text } from "@mantine/core";
+import { Modal, Radio, Text } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
+import { createColumnHelper } from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -36,62 +30,62 @@ export const SelectCohortsModal = ({
   withOrWithoutCohort: WithOrWithoutCohortType;
   pickedCases: readonly string[];
 }): JSX.Element => {
-  const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [checkedValue, setCheckedValue] = useState("");
   const cohortFilter = useCoreSelector((state) =>
     selectCohortFilterSetById(state, checkedValue),
   );
+  const [saveCohortFilters, setSaveCohortFilters] = useState<
+    FilterSet | undefined
+  >(undefined);
   const [loading, setLoading] = useState(false);
 
   const isWithCohort = withOrWithoutCohort === "with";
 
-  const columnListOrder: Columns[] = [
-    {
-      id: "selected",
-      visible: true,
-      columnName: "Select",
-      Cell: ({ value }: { value: string }): JSX.Element => {
-        return (
-          <Radio
-            value={value}
-            checked={checkedValue === value}
-            onChange={(event) => {
-              setCheckedValue(event.currentTarget.value);
-            }}
-          />
-        );
-      },
-      disableSortBy: true,
-    },
-    {
-      id: "name",
-      columnName: "Name",
-      visible: true,
-      disableSortBy: true,
-    },
-    {
-      id: "num_cases",
-      columnName: "# Cases",
-      visible: true,
-      disableSortBy: true,
-    },
-  ];
-
-  const info = useMemo(
+  const cohortListData = useMemo(
     () =>
       cohorts
         ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((cohort) => ({
-          selected: cohort.id,
+          cohort_id: cohort.id,
           name: cohort.name,
-          num_cases: cohort.caseCount?.toLocaleString(),
+          num_cases: cohort.counts.caseCount?.toLocaleString(),
         })),
     [cohorts],
   );
 
+  const cohortListTableColumnHelper =
+    createColumnHelper<typeof cohortListData[0]>();
+
+  const cohortListTableColumn = useMemo(
+    () => [
+      cohortListTableColumnHelper.display({
+        id: "select",
+        header: "Select",
+        cell: ({ row }) => (
+          <Radio
+            value={row.original.cohort_id}
+            checked={checkedValue === row.original.cohort_id}
+            onChange={(event) => {
+              setCheckedValue(event.currentTarget.value);
+            }}
+          />
+        ),
+      }),
+      cohortListTableColumnHelper.accessor("name", {
+        id: "name",
+        header: "Name",
+      }),
+      cohortListTableColumnHelper.accessor("num_cases", {
+        id: "num_cases",
+        header: "# Cases",
+      }),
+    ],
+    [cohortListTableColumnHelper, checkedValue],
+  );
+
   const { handlePageChange, page, pages, size, from, total, displayedData } =
-    useStandardPagination(info);
+    useStandardPagination(cohortListData);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -101,7 +95,7 @@ export const SelectCohortsModal = ({
     }
   };
 
-  const createCohortFromCases = async (customName: string) => {
+  const createCohortFromCases = async () => {
     let resCases: string[];
     setLoading(true);
 
@@ -159,7 +153,7 @@ export const SelectCohortsModal = ({
     );
     const setId = response.data.sets.create.repository.case.set_id;
 
-    const pickedCasesfilters: FilterSet = {
+    setSaveCohortFilters({
       mode: "and",
       root: {
         "cases.case_id": {
@@ -168,97 +162,80 @@ export const SelectCohortsModal = ({
           operands: [`set_id:${setId}`],
         },
       },
-    };
-    coreDispatch(resetSelectedCases());
-    coreDispatch(
-      addNewCohortWithFilterAndMessage({
-        filters: pickedCasesfilters,
-        message: "newCasesCohort",
-        name: customName,
-      }),
-    );
+    });
     setLoading(false);
   };
 
-  const title = `create new cohort: existing cohort ${
+  const title = `save new cohort: existing cohort ${
     isWithCohort ? "with" : "without"
   } selected cases`;
 
-  const description = `Select an existing cohort, then click Submit. This will create a new
+  const description = `Select an existing cohort, then click Submit. This will save a new
     cohort that contains all the cases from your selected cohort ${
       isWithCohort ? "and" : "except"
     } the cases previously selected.`;
 
-  const onNameChange = (name: string) =>
-    cohorts.every((cohort) => cohort.name !== name);
-
-  const [showCreateCohort, setShowCreateCohorts] = useState(false);
+  const [showSaveCohort, setShowSaveCohorts] = useState(false);
   return (
     <>
-      {loading ? (
-        <LoadingOverlay visible />
-      ) : (
-        <Modal
-          opened={opened}
-          onClose={onClose}
-          withCloseButton
-          title={title}
-          withinPortal={false}
-          classNames={{
-            ...modalStyles,
-            body: "flex flex-col justify-between min-h-[300px]",
-          }}
-          size="xl"
-          zIndex={400}
+      <Modal
+        opened={opened}
+        onClose={onClose}
+        withCloseButton
+        title={title}
+        classNames={{
+          content: "p-0 drop-shadow-lg",
+          body: "flex flex-col justify-between min-h-[300px]",
+        }}
+        size="xl"
+        zIndex={400}
+      >
+        {showSaveCohort && (
+          <SaveCohortModal
+            onClose={() => {
+              setShowSaveCohorts(false);
+              onClose();
+            }}
+            filters={saveCohortFilters}
+          />
+        )}
+
+        <div className="px-4">
+          <Text className="text-xs mb-4 block">{description}</Text>
+
+          <VerticalTable
+            data={displayedData}
+            columns={cohortListTableColumn}
+            status="fulfilled"
+            pagination={{
+              page,
+              pages,
+              size,
+              from,
+              total,
+              label: "cohorts",
+            }}
+            handleChange={handleChange}
+            disablePageSize={true}
+          />
+        </div>
+        <div
+          data-testid="modal-button-container"
+          className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
         >
-          {showCreateCohort && (
-            <SaveOrCreateCohortModal
-              entity="cohort"
-              action="create"
-              opened={showCreateCohort}
-              onClose={() => setShowCreateCohorts(false)}
-              onActionClick={async (newName: string) => {
-                await createCohortFromCases(newName);
-                onClose();
-              }}
-              onNameChange={onNameChange}
-            />
-          )}
-
-          <div className="px-4">
-            <Text className="text-xs mb-4 block">{description}</Text>
-
-            <VerticalTable
-              tableData={displayedData}
-              selectableRow={false}
-              columns={columnListOrder}
-              showControls={false}
-              status="fulfilled"
-              pagination={{
-                page,
-                pages,
-                size,
-                from,
-                total,
-                label: "cohorts",
-              }}
-              handleChange={handleChange}
-              disablePageSize={true}
-            />
-          </div>
-          <div className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky">
-            <FunctionButton onClick={onClose}>Cancel</FunctionButton>
-            <DarkFunctionButton
-              disabled={!checkedValue}
-              onClick={() => {
-                setShowCreateCohorts(true);
-              }}
-            >
-              Submit
-            </DarkFunctionButton>
-          </div>
-        </Modal>
-      )}
+          <FunctionButton onClick={onClose}>Cancel</FunctionButton>
+          <DarkFunctionButton
+            disabled={!checkedValue}
+            loading={loading}
+            onClick={async () => {
+              await createCohortFromCases();
+              setShowSaveCohorts(true);
+            }}
+          >
+            Submit
+          </DarkFunctionButton>
+        </div>
+      </Modal>
     </>
   );
 };

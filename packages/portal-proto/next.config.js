@@ -2,7 +2,6 @@
 const withTM = require("next-transpile-modules")([
   "@oncojs/survivalplot",
   "@oncojs/react-survivalplot",
-  "oncogrid",
   "@sjcrh/proteinpaint-client",
 ]);
 

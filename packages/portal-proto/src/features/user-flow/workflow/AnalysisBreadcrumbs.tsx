@@ -1,34 +1,35 @@
 import React, { useContext } from "react";
 import { MdClose, MdCircle } from "react-icons/md";
-import { Button } from "@mantine/core";
 import { SelectionScreenContext } from "./AnalysisWorkspace";
 import { REGISTERED_APPS } from "./registeredApps";
 
 interface AnalysisBreadcrumbsProps {
-  readonly rightComponent?: React.ReactElement;
-  readonly onDemoApp?: boolean;
+  readonly rightComponent: React.ReactElement;
+  readonly onDemoApp: boolean;
+  readonly skipSelectionScreen: boolean;
 }
 
 const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
   rightComponent,
   onDemoApp,
+  skipSelectionScreen,
 }: AnalysisBreadcrumbsProps) => {
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
 
   const displayAdditionalSteps =
-    !onDemoApp && appInfo?.selectionScreen !== undefined;
+    !skipSelectionScreen && appInfo?.selectionScreen !== undefined;
 
   return (
     <div className="w-full bg-primary px-4 py-2 flex items-center ">
-      <Button
+      <button
         onClick={() => setActiveApp(undefined)}
-        className="bg-base-max text-primary-content-darkest px-2"
+        className="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9"
         aria-label="Close app"
       >
         <MdClose size={20} />
-      </Button>
+      </button>
       <span
         className={`p-2 mx-2 uppercase text-white ${
           !displayAdditionalSteps ? "font-bold" : ""

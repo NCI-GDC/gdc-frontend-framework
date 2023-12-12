@@ -25,202 +25,12 @@ const asAccessType = (x: unknown): AccessType => {
   }
 };
 
-const fileTypes = [
-  "annotated_somatic_mutation",
-  "simple_somatic_mutation",
-  "aligned_reads",
-  "gene_expression",
-  "copy_number_segment",
-  "copy_number_estimate",
-  "slide_image",
-  "mirna_expression",
-  "biospecimen_supplement",
-  "clinical_supplement",
-  "methylation_beta_value",
-  "structural_variation",
-  "aggregated_somatic_mutation",
-  "masked_somatic_mutation",
-  "secondary_expression_analysis",
-  "masked_methylation_array",
-  "protein_expression",
-  "pathology_report",
-  "simple_germline_variation",
-  "submitted_genotyping_array",
-] as const;
-
-export type FileType = typeof fileTypes[number];
-
-const isFileType = (x: unknown): x is FileType => {
-  return fileTypes.some((t) => t === x);
-};
-
-const asFileType = (x: unknown): FileType => {
-  if (isFileType(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid file type`);
-  }
-};
-
-const dataCategories: ReadonlyArray<string> = [
-  "Simple Nucleotide Variation",
-  "Copy Number Variation",
-  "Transcriptome Profiling",
-  "Proteome Profiling",
-  "Sequencing Reads",
-  "Biospecimen",
-  "Clinical",
-  "DNA Methylation",
-  "Structural Variation",
-  "Somatic Structural Variation",
-  "Combined Nucleotide Variation",
-] as const;
-
-export type DataCategory = typeof dataCategories[number];
-
-const isDataCategory = (x: unknown): x is DataCategory => {
-  return dataCategories.some((t) => t === x);
-};
-
-const asDataCategory = (x: unknown): DataCategory => {
-  if (isDataCategory(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data category`);
-  }
-};
-
-const dataFormats = [
-  "TXT",
-  "VCF",
-  "BAM",
-  "MAF",
-  "SVS",
-  "IDAT",
-  "BCR XML",
-  "TSV",
-  "BCR SSF XML",
-  "BEDPE",
-  "BCR AUXILIARY XML",
-  "BCR Auxiliary XML",
-  "BCR OMF XML",
-  "BCR BIOTAB",
-  "BCR Biotab",
-  "BCR PPS XML",
-  "CDC JSON",
-  "XLSX",
-  "MEX",
-  "HDF5",
-  "PDF",
-  "BAI",
-  "TBI",
-  "CEL",
-] as const;
-
-export type DataFormat = typeof dataFormats[number];
-
-const isDataFormat = (x: unknown): x is DataFormat => {
-  return dataFormats.some((t) => t === x);
-};
-
-const asDataFormat = (x: unknown): DataFormat => {
-  if (isDataFormat(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data format`);
-  }
-};
-
-const dataTypes = [
-  "Aggregated Somatic Mutation",
-  "Aligned Reads",
-  "Allele-specific Copy Number Segment",
-  "Annotated Somatic Mutation",
-  "Biospecimen Supplement",
-  "Clinical Supplement",
-  "Copy Number Segment",
-  "Differential Gene Expression",
-  "Gene Expression Quantification",
-  "Gene Level Copy Number Scores",
-  "Gene Level Copy Number",
-  "Isoform Expression Quantification",
-  "Masked Annotated Somatic Mutation",
-  "Masked Copy Number Segment",
-  "Masked Somatic Mutation",
-  "Methylation Beta Value",
-  "Protein Expression Quantification",
-  "Raw CGI Variant",
-  "Raw Intensities",
-  "Raw Simple Somatic Mutation",
-  "Simple Germline Variation",
-  "Single Cell Analysis",
-  "Slide Image",
-  "Splice Junction Quantification",
-  "Structural Rearrangement",
-  "Transcript Fusion",
-  "Masked Intensities",
-  "miRNA Expression Quantification",
-  "Pathology Report",
-  "Aligned Reads Index",
-  "Somatic Mutation Index",
-] as const;
-
-export type DataType = typeof dataTypes[number];
-
-const isDataType = (x: unknown): x is DataType => {
-  return dataTypes.some((t) => t === x);
-};
-
-const asDataType = (x: unknown): DataType => {
-  if (isDataType(x)) {
-    return x;
-  } else {
-    throw new Error(`${x} is not a valid data type`);
-  }
-};
-
-const experimentalStrategies = [
-  "ATAC-Seq",
-  "Diagnostic Slide",
-  "Genotyping Array",
-  "Methylation Array",
-  "RNA-Seq",
-  "Targeted Sequencing",
-  "Tissue Slide",
-  "WGS",
-  "WXS",
-  "miRNA-Seq",
-  "scRNA-Seq",
-  "_missing",
-  "Reverse Phase Protein Array",
-] as const;
-
-export type ExperimentalStrategy = typeof experimentalStrategies[number];
-
-const isExperimentalStrategy = (x: unknown): x is ExperimentalStrategy => {
-  return experimentalStrategies.some((t) => t === x);
-};
-
-const asExperimentalStrategy = (
-  x: unknown,
-): ExperimentalStrategy | undefined => {
-  if (x === undefined) {
-    return undefined;
-  }
-
-  if (isExperimentalStrategy(x)) {
-    return x;
-  }
-
-  throw new Error(`${x} is not a valid experimental strategy`);
-};
-
 // TODO use CartFile instead and combine anything that submits to cart
 export interface GdcCartFile {
   readonly file_name: string;
-  readonly data_category: DataCategory;
-  readonly data_type: DataType;
-  readonly data_format: DataFormat;
+  readonly data_category: string;
+  readonly data_type: string;
+  readonly data_format: string;
   readonly state: string;
   readonly file_size: number;
   readonly file_id: string;
@@ -232,7 +42,72 @@ export interface GdcCartFile {
   readonly submitterId: string;
   readonly md5sum: string;
 }
-
+export type FileAnnontationsType = ReadonlyArray<{
+  readonly annotation_id: string;
+  readonly category: string;
+  readonly classification: string;
+  readonly created_datetime: string;
+  readonly entity_id: string;
+  readonly entity_submitter_id: string;
+  readonly entity_type: string;
+  readonly notes: string;
+  readonly state: string;
+  readonly status: string;
+  readonly updated_datetime: string;
+}>;
+export type FileCaseType = ReadonlyArray<{
+  readonly case_id: string;
+  readonly submitter_id: string;
+  readonly annotations?: ReadonlyArray<string>;
+  readonly project?: {
+    readonly dbgap_accession_number?: string;
+    readonly disease_type: string;
+    readonly name: string;
+    readonly primary_site: string;
+    readonly project_id: string;
+    readonly releasable: boolean;
+    readonly released: boolean;
+    readonly state: string;
+  };
+  readonly samples?: ReadonlyArray<{
+    readonly sample_id: string;
+    readonly sample_type: string;
+    readonly submitter_id: string;
+    readonly tissue_type: string;
+    readonly portions?: ReadonlyArray<{
+      readonly submitter_id: string;
+      readonly analytes?: ReadonlyArray<{
+        readonly analyte_id: string;
+        readonly analyte_type: string;
+        readonly submitter_id: string;
+        readonly aliquots?: ReadonlyArray<{
+          readonly aliquot_id: string;
+          readonly submitter_id: string;
+        }>;
+      }>;
+      readonly slides?: ReadonlyArray<{
+        readonly created_datetime: string | null;
+        readonly number_proliferating_cells: number | null;
+        readonly percent_eosinophil_infiltration: number | null;
+        readonly percent_granulocyte_infiltration: number | null;
+        readonly percent_inflam_infiltration: number | null;
+        readonly percent_lymphocyte_infiltration: number | null;
+        readonly percent_monocyte_infiltration: number | null;
+        readonly percent_neutrophil_infiltration: number | null;
+        readonly percent_necrosis: number | null;
+        readonly percent_normal_cells: number | null;
+        readonly percent_stromal_cells: number | null;
+        readonly percent_tumor_cells: number | null;
+        readonly percent_tumor_nuclei: number | null;
+        readonly section_location: string | null;
+        readonly slide_id: string | null;
+        readonly state: string | null;
+        readonly submitter_id: string | null;
+        readonly updated_datetime: string | null;
+      }>;
+    }>;
+  }>;
+}>;
 export interface GdcFile {
   readonly id?: string;
   readonly submitterId: string;
@@ -240,86 +115,22 @@ export interface GdcFile {
   readonly acl: ReadonlyArray<string>;
   readonly createdDatetime: string;
   readonly updatedDatetime: string;
-  readonly data_category: DataCategory;
-  readonly data_format: DataFormat;
+  readonly data_category: string;
+  readonly data_format: string;
   readonly dataRelease?: string;
-  readonly data_type: DataType;
+  readonly data_type: string;
   readonly file_id: string;
   readonly file_name: string;
   readonly file_size: number;
   readonly md5sum: string;
   readonly platform?: string;
   readonly state: string;
-  readonly fileType?: FileType;
+  readonly fileType?: string;
   readonly version?: string;
-  readonly experimental_strategy?: ExperimentalStrategy;
+  readonly experimental_strategy?: string;
   readonly project_id?: string;
-  readonly annotations?: ReadonlyArray<{
-    readonly annotation_id: string;
-    readonly category: string;
-    readonly classification: string;
-    readonly created_datetime: string;
-    readonly entity_id: string;
-    readonly entity_submitter_id: string;
-    readonly entity_type: string;
-    readonly notes: string;
-    readonly state: string;
-    readonly status: string;
-    readonly updated_datetime: string;
-  }>;
-  readonly cases?: ReadonlyArray<{
-    readonly case_id: string;
-    readonly submitter_id: string;
-    readonly annotations?: ReadonlyArray<string>;
-    readonly project?: {
-      readonly dbgap_accession_number?: string;
-      readonly disease_type: string;
-      readonly name: string;
-      readonly primary_site: string;
-      readonly project_id: string;
-      readonly releasable: boolean;
-      readonly released: boolean;
-      readonly state: string;
-    };
-    readonly samples?: ReadonlyArray<{
-      readonly sample_id: string;
-      readonly sample_type: string;
-      readonly submitter_id: string;
-      readonly tissue_type: string;
-      readonly portions?: ReadonlyArray<{
-        readonly submitter_id: string;
-        readonly analytes?: ReadonlyArray<{
-          readonly analyte_id: string;
-          readonly analyte_type: string;
-          readonly submitter_id: string;
-          readonly aliquots?: ReadonlyArray<{
-            readonly aliquot_id: string;
-            readonly submitter_id: string;
-          }>;
-        }>;
-        readonly slides?: ReadonlyArray<{
-          readonly created_datetime: string | null;
-          readonly number_proliferating_cells: number | null;
-          readonly percent_eosinophil_infiltration: number | null;
-          readonly percent_granulocyte_infiltration: number | null;
-          readonly percent_inflam_infiltration: number | null;
-          readonly percent_lymphocyte_infiltration: number | null;
-          readonly percent_monocyte_infiltration: number | null;
-          readonly percent_neutrophil_infiltration: number | null;
-          readonly percent_necrosis: number | null;
-          readonly percent_normal_cells: number | null;
-          readonly percent_stromal_cells: number | null;
-          readonly percent_tumor_cells: number | null;
-          readonly percent_tumor_nuclei: number | null;
-          readonly section_location: string | null;
-          readonly slide_id: string | null;
-          readonly state: string | null;
-          readonly submitter_id: string | null;
-          readonly updated_datetime: string | null;
-        }>;
-      }>;
-    }>;
-  }>;
+  readonly annotations?: FileAnnontationsType;
+  readonly cases?: FileCaseType;
   readonly associated_entities?: ReadonlyArray<{
     readonly entity_submitter_id: string;
     readonly entity_type: string;
@@ -349,9 +160,9 @@ export interface GdcFile {
     readonly submitterId: string;
     readonly createdDatetime: string;
     readonly updatedDatetime: string;
-    readonly data_category: DataCategory;
-    readonly data_format: DataFormat;
-    readonly data_type: DataType;
+    readonly data_category: string;
+    readonly data_format: string;
+    readonly data_type: string;
     readonly file_id: string;
     readonly file_name: string;
     readonly file_size: number;
@@ -368,19 +179,19 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     acl: [...hit.acl],
     createdDatetime: hit.created_datetime,
     updatedDatetime: hit.updated_datetime,
-    data_category: asDataCategory(hit.data_category),
-    data_format: asDataFormat(hit.data_format),
+    data_category: hit.data_category,
+    data_format: hit.data_format,
     dataRelease: hit.data_release,
-    data_type: asDataType(hit.data_type),
+    data_type: hit.data_type,
     file_id: hit.file_id,
     file_name: hit.file_name,
     file_size: hit.file_size,
     md5sum: hit.md5sum,
     platform: hit.platform,
     state: hit.state,
-    fileType: asFileType(hit.type),
+    fileType: hit.type,
     version: hit.version,
-    experimental_strategy: asExperimentalStrategy(hit.experimental_strategy),
+    experimental_strategy: hit.experimental_strategy,
     project_id: hit.cases?.[0]?.project?.project_id,
     annotations: hit.annotations?.map((annotation) => annotation),
     cases: hit.cases?.map((caseObj) => {
@@ -472,9 +283,9 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
           input_files: hit.analysis.input_files?.map((file) => {
             return {
               file_name: file.file_name,
-              data_category: asDataCategory(file.data_category),
-              data_type: asDataType(file.data_type),
-              data_format: asDataFormat(file.data_format),
+              data_category: file.data_category,
+              data_type: file.data_type,
+              data_format: file.data_format,
               file_size: file.file_size,
               file_id: file.file_id,
               acl: hit.acl,
@@ -509,9 +320,9 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         output_files: analysis.output_files?.map((file) => {
           return {
             file_name: file.file_name,
-            data_category: asDataCategory(file.data_category),
-            data_type: asDataType(file.data_type),
-            data_format: asDataFormat(file.data_format),
+            data_category: file.data_category,
+            data_type: file.data_type,
+            data_format: file.data_format,
             file_size: file.file_size,
             file_id: file.file_id,
             acl: hit.acl,
@@ -530,9 +341,9 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
       submitterId: idx.submitter_id,
       createdDatetime: idx.created_datetime,
       updatedDatetime: idx.updated_datetime,
-      data_category: asDataCategory(idx.data_category),
-      data_format: asDataFormat(idx.data_format),
-      data_type: asDataType(idx.data_type),
+      data_category: idx.data_category,
+      data_format: idx.data_format,
+      data_type: idx.data_type,
       file_id: idx.file_id,
       file_name: idx.file_name,
       file_size: idx.file_size,

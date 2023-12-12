@@ -18,16 +18,18 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
   <Modal
     title="Discard Changes"
     opened={openModal}
-    closeButtonLabel="close"
     onClose={onClose}
     size="lg"
-    withinPortal={false}
+    centered
+    classNames={{
+      content: "p-0 drop-shadow-lg",
+    }}
   >
     <div className="p-4">
       <p>Are you sure you want to permanently discard the unsaved changes?</p>
       <p className="text-sm">You cannot undo this action.</p>
     </div>
-    <ModalButtonContainer>
+    <ModalButtonContainer data-testid="modal-button-container">
       <FunctionButton onClick={onClose}>Cancel</FunctionButton>
       <DarkFunctionButton
         onClick={() => {

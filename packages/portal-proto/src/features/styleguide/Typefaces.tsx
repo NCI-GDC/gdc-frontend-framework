@@ -1,7 +1,6 @@
 import { Divider } from "@mantine/core";
-import { ReactNode } from "react";
 
-const Typefaces: ReactNode = () => {
+const Typefaces = () => {
   return (
     <article className="prose font-montserrat text-primary-content-dark prose-xs">
       <p className="prose font-medium text-2xl">Typefaces</p>

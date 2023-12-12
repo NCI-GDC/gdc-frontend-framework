@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { Grid, Alert, Loader } from "@mantine/core";
 import {
   GqlOperation,
   Buckets,
@@ -7,7 +8,7 @@ import {
   useFacetDictionary,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-import { Grid, Alert, Loader } from "@mantine/core";
+import { convertDateToString } from "@/utils/date";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 
@@ -57,7 +58,10 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <Grid className="w-full m-0">
       <Grid.Col span={controlsExpanded ? 6 : 4}>
-        <div className="h-full shadow-md rounded-lg p-2">
+        <div
+          data-testid="overall-survival-plot"
+          className="h-full shadow-md rounded-lg p-2"
+        >
           <h2 className="font-heading font-medium">Overall Survival</h2>
           {isError ? (
             <Alert>{"Something's gone wrong"}</Alert>
@@ -68,6 +72,9 @@ const Dashboard: React.FC<DashboardProps> = ({
               data={survivalData}
               title=""
               plotType={SurvivalPlotTypes.overall}
+              downloadFileName={`overall-survival-plot.${convertDateToString(
+                new Date(),
+              )}`}
             />
           )}
         </div>

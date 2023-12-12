@@ -18,6 +18,7 @@
       "@/app/*": ["src/app/*"],
       "@/components/*": ["src/components/*"],
       "@/features/*": ["src/features/*"],
+      "@/utils/*": ["src/utils/*"],
       "@/hooks/*": ["src/hooks/*"]
     },
     "incremental": true

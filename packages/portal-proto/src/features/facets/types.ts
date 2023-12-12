@@ -1,5 +1,5 @@
 import { NumericFromTo, OperandValue, Operation } from "@gff/core";
-import { ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -80,8 +80,8 @@ export interface FacetCardProps<T extends FacetDataHooks> {
   readonly dismissCallback?: (string) => void;
 
   readonly header?: {
-    readonly Panel?: ComponentType; // optional header component
-    readonly Label?: ComponentType; // optional facet label component
+    readonly Panel?: ComponentType<{ children: ReactNode }>; // optional header component
+    readonly Label?: ComponentType<{ children: ReactNode }>; // optional facet label component
     readonly iconStyle?: string; // optional facet button component
   };
 }
@@ -117,4 +117,12 @@ export interface RangeBucketElement {
   readonly label: string; // label for value
   readonly valueLabel?: string; // string representation of the count
   value?: number; // count of items in range
+}
+
+/**
+ * Sort type for range buckets
+ */
+export interface SortType {
+  type: "value" | "alpha";
+  direction: "asc" | "dsc";
 }

@@ -87,7 +87,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   customBins,
   updateBins,
 }: CategoricalBinningModalProps) => {
-  const [customized, setCustomized] = useState<boolean>(false);
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
   );
@@ -140,13 +139,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       setEditField(newGroupName);
     }
     setSelectedValues({});
-    setCustomized(true);
     setErrorMessage("");
   };
 
   const updateGroupName = (oldName: string, newName: string) => {
     setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
-    setCustomized(true);
     setErrorMessage("");
   };
 
@@ -168,7 +165,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     setValues(restValues);
 
     setSelectedValues({});
-    setCustomized(true);
   };
 
   const sortedValues = Object.entries(values).sort((a, b) =>
@@ -182,9 +178,9 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       size={800}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      withinPortal={false}
       classNames={{
-        header: "text-xl",
+        header: "text-xl m-0 px-0",
+        content: "p-4",
       }}
     >
       <p className="font-content">
@@ -199,20 +195,21 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           <h3 className="font-bold my-auto">Values</h3>
           <div className="gap-1 flex">
             <FunctionButton
+              data-testid="button-custom-bins-reset-group"
               onClick={() => {
                 setEditField(undefined);
                 setHiddenValues({});
                 setValues(results);
                 setSelectedValues({});
-                setCustomized(false);
                 setErrorMessage("");
               }}
-              disabled={!customized}
+              disabled={isEqual(results, values)}
               aria-label="reset groups"
             >
               <ResetIcon size={20} />
             </FunctionButton>
             <FunctionButton
+              data-testid="button-custom-bins-group-values"
               onClick={group}
               disabled={
                 Object.entries(values).filter(([k, v]) =>
@@ -226,6 +223,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               Group
             </FunctionButton>
             <FunctionButton
+              data-testid="button-custom-bins-ungroup-values"
               onClick={() => {
                 setEditField(undefined);
                 setValues({
@@ -248,6 +246,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               Ungroup
             </FunctionButton>
             <FunctionButton
+              data-testid="button-custom-bins-hide-values"
               onClick={hideValues}
               disabled={Object.keys(selectedValues).length === 0}
               leftIcon={<HideIcon />}
@@ -295,6 +294,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         <div className="flex justify-between bg-base-lightest p-2">
           <h3 className="font-bold my-auto">Hidden Values</h3>
           <FunctionButton
+            data-testid="button-custom-bins-show-values"
             disabled={Object.keys(selectedHiddenValues).length === 0}
             onClick={() => {
               setEditField(undefined);
@@ -336,6 +336,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         )}
         <Group spacing={8}>
           <Button
+            data-testid="button-custom-bins-cancel"
             onClick={() => setModalOpen(false)}
             variant="outline"
             color="primary.5"
@@ -343,6 +344,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             Cancel
           </Button>
           <Button
+            data-testid="button-custom-bins-save"
             className="bg-primary-darkest"
             onClick={() => {
               setEditField(undefined);
@@ -396,7 +398,7 @@ const ListValue: React.FC<ListValueProps> = ({
           updateSelectedValues(name, count);
           clearOtherValues();
         }}
-        onKeyPress={createKeyboardAccessibleFunction(() => {
+        onKeyDown={createKeyboardAccessibleFunction(() => {
           updateSelectedValues(name, count);
           clearOtherValues();
         })}
@@ -484,6 +486,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
     <li className="font-content">
       {editing ? (
         <TextInput
+          data-testid="textbox-custom-bin-name"
           ref={ref}
           className={"w-1/2"}
           onKeyDown={createKeyboardAccessibleFunction(closeInput)}
@@ -503,6 +506,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
         >
           {groupName}{" "}
           <PencilIcon
+            data-testid="button-custom-bins-edit-group-name"
             className="ml-2 shrink-0"
             onClick={(e) => {
               e.stopPropagation();

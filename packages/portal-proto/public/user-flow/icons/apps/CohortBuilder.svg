@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
   <g id="CohortBuilder" transform="translate(-112 -32)">
-    <rect id="Rectangle_424" data-name="Rectangle 424" width="48" height="48" rx="3" transform="translate(112 32)" fill="#fff"/>
+    <rect id="Rectangle_424" data-name="Rectangle 424" width="48" height="48" rx="3" transform="translate(112 32)" fill="#fff" style="fill-opacity:0;"/>
     <circle id="DarkBlue" cx="20" cy="20" r="20" transform="translate(116 36)" fill="#00334d"/>
     <circle id="LightBule" cx="17" cy="17" r="17" transform="translate(121.5 38.731)" fill="#406fab"/>
     <circle id="White" cx="14" cy="14" r="14" transform="translate(127 42)" fill="#fff"/>

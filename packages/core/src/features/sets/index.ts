@@ -4,10 +4,13 @@ import {
   useCreateCaseSetFromValuesMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateCaseSetFromFiltersMutation,
 } from "./createSetSlice";
 import {
   setsReducer,
   addSet,
+  removeSets,
+  renameSet,
   selectSetsByType,
   selectAllSets,
   SetTypes,
@@ -18,6 +21,7 @@ import {
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useCaseSetCountsQuery,
 } from "./setCountSlice";
 import {
   useAppendToGeneSetMutation,
@@ -32,8 +36,11 @@ export {
   useCreateCaseSetFromValuesMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateCaseSetFromFiltersMutation,
   setsReducer,
   addSet,
+  removeSets,
+  renameSet,
   selectSetsByType,
   selectAllSets,
   SetTypes,
@@ -42,6 +49,7 @@ export {
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useCaseSetCountsQuery,
   useAppendToGeneSetMutation,
   useAppendToSsmSetMutation,
   useRemoveFromGeneSetMutation,

@@ -6,7 +6,8 @@ import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
-  selectCurrentCohortFilters,
+  joinFilters,
+  selectCurrentCohortGeneAndSSMCaseSet,
   FilterSet,
 } from "../cohort";
 import {
@@ -23,7 +24,9 @@ export interface FetchFacetByNameGQLProps {
   readonly field: string | ReadonlyArray<string>;
   readonly docType?: GQLDocType;
   readonly index?: GQLIndexType;
-  readonly filterSelector?: (state: CoreState) => FilterSet;
+  readonly caseFilterSelector?: (state: CoreState) => FilterSet;
+  readonly localFilters?: FilterSet;
+  readonly splitIntoCasePlusLocalFilters?: boolean;
 }
 
 export const fetchFacetByNameGQL = createAsyncThunk<
@@ -37,11 +40,13 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       field,
       docType = "cases",
       index = "explore" as GQLIndexType,
-      filterSelector = selectCurrentCohortFilters,
+      caseFilterSelector = selectCurrentCohortGeneAndSSMCaseSet,
+      localFilters = undefined,
+      splitIntoCasePlusLocalFilters = false,
     },
     thunkAPI,
   ) => {
-    const filters = buildCohortGqlOperator(filterSelector(thunkAPI.getState()));
+    const caseFilters = caseFilterSelector(thunkAPI.getState());
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string
     // as the alias which reduces the complexity when processing facet buckets
@@ -52,10 +57,28 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       alias: f,
     })) as ReadonlyArray<AliasedFieldQuery>;
 
-    const queryGQL = buildGraphGLBucketsQuery(filtersToQuery, docType, index);
-    const filtersGQL = {
-      filters_0: filters ? filters : {},
-    };
+    const queryGQL = buildGraphGLBucketsQuery(
+      filtersToQuery,
+      docType,
+      index,
+      splitIntoCasePlusLocalFilters,
+    );
+    let filtersGQL: Record<string, unknown> = {};
+
+    if (splitIntoCasePlusLocalFilters) {
+      filtersGQL = {
+        case_filters: buildCohortGqlOperator(caseFilters),
+        filters: buildCohortGqlOperator(
+          localFilters ?? { mode: "and", root: {} },
+        ),
+      };
+    } else {
+      filtersGQL = {
+        filters: buildCohortGqlOperator(
+          joinFilters(caseFilters, localFilters ?? { mode: "and", root: {} }),
+        ),
+      };
+    }
     return graphqlAPI(queryGQL, filtersGQL);
   },
 );
@@ -146,6 +169,7 @@ export const selectFacetByDocTypeAndField = (
   field: string,
 ): FacetBuckets => state.facetsGQL.facetsGQL[docType][field];
 
+// TODO: Memoize this selector
 export const selectMultipleFacetsByDocTypeAndField = (
   state: CoreState,
   docType: GQLDocType,
@@ -156,10 +180,7 @@ export const selectMultipleFacetsByDocTypeAndField = (
 export const selectCaseFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const root = state.facetsGQL.facetsGQL.cases;
-  return root[field];
-};
+): FacetBuckets => state.facetsGQL.facetsGQL.cases[field];
 
 export const selectFileFacets = (
   state: CoreState,
@@ -168,10 +189,7 @@ export const selectFileFacets = (
 export const selectFileFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const root = state.facetsGQL.facetsGQL.files;
-  return root[field];
-};
+): FacetBuckets => state.facetsGQL.facetsGQL.files[field];
 
 export const selectGenesFacets = (
   state: CoreState,
@@ -180,10 +198,7 @@ export const selectGenesFacets = (
 export const selectGenesFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const root = state.facetsGQL.facetsGQL.genes;
-  return root[field];
-};
+): FacetBuckets => state.facetsGQL.facetsGQL.genes[field];
 
 export const selectSSMSFacets = (
   state: CoreState,
@@ -192,18 +207,12 @@ export const selectSSMSFacets = (
 export const selectSSMSFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const root = state.facetsGQL.facetsGQL.ssms;
-  return root[field];
-};
+): FacetBuckets => state.facetsGQL.facetsGQL.ssms[field];
 
 export const selectProjectsFacetByField = (
   state: CoreState,
   field: string,
-): FacetBuckets => {
-  const root = state.facetsGQL.facetsGQL.projects;
-  return root[field];
-};
+): FacetBuckets => state.facetsGQL.facetsGQL.projects[field];
 
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,

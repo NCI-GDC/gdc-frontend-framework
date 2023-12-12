@@ -13,6 +13,7 @@ def start_app():
 
 @step("Select <button_name> on the Repository page")
 def select_repository_page_button(button_name: str):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.repository_page.click_repository_page_button(button_name)
 
 @step("Select <button_name> on the Image Viewer page")
@@ -26,6 +27,12 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
         repository.click_button(filter_name)
     except:
         repository.select_nth_file_filters_result(int(nth) - 1)
+
+@step("Verify cohort case count equals repository table case count")
+def compare_cohort_case_count_and_repo_table_case_count():
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    are_case_counts_equal = APP.repository_page.compare_cohort_case_count_and_repo_table_case_count()
+    assert are_case_counts_equal, f"The cohort bar case count is not equal to the repository table case count"
 
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
@@ -44,12 +51,12 @@ def default_filters(table):
     )
 
 
-@step("Verify <count> items on Add a File Filter filter list")
+@step("Verify <count> items on Add a Custom Filter filter list")
 def verify_file_filter_list_count(count: int):
     actual_count = APP.repository_page.get_file_filter_list_count()
     assert (
         int(count) == actual_count
-    ), f"Add a File Filters list count mismatch.\nExpected: {count}\nActual: {actual_count}"
+    ), f"Add a Custom Filters list count mismatch.\nExpected: {count}\nActual: {actual_count}"
 
 
 @step("Verify file filter names do not start with <pattern>")
@@ -79,6 +86,7 @@ def verify_slide_image_is_visible():
 
 @step("Verify the slide image viewer is showing <number_of_cases> cases")
 def verify_slide_image_viewer_case_count(number_of_cases):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     showing_cases_slide_image_text = APP.repository_page.get_image_viewer_showing_cases_text()
     assert f"Showing {number_of_cases}" in showing_cases_slide_image_text, f"The slide image viewer page is not showing expected number of cases - {number_of_cases}"
 

@@ -13,11 +13,10 @@ interface DownloadButtonProps {
   size?: number;
   format?: string;
   fields?: Array<string>;
+  caseFilters?: Record<string, any>;
   filters?: Record<string, any>;
   extraParams?: Record<string, any>;
   method?: string;
-  queryParams?: string;
-  options?: Record<string, any>;
   customStyle?: string;
   showLoading?: boolean;
   showIcon?: boolean;
@@ -42,13 +41,12 @@ export const DownloadButton = forwardRef<
       size = 10000,
       format = "JSON",
       fields = [],
+      caseFilters = {},
       filters = {},
       inactiveText,
       activeText,
       extraParams,
       method = "POST",
-      queryParams,
-      options,
       customStyle,
       setActive,
       onClick,
@@ -95,6 +93,7 @@ export const DownloadButton = forwardRef<
               attachment: true,
               format,
               fields: fields.join(),
+              case_filters: caseFilters,
               filters,
               pretty: true,
               ...(filename ? { filename } : {}),
@@ -105,12 +104,10 @@ export const DownloadButton = forwardRef<
               params,
               endpoint,
               method,
-              queryParams,
               done: () => setActive && setActive(false),
               dispatch,
               Modal400,
               Modal403,
-              options,
             });
           }}
           {...buttonProps}

@@ -1,20 +1,22 @@
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import { HeaderTitle } from "@/features/shared/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import {
   Demographic,
   Diagnoses,
   Exposures,
   FamilyHistories,
   FollowUps,
+  useCoreDispatch,
 } from "@gff/core";
-import { Divider, Tabs, Text } from "@mantine/core";
+import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { humanify } from "src/utils";
 import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
+import download from "@/utils/download";
 
 export const ClinicalSummary = ({
   demographic,
@@ -22,14 +24,22 @@ export const ClinicalSummary = ({
   family_histories,
   exposures,
   follow_ups,
+  case_id,
+  project_id,
+  submitter_id,
 }: {
   readonly demographic: Demographic;
   readonly diagnoses: ReadonlyArray<Diagnoses>;
   readonly family_histories: ReadonlyArray<FamilyHistories>;
   readonly exposures: ReadonlyArray<Exposures>;
   readonly follow_ups: ReadonlyArray<FollowUps>;
+  readonly case_id: string;
+  readonly project_id: string;
+  readonly submitter_id: string;
 }): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string | null>("demographic");
+  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const dispatch = useCoreDispatch();
 
   const formatDataForDemographics = () => {
     const {
@@ -78,6 +88,52 @@ export const ClinicalSummary = ({
     </span>
   );
 
+  const handleClinicalTSVDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        filename: `clinical.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.tar.gz`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [case_id],
+          },
+        },
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleClinicalJSONDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `clinical.case-${submitter_id}-${project_id}.${new Date()
+          .toISOString()
+          .slice(0, 10)}.json`,
+        filters: {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: [case_id],
+          },
+        },
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
   return (
     <div className="max-w-full">
       <div className="mb-2">
@@ -86,16 +142,26 @@ export const ClinicalSummary = ({
       <DropdownWithIcon
         dropdownElements={[
           {
-            title: "TSV (Coming soon)",
+            title: "TSV",
             icon: <DownloadIcon size={16} aria-label="download icon" />,
+            onClick: handleClinicalTSVDownload,
           },
           {
-            title: "JSON (Coming soon)",
+            title: "JSON",
             icon: <DownloadIcon size={16} aria-label="download icon" />,
+            onClick: handleClinicalJSONDownload,
           },
         ]}
-        TargetButtonChildren="Download"
-        LeftIcon={<DownloadIcon size="1rem" aria-label="download icon" />}
+        TargetButtonChildren={
+          clinicalDownloadActive ? "Processing" : "Download"
+        }
+        LeftIcon={
+          clinicalDownloadActive ? (
+            <Loader size={20} />
+          ) : (
+            <DownloadIcon size="1rem" aria-label="download icon" />
+          )
+        }
       />
 
       <Tabs

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState, createContext, useReducer } from "react";
 import { useRouter } from "next/router";
 import AnalysisCard from "@/features/user-flow/workflow/AnalysisCard";
 import {
@@ -6,12 +6,14 @@ import {
   RECOMMENDED_APPS,
 } from "@/features/user-flow/workflow/registeredApps";
 import { AppRegistrationEntry } from "@/features/user-flow/workflow/utils";
-import SearchInput from "@/components/SearchInput";
 import dynamic from "next/dynamic";
 import CoreToolCard from "./CoreToolCard";
-
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import {
+  chartDownloadReducer,
+  DashboardDownloadContext,
+} from "@/utils/contexts";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -53,7 +55,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   return (
     <div className="flex flex-col font-heading mb-4">
       <div data-tour="analysis_tool_management" className="flex items-center">
-        <div data-tour="most_common_tools" className="mx-4 my-6">
+        <div data-tour="most_common_tools" className="m-4">
           <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
             Core Tools
           </h2>
@@ -73,7 +75,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
           </div>
         </div>
       </div>
-      <div className="mx-4 my-2">
+      <div className="m-4">
         <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
           Analysis Tools
         </h2>
@@ -122,16 +124,20 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
   const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+  const skipSelectionScreen =
+    router?.query?.skipSelectionScreen === "true" || isDemoMode;
 
   useEffect(() => {
     setCohortSelectionOpen(
-      !isDemoMode && appInfo?.selectionScreen !== undefined,
+      !skipSelectionScreen && appInfo?.selectionScreen !== undefined,
     );
-  }, [app, isDemoMode, appInfo]);
+  }, [app, appInfo, skipSelectionScreen]);
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
+
+  const [chartDownloadState, dispatch] = useReducer(chartDownloadReducer, []);
 
   return (
     <div>
@@ -144,13 +150,18 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
             setActiveApp: handleAppSelected,
           }}
         >
-          <AnalysisBreadcrumbs
-            onDemoApp={isDemoMode}
-            rightComponent={
-              app === "CohortBuilder" && !isDemoMode ? <SearchInput /> : null
-            }
-          />
-          <ActiveAnalysisToolNoSSR appId={app} />
+          <DashboardDownloadContext.Provider
+            value={{ state: chartDownloadState, dispatch }}
+          >
+            <AnalysisBreadcrumbs
+              onDemoApp={isDemoMode}
+              skipSelectionScreen={skipSelectionScreen}
+              rightComponent={
+                appInfo?.rightComponent && <appInfo.rightComponent />
+              }
+            />
+            <ActiveAnalysisToolNoSSR appId={app} />
+          </DashboardDownloadContext.Provider>
         </SelectionScreenContext.Provider>
       )}
       {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}

@@ -27,7 +27,6 @@ export const AgreementModal = ({
           Access Alert
         </Text>
       }
-      closeButtonLabel="Close"
       openModal={openModal}
       size="xl"
     >
@@ -55,16 +54,9 @@ export const AgreementModal = ({
             related_files: true,
           }}
           endpoint={`data/${file.file_id}`}
-          queryParams={""}
           activeText="Processing"
           inactiveText="Download"
           method="GET"
-          options={{
-            method: "GET",
-            headers: {
-              Range: "bytes=0-0",
-            },
-          }}
           setActive={setActive}
           active={active}
         />

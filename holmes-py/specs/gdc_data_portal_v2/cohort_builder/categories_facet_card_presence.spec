@@ -58,6 +58,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Ann Arbor Clinical Stage   |
   |Ann Arbor Pathologic Stage |
   |Cog Renal Stage            |
+  |Enneking Msts Stage        |
   |Figo Stage                 |
   |Igcccg Stage               |
   |Inss Stage                 |
@@ -67,11 +68,15 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
 * Validate presence of facet cards on the "Grade Classification" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
+  |Inpc Grade                 |
   |Tumor Grade                |
+  |Who Cns Grade              |
 
 * Validate presence of facet cards on the "Other Classification" tab on the Cohort Builder page
   |facet_name                     |
   |-------------------------------|
+  |Cog Neuroblastoma Risk Group   |
+  |Cog Rhabdomyosarcoma Risk Group|
   |International Prognostic Index |
   |Eln Risk Classification        |
   |Wilms Tumor Histologic Subtype |

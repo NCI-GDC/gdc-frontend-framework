@@ -1,51 +1,37 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useCoreSelector,
   selectCart,
   useCoreDispatch,
-  selectSelectedCases,
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
+  buildCohortGqlOperator,
+  GqlOperation,
+  useCurrentCohortCounts,
 } from "@gff/core";
-import { Button, createStyles, Divider, Menu } from "@mantine/core";
+import { Button, Divider, Loader } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
-import { ageDisplay, allFilesInCart, extractToArray } from "src/utils";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-import Link from "next/link";
-import { CasesCohortButton } from "./CasesCohortButton";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
-import { BiAddToQueue } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
-import { addToCart, removeFromCart } from "../../cart/updateCart";
-import { columnListOrder, getCasesTableAnnotationsLinkParams } from "./utils";
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { ImageSlideCount } from "@/components/ImageSlideCount";
-import { CountsIcon } from "@/features/shared/tailwindComponents";
-import { ButtonTooltip } from "@/components/expandableTables/shared";
-import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import {
-  HandleChangeInput,
-  VerticalTable,
-} from "@/features/shared/VerticalTable";
-
-const useStyles = createStyles((theme) => ({
-  item: {
-    "&[data-hovered]": {
-      // TODO: remove with theme color other than blue
-      backgroundColor: theme.colors.blue[3],
-      color: theme.white,
-    },
-  },
-  root: {
-    "&[data-disabled]": {
-      border: "1px solid gray",
-      margin: "2px 0",
-      cursor: "not-allowed",
-    },
-  },
-}));
+  ageDisplay,
+  extractToArray,
+  statusBooleansToDataStatus,
+} from "src/utils";
+import { CasesCohortButtonFromValues } from "./CasesCohortButton";
+import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { MdDownload as DownloadIcon } from "react-icons/md";
+import { CountsIcon } from "@/components/tailwindComponents";
+import { convertDateToString } from "@/utils/date";
+import download from "@/utils/download";
+import {
+  ColumnOrderState,
+  SortingState,
+  VisibilityState,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { HandleChangeInput } from "@/components/Table/types";
+import VerticalTable from "@/components/Table/VerticalTable";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -65,17 +51,26 @@ const getSlideCountFromCaseSummary = (
 
 export const ContextualCasesView: React.FC = () => {
   const dispatch = useCoreDispatch();
-  const { classes } = useStyles();
+  const { setEntityMetadata } = useContext(SummaryModalContext);
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
-  const [columns, setColumns] = useState(columnListOrder);
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const pickedCases = useCoreSelector((state) => selectSelectedCases(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
+  const cohortCounts = useCurrentCohortCounts();
+
+  /* download active */
+  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+    useState(false);
+  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [cohortTableJSONDownloadActive, setCohortTableJSONDownloadActive] =
+    useState(false);
+  const [cohortTableTSVDownloadActive, setCohortTableTSVDownloadActive] =
+    useState(false);
+  /* download active end */
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -113,169 +108,77 @@ export const ContextualCasesView: React.FC = () => {
   });
 
   useEffect(() => {
+    setRowSelection({});
     setOffset(0);
   }, [cohortFilters]);
 
-  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const casesData: casesTableDataType[] =
+    data?.map((datum) => ({
+      case_uuid: datum.case_uuid,
+      case_id: datum.case_id,
+      project: datum.project_id,
+      program: datum.program,
+      primary_site: datum.primary_site,
+      disease_type: datum.disease_type ?? "--",
+      primary_diagnosis: datum?.primary_diagnosis ?? "--",
+      age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
+      vital_status: datum?.vital_status ?? "--",
+      days_to_death: ageDisplay(datum?.days_to_death),
+      gender: datum?.gender ?? "--",
+      race: datum?.race ?? "--",
+      ethnicity: datum?.ethnicity ?? "--",
+      slide_count: getSlideCountFromCaseSummary(datum.experimental_strategies),
+      files_count: datum?.filesCount,
+      files: datum.files,
+      experimental_strategies: datum?.experimental_strategies
+        ? [
+            ...((extractToArray(
+              datum?.experimental_strategies,
+              "experimental_strategy",
+            ) as string[]) ?? []),
+          ].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        : "--",
 
-  const cases = useMemo(
-    () =>
-      data?.map((datum) => {
-        const isAllFilesInCart = datum?.files
-          ? allFilesInCart(currentCart, datum.files)
-          : false;
-        const numberOfFilesToRemove = datum.files
-          ?.map((file) =>
-            currentCart.filter(
-              (data_file) => data_file.file_id === file.file_id,
-            ),
-          )
-          .filter((item) => item.length > 0).length;
-        const slideCount = getSlideCountFromCaseSummary(
-          datum.experimental_strategies,
-        );
-        const isPlural = datum.filesCount > 1;
-        return {
-          selected: datum.case_uuid,
-          slides: (
-            <Link
-              href={{
-                pathname: "/image-viewer/MultipleImageViewerPage",
-                query: { caseId: datum.case_uuid },
-              }}
-              passHref
-              legacyBehavior
-            >
-              <ImageSlideCount slideCount={slideCount} />
-            </Link>
-          ),
-          cart: (
-            <Menu position="bottom-start" classNames={classes}>
-              <Menu.Target>
-                <Button
-                  leftIcon={
-                    <CartIcon
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                    />
-                  }
-                  rightIcon={
-                    <Dropdown
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                    />
-                  }
-                  variant="outline"
-                  compact
-                  classNames={{
-                    leftIcon: "m-0",
-                  }}
-                  size="xs"
-                  className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                />
-              </Menu.Target>
-              <Menu.Dropdown>
-                {numberOfFilesToRemove < datum.filesCount && (
-                  <Menu.Item
-                    icon={<BiAddToQueue />}
-                    onClick={() => {
-                      addToCart(datum.files, currentCart, dispatch);
-                    }}
-                  >
-                    Add {datum.filesCount} Case {isPlural ? "files" : "file"} to
-                    the Cart
-                  </Menu.Item>
-                )}
+      annotations: datum.annotations,
+    })) ?? [];
 
-                {numberOfFilesToRemove > 0 && (
-                  <Menu.Item
-                    icon={<BsTrash />}
-                    onClick={() => {
-                      removeFromCart(datum.files, currentCart, dispatch);
-                    }}
-                  >
-                    Remove{" "}
-                    {numberOfFilesToRemove === 0
-                      ? datum.filesCount
-                      : numberOfFilesToRemove}{" "}
-                    Case {isPlural ? "files" : "file"} from the Cart
-                  </Menu.Item>
-                )}
-              </Menu.Dropdown>
-            </Menu>
-          ),
-          case_id: (
-            <OverflowTooltippedLabel label={datum.case_id}>
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "case",
-                    entity_id: datum.case_uuid,
-                  })
-                }
-                label={datum.case_id}
-              />
-            </OverflowTooltippedLabel>
-          ),
-          case_uuid: datum.case_uuid,
-          project_id: (
-            <OverflowTooltippedLabel label={datum.project_id}>
-              <PopupIconButton
-                handleClick={() =>
-                  setEntityMetadata({
-                    entity_type: "project",
-                    entity_id: datum.project_id,
-                  })
-                }
-                label={datum.project_id}
-              />
-            </OverflowTooltippedLabel>
-          ),
-          program: datum.program,
-          primary_site: datum.primary_site,
-          disease_type: datum.disease_type ?? "--",
-          primary_diagnosis: datum?.primary_diagnosis ?? "--",
-          age_at_diagnosis: ageDisplay(datum?.age_at_diagnosis),
-          vital_status: datum?.vital_status ?? "--",
-          days_to_death: ageDisplay(datum?.days_to_death),
-          gender: datum?.gender ?? "--",
-          race: datum?.race ?? "--",
-          ethnicity: datum?.ethnicity ?? "--",
-          files: datum?.filesCount?.toLocaleString(),
-          experimental_strategies: extractToArray(
-            datum?.experimental_strategies,
-            "experimental_strategy",
-          ),
-          annotations: getCasesTableAnnotationsLinkParams(
-            datum.annotations,
-            datum.case_uuid,
-          ) ? (
-            <Link
-              href={getCasesTableAnnotationsLinkParams(
-                datum.annotations,
-                datum.case_uuid,
-              )}
-              passHref
-            >
-              <a className="text-utility-link underline" target={"_blank"}>
-                {datum.annotations.length}
-              </a>
-            </Link>
-          ) : (
-            0
-          ),
-        };
-      }),
-    [data, currentCart, classes, dispatch, setEntityMetadata],
+  const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
+
+  const casesTableDefaultColumns = useGenerateCasesTableColumns({
+    casesDataColumnHelper,
+    currentCart,
+    setEntityMetadata,
+  });
+
+  const getRowId = (originalRow: casesTableDataType) => {
+    return originalRow.case_uuid;
+  };
+  const [rowSelection, setRowSelection] = useState({});
+  const pickedCases = Object.entries(rowSelection)?.map(
+    ([case_uuid]) => case_uuid,
   );
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
+    casesTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    case_uuid: false,
+    program: false,
+    disease_type: false,
+    primary_diagnosis: false,
+    vital_status: false,
+    days_to_death: false,
+    race: false,
+    ethnicity: false,
+    age_at_diagnosis: false,
+    experimental_strategy: false,
+  });
 
-  const sortByActions = (sortByObj) => {
+  const sortByActions = (sortByObj: SortingState) => {
     const COLUMN_ID_TO_FIELD = {
       case_id: "submitter_id",
       case_uuid: "case_id",
-      project_id: "project.project_id",
+      project: "project.project_id",
       program: "project.program.name",
       primary_site: "primary_site",
       disease_type: "disease_type",
@@ -286,7 +189,7 @@ export const ContextualCasesView: React.FC = () => {
       ethnicity: "demographic.ethnicity",
       files: "summary.file_count",
     };
-    const tempSortBy = sortByObj.map((sortObj) => {
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
       return {
         field: COLUMN_ID_TO_FIELD[sortObj.id],
         direction: sortObj.desc ? "desc" : "asc",
@@ -294,6 +197,11 @@ export const ContextualCasesView: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
+
+  useEffect(() => {
+    setRowSelection({});
+    sortByActions(sorting);
+  }, [sorting]);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
@@ -311,85 +219,276 @@ export const ContextualCasesView: React.FC = () => {
         setOffset(0);
         setSearchTerm(obj.newSearch);
         break;
-      case "newHeadings":
-        setColumns(obj.newHeadings);
-        break;
     }
   };
 
+  const caseCounts =
+    pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
+
+  const downloadFilter: GqlOperation =
+    pickedCases.length > 0
+      ? {
+          op: "in",
+          content: {
+            field: "cases.case_id",
+            value: pickedCases,
+          },
+        }
+      : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+
+  const handleTSVDownload = async () => {
+    setCohortTableTSVDownloadActive(true);
+    await download({
+      endpoint: "cases",
+      method: "POST",
+      params: {
+        attachment: true,
+        filename: `cohort.${convertDateToString(new Date())}.tsv`,
+        case_filters:
+          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        fields: [
+          "case_id",
+          "submitter_id",
+          "primary_site",
+          "disease_type",
+          "project.project_id",
+          "project.program.name",
+          "demographic.gender",
+          "demographic.race",
+          "demographic.ethnicity",
+          "demographic.days_to_death",
+          "demographic.vital_status",
+          "diagnoses.primary_diagnosis",
+          "diagnoses.age_at_diagnosis",
+          "summary.file_count",
+          "summary.experimental_strategies.experimental_strategy",
+        ],
+        format: "tsv",
+      },
+      dispatch,
+      done: () => setCohortTableTSVDownloadActive(false),
+    });
+  };
+
+  const handleJSONDownload = () => {
+    setCohortTableJSONDownloadActive(true);
+    download({
+      endpoint: "cases",
+      method: "POST",
+      dispatch,
+      params: {
+        filename: `cohort.${convertDateToString(new Date())}.json`,
+        case_filters:
+          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        attachment: true,
+        pretty: true,
+        format: "JSON",
+        fields: [
+          "submitter_slide_ids",
+          "submitter_id",
+          "case_id",
+          "project.project_id",
+          "project.program.name",
+          "primary_site",
+          "disease_type",
+          "diagnoses.age_at_diagnosis",
+          "demographic.vital_status",
+          "demographic.days_to_death",
+          "demographic.race",
+          "demographic.gender",
+          "demographic.ethnicity",
+          "summary.file_count",
+          "summary.experimental_strategies.experimental_strategy",
+        ].join(","),
+        size: caseCounts,
+      },
+      done: () => setCohortTableJSONDownloadActive(false),
+    });
+  };
+
+  const handleClinicalTSVDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        filename: `clinical.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleClinicalJSONDownload = () => {
+    setClinicalDownloadActive(true);
+    download({
+      endpoint: "clinical_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `clinical.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setClinicalDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenTSVDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        filename: `biospecimen.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
+  const handleBiospeciemenJSONDownload = () => {
+    setBiospecimenDownloadActive(true);
+    download({
+      endpoint: "biospecimen_tar",
+      method: "POST",
+      dispatch,
+      params: {
+        format: "JSON",
+        pretty: true,
+        filename: `biospecimen.${
+          pickedCases.length > 0 ? "cases_selection" : "cohort"
+        }.${new Date().toISOString().slice(0, 10)}.json`,
+        filters: downloadFilter,
+        size: caseCounts,
+      },
+      done: () => setBiospecimenDownloadActive(false),
+    });
+  };
+
   return (
-    <div className="flex flex-col mx-1" data-testid="cases-table">
-      <Divider color="#C5C5C5" className="mb-3 mr-4" />
+    <div className="flex flex-col" data-testid="cases-table">
+      <Divider color="#C5C5C5" className="mb-3" />
 
       <VerticalTable
-        tableData={cases || []}
-        columns={columns}
+        data={casesData}
+        columns={casesTableDefaultColumns}
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
           <div className="flex gap-2">
-            <CasesCohortButton />
+            <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON (Coming Soon)" },
-                { title: "TSV (Coming Soon)" },
+                {
+                  title: "JSON",
+                  onClick: handleBiospeciemenJSONDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
+                {
+                  title: "TSV",
+                  onClick: handleBiospeciemenTSVDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
               ]}
-              TargetButtonChildren="Biospecimen"
+              TargetButtonChildren={
+                biospecimenDownloadActive ? "Processing" : "Biospecimen"
+              }
               LeftIcon={
-                pickedCases.length ? (
+                biospecimenDownloadActive ? (
+                  <Loader size={20} />
+                ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
-                ) : null
+                ) : (
+                  <DownloadIcon size="1rem" aria-label="Biospecimen dropdown" />
+                )
               }
             />
 
             <DropdownWithIcon
               dropdownElements={[
-                { title: "JSON (Coming Soon)" },
-                { title: "TSV (Coming Soon)" },
+                {
+                  title: "JSON",
+                  onClick: handleClinicalJSONDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
+                {
+                  title: "TSV",
+                  onClick: handleClinicalTSVDownload,
+                  icon: <DownloadIcon aria-label="Download" />,
+                },
               ]}
-              TargetButtonChildren="Clinical"
+              TargetButtonChildren={
+                clinicalDownloadActive ? "Processing" : "Clinical"
+              }
               LeftIcon={
-                pickedCases.length ? (
+                clinicalDownloadActive ? (
+                  <Loader size={20} />
+                ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
-                ) : null
+                ) : (
+                  <DownloadIcon size="1rem" aria-label="Clinical dropdown" />
+                )
               }
             />
 
-            <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary" className="bg-base-max">
-                JSON
-              </Button>
-            </ButtonTooltip>
-            <ButtonTooltip label=" " comingSoon={true}>
-              <Button variant="outline" color="primary" className="bg-base-max">
-                TSV
-              </Button>
-            </ButtonTooltip>
+            <Button
+              onClick={handleJSONDownload}
+              variant="outline"
+              color="primary"
+              className="bg-base-max"
+            >
+              {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
+            </Button>
+
+            <Button
+              variant="outline"
+              color="primary"
+              className="bg-base-max"
+              onClick={handleTSVDownload}
+            >
+              {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
+            </Button>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
           pagination?.total > 1 ? "Cases" : "Case"
         }`}
+        columnSorting="manual"
+        enableRowSelection={true}
         showControls={true}
-        columnSorting={"manual"}
-        selectableRow={false}
+        setRowSelection={setRowSelection}
+        rowSelection={rowSelection}
+        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         search={{
           enabled: true,
+          tooltip: "e.g. TCGA-GM-A2DA, c07b122e-ac50-4db2-add2-5617a5d0e976",
         }}
-        status={
-          isFetching
-            ? "pending"
-            : isSuccess
-            ? "fulfilled"
-            : isError
-            ? "rejected"
-            : "uninitialized"
-        }
+        sorting={sorting}
+        setSorting={setSorting}
+        setColumnVisibility={setColumnVisibility}
+        columnVisibility={columnVisibility}
+        columnOrder={columnOrder}
+        setColumnOrder={setColumnOrder}
+        getRowId={getRowId}
+        baseZIndex={300}
       />
     </div>
   );

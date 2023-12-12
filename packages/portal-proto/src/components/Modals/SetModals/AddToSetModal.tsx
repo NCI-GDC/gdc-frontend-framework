@@ -22,7 +22,6 @@ import FunctionButton from "@/components/FunctionButton";
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import SetTable from "./SetTable";
-import { modalStyles } from "../styles";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface AddToSetModalProps {
@@ -109,12 +108,12 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       title={`Add ${addToCount.toLocaleString()} ${setTypeLabel}${
         addToCount > 1 ? "s" : ""
       } to an existing set`}
-      closeButtonLabel="close"
       opened
       onClose={closeModal}
       size="lg"
-      classNames={modalStyles}
-      withinPortal={false}
+      classNames={{
+        content: "p-0 drop-shadow-lg",
+      }}
     >
       <div className="p-4">
         <SetTable
@@ -146,7 +145,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           />
         )}
       </div>
-      <ModalButtonContainer>
+      <ModalButtonContainer data-testid="modal-button-container">
         <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
         <DarkFunctionButton
           disabled={
