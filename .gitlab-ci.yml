@@ -150,16 +150,16 @@ Build UI tests Docker image:
     matrix:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
-trigger_ui_tests_orange:
+trigger_ui_tests_pink:
   extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
-    APP_ENVIRONMENT: QA_ORANGE
+    APP_ENVIRONMENT: QA_PINK
   needs:
-    - job: deploy_qa/uat
+    - job: deploy_qa/pink
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/pink" && $CI_PIPELINE_SOURCE != "schedule"'
       allow_failure: true
 
 trigger_ui_tests_uat:
@@ -181,4 +181,4 @@ trigger_ui_tests_scheduled:
       when: always
   parallel:
     matrix:
-      - APP_ENVIRONMENT: ["QA_ORANGE", "QA_UAT"]
+      - APP_ENVIRONMENT: ["QA_PINK", "QA_UAT"]
