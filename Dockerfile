@@ -28,6 +28,9 @@ RUN lerna run --scope portal-proto build
 # ==================================================================
 
 FROM node:16.20.2-alpine3.17 AS runner
+LABEL org.opencontainers.image.title="gdc-frontend-framework" \
+      org.opencontainers.image.source="https://github.com/NCI-GDC/gdc-frontend-framework" \
+      org.opencontainers.image.vendor="NCI-GDC"
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
