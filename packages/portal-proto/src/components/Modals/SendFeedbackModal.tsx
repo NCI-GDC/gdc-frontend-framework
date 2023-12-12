@@ -29,6 +29,7 @@ const SendFeedbackModal = ({
           <a
             href="mailto:support@nci-gdc.datacommons.io"
             className="text-primary-darker font-bold underline"
+            target="blank"
           >
             support@nci-gdc.datacommons.io
           </a>
