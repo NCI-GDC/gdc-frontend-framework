@@ -2,7 +2,7 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: feat/remove-ssh-keyscan
+    ref: 0.5.0
     file:
       - templates/global/full.yaml
       - templates/node/full.yaml
