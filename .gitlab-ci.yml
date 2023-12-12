@@ -86,6 +86,7 @@ Build and push image:
     - apk add bash
   script:
     - |
+      set -x
       docker build \
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA" \
       --label "org.opencontainers.image.created=$(date -Iseconds)" \
