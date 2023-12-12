@@ -26,23 +26,26 @@ tags: gdc-data-portal-v2, regression, projects, cohort
   |1     |1  |
 * Select "Create New Cohort" on the Projects page
 * Name the cohort "REBC Project Page Cohort"
-* Select create or save in cohort modal
-* Is modal with text "REBC Project Page Cohort has been created" present on the page and "Keep Modal"
-* Set this as your current cohort
-* "REBC Project Page Cohort" should be the active cohort
-* Is text "Changes not saved" present on the page
-* Select "Save" from the Cohort Bar
 * Perform action and validate modal text
-  |Action to Perform|Text to validate in modal    |Keep or Remove Modal|
-  |-----------------|-----------------------------|--------------------|
-  |Save             |Cohort has been saved        |Remove Modal        |
+  |Action to Perform|Text to validate in modal                   |Keep or Remove Modal|
+  |-----------------|--------------------------------------------|--------------------|
+  |Save             |REBC Project Page Cohort has been saved     |Keep Modal          |
+* Set this as your current cohort
+* Wait for cohort bar case count loading spinner
 * "REBC Project Page Cohort" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections           |position in filter area  |
+  |-------------------|---------------------|-------------------------|
+  |Project            |REBC-THYR            |1                        |
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal    |Keep or Remove Modal|
   |-----------------|-----------------------------|--------------------|
   |Delete           |has been deleted             |Remove Modal        |
+* Validate the cohort query filter does not have these filters
+  |facet_name         |selections           |
+  |-------------------|---------------------|
+  |Project            |REBC-THYR            |
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
