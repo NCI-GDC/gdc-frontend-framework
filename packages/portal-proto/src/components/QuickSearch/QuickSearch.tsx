@@ -45,53 +45,60 @@ export const QuickSearch = (): JSX.Element => {
   }
 
   const renderItem = forwardRef<HTMLDivElement, ItemProps>(
-    ({ value, label, symbol, obj, ...others }: ItemProps, ref) => (
-      <div ref={ref} {...others}>
-        <div
-          className={`flex p-2 px-4 ${
-            others["data-hovered"] &&
-            "bg-primary-darkest text-primary-contrast-darkest"
-          }`}
-        >
-          <div className="self-center">
-            <TypeIcon
-              iconText={entityShortNameMapping[atob(label).split(":")[0]]}
-              changeOnHover={others["data-hovered"]}
-            />
-          </div>
-          <div className="flex flex-col">
-            <div style={{ width: 200 }}>
-              <Badge
-                classNames={{
-                  inner: "text-xs",
-                  root: `${
-                    others["data-hovered"]
-                      ? "bg-primary-contrast-darker text-primary-darker"
-                      : "bg-primary-darker text-primary-contrast-darker"
-                  }`,
-                }}
-                className="cursor-pointer"
-              >
-                {symbol || atob(label).split(":")[1]}
-              </Badge>
+    ({ value, label, symbol, obj, ...others }: ItemProps, ref) => {
+      const badgeText = symbol || atob(label).split(":")[1];
+      const mainText = findMatchingToken(
+        obj,
+        searchText.trim().toLocaleLowerCase(),
+      );
+      return (
+        <div ref={ref} {...others} aria-label={`${badgeText}, ${mainText}`}>
+          <div
+            className={`flex p-2 px-4 ${
+              others["data-hovered"] &&
+              "bg-primary-darkest text-primary-contrast-darkest"
+            }`}
+          >
+            <div className="self-center">
+              <TypeIcon
+                iconText={entityShortNameMapping[atob(label).split(":")[0]]}
+                changeOnHover={others["data-hovered"]}
+              />
             </div>
-            <span className="text-sm">
-              <Highlight
-                highlight={searchText.trim()}
-                highlightStyles={{
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  fontSize: "14px",
-                  color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
-                }}
-              >
-                {findMatchingToken(obj, searchText.trim().toLocaleLowerCase())}
-              </Highlight>
-            </span>
+            <div className="flex flex-col">
+              <div style={{ width: 200 }}>
+                <Badge
+                  classNames={{
+                    inner: "text-xs",
+                    root: `${
+                      others["data-hovered"]
+                        ? "bg-primary-contrast-darker text-primary-darker"
+                        : "bg-primary-darker text-primary-contrast-darker"
+                    }`,
+                  }}
+                  className="cursor-pointer"
+                >
+                  {badgeText}
+                </Badge>
+              </div>
+              <span className="text-sm">
+                <Highlight
+                  highlight={searchText.trim()}
+                  highlightStyles={{
+                    fontStyle: "italic",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
+                  }}
+                >
+                  {mainText}
+                </Highlight>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    ),
+      );
+    },
   );
 
   const onSelectItem = (id: string) => {
