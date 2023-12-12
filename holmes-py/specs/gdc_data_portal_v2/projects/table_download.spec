@@ -43,6 +43,7 @@ tags: gdc-data-portal-v2, regression, projects, download
 * Verify that "TSV Projects Table from Projects" does not contain specified information
   |required_info|
   |-------------|
+  |GENIE        |
   |FM           |
   |GENIE        |
   |HCMI         |
@@ -83,7 +84,7 @@ tags: gdc-data-portal-v2, regression, projects, download
 * Make the following selections on a filter card
   |filter_name      |selection            |
   |-----------------|---------------------|
-  |Program          |GENIE                |
+  |Program          |FM                   |
   |Program          |BEATAML1.0           |
   |Program          |CGCI                 |
 * Download "TSV Projects Table" from "Projects"
@@ -97,6 +98,25 @@ tags: gdc-data-portal-v2, regression, projects, download
   |Program      |
   |Cases        |
   |Experimental Strategy|
+  |FM-AD                |
+  |BEATAML1.0-COHORT    |
+  |CGCI-HTMCP-CC        |
+  |CGCI-BLGSP           |
+  |BEATAML1.0-CRENOLANIB|
+  |CGCI-HTMCP-LC        |
+  |Targeted Sequencing  |
+  |Acinar Cell Neoplasms|
+  |RNA-Seq              |
+  |Mature B-Cell Lymphomas|
+  |WXS                  |
+  |Hematopoietic and reticuloendothelial systems|
+  |Cervix uteri         |
+  |Bronchus and lung    |
+
+* Verify that "TSV Projects Table from Projects" does not contain specified information
+  |required_info|
+  |-------------|
+  |GENIE        |
   |GENIE-MSK    |
   |GENIE-DFCI   |
   |GENIE-MDA    |
@@ -104,29 +124,17 @@ tags: gdc-data-portal-v2, regression, projects, download
   |GENIE-UHN    |
   |GENIE-VICC   |
   |GENIE-GRCC   |
-  |BEATAML1.0-COHORT|
   |GENIE-NKI    |
-  |CGCI-HTMCP-CC|
-  |CGCI-BLGSP   |
-  |BEATAML1.0-CRENOLANIB|
-  |Targeted Sequencing|
-  |RNA-Seq      |
-  |WGS          |
-  |miRNA-Seq    |
-  |WXS          |
-  |Methylation Array|
-  |Myeloid Leukemias|
-  |Cervix uteri |
-* Verify that "TSV Projects Table from Projects" does not contain specified information
-  |required_info|
-  |-------------|
   |CMI          |
   |CMI-MBC      |
   |CMI-MPC      |
   |CMI-ASC      |
-  |FM           |
   |HCMI         |
   |TCGA         |
+  |APOLLO       |
+  |TARGET       |
+  |VAREPOP      |
+  |MATCH        |
   |Data Category|
   |data category|
   |simple nucleotide variation  |
