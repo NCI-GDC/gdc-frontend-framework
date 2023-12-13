@@ -35,18 +35,22 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <label
         hidden
         htmlFor={
-          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+          multiselect
+            ? `setOperationCheckboxSelect-${setId}`
+            : `setOperationRadioSelect-${setId}`
         }
         id={
-          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+          multiselect
+            ? `setOperationCheckboxSelect-${setId}`
+            : `setOperationRadioSelect-${setId}`
         }
       >
-        {`${selected ? `Select` : `Unselect`} ${setId} fdsfdsfsd`}
+        {`${selected ? `Select` : `Unselect`} ${setId}`}
       </label>
       <span>
         {multiselect ? (
           <Checkbox
-            aria-labelledby="setOperationCheckboxSelect"
+            aria-labelledby={`setOperationCheckboxSelect-${setId}`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -60,7 +64,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
-            aria-labelledby="setOperationRadioSelect"
+            aria-labelledby={`setOperationRadioSelect-${setId}`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}

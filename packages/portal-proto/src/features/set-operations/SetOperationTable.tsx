@@ -89,8 +89,8 @@ export const SetOperationTable = ({
           <>
             <label
               hidden
-              htmlFor="setOperationSelect"
-              id="setOperationSelect"
+              htmlFor={`setOperationSelect-${row.original.operationKey}`}
+              id={`setOperationSelect-${row.original.operationKey}`}
             >{`${
               !selectedSets[row.original.operationKey] ? `Select` : `Unselect`
             } the ${row.original.operationKey} row`}</label>
@@ -100,7 +100,7 @@ export const SetOperationTable = ({
                 input: "checked:bg-accent checked:border-accent",
               }}
               value={row.original.operationKey}
-              aria-labelledby="setOperationSelect"
+              aria-labelledby={`setOperationSelect-${row.original.operationKey}`}
               checked={selectedSets[row.original.operationKey]}
               onChange={(e) => {
                 setSelectedSets({
@@ -161,7 +161,6 @@ export const SetOperationTable = ({
 
   return (
     <VerticalTable
-      aria-hidden="true"
       data={setOperationTableData}
       columns={setOperationTableColumns}
       enableRowSelection={true}
