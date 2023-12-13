@@ -51,7 +51,7 @@ export const useGenerateGenesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <>
-            <label hidden htmlFor="genesSelectAll" id="genesSelectAll">
+            <label hidden htmlFor={`geneSelectAll`} id={`geneSelectAll`}>
               {table.getIsAllRowsSelected() ? `Select` : `Unselect`}{" "}
               {table
                 .getRowModel()
@@ -64,7 +64,7 @@ export const useGenerateGenesTableColumns = ({
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="genesSelectAll"
+              aria-labelledby={`geneSelectAll`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -74,15 +74,19 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => (
           <>
-            <label hidden htmlFor="geneSelect" id="geneSelect">{`${
-              row.getIsSelected() ? `Select` : `Unselect`
-            } the ${row.original.symbol} gene row`}</label>
+            <label
+              hidden
+              htmlFor={`geneSelect-${row.original.symbol}`}
+              id={`geneSelect-${row.original.symbol}`}
+            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
+              row.original.symbol
+            } gene row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="geneSelect"
+              aria-labelledby={`geneSelect-${row.original.symbol}`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

@@ -73,8 +73,8 @@ export const useGenerateSMTableColumns = ({
           <>
             <label
               hidden
-              htmlFor="mutationsSelectAll"
-              id="mutationsSelectAll"
+              htmlFor={`mutationsSelectAll`}
+              id={`mutationsSelectAll`}
             >{`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
               .getRowModel()
               .rows.map(
@@ -90,7 +90,7 @@ export const useGenerateSMTableColumns = ({
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="mutationsSelectAll"
+              aria-labelledby={`mutationsSelectAll`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -100,9 +100,13 @@ export const useGenerateSMTableColumns = ({
         ),
         cell: ({ row }) => (
           <>
-            <label hidden htmlFor="mutationSelect" id="mutationSelect">{`${
-              row.getIsSelected() ? `Select` : `Unselect`
-            } the ${row.original.protein_change.symbol} ${
+            <label
+              hidden
+              htmlFor={`mutationSelect-${row.original.protein_change.symbol}`}
+              id={`mutationSelect-${row.original.protein_change.symbol}`}
+            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
+              row.original.protein_change.symbol
+            } ${
               row.original.protein_change?.aaChange ?? ""
             } mutation row`}</label>
             <Checkbox
@@ -110,7 +114,7 @@ export const useGenerateSMTableColumns = ({
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="mutationSelect"
+              aria-labelledby={`mutationSelect-${row.original.protein_change.symbol}`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

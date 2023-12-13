@@ -29,24 +29,27 @@ const SelectCell: React.FC<SelectCellProps> = ({
   const [setId] = set;
   const disabledMessage = shouldDisable(count);
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
-
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage} zIndex={400}>
       <label
         hidden
         htmlFor={
-          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+          multiselect
+            ? `setOperationCheckboxSelect-${setId}`
+            : `setOperationRadioSelect-${setId}`
         }
         id={
-          multiselect ? `setOperationCheckboxSelect` : `setOperationRadioSelect`
+          multiselect
+            ? `setOperationCheckboxSelect-${setId}`
+            : `setOperationRadioSelect-${setId}`
         }
       >
-        {`${selected ? `Select` : `Unselect`} ${setId} fdsfdsfsd`}
+        {`${selected ? `Select` : `Unselect`} ${setId}`}
       </label>
       <span>
         {multiselect ? (
           <Checkbox
-            aria-labelledby="setOperationCheckboxSelect"
+            aria-labelledby={`setOperationCheckboxSelect`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -60,7 +63,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
-            aria-labelledby="setOperationRadioSelect"
+            aria-labelledby={`setOperationRadioSelect`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}

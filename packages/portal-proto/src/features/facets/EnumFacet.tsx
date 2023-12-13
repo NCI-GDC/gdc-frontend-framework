@@ -388,12 +388,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <div className="flex-none">
                             <label
                               hidden
-                              htmlFor="selectFacet"
-                              id="selectFacet"
+                              htmlFor={`selectFacet-${value}`}
+                              id={`selectFacet-${value}`}
                             >{`Select ${value}`}</label>
                             <Checkbox
                               data-testid={`checkbox-${value}`}
-                              aria-labelledby="selectFacet"
+                              aria-labelledby={`selectFacet-${value}`}
                               value={value}
                               size="xs"
                               color="accent"

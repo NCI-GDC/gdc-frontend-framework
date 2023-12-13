@@ -236,16 +236,20 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         ),
         cell: ({ row }) => (
           <>
-            <label hidden htmlFor="manageSetSelect" id="manageSetSelect">{`${
-              row.getIsSelected() ? `Select` : `Unselect`
-            } the ${row.original.setName} set row`}</label>
+            <label
+              hidden
+              htmlFor={`manageSetSelect-${row.original.setName}`}
+              id={`manageSetSelect-${row.original.setName}`}
+            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
+              row.original.setName
+            } set row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
               data-testid="checkbox-select-set"
-              aria-labelledby="manageSetSelect"
+              aria-labelledby={`manageSetSelect-${row.original.setName}`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

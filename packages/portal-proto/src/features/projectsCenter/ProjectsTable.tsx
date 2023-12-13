@@ -163,13 +163,18 @@ const ProjectsTable: React.FC = () => {
   const [expandedColumnId, setExpandedColumnId] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
+
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
       projectsTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
           <>
-            <label hidden htmlFor="projectsSelectAll" id="projectsSelectAll">
+            <label
+              hidden
+              htmlFor={`projectsSelectAll`}
+              id={`projectsSelectAll`}
+            >
               {`${
                 table.getIsAllRowsSelected() ? `Select` : `Unselect`
               } ${Object.keys(table.getRowModel().rowsById).join(
@@ -181,7 +186,7 @@ const ProjectsTable: React.FC = () => {
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="projectsSelectAll"
+              aria-labelledby={`projectsSelectAll`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -191,15 +196,19 @@ const ProjectsTable: React.FC = () => {
         ),
         cell: ({ row }) => (
           <>
-            <label hidden htmlFor="projectSelect" id="projectSelect">{`${
-              row.getIsSelected() ? `Select` : `Unselect`
-            } the ${row.id} project row`}</label>
+            <label
+              hidden
+              htmlFor={`projectSelect-${row.id}`}
+              id={`projectSelect-${row.id}`}
+            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
+              row.id
+            } project row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="projectSelect"
+              aria-labelledby={`projectSelect-${row.id}`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),
