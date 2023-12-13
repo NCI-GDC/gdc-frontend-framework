@@ -479,6 +479,7 @@ const CohortManager: React.FC = () => {
             <Tooltip label="Save Cohort" position="top" withArrow>
               <span className="h-12">
                 <DropdownWithIcon
+                  customDataTestId="saveButton"
                   dropdownElements={[
                     {
                       onClick: () => {
