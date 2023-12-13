@@ -2,7 +2,7 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: 0.5.0
+    ref: 0.5.1
     file:
       - templates/global/full.yaml
       - templates/node/full.yaml
