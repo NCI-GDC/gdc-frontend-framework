@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Enter text "Most Frequent Mutations" in the "Input field for new set name" search bar
 * Select "Save"
 * Is text "Set has been saved." present on the page
-* Pause "2" seconds
+* Pause "3" seconds
 
 ## Edit Set Name
 * Select "Edit Set Name" for set "Most Frequent Mutations" on Manage Sets page

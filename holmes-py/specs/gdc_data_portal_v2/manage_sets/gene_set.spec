@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Enter text "Top Mutated Genes" in the "Input field for new set name" search bar
 * Select "Save"
 * Is text "Set has been saved." present on the page
-* Pause "2" seconds
+* Pause "3" seconds
 
 ## Edit Set Name
 * Select "Edit Set Name" for set "Top Mutated Genes" on Manage Sets page
