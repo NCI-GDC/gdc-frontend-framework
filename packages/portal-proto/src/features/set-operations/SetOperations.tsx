@@ -56,9 +56,8 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
             countHook={countHook}
             entityType={entityType}
           />
-          <div aria-hidden="true" className="m-8" />
+          <div className="m-8" />
           <SetOperationTable
-            aria-hidden="true"
             data={data}
             selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}

@@ -89,6 +89,11 @@ const SelectCell: React.FC<SelectCellProps> = ({
       }
     >
       <span>
+        <label
+          hidden
+          htmlFor={`${entityType}-selection-${setId}`}
+          id={`${entityType}-selection-${setId}`}
+        >{`Select ${entityType}`}</label>
         <Checkbox
           classNames={{
             input: "checked:bg-accent checked:border-accent",
