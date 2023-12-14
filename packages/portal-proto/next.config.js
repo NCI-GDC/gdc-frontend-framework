@@ -10,7 +10,7 @@ const withTM = require("next-transpile-modules")([
  * the intended deployment path. For example, the basePath of "/v2"
  * means that the application will be available at "https://<host>/v2"
  */
-const basePath = process.env.NEXT_PUBLIC_BASEPATH;
+const basePath = process.env.NEXT_PUBLIC_BASEPATH || "";
 
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
