@@ -33,23 +33,26 @@ tags: regression, smoke
 ## Add a Custom Filter modal
 * Navigate to "Add a File Filter" from "Repository" "app"
 
-## Add a Custom Filter displayed on Add a Custom Filter modal
-* Verify that the "Add a Custom Filter" text is displayed on "Add a Custom Filter" "modal"
+Add a Custom Filter displayed on Add a Custom Filter modal
+Verify that the "Add a Custom Filter" text is displayed on "Add a Custom Filter" "modal"
 
-## Search for a file property on Add a Custom Filter modal
-* Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
+Search for a file property on Add a Custom Filter modal
+Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
 
-## File properties on Add a Custom Filter modal
-* Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
+File properties on Add a Custom Filter modal
+Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
 
 ## # file counts listed on Add a Custom Filter modal
+* Is text "303 properties" present on the page
 * Verify "303" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
 * Verify file filter names do not start with "files."
 
-## Only show properties with values on Add a Custom Filter modal
-* Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
+Only show properties with values on Add a Custom Filter modal
+Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
+
+## Close Modal
 * Close the modal
 
 ## Search filters
@@ -63,6 +66,6 @@ tags: regression, smoke
 
 * Navigate to "Add a File Filter" from "Repository" "app"
 * Search for file filter, <filter_name>
-* Verify that the <filter_name> text is displayed on "Add a Custom Filter" "modal"
+Verify that the <filter_name> text is displayed on "Add a Custom Filter" "modal"
 * Select file filter, <filter_name>, nth: <nth>
 * Verify that the file filter, <filter_name>, has been applied

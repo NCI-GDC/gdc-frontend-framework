@@ -15,6 +15,9 @@ def start_app():
 def click_button_on_cohort_bar(button_name: str):
     time.sleep(0.5)
     APP.cohort_bar.click_cohort_bar_button(button_name)
+    # Clicks "Save" from the save button dropdown menu
+    if button_name == "Save":
+        APP.shared.click_text_option_from_dropdown_menu(button_name)
     time.sleep(0.5)
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")

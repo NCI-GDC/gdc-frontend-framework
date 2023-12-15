@@ -40,6 +40,7 @@ def setup_test_run():
     APP.header_section.wait_for_page_to_load("analysis")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.cohort_bar.click_cohort_bar_button("Save")
+    APP.shared.click_text_option_from_dropdown_menu("Save")
     APP.shared.send_text_into_search_bar("never_use_this_cohort_name", "Input field for new cohort name")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")

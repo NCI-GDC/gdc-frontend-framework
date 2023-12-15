@@ -10,14 +10,22 @@ tags: gdc-data-portal-v2, repository, regression, smoke
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app
 * Navigate to "Downloads" from "Header" "section"
-
-## Add Files from the Table
 * Wait for table loading spinner
 * Wait for cohort bar case count loading spinner
+* Pause "2" seconds
+* Wait for cohort bar case count loading spinner
+
+## Add Files from the Table
+When selecting from the table and checking the message for the first time,
+the automation may not "see" the message. I found selecting, de-selecting, then selecting
+again solves the problem and automation can find the message.
 * Select value from table by row and column
   |row|column|
   |------|---|
   |1     |1  |
+  |1     |1  |
+  |1     |1  |
+* Pause "1" seconds
 * Is modal with text "Added" present on the page and "Keep Modal"
 * Select value from table by row and column
   |row|column|
