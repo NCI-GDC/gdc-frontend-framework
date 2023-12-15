@@ -7,7 +7,7 @@ class HeaderSectionLocators:
 
     # These are all locators that only appear when the respective page has fully loaded
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
-    PROJECTS_WAIT_FOR_ELEMENT = "input[data-testid='checkbox-biospecimen']"
+    PROJECTS_WAIT_FOR_ELEMENT = "[data-testid='button-json-projects-table']"
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
     REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
@@ -38,14 +38,14 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT)
         elif page_to_load == "cohort":
             self.wait_for_selector(HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT)
-            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         elif page_to_load == "downloads":
             # Repository page does not load quickly, and automation will move too fast at times
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT)
             self.wait_for_selector(HeaderSectionLocators.REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT)
-            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-            self.wait_for_loading_spinner_table_to_detatch()
         elif page_to_load == "home":
             self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
         elif page_to_load == "manage-sets":
             self.wait_for_selector(HeaderSectionLocators.MANAGE_SETS_WAIT_FOR_ELEMENT)
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()

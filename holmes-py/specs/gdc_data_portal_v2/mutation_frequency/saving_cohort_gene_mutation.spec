@@ -15,11 +15,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 ## Add Genes to Cohort and Save
 * Wait for loading spinner
 * Select "Add" from the Cohort Bar
-* Name the cohort "Gene Cohort" in the Cohort Bar section
-* Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |Gene Cohort has been created               |Remove Modal        |
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* "Unsaved_Cohort" should be the active cohort
 * Search the table for "TP53"
 * Wait for table body text to appear
   |expected_text|row  |column |
@@ -50,6 +47,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Pause "3" seconds
 * Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
+* Name the cohort "Gene Cohort" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
@@ -64,11 +62,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
 * Select "Add" from the Cohort Bar
-* Name the cohort "Mutation Cohort" in the Cohort Bar section
-* Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |Mutation Cohort has been created           |Remove Modal        |
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* "Unsaved_Cohort" should be the active cohort
 * Search the table for "chr3:g.179218294G>A"
 * Wait for table body text to appear
   |expected_text        |row  |column |
@@ -81,6 +76,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Pause "3" seconds
 * Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
+* Name the cohort "Mutation Cohort" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
@@ -93,11 +89,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Add Mutation and Gene to Cohort and Save
 * Select "Add" from the Cohort Bar
-* Name the cohort "Mutation and Gene Cohort" in the Cohort Bar section
-* Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |Mutation and Gene Cohort has been created  |Remove Modal        |
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* "Unsaved_Cohort" should be the active cohort
 * Search the table for "chr7:g.140753336A>T"
 * Wait for table body text to appear
   |expected_text        |row  |column |
@@ -122,6 +115,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Pause "3" seconds
 * Wait for cohort bar case count loading spinner
 * Select "Save" from the Cohort Bar
+* Name the cohort "Mutation and Gene Cohort" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|

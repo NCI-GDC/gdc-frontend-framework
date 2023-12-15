@@ -70,7 +70,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   clearFilters(field);
                   dismissCallback(field);
                 }}
-                aria-label="remove the facet"
+                aria-label="Remove the facet"
               >
                 <CloseIcon size="1.25em" className={controlsIconStyle} />
               </FacetIconButton>

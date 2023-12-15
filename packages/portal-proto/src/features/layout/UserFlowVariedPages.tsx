@@ -181,14 +181,14 @@ export const UserFlowVariedPages = ({
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <ClearStoreErrorBoundary>
-        <div
+        <aside
           className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
           style={{
             top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
           }}
         >
           {ContextBar ? ContextBar : null}
-        </div>
+        </aside>
         <main
           data-tour="full_page_content"
           className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"

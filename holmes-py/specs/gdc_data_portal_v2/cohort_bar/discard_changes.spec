@@ -18,11 +18,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 ## Discard Changes on Unsaved Cohort
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar
-* Name the cohort "Discard Changes Cohort" in the Cohort Bar section
-* Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |Discard Changes Cohort has been created    |Remove Modal        |
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
 * Make the following selections from "Exposure" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
@@ -44,7 +40,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
-* "Discard Changes Cohort" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be disabled in the Cohort Bar
@@ -58,6 +53,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 
 ## Discard Changes on Saved Cohort
 * Select "Save" from the Cohort Bar
+* Name the cohort "Discard Changes Cohort" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|

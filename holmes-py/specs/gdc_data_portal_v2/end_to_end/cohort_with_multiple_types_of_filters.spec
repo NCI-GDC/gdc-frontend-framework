@@ -19,11 +19,8 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Wait for cohort bar case count loading spinner
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar
-* Name the cohort "Multiple Filters Cohort" in the Cohort Bar section
-* Perform action and validate modal text
-  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
-  |-----------------|-------------------------------------------|--------------------|
-  |Create           |Multiple Filters Cohort has been created   |Remove Modal        |
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* "Unsaved_Cohort" should be the active cohort
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection              |
   |-----------------|-----------------------|
