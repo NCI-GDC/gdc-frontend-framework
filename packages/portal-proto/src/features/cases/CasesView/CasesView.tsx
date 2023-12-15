@@ -148,6 +148,8 @@ export const ContextualCasesView: React.FC = () => {
     casesDataColumnHelper,
     currentCart,
     setEntityMetadata,
+    currentPage: pagination?.page,
+    totalPages: pagination?.total,
   });
 
   const getRowId = (originalRow: casesTableDataType) => {

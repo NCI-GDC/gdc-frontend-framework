@@ -48,10 +48,14 @@ export const useGenerateCasesTableColumns = ({
   casesDataColumnHelper,
   currentCart,
   setEntityMetadata,
+  currentPage,
+  totalPages,
 }: {
   casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<casesTableDataType>[] => {
   const dispatch = useCoreDispatch();
   const CasesTableDefaultColumns = useMemo<ColumnDef<casesTableDataType>[]>(
@@ -60,18 +64,12 @@ export const useGenerateCasesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <>
-            <label hidden htmlFor="casesSelectAll" id="casesSelectAll">
-              {`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
-                .getRowModel()
-                .rows.map(({ original }) => original.project)
-                .join(", ")} case rows`}{" "}
-            </label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby="casesSelectAll"
+              aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -81,19 +79,12 @@ export const useGenerateCasesTableColumns = ({
         ),
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={`caseSelect-${row.original.project}`}
-              id={`caseSelect-${row.original.project}`}
-            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
-              row?.original?.project ?? ""
-            } case row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={`caseSelect-${row.original.project}`}
+              aria-label={`Select the ${row?.original?.project} case row`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

@@ -79,19 +79,12 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         header: "Select",
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={"savedSetsSelectAll"}
-              id={"savedSetsSelectAll"}
-            >{`${row.getIsSelected() ? `Select` : `Unselect`} ${
-              row.original.setId
-            }`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={"savedSetsSelectAll"}
+              aria-label={`Select ${row.original.setId}`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

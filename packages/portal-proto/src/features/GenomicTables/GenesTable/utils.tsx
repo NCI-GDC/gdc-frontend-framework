@@ -26,6 +26,8 @@ export const useGenerateGenesTableColumns = ({
   genomicFilters,
   generateFilters,
   handleMutationCountClick,
+  currentPage,
+  totalPages,
 }: {
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -42,6 +44,8 @@ export const useGenerateGenesTableColumns = ({
     geneId: string,
   ) => Promise<FilterSet>;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<Gene>[] => {
   const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
@@ -51,20 +55,12 @@ export const useGenerateGenesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <>
-            <label hidden htmlFor={`geneSelectAll`} id={`geneSelectAll`}>
-              {table.getIsAllRowsSelected() ? `Select` : `Unselect`}{" "}
-              {table
-                .getRowModel()
-                .rows.map(({ original: { symbol } }) => symbol)
-                .join(", ")}{" "}
-              gene rows
-            </label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={`geneSelectAll`}
+              aria-label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -74,19 +70,12 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={`geneSelect-${row.original.symbol}`}
-              id={`geneSelect-${row.original.symbol}`}
-            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
-              row.original.symbol
-            } gene row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={`geneSelect-${row.original.symbol}`}
+              aria-label={`Select the ${row.original.symbol} gene row`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

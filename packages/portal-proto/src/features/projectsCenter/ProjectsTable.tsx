@@ -170,23 +170,12 @@ const ProjectsTable: React.FC = () => {
         id: "select",
         header: ({ table }) => (
           <>
-            <label
-              hidden
-              htmlFor={`projectsSelectAll`}
-              id={`projectsSelectAll`}
-            >
-              {`${
-                table.getIsAllRowsSelected() ? `Select` : `Unselect`
-              } ${Object.keys(table.getRowModel().rowsById).join(
-                ", ",
-              )} project rows`}
-            </label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={`projectsSelectAll`}
+              aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
               {...{
                 checked: table.getIsAllRowsSelected(),
                 onChange: table.getToggleAllRowsSelectedHandler(),
@@ -196,19 +185,12 @@ const ProjectsTable: React.FC = () => {
         ),
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={`projectSelect-${row.id}`}
-              id={`projectSelect-${row.id}`}
-            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
-              row.id
-            } project row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
-              aria-labelledby={`projectSelect-${row.id}`}
+              aria-label={`Select the ${row.id} project row`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),

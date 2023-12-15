@@ -146,9 +146,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
               htmlFor={`switch-${field.full}`}
               aria-labelledby={`switch-${field.full}`}
             >
-              <span id={`switch-${field.full}`}>
-                <Highlight highlight={searchTerm}>{displayName}</Highlight>
-              </span>
+              <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>
             <Switch
               styles={(theme) => ({

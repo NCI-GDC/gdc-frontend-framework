@@ -87,20 +87,13 @@ export const SetOperationTable = ({
         header: "Select",
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={`setOperationSelect-${row.original.operationKey}`}
-              id={`setOperationSelect-${row.original.operationKey}`}
-            >{`${
-              !selectedSets[row.original.operationKey] ? `Select` : `Unselect`
-            } the ${row.original.operationKey} row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
               value={row.original.operationKey}
-              aria-labelledby={`setOperationSelect-${row.original.operationKey}`}
+              aria-label={`Select the ${row.original.operationKey} set operation row`}
               checked={selectedSets[row.original.operationKey]}
               onChange={(e) => {
                 setSelectedSets({

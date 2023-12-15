@@ -305,6 +305,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setEntityMetadata,
     projectId,
     generateFilters,
+    currentPage: page,
+    totalPages: Math.ceil(data?.ssmsTotal / pageSize),
   });
 
   const getRowId = (originalRow: SomaticMutation) => {

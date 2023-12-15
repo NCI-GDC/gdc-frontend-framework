@@ -212,14 +212,6 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         id: "select",
         header: ({ table }) => (
           <>
-            <label
-              hidden
-              htmlFor="manageSetsSelectAll"
-              id="manageSetsSelectAll"
-            >{`${table.getIsAllRowsSelected() ? `Select` : `Unselect`} ${table
-              .getRowModel()
-              .rows.map(({ original: { setName } }) => setName)
-              .join(", ")} set rows of the table`}</label>
             <Checkbox
               size="xs"
               classNames={{
@@ -230,26 +222,19 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
                 onChange: table.getToggleAllRowsSelectedHandler(),
               }}
               data-testid="checkbox-select-all-sets"
-              aria-labelledby="manageSetsSelectAll"
+              aria-label={`Select all sets of page ${page} of ${total}`}
             />
           </>
         ),
         cell: ({ row }) => (
           <>
-            <label
-              hidden
-              htmlFor={`manageSetSelect-${row.original.setName}`}
-              id={`manageSetSelect-${row.original.setName}`}
-            >{`${row.getIsSelected() ? `Select` : `Unselect`} the ${
-              row.original.setName
-            } set row`}</label>
             <Checkbox
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
               }}
               data-testid="checkbox-select-set"
-              aria-labelledby={`manageSetSelect-${row.original.setName}`}
+              aria-label={` Select the ${row.original.setName} row`}
               {...{
                 checked: row.getIsSelected(),
                 onChange: row.getToggleSelectedHandler(),
