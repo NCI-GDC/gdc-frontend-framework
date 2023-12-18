@@ -143,6 +143,7 @@ const SetTable: React.FC<SetTableProps> = ({
       multiselect,
       setSelectedSets,
       shouldDisable,
+      componentId,
     ],
   );
 

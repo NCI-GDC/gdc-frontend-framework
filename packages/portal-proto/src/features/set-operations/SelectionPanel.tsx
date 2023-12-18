@@ -357,6 +357,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       setSelectedEntities,
       setSelectedEntityType,
       setSelectionPanelColumnHelper,
+      componentId,
     ],
   );
 

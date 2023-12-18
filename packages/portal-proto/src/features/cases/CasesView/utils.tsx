@@ -306,7 +306,14 @@ export const useGenerateCasesTableColumns = ({
           ),
       }),
     ],
-    [casesDataColumnHelper, currentCart, dispatch, setEntityMetadata],
+    [
+      casesDataColumnHelper,
+      currentCart,
+      dispatch,
+      setEntityMetadata,
+      currentPage,
+      totalPages,
+    ],
   );
 
   return CasesTableDefaultColumns;

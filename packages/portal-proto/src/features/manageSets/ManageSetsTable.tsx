@@ -207,6 +207,28 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   const manageSetsTableColumnHelper =
     createColumnHelper<ManageSetsTableDataType>();
 
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(tableData);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
   const manageSetsColumn = useMemo(
     () => [
       manageSetsTableColumnHelper.display({
@@ -287,30 +309,8 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         ),
       }),
     ],
-    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper],
+    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper, page, total],
   );
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(tableData);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
 
   return (
     <div data-testid="table-manage-sets" className="w-3/4 pb-6">

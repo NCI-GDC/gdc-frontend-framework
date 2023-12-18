@@ -346,6 +346,9 @@ export const useGenerateGenesTableColumns = ({
       toggledGenes,
       generateFilters,
       handleSurvivalPlotToggled,
+      componentId,
+      currentPage,
+      totalPages,
     ],
   );
 

@@ -298,6 +298,9 @@ export const useGenerateSMTableColumns = ({
       setEntityMetadata,
       generateFilters,
       toggledSsms,
+      componentId,
+      currentPage,
+      totalPages,
     ],
   );
 
