@@ -66,24 +66,24 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
     getGeneCancerDistributionTable: builder.query({
       query: (request: {
         gene: string;
-        contextFilters: FilterSet | undefined;
+        cohortFilters: FilterSet | undefined;
+        genomicFilters: FilterSet | undefined;
+        //     contextFilters: FilterSet | undefined;
       }) => {
-        const contextGene =
-          ((request.contextFilters?.root["genes.gene_id"] as Includes)
-            ?.operands as string[]) ?? [];
-        const contextWithGene = {
+        const genomicWithGene = {
           mode: "and",
           root: {
-            ...request.contextFilters?.root,
+            ...request.genomicFilters?.root,
             ["genes.gene_id"]: {
               operator: "includes",
               field: "genes.gene_id",
-              operands: [request.gene, ...contextGene],
+              operands: [request.gene],
             } as Includes,
           },
         };
 
-        const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
+        const gqlContextFilter = buildCohortGqlOperator(genomicWithGene);
+        const gqlCohortFilters = buildCohortGqlOperator(request.cohortFilters);
         const gqlContextIntersection =
           gqlContextFilter && (gqlContextFilter as GqlIntersection).content
             ? (gqlContextFilter as GqlIntersection).content
@@ -91,6 +91,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         return {
           graphQLQuery: `
         query CancerDistributionTable(
+          $cohortFilters: FiltersArgument
           $ssmTested: FiltersArgument
           $ssmCountsFilters: FiltersArgument
           $caseAggsFilter: FiltersArgument
@@ -101,7 +102,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
           viewer {
             explore {
               ssms {
-                aggregations(filters: $ssmCountsFilters) {
+                aggregations(case_filters: $cohortFilters, filters: $ssmCountsFilters) {
                   occurrence__case__project__project_id {
                     buckets {
                       key
@@ -111,7 +112,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                 }
               }
               cases {
-                filtered: aggregations(filters: $caseAggsFilter) {
+                filtered: aggregations(case_filters: $cohortFilters, filters: $caseAggsFilter) {
                   project__project_id {
                     buckets {
                       doc_count
@@ -119,7 +120,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                cnvGain: aggregations(filters: $cnvGainFilter) {
+                cnvGain: aggregations(case_filters: $cohortFilters, filters: $cnvGainFilter) {
                   project__project_id {
                     buckets {
                       doc_count
@@ -127,7 +128,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                cnvLoss: aggregations(filters: $cnvLossFilter) {
+                cnvLoss: aggregations(case_filters: $cohortFilters, filters: $cnvLossFilter) {
                   project__project_id {
                     buckets {
                       doc_count
@@ -135,7 +136,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                cnvTotal: aggregations(filters: $cnvTested) {
+                cnvTotal: aggregations(case_filters: $cohortFilters, filters: $cnvTested) {
                    project__project_id {
                     buckets {
                       doc_count
@@ -143,7 +144,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                total: aggregations(filters: $ssmTested) {
+                total: aggregations(case_filters: $cohortFilters, filters: $ssmTested) {
                   project__project_id {
                     buckets {
                       doc_count
@@ -157,6 +158,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         }
       `,
           graphQLFilters: {
+            cohortFilters: gqlCohortFilters,
             ssmTested: {
               content: [
                 {

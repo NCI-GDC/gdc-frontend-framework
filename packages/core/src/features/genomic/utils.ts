@@ -1,8 +1,8 @@
-import { FilterSet, buildCohortGqlOperator } from "../cohort";
+//import { FilterSet, buildCohortGqlOperator } from "../cohort";
 import {
   Intersection,
   Union,
-  GqlIntersection,
+  //GqlIntersection,
   GqlOperation,
   GqlIncludes,
 } from "../gdcapi/filters";
@@ -21,15 +21,15 @@ export const appendFilterToOperation = (
 };
 
 export const getSSMTestedCases = (
-  cohortFilters: FilterSet,
+  //cohortFilters: FilterSet,
   geneSymbol?: string,
 ): GqlOperation => {
-  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
-
-  const gqlCohortIntersection =
-    cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
-      ? (cohortFiltersGQl as GqlIntersection).content
-      : [];
+  // const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+  //
+  // const gqlCohortIntersection =
+  //   cohortFiltersGQl && (cohortFiltersGQl as GqlIntersection).content
+  //     ? (cohortFiltersGQl as GqlIntersection).content
+  //     : [];
 
   return {
     content: [
@@ -54,7 +54,7 @@ export const getSSMTestedCases = (
           : []),
       ],
       // For case filter only use cohort filter and not genomic filter
-      ...gqlCohortIntersection,
+      //   ...gqlCohortIntersection,
     ],
     op: "and",
   };

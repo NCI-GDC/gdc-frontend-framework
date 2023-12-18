@@ -52,7 +52,7 @@ $sort: [Sort]
               mutation_subtype
               ssm_id
               consequence {
-                hits(first: 1, filters: $consequenceFilters) {
+                hits(first: 1, case_filters: $consequenceFilters) {
                   edges {
                     node {
                       transcript {
@@ -77,12 +77,12 @@ $sort: [Sort]
                 }
               }
               filteredOccurences: occurrence {
-                hits(first: 0, filters: $ssmCaseFilter) {
+                hits(first: 0, case_filters: $caseFilters,  filters: $ssmCaseFilter) {
                   total
                 }
               }
               occurrence {
-                hits(first: 0, filters: $ssmTested) {
+                hits(first: 0, case_filters: $caseFilters, filters: $ssmTested) {
                   total
                 }
               }
@@ -245,7 +245,7 @@ const generateFilter = ({
   cohortFilters, // the cohort filters which used to filter the cases
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
-  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+  const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -273,12 +273,12 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: getSSMTestedCases(cohortFilters, geneSymbol),
+    ssmCaseFilter: getSSMTestedCases(geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
       ? buildCohortGqlOperator(caseFilter)
-      : cohortFiltersGQl,
+      : cohortFiltersGQL,
     ssmsTable_filters: tableFilters,
     consequenceFilters: {
       content: [
