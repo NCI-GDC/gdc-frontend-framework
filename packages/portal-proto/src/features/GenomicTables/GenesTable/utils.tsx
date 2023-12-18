@@ -1,6 +1,7 @@
+// This table can be found at /analysis_page?app=MutationFrequencyApp
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useId } from "react";
 import { Checkbox, Tooltip } from "@mantine/core";
 import {
   IoIosArrowDropdownCircle as DownIcon,
@@ -47,6 +48,7 @@ export const useGenerateGenesTableColumns = ({
   currentPage: number;
   totalPages: number;
 }): ColumnDef<Gene>[] => {
+  const componentId = useId();
   const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
   const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
@@ -54,34 +56,30 @@ export const useGenerateGenesTableColumns = ({
       genesTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select the ${row.original.symbol} gene row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-labelledby={`${componentId}-genes-table-${row.original.gene_id}`}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),
@@ -141,6 +139,7 @@ export const useGenerateGenesTableColumns = ({
               })
             }
             label={row.original.symbol}
+            ariaId={`${componentId}-genes-table-${row.original.gene_id}`}
           />
         ),
       }),

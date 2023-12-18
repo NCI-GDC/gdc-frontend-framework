@@ -1,3 +1,4 @@
+// This table can be found at /manage_sets
 import React, { useMemo, useState } from "react";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
@@ -227,20 +228,18 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           </>
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              data-testid="checkbox-select-set"
-              aria-label={` Select the ${row.original.setName} row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            data-testid="checkbox-select-set"
+            aria-label={row.original.setName}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),

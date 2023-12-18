@@ -1,4 +1,5 @@
-import React, { useMemo, useEffect, useState } from "react";
+// This table can be found at /analysis_page?app=SetOperations
+import React, { useMemo, useEffect, useState, useId } from "react";
 import { shallowEqual } from "react-redux";
 import Link from "next/link";
 import { Checkbox, Tooltip } from "@mantine/core";
@@ -61,6 +62,7 @@ interface SelectCellProps {
   readonly selectedEntityType: SetOperationEntityType;
   readonly setSelectedEntities: (entities: SelectedEntities) => void;
   readonly setSelectedEntityType: (type: SetOperationEntityType) => void;
+  readonly componentId: string;
 }
 
 const SelectCell: React.FC<SelectCellProps> = ({
@@ -73,6 +75,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   selectedEntityType,
   setSelectedEntities,
   setSelectedEntityType,
+  componentId,
 }: SelectCellProps) => {
   return (
     <Tooltip
@@ -103,7 +106,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
             );
             setSelectedEntityType(entityType);
           }}
-          aria-labelledby={`${entityType}-selection-${setId}`}
+          aria-labelledby={`${componentId}-${entityType}-selection-${setId}`}
         />
       </span>
     </Tooltip>
@@ -166,6 +169,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   selectedEntityType,
   setSelectedEntityType,
 }: SelectionPanelProps) => {
+  const componentId = useId();
   const [sortBy, setSortBy] = useState<SortingState>([]);
   const geneSets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const mutationSets = useCoreSelector((state) =>
@@ -275,6 +279,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               setSelectedEntities={setSelectedEntities}
               setSelectedEntityType={setSelectedEntityType}
               key={`${entityTypes}-select-${row.original.setId}`}
+              componentId={componentId}
             />
           );
         },
@@ -304,8 +309,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         id: "name",
         header: "Name",
         cell: ({ getValue, row }) => (
-          <label
-            id={`${row.original.entity_type}-selection-${
+          <span
+            id={`${componentId}-${row.original.entity_type}-selection-${
               (row.original as Record<string, any>).setId
             }`}
             className={
@@ -321,7 +326,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
             }
           >
             {getValue()}
-          </label>
+          </span>
         ),
       }),
       setSelectionPanelColumnHelper.accessor("count", {

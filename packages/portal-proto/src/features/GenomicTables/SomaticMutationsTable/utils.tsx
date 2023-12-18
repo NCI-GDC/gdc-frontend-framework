@@ -1,8 +1,9 @@
+// This table can be found at /analysis_page?app=MutationFrequencyApp Mutations tab
 import { humanify } from "@/utils/index";
 import { SSMSData, FilterSet } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useId } from "react";
 import { Checkbox } from "@mantine/core";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import {
@@ -64,6 +65,7 @@ export const useGenerateSMTableColumns = ({
   currentPage: number;
   totalPages: number;
 }): ColumnDef<SomaticMutation>[] => {
+  const componentId = useId();
   const SMTableColumnHelper = useMemo(
     () => createColumnHelper<SomaticMutation>(),
     [],
@@ -74,34 +76,30 @@ export const useGenerateSMTableColumns = ({
       SMTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select the ${row.original.protein_change.symbol} mutation row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-labelledby={`${componentId}-mutation-table-${row.original.mutation_id}`}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),
@@ -187,6 +185,7 @@ export const useGenerateSMTableColumns = ({
             shouldOpenModal={isModal && geneSymbol === undefined}
             shouldLink={projectId !== undefined}
             setEntityMetadata={setEntityMetadata}
+            ariaId={`${componentId}-mutation-table-${row.original.mutation_id}`}
           />
         ),
       }),
