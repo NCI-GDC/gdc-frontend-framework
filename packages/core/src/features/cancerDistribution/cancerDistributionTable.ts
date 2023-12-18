@@ -136,7 +136,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                cnvTotal: aggregations(case_filters: $cohortFilters, filters: $cnvTested) {
+                cnvTotal: aggregations(filters: $cnvTested) {
                    project__project_id {
                     buckets {
                       doc_count
@@ -144,7 +144,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
-                total: aggregations(case_filters: $cohortFilters, filters: $ssmTested) {
+                total: aggregations(filters: $ssmTested) {
                   project__project_id {
                     buckets {
                       doc_count

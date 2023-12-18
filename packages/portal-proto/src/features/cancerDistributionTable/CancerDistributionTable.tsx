@@ -80,7 +80,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     [projects?.projectData],
   );
 
-  const formattedData = useMemo(
+  const formattedData = useDeepCompareMemo(
     () =>
       isSuccess && !projectsFetching
         ? data?.projects.map((d) => {

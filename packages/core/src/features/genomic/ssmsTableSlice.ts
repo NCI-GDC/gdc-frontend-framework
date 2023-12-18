@@ -37,7 +37,7 @@ $sort: [Sort]
         }
       }
       filteredCases: cases {
-        hits(first: 0, case_filters: $ssmCaseFilter) {
+        hits(first: 0, case_filters: $caseFilters,  filters: $ssmCaseFilter) {
           total
         }
       }
