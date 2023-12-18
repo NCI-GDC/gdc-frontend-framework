@@ -329,7 +329,7 @@ export interface SurvivalPlotProps {
   readonly tableTooltip?: boolean;
 }
 
-const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
+const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
   plotType = SurvivalPlotTypes.mutation,
@@ -659,4 +659,16 @@ const SurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
 };
 
+const SurvivalPlot = (props: SurvivalPlotProps) => {
+  const [downloadInProgress, setDownloadInProgress] = useState(false);
+  return (
+    <DownloadProgressContext.Provider
+      value={{ downloadInProgress, setDownloadInProgress }}
+    >
+      <ExternalDownloadStateSurvivalPlot {...props} />
+    </DownloadProgressContext.Provider>
+  );
+};
+
+export { ExternalDownloadStateSurvivalPlot };
 export default SurvivalPlot;

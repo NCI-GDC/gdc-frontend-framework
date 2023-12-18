@@ -9,7 +9,7 @@ import {
   PROTEINPAINT_API,
   useUserDetails,
   useCoreDispatch,
-  addNewUnsavedCohort,
+  useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
@@ -18,9 +18,9 @@ import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
-  getFilters,
   RxComponentCallbacks,
 } from "./sjpp-types";
+import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 const basepath = PROTEINPAINT_API;
 
@@ -42,27 +42,50 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // TODO: use the CreatCohortModal, similar to how it's done in OncoMatrix
+  const [createSet, response] = useCreateCaseSetFromValuesMutation();
+  const [newCohortFilters, setNewCohortFilters] =
+    useState<FilterSet>(undefined);
+
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
-      const filters = getFilters(arg);
-      coreDispatch(
-        // TODO: option to edit a cohort using ImportCohortModal???
-        addNewUnsavedCohort({
-          filters,
-          message: "newCasesCohort",
-          // TODO: improve cohort name constructor
-          name: arg.source + ` (n=${arg.samples.length})`,
-        }),
-      );
+      const cases = arg.samples.map((d) => d["cases.case_id"]);
+      if (cases.length > 1) {
+        createSet({ values: cases });
+      }
     },
-    [coreDispatch],
+    [createSet],
   );
 
-  const callbacks: RxComponentCallbacks = {
+  // a set for the new cohort is created, now show the save cohort modal
+  useEffect(() => {
+    if (response.isSuccess) {
+      const filters: FilterSet = {
+        mode: "and",
+        root: {
+          "cases.case_id": {
+            operator: "includes",
+            field: "cases.case_id",
+            operands: [`set_id:${response.data}`],
+          },
+        },
+      };
+      setNewCohortFilters(filters);
+      setShowSaveCohort(true);
+    }
+  }, [response.isSuccess, coreDispatch, response.data]);
+
+  const geneExpCallbacks: RxComponentCallbacks = {
     "postRender.gdcGeneExpression": () => setIsLoading(false),
     "error.gdcGeneExpression": () => setIsLoading(false),
+  };
+
+  const appCallbacks: RxComponentCallbacks = {
+    "preDispatch.gdcPlotApp": () => {
+      setIsLoading(true);
+    },
+    "error.gdcPlotApp": () => setIsLoading(false),
   };
 
   useEffect(
@@ -88,7 +111,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
           props,
           prevData.current.filter0,
           callback,
-          callbacks,
+          geneExpCallbacks,
+          appCallbacks,
         );
         if (!data) return;
 
@@ -121,6 +145,12 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
+      {showSaveCohort && newCohortFilters && (
+        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+          onClose={() => setShowSaveCohort(false)}
+          filters={newCohortFilters}
+        />
+      )}
       <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
     </div>
   );
@@ -143,18 +173,22 @@ interface GeneExpressionArg {
 
 interface GeneExpressionArgOpts {
   hierCluster: GeneExpressionArgHierCluster;
+  app?: {
+    callbacks?: RxComponentCallbacks;
+  };
 }
 
 interface GeneExpressionArgHierCluster {
   allow2selectSamples?: SelectSamples;
-  callbacks: RxComponentCallbacks;
+  callbacks?: RxComponentCallbacks;
 }
 
 function getGeneExpressionTrack(
   props: PpProps,
   filter0: any,
   callback?: SelectSamplesCallback,
-  callbacks?: RxComponentCallbacks,
+  geneExpCallbacks?: RxComponentCallbacks,
+  appCallbacks?: RxComponentCallbacks,
 ) {
   const defaultFilter = null;
 
@@ -165,6 +199,9 @@ function getGeneExpressionTrack(
     launchGdcHierCluster: true,
     filter0: filter0 || defaultFilter,
     opts: {
+      app: {
+        callbacks: appCallbacks,
+      },
       hierCluster: {
         allow2selectSamples: {
           buttonText: "Create Cohort",
@@ -177,7 +214,7 @@ function getGeneExpressionTrack(
           ],
           callback,
         },
-        callbacks,
+        callbacks: geneExpCallbacks,
       },
     },
   };

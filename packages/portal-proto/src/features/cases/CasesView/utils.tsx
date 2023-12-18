@@ -104,6 +104,9 @@ export const useGenerateCasesTableColumns = ({
             <Menu position="bottom-start">
               <Menu.Target>
                 <Button
+                  aria-label={`${
+                    isAllFilesInCart ? "remove" : "add"
+                  } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
                   leftIcon={
                     <CartIcon
                       className={
@@ -128,7 +131,6 @@ export const useGenerateCasesTableColumns = ({
                   }}
                   size="xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                  aria-label="Update cart"
                 />
               </Menu.Target>
               <Menu.Dropdown>
