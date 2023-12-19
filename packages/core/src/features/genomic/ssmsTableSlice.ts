@@ -52,7 +52,7 @@ $sort: [Sort]
               mutation_subtype
               ssm_id
               consequence {
-                hits(first: 1, case_filters: $consequenceFilters) {
+                hits(first: 1, case_filters: $caseFilters, filters: $consequenceFilters) {
                   edges {
                     node {
                       transcript {
