@@ -365,7 +365,7 @@ const CohortManager: React.FC = () => {
                 coreDispatch(setCohort(cohort));
               })
               .catch(() =>
-                coreDispatch(setCohortMessage(["error|saving|allId"])),
+                coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal })),
               );
           }}
         />
