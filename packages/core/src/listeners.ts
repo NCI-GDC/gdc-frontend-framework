@@ -89,7 +89,13 @@ startCoreListening({
 });
 
 startCoreListening({
-  matcher: cohortApiSlice.endpoints.getCohortsByContextId.matchFulfilled,
+  matcher: isAnyOf(
+    cohortApiSlice.endpoints.getCohortsByContextId.matchFulfilled,
+    cohortApiSlice.endpoints.getCohortById.matchFulfilled,
+    cohortApiSlice.endpoints.addCohort.matchFulfilled,
+    cohortApiSlice.endpoints.updateCohort.matchFulfilled,
+    cohortApiSlice.endpoints.deleteCohort.matchFulfilled,
+  ),
   effect: async () => {
     // Store context id cookie in local storage to make it more resilient to deletion
     const contextId = Cookies.get("gdc_context_id");
