@@ -64,7 +64,7 @@ export const getSSMTestedCases = (
  * Geta the SSM tested cases for a gene
  * @param geneSymbol - gene symbol
  */
-export const getSSMGeneTestedCases = (geneSymbol: string): GqlOperation => {
+export const getSSMGeneTestedCases = (geneSymbol?: string): GqlOperation => {
   return {
     content: [
       ...[
