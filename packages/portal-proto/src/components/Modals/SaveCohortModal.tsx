@@ -21,6 +21,8 @@ import {
   useGetCohortsByContextIdQuery,
   useLazyGetCohortByIdQuery,
   discardCohortChanges,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -55,6 +57,7 @@ const SaveCohortModal = ({
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
   const {
     data: cohortsListData,
     isSuccess: cohortListSuccess,
@@ -190,7 +193,7 @@ const SaveCohortModal = ({
         ) {
           setShowReplaceCohort(true);
         } else {
-          coreDispatch(setCohortMessage(["error|saving|allId"]));
+          coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
         }
       });
   };
