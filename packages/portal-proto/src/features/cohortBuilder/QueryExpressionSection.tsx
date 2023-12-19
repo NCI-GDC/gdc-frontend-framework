@@ -11,6 +11,10 @@ import { useCoreDispatch, clearCohortFilters, FilterSet } from "@gff/core";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertFilterToComponent } from "./QueryRepresentation";
 import { Tooltip } from "@mantine/core";
+import {
+  getCombinedClassesExpandCollapseQuery,
+  getCombinedClassesForRowCollapse,
+} from "./style";
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -182,7 +186,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
               <div className="display flex gap-2 ml-auto mr-3">
                 <Tooltip
                   label={
-                    allQueryExpressionsCollapsed
+                    noFilters
+                      ? "No values to expand/collapse"
+                      : allQueryExpressionsCollapsed
                       ? "Expand all values"
                       : "Collapse all values"
                   }
@@ -203,15 +209,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse all queries"
                     aria-expanded={!allQueryExpressionsCollapsed}
-                    className={`${
-                      allQueryExpressionsCollapsed
-                        ? "text-primary"
-                        : "text-base-max"
-                    } disabled:pointer-events-none hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest flex gap-0 items-center border-1 border-white rounded-md w-7 h-7 ${
-                      allQueryExpressionsCollapsed
-                        ? "bg-white"
-                        : "bg-transparent"
-                    }`}
+                    className={getCombinedClassesExpandCollapseQuery(
+                      allQueryExpressionsCollapsed,
+                    )}
                     disabled={noFilters}
                   >
                     {allQueryExpressionsCollapsed ? (
@@ -248,7 +248,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                    className={`text-base-max disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center`}
+                    className={getCombinedClassesForRowCollapse(
+                      filtersSectionCollapsed,
+                    )}
                   >
                     {filtersSectionCollapsed ? (
                       <>
