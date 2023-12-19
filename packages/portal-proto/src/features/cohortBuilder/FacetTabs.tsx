@@ -188,6 +188,7 @@ const CustomFacetGroup = (): JSX.Element => {
         visible={!isDictionaryReady}
       />
       <Modal
+        data-testid="modal-cohort-builder-add-custom-filter"
         size="xl"
         opened={opened}
         onClose={() => setOpened(false)}

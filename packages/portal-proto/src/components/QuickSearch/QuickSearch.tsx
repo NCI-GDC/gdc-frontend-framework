@@ -52,7 +52,12 @@ export const QuickSearch = (): JSX.Element => {
         searchText.trim().toLocaleLowerCase(),
       );
       return (
-        <div ref={ref} {...others} aria-label={`${badgeText}, ${mainText}`}>
+        <div
+          data-testid="text-search-result"
+          ref={ref}
+          {...others}
+          aria-label={`${badgeText}, ${mainText}`}
+        >
           <div
             className={`flex p-2 px-4 ${
               others["data-hovered"] &&
