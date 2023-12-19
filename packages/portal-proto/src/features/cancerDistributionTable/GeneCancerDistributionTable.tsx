@@ -10,8 +10,6 @@ const GeneCancerDistributionTable: React.FC<
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: GeneCancerDistributionTableProps) => {
-  // const contextFilters = processFilters(genomicFilters, cohortFilters);
-
   const { data, isFetching, isError, isSuccess } =
     useGetGeneCancerDistributionTableQuery({
       gene,

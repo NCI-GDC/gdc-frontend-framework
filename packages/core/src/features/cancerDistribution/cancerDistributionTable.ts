@@ -68,7 +68,6 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
         gene: string;
         cohortFilters: FilterSet | undefined;
         genomicFilters: FilterSet | undefined;
-        //     contextFilters: FilterSet | undefined;
       }) => {
         const genomicWithGene = {
           mode: "and",
