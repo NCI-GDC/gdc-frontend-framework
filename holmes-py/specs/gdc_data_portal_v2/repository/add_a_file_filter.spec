@@ -18,7 +18,6 @@ tags: regression, smoke
 
 ## Default filters on Repository
 * Verify that the following default filters are displayed in order
-
    |default_filters      |
    |---------------------|
    |Data Category        |
@@ -29,28 +28,27 @@ tags: regression, smoke
    |Platform             |
    |Access               |
 
-
 ## Add a Custom Filter modal
 * Navigate to "Add a File Filter" from "Repository" "app"
 
-Add a Custom Filter displayed on Add a Custom Filter modal
-Verify that the "Add a Custom Filter" text is displayed on "Add a Custom Filter" "modal"
+## Add a Custom Filter displayed on Add a Custom Filter modal
+* Verify that the "Add a Custom Filter" text is displayed on "Add a Custom Filter" "modal"
 
-Search for a file property on Add a Custom Filter modal
-Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
+## Search for a file property on Add a Custom Filter modal
+* Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
 
-File properties on Add a Custom Filter modal
-Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
+## File properties on Add a Custom Filter modal
+* Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
 
-## # file counts listed on Add a Custom Filter modal
+## File counts listed on Add a Custom Filter modal
 * Is text "303 properties" present on the page
 * Verify "303" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
 * Verify file filter names do not start with "files."
 
-Only show properties with values on Add a Custom Filter modal
-Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
+## Only show properties with values on Add a Custom Filter modal
+* Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
 
 ## Close Modal
 * Close the modal

@@ -31,9 +31,9 @@ class GenericLocators:
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
-    QUICK_SEARCH_BAR_FIRST_RESULT = '[style="flex-direction: column;"] > div >> nth=0'
-    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[style="flex-direction: column;"] > div >> nth={result_in_list}'
-    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[style="flex-direction: column;"] > div >> nth={result_in_list} >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -52,6 +52,7 @@ class GenericLocators:
     TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
     TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    BUTTON_TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
     SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
@@ -302,6 +303,11 @@ class BasePage:
     def is_button_disabled(self, button_name):
         button_name = self.normalize_button_identifier(button_name)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
+    def is_dropdown_option_text_button_disabled(self, dropdown_text_option):
+        locator = GenericLocators.BUTTON_TEXT_DROPDOWN_MENU_OPTION(dropdown_text_option)
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 

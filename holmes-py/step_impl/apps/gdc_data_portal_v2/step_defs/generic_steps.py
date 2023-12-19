@@ -101,7 +101,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_add_custom_filter_modal},
     }
     first_text = text.split(" ")[0]
     try:
