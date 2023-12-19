@@ -283,6 +283,7 @@ export const SearchInput: React.FC = () => {
             <>
               <div
                 role="group"
+                data-testid="text-filter-results-by-related-categories"
                 aria-label="Filter Results by Related Categories"
                 aria-controls={comboboxlistId}
               >
@@ -342,7 +343,11 @@ export const SearchInput: React.FC = () => {
                           }
                         : {};
                     return (
-                      <li className="cursor-pointer" key={result.id}>
+                      <li
+                        data-testid="text-search-result"
+                        className="cursor-pointer"
+                        key={result.id}
+                      >
                         <Tooltip
                           events={{
                             hover: showTooltip,
