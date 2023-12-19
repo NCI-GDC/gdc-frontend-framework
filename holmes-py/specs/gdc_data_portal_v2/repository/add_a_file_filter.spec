@@ -41,7 +41,6 @@ tags: regression, smoke
 * Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
 
 ## File counts listed on Add a Custom Filter modal
-* Is text "303 properties" present on the page
 * Verify "303" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
