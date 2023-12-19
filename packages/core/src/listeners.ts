@@ -4,6 +4,7 @@ import {
   isFulfilled,
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 import { CoreDispatch } from "./store";
 import { CoreState } from "./reducers";
 import {
@@ -18,6 +19,7 @@ import {
   discardCohortChanges,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
+import { cohortApiSlice } from "./features/api/cohortApiSlice";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -25,11 +27,11 @@ import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
  * current cohort filters mutate, and it contains a filter entry in REQUIRES_CASE_SET_FILTERS
  */
 
-export const caseSetListenerMiddleware = createListenerMiddleware();
+export const coreStoreListenerMiddleware = createListenerMiddleware();
 export type CoreStartListening = TypedStartListening<CoreState, CoreDispatch>;
 
 export const startCoreListening =
-  caseSetListenerMiddleware.startListening as CoreStartListening;
+  coreStoreListenerMiddleware.startListening as CoreStartListening;
 
 // TODO add clearCaseSet handler to remove caseSet from the Cohort Persistence GDC API
 
@@ -83,5 +85,35 @@ startCoreListening({
   effect: async (action, listenerApi) => {
     // update the cohort case counts when the new case set is ready
     listenerApi.dispatch(fetchCohortCaseCounts(action.meta.arg?.cohortId));
+  },
+});
+
+startCoreListening({
+  matcher: cohortApiSlice.endpoints.getCohortsByContextId.matchFulfilled,
+  effect: async () => {
+    // Store context id cookie in local storage to make it more resilient to deletion
+    const contextId = Cookies.get("gdc_context_id");
+    if (contextId) {
+      localStorage.setItem("gdc_context_id", contextId);
+    }
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(
+    cohortApiSlice.endpoints.getCohortsByContextId.matchPending,
+    cohortApiSlice.endpoints.getCohortById.matchPending,
+    cohortApiSlice.endpoints.addCohort.matchPending,
+    cohortApiSlice.endpoints.updateCohort.matchPending,
+    cohortApiSlice.endpoints.deleteCohort.matchPending,
+  ),
+  effect: async () => {
+    // If cookie has been deleted, restore it from local storage
+    if (!Cookies.get("gdc_context_id")) {
+      const contextId = localStorage.getItem("gdc_context_id");
+      if (contextId) {
+        Cookies.set("gdc_context_id", contextId);
+      }
+    }
   },
 });
