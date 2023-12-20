@@ -37,7 +37,10 @@ const persistConfig = {
         // Retrieve context id from local storage when rehydrating the store
         const contextId = localStorage.getItem("gdc_context_id");
         if (contextId) {
-          Cookies.set("gdc_context_id", contextId);
+          Cookies.remove("gdc_context_id");
+          Cookies.set("gdc_context_id", contextId, {
+            domain: ".gdc.cancer.gov",
+          });
         }
         return outboundState;
       },

@@ -118,7 +118,7 @@ startCoreListening({
     if (!Cookies.get("gdc_context_id")) {
       const contextId = localStorage.getItem("gdc_context_id");
       if (contextId) {
-        Cookies.set("gdc_context_id", contextId);
+        Cookies.set("gdc_context_id", contextId, { domain: ".gdc.cancer.gov" });
       }
     }
   },
