@@ -144,7 +144,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
             <label
               className="font-content font-medium text-md"
               htmlFor={`switch-${field.full}`}
-              aria-labelledby={`switch-${field.full}`}
             >
               <Highlight highlight={searchTerm}>{displayName}</Highlight>
             </label>

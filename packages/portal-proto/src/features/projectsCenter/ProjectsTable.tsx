@@ -274,7 +274,13 @@ const ProjectsTable: React.FC = () => {
         enableSorting: true,
       }),
     ],
-    [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
+    [
+      projectsTableColumnHelper,
+      setEntityMetadata,
+      expandedColumnId,
+      activePage,
+      data?.pagination?.total,
+    ],
   );
 
   const getRowId = (originalRow: ProjectDataType) => {

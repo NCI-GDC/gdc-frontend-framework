@@ -1,3 +1,4 @@
+// This table can be found at /manage_sets
 import React, { useMemo, useState } from "react";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
@@ -206,6 +207,28 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   const manageSetsTableColumnHelper =
     createColumnHelper<ManageSetsTableDataType>();
 
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(tableData);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
   const manageSetsColumn = useMemo(
     () => [
       manageSetsTableColumnHelper.display({
@@ -227,20 +250,18 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           </>
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              data-testid="checkbox-select-set"
-              aria-label={` Select the ${row.original.setName} row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            data-testid="checkbox-select-set"
+            aria-label={row.original.setName}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),
@@ -288,30 +309,8 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         ),
       }),
     ],
-    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper],
+    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper, page, total],
   );
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(tableData);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
 
   return (
     <div data-testid="table-manage-sets" className="w-3/4 pb-6">
