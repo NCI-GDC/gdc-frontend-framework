@@ -34,7 +34,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <span>
         {multiselect ? (
           <Checkbox
-            aria-label={`Select ${setId}`}
+            aria-label={setId}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}

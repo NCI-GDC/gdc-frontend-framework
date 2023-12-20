@@ -78,19 +78,17 @@ export const useGenerateCasesTableColumns = ({
           </>
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select the ${row?.original?.project} case row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={row?.original?.project}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
       }),
       casesDataColumnHelper.display({

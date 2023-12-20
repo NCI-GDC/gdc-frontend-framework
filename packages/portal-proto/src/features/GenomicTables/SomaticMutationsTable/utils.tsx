@@ -74,34 +74,30 @@ export const useGenerateSMTableColumns = ({
       SMTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select the ${row.original.protein_change.symbol} mutation row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={row.original.protein_change.symbol}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),
