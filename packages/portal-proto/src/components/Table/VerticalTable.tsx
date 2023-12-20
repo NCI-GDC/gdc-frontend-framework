@@ -55,7 +55,10 @@ import { useDeepCompareEffect } from "use-deep-compare";
  * @param setColumnVisibility - A function that sets the column visibility.
  * @param columnOrder - The column order.
  * @param setColumnOrder  - A function that sets the column order.
- * @param columnSorting - The column sorting.
+ * @param columnSorting - The column sorting, possible values:
+          - "none" - No sorting is enabled.
+          - "enable" - Sorting is enabled.
+          - "manual" - Manual sorting is enabled.
  * @param sorting - The sorting.
  * @param setSorting  - A function that sets the sorting.
  * @param expanded  - The expanded.

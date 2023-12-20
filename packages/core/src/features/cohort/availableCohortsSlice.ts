@@ -556,29 +556,28 @@ interface CopyCohortParams {
  * this uses redux-toolkit entity adapter to manage the cohorts
  * Because it is an entity adapter, the state contains an array of id (string)
  * and a Dictionary of Cohort objects. There are two additional members:
- *  currentCohortId: which is used to identify the "current" or active cohort
- *  message: used to pass a state change message and parameter. NOTE: message is a
- *  simple string consisting of message|parameter and can be replaced in the future with
- *  something else like an object, but this keeps the additional member to EntityAdapter
- *  more normalized.
- *
+ *  - currentCohortId: which is used to identify the "current" or active cohort
+ *  - message: used to pass a state change message and parameter. NOTE: message is a
+ *  - simple string consisting of message|parameter and can be replaced in the future with
+ *  - something else like an object, but this keeps the additional member to EntityAdapter
+ *  - more normalized.
  *
  * The slice exports the following actions:
- * * setCohortList() - set saved cohort to the adapter that comes from the server
- * * addNewCohort() - create a new cohort
- * * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
- * * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
- * * updateCohortName(name:string): changes the current cohort's name
- * * updateCohortFilter(filters: FilterSet): update the filters for this cohort
- * * removeCohortFilter(filter:string): removes the filter from the cohort
- * * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
- * * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
- * * clearCaseSet(): resets the caseSet member to all GDC
- * * removeCohort(): removes the current cohort
- * * setCohortMessage(): sets the current cohort message
- * * clearCohortMessage(): clears the current message by setting it to undefined
- * * addNewCohortGroups(): adds groups of filters to the current cohort
- * * removeCohortGroup(): removes a group of filters from the current cohort
+ * - setCohortList() - set saved cohort to the adapter that comes from the server
+ * - addNewCohort() - create a new cohort
+ * - addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
+ * - copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
+ * - updateCohortName(name:string): changes the current cohort's name
+ * - updateCohortFilter(filters: FilterSet): update the filters for this cohort
+ * - removeCohortFilter(filter:string): removes the filter from the cohort
+ * - clearCohortFilters(): removes all the filters by setting them to the default all GDC state
+ * - setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
+ * - clearCaseSet(): resets the caseSet member to all GDC
+ * - removeCohort(): removes the current cohort
+ * - setCohortMessage(): sets the current cohort message
+ * - clearCohortMessage(): clears the current message by setting it to undefined
+ * - addNewCohortGroups(): adds groups of filters to the current cohort
+ * - removeCohortGroup(): removes a group of filters from the current cohort
  * @category Cohort
  */
 const slice = createSlice({
@@ -1153,7 +1152,7 @@ export const selectCurrentCohortSaved = (
 };
 
 /**
- * Returns the current cohort or undefined if cohort is not founf
+ * Returns the current cohort or undefined if cohort is not found
  * @param state - the CoreState
  * @returns the current cohort or undefined
  *
@@ -1435,10 +1434,12 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
 };
 
 /**
- * A hook to get the current cohort filter as a FilterSet
+ * A hook to get gene/ssm case set for the current cohort
+ * This function is being deprecated and will be removed in the future
  * @category Cohort
  * @category Hooks
  * @hidden
+ * @deprecated - after refactoring to support dynamic cohorts, this function will be removed
  */
 export const useCurrentCohortWithGeneAndSsmCaseSet = ():
   | FilterSet
