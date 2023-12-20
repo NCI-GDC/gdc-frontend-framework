@@ -6,7 +6,7 @@ const plugin = require("tailwindcss/plugin");
 // define NCI colors so all at 10 color pallets
 // note addition of vivid, white, black to "pad" the
 // nci color to 10 colors
-
+const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 const nciGray = {
   max: "#FFFFFF",
   lightest: "#f1f1f1",
@@ -827,8 +827,8 @@ module.exports = {
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {
-        "hero-pattern": "url(/homepage/hero-background.svg)",
-        "mid-pattern": "url(/homepage/hp-bg-mid.svg)",
+        "hero-pattern": `url(${basePath}/homepage/hero-background.svg)`,
+        "mid-pattern": `url(${basePath}/homepage/hp-bg-mid.svg)`,
       },
       borderWidth: {
         DEFAULT: "1px",
