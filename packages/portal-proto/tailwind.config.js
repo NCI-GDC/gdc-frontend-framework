@@ -827,8 +827,8 @@ module.exports = {
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {
-        "hero-pattern": "url(/v2/homepage/hero-background.svg)",
-        "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
+        "hero-pattern": "url(/homepage/hero-background.svg)",
+        "mid-pattern": "url(/homepage/hp-bg-mid.svg)",
       },
       borderWidth: {
         DEFAULT: "1px",
