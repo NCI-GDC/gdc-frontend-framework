@@ -659,6 +659,20 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
 };
 
+/**
+ * Survival plot component
+ * @param data - data to be plotted
+ * @param names - names of the data to be plotted
+ * @param plotType - type of the plot
+ * @param title - title of the plot
+ * @param hideLegend - whether to hide the legend
+ * @param height - height of the plot
+ * @param field - field of the plot
+ * @param downloadFileName - name of the file to download
+ * @param tableTooltip - whether to show the table tooltip
+ * @category Charts
+ */
+
 const SurvivalPlot = (props: SurvivalPlotProps) => {
   const [downloadInProgress, setDownloadInProgress] = useState(false);
   return (

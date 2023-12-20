@@ -1,3 +1,13 @@
 {
-  "entryPoints": ["src/index.ts"]
+  "entryPoints": ["src/index.ts"],
+  "categoryOrder": [
+    "Cases",
+    "Cohorts",
+    "Filters",
+    "Selectors",
+    "Hooks",
+    "Utility",
+    "GDC API",
+    "*"
+  ]
 }

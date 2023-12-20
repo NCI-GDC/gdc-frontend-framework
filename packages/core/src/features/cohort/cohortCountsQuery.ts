@@ -10,6 +10,17 @@ import {
   selectCurrentCohortFilterSet,
 } from "./availableCohortsSlice";
 
+/**
+ *  CountsData holds all the case counts for a cohort
+ *  @property caseCount - number of cases in cohort
+ *  @property fileCount - number of files in cohort
+ *  @property genesCount - number of genes in cohort
+ *  @property mutationCount - number of mutations in cohort
+ *  @property ssmCaseCount - number of cases with somatic mutations in cohort
+ *  @property sequenceReadCaseCount - number of cases with sequence reads in cohort
+ *  @property repositoryCaseCount - number of cases using the repository index in cohort
+ *  @category Cohort
+ */
 export interface CountsData {
   readonly caseCount: number;
   readonly fileCount: number;
@@ -25,7 +36,8 @@ export interface CountsDataAndStatus extends CountsData {
 }
 
 /**
- * Constant representing Null Counts
+ * Constant representing Null Counts or uninitialized counts
+ * @category Cohort
  */
 export const NullCountsData: CountsDataAndStatus = {
   caseCount: -1,

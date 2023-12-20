@@ -1,4 +1,4 @@
 {
-  "entryPoints": ["src/*"],
-  "entryPointStrategy": "expand"
+  "entryPoints": ["src/index.ts"],
+  "categoryOrder": ["Buttons", "Facets", "Modals", "Charts", "Table", "*"]
 }

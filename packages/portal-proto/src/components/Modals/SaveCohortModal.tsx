@@ -35,6 +35,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
  * @param filters - the filters associated with the cohort
  * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
  * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
+ * @category Modals
  */
 const SaveCohortModal = ({
   initialName = "",

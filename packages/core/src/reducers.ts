@@ -109,4 +109,8 @@ export const reducers = combineReducers({
   sets: setsReducer,
 });
 
+/**
+ * The redux store of the Portal V2 core.
+ */
+
 export type CoreState = ReturnType<typeof reducers>;
