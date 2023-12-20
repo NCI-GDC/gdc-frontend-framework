@@ -49,8 +49,8 @@ import { useDeepCompareEffect } from "use-deep-compare";
  * @param showControls  - A boolean value indicating whether the controls should be displayed.
  * @param handleChange  - A function that handles the change.
  * @param pagination  - The pagination options for the table.
- * @param disablePageSize - A boolean value indicating whether the page size should be disabled.
- * @param renderSubComponent - A function that renders the sub component.
+ * @param disablePageSize - A boolean value indicating whether the page size should be disabled in the pagination.
+ * @param renderSubComponent - A function that renders the subcomponent.
  * @param columnVisibility  - The column visibility.
  * @param setColumnVisibility - A function that sets the column visibility.
  * @param columnOrder - The column order.
