@@ -317,3 +317,18 @@ export const buildGqlOperationToFilterSet = (
 export const joinFilters = (a: FilterSet, b: FilterSet): FilterSet => {
   return { mode: a.mode, root: { ...a.root, ...b.root } };
 };
+
+/*
+export const mergeFilters = (a: FilterSet, b: FilterSet): FilterSet => {
+  Object.keys(b.root).forEach((key) => {
+    if (a.root[key]) {
+      a.root[key] = {
+        operator: "and",
+        operands: [a.root[key], b.root[key]],
+      };
+    } else {
+      a.root[key] = b.root[key];
+    }
+   });
+  return a;
+}*/
