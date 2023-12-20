@@ -9,7 +9,7 @@ class RepositoryPageLocators:
     FACET_BY_NAME = '//div[@data-testid="filters-facets"]//div[text()="Data Category"]/../../..//input[@value="biospecimen"]'
     FILTER_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}']"
     REPO_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}-files-table']"
-    MODAL_IDENT = lambda modal_name: f"//h3[text()='{modal_name}']/../../.."
+    MODAL_ADD_CUSTOM_FILTER_IDENT = "[data-testid='modal-repository-add-custom-filter']"
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="section-file-filter-search"]>div>div>input'
 
@@ -87,16 +87,15 @@ class RepositoryPage(BasePage):
         repo_table_case_count_locator = RepositoryPageLocators.TEXT_REPO_TABLE_CASE_COUNT(cohort_bar_case_count)
         return self.is_visible(repo_table_case_count_locator)
 
-    def get_text_on_modal(self, text):
-        modal_name = "Add a Custom Filter"
+    def get_text_on_add_custom_filter_modal(self, text):
         result = None
         try:
             result = self.get_text(
-                f"{RepositoryPageLocators.MODAL_IDENT(modal_name)}//*[text()='{text}']"
+                f"{RepositoryPageLocators.MODAL_ADD_CUSTOM_FILTER_IDENT} >> text='{text}'"
             )
         except Exception as exc:
             result = self.get_text(
-                f"{RepositoryPageLocators.MODAL_IDENT(modal_name)}//*[contains(.,'{text}')]"
+                f"{RepositoryPageLocators.MODAL_ADD_CUSTOM_FILTER_IDENT}//*[contains(.,'{text}')]"
             )
         result = result.replace("\n", " ")
         return result
