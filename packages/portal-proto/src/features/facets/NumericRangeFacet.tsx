@@ -174,7 +174,8 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
           />
         </>
       ) : null}
-      <div role="group" className="mt-1">
+      <fieldset className="mt-1">
+        <legend className="sr-only">Numberic range filters</legend>
         {Object.keys(rangeLabelsAndValues)
           .slice(0, itemsToShow)
           .sort(
@@ -215,7 +216,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
               </div>
             );
           })}
-      </div>
+      </fieldset>
     </div>
   );
 };
@@ -321,79 +322,82 @@ const FromTo: React.FC<FromToProps> = ({
   return (
     <div className="relative w-full">
       <div className="flex flex-col text-base-contrast-max bg-base-max text-md">
-        <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
-          <div className="basis-1/5 text-center">From</div>
-          <SegmentedControl
-            className="basis-2/5"
-            size="sm"
-            value={fromOp}
-            onChange={(value) => {
-              setFromOp(value as RangeFromOp);
-              changedCallback();
-            }}
-            data={[
-              { label: "\u2265", value: ">=" },
-              { label: ">", value: ">" },
-            ]}
-            aria-label="select greater and equal or greater than"
-          />
-          <NumberInput
-            className="basis-2/5 text-sm"
-            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
-            min={lowerUnitRange}
-            max={upperUnitRange}
-            // units are always days
-            value={adjustDaysToYears(fromValue, units)}
-            onChange={(value) => {
-              if (value === "") return;
-              setFromValue(
-                adjustYearsToDays(
-                  clamp(value, lowerUnitRange, upperUnitRange),
-                  units,
-                ),
-              );
-              changedCallback();
-            }}
-            hideControls
-            aria-label="input from value"
-          />
-        </div>
-        <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border font-content">
-          <div className="basis-1/5 text-center">To</div>
-          <SegmentedControl
-            className="basis-2/5"
-            size="sm"
-            value={toOp}
-            onChange={(value) => {
-              setToOp(value as RangeToOp);
-              changedCallback();
-            }}
-            data={[
-              { label: "\u2264", value: "<=" },
-              { label: "<", value: "<" },
-            ]}
-            aria-label="select less or less than and equal"
-          />
-          <NumberInput
-            className="basis-2/5"
-            placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
-            min={lowerUnitRange}
-            max={upperUnitRange}
-            onChange={(value) => {
-              if (value === "") return;
-              setToValue(
-                adjustYearsToDays(
-                  clamp(value, lowerUnitRange, upperUnitRange),
-                  units,
-                ),
-              );
-              changedCallback();
-            }}
-            value={adjustDaysToYears(toValue, units)}
-            hideControls
-            aria-label="input to value"
-          />
-        </div>
+        <fieldset>
+          <legend className="sr-only">Numeric from/to filters</legend>
+          <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
+            <div className="basis-1/5 text-center">From</div>
+            <SegmentedControl
+              className="basis-2/5"
+              size="sm"
+              value={fromOp}
+              onChange={(value) => {
+                setFromOp(value as RangeFromOp);
+                changedCallback();
+              }}
+              data={[
+                { label: "\u2265", value: ">=" },
+                { label: ">", value: ">" },
+              ]}
+              aria-label="select greater and equal or greater than"
+            />
+            <NumberInput
+              className="basis-2/5 text-sm"
+              placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+              min={lowerUnitRange}
+              max={upperUnitRange}
+              // units are always days
+              value={adjustDaysToYears(fromValue, units)}
+              onChange={(value) => {
+                if (value === "") return;
+                setFromValue(
+                  adjustYearsToDays(
+                    clamp(value, lowerUnitRange, upperUnitRange),
+                    units,
+                  ),
+                );
+                changedCallback();
+              }}
+              hideControls
+              aria-label="input from value"
+            />
+          </div>
+          <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border font-content">
+            <div className="basis-1/5 text-center">To</div>
+            <SegmentedControl
+              className="basis-2/5"
+              size="sm"
+              value={toOp}
+              onChange={(value) => {
+                setToOp(value as RangeToOp);
+                changedCallback();
+              }}
+              data={[
+                { label: "\u2264", value: "<=" },
+                { label: "<", value: "<" },
+              ]}
+              aria-label="select less or less than and equal"
+            />
+            <NumberInput
+              className="basis-2/5"
+              placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
+              min={lowerUnitRange}
+              max={upperUnitRange}
+              onChange={(value) => {
+                if (value === "") return;
+                setToValue(
+                  adjustYearsToDays(
+                    clamp(value, lowerUnitRange, upperUnitRange),
+                    units,
+                  ),
+                );
+                changedCallback();
+              }}
+              value={adjustDaysToYears(toValue, units)}
+              hideControls
+              aria-label="input to value"
+            />
+          </div>
+        </fieldset>
         {isWarning ? (
           <div className="bg-utility-warning border-utility-warning">
             <span>

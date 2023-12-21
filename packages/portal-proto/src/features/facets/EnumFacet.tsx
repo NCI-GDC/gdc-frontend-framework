@@ -380,56 +380,61 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   !sortedData || Object.entries(sortedData).length === 0 ? (
                     <div className="mx-4">No results found</div>
                   ) : (
-                    Object.entries(sortedData).map(([value, count]) => {
-                      return (
-                        <div
-                          key={`${field}-${value}`}
-                          className="flex flex-row items-center gap-x-1 px-2 "
-                        >
-                          <div className="flex-none">
-                            <Checkbox
-                              data-testid={`checkbox-${value}`}
-                              value={value}
-                              size="xs"
-                              color="accent"
-                              onChange={(e) =>
-                                handleChange(
-                                  e.currentTarget.value,
-                                  e.currentTarget.checked,
-                                )
-                              }
-                              aria-label={`checkbox for ${field}`}
-                              classNames={{
-                                input: "hover:bg-accent-darker",
-                              }}
-                              checked={
-                                !!(
-                                  selectedEnums && selectedEnums.includes(value)
-                                )
-                              }
-                            />
-                          </div>
-                          <OverflowTooltippedLabel label={value}>
-                            <span className="font-content">{value}</span>
-                          </OverflowTooltippedLabel>
+                    <fieldset>
+                      <legend className="sr-only">Filter values</legend>
+                      {Object.entries(sortedData).map(([value, count]) => {
+                        return (
                           <div
-                            data-testid={`text-${value}`}
-                            className="flex-none text-right w-14 font-content"
+                            key={`${field}-${value}`}
+                            className="flex flex-row items-center gap-x-1 px-2 "
                           >
-                            {count.toLocaleString()}
-                          </div>
-                          {showPercent ? (
-                            <div className="flex-none text-right w-18 font-content">
-                              (
-                              {(((count as number) / totalCount) * 100).toFixed(
-                                2,
-                              )}
-                              %)
+                            <div className="flex-none">
+                              <Checkbox
+                                data-testid={`checkbox-${value}`}
+                                value={value}
+                                size="xs"
+                                color="accent"
+                                onChange={(e) =>
+                                  handleChange(
+                                    e.currentTarget.value,
+                                    e.currentTarget.checked,
+                                  )
+                                }
+                                aria-label={`checkbox for ${field}`}
+                                classNames={{
+                                  input: "hover:bg-accent-darker",
+                                }}
+                                checked={
+                                  !!(
+                                    selectedEnums &&
+                                    selectedEnums.includes(value)
+                                  )
+                                }
+                              />
                             </div>
-                          ) : null}
-                        </div>
-                      );
-                    })
+                            <OverflowTooltippedLabel label={value}>
+                              <span className="font-content">{value}</span>
+                            </OverflowTooltippedLabel>
+                            <div
+                              data-testid={`text-${value}`}
+                              className="flex-none text-right w-14 font-content"
+                            >
+                              {count.toLocaleString()}
+                            </div>
+                            {showPercent ? (
+                              <div className="flex-none text-right w-18 font-content">
+                                (
+                                {(
+                                  ((count as number) / totalCount) *
+                                  100
+                                ).toFixed(2)}
+                                %)
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </fieldset>
                   )
                 ) : (
                   <div>

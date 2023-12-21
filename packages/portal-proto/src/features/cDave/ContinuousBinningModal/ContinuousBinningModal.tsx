@@ -280,73 +280,76 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 : "by"}
               :
             </span>
-            {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
-            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-            <div
-              className="flex mt-4 items-start text-sm"
-              onClick={() => setBinMethod("interval")}
-            >
-              <Radio
-                data-testid="button-select-set-interval"
-                className="px-2"
-                value="interval"
-                name="binMethod"
-                aria-label="select interval"
-                color="nci-blue"
-                checked={binMethod === "interval"}
-                onChange={(e) =>
-                  e.target.checked ? setBinMethod("interval") : undefined
-                }
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-size"
-                className="font-content"
+            <fieldset>
+              <legend className="sr-only">Define bins by interval</legend>
+              {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+              <div
+                className="flex mt-4 items-start text-sm"
+                onClick={() => setBinMethod("interval")}
               >
-                A set interval of
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalSize")}
-                id={"continuous-bin-modal-interval-size"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-size"
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-min"
-                className="font-content"
-              >
-                with values from
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalMin")}
-                id={"continuous-bin-modal-interval-min"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-min"
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-max"
-                className="font-content"
-              >
-                to less than
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalMax")}
-                id={"continuous-bin-modal-interval-max"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-max"
-              />
-            </div>
+                <Radio
+                  data-testid="button-select-set-interval"
+                  className="px-2"
+                  value="interval"
+                  name="binMethod"
+                  aria-label="select interval"
+                  color="nci-blue"
+                  checked={binMethod === "interval"}
+                  onChange={(e) =>
+                    e.target.checked ? setBinMethod("interval") : undefined
+                  }
+                />
+                <label
+                  htmlFor="continuous-bin-modal-interval-size"
+                  className="font-content"
+                >
+                  A set interval of
+                </label>
+                <TextInput
+                  {...intervalForm.getInputProps("setIntervalSize")}
+                  id={"continuous-bin-modal-interval-size"}
+                  classNames={{
+                    wrapper: `px-2`,
+                    input:
+                      binMethod === "ranges" ? "bg-base-lightest" : undefined,
+                  }}
+                  data-testid="textbox-set-interval-size"
+                />
+                <label
+                  htmlFor="continuous-bin-modal-interval-min"
+                  className="font-content"
+                >
+                  with values from
+                </label>
+                <TextInput
+                  {...intervalForm.getInputProps("setIntervalMin")}
+                  id={"continuous-bin-modal-interval-min"}
+                  classNames={{
+                    wrapper: `px-2`,
+                    input:
+                      binMethod === "ranges" ? "bg-base-lightest" : undefined,
+                  }}
+                  data-testid="textbox-set-interval-min"
+                />
+                <label
+                  htmlFor="continuous-bin-modal-interval-max"
+                  className="font-content"
+                >
+                  to less than
+                </label>
+                <TextInput
+                  {...intervalForm.getInputProps("setIntervalMax")}
+                  id={"continuous-bin-modal-interval-max"}
+                  classNames={{
+                    wrapper: `px-2`,
+                    input:
+                      binMethod === "ranges" ? "bg-base-lightest" : undefined,
+                  }}
+                  data-testid="textbox-set-interval-max"
+                />
+              </div>
+            </fieldset>
           </div>
           <FunctionButton
             data-testid="button-reset-bins"
