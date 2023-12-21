@@ -86,12 +86,19 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
         dispatch(
           addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
         );
-        showNotification({ message: "Set has been modified." });
+        showNotification({
+          message: "Set has been modified.",
+          closeButtonProps: { "aria-label": "Close notification" },
+        });
 
         closeModal();
       }
     } else if (response.isError) {
-      showNotification({ message: "Problem modifiying set.", color: "red" });
+      showNotification({
+        message: "Problem modifiying set.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
   }, [
     response.isSuccess,
