@@ -175,7 +175,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
         </>
       ) : null}
       <fieldset className="mt-1">
-        <legend className="sr-only">Numberic range filters</legend>
+        <legend className="sr-only">Numeric range filters</legend>
         {Object.keys(rangeLabelsAndValues)
           .slice(0, itemsToShow)
           .sort(
