@@ -141,7 +141,7 @@ export const Header: React.FC<HeaderProps> = ({
             Send Feedback
           </Button>
           <a
-            href="https://portal.gdc.cancer.gov/annotations"
+            href="https://portal.gdc.cancer.gov/v1/annotations"
             className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
