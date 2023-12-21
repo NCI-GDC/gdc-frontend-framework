@@ -16,6 +16,18 @@ import { MdClose as CloseIcon } from "react-icons/md";
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values && values.length > 0 && values.includes("true");
 
+/**
+ * Facet card for a boolean field
+ * @param field - field to facet on
+ * @param hooks - hooks to use for the facet
+ * @param description - description of the facet
+ * @param valueLabel - label for the value
+ * @param facetName - name of the facet
+ * @param dismissCallback - callback to call when the facet is dismissed
+ * @param width - width of the facet
+ * @category Facets
+ */
+
 const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
   hooks,
@@ -70,7 +82,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   clearFilters(field);
                   dismissCallback(field);
                 }}
-                aria-label="remove the facet"
+                aria-label="Remove the facet"
               >
                 <CloseIcon size="1.25em" className={controlsIconStyle} />
               </FacetIconButton>

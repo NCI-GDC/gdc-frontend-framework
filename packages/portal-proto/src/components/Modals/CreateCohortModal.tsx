@@ -1,5 +1,12 @@
 import { SaveOrCreateEntityModal } from "./SaveOrCreateEntityModal";
 
+/**
+ * Modal that will display when the user clicks a create cohort button.
+ * @param onClose - callback to close the modal
+ * @param onActionClick - callback to create the cohort
+ * @category Modals
+ */
+
 const CreateCohortModal = ({
   onClose,
   onActionClick,

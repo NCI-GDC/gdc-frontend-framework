@@ -50,6 +50,22 @@ export interface CohortStoredSets {
   readonly field: string;
 }
 
+/**
+ * A Cohort is a collection of filters that can be used to query the GDC API.
+ * The cohort interface is used to manage the cohort state in the redux-toolkit entity adapter.
+ * @see https://redux-toolkit.js.org/api/createEntityAdapter
+ *
+ * @property id - the id of the cohort
+ * @property name - the name of the cohort
+ * @property filters - the filters for the cohort
+ * @property caseSet - the caseSet for the cohort
+ * @property sets - the sets for the cohort
+ * @property modified - flag indicating if the cohort has been modified
+ * @property modified_datetime - the last time the cohort was modified
+ * @property saved - flag indicating if the cohort has been saved
+ * @category Cohort
+ */
+
 export interface Cohort {
   readonly id: string;
   readonly name: string;
@@ -540,34 +556,35 @@ interface CopyCohortParams {
  * this uses redux-toolkit entity adapter to manage the cohorts
  * Because it is an entity adapter, the state contains an array of id (string)
  * and a Dictionary of Cohort objects. There are two additional members:
- *  currentCohortId: which is used to identify the "current" or active cohort
- *  message: used to pass a state change message and parameter. NOTE: message is a
- *  simple string consisting of message|parameter and can be replaced in the future with
- *  something else like an object, but this keeps the additional member to EntityAdapter
- *  more normalized.
- *
+ *  - currentCohortId: which is used to identify the "current" or active cohort
+ *  - message: used to pass a state change message and parameter. NOTE: message is a
+ *  - simple string consisting of message|parameter and can be replaced in the future with
+ *  - something else like an object, but this keeps the additional member to EntityAdapter
+ *  - more normalized.
  *
  * The slice exports the following actions:
- * setCohortList() - set saved cohort to the adapter that comes from the server
- * addNewCohort() - create a new cohort
- * addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
- * copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
- * updateCohortName(name:string): changes the current cohort's name
- * updateCohortFilter(filters: FilterSet): update the filters for this cohort
- * removeCohortFilter(filter:string): removes the filter from the cohort
- * clearCohortFilters(): removes all the filters by setting them to the default all GDC state
- * setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
- * clearCaseSet(): resets the caseSet member to all GDC
- * removeCohort(): removes the current cohort
- * setCohortMessage(): sets the current cohort message
- * clearCohortMessage(): clears the current message by setting it to undefined
- * addNewCohortGroups(): adds groups of filters to the current cohort
- * removeCohortGroup(): removes a group of filters from the current cohort
+ * - setCohortList() - set saved cohort to the adapter that comes from the server
+ * - addNewCohort() - create a new cohort
+ * - addNewCohortWithFilterAndMessage - create a cohort with the passed filters and message id
+ * - copyCohort - create a copy of the cohort with sourceId to a new cohort with destId
+ * - updateCohortName(name:string): changes the current cohort's name
+ * - updateCohortFilter(filters: FilterSet): update the filters for this cohort
+ * - removeCohortFilter(filter:string): removes the filter from the cohort
+ * - clearCohortFilters(): removes all the filters by setting them to the default all GDC state
+ * - setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
+ * - clearCaseSet(): resets the caseSet member to all GDC
+ * - removeCohort(): removes the current cohort
+ * - setCohortMessage(): sets the current cohort message
+ * - clearCohortMessage(): clears the current message by setting it to undefined
+ * - addNewCohortGroups(): adds groups of filters to the current cohort
+ * - removeCohortGroup(): removes a group of filters from the current cohort
+ * @category Cohort
  */
 const slice = createSlice({
   name: "cohort/availableCohorts",
   initialState: emptyInitialState,
   reducers: {
+    /** @hidden */
     setCohortList: (state, action: PayloadAction<Cohort[]>) => {
       // TODO: Behavior TBD - https://jira.opensciencedatacloud.org/browse/PEAR-762
       // When the user deletes context id from their cookies
@@ -578,6 +595,11 @@ const slice = createSlice({
         cohortsAdapter.upsertMany(state, [...action.payload] as Cohort[]);
       }
     },
+    /**
+     * Creates a new cohort with the passed name. If no name is passed, the cohort is named "Unsaved Cohort"
+     * @param state - the CoreState
+     * @param action - optional cohort name
+     */
     addNewCohort: (state, action?: PayloadAction<string | undefined>) => {
       const cohort = newCohort({
         customName: action?.payload ?? UNSAVED_COHORT_NAME,
@@ -805,21 +827,26 @@ const slice = createSlice({
     },
     discardCohortChanges: (
       state,
-      action: PayloadAction<FilterSet | undefined>,
+      action: PayloadAction<{
+        filters: FilterSet | undefined;
+        showMessage: boolean;
+      }>,
     ) => {
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
         changes: {
-          filters: action.payload || { mode: "and", root: {} },
+          filters: action.payload.filters || { mode: "and", root: {} },
           modified: false,
           modified_datetime: new Date().toISOString(),
         },
       });
-      state.message = [
-        `discardChanges|${state.entities[getCurrentCohort(state)]?.name}|${
-          state.currentCohort
-        }`,
-      ];
+      if (action.payload.showMessage) {
+        state.message = [
+          `discardChanges|${state.entities[getCurrentCohort(state)]?.name}|${
+            state.currentCohort
+          }`,
+        ];
+      }
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
@@ -1051,19 +1078,52 @@ export const {
  *  -------------------------------------------------------------------------
  **/
 
+/**
+ * Returns the selectors for the cohorts EntityAdapter
+ * @param state - the CoreState
+ *
+ * @hidden
+ */
 export const cohortSelectors = cohortsAdapter.getSelectors(
   (state: CoreState) => state.cohort.availableCohorts,
 );
 
+/**
+ * Returns all the cohorts in the state
+ * @param state - the CoreState
+ *
+ * @category Cohort
+ * @category Selectors
+ */
+
 export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
   cohortSelectors.selectAll(state);
 
+/**
+ * Returns the current cohort id
+ * @param state - the CoreState
+ *
+ * @category Cohort
+ * @category Selectors
+ */
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort?.availableCohorts?.currentCohort;
 
+/**
+ * Returns the current cohort message
+ * @param state - the CoreState
+ * @hidden
+ */
 export const selectCohortMessage = (state: CoreState): string[] | undefined =>
   state.cohort.availableCohorts.message;
 
+/**
+ * Returns if the current cohort is modified
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ * @hidden
+ */
 export const selectCurrentCohortModified = (
   state: CoreState,
 ): boolean | undefined => {
@@ -1074,6 +1134,13 @@ export const selectCurrentCohortModified = (
   return cohort?.modified;
 };
 
+/**
+ * Returns if the current cohort has been saved
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ * @hidden
+ */
 export const selectCurrentCohortSaved = (
   state: CoreState,
 ): boolean | undefined => {
@@ -1084,9 +1151,23 @@ export const selectCurrentCohortSaved = (
   return cohort?.saved;
 };
 
+/**
+ * Returns the current cohort or undefined if cohort is not found
+ * @param state - the CoreState
+ * @returns the current cohort or undefined
+ *
+ * @category Cohort
+ * @category Selectors
+ */
 export const selectCurrentCohort = (state: CoreState): Cohort | undefined =>
   cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state));
 
+/**
+ *  Returns the current cohort name
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ */
 export const selectCurrentCohortName = (
   state: CoreState,
 ): string | undefined => {
@@ -1097,6 +1178,14 @@ export const selectCurrentCohortName = (
   return cohort?.name;
 };
 
+/**
+ * Finds a cohort by name and returns it or undefined if not found
+ * @param state - the CoreState
+ * @param name - the name of the cohort
+ * @category Cohort
+ * @category Selectors
+ */
+
 export const selectAvailableCohortByName = (
   state: CoreState,
   name: string,
@@ -1106,7 +1195,9 @@ export const selectAvailableCohortByName = (
     .find((cohort: Cohort) => cohort.name === name);
 
 /**
- * Returns the current cohort filters as a FilterSet
+ * Returns the current cohort filters as a {@link FilterSet}
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortFilterSet = (
   state: CoreState,
@@ -1120,6 +1211,10 @@ export const selectCurrentCohortFilterSet = (
 
 /**
  * Returns the cohort's name given the id
+ * @param state - the CoreState
+ * @param cohortId - the cohort id
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCohortNameById = (
   state: CoreState,
@@ -1130,7 +1225,12 @@ export const selectCohortNameById = (
 };
 
 /**
- * Returns the current cohort filters as a FilterSet
+ * Returns the cohort's filters given an id
+ * @param state - the CoreState
+ * cohortId - the cohort id
+ * @category Cohort
+ * @category Selectors
+ *
  */
 export const selectCohortFilterSetById = (
   state: CoreState,
@@ -1142,6 +1242,9 @@ export const selectCohortFilterSetById = (
 
 /**
  * Returns the currentCohortFilters as a GqlOperation
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortGqlFilters = (
   state: CoreState,
@@ -1157,6 +1260,10 @@ export const selectCurrentCohortGqlFilters = (
  * Returns either a filterSet or a filter containing a caseSetId that was created
  * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
  * Used to create a cohort that works with both explore and repository indexes
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ * @hidden
  */
 export const selectCurrentCohortGeneAndSSMCaseSet = (
   state: CoreState,
@@ -1171,7 +1278,11 @@ export const selectCurrentCohortGeneAndSSMCaseSet = (
 };
 
 /**
- * Main selector of the current Cohort Filters.
+ * Public selector of the current Cohort Filters.
+ * Returns the current cohort filters as a FilterSet
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortFilters = (state: CoreState): FilterSet => {
   const cohort = cohortSelectors.selectById(
@@ -1185,6 +1296,10 @@ export const selectCurrentCohortFilters = (state: CoreState): FilterSet => {
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
  * returns undefined.
+ * @param state - the CoreState
+ * @param name - the name of the filter
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortFiltersByName = (
   state: CoreState,
@@ -1199,6 +1314,9 @@ export const selectCurrentCohortFiltersByName = (
 
 /**
  * Returns the current cohort case count
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortCaseCount = (
   state: CoreState,
@@ -1225,6 +1343,9 @@ export const selectCurrentCohortFiltersByNames = (
 /**
  * Returns the current caseSetId filter representing the cohort
  * if the cohort is undefined it returns an empty caseSetIdFilter
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
  */
 export const selectCurrentCohortCaseSet = (
   state: CoreState,
@@ -1242,11 +1363,24 @@ export const selectCurrentCohortCaseSet = (
   return { ...cohort.caseSet };
 };
 
+/**
+ * Given a cohortId returns the Cohort if found, otherwise returns undefined
+ * @param state - the CoreState
+ * @param cohortId - the cohort id to return
+ * @category Cohort
+ * @category Selectors
+ */
 export const selectCohortById = (
   state: CoreState,
   cohortId: string,
 ): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
 
+/**
+ * Returns a array of all the cohorts
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ */
 export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
   cohortSelectors.selectEntities(state);
 
@@ -1288,12 +1422,25 @@ export const selectUnsavedCohortName = (state: CoreState): string | undefined =>
  *  -------------------------------------------------------------------------
  **/
 
+/**
+ * A hook to get the current cohort filter as a FilterSet
+ * @category Cohort
+ * @category Hooks
+ */
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state: CoreState) =>
     selectCurrentCohortFilterSet(state),
   );
 };
 
+/**
+ * A hook to get gene/ssm case set for the current cohort
+ * This function is being deprecated and will be removed in the future
+ * @category Cohort
+ * @category Hooks
+ * @hidden
+ * @deprecated - after refactoring to support dynamic cohorts, this function will be removed
+ */
 export const useCurrentCohortWithGeneAndSsmCaseSet = ():
   | FilterSet
   | undefined => {
@@ -1302,6 +1449,11 @@ export const useCurrentCohortWithGeneAndSsmCaseSet = ():
   );
 };
 
+/**
+ * A hook to get the counts of cases and files for the current cohort
+ * @category Cohort
+ * @category Hooks
+ */
 export const useCurrentCohortCounts =
   (): CoreDataSelectorResponse<CountsData> => {
     return useCoreSelector((state: CoreState) =>
@@ -1320,6 +1472,11 @@ export const useCurrentCohortCounts =
  * This primary used to handle gene and ssms applications
  * and is also called from the query expression to handle removing
  * genes and ssms from the expression
+ * @param field - the field that requires a case set
+ * @param operation - the new filter operation
+ * @category Cohort
+ * @category Thunks
+ * @hidden
  */
 export const updateActiveCohortFilter =
   ({
@@ -1422,7 +1579,7 @@ export const discardActiveCohortChanges =
         modified: false,
         cohortId: cohortId,
       });
-    } else dispatch(discardCohortChanges(filters));
+    } else dispatch(discardCohortChanges({ filters, showMessage: true }));
   };
 
 export const setActiveCohortList =

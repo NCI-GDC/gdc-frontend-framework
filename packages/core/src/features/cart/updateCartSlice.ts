@@ -29,7 +29,6 @@ const slice = createSlice({
       return state;
     },
   },
-  extraReducers: {},
 });
 
 export const updateCartReducer = slice.reducer;

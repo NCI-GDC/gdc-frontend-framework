@@ -187,10 +187,15 @@ const CustomFacetGroup = (): JSX.Element => {
         data-testid="loading-spinner"
         visible={!isDictionaryReady}
       />
-      <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+      <Modal
+        data-testid="modal-cohort-builder-add-custom-filter"
+        size="xl"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Add a Custom Filter"
+      >
         <div className="p-4">
           <FacetSelection
-            title="Add a Custom Filter"
             facetType="cases"
             handleFilterSelected={handleFilterSelected}
             usedFacets={cohortBuilderFilters}

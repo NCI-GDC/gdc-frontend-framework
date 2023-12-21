@@ -24,7 +24,7 @@
     "build-docs": "typedoc"
   },
   "lint-staged": {
-    "**/*": [
+    "!(**/*.png)": [
       "prettier --write --ignore-unknown",
       "eslint --fix"
     ]
@@ -53,6 +53,7 @@
     "react-table": "^7.7.12",
     "react-use": "^17.3.2",
     "react-window": "^1.8.6",
+    "sharp": "^0.32.6",
     "tinycolor2": "^1.4.2",
     "url-join": "^5.0.0",
     "use-deep-compare": "^1.1.0"
@@ -78,7 +79,8 @@
     "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2",
-    "typedoc": "^0.25.3"
+    "typedoc": "^0.25.4",
+    "typedoc-plugin-missing-exports": "^2.1.0"
   },
   "engines": {
     "npm": ">=8.0.0"

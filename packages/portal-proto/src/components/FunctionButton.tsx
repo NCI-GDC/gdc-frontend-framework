@@ -5,6 +5,11 @@ interface FunctionButtonProps {
   disabled: boolean;
 }
 
+/**
+ * Function button component
+ * @param disabled - whether the button is disabled
+ * @category Buttons
+ */
 export default tw(Button)<FunctionButtonProps>`
  ${(p) =>
    p.disabled

@@ -137,10 +137,15 @@ export const FileFacetPanel = (): JSX.Element => {
         </Text>
       </Button>
       <div className="flex flex-col gap-y-4" data-testid="filters-facets">
-        <Modal size="xl" opened={opened} onClose={() => setOpened(false)}>
+        <Modal
+          data-testid="modal-repository-add-custom-filter"
+          size="xl"
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title="Add a Custom Filter"
+        >
           <div className="p-4">
             <FacetSelection
-              title="Add a Custom Filter"
               facetType="files"
               handleFilterSelected={handleFilterSelected}
               usedFacets={config.facets}

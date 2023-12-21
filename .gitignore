@@ -5,4 +5,4 @@ venv
 *.tsbuildinfo
 .env.local
 .DS_Store
-docs
+docs/api

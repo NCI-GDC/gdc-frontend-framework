@@ -5,7 +5,7 @@ import re
 
 from datetime import datetime as dt
 
-from getgauge.python import step, before_spec, after_spec, data_store
+from getgauge.python import step, before_spec, after_spec, before_suite, data_store
 
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
@@ -17,15 +17,40 @@ from ....base.utility import Utility
 def pause_10_seconds(sleep_time):
     time.sleep(int(sleep_time))
 
-@before_spec
+@before_suite
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@before_suite
+def navigate_to_app():
+    APP.navigate()
+    APP.warning_modal.accept_warning()
+
+@before_suite
+def setup_test_run():
+    """
+    Before the start of tests this function will run once. When accessing the data portal for the
+    first time, an unsaved cohort will be created. There can only be one unsaved cohort in the
+    data portal at a time. That means the user cannot create another cohort (in the cohort bar), until
+    the initial one has been saved. This function saves that initial cohort so subsequent tests can run, as some
+    depend on a starting condition that they be able to create a cohort.
+    """
+    APP.analysis_center_page.visit()
+    APP.header_section.wait_for_page_to_load("analysis")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.cohort_bar.click_cohort_bar_button("Save")
+    APP.shared.click_text_option_from_dropdown_menu("Save")
+    APP.shared.send_text_into_search_bar("never_use_this_cohort_name", "Input field for new cohort name")
+    APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+    APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
+    time.sleep(1)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
 @after_spec
 def setup_next_spec_run():
     """
-    After each spec file's execution, this function will run. The intention is to
+    After each spec file's execution this function will run. The intention is to
     clear the active cohort filters and setup the next spec run.
 
     First, we go to the analysis center. If a test found a bug in the data portal the next test
@@ -76,7 +101,7 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_add_custom_filter_modal},
     }
     first_text = text.split(" ")[0]
     try:
@@ -351,6 +376,7 @@ def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""
     is_text_present = APP.shared.wait_for_text_in_temporary_message(expected_text,action)
     assert is_text_present, f"The text '{expected_text}' is NOT present in a modal"
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Validate the message <message_id> displays the text <expected_text>")
 def validate_message_id_text_is_present_on_the_page(message_id:str, expected_text: str):
