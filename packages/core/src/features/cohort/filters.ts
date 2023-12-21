@@ -318,17 +318,52 @@ export const joinFilters = (a: FilterSet, b: FilterSet): FilterSet => {
   return { mode: a.mode, root: { ...a.root, ...b.root } };
 };
 
-/*
-export const mergeFilters = (a: FilterSet, b: FilterSet): FilterSet => {
-  Object.keys(b.root).forEach((key) => {
-    if (a.root[key]) {
-      a.root[key] = {
-        operator: "and",
-        operands: [a.root[key], b.root[key]],
-      };
+/**
+ * Given a FilterSet filter and a FilterSet of additions, merge the additions into the filter.
+ * @param a - FilterSet to merge to
+ * @param b - additionas to the filter
+ */
+export const mergeFilterSets = (
+  filters: FilterSet,
+  additions: FilterSet,
+): FilterSet => {
+  // given a filter and a set of additions, merge the additions into the filter
+  // if the filter has a key that is in the additions, merge the additions
+  // the merge rules are:
+  // 1. if the filter op is "=" and the addition op is "=", then the filter op is converted to "includes' and the value is the union of the two values
+  // 2. if the filter op is "includes" and the addition op is "=", then the value is the union of the two values
+  // 3. if the filter op is "includes" and the addition op is "includes", then the value is the union of the two values
+
+  const result = { ...filters };
+  Object.keys(additions.root).forEach((key) => {
+    if (result.root[key]) {
+      const filter = result.root[key];
+      const addition = additions.root[key];
+      if (filter.operator === "=" && addition.operator === "=") {
+        result.root[key] = {
+          operator: "includes",
+          field: filter.field,
+          operands: [filter.operand, addition.operand],
+        };
+      } else if (filter.operator === "includes" && addition.operator === "=") {
+        result.root[key] = {
+          operator: "includes",
+          field: filter.field,
+          operands: [...filter.operands, addition.operand],
+        };
+      } else if (
+        filter.operator === "includes" &&
+        addition.operator === "includes"
+      ) {
+        result.root[key] = {
+          operator: "includes",
+          field: filter.field,
+          operands: [...filter.operands, ...addition.operands],
+        };
+      }
     } else {
-      a.root[key] = b.root[key];
+      result.root[key] = additions.root[key];
     }
-   });
-  return a;
-}*/
+  });
+  return result;
+};

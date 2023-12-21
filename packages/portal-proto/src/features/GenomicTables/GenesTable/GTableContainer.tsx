@@ -10,6 +10,7 @@ import {
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
+  mergeFilterSets,
   buildCohortGqlOperator,
   useCoreDispatch,
   extractFiltersWithPrefixFromFilterSet,
@@ -148,7 +149,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
         if (type === "cnvgain") {
           // only genes filters
-          return joinFilters(caseSetCreationFilters, {
+          return mergeFilterSets(caseSetCreationFilters, {
             mode: "and",
             root: {
               "genes.cnv.cnv_change": {
@@ -165,7 +166,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           });
         } else if (type === "cnvloss") {
           // only genes filters
-          return joinFilters(caseSetCreationFilters, {
+          return mergeFilterSets(caseSetCreationFilters, {
             mode: "and",
             root: {
               "genes.cnv.cnv_change": {
@@ -182,7 +183,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           });
         } else {
           // any other type will use all filters
-          return joinFilters(caseSetCreationFilters, {
+          return mergeFilterSets(caseSetCreationFilters, {
             mode: "and",
             root: {
               "ssms.ssm_id": {
@@ -199,7 +200,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         }
       };
       const filters = buildFilters();
-      console.log("filters", filters);
       return filters;
     },
     [cohortFilters, genomicFilters, genesOnlyFilters],
