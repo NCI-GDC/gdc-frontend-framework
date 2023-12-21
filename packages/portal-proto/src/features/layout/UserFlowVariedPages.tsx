@@ -71,6 +71,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "deleteCohort") {
@@ -80,6 +81,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "savedCohort") {
@@ -89,6 +91,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "savedCohortSetCurrent") {
@@ -103,6 +106,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "savedCurrentCohort") {
@@ -112,6 +116,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "discardChanges") {
@@ -130,6 +135,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "newCasesCohort") {
@@ -144,6 +150,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "newProjectsCohort") {
@@ -158,6 +165,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
         }

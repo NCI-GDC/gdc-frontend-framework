@@ -156,6 +156,7 @@ const download = async ({
             },
           },
         }),
+        closeButtonProps: { "aria-label": "Close notification" },
       }),
     100,
   ); // set to 100 as that is perceived as instant
