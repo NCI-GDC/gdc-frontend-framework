@@ -77,6 +77,9 @@ const MatchedTable = ({
       matchedTableColumnHelper.group({
         id: "submitted_id",
         header: `Submitted ${upperFirst(entityLabel)} Identifier`,
+        meta: {
+          scope: "colgroup",
+        },
         enableSorting: false,
         columns: uniqueSubmittedIdentifierFields.map((id) => {
           return matchedTableColumnHelper.accessor(
