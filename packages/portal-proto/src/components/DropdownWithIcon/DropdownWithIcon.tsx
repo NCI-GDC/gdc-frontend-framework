@@ -1,6 +1,7 @@
 import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
+import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 
 interface DropdownWithIconProps {
@@ -57,6 +58,11 @@ interface DropdownWithIconProps {
    * custom test id
    */
   customDataTestId?: string;
+
+  /**
+    tooltip
+   */
+  tooltip?: string;
 }
 
 export const DropdownWithIcon = ({
@@ -72,6 +78,7 @@ export const DropdownWithIcon = ({
   fullHeight,
   zIndex = undefined,
   customDataTestId = undefined,
+  tooltip = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
@@ -93,7 +100,17 @@ export const DropdownWithIcon = ({
             root: fullHeight ? "h-full" : undefined,
           }}
         >
-          {TargetButtonChildren}
+          <div>
+            {tooltip?.length && !targetButtonDisabled ? (
+              <div>
+                <Tooltip label={tooltip}>
+                  <div>{TargetButtonChildren}</div>
+                </Tooltip>
+              </div>
+            ) : (
+              <div>{TargetButtonChildren}</div>
+            )}
+          </div>
         </Button>
       </Menu.Target>
       <Menu.Dropdown
