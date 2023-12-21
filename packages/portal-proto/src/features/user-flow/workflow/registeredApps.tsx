@@ -229,7 +229,7 @@ export const REGISTERED_APPS = [
       />
     ),
     tags: ["variantAnalysis", "cnv", "ssm"],
-    hasDemo: false,
+    hasDemo: true,
     description:
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",
