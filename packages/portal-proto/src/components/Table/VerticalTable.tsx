@@ -441,6 +441,9 @@ function VerticalTable<TData>({
                               setExpanded(row, columnId);
                             })}
                             className="cursor-auto align-bottom"
+                            aria-label={`${
+                              row.getIsExpanded() ? "Collapse" : "Expand"
+                            } row`}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>

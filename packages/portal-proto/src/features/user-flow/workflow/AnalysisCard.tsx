@@ -108,6 +108,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             root: "text-secondary-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
+          aria-label={`${
+            descriptionVisible ? "Collapse" : "Expand"
+          } tool description`}
+          aria-expanded={descriptionVisible}
         >
           {entry.name}
         </Button>
@@ -115,6 +119,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
           className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
+          aria-hidden={!descriptionVisible}
         >
           <div
             className={`${
