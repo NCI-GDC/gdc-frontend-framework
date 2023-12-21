@@ -333,7 +333,7 @@ const CohortManager: React.FC = () => {
             const updateBody = {
               id: cohortId,
               name: cohortName,
-              type: "static",
+              type: "dynamic",
               filters:
                 Object.keys(filters.root).length > 0
                   ? buildCohortGqlOperator(filters)
