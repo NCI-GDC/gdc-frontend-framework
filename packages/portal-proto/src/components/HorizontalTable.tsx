@@ -72,6 +72,7 @@ export const HorizontalTable = ({
                   !slideImageDetails && "py-2.5"
                 } border-base-lighter border-1 whitespace-nowrap font-semibold font-heading`}
                 key={`head-${obj.headerName}`}
+                scope="row"
               >
                 {obj.headerName}
               </th>

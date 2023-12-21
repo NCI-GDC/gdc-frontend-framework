@@ -46,6 +46,7 @@ const MatchedTable = ({
         header: "Mapped To",
         meta: {
           highlighted: true,
+          scope: "colgroup",
         },
         enableSorting: false,
         columns: uniqueMappedToFields.map((id) => {
