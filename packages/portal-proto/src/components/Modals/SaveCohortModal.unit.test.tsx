@@ -49,7 +49,7 @@ describe("SaveCohortModal", () => {
     jest
       .spyOn(core, "useAddCohortMutation")
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
-    const copyCohortMock = jest.spyOn(core, "copyCohort");
+    const copyCohortMock = jest.spyOn(core, "copyToSavedCohort");
     const setCurrentCohortMock = jest.spyOn(core, "setCurrentCohortId");
 
     const { getByText } = render(
@@ -74,7 +74,6 @@ describe("SaveCohortModal", () => {
     expect(copyCohortMock).toBeCalledWith({
       sourceId: "1",
       destId: "2",
-      saved: true,
     });
     expect(setCurrentCohortMock).toBeCalledWith("2");
   });
@@ -221,7 +220,7 @@ describe("SaveCohortModal", () => {
       .spyOn(core, "useAddCohortMutation")
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
     const setCurrentCohortMock = jest.spyOn(core, "setCurrentCohortId");
-    const addCohortToStoreMock = jest.spyOn(core, "setCohort");
+    const addCohortToStoreMock = jest.spyOn(core, "addNewSavedCohort");
 
     const { getByText } = render(
       <SaveCohortModal

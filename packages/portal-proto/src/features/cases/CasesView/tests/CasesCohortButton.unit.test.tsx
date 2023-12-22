@@ -3,11 +3,6 @@ import { render } from "@testing-library/react";
 import { CasesCohortButton } from "../CasesCohortButton";
 import userEvent from "@testing-library/user-event";
 
-jest.mock("@gff/core", () => ({
-  useCoreDispatch: jest.fn(() => () => null),
-  addNewCohortWithFilterAndMessage: jest.fn(),
-}));
-
 describe("CasesCohortButton", () => {
   it("displays loading message when cases are fetching", async () => {
     const { getByText } = render(

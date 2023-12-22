@@ -9,9 +9,9 @@ import { CoreState } from "./reducers";
 import {
   updateCohortFilter,
   removeCohortFilter,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
   selectAvailableCohorts,
-  addNewCohort,
+  addNewDefaultUnsavedCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
   clearCohortFilters,
@@ -51,7 +51,7 @@ startCoreListening({
  * This is used when creating a new cohort from a link, as it is not the current cohort
  */
 startCoreListening({
-  matcher: isAnyOf(addNewCohortWithFilterAndMessage, addNewCohort),
+  matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
   effect: async (_, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
@@ -68,7 +68,7 @@ startCoreListening({
  * not the current cohort.
  */
 startCoreListening({
-  matcher: isAnyOf(addNewCohortWithFilterAndMessage),
+  matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
   effect: async (_action, listenerApi) => {
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
