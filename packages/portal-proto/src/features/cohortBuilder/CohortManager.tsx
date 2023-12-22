@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { LoadingOverlay, Select, Loader, Tooltip } from "@mantine/core";
+import { LoadingOverlay, Select, Loader, Tooltip, Modal } from "@mantine/core";
 import { NextRouter, useRouter } from "next/router";
 import {
   MdAdd as AddIcon,
@@ -45,6 +45,7 @@ import {
   useCurrentCohortCounts,
   fetchCohortCaseCounts,
   selectHasUnsavedCohorts,
+  hideModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -56,6 +57,8 @@ import { convertDateToString } from "src/utils/date";
 import ImportCohortModal from "./Modals/ImportCohortModal";
 import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -362,7 +365,7 @@ const CohortManager: React.FC = () => {
                 coreDispatch(setCohort(cohort));
               })
               .catch(() =>
-                coreDispatch(setCohortMessage(["error|saving|allId"])),
+                coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal })),
               );
           }}
         />
@@ -384,6 +387,20 @@ const CohortManager: React.FC = () => {
           filters={filters}
           saveAs
         />
+      )}
+      {modal === Modals.SaveCohortErrorModal && (
+        <Modal
+          opened
+          onClose={() => coreDispatch(hideModal())}
+          title="Save Cohort Error"
+        >
+          <p className="py-2 px-4">There was a problem saving the cohort.</p>
+          <ModalButtonContainer data-testid="modal-button-container">
+            <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
+              OK
+            </DarkFunctionButton>
+          </ModalButtonContainer>
+        </Modal>
       )}
       {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
@@ -479,6 +496,7 @@ const CohortManager: React.FC = () => {
             <Tooltip label="Save Cohort" position="top" withArrow>
               <span className="h-12">
                 <DropdownWithIcon
+                  customDataTestId="saveButton"
                   dropdownElements={[
                     {
                       onClick: () => {

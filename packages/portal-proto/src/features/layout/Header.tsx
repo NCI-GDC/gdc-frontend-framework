@@ -275,6 +275,9 @@ export const Header: React.FC<HeaderProps> = ({
                             },
                           },
                         }),
+                        closeButtonProps: {
+                          "aria-label": "Close notification",
+                        },
                       });
                     }
                   }}

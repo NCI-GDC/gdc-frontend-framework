@@ -31,26 +31,30 @@ export const SummaryModal = ({
     }
   }, [prevPath, currentPath, onClose]);
 
-  const { SummaryPage } =
+  const { SummaryPage, title } =
     entity_type === "project"
       ? {
           SummaryPage: <ProjectSummary projectId={entity_id} isModal={true} />,
+          title: "Project",
         }
       : entity_type === "case"
       ? {
           SummaryPage: (
             <CaseSummary case_id={entity_id} bio_id="" isModal={true} />
           ),
+          title: "Case",
         }
       : entity_type === "file"
       ? {
           SummaryPage: (
             <ContextualFileView setCurrentFile={entity_id} isModal={true} />
           ),
+          title: "File",
         }
       : entity_type === "ssms"
       ? {
           SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
+          title: "Mutation",
         }
       : {
           SummaryPage: (
@@ -61,16 +65,20 @@ export const SummaryModal = ({
               contextFilters={contextFilters}
             />
           ),
+          title: "Gene",
         };
+
   return (
     <Modal
       opened={modalOpened}
       onClose={onClose}
       size="calc(100vw - 100px)"
       withinPortal={false}
+      title={`${title} summary modal`}
       zIndex={300}
       classNames={{
         header: "m-0 p-0 border-0",
+        title: "sr-only",
         close:
           "absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30",
       }}

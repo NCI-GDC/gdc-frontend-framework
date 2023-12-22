@@ -12,6 +12,15 @@ const BarChart = dynamic(() => import("./BarChart"), {
 });
 
 const CHART_NAME = "cancer-distribution-bar-chart-cnv";
+
+/**
+ * Props for the CNVPlot component
+ * @property gene - gene to plot
+ * @property height - height of the chart
+ * @property genomicFilters - genomic filters to apply
+ * @property cohortFilters - cohort filters to apply
+ * @category Charts
+ */
 interface CNVPlotProps {
   readonly gene: string;
   readonly height?: number;
@@ -22,6 +31,14 @@ interface CNVPlotProps {
 const hovertemplate =
   "%{customdata[0]} Cases Affected in <b>%{x}</b><br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)<extra></extra>";
 
+/**
+ * CNV plot component
+ * @param gene - gene to plot
+ * @param height - height of the chart
+ * @param genomicFilters - genomic filters to apply
+ * @param cohortFilters - cohort filters to apply
+ * @category Charts
+ */
 const CNVPlot: React.FC<CNVPlotProps> = ({
   gene,
   height = undefined,

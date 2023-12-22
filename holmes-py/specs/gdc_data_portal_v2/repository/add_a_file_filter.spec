@@ -18,7 +18,6 @@ tags: regression, smoke
 
 ## Default filters on Repository
 * Verify that the following default filters are displayed in order
-
    |default_filters      |
    |---------------------|
    |Data Category        |
@@ -28,7 +27,6 @@ tags: regression, smoke
    |Data Format          |
    |Platform             |
    |Access               |
-
 
 ## Add a Custom Filter modal
 * Navigate to "Add a File Filter" from "Repository" "app"
@@ -42,7 +40,7 @@ tags: regression, smoke
 ## File properties on Add a Custom Filter modal
 * Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
 
-## # file counts listed on Add a Custom Filter modal
+## File counts listed on Add a Custom Filter modal
 * Verify "303" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
@@ -50,6 +48,8 @@ tags: regression, smoke
 
 ## Only show properties with values on Add a Custom Filter modal
 * Verify that the "Only show properties with values" text is displayed on "Add a Custom Filter" "modal"
+
+## Close Modal
 * Close the modal
 
 ## Search filters
@@ -63,6 +63,6 @@ tags: regression, smoke
 
 * Navigate to "Add a File Filter" from "Repository" "app"
 * Search for file filter, <filter_name>
-* Verify that the <filter_name> text is displayed on "Add a Custom Filter" "modal"
+Verify that the <filter_name> text is displayed on "Add a Custom Filter" "modal"
 * Select file filter, <filter_name>, nth: <nth>
 * Verify that the file filter, <filter_name>, has been applied

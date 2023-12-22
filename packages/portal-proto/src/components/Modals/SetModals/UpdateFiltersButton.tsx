@@ -48,7 +48,11 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
 
       dispatch(hideModal());
     } else if (response.isError) {
-      showNotification({ message: "Problem applying set.", color: "red" });
+      showNotification({
+        message: "Problem applying set.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
   }, [
     response.data,

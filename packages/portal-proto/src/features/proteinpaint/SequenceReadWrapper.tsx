@@ -78,7 +78,13 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
       >
         <b>Access alert</b>
         <hr />
-        <p>Please login to access the Sequence Read visualization tool.</p>
+        <p>
+          Please login to access the{" "}
+          {props.stream2download
+            ? "BAM Slicing Download"
+            : "Sequence Read visualization"}{" "}
+          tool.
+        </p>
       </div>
       <div
         ref={divRef}

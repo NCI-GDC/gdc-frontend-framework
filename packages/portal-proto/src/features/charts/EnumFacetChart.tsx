@@ -13,13 +13,12 @@ import {
   VictoryTheme,
   Bar,
   VictoryAxis,
-  VictoryLabel,
   VictoryStack,
   VictoryTooltip,
 } from "victory";
 import { useMantineTheme } from "@mantine/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { capitalize, truncateString } from "src/utils";
+import { capitalize } from "src/utils";
 import { fieldNameToTitle } from "@gff/core";
 import { FacetDocTypeToLabelsMap } from "../facets/hooks";
 
@@ -56,7 +55,6 @@ const processChartData = (
     .slice(0, maxBins)
     .map((d) => ({
       x: processLabel(d),
-      truncatedXName: truncateString(processLabel(d), 35),
       y: data[d],
     }));
   return results.reverse();
@@ -166,10 +164,43 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
   );
 };
 
+interface EnumBarChartVictoryLabelProps {
+  readonly x?: number;
+  readonly y?: number;
+  readonly text?: string;
+}
+
+const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
+  x,
+  y,
+  text,
+}: EnumBarChartVictoryLabelProps) => {
+  return (
+    <foreignObject x={0} y={y - 26} width={"100%"} height="25">
+      <div
+        style={{
+          paddingTop: 2,
+          paddingLeft: x + 12,
+          paddingRight: 45,
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          textOverflow: "ellipsis",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          fontSize: 23,
+          fontFamily: "Noto Sans, sans-serif",
+        }}
+      >
+        {text}
+      </div>
+    </foreignObject>
+  );
+};
+
 interface EnumBarChartData {
   x: string;
   y: number;
-  truncatedXName: string;
 }
 
 interface BarChartProps {
@@ -200,15 +231,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
       containerComponent={<VictoryContainer role="figure" />}
     >
       <VictoryAxis
-        tickLabelComponent={
-          <VictoryLabel
-            dx={12}
-            dy={-15}
-            textAnchor={"start"}
-            style={[{ fontSize: 23, fontFamily: "Noto Sans, sans-serif" }]}
-            text={({ datum }) => data[datum - 1]?.truncatedXName}
-          />
-        }
+        tickLabelComponent={<EnumBarChartVictoryLabel />}
         style={{
           grid: { stroke: "none" },
           ticks: { size: 0 },

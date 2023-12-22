@@ -8,7 +8,8 @@ import {
   useGetSurvivalPlotQuery,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import SurvivalPlot, {
+import {
+  ExternalDownloadStateSurvivalPlot,
   SurvivalPlotTypes,
 } from "@/features/charts/SurvivalPlot";
 import { convertDateToString } from "@/utils/date";
@@ -121,7 +122,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
         ) : isError ? (
           <Alert color={"red"}>{"Something's gone wrong"}</Alert>
         ) : (
-          <SurvivalPlot
+          <ExternalDownloadStateSurvivalPlot
             data={data}
             height={150}
             title={""}

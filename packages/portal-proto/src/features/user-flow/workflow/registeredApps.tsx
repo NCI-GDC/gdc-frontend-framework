@@ -10,6 +10,7 @@ import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
 import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.svg";
 import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
+import BAMSlicingDownloadIcon from "public/user-flow/icons/apps/BAMSlicingDownload.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
@@ -162,8 +163,10 @@ export const REGISTERED_APPS = [
     optimizeRules: ["data format = BAM"],
   },
   {
-    name: "BAM Download Prototype",
-    icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,
+    name: "BAM Slicing Download",
+    icon: (
+      <BAMSlicingDownloadIcon role="img" aria-label="Sequence Reads icon" />
+    ),
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -216,7 +219,7 @@ export const REGISTERED_APPS = [
       "Current cohort does not have SSM or CNV data available for visualization.",
   },
   {
-    name: "Gene Expression Prototype",
+    name: "Gene Expression Clustering",
     icon: (
       <GeneExpressionIcon
         className="m-auto"
@@ -226,7 +229,7 @@ export const REGISTERED_APPS = [
       />
     ),
     tags: ["variantAnalysis", "cnv", "ssm"],
-    hasDemo: false,
+    hasDemo: true,
     description:
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",

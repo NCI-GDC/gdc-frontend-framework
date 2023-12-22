@@ -26,6 +26,21 @@ interface Props {
   closeOnEscape?: boolean;
 }
 
+/**
+ * Base Modal component that can be used to create modals with custom buttons
+ * @param openModal - boolean to open or close the modal
+ * @param title - title of the modal
+ * @param size - size of the modal
+ * @param children - content of the modal
+ * @param buttons - array of buttons to be rendered in the modal
+ * @param withCloseButton - boolean to show or hide the close button
+ * @param onClose - function to be called when the modal is closed
+ * @param closeOnClickOutside - boolean to close the modal when clicked outside
+ * @param closeOnEscape - boolean to close the modal when escape key is pressed
+ *
+ * @category Components
+ */
+
 export const BaseModal: React.FC<Props> = ({
   openModal,
   title,

@@ -1,0 +1,16 @@
+<svg id="BAM_Slicing_Download_Tool_BlkonWht" data-name="BAM Slicing Download Tool BlkonWht" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect id="Rectangle_425" data-name="Rectangle 425" width="48" height="48" rx="3" fill="#fff"/>
+  <path id="Path_254" data-name="Path 254" d="M8.47,16.96H38.92c-7.62,0-10.08-7.05-14.11-7.05s-7.45,7.05-16.34,7.05Z" fill="#ee5251"/>
+  <path id="Path_255" data-name="Path 255" d="M40.12,19.42c-.42-.49-.85-.98-1.29-1.46H29.61c1.27.83,4.96,5.1,6.77,9.38h8.77a39.434,39.434,0,0,0-5.02-7.91Z" fill="#99e3d0"/>
+  <path id="Path_256" data-name="Path 256" d="M34.97,27.38a40.894,40.894,0,0,0-6.42-9.42H19.33c2.67,2.46,5.75,4.95,8.04,9.91,1.93,4.16,4.05,11.26,5.13,14.75h8.01a114.361,114.361,0,0,0-5.54-15.23Z" fill="#4ccead"/>
+  <path id="Path_257" data-name="Path 257" d="M22.74,44.43h8.37c-.77-3.71-2.8-12.2-6.3-18.69-1.64-3.03-5.36-5.66-7.4-7.79H7.45c1.93,1.42,6.98,5.46,9.93,10.92,2.72,5.03,4.49,11.75,5.35,15.56Z" fill="#00ba8b"/>
+  <rect id="Rectangle_426" data-name="Rectangle 426" width="40.52" height="12.85" transform="translate(3.74 3.83)" fill="none" stroke="#00334d" stroke-miterlimit="10" stroke-width="0.75"/>
+  <g id="Group_579" data-name="Group 579">
+    <path id="Path_258" data-name="Path 258" d="M14.45,29.12h4.04V20.19H29.24v8.93h4.03l-9.41,9.41Z" fill="#fff"/>
+    <path id="Path_259" data-name="Path 259" d="M28.86,20.56V29.5h3.5L23.86,38l-8.5-8.5h3.5V20.56h10m.75-.75H18.11v8.94H13.54l1.28,1.28,8.5,8.5.53.53.53-.53,8.5-8.5,1.28-1.28H29.6V19.81h0Z" fill="#00334d"/>
+  </g>
+  <g id="Group_580" data-name="Group 580">
+    <rect id="Rectangle_427" data-name="Rectangle 427" width="23.53" height="2.36" transform="translate(11.9 40.62)" fill="#fff"/>
+    <path id="Path_260" data-name="Path 260" d="M35.05,41v1.61H12.27V41H35.05m.75-.75H11.52v3.11H35.8V40.25Z" fill="#00334d"/>
+  </g>
+</svg>
