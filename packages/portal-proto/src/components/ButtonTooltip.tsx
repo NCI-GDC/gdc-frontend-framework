@@ -8,11 +8,12 @@ interface ButtonTooltipPros {
 }
 
 /**
- * Styled Tooltip to for buttons
+ * Styled Tooltip for use with buttons
  * @param children - child component to wrap tooltip with
  * @param label - the text label
  * @param width - width of the tooltip. Default: "auto"
  * @param comingSoon - temporary flag to indicate button's functionality is pending
+ * @category Buttons
  */
 export const ButtonTooltip = ({
   children,

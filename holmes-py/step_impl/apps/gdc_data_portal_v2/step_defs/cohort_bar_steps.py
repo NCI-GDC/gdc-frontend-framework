@@ -15,6 +15,9 @@ def start_app():
 def click_button_on_cohort_bar(button_name: str):
     time.sleep(0.5)
     APP.cohort_bar.click_cohort_bar_button(button_name)
+    # Clicks "Save" from the save button dropdown menu
+    if button_name == "Save":
+        APP.shared.click_text_option_from_dropdown_menu(button_name)
     time.sleep(0.5)
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
@@ -23,8 +26,14 @@ def name_cohort(cohort_name: str):
 
 @step("<button_name> should be disabled in the Cohort Bar")
 def button_should_be_disabled_on_cohort_bar(button_name: str):
-    is_button_disabled = APP.cohort_bar.is_cohort_bar_button_disabled(button_name)
-    assert is_button_disabled, f"The cohort bar button {button_name} is NOT disabled"
+    if button_name.lower() == "save" or button_name.lower() == "save as":
+        APP.cohort_bar.click_cohort_bar_button(button_name)
+        is_button_disabled = APP.cohort_bar.is_dropdown_option_text_button_disabled(button_name)
+        APP.cohort_bar.click_cohort_bar_button(button_name)
+        assert is_button_disabled, f"The cohort bar save button dropdown option '{button_name}' is NOT disabled"
+    else:
+        is_button_disabled = APP.cohort_bar.is_cohort_bar_button_disabled(button_name)
+        assert is_button_disabled, f"The cohort bar button {button_name} is NOT disabled"
 
 @step("<cohort_name> should be the active cohort")
 def is_expected_active_cohort_present(cohort_name: str):

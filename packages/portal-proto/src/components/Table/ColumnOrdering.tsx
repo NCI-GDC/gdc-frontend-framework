@@ -119,6 +119,7 @@ function ColumnOrdering<TData>({
                   className={isBackToDefaults && "invisible"}
                   data-testid="restore-default-icon"
                   aria-label="restore default column ordering button"
+                  aria-hidden={isBackToDefaults}
                 >
                   <RevertIcon
                     className="text-primary"

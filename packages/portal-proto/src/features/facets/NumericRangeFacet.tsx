@@ -787,6 +787,21 @@ const PercentRange: React.FC<NumericFacetData> = ({
   );
 };
 
+/**
+ * A component which manages a numeric range facet
+ * @param field - field for this facet
+ * @param hooks - hooks to manage facet
+ * @param rangeDatatype - the datatype of the range
+ * @param description - description of the facet
+ * @param valueLabel  - string representing the datatype of values (e.g. "Cases")
+ * @param minimum - minimum value for the range
+ * @param maximum - maximum value for the range
+ * @param facetName - name of the facet
+ * @param dismissCallback  - function to call when facet is dismissed
+ * @param width - width of the facet
+ * @category Facets
+ */
+
 const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   field,
   hooks,

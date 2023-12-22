@@ -70,10 +70,17 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           setId: response.data as string,
         }),
       );
-      showNotification({ message: "Set has been saved." });
+      showNotification({
+        message: "Set has been saved.",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
       closeModal();
     } else if (response.isError) {
-      showNotification({ message: "Problem saving set.", color: "red" });
+      showNotification({
+        message: "Problem saving set.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
   }, [
     response.isSuccess,

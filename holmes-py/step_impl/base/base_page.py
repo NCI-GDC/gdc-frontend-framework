@@ -31,9 +31,9 @@ class GenericLocators:
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
-    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
-    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list}'
-    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list} >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -51,6 +51,8 @@ class GenericLocators:
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
     TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
+    TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    BUTTON_TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
     SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
@@ -304,6 +306,11 @@ class BasePage:
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
+    def is_dropdown_option_text_button_disabled(self, dropdown_text_option):
+        locator = GenericLocators.BUTTON_TEXT_DROPDOWN_MENU_OPTION(dropdown_text_option)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
     def is_facet_card_enum_checkbox_checked(self, checkbox_id):
         """Returns if a filter card enum checkbox is checked"""
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
@@ -395,6 +402,11 @@ class BasePage:
     def click_create_or_save_button_in_cohort_modal(self):
         """Clicks 'Create' or 'Save' in cohort modal"""
         locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        self.click(locator)
+
+    def click_text_option_from_dropdown_menu(self, dropdown_option):
+        """Clicks a text option from a dropdown menu"""
+        locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(locator)
 
     def clear_active_cohort_filters(self):
