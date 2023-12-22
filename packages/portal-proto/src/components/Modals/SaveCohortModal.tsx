@@ -109,7 +109,7 @@ const SaveCohortModal = ({
 
     const addBody = {
       name: newName,
-      type: "static",
+      type: "dynamic",
       filters:
         Object.keys(filters.root).length > 0
           ? buildCohortGqlOperator(filters)

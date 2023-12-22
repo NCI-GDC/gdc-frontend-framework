@@ -147,7 +147,7 @@ describe("SaveCohortModal", () => {
     expect(mockMutation).toBeCalledWith({
       cohort: {
         name: "my new cohort",
-        type: "static",
+        type: "dynamic",
         filters: {
           op: "and",
           content: [

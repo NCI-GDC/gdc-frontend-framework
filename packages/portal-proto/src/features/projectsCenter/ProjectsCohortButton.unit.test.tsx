@@ -75,7 +75,7 @@ describe("<ProjectCohortButton />", () => {
             },
           ],
         },
-        type: "static",
+        type: "dynamic",
         name: "New Cohort",
       },
       delete_existing: false,
