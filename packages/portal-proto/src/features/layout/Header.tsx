@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({
                 layout="fill"
                 style={{ objectFit: "contain" }}
                 data-testid="button-header-home"
-                aria-label="NIH GDC Data Portal logo"
+                aria-label="NIH GDC Data Portal Home"
                 role="img"
               />
             </a>
@@ -150,9 +150,8 @@ export const Header: React.FC<HeaderProps> = ({
             Browse Annotations
           </a>
           <Link href="/manage_sets" passHref>
-            <Button
-              unstyled
-              data-testid="button-header-manage-sets"
+            <a
+              data-testid="link-header-manage-sets"
               className={`p-1 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
@@ -163,11 +162,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <OptionsIcon size="22px" className="rotate-90" />
                 Manage Sets
               </div>
-            </Button>
+            </a>
           </Link>
           <Link href="/cart" passHref>
-            <Button
-              unstyled
+            <a
               data-testid="cartLink"
               className={`p-1 rounded-md ${
                 router.pathname === "/cart"
@@ -190,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
                   {currentCart?.length || 0}
                 </Badge>
               </div>
-            </Button>
+            </a>
           </Link>
           {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
@@ -309,7 +307,6 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu.Target>
               <button
                 data-testid="extraButton"
-                aria-label="GDC apps button"
                 className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon size="24px" className="text-primary-darkest" />
@@ -325,7 +322,7 @@ export const Header: React.FC<HeaderProps> = ({
                         src="/user-flow/icons/gdc-app-data-portal-blue.svg"
                         width={30}
                         height={30}
-                        alt="portal"
+                        alt=""
                       />
                       Data Portal
                     </AppLink>
@@ -337,7 +334,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-website-blue.svg"
                       width={30}
                       height={30}
-                      alt="website"
+                      alt=""
                     />
                     Website
                   </AppLink>
@@ -352,7 +349,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-portal-api.svg"
                       width={30}
                       height={30}
-                      alt="API"
+                      alt=""
                     />
                     API
                   </AppLink>
@@ -366,7 +363,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
                       width={30}
                       height={30}
-                      alt="data transfer tool"
+                      alt=""
                     />
                     Data Transfer Tool
                   </AppLink>
@@ -377,7 +374,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-docs.svg"
                       width={30}
                       height={30}
-                      alt="docs"
+                      alt=""
                     />
                     Documentation
                   </AppLink>
@@ -391,7 +388,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-submission-portal.svg"
                       width={30}
                       height={30}
-                      alt="submission portal"
+                      alt=""
                     />
                     Data Submission Portal
                   </AppLink>
@@ -405,7 +402,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-publications.svg"
                       width={30}
                       height={30}
-                      alt="publications"
+                      alt=""
                     />
                     Publications
                   </AppLink>

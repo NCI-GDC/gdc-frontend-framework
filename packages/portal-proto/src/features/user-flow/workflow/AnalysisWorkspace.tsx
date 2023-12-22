@@ -30,13 +30,7 @@ const ALL_OTHER_APPS = Object.keys(initialApps).filter(
   (x) => !RECOMMENDED_APPS.includes(x),
 );
 
-interface AnalysisGridProps {
-  readonly onAppSelected?: (id: string, demoMode?: boolean) => void;
-}
-
-const AnalysisGrid: React.FC<AnalysisGridProps> = ({
-  onAppSelected,
-}: AnalysisGridProps) => {
+const AnalysisGrid: React.FC = () => {
   // TODO: move app registration to core
   // create mappable object
 
@@ -44,13 +38,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [activeApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
   const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
-
-  const handleOpenAppClicked = (
-    x: AppRegistrationEntry,
-    demoMode?: boolean,
-  ) => {
-    onAppSelected(x.id, demoMode);
-  };
 
   return (
     <div className="flex flex-col font-heading mb-4">
@@ -66,10 +53,7 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
               .map((x: AppRegistrationEntry) => {
                 return (
                   <div key={x.name} className="basis-coretools">
-                    <CoreToolCard
-                      entry={{ ...{ applicable: true, ...x } }}
-                      onClick={handleOpenAppClicked}
-                    />
+                    <CoreToolCard entry={{ ...{ applicable: true, ...x } }} />
                   </div>
                 );
               })}
@@ -90,7 +74,6 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
                 <div key={x.name} className="min-w-0 basis-tools">
                   <AnalysisCard
                     entry={{ ...{ applicable: true, ...x } }}
-                    onClick={handleOpenAppClicked}
                     descriptionVisible={activeAnalysisCard === idx}
                     setDescriptionVisible={() =>
                       setActiveAnalysisCard(
@@ -165,7 +148,7 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
           </DashboardDownloadContext.Provider>
         </SelectionScreenContext.Provider>
       )}
-      {!app && <AnalysisGrid onAppSelected={handleAppSelected} />}
+      {!app && <AnalysisGrid />}
     </div>
   );
 };
