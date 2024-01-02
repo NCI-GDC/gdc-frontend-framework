@@ -63,19 +63,17 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
         ),
         cell: ({ row }) => (
           <Checkbox

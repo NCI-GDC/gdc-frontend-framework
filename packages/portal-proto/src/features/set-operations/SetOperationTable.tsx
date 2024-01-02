@@ -86,23 +86,21 @@ export const SetOperationTable = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              value={row.original.operationKey}
-              aria-label={`Select the ${row.original.operationKey} set operation row`}
-              checked={selectedSets[row.original.operationKey]}
-              onChange={(e) => {
-                setSelectedSets({
-                  ...selectedSets,
-                  [e.target.value]: !selectedSets[e.target.value],
-                });
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            value={row.original.operationKey}
+            aria-label={`Select the ${row.original.operationKey} set operation row`}
+            checked={selectedSets[row.original.operationKey]}
+            onChange={(e) => {
+              setSelectedSets({
+                ...selectedSets,
+                [e.target.value]: !selectedSets[e.target.value],
+              });
+            }}
+          />
         ),
       },
       setOperationTableColumnsHelper.accessor("setOperation", {

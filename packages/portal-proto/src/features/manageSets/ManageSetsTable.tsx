@@ -234,20 +234,18 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
       manageSetsTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-              data-testid="checkbox-select-all-sets"
-              aria-label={`Select all sets of page ${page} of ${total}`}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+            data-testid="checkbox-select-all-sets"
+            aria-label={`Select all sets of page ${page} of ${total}`}
+          />
         ),
         cell: ({ row }) => (
           <Checkbox

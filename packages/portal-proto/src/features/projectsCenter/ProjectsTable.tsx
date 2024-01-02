@@ -169,34 +169,30 @@ const ProjectsTable: React.FC = () => {
       projectsTableColumnHelper.display({
         id: "select",
         header: ({ table }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler(),
+            }}
+          />
         ),
         cell: ({ row }) => (
-          <>
-            <Checkbox
-              size="xs"
-              classNames={{
-                input: "checked:bg-accent checked:border-accent",
-              }}
-              aria-label={`Select the ${row.id} project row`}
-              {...{
-                checked: row.getIsSelected(),
-                onChange: row.getToggleSelectedHandler(),
-              }}
-            />
-          </>
+          <Checkbox
+            size="xs"
+            classNames={{
+              input: "checked:bg-accent checked:border-accent",
+            }}
+            aria-label={`Select the ${row.id} project row`}
+            {...{
+              checked: row.getIsSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
         ),
         enableHiding: false,
       }),
