@@ -388,7 +388,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <div className="flex-none">
                             <Checkbox
                               data-testid={`checkbox-${value}`}
-                              aria-label={`Select the ${value} facet`}
+                              aria-label={`${value}`}
                               value={value}
                               size="xs"
                               color="accent"
@@ -442,7 +442,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           >
                             <div className="flex-none">
                               <Checkbox
-                                aria-label={`Select the ${field} facet`}
                                 size="xs"
                                 className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
                               />
