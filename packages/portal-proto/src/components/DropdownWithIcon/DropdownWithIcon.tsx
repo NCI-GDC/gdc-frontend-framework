@@ -81,7 +81,7 @@ export const DropdownWithIcon = ({
   customDataTestId = undefined,
   tooltip = undefined,
 }: DropdownWithIconProps): JSX.Element => {
-  const [trapped, setTrapped] = useState(true);
+  const [trapped, setTrapped] = useState(false);
   const focusTrap = useFocusTrap(trapped);
   return (
     <Menu
@@ -95,6 +95,7 @@ export const DropdownWithIcon = ({
     >
       <Menu.Target>
         <Button
+          tabIndex={0}
           variant="outline"
           color="primary"
           className="bg-base-max border-primary focus:border-6 focus:border-double focus:border-rounded-md focus:border-focusColor data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
