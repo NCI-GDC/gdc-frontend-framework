@@ -90,14 +90,12 @@ class RepositoryPage(BasePage):
     def get_text_on_add_custom_filter_modal(self, text):
         result = None
         try:
-            result = self.get_text(
-                f"{RepositoryPageLocators.MODAL_ADD_CUSTOM_FILTER_IDENT} >> text='{text}'"
-            )
-        except Exception as exc:
-            result = self.get_text(
-                f"{RepositoryPageLocators.MODAL_ADD_CUSTOM_FILTER_IDENT}//*[contains(.,'{text}')]"
-            )
-        result = result.replace("\n", " ")
+            locator = f"{RepositoryPageLocators.MODAL_ADD_CUSTOM_FILTER_IDENT} >> text='{text}'"
+            self.wait_until_locator_is_visible(locator)
+            result = self.get_text(locator)
+            result = result.replace("\n", " ")
+        except:
+            return result
         return result
 
     def get_file_filter_list_count(self):

@@ -12,11 +12,11 @@ class AnalysisCenterLocators:
     TEXT_DESCRIPTION_TOOL = lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
     TOOLTIP_ZERO_CASES_ON_TOOL_CARD = lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
 
-    FEATURED_TOOL_PROJECTS = 'button[aria-label="Navigate to Projects"]'
-    FEATURED_TOOL_COHORT_BUILDER = 'button[aria-label="Navigate to Cohort Builder"]'
-    FEATURED_TOOL_REPOSITORY = 'button[aria-label="Navigate to Repository"]'
+    FEATURED_TOOL_PROJECTS = '[aria-label="Navigate to Projects"]'
+    FEATURED_TOOL_COHORT_BUILDER = '[aria-label="Navigate to Cohort Builder"]'
+    FEATURED_TOOL_REPOSITORY = '[aria-label="Navigate to Repository"]'
 
-    ANALYSIS_CENTER_HEADER = 'a[data-testid="button-header-analysis"]'
+    ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
 class AnalysisCenterPage(BasePage):
     def __init__(self, driver: Page, url:str) -> None:
