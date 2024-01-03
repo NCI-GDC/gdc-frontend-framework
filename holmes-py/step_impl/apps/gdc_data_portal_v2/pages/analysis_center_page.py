@@ -12,9 +12,9 @@ class AnalysisCenterLocators:
     TEXT_DESCRIPTION_TOOL = lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
     TOOLTIP_ZERO_CASES_ON_TOOL_CARD = lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
 
-    FEATURED_TOOL_PROJECTS = '[aria-label="Navigate to Projects"]'
-    FEATURED_TOOL_COHORT_BUILDER = '[aria-label="Navigate to Cohort Builder"]'
-    FEATURED_TOOL_REPOSITORY = '[aria-label="Navigate to Repository"]'
+    CORE_TOOL_PROJECTS = '[data-testid="button-core-tools-Projects"]'
+    CORE_TOOL_COHORT_BUILDER = '[data-testid="button-core-tools-Cohort Builder"]'
+    CORE_TOOL_REPOSITORY = '[data-testid="button-core-tools-Repository"]'
 
     ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
@@ -27,7 +27,7 @@ class AnalysisCenterPage(BasePage):
         self.driver.goto(self.URL)
 
     def is_analysis_center_page_present(self):
-        locator = AnalysisCenterLocators.FEATURED_TOOL_REPOSITORY
+        locator = AnalysisCenterLocators.CORE_TOOL_REPOSITORY
         return self.is_visible(locator)
 
     def navigate_to_app(self, app_name: str):
@@ -58,20 +58,20 @@ class AnalysisCenterPage(BasePage):
         is_tooltip_text_present = self.is_text_present(tooltip_text)
         return is_tooltip_text_present
 
-    def featured_tools_navigation_check(self):
+    def core_tools_navigation_check(self):
         # First element in the set: a featured tool navigate button
         # Second element in the set: an element to check if user landed on correct page
         nav_and_location = [
             (
-                AnalysisCenterLocators.FEATURED_TOOL_PROJECTS,
+                AnalysisCenterLocators.CORE_TOOL_PROJECTS,
                 HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT,
             ),
             (
-                AnalysisCenterLocators.FEATURED_TOOL_COHORT_BUILDER,
+                AnalysisCenterLocators.CORE_TOOL_COHORT_BUILDER,
                 HeaderSectionLocators.COHORT_BUILDER_WAIT_FOR_ELEMENT,
             ),
             (
-                AnalysisCenterLocators.FEATURED_TOOL_REPOSITORY,
+                AnalysisCenterLocators.CORE_TOOL_REPOSITORY,
                 HeaderSectionLocators.REPOSITORY_WAIT_FOR_ELEMENT,
             ),
         ]
