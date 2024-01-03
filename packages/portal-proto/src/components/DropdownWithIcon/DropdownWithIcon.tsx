@@ -1,8 +1,9 @@
 import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { useFocusTrap } from "@mantine/hooks";
 
 interface DropdownWithIconProps {
   /**
@@ -80,12 +81,17 @@ export const DropdownWithIcon = ({
   customDataTestId = undefined,
   tooltip = undefined,
 }: DropdownWithIconProps): JSX.Element => {
+  const [trapped, setTrapped] = useState(true);
+  const focusTrap = useFocusTrap(trapped);
   return (
     <Menu
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
       data-testid={customDataTestId ?? "menu-elem"}
       zIndex={zIndex}
+      returnFocus={true}
+      onClose={() => setTrapped(false)}
+      onOpen={() => setTrapped(true)}
     >
       <Menu.Target>
         <Button
@@ -129,17 +135,20 @@ export const DropdownWithIcon = ({
           </>
         )}
         {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
-          <Menu.Item
-            onClick={() => {
-              onClick && onClick();
-            }}
-            key={`${title}-${idx}`}
-            data-testid={`${title}-${idx}`}
-            icon={icon && icon}
-            disabled={disabled}
-          >
-            {title}
-          </Menu.Item>
+          <span key={idx} ref={focusTrap}>
+            <Menu.Item
+              tabIndex={0}
+              onClick={() => {
+                onClick && onClick();
+              }}
+              key={`${title}-${idx}`}
+              data-testid={`${title}-${idx}`}
+              icon={icon && icon}
+              disabled={disabled}
+            >
+              {title}
+            </Menu.Item>
+          </span>
         ))}
       </Menu.Dropdown>
     </Menu>
