@@ -39,6 +39,7 @@ import {
   SAMPLE_SHEET_FIELDS,
 } from "./utils";
 import StickyControl from "./StickyControl";
+import { useViewportSize } from "@mantine/hooks";
 
 const ContextBar = ({
   handleIsSticky,
@@ -52,6 +53,7 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const { width } = useViewportSize();
 
   /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
@@ -248,7 +250,7 @@ const ContextBar = ({
     >
       <div className="flex flex-col bg-nci-violet-lightest">
         <div className="relative p-4 pb-24">
-          <div className="flex flex-row absolute gap-2">
+          <div className="flex flex-row md:relative md:pb-4 lg:pb-0 lg:absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -399,7 +401,7 @@ const ContextBar = ({
             value={activeTab}
             onTabChange={setActiveTab}
           >
-            <Tabs.List position="right">
+            <Tabs.List position={width < 1024 ? "left" : "right"}>
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
