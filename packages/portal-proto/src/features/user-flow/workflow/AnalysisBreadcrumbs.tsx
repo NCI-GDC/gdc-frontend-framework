@@ -41,7 +41,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         <>
           {appInfo?.selectionScreen !== undefined && (
             <>
-              <MdCircle size={8} color="white" />
+              <MdCircle size={8} color="white" role="separator" />
               <span
                 className={`p-2 mx-2 uppercase cursor-pointer text-white ${
                   selectionScreenOpen ? "font-bold" : ""
@@ -59,12 +59,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
           {!selectionScreenOpen && (
             <>
-              <MdCircle
-                size={8}
-                color="white"
-                role="separator"
-                aria-hidden="true"
-              />
+              <MdCircle size={8} color="white" role="separator" />
               <span className="p-2 mx-2 uppercase font-bold text-white">
                 Results
               </span>
