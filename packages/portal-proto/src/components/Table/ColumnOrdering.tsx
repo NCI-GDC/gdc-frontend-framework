@@ -1,5 +1,11 @@
-import { Switch, ActionIcon, Tooltip, TextInput, Divider } from "@mantine/core";
-import { useClickOutside } from "@mantine/hooks";
+import {
+  Switch,
+  ActionIcon,
+  Tooltip,
+  TextInput,
+  Divider,
+  Menu,
+} from "@mantine/core";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useState } from "react";
 import { MdDragIndicator as DragIcon } from "react-icons/md";
@@ -45,7 +51,6 @@ function ColumnOrdering<TData>({
 }): JSX.Element {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const ref = useClickOutside(() => setShowColumnMenu(false));
 
   const isBackToDefaults =
     isEqual(table.initialState.columnOrder, columnOrder) &&
@@ -81,16 +86,18 @@ function ColumnOrdering<TData>({
   };
 
   return (
-    <div ref={ref}>
+    <Menu
+      position="bottom-end"
+      middlewares={{ shift: false, flip: false }}
+      onChange={setShowColumnMenu}
+      offset={0}
+    >
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
-        <span>
+        <Menu.Target>
           <ActionIcon
             variant="outline"
             size="lg"
-            onClick={() => setShowColumnMenu((o) => !o)}
-            aria-label={`${
-              showColumnMenu ? "close" : "show"
-            } column change menu button`}
+            aria-label="Customize Columns"
             color="primary"
             data-testid="button-column-selector-box"
             className={`${
@@ -99,72 +106,63 @@ function ColumnOrdering<TData>({
           >
             {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
           </ActionIcon>
-        </span>
+        </Menu.Target>
       </Tooltip>
 
-      {showColumnMenu && (
-        <div
-          className="w-max absolute bg-base-max z-10 right-3 border-2 border-primary p-2 rounded-md"
-          data-testid="column-selector-popover-modal"
-        >
-          <div className="flex justify-between items-center">
-            <span className="font-bold text-primary-darkest tracking-normal">
-              Customize Columns
-            </span>
+      <Menu.Dropdown
+        className="bg-base-max border-2 border-primary p-2 rounded-md"
+        data-testid="column-selector-popover-modal"
+      >
+        <div className="flex justify-between items-center">
+          <span className="font-bold text-primary-darkest tracking-normal">
+            Customize Columns
+          </span>
 
-            <Tooltip label="Restore defaults" disabled={isBackToDefaults}>
-              <span>
-                <ActionIcon
-                  onClick={handleColumnOrderingReset}
-                  className={isBackToDefaults && "invisible"}
-                  data-testid="restore-default-icon"
-                  aria-label="restore default column ordering button"
-                  aria-hidden={isBackToDefaults}
-                >
-                  <RevertIcon
-                    className="text-primary"
-                    size="1rem"
-                    aria-label="Undo icon"
-                  />
-                </ActionIcon>
-              </span>
-            </Tooltip>
-          </div>
-          <Divider color="base.2" className="mt-1" />
-          <TextInput
-            value={searchValue}
-            onChange={(event) =>
-              setSearchValue(event.currentTarget.value.trim())
-            }
-            placeholder="Filter Columns"
-            aria-label="Search input for columns"
-            icon={<SearchIcon />}
-            className="mb-2 mt-4"
-            data-testid="textbox-column-selector"
-          />
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[
-              restrictToVerticalAxis,
-              restrictToWindowEdges,
-              restrictToParentElement,
-            ]}
-          >
-            <SortableContext
-              items={table.getAllLeafColumns()}
-              strategy={verticalListSortingStrategy}
-            >
-              <List
-                columns={table.getAllLeafColumns()}
-                searchValue={searchValue}
-              />
-            </SortableContext>
-          </DndContext>
+          <Tooltip label="Restore defaults" disabled={isBackToDefaults}>
+            <span>
+              <ActionIcon
+                onClick={handleColumnOrderingReset}
+                className={isBackToDefaults && "invisible"}
+                data-testid="restore-default-icon"
+                aria-label="restore default column ordering"
+              >
+                <RevertIcon className="text-primary" size="1rem" />
+              </ActionIcon>
+            </span>
+          </Tooltip>
         </div>
-      )}
-    </div>
+        <Divider color="base.2" className="mt-1" />
+        <TextInput
+          value={searchValue}
+          onChange={(event) => setSearchValue(event.currentTarget.value.trim())}
+          placeholder="Filter Columns"
+          aria-label="Search input for columns"
+          icon={<SearchIcon />}
+          className="mb-2 mt-4"
+          data-testid="textbox-column-selector"
+        />
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[
+            restrictToVerticalAxis,
+            restrictToWindowEdges,
+            restrictToParentElement,
+          ]}
+        >
+          <SortableContext
+            items={table.getAllLeafColumns()}
+            strategy={verticalListSortingStrategy}
+          >
+            <List
+              columns={table.getAllLeafColumns()}
+              searchValue={searchValue}
+            />
+          </SortableContext>
+        </DndContext>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
 
@@ -228,16 +226,18 @@ function DraggableColumnItem<TData>({
       <div
         {...attributes}
         role={undefined}
-        className="flex justify-between items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move gap-4"
+        className="flex gap-2 items-center bg-nci-violet-lightest px-1 py-1.5 h-6 cursor-move"
       >
-        <div className="flex gap-2 items-center">
-          <DragIcon size="1rem" className="text-primary" />
-          <span className="text-xs text-secondary-contrast-lighter font-medium tracking-normal">
-            {humanify({ term: column.id })}
-          </span>
-        </div>
-
+        <DragIcon size="1rem" className="text-primary" />
         <Switch
+          labelPosition="left"
+          label={humanify({ term: column.id })}
+          classNames={{
+            root: "w-full",
+            body: "grow flex justify-between",
+            label:
+              "text-xs text-secondary-contrast-lighter font-medium tracking-normal",
+          }}
           color="accent"
           checked={column.getIsVisible()}
           onChange={() => column.toggleVisibility()}
@@ -248,9 +248,6 @@ function DraggableColumnItem<TData>({
             }
           }}
           size="xs"
-          aria-label={`toggle column visibility switch button for ${humanify({
-            term: column.id,
-          })} column`}
           data-testid="switch-toggle"
         />
       </div>
