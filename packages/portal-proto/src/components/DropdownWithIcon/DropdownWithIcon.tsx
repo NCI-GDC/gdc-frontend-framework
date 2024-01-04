@@ -68,7 +68,7 @@ interface DropdownWithIconProps {
 export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
-  RightIcon = <Dropdown size="1.25em" />,
+  RightIcon = <Dropdown data-testid="dropdown-icon" size="1.25em" />,
   TargetButtonChildren,
   targetButtonDisabled,
   dropdownElements,
