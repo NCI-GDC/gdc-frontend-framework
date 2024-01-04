@@ -17,7 +17,7 @@ class GenericLocators:
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
     # This locator allows you to send in a specific case count and check if it is there
-    COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'[data-testid="expandcollapseButton"] >> text="{case_count}"'
     # This locator allows you to grab the case count text for further testing
     TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     CART_IDENT = '[data-testid="cartLink"]'

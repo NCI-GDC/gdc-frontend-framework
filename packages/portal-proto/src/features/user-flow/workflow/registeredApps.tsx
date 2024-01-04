@@ -32,9 +32,7 @@ export const COHORTS = [
 export const REGISTERED_APPS = [
   {
     name: "Clinical Data Analysis",
-    icon: (
-      <ClinicalDataIcon role="img" aria-label="Clinical Data Analysis icon" />
-    ),
+    icon: <ClinicalDataIcon />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     countsField: "repositoryCaseCount",
@@ -47,15 +45,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    icon: (
-      <CohortBuilderIcon
-        role="img"
-        aria-label="Cohort Builder icon"
-        width={64}
-        height={64}
-        viewBox="0 0 60 60"
-      />
-    ),
+    icon: <CohortBuilderIcon width={64} height={64} viewBox="0 0 60 60" />,
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
@@ -66,9 +56,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Mutation Frequency",
-    icon: (
-      <MutationFrequencyIcon role="img" aria-label="Mutation Frequency icon" />
-    ),
+    icon: <MutationFrequencyIcon />,
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
@@ -81,7 +69,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Repository",
-    icon: <RepositoryIcon role="img" aria-label="Repository icon" />,
+    icon: <RepositoryIcon />,
     tags: ["files"],
     hasDemo: false,
     countsField: "repositoryCaseCount",
@@ -91,15 +79,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Projects",
-    icon: (
-      <ProjectsIcon
-        width={64}
-        height={64}
-        viewBox="0 -20 128 128"
-        role="img"
-        aria-label="Projects icon"
-      />
-    ),
+    icon: <ProjectsIcon width={64} height={64} viewBox="0 -20 128 128" />,
     tags: [],
     hasDemo: false,
     id: "Projects",
@@ -109,9 +89,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: (
-      <CohortComparisonIcon role="img" aria-label="Cohort Comparison icon" />
-    ),
+    icon: <CohortComparisonIcon />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
@@ -139,7 +117,7 @@ export const REGISTERED_APPS = [
   */
   {
     name: "Set Operations",
-    icon: <SetOperationsIcon role="img" aria-label="Set Operations icon" />,
+    icon: <SetOperationsIcon />,
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
@@ -151,7 +129,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Sequence Reads",
-    icon: <SequenceReadsIcon role="img" aria-label="Sequence Reads icon" />,
+    icon: <SequenceReadsIcon />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -164,9 +142,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "BAM Slicing Download",
-    icon: (
-      <BAMSlicingDownloadIcon role="img" aria-label="Sequence Reads icon" />
-    ),
+    icon: <BAMSlicingDownloadIcon />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -177,15 +153,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    icon: (
-      <ProteinPaintIcon
-        height={48}
-        width={80}
-        viewBox="-12 0 80 48"
-        role="img"
-        aria-label="ProteinPaint icon"
-      />
-    ),
+    icon: <ProteinPaintIcon height={48} width={80} viewBox="-12 0 80 48" />,
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description:
@@ -199,14 +167,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "OncoMatrix",
-    icon: (
-      <OncoMatrixIcon
-        className="m-auto"
-        height={48}
-        width={80}
-        aria-label="OncoMatrix icon"
-      />
-    ),
+    icon: <OncoMatrixIcon className="m-auto" height={48} width={80} />,
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
@@ -220,14 +181,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Gene Expression Clustering",
-    icon: (
-      <GeneExpressionIcon
-        className="m-auto"
-        height={48}
-        width={80}
-        aria-label="Gene Expression icon"
-      />
-    ),
+    icon: <GeneExpressionIcon className="m-auto" height={48} width={80} />,
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:

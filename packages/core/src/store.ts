@@ -9,11 +9,13 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  createTransform,
 } from "redux-persist";
+import Cookies from "js-cookie";
 import { reducers } from "./reducers";
 import { allFilesApiSliceMiddleware } from "./features/files/allFilesMutation";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
-import { caseSetListenerMiddleware } from "./listeners";
+import { coreStoreListenerMiddleware } from "./listeners";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
@@ -26,6 +28,24 @@ const persistConfig = {
   version: 1,
   storage,
   whitelist: ["cart", "bannerNotification", "sets"],
+  transforms: [
+    createTransform(
+      (inboundState) => {
+        return inboundState;
+      },
+      (outboundState) => {
+        // Retrieve context id from local storage when rehydrating the store
+        const contextId = localStorage.getItem("gdc_context_id");
+        if (contextId) {
+          Cookies.remove("gdc_context_id");
+          Cookies.set("gdc_context_id", contextId, {
+            domain: ".gdc.cancer.gov",
+          });
+        }
+        return outboundState;
+      },
+    ),
+  ],
 };
 
 export const coreStore = configureStore({
@@ -48,7 +68,7 @@ export const coreStore = configureStore({
         endpointSliceMiddleware,
         projectApiSliceMiddleware,
       )
-      .prepend(caseSetListenerMiddleware.middleware), // needs to be prepended
+      .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });
 
 setupListeners(coreStore.dispatch);
