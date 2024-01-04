@@ -112,6 +112,7 @@ export const useGenerateCasesTableColumns = ({
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
+                      aria-hidden="true"
                     />
                   }
                   rightIcon={
@@ -120,6 +121,7 @@ export const useGenerateCasesTableColumns = ({
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
                       size={18}
+                      aria-hidden="true"
                     />
                   }
                   variant="outline"

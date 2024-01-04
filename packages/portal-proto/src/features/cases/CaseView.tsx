@@ -361,7 +361,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         headerTitle={headerTitle}
         leftElement={
           <Button
-            leftIcon={<FaShoppingCart />}
+            leftIcon={<FaShoppingCart aria-hidden="true" />}
             className="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
             onClick={() =>
               isAllFilesInCart

@@ -28,7 +28,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         className="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9"
         aria-label="Close app"
       >
-        <MdClose size={20} />
+        <MdClose size={20} aria-hidden="true" />
       </button>
       <span
         className={`p-2 mx-2 uppercase text-white ${
@@ -59,7 +59,12 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
           {!selectionScreenOpen && (
             <>
-              <MdCircle size={8} color="white" />
+              <MdCircle
+                size={8}
+                color="white"
+                role="separator"
+                aria-hidden="true"
+              />
               <span className="p-2 mx-2 uppercase font-bold text-white">
                 Results
               </span>

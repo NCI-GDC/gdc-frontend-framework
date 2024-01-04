@@ -91,7 +91,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         }}
         variant="transparent"
       >
-        <TrashIcon />
+        <TrashIcon aria-hidden="true" />
       </ActionIcon>
       {count > 0 && (
         <ActionIcon
@@ -121,7 +121,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
             });
           }}
         >
-          <DownloadIcon />
+          <DownloadIcon aria-hidden="true" />
         </ActionIcon>
       )}
     </div>

@@ -135,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
             variant="subtle"
             data-testid="button-header-send-feeback"
             className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-1"
-            leftIcon={<FeebackIcon size="24px" />}
+            leftIcon={<FeebackIcon size="24px" aria-hidden="true" />}
             onClick={() => setOpenFeedbackModal(true)}
           >
             Send Feedback
@@ -309,7 +309,11 @@ export const Header: React.FC<HeaderProps> = ({
                 data-testid="extraButton"
                 className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
               >
-                <AppsIcon size="24px" className="text-primary-darkest" />
+                <AppsIcon
+                  size="24px"
+                  className="text-primary-darkest"
+                  aria-hidden="true"
+                />
                 <p className="font-heading">GDC Apps</p>
               </button>
             </Menu.Target>

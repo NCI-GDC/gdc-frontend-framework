@@ -450,7 +450,7 @@ const FilesTables: React.FC = () => {
           : "File"}
       </div>
       <div>
-        <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+        <MdPerson className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         <strong className="mr-1">{totalCaseCount}</strong>
         {fileSizeSliceData?.data?.total_case_count > 1 ||
         fileSizeSliceData?.data?.total_case_count === 0
@@ -458,7 +458,7 @@ const FilesTables: React.FC = () => {
           : "Case"}
       </div>
       <div>
-        <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+        <MdSave className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         {totalFileSize}
       </div>
     </div>

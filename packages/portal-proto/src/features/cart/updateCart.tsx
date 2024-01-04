@@ -39,7 +39,11 @@ interface UndoButtonProps {
 }
 const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
   return (
-    <Button variant={"white"} onClick={action} leftIcon={<UndoIcon />}>
+    <Button
+      variant={"white"}
+      onClick={action}
+      leftIcon={<UndoIcon aria-hidden="true" />}
+    >
       <span className="underline">Undo</span>
     </Button>
   );
