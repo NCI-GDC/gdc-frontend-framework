@@ -52,7 +52,11 @@ const AnalysisGrid: React.FC = () => {
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
-                  <div key={x.name} className="basis-coretools">
+                  <div
+                    key={x.name}
+                    className="basis-coretools"
+                    data-testid={`button-core-tools-${x.name}`}
+                  >
                     <CoreToolCard entry={{ ...{ applicable: true, ...x } }} />
                   </div>
                 );
