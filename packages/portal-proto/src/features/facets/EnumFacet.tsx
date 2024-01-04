@@ -44,6 +44,7 @@ import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width - set the width of the facet
  * @param header - object containing the components to use for the header
+ * @category Facets
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
@@ -166,23 +167,42 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   useDeepCompareEffect(() => {
     if (isSuccess && data) {
-      const tempFlteredData = Object.entries(data)
+      // get all the data except the missing and empty values
+      const tempFilteredData = Object.entries(data)
         .filter((entry) => entry[0] != "_missing" && entry[0] != "")
         .filter((entry) =>
           searchTerm === ""
             ? entry
             : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
         );
-      const remainingValues = tempFlteredData.length - maxValuesToDisplay;
+
+      // it is possible that the selected enums are not in the data as their counts are 0
+      // therefore we need to add them to the data
+      const selectedEnumNotInData = selectedEnums
+        ? selectedEnums.reduce((acc, curr) => {
+            if (!tempFilteredData.find((x) => x[0] === curr)) {
+              acc.push([curr, 0]); // count will be 0
+            }
+            return acc;
+          }, [] as Array<[string, number]>)
+        : [];
+
+      const remainingValues =
+        tempFilteredData.length +
+        selectedEnumNotInData.length -
+        maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
       const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
-        tempFlteredData.length,
+        tempFilteredData.length + selectedEnumNotInData.length,
       );
 
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
-        filteredData: tempFlteredData,
-        filteredDataObj: Object.fromEntries(tempFlteredData),
+        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
+        filteredDataObj: Object.fromEntries([
+          ...tempFilteredData,
+          ...selectedEnumNotInData,
+        ]),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,
@@ -210,6 +230,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     searchTerm,
     calcCardStyle,
     calcNumberOfBarsToDisplay,
+    selectedEnums,
   ]);
 
   useDeepCompareEffect(() => {
@@ -275,7 +296,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
                   <FlipIcon size="1.45em" className={header.iconStyle} />
                 </FacetIconButton>
@@ -346,7 +367,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={facetChartData.cardStyle}>
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}

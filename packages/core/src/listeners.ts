@@ -4,20 +4,22 @@ import {
   isFulfilled,
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 import { CoreDispatch } from "./store";
 import { CoreState } from "./reducers";
 import {
   updateCohortFilter,
   removeCohortFilter,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
   selectAvailableCohorts,
-  addNewCohort,
+  addNewDefaultUnsavedCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
   clearCohortFilters,
   discardCohortChanges,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
+import { cohortApiSlice } from "./features/api/cohortApiSlice";
 
 /**
  * Defines coreListeners for adding middleware.
@@ -25,11 +27,11 @@ import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
  * current cohort filters mutate, and it contains a filter entry in REQUIRES_CASE_SET_FILTERS
  */
 
-export const caseSetListenerMiddleware = createListenerMiddleware();
+export const coreStoreListenerMiddleware = createListenerMiddleware();
 export type CoreStartListening = TypedStartListening<CoreState, CoreDispatch>;
 
 export const startCoreListening =
-  caseSetListenerMiddleware.startListening as CoreStartListening;
+  coreStoreListenerMiddleware.startListening as CoreStartListening;
 
 // TODO add clearCaseSet handler to remove caseSet from the Cohort Persistence GDC API
 
@@ -51,7 +53,7 @@ startCoreListening({
  * This is used when creating a new cohort from a link, as it is not the current cohort
  */
 startCoreListening({
-  matcher: isAnyOf(addNewCohortWithFilterAndMessage, addNewCohort),
+  matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
   effect: async (_, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
@@ -68,7 +70,7 @@ startCoreListening({
  * not the current cohort.
  */
 startCoreListening({
-  matcher: isAnyOf(addNewCohortWithFilterAndMessage),
+  matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
   effect: async (_action, listenerApi) => {
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
@@ -83,5 +85,41 @@ startCoreListening({
   effect: async (action, listenerApi) => {
     // update the cohort case counts when the new case set is ready
     listenerApi.dispatch(fetchCohortCaseCounts(action.meta.arg?.cohortId));
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(
+    cohortApiSlice.endpoints.getCohortsByContextId.matchFulfilled,
+    cohortApiSlice.endpoints.getCohortById.matchFulfilled,
+    cohortApiSlice.endpoints.addCohort.matchFulfilled,
+    cohortApiSlice.endpoints.updateCohort.matchFulfilled,
+    cohortApiSlice.endpoints.deleteCohort.matchFulfilled,
+  ),
+  effect: async () => {
+    // Store context id cookie in local storage to make it more resilient to deletion
+    const contextId = Cookies.get("gdc_context_id");
+    if (contextId) {
+      localStorage.setItem("gdc_context_id", contextId);
+    }
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(
+    cohortApiSlice.endpoints.getCohortsByContextId.matchPending,
+    cohortApiSlice.endpoints.getCohortById.matchPending,
+    cohortApiSlice.endpoints.addCohort.matchPending,
+    cohortApiSlice.endpoints.updateCohort.matchPending,
+    cohortApiSlice.endpoints.deleteCohort.matchPending,
+  ),
+  effect: async () => {
+    // If cookie has been deleted, restore it from local storage
+    if (!Cookies.get("gdc_context_id")) {
+      const contextId = localStorage.getItem("gdc_context_id");
+      if (contextId) {
+        Cookies.set("gdc_context_id", contextId, { domain: ".gdc.cancer.gov" });
+      }
+    }
   },
 });

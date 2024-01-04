@@ -32,6 +32,42 @@ import { createKeyboardAccessibleFunction } from "@/utils/index";
 import { v4 as uuidv4 } from "uuid";
 import { useDeepCompareEffect } from "use-deep-compare";
 
+/**
+ * VerticalTable is a table component that displays data in a vertical format.
+ * @param columns - The columns to be displayed in the table.
+ * @param data - The data to be displayed in the table.
+ * @param footer - The footer to be displayed in the table.
+ * @param getRowCanExpand - A function that returns a boolean value indicating whether a row can be expanded.
+ * @param expandableColumnIds - The column ids that can be expanded.
+ * @param setRowSelection - A function that sets the row selection.
+ * @param rowSelection - The row selection.
+ * @param enableRowSelection  - A boolean value indicating whether row selection is enabled.
+ * @param status  - The status of the data.
+ * @param tableTitle  - The title of the table.
+ * @param additionalControls  - Additional controls to be displayed in the table.
+ * @param search  - The search options for the table.
+ * @param showControls  - A boolean value indicating whether the controls should be displayed.
+ * @param handleChange  - A function that handles the change.
+ * @param pagination  - The pagination options for the table.
+ * @param disablePageSize - A boolean value indicating whether the page size should be disabled in the pagination.
+ * @param renderSubComponent - A function that renders the subcomponent.
+ * @param columnVisibility  - The column visibility.
+ * @param setColumnVisibility - A function that sets the column visibility.
+ * @param columnOrder - The column order.
+ * @param setColumnOrder  - A function that sets the column order.
+ * @param columnSorting - The column sorting, possible values:
+          - "none" - No sorting is enabled.
+          - "enable" - Sorting is enabled.
+          - "manual" - Manual sorting is enabled.
+ * @param sorting - The sorting.
+ * @param setSorting  - A function that sets the sorting.
+ * @param expanded  - The expanded.
+ * @param setExpanded - A function that sets the expanded.
+ * @param getRowId  - A function that returns the row id.
+ * @param baseZIndex  - The base z index.
+ * @category Table
+ */
+
 function VerticalTable<TData>({
   columns,
   data = [],
@@ -318,6 +354,7 @@ function VerticalTable<TData>({
                         className={commonHeaderClass}
                         key={header.id}
                         colSpan={header.colSpan}
+                        scope={header.column.columnDef.meta?.scope || "col"}
                       >
                         {headerName}
                       </th>
@@ -326,7 +363,7 @@ function VerticalTable<TData>({
                     return (
                       <th
                         key={header.id}
-                        scope="col"
+                        scope={header.column.columnDef.meta?.scope || "col"}
                         className={`
                         ${commonHeaderClass} whitespace-nowrap
                         ${
@@ -405,6 +442,9 @@ function VerticalTable<TData>({
                               setExpanded(row, columnId);
                             })}
                             className="cursor-auto align-bottom"
+                            aria-label={`${
+                              row.getIsExpanded() ? "Collapse" : "Expand"
+                            } row`}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>

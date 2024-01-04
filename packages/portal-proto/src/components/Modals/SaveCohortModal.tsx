@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
 import {
   removeCohort,
-  copyCohort,
+  copyToSavedCohort,
   setCohortMessage,
   buildCohortGqlOperator,
   setCurrentCohortId,
@@ -12,11 +13,16 @@ import {
   useAddCohortMutation,
   fetchCohortCaseCounts,
   FilterSet,
-  setCohort,
+  addNewSavedCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
+  useCoreSelector,
+  selectAvailableCohorts,
+  useGetCohortsByContextIdQuery,
   useLazyGetCohortByIdQuery,
   discardCohortChanges,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -29,6 +35,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
  * @param filters - the filters associated with the cohort
  * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
  * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
+ * @category Modals
  */
 const SaveCohortModal = ({
   initialName = "",
@@ -47,8 +54,40 @@ const SaveCohortModal = ({
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
+  const [cohortReplaced, setCohortReplaced] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
+  const {
+    data: cohortsListData,
+    isSuccess: cohortListSuccess,
+    isLoading: cohortListLoading,
+  } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
+
+  useDeepCompareEffect(() => {
+    if (cohortListSuccess && cohortReplaced) {
+      // Remove replaced cohort
+      const updatedCohortIds = (cohortsListData || []).map(
+        (cohort) => cohort.id,
+      );
+      const outdatedCohortsIds = cohorts
+        .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
+        .map((c) => c.id);
+      for (const id of outdatedCohortsIds) {
+        coreDispatch(removeCohort({ currentID: id }));
+      }
+
+      onClose();
+    }
+  }, [
+    cohortListSuccess,
+    cohortReplaced,
+    cohortsListData,
+    cohorts,
+    coreDispatch,
+    onClose,
+  ]);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const saveAction = async (newName: string, replace: boolean) => {
@@ -70,7 +109,7 @@ const SaveCohortModal = ({
 
     const addBody = {
       name: newName,
-      type: "static",
+      type: "dynamic",
       filters:
         Object.keys(filters.root).length > 0
           ? buildCohortGqlOperator(filters)
@@ -82,10 +121,9 @@ const SaveCohortModal = ({
       .then((payload) => {
         if (prevCohort && !saveAs) {
           coreDispatch(
-            copyCohort({
+            copyToSavedCohort({
               sourceId: prevCohort,
               destId: payload.id,
-              saved: true,
             }),
           );
           // NOTE: the current cohort can not be undefined. Setting the id to a cohort
@@ -106,7 +144,7 @@ const SaveCohortModal = ({
           coreDispatch(fetchCohortCaseCounts(payload.id));
         } else {
           coreDispatch(
-            setCohort({
+            addNewSavedCohort({
               id: payload.id,
               name: payload.name,
               filters: buildGqlOperationToFilterSet(payload.filters),
@@ -141,7 +179,12 @@ const SaveCohortModal = ({
           coreDispatch(fetchCohortCaseCounts(payload.id));
         }
 
-        onClose();
+        // Need to wait for request removing outdated cohorts to finish when replacing cohort
+        if (replace) {
+          setCohortReplaced(true);
+        } else {
+          onClose();
+        }
       })
       .catch((e: FetchBaseQueryError) => {
         if (
@@ -150,7 +193,7 @@ const SaveCohortModal = ({
         ) {
           setShowReplaceCohort(true);
         } else {
-          coreDispatch(setCohortMessage(["error|saving|allId"]));
+          coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
         }
       });
   };
@@ -182,6 +225,7 @@ const SaveCohortModal = ({
             saveAction(enteredName, true);
           }}
           data-testid="replace-cohort-button"
+          loading={isLoading || cohortListLoading}
         >
           Replace
         </Button>

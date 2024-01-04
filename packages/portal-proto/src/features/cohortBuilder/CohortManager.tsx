@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { LoadingOverlay, Select, Loader, Tooltip } from "@mantine/core";
+import { LoadingOverlay, Select, Loader, Tooltip, Modal } from "@mantine/core";
 import { NextRouter, useRouter } from "next/router";
 import {
   MdAdd as AddIcon,
@@ -16,7 +16,7 @@ import tw from "tailwind-styled-components";
 import saveAs from "file-saver";
 import {
   selectAvailableCohorts,
-  addNewCohort,
+  addNewDefaultUnsavedCohort,
   removeCohort,
   selectCurrentCohortName,
   selectCurrentCohortModified,
@@ -37,14 +37,15 @@ import {
   useGetCasesQuery,
   Operation,
   updateActiveCohortFilter,
-  addNewCohortWithFilterAndMessage,
+  addNewUnsavedCohort,
   showModal,
   DataStatus,
-  setCohort,
   setActiveCohort,
   useCurrentCohortCounts,
   fetchCohortCaseCounts,
   selectHasUnsavedCohorts,
+  addNewSavedCohort,
+  hideModal,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -56,6 +57,8 @@ import { convertDateToString } from "src/utils/date";
 import ImportCohortModal from "./Modals/ImportCohortModal";
 import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -227,10 +230,10 @@ const CohortManager: React.FC = () => {
         createCohortFilters as string,
       ) as FilterSet;
       coreDispatch(
-        addNewCohortWithFilterAndMessage({
+        addNewUnsavedCohort({
           filters: cohortFilters,
           name: (createCohortName as string).replace(/-/g, " "),
-          makeCurrent: true,
+          replace: true,
           message: "newCohort",
         }),
       );
@@ -330,7 +333,7 @@ const CohortManager: React.FC = () => {
             const updateBody = {
               id: cohortId,
               name: cohortName,
-              type: "static",
+              type: "dynamic",
               filters:
                 Object.keys(filters.root).length > 0
                   ? buildCohortGqlOperator(filters)
@@ -356,13 +359,11 @@ const CohortManager: React.FC = () => {
                     status: counts.status,
                   },
                   modified_datetime: response.modified_datetime,
-                  saved: true,
-                  modified: false,
                 };
-                coreDispatch(setCohort(cohort));
+                coreDispatch(addNewSavedCohort(cohort));
               })
               .catch(() =>
-                coreDispatch(setCohortMessage(["error|saving|allId"])),
+                coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal })),
               );
           }}
         />
@@ -384,6 +385,20 @@ const CohortManager: React.FC = () => {
           filters={filters}
           saveAs
         />
+      )}
+      {modal === Modals.SaveCohortErrorModal && (
+        <Modal
+          opened
+          onClose={() => coreDispatch(hideModal())}
+          title="Save Cohort Error"
+        >
+          <p className="py-2 px-4">There was a problem saving the cohort.</p>
+          <ModalButtonContainer data-testid="modal-button-container">
+            <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
+              OK
+            </DarkFunctionButton>
+          </ModalButtonContainer>
+        </Modal>
       )}
       {modal === Modals.ImportCohortModal && <ImportCohortModal />}
       {modal === Modals.GlobalCaseSetModal && (
@@ -479,6 +494,7 @@ const CohortManager: React.FC = () => {
             <Tooltip label="Save Cohort" position="top" withArrow>
               <span className="h-12">
                 <DropdownWithIcon
+                  customDataTestId="saveButton"
                   dropdownElements={[
                     {
                       onClick: () => {
@@ -518,7 +534,7 @@ const CohortManager: React.FC = () => {
               withArrow
             >
               <CohortGroupButton
-                onClick={() => coreDispatch(addNewCohort())}
+                onClick={() => coreDispatch(addNewDefaultUnsavedCohort())}
                 data-testid="addButton"
                 disabled={hasUnsavedCohorts}
               >

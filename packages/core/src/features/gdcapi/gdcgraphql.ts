@@ -42,6 +42,12 @@ const buildGraphQLFetchError = async (
   };
 };
 
+/**
+ * Call the GDC GraphQL API
+ * @param query - GraphQL query
+ * @param variables - GraphQL variables
+ * @category GDC API
+ */
 export const graphqlAPI = async <T>(
   query: string,
   variables: Record<string, unknown>,

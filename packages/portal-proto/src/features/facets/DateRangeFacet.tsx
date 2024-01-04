@@ -49,6 +49,16 @@ const convertStringToDate = (dateStr?: string): Date | null => {
 
 type DateRange = [Date | null, Date | null];
 
+/**
+ * Facet card for a date range field
+ * @param field - field to facet on
+ * @param description - description of the facet
+ * @param hooks - hooks to use for the facet
+ * @param facetName - name of the facet
+ * @param dismissCallback - callback to call when the facet is dismissed
+ * @param width - width of the facet
+ * @category Facets
+ */
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
   description,
@@ -129,7 +139,8 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           )}
         </div>
       </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2">
+      <fieldset className="flex flex-nowrap items-center p-2">
+        <legend className="sr-only">Date range filters</legend>
         <DateInput
           clearable
           size="xs"
@@ -191,7 +202,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             />
           </Popover.Dropdown>
         </Popover>
-      </div>
+      </fieldset>
     </div>
   );
 };

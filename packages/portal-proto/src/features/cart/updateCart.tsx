@@ -179,6 +179,7 @@ export const removeFromCart = (
     classNames: {
       description: "flex flex-col content-center text-center",
     },
+    closeButtonProps: { "aria-label": "Close notification" },
   });
   const filesToRemove = files.map((f) => f.file_id);
   dispatch(removeFilesFromCart(filesToRemove));
@@ -190,6 +191,7 @@ export const showCartOverLimitNotification = (numFilesInCart: number): void => {
     classNames: {
       description: "flex flex-col content-center text-center",
     },
+    closeButtonProps: { "aria-label": "Close notification" },
   });
 };
 
@@ -215,6 +217,7 @@ export const addToCart = (
       classNames: {
         description: "flex flex-col content-center text-center",
       },
+      closeButtonProps: { "aria-label": "Close notification" },
     });
   }
 };

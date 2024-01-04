@@ -247,7 +247,7 @@ const ContextBar = ({
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
-        <div className="relative p-4">
+        <div className="relative p-4 pb-24">
           <div className="flex flex-row absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[

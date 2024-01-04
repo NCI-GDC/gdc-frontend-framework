@@ -40,6 +40,7 @@ def setup_test_run():
     APP.header_section.wait_for_page_to_load("analysis")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.cohort_bar.click_cohort_bar_button("Save")
+    APP.shared.click_text_option_from_dropdown_menu("Save")
     APP.shared.send_text_into_search_bar("never_use_this_cohort_name", "Input field for new cohort name")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
@@ -100,13 +101,9 @@ def navigate_to_page_in_page(target, source, target_type):
 def verify_text_on_page(text, source, target_type):
     sources = {
         "Repository": {"app": APP.repository_page.get_title},
-        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_modal},
+        "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_add_custom_filter_modal},
     }
-    first_text = text.split(" ")[0]
-    try:
-        text_value = sources.get(source)[target_type](text)
-    except:
-        text_value = sources.get(source)[target_type](first_text)
+    text_value = sources.get(source)[target_type](text)
     assert (
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"

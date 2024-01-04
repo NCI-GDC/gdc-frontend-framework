@@ -49,10 +49,10 @@ describe("<SearchInput />", () => {
     const { getByPlaceholderText, getByRole } = render(<SearchInput />);
     await userEvent.type(getByPlaceholderText("Search"), "bio");
     expect(
-      getByRole("button", { name: "Bio Thing Category: General" }),
+      getByRole("button", { name: "BioThing Category: General" }),
     ).toBeInTheDocument();
     expect(
-      getByRole("button", { name: "Bio psy Category: Very General" }),
+      getByRole("button", { name: "Biopsy Category: Very General" }),
     ).toBeInTheDocument();
   });
 
@@ -63,8 +63,11 @@ describe("<SearchInput />", () => {
     await userEvent.type(getByPlaceholderText("Search"), "bio");
     await userEvent.click(getAllByText("Very General")[0]);
     expect(
-      queryByRole("button", { name: "Bio Thing Category: General" }),
+      queryByRole("button", { name: "BioThing Category: General" }),
     ).not.toBeInTheDocument();
+    expect(
+      queryByRole("button", { name: "Biopsy Category: Very General" }),
+    ).toBeInTheDocument();
   });
 
   it("hides tooltip if no relevant info", async () => {
@@ -73,7 +76,7 @@ describe("<SearchInput />", () => {
     await userEvent.type(getByPlaceholderText("Search"), "bio");
 
     await userEvent.hover(
-      queryByRole("button", { name: "Bio Thing Category: General" }),
+      queryByRole("button", { name: "BioThing Category: General" }),
     );
     expect(queryByRole("tooltip")).toBeInTheDocument();
     expect(getByText("blah blah")).toBeInTheDocument();
@@ -81,11 +84,11 @@ describe("<SearchInput />", () => {
       getByTestId("cohort-builder-search-matching-values").textContent,
     ).toEqual("Values Matched: biobio");
     await userEvent.unhover(
-      queryByRole("button", { name: "Bio Thing Category: General" }),
+      queryByRole("button", { name: "BioThing Category: General" }),
     );
 
     await userEvent.hover(
-      queryByRole("button", { name: "Bio psy Category: Very General" }),
+      queryByRole("button", { name: "Biopsy Category: Very General" }),
     );
     expect(queryByRole("tooltip")).not.toBeInTheDocument();
   });
@@ -99,7 +102,7 @@ describe("<SearchInput />", () => {
     const { getByPlaceholderText, getByRole } = render(<SearchInput />);
     await userEvent.type(getByPlaceholderText("Search"), "bio");
     await userEvent.click(
-      getByRole("button", { name: "Bio psy Category: Very General" }),
+      getByRole("button", { name: "Biopsy Category: Very General" }),
     );
 
     expect(routerSpy).toBeCalledWith({
@@ -115,7 +118,7 @@ describe("<SearchInput />", () => {
     await userEvent.type(getByPlaceholderText("Search"), "bio");
     await userEvent.click(getByTestId("search-input-clear-search"));
     expect(
-      queryByRole("button", { name: "Bio Thing Category: General" }),
+      queryByRole("button", { name: "BioThing Category: General" }),
     ).not.toBeInTheDocument();
   });
 });

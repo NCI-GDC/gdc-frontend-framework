@@ -38,17 +38,8 @@ export const headerElements = [
         className="cursor-pointer"
         passHref
       >
-        <NavLink
-          data-testid="button-header-analysis"
-          aria-label="analysis center button"
-        >
-          <AnalysisCenterIcon
-            aria-label="Analysis logo"
-            width={24}
-            height={24}
-            viewBox="0 0 500 500"
-            role="img"
-          />
+        <NavLink data-testid="button-header-analysis">
+          <AnalysisCenterIcon width={24} height={24} viewBox="0 0 500 500" />
           Analysis Center
         </NavLink>
       </Link>
@@ -71,17 +62,8 @@ export const headerElements = [
         className="cursor-pointer"
         passHref
       >
-        <NavLink
-          data-testid="button-header-projects"
-          aria-label="project/studies center button"
-        >
-          <ProjectsIcon
-            aria-label="Studies logo"
-            width={24}
-            height={24}
-            viewBox="0 -15 100 100"
-            role="img"
-          />
+        <NavLink data-testid="button-header-projects">
+          <ProjectsIcon width={24} height={24} viewBox="0 -15 100 100" />
           Projects
         </NavLink>
       </Link>
@@ -104,17 +86,8 @@ export const headerElements = [
         className="cursor-pointer"
         passHref
       >
-        <NavLink
-          data-testid="button-header-cohort"
-          aria-label="cohort Builder button"
-        >
-          <CohortBuilderIcon
-            aria-label="Cohort Builder logo"
-            width={24}
-            height={24}
-            viewBox="0 0 50 50"
-            role="img"
-          />
+        <NavLink data-testid="button-header-cohort">
+          <CohortBuilderIcon width={24} height={24} viewBox="0 0 50 50" />
           Cohort Builder
         </NavLink>
       </Link>
@@ -137,17 +110,8 @@ export const headerElements = [
         className="cursor-pointer"
         passHref
       >
-        <NavLink
-          data-testid="button-header-downloads"
-          aria-label="Repository button"
-        >
-          <DownloadIcon
-            aria-label="Repository logo"
-            width={24}
-            height={24}
-            viewBox="0 0 50 50"
-            role="img"
-          />
+        <NavLink data-testid="button-header-downloads">
+          <DownloadIcon width={24} height={24} viewBox="0 0 50 50" />
           Repository
         </NavLink>
       </Link>
