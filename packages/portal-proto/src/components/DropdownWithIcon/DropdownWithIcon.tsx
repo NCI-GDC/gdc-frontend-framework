@@ -64,6 +64,11 @@ interface DropdownWithIconProps {
     tooltip
    */
   tooltip?: string;
+
+  /**
+   * border styles for specific instance(s) of dropdown
+   */
+  customBorderStyling?: string;
 }
 
 export const DropdownWithIcon = ({
@@ -80,6 +85,7 @@ export const DropdownWithIcon = ({
   zIndex = undefined,
   customDataTestId = undefined,
   tooltip = undefined,
+  customBorderStyling = "",
 }: DropdownWithIconProps): JSX.Element => {
   const [trapped, setTrapped] = useState(false);
   const focusTrap = useFocusTrap(trapped);
@@ -89,16 +95,14 @@ export const DropdownWithIcon = ({
       {...(customPosition && { position: customPosition })}
       data-testid={customDataTestId ?? "menu-elem"}
       zIndex={zIndex}
-      returnFocus={true}
       onClose={() => setTrapped(false)}
       onOpen={() => setTrapped(true)}
     >
       <Menu.Target>
         <Button
-          tabIndex={0}
           variant="outline"
           color="primary"
-          className="bg-base-max border-primary focus:border-6 focus:border-double focus:border-rounded-md focus:border-focusColor data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          className={`bg-base-max border-primary ${customBorderStyling} data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}

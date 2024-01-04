@@ -521,6 +521,9 @@ const CohortManager: React.FC = () => {
                   TargetButtonChildren=""
                   fullHeight
                   disableTargetWidth
+                  customBorderStyling={
+                    "focus:border-6 focus:border-double focus:border-rounded-md focus:border-focusColor"
+                  }
                 />
               </span>
             </Tooltip>
