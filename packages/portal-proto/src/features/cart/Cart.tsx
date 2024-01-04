@@ -1,10 +1,7 @@
-import { ActionIcon, Grid } from "@mantine/core";
+import { Grid, Accordion } from "@mantine/core";
 import tw from "tailwind-styled-components";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
-import {
-  MdExpandLess as ExpandLessIcon,
-  MdExpandMore as ExpandMoreIcon,
-} from "react-icons/md";
+import { MdExpandMore as ExpandMoreIcon } from "react-icons/md";
 import {
   useCartSummary,
   useCoreSelector,
@@ -17,7 +14,6 @@ import CartHeader from "./CartHeader";
 import AuthorizationTable from "./AuthorizationTable";
 import { groupByAccess } from "./utils";
 import { FaExclamationCircle } from "react-icons/fa";
-import { useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { HeaderTitle } from "@/components/tailwindComponents";
 
@@ -35,7 +31,6 @@ const P = tw.p`
 `;
 
 const Cart: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
   const { data: userDetails } = useUserDetails();
@@ -68,23 +63,30 @@ const Cart: React.FC = () => {
         dbGapList={dbGapList}
       />
       <div className="mt-4 mx-4 mb-16">
-        <div
-          className={`${
-            isCollapsed ? "h-10" : ""
-          } flex border border-cartDarkerOrange text-secondary-contrast-lighter`}
+        <Accordion
+          variant="contained"
+          chevron={<ExpandMoreIcon size="1.75em" />}
+          classNames={{
+            item: "border-cartDarkerOrange border-l-[3rem]",
+            chevron: "text-cartDarkerOrange",
+            label: "text-sm font-bold uppercase font-heading ml-4",
+          }}
         >
-          <div className="flex w-12 bg-cartDarkerOrange justify-center p-2">
-            <FaExclamationCircle color="white" className="h-6 w-6" />
-          </div>
-          <div
-            className={`bg-cartLighterOrange w-full h-full pl-4 ${
-              isCollapsed ? "flex items-center" : "pt-[7px]"
-            }`}
+          <Accordion.Item
+            value="howTo"
+            className="border border-cartDarkerOrange text-secondary-contrast-lighter bg-cartLighterOrange"
           >
-            <span className="text-sm font-bold uppercase font-heading">
+            <Accordion.Control
+              className="hover:bg-[#FFFFFF50] pl-0 relative"
+              data-testid="expand-collapse-button"
+            >
               How to download files in my cart?
-            </span>
-            {!isCollapsed && (
+              <FaExclamationCircle
+                color="white"
+                className="h-6 w-6 absolute left-[-2.2rem] top-4"
+              />
+            </Accordion.Control>
+            <Accordion.Panel>
               <div data-testid="download-info">
                 <div className="mb-2">
                   <H2>Download Manifest:</H2>
@@ -127,30 +129,9 @@ const Cart: React.FC = () => {
                   </P>
                 </div>
               </div>
-            )}
-          </div>
-          <div
-            className={`bg-cartLighterOrange ${
-              isCollapsed ? "flex items-center" : ""
-            }`}
-          >
-            <ActionIcon
-              variant="transparent"
-              className="text-cartDarkerOrange hover:cursor-pointer rounded-none mr-4"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              data-testid="expand-collapse-button"
-              aria-label={
-                isCollapsed ? "expand more button" : "collapse button"
-              }
-            >
-              {isCollapsed ? (
-                <ExpandMoreIcon size="1.75em" aria-label="expand more icon" />
-              ) : (
-                <ExpandLessIcon size="1.75em" aria-label="collapse icon" />
-              )}
-            </ActionIcon>
-          </div>
-        </div>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
 
         <div className="flex gap-8 mt-4">
           <div className="flex-1">
