@@ -49,7 +49,7 @@ const SingleAppsPage: NextPage = () => {
         <title>GDC Analysis Center</title>
         <meta
           property="og:title"
-          content="GDC Analysis Centere"
+          content="GDC Analysis Center"
           key="gdc-analysis-center"
         />
       </Head>

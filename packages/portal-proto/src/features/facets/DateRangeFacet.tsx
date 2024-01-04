@@ -139,7 +139,8 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           )}
         </div>
       </FacetHeader>
-      <div className="flex flex-nowrap items-center p-2">
+      <fieldset className="flex flex-nowrap items-center p-2">
+        <legend className="sr-only">Date range filters</legend>
         <DateInput
           clearable
           size="xs"
@@ -201,7 +202,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             />
           </Popover.Dropdown>
         </Popover>
-      </div>
+      </fieldset>
     </div>
   );
 };
