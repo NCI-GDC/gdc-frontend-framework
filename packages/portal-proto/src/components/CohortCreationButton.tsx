@@ -105,6 +105,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           }}
           disabled={disabled || loading}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
+          aria-label={"Save a new cohort"}
         >
           <IconWrapper $disabled={disabled} aria-hidden="true">
             {loading ? (
