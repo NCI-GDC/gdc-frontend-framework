@@ -9,9 +9,9 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
-@step("Validate featured tools navigation")
+@step("Validate Core Tools Navigation")
 def navigation_bar_icon_check():
-    Result = APP.analysis_center_page.featured_tools_navigation_check()
+    Result = APP.analysis_center_page.core_tools_navigation_check()
     assert Result, f"FAILED: featured tools did not navigate correctly"
 
 @step("Validate analysis tool description <table>")
