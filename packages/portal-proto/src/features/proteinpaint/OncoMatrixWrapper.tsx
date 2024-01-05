@@ -137,7 +137,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
 
   const divRef = useRef();
   return (
-    <div>
+    <div className="relative">
       {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
       <div
         ref={divRef}
