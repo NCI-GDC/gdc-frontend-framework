@@ -287,9 +287,7 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={
-                <DownloadIcon size="1rem" aria-label="Files dropdown" />
-              }
+              LeftIcon={<DownloadIcon size="1rem" />}
             />
 
             <DropdownWithIcon
@@ -317,12 +315,7 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={
-                <CohortFilterIcon
-                  size="1rem"
-                  aria-label="Custom cohort filters"
-                />
-              }
+              LeftIcon={<CohortFilterIcon size="1rem" />}
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -349,10 +342,7 @@ const ContextBar = ({
                     biospecimenDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Biospecimen dropdown"
-                      />
+                      <DownloadIcon size="1rem" />
                     )
                   }
                 />
@@ -377,10 +367,7 @@ const ContextBar = ({
                     clinicalDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Clinical dropdown"
-                      />
+                      <DownloadIcon size="1rem" />
                     )
                   }
                 />
