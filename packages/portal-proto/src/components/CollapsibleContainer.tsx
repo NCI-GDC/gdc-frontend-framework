@@ -52,7 +52,6 @@ export const CollapsibleContainer = (
                 className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-12 rounded-md"
                 onClick={toggle}
                 aria-expanded={!isCollapsed}
-                aria-label="expand or collapse container"
               >
                 {!onlyIcon ? (
                   <div className="flex gap-1 items-center">
