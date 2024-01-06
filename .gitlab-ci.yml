@@ -2,17 +2,17 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: 0.2.0
+    ref: 0.5.1
     file:
       - templates/global/full.yaml
+      - templates/node/full.yaml
       - templates/deployments/salt-service.yaml
 
 .default_rules: &default_rules
   rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
+    - if: $RUN_UI_TESTS_ONLY != "true"
 
 .services:
-  allow_failure: true
   stage: deploy
   when: manual
   parallel:
@@ -24,19 +24,14 @@ stages:
   - .pre
   - test
   - unit
-  - release
+  - build
   - "tag image"
-  - build_ui_tests_image
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/node:16-alpine3.15
+image: docker.osdc.io/node:16.20.2-alpine3.17
 
 variables:
-  npm_config_registry: https://nexus.osdc.io/repository/npm-all/
-  npm_config_cache: .npm
-  npm_config_proxy: http://cloud-proxy:3128
-  npm_config_https_proxy: http://cloud-proxy:3128
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
 
 workflow:
@@ -49,7 +44,7 @@ workflow:
 Linting:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -58,7 +53,7 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - npm run format:check
@@ -67,7 +62,7 @@ Prettier Checks:
 Build and test core and portal:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@8
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
@@ -81,7 +76,7 @@ Build and test core and portal:
   <<: *default_rules
 
 Build and push image:
-  stage: release
+  stage: build
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -90,7 +85,14 @@ Build and push image:
   before_script:
     - apk add bash
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
+    - |
+      docker build \
+      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA" \
+      --label "org.opencontainers.image.created=$(date -Iseconds)" \
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA" \
+      --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" \
+      --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" \
+      -t "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA" .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
   <<: *default_rules
 
@@ -133,7 +135,7 @@ Push tagged image:
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
 Build UI tests Docker image:
-  stage: build_ui_tests_image
+  stage: build
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -142,6 +144,8 @@ Build UI tests Docker image:
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $RUN_UI_TESTS_ONLY == "true"'
 
 .trigger_ui_tests:
   stage: .trigger_ui_tests
@@ -153,16 +157,16 @@ Build UI tests Docker image:
     matrix:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
-trigger_ui_tests_yellow:
+trigger_ui_tests_pink:
   extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
-    APP_ENVIRONMENT: QA_YELLOW
+    APP_ENVIRONMENT: QA_PINK
   needs:
-    - job: deploy_qa/uat
+    - job: deploy_qa/pink
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/pink" && $CI_PIPELINE_SOURCE != "schedule"'
       allow_failure: true
 
 trigger_ui_tests_uat:
@@ -184,4 +188,4 @@ trigger_ui_tests_scheduled:
       when: always
   parallel:
     matrix:
-      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
+      - APP_ENVIRONMENT: ["QA_PINK", "QA_UAT"]
