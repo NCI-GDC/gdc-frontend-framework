@@ -141,9 +141,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             root: "text-secondary-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
-          aria-label={`${
-            descriptionVisible ? "Collapse" : "Expand"
-          } tool description`}
           aria-expanded={descriptionVisible}
         >
           {entry.name}
