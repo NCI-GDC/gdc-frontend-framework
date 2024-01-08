@@ -52,10 +52,10 @@ tags: cohort-selections
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |action                       |
   |-----------------|-----------------------------|
-  |Morphology       |chart view                   |
+  |Morphology       |Chart view                   |
   |Morphology       |clear selection              |
   |Morphology       |Search                       |
-  |Morphology       |chart view                   |
+  |Morphology       |Selection view               |
 * Search in a filter card from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|

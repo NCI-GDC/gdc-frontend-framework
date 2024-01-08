@@ -61,6 +61,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
   |ENSG00000165323        |
 
 ## Delete Set
+* Pause "3" seconds
 * Select "Delete Set" for set "Edited Name Gene Set" on Manage Sets page
 * Is modal with text "Edited Name Gene Set has been deleted" present on the page and "Keep Modal"
 * Undo Action
