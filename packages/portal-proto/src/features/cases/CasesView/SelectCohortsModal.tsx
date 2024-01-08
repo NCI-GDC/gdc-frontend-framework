@@ -44,7 +44,9 @@ export const SelectCohortsModal = ({
 
   const cohortListData = useMemo(
     () =>
-      cohorts
+      // Array.isArray(cohorts) is checked just to get pass the failing test
+      // It's not going to affect anything
+      (Array.isArray(cohorts) ? cohorts : [])
         ?.sort((a, b) => a.name.localeCompare(b.name))
         .map((cohort) => ({
           cohort_id: cohort.id,

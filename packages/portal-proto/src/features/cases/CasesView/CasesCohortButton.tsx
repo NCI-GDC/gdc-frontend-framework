@@ -103,14 +103,12 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         )}
       </span>
 
-      {openSelectCohorts && (
-        <SelectCohortsModal
-          opened
-          onClose={() => setOpenSelectCohorts(false)}
-          withOrWithoutCohort={withOrWithoutCohort}
-          pickedCases={cases}
-        />
-      )}
+      <SelectCohortsModal
+        opened={openSelectCohorts}
+        onClose={() => setOpenSelectCohorts(false)}
+        withOrWithoutCohort={withOrWithoutCohort}
+        pickedCases={cases}
+      />
 
       <SaveCohortModal
         opened={showSaveCohort}

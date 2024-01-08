@@ -29,8 +29,8 @@ describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
     (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
       true as any,
     );
+    jest.spyOn(core, "useCoreSelector").mockReturnValue({});
     const { getByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
-
     await waitFor(() =>
       expect(
         getByText(
@@ -44,6 +44,7 @@ describe("<GenesAndMutationFrequencyAnalysisTool />", () => {
     (useIsDemoApp as unknown as jest.Mock<useIsDemoAppType>).mockReturnValue(
       false as any,
     );
+    jest.spyOn(core, "useCoreSelector").mockReturnValue({});
     const { queryByText } = render(<GenesAndMutationFrequencyAnalysisTool />);
     await waitFor(() =>
       expect(
