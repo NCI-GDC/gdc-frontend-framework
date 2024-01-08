@@ -10,6 +10,7 @@ interface UserInputModalProps {
   readonly modalTitle: string;
   readonly children: React.ReactNode;
   readonly tabs?: { label: string; value: string }[];
+  readonly opened: boolean;
 }
 
 /***
@@ -19,12 +20,14 @@ interface UserInputModalProps {
  * @param modalTitle - title of the modal
  * @param children - children to render in the modal
  * @param tabs - tabs to render in the modal
+ * @param opened - boolean to open and close the modal
  * @category Modals
  */
 const UserInputModal: React.FC<UserInputModalProps> = ({
   modalTitle,
   children,
   tabs,
+  opened,
 }: UserInputModalProps) => {
   const dispatch = useCoreDispatch();
   const [showDiscardModal, setShowDiscardModal] = useState<
@@ -47,7 +50,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       title={modalTitle}
       onClose={() =>
         userEnteredInput ? setShowDiscardModal("close") : dispatch(hideModal())

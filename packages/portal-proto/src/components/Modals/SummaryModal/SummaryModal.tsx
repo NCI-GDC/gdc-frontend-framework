@@ -31,6 +31,11 @@ export const SummaryModal = ({
     }
   }, [prevPath, currentPath, onClose]);
 
+  // can this be cleaned up?
+  useEffect(() => {
+    setOpened(opened);
+  }, [opened]);
+
   const { SummaryPage, title } =
     entity_type === "project"
       ? {

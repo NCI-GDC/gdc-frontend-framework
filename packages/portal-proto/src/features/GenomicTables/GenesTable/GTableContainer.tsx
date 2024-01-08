@@ -347,59 +347,59 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      {showSaveModal && (
-        <SaveSelectionAsSetModal
-          filters={buildCohortGqlOperator(setFilters)}
-          initialSetName={
-            selectedGenes.length === 0
-              ? filtersToName(setFilters)
-              : "Custom Gene Selection"
-          }
-          sort="case.project.project_id"
-          saveCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          createSetHook={useCreateGeneSetFromFiltersMutation}
-          closeModal={() => setShowSaveModal(false)}
-        />
-      )}
-      {showAddModal && (
-        <AddToSetModal
-          filters={setFilters}
-          addToCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          singleCountHook={useGeneSetCountQuery}
-          countHook={useGeneSetCountsQuery}
-          appendSetHook={useAppendToGeneSetMutation}
-          closeModal={() => setShowAddModal(false)}
-          field={"genes.gene_id"}
-          sort="case.project.project_id"
-        />
-      )}
-      {showRemoveModal && (
-        <RemoveFromSetModal
-          filters={setFilters}
-          removeFromCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          countHook={useGeneSetCountsQuery}
-          closeModal={() => setShowRemoveModal(false)}
-          removeFromSetHook={useRemoveFromGeneSetMutation}
-        />
-      )}
+      <SaveSelectionAsSetModal
+        opened={showSaveModal}
+        filters={buildCohortGqlOperator(setFilters)}
+        initialSetName={
+          selectedGenes.length === 0
+            ? filtersToName(setFilters)
+            : "Custom Gene Selection"
+        }
+        sort="case.project.project_id"
+        saveCount={
+          selectedGenes.length === 0
+            ? data?.genes?.genes_total
+            : selectedGenes.length
+        }
+        setType="genes"
+        setTypeLabel="gene"
+        createSetHook={useCreateGeneSetFromFiltersMutation}
+        closeModal={() => setShowSaveModal(false)}
+      />
+
+      <AddToSetModal
+        opened={showAddModal}
+        filters={setFilters}
+        addToCount={
+          selectedGenes.length === 0
+            ? data?.genes?.genes_total
+            : selectedGenes.length
+        }
+        setType="genes"
+        setTypeLabel="gene"
+        singleCountHook={useGeneSetCountQuery}
+        countHook={useGeneSetCountsQuery}
+        appendSetHook={useAppendToGeneSetMutation}
+        closeModal={() => setShowAddModal(false)}
+        field={"genes.gene_id"}
+        sort="case.project.project_id"
+      />
+
+      <RemoveFromSetModal
+        opened={showRemoveModal}
+        filters={setFilters}
+        removeFromCount={
+          selectedGenes.length === 0
+            ? data?.genes?.genes_total
+            : selectedGenes.length
+        }
+        setType="genes"
+        setTypeLabel="gene"
+        countHook={useGeneSetCountsQuery}
+        closeModal={() => setShowRemoveModal(false)}
+        removeFromSetHook={useRemoveFromGeneSetMutation}
+      />
+
       <VerticalTable
         data={formattedTableData}
         columns={genesTableDefaultColumns}
@@ -410,16 +410,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 {
                   title: "Save as new gene set",
                   onClick: () => setShowSaveModal(true),
+                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Add to existing gene set",
                   disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowAddModal(true),
+                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Remove from existing gene set",
                   disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowRemoveModal(true),
+                  shouldCloseOnClick: false,
                 },
               ]}
               TargetButtonChildren="Save/Edit Gene Set"

@@ -33,6 +33,7 @@ interface RemoveFromSetModalProps {
   readonly removeFromSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;
+  readonly opened: boolean;
 }
 
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
@@ -43,6 +44,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   closeModal,
   countHook,
   removeFromSetHook,
+  opened,
 }: RemoveFromSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
@@ -86,10 +88,10 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
 
   return (
     <Modal
-      title={`Remove ${removeFromCount.toLocaleString()} ${setTypeLabel}${
+      title={`Remove ${removeFromCount?.toLocaleString()} ${setTypeLabel}${
         removeFromCount > 1 ? "s" : ""
       } from an existing set`}
-      opened
+      opened={opened}
       onClose={closeModal}
       size="lg"
       classNames={{

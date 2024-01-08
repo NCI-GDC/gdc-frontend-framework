@@ -33,6 +33,11 @@ interface DropdownWithIconProps {
     onClick?: () => void;
     icon?: JSX.Element;
     disabled?: boolean; // if true, disables the menu item
+    /**
+     * whether the menu item should close on click
+     * should set it to false when the menu item is opening a modal as when we press ESC focus returns to the item
+     */
+    shouldCloseOnClick?: boolean;
   }>;
   /**
    *    only provide menuLabelText if we want label for dropdown elements
@@ -91,13 +96,13 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
-          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          className="bg-base-max data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
           classNames={{
             rightIcon: "border-l pl-1 -mr-2",
-            root: fullHeight ? "h-full" : undefined,
+            root: `${fullHeight ? "h-full" : undefined}`,
           }}
         >
           <div>
@@ -128,19 +133,25 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </>
         )}
-        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
-          <Menu.Item
-            onClick={() => {
-              onClick && onClick();
-            }}
-            key={`${title}-${idx}`}
-            data-testid={`${title}-${idx}`}
-            icon={icon && icon}
-            disabled={disabled}
-          >
-            {title}
-          </Menu.Item>
-        ))}
+        {dropdownElements.map(
+          (
+            { title, onClick, icon, disabled, shouldCloseOnClick = true },
+            idx,
+          ) => (
+            <Menu.Item
+              onClick={() => {
+                onClick && onClick();
+              }}
+              closeMenuOnClick={shouldCloseOnClick}
+              key={`${title}-${idx}`}
+              data-testid={`${title}-${idx}`}
+              icon={icon && icon}
+              disabled={disabled}
+            >
+              {title}
+            </Menu.Item>
+          ),
+        )}
       </Menu.Dropdown>
     </Menu>
   );

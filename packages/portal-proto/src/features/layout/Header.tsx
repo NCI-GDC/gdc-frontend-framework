@@ -215,6 +215,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }
                     dispatch(showModal({ modal: Modals.UserProfileModal }));
                   }}
+                  closeMenuOnClick={false}
                   data-testid="userprofilemenu"
                 >
                   User Profile
@@ -435,23 +436,22 @@ export const Header: React.FC<HeaderProps> = ({
         opened={openFeedbackModal}
         onClose={() => setOpenFeedbackModal(false)}
       />
-      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
-      {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
-      {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
-      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
-      {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
-      {entityMetadata.entity_type !== null && (
-        <SummaryModal
-          opened
-          onClose={() =>
-            setEntityMetadata({
-              entity_type: null,
-              entity_id: null,
-            })
-          }
-          entityMetadata={entityMetadata}
-        />
-      )}
+      <GeneralErrorModal openModal={modal === Modals.GeneralErrorModal} />
+      <UserProfileModal openModal={modal === Modals.UserProfileModal} />
+      <SessionExpireModal openModal={modal === Modals.SessionExpireModal} />
+      <NoAccessModal openModal={modal === Modals.NoAccessModal} />
+      <FirstTimeModal openModal={modal === Modals.FirstTimeModal} />
+
+      <SummaryModal
+        opened={entityMetadata.entity_type !== null}
+        onClose={() =>
+          setEntityMetadata({
+            entity_type: null,
+            entity_id: null,
+          })
+        }
+        entityMetadata={entityMetadata}
+      />
     </div>
   );
 };

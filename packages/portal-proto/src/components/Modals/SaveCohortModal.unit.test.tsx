@@ -16,6 +16,7 @@ describe("SaveCohortModal", () => {
     const { getByRole } = render(
       <SaveCohortModal
         onClose={jest.fn()}
+        opened
         filters={{
           root: {
             "projects.program.name": {
@@ -54,6 +55,7 @@ describe("SaveCohortModal", () => {
 
     const { getByText } = render(
       <SaveCohortModal
+        opened
         onClose={jest.fn()}
         filters={{
           root: {
@@ -113,6 +115,7 @@ describe("SaveCohortModal", () => {
 
     const { getByText } = render(
       <SaveCohortModal
+        opened
         onClose={jest.fn()}
         filters={{
           root: {
@@ -182,6 +185,7 @@ describe("SaveCohortModal", () => {
 
     const { getByText } = render(
       <SaveCohortModal
+        opened
         onClose={jest.fn()}
         filters={{
           root: {
@@ -224,6 +228,7 @@ describe("SaveCohortModal", () => {
 
     const { getByText } = render(
       <SaveCohortModal
+        opened
         onClose={jest.fn()}
         filters={{
           root: {
@@ -268,6 +273,7 @@ describe("SaveCohortModal", () => {
 
     const { getByText } = render(
       <SaveCohortModal
+        opened
         onClose={jest.fn()}
         filters={{
           root: {

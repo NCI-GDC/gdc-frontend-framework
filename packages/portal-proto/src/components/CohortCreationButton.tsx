@@ -116,12 +116,12 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>
       </Tooltip>
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={cohortFilters}
-        />
-      )}
+
+      <SaveCohortModal
+        onClose={() => setShowSaveCohort(false)}
+        opened={showSaveCohort}
+        filters={cohortFilters}
+      />
     </div>
   );
 };

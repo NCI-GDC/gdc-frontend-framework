@@ -436,59 +436,60 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               </p>
             </div>
           )}
-          {showSaveModal && (
-            <SaveSelectionAsSetModal
-              filters={buildCohortGqlOperator(setFilters)}
-              sort="occurrence.case.project.project_id"
-              initialSetName={
-                selectedMutations.length === 0
-                  ? filtersToName(setFilters)
-                  : "Custom Mutation Selection"
-              }
-              saveCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              createSetHook={useCreateSsmsSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )}
-          {showAddModal && (
-            <AddToSetModal
-              filters={setFilters}
-              addToCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              singleCountHook={useSsmSetCountQuery}
-              countHook={useSsmSetCountsQuery}
-              appendSetHook={useAppendToSsmSetMutation}
-              closeModal={() => setShowAddModal(false)}
-              field={"ssms.ssm_id"}
-              sort="occurrence.case.project.project_id"
-            />
-          )}
-          {showRemoveModal && (
-            <RemoveFromSetModal
-              filters={setFilters}
-              removeFromCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              countHook={useSsmSetCountsQuery}
-              closeModal={() => setShowRemoveModal(false)}
-              removeFromSetHook={useRemoveFromSsmSetMutation}
-            />
-          )}
+
+          <SaveSelectionAsSetModal
+            opened={showSaveModal}
+            filters={buildCohortGqlOperator(setFilters)}
+            sort="occurrence.case.project.project_id"
+            initialSetName={
+              selectedMutations.length === 0
+                ? filtersToName(setFilters)
+                : "Custom Mutation Selection"
+            }
+            saveCount={
+              selectedMutations.length === 0
+                ? data?.ssmsTotal
+                : selectedMutations.length
+            }
+            setType="ssms"
+            setTypeLabel="mutation"
+            createSetHook={useCreateSsmsSetFromFiltersMutation}
+            closeModal={() => setShowSaveModal(false)}
+          />
+
+          <AddToSetModal
+            opened={showAddModal}
+            filters={setFilters}
+            addToCount={
+              selectedMutations.length === 0
+                ? data?.ssmsTotal
+                : selectedMutations.length
+            }
+            setType="ssms"
+            setTypeLabel="mutation"
+            singleCountHook={useSsmSetCountQuery}
+            countHook={useSsmSetCountsQuery}
+            appendSetHook={useAppendToSsmSetMutation}
+            closeModal={() => setShowAddModal(false)}
+            field={"ssms.ssm_id"}
+            sort="occurrence.case.project.project_id"
+          />
+
+          <RemoveFromSetModal
+            opened={showRemoveModal}
+            filters={setFilters}
+            removeFromCount={
+              selectedMutations.length === 0
+                ? data?.ssmsTotal
+                : selectedMutations.length
+            }
+            setType="ssms"
+            setTypeLabel="mutation"
+            countHook={useSsmSetCountsQuery}
+            closeModal={() => setShowRemoveModal(false)}
+            removeFromSetHook={useRemoveFromSsmSetMutation}
+          />
+
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable
@@ -501,16 +502,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     {
                       title: "Save as new mutation set",
                       onClick: () => setShowSaveModal(true),
+                      shouldCloseOnClick: false,
                     },
                     {
                       title: "Add to existing mutation set",
                       disabled: Object.keys(sets).length === 0,
                       onClick: () => setShowAddModal(true),
+                      shouldCloseOnClick: false,
                     },
                     {
                       title: "Remove from existing mutation set",
                       disabled: Object.keys(sets).length === 0,
                       onClick: () => setShowRemoveModal(true),
+                      shouldCloseOnClick: false,
                     },
                   ]}
                   TargetButtonChildren="Save/Edit Mutation Set"

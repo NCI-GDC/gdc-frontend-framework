@@ -20,6 +20,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  opened,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -29,6 +30,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
         { label: "Enter Genes", value: "input" },
         { label: "Saved Sets", value: "saved" },
       ]}
+      opened={opened}
     >
       <Tabs.Panel value="input" className="pt-4">
         <InputEntityList

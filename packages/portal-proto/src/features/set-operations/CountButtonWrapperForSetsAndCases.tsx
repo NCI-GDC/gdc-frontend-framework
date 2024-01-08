@@ -73,32 +73,29 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 
   return (
     <>
-      {showSaveModal &&
-        (entityType === "mutations" ? (
-          <SaveSelectionAsSetModal
-            filters={filters}
-            sort="occurrence.case.project.project_id"
-            initialSetName="Custom Mutation Selection"
-            saveCount={count}
-            setType="ssms"
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        ) : (
-          entityType === "genes" && (
-            <SaveSelectionAsSetModal
-              filters={filters}
-              initialSetName={"Custom Gene Selection"}
-              sort="case.project.project_id"
-              saveCount={count}
-              setType="genes"
-              setTypeLabel="gene"
-              createSetHook={useCreateGeneSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )
-        ))}
+      <SaveSelectionAsSetModal
+        opened={showSaveModal && entityType === "mutations"}
+        filters={filters}
+        sort="occurrence.case.project.project_id"
+        initialSetName="Custom Mutation Selection"
+        saveCount={count}
+        setType="ssms"
+        setTypeLabel="mutation"
+        createSetHook={useCreateSsmsSetFromFiltersMutation}
+        closeModal={() => setShowSaveModal(false)}
+      />
+
+      <SaveSelectionAsSetModal
+        opened={showSaveModal && entityType === "genes"}
+        filters={filters}
+        initialSetName={"Custom Gene Selection"}
+        sort="case.project.project_id"
+        saveCount={count}
+        setType="genes"
+        setTypeLabel="gene"
+        createSetHook={useCreateGeneSetFromFiltersMutation}
+        closeModal={() => setShowSaveModal(false)}
+      />
 
       <CreateFromCountButton
         tooltipLabel={

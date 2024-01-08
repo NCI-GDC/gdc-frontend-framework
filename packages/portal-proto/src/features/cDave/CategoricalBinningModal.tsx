@@ -78,6 +78,7 @@ interface CategoricalBinningModalProps {
   readonly results: Record<string, number>;
   readonly customBins: CategoricalBins;
   readonly updateBins: (bin: CategoricalBins) => void;
+  readonly opened: boolean;
 }
 
 const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
@@ -86,6 +87,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   results,
   customBins,
   updateBins,
+  opened,
 }: CategoricalBinningModalProps) => {
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
@@ -173,7 +175,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       onClose={() => setModalOpen(false)}
       size={800}
       zIndex={400}

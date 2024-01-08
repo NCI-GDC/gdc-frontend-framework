@@ -123,7 +123,11 @@ const CardControls: React.FC<CardControlsProps> = ({
             TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
-              { title: "Edit Bins", onClick: () => setBinningModalOpen(true) },
+              {
+                title: "Edit Bins",
+                onClick: () => setBinningModalOpen(true),
+                shouldCloseOnClick: false,
+              },
               {
                 title: "Reset to Default",
                 disabled: customBinnedData === null,

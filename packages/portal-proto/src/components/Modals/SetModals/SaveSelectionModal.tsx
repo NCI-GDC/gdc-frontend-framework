@@ -26,6 +26,7 @@ interface SaveSelectionAsSetModalProps {
   readonly createSetHook: UseMutation<any>;
   readonly closeModal: () => void;
   readonly sort?: string;
+  readonly opened: boolean;
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
@@ -37,6 +38,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   createSetHook,
   closeModal,
   sort,
+  opened,
 }: SaveSelectionAsSetModalProps) => {
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
@@ -94,10 +96,10 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
 
   return (
     <Modal
-      title={`Save ${max.toLocaleString()} ${setTypeLabel}${
+      title={`Save ${max?.toLocaleString()} ${setTypeLabel}${
         max > 1 ? "s" : ""
       } as a new set`}
-      opened
+      opened={opened}
       onClose={closeModal}
       size="lg"
       classNames={{
@@ -113,7 +115,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           {...form.getInputProps("top")}
         />
         <p className="text-sm pb-2 pt-1">
-          Up to the top {max.toLocaleString()} {setTypeLabel}
+          Up to the top {max?.toLocaleString()} {setTypeLabel}
           {max > 1 ? "s" : ""} can be saved.
         </p>
         <TextInput

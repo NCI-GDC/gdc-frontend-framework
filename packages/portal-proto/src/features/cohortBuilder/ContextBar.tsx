@@ -247,7 +247,7 @@ const ContextBar = ({
       }
     >
       <div className="flex flex-col bg-nci-violet-lightest">
-        <div className="relative p-4 pb-24">
+        <div className="relative p-4">
           <div className="flex flex-row absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
@@ -300,6 +300,7 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalCaseSetModal }),
                     ),
+                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Genes",
@@ -307,6 +308,7 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalGeneSetModal }),
                     ),
+                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Mutations",
@@ -314,6 +316,7 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalMutationSetModal }),
                     ),
+                  shouldCloseOnClick: false,
                 },
               ]}
               TargetButtonChildren="Custom Filters"

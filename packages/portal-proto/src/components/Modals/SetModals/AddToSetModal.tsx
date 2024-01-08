@@ -41,6 +41,7 @@ interface AddToSetModalProps {
   readonly appendSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;
+  readonly opened: boolean;
 }
 
 const AddToSetModal: React.FC<AddToSetModalProps> = ({
@@ -54,6 +55,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
   singleCountHook,
   countHook,
   appendSetHook,
+  opened,
 }: AddToSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
@@ -112,10 +114,10 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
 
   return (
     <Modal
-      title={`Add ${addToCount.toLocaleString()} ${setTypeLabel}${
+      title={`Add ${addToCount?.toLocaleString()} ${setTypeLabel}${
         addToCount > 1 ? "s" : ""
       } to an existing set`}
-      opened
+      opened={opened}
       onClose={closeModal}
       size="lg"
       classNames={{

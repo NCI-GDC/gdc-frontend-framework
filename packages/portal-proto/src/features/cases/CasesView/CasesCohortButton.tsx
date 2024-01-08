@@ -55,6 +55,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                     setShowSaveCohort(true);
                   }
                 },
+                shouldCloseOnClick: false,
               },
               {
                 title: " Existing Cohort With Selected Cases",
@@ -62,6 +63,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                   setWithOrWithoutCohort("with");
                   setOpenSelectCohorts(true);
                 },
+                shouldCloseOnClick: false,
               },
               {
                 title: " Existing Cohort Without Selected Cases",
@@ -69,6 +71,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                   setWithOrWithoutCohort("without");
                   setOpenSelectCohorts(true);
                 },
+                shouldCloseOnClick: false,
               },
             ]
       }
@@ -108,21 +111,21 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
           pickedCases={cases}
         />
       )}
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={{
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                operator: "includes",
-                field: "cases.case_id",
-                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
-              },
+
+      <SaveCohortModal
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={{
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 };
