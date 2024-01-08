@@ -24,16 +24,23 @@ def click_button_on_cohort_bar(button_name: str):
 def name_cohort(cohort_name: str):
     APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
 
-@step("<button_name> should be disabled in the Cohort Bar")
-def button_should_be_disabled_on_cohort_bar(button_name: str):
-    if button_name.lower() == "save" or button_name.lower() == "save as":
-        APP.cohort_bar.click_cohort_bar_button(button_name)
+@step("<button_name> should be <enabled_or_disabled> in the Cohort Bar")
+def button_should_be_disabled_or_enabled_on_cohort_bar(button_name: str, enabled_or_disabled:str):
+    enabled_or_disabled = enabled_or_disabled.lower()
+    is_button_disabled = None
+    # For the save button, the text in the dropdown will be what is disabled
+    if button_name.lower() in ["save", "save as"]:
+        APP.cohort_bar.click_cohort_bar_button("save")
         is_button_disabled = APP.cohort_bar.is_dropdown_option_text_button_disabled(button_name)
-        APP.cohort_bar.click_cohort_bar_button(button_name)
-        assert is_button_disabled, f"The cohort bar save button dropdown option '{button_name}' is NOT disabled"
+        APP.cohort_bar.click_cohort_bar_button("save")
+    # Otherwise, for all other cohort bar buttons, the buttons themselves will what is disabled
     else:
         is_button_disabled = APP.cohort_bar.is_cohort_bar_button_disabled(button_name)
-        assert is_button_disabled, f"The cohort bar button {button_name} is NOT disabled"
+    # Assert if the button should be enabled or disabled based on test input
+    if enabled_or_disabled == "enabled":
+        assert is_button_disabled==False, f"The cohort bar button '{button_name}' is disabled when it should NOT be"
+    elif enabled_or_disabled == "disabled":
+        assert is_button_disabled, f"The cohort bar button {button_name} is enabled when it should NOT be"
 
 @step("<cohort_name> should be the active cohort")
 def is_expected_active_cohort_present(cohort_name: str):
