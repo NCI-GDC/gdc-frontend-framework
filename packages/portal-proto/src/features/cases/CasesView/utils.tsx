@@ -48,10 +48,14 @@ export const useGenerateCasesTableColumns = ({
   casesDataColumnHelper,
   currentCart,
   setEntityMetadata,
+  currentPage,
+  totalPages,
 }: {
   casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<casesTableDataType>[] => {
   const dispatch = useCoreDispatch();
   const CasesTableDefaultColumns = useMemo<ColumnDef<casesTableDataType>[]>(
@@ -64,11 +68,11 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -77,7 +81,7 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-label={row?.original?.project}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -298,7 +302,14 @@ export const useGenerateCasesTableColumns = ({
           ),
       }),
     ],
-    [casesDataColumnHelper, currentCart, dispatch, setEntityMetadata],
+    [
+      casesDataColumnHelper,
+      currentCart,
+      dispatch,
+      setEntityMetadata,
+      currentPage,
+      totalPages,
+    ],
   );
 
   return CasesTableDefaultColumns;

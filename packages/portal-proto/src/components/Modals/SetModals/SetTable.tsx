@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useId } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
@@ -16,6 +16,7 @@ interface SelectCellProps {
   readonly selectedSets: string[][];
   readonly setSelectedSets: (sets: string[][]) => void;
   readonly shouldDisable?: (value: number) => string;
+  readonly componentId: string;
 }
 
 const SelectCell: React.FC<SelectCellProps> = ({
@@ -25,6 +26,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   selectedSets,
   setSelectedSets,
   shouldDisable,
+  componentId,
 }: SelectCellProps) => {
   const [setId] = set;
   const disabledMessage = shouldDisable(count);
@@ -35,6 +37,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <span>
         {multiselect ? (
           <Checkbox
+            aria-label={setId}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -45,7 +48,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
                   )
                 : setSelectedSets([...selectedSets, set])
             }
-            aria-labelledby={`set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${set[0]}`}
           />
         ) : (
           <Radio
@@ -53,7 +56,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
-            aria-labelledby={`set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${set[0]}`}
           />
         )}
       </span>
@@ -84,6 +87,7 @@ const SetTable: React.FC<SetTableProps> = ({
   sortByName = false,
   shouldDisable,
 }: SetTableProps) => {
+  const componentId = useId();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const { data: counts, isSuccess } = countHook({
     setIds: Object.keys(sets),
@@ -114,6 +118,7 @@ const SetTable: React.FC<SetTableProps> = ({
             shouldDisable={shouldDisable}
             selectedSets={selectedSets}
             setSelectedSets={setSelectedSets}
+            componentId={componentId}
           />
         ),
       }),
@@ -121,7 +126,9 @@ const SetTable: React.FC<SetTableProps> = ({
         id: "Name",
         header: "Name",
         cell: ({ getValue, row }) => (
-          <label id={`set-table-${row.original.set[0]}`}>{getValue()}</label>
+          <span id={`${componentId}-set-table-${row.original.set[0]}`}>
+            {getValue()}
+          </span>
         ),
       }),
       setTableColumnHelper.accessor("count", {
@@ -137,6 +144,7 @@ const SetTable: React.FC<SetTableProps> = ({
       multiselect,
       setSelectedSets,
       shouldDisable,
+      componentId,
     ],
   );
 
