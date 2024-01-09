@@ -300,7 +300,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
                   <FlipIcon
                     size="1.45em"
@@ -383,7 +383,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={facetChartData.cardStyle}>
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}

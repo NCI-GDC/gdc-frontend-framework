@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { Tooltip } from "@mantine/core";
 import classNames from "classnames";
+import { createKeyboardAccessibleFunction } from "src/utils/";
 
 interface SwitchSpringProps {
   isActive: boolean;
@@ -38,6 +39,16 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const { plot } = survivalProps ?? { plot: "" };
 
+  const toggleSwitch = () => {
+    if (disabled) {
+      return;
+    }
+    // todo: if used for > 2 icons refactor to use switch(icon) statement
+    icon
+      ? handleSwitch(selected[`symbol`], selected[`name`], plot)
+      : handleSwitch(selected);
+  };
+
   return (
     <Tooltip
       label={tooltip}
@@ -55,16 +66,11 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
           },
           isActive ? "bg-activeColor" : "bg-gray-300",
         )}
-        onClick={() => {
-          if (disabled) {
-            return;
-          }
-          // todo: if used for > 2 icons refactor to use switch(icon) statement
-          icon
-            ? handleSwitch(selected[`symbol`], selected[`name`], plot)
-            : handleSwitch(selected);
-        }}
+        onClick={toggleSwitch}
+        onKeyDown={createKeyboardAccessibleFunction(toggleSwitch)}
         aria-disabled={disabled}
+        tabIndex={0}
+        aria-label={tooltip}
       >
         <animated.div
           data-testid="button-bottom-switchSpring"

@@ -151,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
           <Link href="/manage_sets" passHref>
             <a
-              data-testid="link-header-manage-sets"
+              data-testid="button-header-manage-sets"
               className={`p-1 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"

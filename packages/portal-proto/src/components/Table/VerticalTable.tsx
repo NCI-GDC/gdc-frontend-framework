@@ -354,6 +354,7 @@ function VerticalTable<TData>({
                         className={commonHeaderClass}
                         key={header.id}
                         colSpan={header.colSpan}
+                        scope={header.column.columnDef.meta?.scope || "col"}
                       >
                         {headerName}
                       </th>
@@ -362,7 +363,7 @@ function VerticalTable<TData>({
                     return (
                       <th
                         key={header.id}
-                        scope="col"
+                        scope={header.column.columnDef.meta?.scope || "col"}
                         className={`
                         ${commonHeaderClass} whitespace-nowrap
                         ${
@@ -441,6 +442,9 @@ function VerticalTable<TData>({
                               setExpanded(row, columnId);
                             })}
                             className="cursor-auto align-bottom"
+                            aria-label={`${
+                              row.getIsExpanded() ? "Collapse" : "Expand"
+                            } row`}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>

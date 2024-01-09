@@ -103,11 +103,7 @@ def verify_text_on_page(text, source, target_type):
         "Repository": {"app": APP.repository_page.get_title},
         "Add a Custom Filter": {"modal": APP.repository_page.get_text_on_add_custom_filter_modal},
     }
-    first_text = text.split(" ")[0]
-    try:
-        text_value = sources.get(source)[target_type](text)
-    except:
-        text_value = sources.get(source)[target_type](first_text)
+    text_value = sources.get(source)[target_type](text)
     assert (
         text == text_value
     ), f"Unexpected title detected: looking for {text}, but got {text_value}"

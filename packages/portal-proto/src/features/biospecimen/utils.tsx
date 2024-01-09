@@ -121,6 +121,7 @@ export const formatEntityInfo = (
             variant="outline"
             size="sm"
             className="w-8 p-0 h-6 text-primary bg-base-max border-primary hover:bg-primary hover:text-base-max"
+            aria-label="View Slide Image"
           >
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
