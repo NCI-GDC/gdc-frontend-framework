@@ -194,7 +194,9 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
                 <Button
-                  rightIcon={<ArrowDropDownIcon size="2em" />}
+                  rightIcon={
+                    <ArrowDropDownIcon size="2em" aria-hidden="true" />
+                  }
                   variant="subtle"
                   className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}

@@ -390,7 +390,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon />}
+                icon={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -398,7 +398,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon />}
+                icon={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>
