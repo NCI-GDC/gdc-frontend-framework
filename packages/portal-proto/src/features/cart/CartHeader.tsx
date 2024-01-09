@@ -25,6 +25,7 @@ import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
+import { focusStyles } from "@/utils/index";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
@@ -137,7 +138,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: `${buttonStyle} ml-4`,
+                root: `${buttonStyle} ml-4 ${focusStyles}`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
@@ -178,7 +179,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: buttonStyle,
+                root: `${buttonStyle} ${focusStyles}`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
@@ -446,7 +447,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               leftIcon={<TrashIcon />}
               rightIcon={<DropdownIcon size={20} />}
               classNames={{
-                root: "bg-nci-red-darker font-medium text-base-max", //TODO: find good color theme for this
+                root: `bg-nci-red-darker font-medium text-base-max ${focusStyles}`, //TODO: find good color theme for this
                 rightIcon: "border-l pl-1 -mr-2",
               }}
             >
