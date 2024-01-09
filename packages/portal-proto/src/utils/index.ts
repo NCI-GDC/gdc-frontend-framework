@@ -283,9 +283,9 @@ export const getAnnotationsLinkParamsFromFiles = (
     return null;
 
   if (file?.annotations?.length === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${file.annotations[0].annotation_id}`;
+    return `https://portal.gdc.cancer.gov/v1/annotations/${file.annotations[0].annotation_id}`;
   }
-  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
+  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
     file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
   ]}]},"op":"in"}],"op":"and"}`;
 };

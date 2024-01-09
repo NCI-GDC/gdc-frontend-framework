@@ -15,9 +15,9 @@ const getAnnotationsLinkParams = (
   if (!annotations) return null;
 
   if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${annotations[0]}`;
+    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations[0]}`;
   }
-  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 const AssociatedCB = ({
