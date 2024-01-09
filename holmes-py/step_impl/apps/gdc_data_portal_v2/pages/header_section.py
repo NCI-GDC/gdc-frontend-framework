@@ -6,10 +6,10 @@ class HeaderSectionLocators:
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-header-{button_name}']"
 
     # These are all locators that only appear when the respective page has fully loaded
-    ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "button[aria-label='Navigate to Clinical Data Analysis tool']"
+    ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "[data-testid='Clinical Data Analysis-tool']"
     PROJECTS_WAIT_FOR_ELEMENT = "[data-testid='button-json-projects-table']"
-    COHORT_BUILDER_WAIT_FOR_ELEMENT = "button[data-testid='button-cohort-builder-general']"
-    REPOSITORY_WAIT_FOR_ELEMENT = "button[data-testid='button-json-files-table']"
+    COHORT_BUILDER_WAIT_FOR_ELEMENT = "[data-testid='button-cohort-builder-general']"
+    REPOSITORY_WAIT_FOR_ELEMENT = "[data-testid='button-json-files-table']"
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
     MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"

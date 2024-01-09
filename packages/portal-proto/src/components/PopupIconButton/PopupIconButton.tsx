@@ -7,6 +7,7 @@ interface PopupIconButtonProps {
   handleClick: () => void;
   customAriaLabel?: string;
   customStyle?: string;
+  ariaId?: string;
 }
 
 export const PopupIconButton = forwardRef<
@@ -19,6 +20,7 @@ export const PopupIconButton = forwardRef<
       handleClick,
       customAriaLabel = undefined,
       customStyle = "text-utility-link underline font-content",
+      ariaId,
     }: PopupIconButtonProps,
     ref,
   ): JSX.Element => {
@@ -45,7 +47,7 @@ export const PopupIconButton = forwardRef<
         variant="subtle"
         compact
       >
-        {label}
+        {ariaId ? <span id={ariaId}>{label}</span> : <>{label}</>}
       </Button>
     );
   },

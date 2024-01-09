@@ -17,6 +17,7 @@ declare module "@tanstack/table-core" {
   interface ColumnMeta<TData extends RowData, TValue> {
     highlighted?: boolean;
     sortingFn?: (rowA: TData, rowB: TData) => 1 | -1 | 0;
+    scope?: "col" | "colgroup";
   }
 }
 

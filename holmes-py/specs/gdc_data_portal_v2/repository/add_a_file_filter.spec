@@ -20,11 +20,12 @@ tags: regression, smoke
 * Verify that the following default filters are displayed in order
    |default_filters      |
    |---------------------|
+   |Experimental Strategy|
+   |Wgs Coverage         |
    |Data Category        |
    |Data Type            |
-   |Experimental Strategy|
-   |Workflow Type        |
    |Data Format          |
+   |Workflow Type        |
    |Platform             |
    |Access               |
 
@@ -38,10 +39,10 @@ tags: regression, smoke
 * Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
 
 ## File properties on Add a Custom Filter modal
-* Verify that the "303 properties" text is displayed on "Add a Custom Filter" "modal"
+* Verify that the "302 properties" text is displayed on "Add a Custom Filter" "modal"
 
 ## File counts listed on Add a Custom Filter modal
-* Verify "303" items on Add a Custom Filter filter list
+* Verify "302" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
 * Verify file filter names do not start with "files."

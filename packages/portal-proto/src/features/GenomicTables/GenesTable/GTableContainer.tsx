@@ -264,6 +264,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     genomicFilters,
     generateFilters,
     handleMutationCountClick,
+    currentPage: page,
+    totalPages: Math.ceil(data?.genes?.genes_total / pageSize),
   });
 
   const getRowId = (originalRow: Gene) => {

@@ -296,7 +296,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
                   <FlipIcon size="1.45em" className={header.iconStyle} />
                 </FacetIconButton>
@@ -367,7 +367,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={facetChartData.cardStyle}>
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}
@@ -389,6 +393,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <div className="flex-none">
                             <Checkbox
                               data-testid={`checkbox-${value}`}
+                              aria-label={`${value}`}
                               value={value}
                               size="xs"
                               color="accent"
@@ -398,7 +403,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                                   e.currentTarget.checked,
                                 )
                               }
-                              aria-label={`checkbox for ${field}`}
                               classNames={{
                                 input: "hover:bg-accent-darker",
                               }}
