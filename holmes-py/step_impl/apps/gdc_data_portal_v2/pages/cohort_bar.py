@@ -18,6 +18,7 @@ class CohortBarLocators:
     TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK= lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) >> text={full_query_filter} >> nth=0'
     TEXT_COHORT_QUERY_FILTER_CHECK_WHOLE_AREA = lambda full_query_filter: f'[data-testid="text-cohort-filters"] > div:has-text("{full_query_filter}") >> nth=0'
     TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK_WHOLE_AREA = lambda full_query_filter: f'[data-testid="text-cohort-filters"] >> text={full_query_filter} >> nth=0'
+    BUTTON_REMOVE_COHORT_QUERY_FILTER = lambda query_name_to_remove: f'[aria-label="remove {query_name_to_remove}"]'
 
 class CohortBar(BasePage):
 
@@ -32,6 +33,11 @@ class CohortBar(BasePage):
     # Clicks a button on the actual cohort bar
     def click_cohort_bar_button(self, button_name:str):
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))
+        self.click(locator)
+
+    # Clicks the 'x' to remove a specified filter in the cohort query area
+    def click_remove_filter_from_cohort_query_area(self, filter_name_to_remove:str):
+        locator = CohortBarLocators.BUTTON_REMOVE_COHORT_QUERY_FILTER(filter_name_to_remove)
         self.click(locator)
 
     def select_cohort_from_dropdown(self, cohort_name:str):

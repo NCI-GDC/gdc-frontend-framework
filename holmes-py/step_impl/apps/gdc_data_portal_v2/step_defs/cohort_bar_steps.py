@@ -14,10 +14,13 @@ def start_app():
 @step("Select <button> from the Cohort Bar")
 def click_button_on_cohort_bar(button_name: str):
     time.sleep(0.5)
-    APP.cohort_bar.click_cohort_bar_button(button_name)
-    # Clicks "Save" from the save button dropdown menu
-    if button_name == "Save":
-        APP.shared.click_text_option_from_dropdown_menu(button_name)
+    # If saving the cohort, click the save button and select specified text from dropdown menu
+    if button_name.lower() in ["save", "save as"]:
+        APP.cohort_bar.click_cohort_bar_button("save")
+        APP.cohort_bar.click_text_option_from_dropdown_menu(button_name)
+    # Otherwise, just click the specified button on the cohort bar
+    else:
+        APP.cohort_bar.click_cohort_bar_button(button_name)
     time.sleep(0.5)
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
@@ -74,6 +77,20 @@ def validate_cohort_is_present_in_dropdown(cohort_name: str):
     is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
     click_button_on_cohort_bar("Switch")
     assert is_cohort_visible, f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"
+
+@step("Remove these filters from the cohort query area <table>")
+def validate_cohort_query_filters(table):
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        APP.cohort_bar.click_remove_filter_from_cohort_query_area(v[0])
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 @step("Validate the cohort query filter area has these filters <table>")
 def validate_cohort_query_filters(table):
