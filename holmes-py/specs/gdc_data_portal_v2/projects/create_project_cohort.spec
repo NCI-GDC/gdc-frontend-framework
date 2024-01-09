@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Create, Save, Delete Cohort on the Project Page
 Test-Case      : PEAR-1291
 
-tags: gdc-data-portal-v2, regression, projects, cohort
+tags: gdc-data-portal-v2, regression, projects, cohort, smoke-test
 
 ## Navigate to Projects Page
 * On GDC Data Portal V2 app

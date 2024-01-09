@@ -4,7 +4,7 @@ Version			: 1.1
 Owner		    : GDC QA
 Description		: Test clinical data properties section
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, smoke-test
 
 ## Navigate to Clinical Data Analysis
 * On GDC Data Portal V2 app

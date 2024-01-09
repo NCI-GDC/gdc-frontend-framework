@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Slide Image Viewer
 Test-Case       : PEAR-479
 
-tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
+tags: gdc-data-portal-v2, repository, regression, slide-image-viewer, smoke-test
 
 ## Navigate to Slide Image Viewer
 * On GDC Data Portal V2 app

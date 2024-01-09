@@ -7,7 +7,7 @@ Description		: Test JSON, TSV, Manifest Download
 tags: gdc-data-portal-v2, repository, json-tsv-file-download, download
 
 ## JSON, TSV, Manifest file download - repository
-tags: regression, smoke, json-file-download
+tags: regression, smoke, json-file-download, smoke-test
 
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
