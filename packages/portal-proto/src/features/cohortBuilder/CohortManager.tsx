@@ -46,6 +46,7 @@ import {
   selectHasUnsavedCohorts,
   addNewSavedCohort,
   hideModal,
+  UNSAVED_COHORT_NAME,
 } from "@gff/core";
 import { useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -371,7 +372,9 @@ const CohortManager: React.FC = () => {
 
       {showSaveCohort && (
         <SaveCohortModal
-          initialName={cohortName}
+          initialName={
+            cohortName !== UNSAVED_COHORT_NAME ? cohortName : undefined
+          }
           onClose={() => setShowSaveCohort(false)}
           cohortId={cohortId}
           filters={filters}
