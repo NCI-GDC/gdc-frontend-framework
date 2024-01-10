@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - card functions
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card, smoke-test
+tags: gdc-data-portal-v2, cohort-builder, filter-card
 
 ## Navigate to Cohort Builder
 

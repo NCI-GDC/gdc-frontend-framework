@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description     : Mutation Frequency Demo Mode
 Test-Case       : PEAR-914
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, smoke-test
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Mutation Frequency Demo
 * On GDC Data Portal V2 app

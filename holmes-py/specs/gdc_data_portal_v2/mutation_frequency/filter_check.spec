@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Filtering on the Mutation Frequency App
 Test-Case      : PEAR-898, PEAR-916
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, smoke-test
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app

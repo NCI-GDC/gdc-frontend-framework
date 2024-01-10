@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description     : cDAVE Demo Mode
 Test-Case       : PEAR-603
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression, smoke-test
+tags: gdc-data-portal-v2, clinical-data-analysis, regression
 
 ## Navigate to Clinical Data Analysis Demo
 * On GDC Data Portal V2 app

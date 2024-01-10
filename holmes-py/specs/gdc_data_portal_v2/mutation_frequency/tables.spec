@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Validate Table Details
 Test-Case      : PEAR-899, PEAR-905
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, smoke-test
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app

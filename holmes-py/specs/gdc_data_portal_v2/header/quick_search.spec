@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test results from quick search bar
 Test-Case       : PEAR-937
 
-tags: gdc-data-portal-v2, regression, search-bar
+tags: gdc-data-portal-v2, regression, search-bar, smoke-test
 
 ## Search - File
 * On GDC Data Portal V2 app

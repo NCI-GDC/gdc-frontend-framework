@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Gene Set - Create, Edit, Download, Delete
 Test-Case       : PEAR-1619
 
-tags: gdc-data-portal-v2, manage-sets, regression, smoke-test
+tags: gdc-data-portal-v2, manage-sets, regression
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app
