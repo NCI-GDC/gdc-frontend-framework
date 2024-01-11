@@ -10,13 +10,6 @@ import { repositoryRangeFacetsReducer } from "@/features/repositoryApp/repositor
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
-const persistConfig = {
-  key: REPOSITORY_APP_NAME,
-  version: 1,
-  storage,
-  whitelist: ["facets", "filters"],
-};
-
 const downloadAppReducers = combineReducers({
   facets: repositoryConfigReducer,
   filters: repositoryFiltersReducer,
@@ -24,6 +17,13 @@ const downloadAppReducers = combineReducers({
   facetBuckets: repositoryFacetsGQLReducer,
   facetRanges: repositoryRangeFacetsReducer,
 });
+
+const persistConfig = {
+  key: REPOSITORY_APP_NAME,
+  version: 1,
+  storage,
+  whitelist: ["facets", "filters"],
+};
 
 // create the store, context and selector for the RepositoryApp
 // Note the repository app has a local store and context which isolates
