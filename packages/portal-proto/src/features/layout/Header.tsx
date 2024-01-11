@@ -12,7 +12,7 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-
+  const userDropdownRef = useRef<HTMLButtonElement>();
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -199,6 +199,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
+                  ref={userDropdownRef}
                 >
                   {userInfo?.data?.username}
                 </Button>
@@ -214,8 +215,11 @@ export const Header: React.FC<HeaderProps> = ({
                       return;
                     }
                     dispatch(showModal({ modal: Modals.UserProfileModal }));
+                    // This is done inorder to set the last focused element as the menu target element
+                    // This is done to return focus to the target element if the modal is closed with ESC
+                    userDropdownRef?.current &&
+                      userDropdownRef?.current?.focus();
                   }}
-                  // here too target ref for the target button needed
                   data-testid="userprofilemenu"
                 >
                   User Profile

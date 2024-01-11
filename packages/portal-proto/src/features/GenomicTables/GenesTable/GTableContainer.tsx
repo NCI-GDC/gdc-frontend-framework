@@ -16,7 +16,7 @@ import {
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
 import { Loader, Text } from "@mantine/core";
@@ -347,6 +347,21 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   };
 
+  const handleSaveSelectionAsSetModalClose = useCallback(
+    () => setShowSaveModal(false),
+    [],
+  );
+
+  const handleAddToSetModalClose = useCallback(
+    () => setShowAddModal(false),
+    [],
+  );
+
+  const handleRemoveFromSetModalClose = useCallback(
+    () => setShowRemoveModal(false),
+    [],
+  );
+
   return (
     <>
       <SaveSelectionAsSetModal
@@ -366,7 +381,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setType="genes"
         setTypeLabel="gene"
         createSetHook={useCreateGeneSetFromFiltersMutation}
-        closeModal={() => setShowSaveModal(false)}
+        closeModal={handleSaveSelectionAsSetModalClose}
       />
 
       <AddToSetModal
@@ -382,7 +397,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         singleCountHook={useGeneSetCountQuery}
         countHook={useGeneSetCountsQuery}
         appendSetHook={useAppendToGeneSetMutation}
-        closeModal={() => setShowAddModal(false)}
+        closeModal={handleAddToSetModalClose}
         field={"genes.gene_id"}
         sort="case.project.project_id"
       />
@@ -398,7 +413,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
         setType="genes"
         setTypeLabel="gene"
         countHook={useGeneSetCountsQuery}
-        closeModal={() => setShowRemoveModal(false)}
+        closeModal={handleRemoveFromSetModalClose}
         removeFromSetHook={useRemoveFromGeneSetMutation}
       />
 

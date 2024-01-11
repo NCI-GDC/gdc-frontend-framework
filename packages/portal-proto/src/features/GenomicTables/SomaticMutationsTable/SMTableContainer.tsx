@@ -17,7 +17,7 @@ import {
   getSSMTestedCases,
   useGetSsmTableDataMutation,
 } from "@gff/core";
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
@@ -426,6 +426,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
+  const handleSaveSelectionAsSetModalClose = useCallback(
+    () => setShowSaveModal(false),
+    [],
+  );
+
+  const handleAddToSetModalClose = useCallback(
+    () => setShowAddModal(false),
+    [],
+  );
+
+  const handleRemoveFromSetModalClose = useCallback(
+    () => setShowRemoveModal(false),
+    [],
+  );
   return (
     <>
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
@@ -456,7 +470,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             setType="ssms"
             setTypeLabel="mutation"
             createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
+            closeModal={handleSaveSelectionAsSetModalClose}
           />
 
           <AddToSetModal
@@ -472,7 +486,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             singleCountHook={useSsmSetCountQuery}
             countHook={useSsmSetCountsQuery}
             appendSetHook={useAppendToSsmSetMutation}
-            closeModal={() => setShowAddModal(false)}
+            closeModal={handleAddToSetModalClose}
             field={"ssms.ssm_id"}
             sort="occurrence.case.project.project_id"
           />
@@ -488,7 +502,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             setType="ssms"
             setTypeLabel="mutation"
             countHook={useSsmSetCountsQuery}
-            closeModal={() => setShowRemoveModal(false)}
+            closeModal={handleRemoveFromSetModalClose}
             removeFromSetHook={useRemoveFromSsmSetMutation}
           />
 
