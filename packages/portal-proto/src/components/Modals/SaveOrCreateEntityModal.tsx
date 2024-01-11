@@ -138,7 +138,6 @@ export const SaveOrCreateEntityBody = ({
           withAsterisk
           label="Name"
           placeholder={`New ${upperFirst(entity)} Name`}
-          aria-label={`Input field for new ${entity} name`}
           description={description}
           classNames={{
             description: "mt-1",
@@ -176,7 +175,6 @@ export const SaveOrCreateEntityBody = ({
           <Button
             variant="filled"
             color="secondary"
-            aria-label={`Save button to add a ${entity}`}
             onClick={handleActionClick}
             data-testid="action-button"
             loading={loading}
