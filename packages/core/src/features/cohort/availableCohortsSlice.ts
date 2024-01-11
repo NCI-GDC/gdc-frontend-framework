@@ -666,14 +666,14 @@ const slice = createSlice({
       state,
       action?: PayloadAction<{
         shouldShowMessage?: boolean;
-        currentID?: string;
+        id?: string;
       }>,
     ) => {
       const removedCohort =
-        state.entities[action?.payload?.currentID || getCurrentCohort(state)];
+        state.entities[action?.payload?.id || getCurrentCohort(state)];
       cohortsAdapter.removeOne(
         state,
-        action?.payload?.currentID || getCurrentCohort(state),
+        action?.payload?.id || getCurrentCohort(state),
       );
       // TODO: this will be removed after cohort id issue is fixed in the BE
       // This is just a hack to remove cohort without triggering notification
@@ -697,7 +697,7 @@ const slice = createSlice({
           `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
           `newCohort|${createdCohort.name}|${createdCohort.id}`,
         ];
-      } else {
+      } else if (action?.payload.id === undefined) {
         state.currentCohort = selector.selectAll(state)[0].id;
       }
     },
@@ -842,10 +842,11 @@ const slice = createSlice({
       action: PayloadAction<{
         filters: FilterSet | undefined;
         showMessage: boolean;
+        id?: string;
       }>,
     ) => {
       cohortsAdapter.updateOne(state, {
-        id: getCurrentCohort(state),
+        id: action.payload.id ?? getCurrentCohort(state),
         changes: {
           filters: action.payload.filters || { mode: "and", root: {} },
           modified: false,
