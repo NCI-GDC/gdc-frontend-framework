@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storageSession from "redux-persist/lib/storage/session";
 import { createAppStore } from "@gff/core";
 import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
 
@@ -9,7 +9,7 @@ const PROJECT_APP_NAME = "ProjectCenter";
 const persistConfig = {
   key: PROJECT_APP_NAME,
   version: 1,
-  storage,
+  storage: storageSession,
   whitelist: ["projectApp"],
 };
 
