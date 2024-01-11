@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
   |-----------------------|-----------------------|
   |Age at Diagnosis       |Age at Diagnosis       |
 
-* Enter text "GENIE-MSK" in the search bar on the Cohort Builder page
+* Enter text "MMRF-COMMPASS" in the search bar on the Cohort Builder page
 
 * Expected result "Project" in the search bar on the Cohort Builder page
 
