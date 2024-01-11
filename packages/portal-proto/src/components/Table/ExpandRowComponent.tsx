@@ -22,25 +22,18 @@ const ExpandRowComponent = ({
     ) : (
       <div className="flex items-center text-primary cursor-pointer gap-2">
         {isRowExpanded && isColumnExpanded ? (
-          <UpIcon
-            size="1.25em"
-            className="text-accent"
-            data-testid="up-icon"
-            aria-hidden="true"
-          />
+          <UpIcon size="1.25em" className="text-accent" data-testid="up-icon" />
         ) : (
           <DownIcon
             size="1.25em"
             className="text-accent"
             data-testid="down-icon"
-            aria-hidden="true"
           />
         )}
         <span
           className={`whitespace-nowrap ${
             isRowExpanded && isColumnExpanded && "font-bold"
           }`}
-          aria-hidden="true"
         >
           {value.length.toLocaleString().padStart(6)} {title}
         </span>
