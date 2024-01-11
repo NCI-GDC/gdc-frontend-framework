@@ -43,7 +43,6 @@ tags: gdc-data-portal-v2, regression, projects, download
 * Verify that "TSV Projects Table from Projects" does not contain specified information
   |required_info|
   |-------------|
-  |GENIE        |
   |FM           |
   |GENIE        |
   |HCMI         |
