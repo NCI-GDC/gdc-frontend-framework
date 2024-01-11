@@ -47,7 +47,7 @@ import {
   addNewSavedCohort,
   hideModal,
 } from "@gff/core";
-import { useCohortFacetFilters } from "./utils";
+import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
@@ -371,7 +371,11 @@ const CohortManager: React.FC = () => {
 
       {showSaveCohort && (
         <SaveCohortModal
-          initialName={cohortName}
+          initialName={
+            !INVALID_COHORT_NAMES.includes(cohortName.toLowerCase())
+              ? cohortName
+              : undefined
+          }
           onClose={() => setShowSaveCohort(false)}
           cohortId={cohortId}
           filters={filters}

@@ -34,7 +34,7 @@ import {
   NullCountsData,
 } from "./cohortCountsQuery";
 
-const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
+export const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
