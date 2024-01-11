@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : JSON, TSV Downloads on the project page
 Test-Case      : PEAR-1290
 
-tags: gdc-data-portal-v2, regression, projects, download
+tags: gdc-data-portal-v2, regression, projects, download, smoke-test
 
 ## Navigate to Projects Page
 * On GDC Data Portal V2 app
