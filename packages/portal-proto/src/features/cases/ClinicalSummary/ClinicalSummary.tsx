@@ -143,12 +143,12 @@ export const ClinicalSummary = ({
         dropdownElements={[
           {
             title: "TSV",
-            icon: <DownloadIcon size={16} aria-label="download icon" />,
+            icon: <DownloadIcon size={16} aria-label="download" />,
             onClick: handleClinicalTSVDownload,
           },
           {
             title: "JSON",
-            icon: <DownloadIcon size={16} aria-label="download icon" />,
+            icon: <DownloadIcon size={16} aria-label="download" />,
             onClick: handleClinicalJSONDownload,
           },
         ]}
@@ -159,7 +159,7 @@ export const ClinicalSummary = ({
           clinicalDownloadActive ? (
             <Loader size={20} />
           ) : (
-            <DownloadIcon size="1rem" aria-label="download icon" />
+            <DownloadIcon size="1rem" aria-label="download" />
           )
         }
       />

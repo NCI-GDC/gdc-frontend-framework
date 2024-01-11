@@ -181,12 +181,12 @@ export const Biospecimen = ({
             dropdownElements={[
               {
                 title: "TSV",
-                icon: <DownloadIcon size={16} aria-label="download icon" />,
+                icon: <DownloadIcon size={16} aria-label="download" />,
                 onClick: handleBiospeciemenTSVDownload,
               },
               {
                 title: "JSON",
-                icon: <DownloadIcon size={16} aria-label="download icon" />,
+                icon: <DownloadIcon size={16} aria-label="download" />,
                 onClick: handleBiospeciemenJSONDownload,
               },
             ]}
@@ -197,7 +197,7 @@ export const Biospecimen = ({
               biospecimenDownloadActive ? (
                 <Loader size={20} />
               ) : (
-                <DownloadIcon size="1rem" aria-label="download icon" />
+                <DownloadIcon size="1rem" aria-label="download" />
               )
             }
             zIndex={5}
