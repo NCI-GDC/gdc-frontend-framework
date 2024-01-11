@@ -412,19 +412,16 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 {
                   title: "Save as new gene set",
                   onClick: () => setShowSaveModal(true),
-                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Add to existing gene set",
                   disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowAddModal(true),
-                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Remove from existing gene set",
                   disabled: Object.keys(sets || {}).length === 0,
                   onClick: () => setShowRemoveModal(true),
-                  shouldCloseOnClick: false,
                 },
               ]}
               TargetButtonChildren="Save/Edit Gene Set"

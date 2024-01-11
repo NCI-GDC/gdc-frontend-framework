@@ -69,7 +69,7 @@ export const UserProfileModal = ({
       buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}
     >
       <div className={`${!data ? "py-4" : "py-2"}`}>
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           <ScrollableTableWithFixedHeader
             tableData={{
               headers: headings,

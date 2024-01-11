@@ -55,7 +55,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                     setShowSaveCohort(true);
                   }
                 },
-                shouldCloseOnClick: false,
               },
               {
                 title: " Existing Cohort With Selected Cases",
@@ -63,7 +62,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                   setWithOrWithoutCohort("with");
                   setOpenSelectCohorts(true);
                 },
-                shouldCloseOnClick: false,
               },
               {
                 title: " Existing Cohort Without Selected Cases",
@@ -71,7 +69,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
                   setWithOrWithoutCohort("without");
                   setOpenSelectCohorts(true);
                 },
-                shouldCloseOnClick: false,
               },
             ]
       }

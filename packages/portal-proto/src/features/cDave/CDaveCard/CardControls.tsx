@@ -126,7 +126,6 @@ const CardControls: React.FC<CardControlsProps> = ({
               {
                 title: "Edit Bins",
                 onClick: () => setBinningModalOpen(true),
-                shouldCloseOnClick: false,
               },
               {
                 title: "Reset to Default",

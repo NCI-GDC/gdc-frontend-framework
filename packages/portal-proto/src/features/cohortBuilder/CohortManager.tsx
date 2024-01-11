@@ -488,13 +488,11 @@ const CohortManager: React.FC = () => {
                       },
                       title: "Save",
                       disabled: currentCohort?.saved && !cohortModified,
-                      shouldCloseOnClick: false,
                     },
                     {
                       onClick: () => setShowSaveAsCohort(true),
                       title: "Save As",
                       disabled: !currentCohort?.saved,
-                      shouldCloseOnClick: false,
                     },
                   ]}
                   LeftIcon={

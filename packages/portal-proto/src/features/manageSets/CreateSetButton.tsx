@@ -89,13 +89,11 @@ const CreateSetButton: React.FC = () => {
             title: "Genes",
             onClick: () =>
               dispatch(showModal({ modal: Modals.GlobalGeneSetModal })),
-            shouldCloseOnClick: false,
           },
           {
             title: "Mutations",
             onClick: () =>
               dispatch(showModal({ modal: Modals.GlobalMutationSetModal })),
-            shouldCloseOnClick: false,
           },
         ]}
         zIndex={10}

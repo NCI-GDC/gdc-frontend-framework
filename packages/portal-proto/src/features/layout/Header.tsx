@@ -215,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }
                     dispatch(showModal({ modal: Modals.UserProfileModal }));
                   }}
-                  closeMenuOnClick={false}
+                  // here too target ref for the target button needed
                   data-testid="userprofilemenu"
                 >
                   User Profile

@@ -504,19 +504,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     {
                       title: "Save as new mutation set",
                       onClick: () => setShowSaveModal(true),
-                      shouldCloseOnClick: false,
                     },
                     {
                       title: "Add to existing mutation set",
                       disabled: Object.keys(sets).length === 0,
                       onClick: () => setShowAddModal(true),
-                      shouldCloseOnClick: false,
                     },
                     {
                       title: "Remove from existing mutation set",
                       disabled: Object.keys(sets).length === 0,
                       onClick: () => setShowRemoveModal(true),
-                      shouldCloseOnClick: false,
                     },
                   ]}
                   TargetButtonChildren="Save/Edit Mutation Set"

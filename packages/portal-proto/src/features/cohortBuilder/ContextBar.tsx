@@ -302,7 +302,6 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalCaseSetModal }),
                     ),
-                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Genes",
@@ -310,7 +309,6 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalGeneSetModal }),
                     ),
-                  shouldCloseOnClick: false,
                 },
                 {
                   title: "Mutations",
@@ -318,7 +316,6 @@ const ContextBar = ({
                     coreDispatch(
                       showModal({ modal: Modals.GlobalMutationSetModal }),
                     ),
-                  shouldCloseOnClick: false,
                 },
               ]}
               TargetButtonChildren="Custom Filters"
