@@ -28,7 +28,6 @@ import {
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
-import { createKeyboardAccessibleFunction } from "@/utils/index";
 import { v4 as uuidv4 } from "uuid";
 import { useDeepCompareEffect } from "use-deep-compare";
 
@@ -437,14 +436,9 @@ function VerticalTable<TData>({
                               setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             }}
-                            onKeyDown={createKeyboardAccessibleFunction(() => {
-                              setClickedColumnId(columnId);
-                              setExpanded(row, columnId);
-                            })}
                             className="cursor-auto align-bottom"
-                            aria-label={`${
-                              row.getIsExpanded() ? "Collapse" : "Expand"
-                            } row`}
+                            aria-expanded={row.getIsExpanded()}
+                            aria-controls={`${row.id}_${columnId}_expanded`}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>
@@ -456,7 +450,7 @@ function VerticalTable<TData>({
                   })}
                 </tr>
                 {row.getIsExpanded() && (
-                  <tr>
+                  <tr id={`${row.id}_${clickedColumnId}_expanded`}>
                     {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
                       {/* Need to pass in the SubRow component to render here */}
