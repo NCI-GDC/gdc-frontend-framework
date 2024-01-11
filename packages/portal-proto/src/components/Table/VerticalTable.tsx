@@ -426,11 +426,15 @@ function VerticalTable<TData>({
                   {row.getVisibleCells().map((cell) => {
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
                     const columnId = cell.column.columnDef.id;
+                    const cellValue = cell.getValue();
 
                     return (
                       <td key={cell.id} className="px-2.5 py-2 cursor-default">
                         {row.getCanExpand() &&
-                        expandableColumnIds.includes(columnId) ? (
+                        expandableColumnIds.includes(columnId) &&
+                        // check to make sure item is expandable
+                        Array.isArray(cellValue) &&
+                        cellValue.length > 1 ? (
                           <button
                             onClick={() => {
                               setClickedColumnId(columnId);
@@ -438,7 +442,10 @@ function VerticalTable<TData>({
                             }}
                             className="cursor-auto align-bottom"
                             aria-expanded={row.getIsExpanded()}
-                            aria-controls={`${row.id}_${columnId}_expanded`}
+                            aria-controls={`${row.id}_${columnId}_expanded`.replace(
+                              /\W/g,
+                              "_",
+                            )}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>
@@ -450,7 +457,12 @@ function VerticalTable<TData>({
                   })}
                 </tr>
                 {row.getIsExpanded() && (
-                  <tr id={`${row.id}_${clickedColumnId}_expanded`}>
+                  <tr
+                    id={`${row.id}_${clickedColumnId}_expanded`.replace(
+                      /\W/g,
+                      "_",
+                    )}
+                  >
                     {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
                       {/* Need to pass in the SubRow component to render here */}
