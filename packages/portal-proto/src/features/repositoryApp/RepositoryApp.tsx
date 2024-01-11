@@ -13,7 +13,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
@@ -28,7 +28,10 @@ import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
-import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
+import {
+  useClearLocalFilterWhenCohortChanges,
+  useClearAllRepositoryFilters,
+} from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
@@ -110,6 +113,11 @@ export const RepositoryApp = (): JSX.Element => {
     return buildCohortGqlOperator(joinFilters(localFilters, cartFilterSet));
   };
   const [active, setActive] = useState(false);
+
+  const clearAllFilters = useClearAllRepositoryFilters();
+  useEffect(() => {
+    return () => clearAllFilters();
+  }, [clearAllFilters]);
 
   useClearLocalFilterWhenCohortChanges();
 

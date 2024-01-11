@@ -1,7 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import storageSession from "redux-persist/lib/storage/session";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
 import { repositoryFacetsGQLReducer } from "./repositoryFacetSlice";
@@ -11,21 +10,16 @@ import { repositoryRangeFacetsReducer } from "@/features/repositoryApp/repositor
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
-const facetPersistConfig = {
-  key: `${REPOSITORY_APP_NAME}Facets`,
+const persistConfig = {
+  key: REPOSITORY_APP_NAME,
   version: 1,
   storage,
-};
-
-const filterPersistConfig = {
-  key: `${REPOSITORY_APP_NAME}Filters`,
-  version: 1,
-  storage: storageSession,
+  whitelist: ["facets", "filters"],
 };
 
 const downloadAppReducers = combineReducers({
-  facets: persistReducer(facetPersistConfig, repositoryConfigReducer),
-  filters: persistReducer(filterPersistConfig, repositoryFiltersReducer),
+  facets: repositoryConfigReducer,
+  filters: repositoryFiltersReducer,
   images: imageCountsReducer,
   facetBuckets: repositoryFacetsGQLReducer,
   facetRanges: repositoryRangeFacetsReducer,
@@ -37,7 +31,7 @@ const downloadAppReducers = combineReducers({
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
-    reducers: downloadAppReducers,
+    reducers: persistReducer(persistConfig, downloadAppReducers),
     name: REPOSITORY_APP_NAME,
     version: "0.0.1",
   });

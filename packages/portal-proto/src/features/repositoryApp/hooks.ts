@@ -16,7 +16,7 @@ import {
   UseAppDataResponse,
   buildCohortGqlOperator,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
 import {
@@ -70,6 +70,13 @@ export const useClearRepositoryFilters = (): ClearFacetFunction => {
   return (field: string) => {
     dispatch(removeRepositoryFilter(field));
   };
+};
+
+export const useClearAllRepositoryFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearRepositoryFilters());
+  }, [dispatch]);
 };
 
 type updateEnumFiltersFunc = (
