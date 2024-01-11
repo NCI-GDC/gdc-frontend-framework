@@ -26,6 +26,7 @@ import {
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 /**
  * SaveCohortModal handles saving a user's cohort
@@ -269,7 +270,7 @@ const SaveCohortModal = ({
           }
           closeOnAction={false}
           loading={isLoading}
-          disallowedNames={["unsaved_cohort"]}
+          disallowedNames={INVALID_COHORT_NAMES}
         />
       )}
     </Modal>
