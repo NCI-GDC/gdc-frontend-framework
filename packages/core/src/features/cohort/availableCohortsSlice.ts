@@ -1016,6 +1016,8 @@ const slice = createSlice({
                 mutationCount: response.data.viewer.explore.ssms.hits.total,
                 fileCount: response.data.viewer.repository.files.hits.total,
                 ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+                cnvOrSsmCaseCount:
+                  response.data.viewer.explore.cnvsOrSsmsCases.hits.total,
                 sequenceReadCaseCount:
                   response.data.viewer.repository.sequenceReads.hits.total,
                 repositoryCaseCount:
@@ -1036,6 +1038,7 @@ const slice = createSlice({
               genesCount: -1,
               mutationCount: -1,
               ssmCaseCount: -1,
+              cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               status: "pending",
@@ -1053,6 +1056,7 @@ const slice = createSlice({
               genesCount: -1,
               mutationCount: -1,
               ssmCaseCount: -1,
+              cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               status: "rejected",

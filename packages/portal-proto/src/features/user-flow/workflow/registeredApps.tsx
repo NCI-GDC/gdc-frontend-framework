@@ -60,7 +60,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
-    countsField: "ssmCaseCount",
+    countsField: "cnvOrSsmCaseCount",
     description:
       "Visualize most frequently mutated genes and somatic mutations.",
     noDataTooltip:
@@ -173,7 +173,7 @@ export const REGISTERED_APPS = [
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
-    countsField: "ssmCaseCount",
+    countsField: "cnvOrSsmCaseCount",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
