@@ -17,6 +17,8 @@ import {
   createCaseSet,
   clearCohortFilters,
   discardCohortChanges,
+  selectCurrentCohortId,
+  addNewSavedCohort,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
@@ -53,14 +55,17 @@ startCoreListening({
  * This is used when creating a new cohort from a link, as it is not the current cohort
  */
 startCoreListening({
-  matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
-  effect: async (_, listenerApi) => {
-    // the last cohort added is the one we want to get the case count for
-    const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
-      (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
-    );
-
-    const latestCohortId = cohorts[0]?.id;
+  matcher: isAnyOf(
+    addNewUnsavedCohort,
+    addNewDefaultUnsavedCohort,
+    addNewSavedCohort,
+  ),
+  effect: async (action, listenerApi) => {
+    // get the current cohort id
+    console.log("action.meta.arg", action?.meta?.arg);
+    const latestCohortId =
+      action?.meta?.arg?.cohortId ??
+      selectCurrentCohortId(listenerApi.getState());
     listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
   },
 });
