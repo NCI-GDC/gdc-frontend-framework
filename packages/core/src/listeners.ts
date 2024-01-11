@@ -62,7 +62,6 @@ startCoreListening({
   ),
   effect: async (action, listenerApi) => {
     // get the current cohort id
-    console.log("action.meta.arg", action?.meta?.arg);
     const latestCohortId =
       action?.meta?.arg?.cohortId ??
       selectCurrentCohortId(listenerApi.getState());
