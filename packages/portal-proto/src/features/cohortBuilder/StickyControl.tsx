@@ -1,3 +1,4 @@
+import { focusStyles } from "src/utils";
 import { Tooltip } from "@mantine/core";
 import {
   BsPin as StickyOffIcon,
@@ -20,7 +21,7 @@ const StickyControl = ({
   >
     <button
       data-testid="button-cohort-bar-pin-unpin"
-      className="bg-primary-darker hover:bg-primary-darkest h-12 w-12 grid place-items-center text-white rounded-md"
+      className={`bg-primary-darker hover:bg-primary-darkest h-12 w-12 grid place-items-center text-white rounded-md ${focusStyles}`}
       onClick={() => handleIsSticky(!isSticky)}
       aria-label={`Toggle to ${
         isSticky ? "unpin" : "pin"

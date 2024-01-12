@@ -48,23 +48,23 @@ tags: cohort-selections
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
-  |Morphology       |8000/0               |
+  |Morphology       |8010/3               |
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |action                       |
   |-----------------|-----------------------------|
-  |Morphology       |chart view                   |
+  |Morphology       |Chart view                   |
   |Morphology       |clear selection              |
   |Morphology       |Search                       |
-  |Morphology       |chart view                   |
+  |Morphology       |Selection view               |
 * Search in a filter card from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|
-  |Morphology       |search values        |9950/3|
+  |Morphology       |search values        |9861/3|
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
-  |Morphology       |9950/3               |
-  |Morphology       |9950/3               |
+  |Morphology       |9861/3               |
+  |Morphology       |9861/3               |
 * Expand or contract a facet from "Available Data" tab on the Cohort Builder page
   |facet_name       |label                |
   |-----------------|---------------------|

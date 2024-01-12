@@ -23,7 +23,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, fileInCart, humanify } from "src/utils";
+import { allFilesInCart, fileInCart, focusStyles, humanify } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import fileSize from "filesize";
@@ -361,8 +361,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
         headerTitle={headerTitle}
         leftElement={
           <Button
-            leftIcon={<FaShoppingCart aria-hidden="true" />}
-            className="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
+            leftIcon={<FaShoppingCart />}
+            className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(

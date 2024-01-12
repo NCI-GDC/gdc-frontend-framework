@@ -3,6 +3,7 @@ import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
 import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { focusStyles } from "src/utils";
 
 interface DropdownWithIconProps {
   /**
@@ -99,7 +100,7 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
-          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}

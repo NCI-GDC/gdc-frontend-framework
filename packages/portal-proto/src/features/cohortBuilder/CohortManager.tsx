@@ -92,6 +92,11 @@ flex
 justify-center
 items-center
 transition-colors
+focus-visible:outline-none
+focus-visible:ring-offset-2
+focus-visible:ring-inset
+focus-visible:ring-2
+focus-visible:ring-focusColor
 `;
 
 /**
@@ -247,7 +252,7 @@ const CohortManager: React.FC = () => {
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 shadow-lg bg-primary"
     >
       {(isCohortIdFetching ||
         isDeleteCohortLoading ||
