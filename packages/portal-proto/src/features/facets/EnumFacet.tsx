@@ -331,7 +331,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           <TextInput
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="values"
+            aria-label={`${
+              facetName ? facetName : fieldNameToTitle(field)
+            } values`}
             className={"p-2"}
             placeholder="Search"
             ref={searchInputRef}
