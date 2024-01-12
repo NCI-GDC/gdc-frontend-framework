@@ -1002,7 +1002,7 @@ const slice = createSlice({
           cohortsAdapter.updateOne(state, {
             id: action.meta.arg ?? getCurrentCohort(state),
             changes: {
-              counts: { ...NullCountsData, status: "pending" },
+              counts: { ...NullCountsData, status: "rejected" },
             },
           });
         } else {
