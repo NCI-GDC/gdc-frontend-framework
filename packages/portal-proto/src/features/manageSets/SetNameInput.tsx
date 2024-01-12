@@ -64,7 +64,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               data-testid="button-close-set-name-input"
               aria-label="Close input"
             >
-              <CloseIcon className="text-nci-red-darkest" />
+              <CloseIcon className="text-nci-red-darkest" aria-hidden="true" />
             </ActionIcon>
             <ActionIcon
               onClick={() => {
@@ -78,7 +78,11 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               data-testid="button-accept-set-name-input"
               aria-label="Rename set"
             >
-              <CheckIcon className="text-nci-green-darkest" size={10} />
+              <CheckIcon
+                className="text-nci-green-darkest"
+                size={10}
+                aria-hidden="true"
+              />
             </ActionIcon>
           </>
         ) : (
@@ -90,7 +94,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               aria-label="Edit set name"
               data-testid="button-edit-set-name"
             >
-              <EditIcon className="text-accent" />
+              <EditIcon className="text-accent" aria-hidden="true" />
             </ActionIcon>
           </>
         )}

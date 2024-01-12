@@ -83,9 +83,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
               : "bg-base-max hover:bg-primary hover:text-base-max"
           }`}
           disabled={disabled}
-          aria-label="download button"
+          aria-label="download TSV"
         >
-          {loading ? <Loader size={14} /> : <DownloadIcon />}
+          {loading ? <Loader size={14} /> : <DownloadIcon aria-hidden="true" />}
         </ActionIcon>
       </div>
     </Tooltip>

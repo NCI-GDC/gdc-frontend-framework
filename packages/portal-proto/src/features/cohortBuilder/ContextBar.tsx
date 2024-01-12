@@ -289,9 +289,7 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={
-                <DownloadIcon size="1rem" aria-label="Files dropdown" />
-              }
+              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
             />
 
             <DropdownWithIcon
@@ -319,12 +317,7 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={
-                <CohortFilterIcon
-                  size="1rem"
-                  aria-label="Custom cohort filters"
-                />
-              }
+              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -351,10 +344,7 @@ const ContextBar = ({
                     biospecimenDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Biospecimen dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -379,10 +369,7 @@ const ContextBar = ({
                     clinicalDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Clinical dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -405,7 +392,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon />}
+                icon={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -413,7 +400,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon />}
+                icon={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>

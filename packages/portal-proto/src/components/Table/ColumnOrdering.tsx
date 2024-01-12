@@ -104,7 +104,11 @@ function ColumnOrdering<TData>({
               showColumnMenu && "border-2 border-primary"
             } hover:bg-primary hover:text-base-max`}
           >
-            {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
+            {!showColumnMenu ? (
+              <BsList size="1.5rem" aria-hidden="true" />
+            ) : (
+              <BsX size="2rem" aria-hidden="true" />
+            )}
           </ActionIcon>
         </Menu.Target>
       </Tooltip>

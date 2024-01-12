@@ -23,6 +23,7 @@ import {
   getAnnotationsLinkParams,
 } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { focusStyles } from "@/utils/index";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -242,7 +243,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               <Button
                 color="primary"
                 variant="outline"
-                className="bg-base-max border-primary font-medium text-sm"
+                className={`bg-base-max border-primary font-medium text-sm ${focusStyles}`}
                 onClick={() => setShowSaveCohort(true)}
               >
                 Save New Cohort
@@ -334,7 +335,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                     <DownloadIcon size="1.25em" />
                   )
                 }
-                className="text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max"
+                className={`text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
                 classNames={{ label: "font-medium text-sm" }}
                 onClick={handleManifestDownload}
               >

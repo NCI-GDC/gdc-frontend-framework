@@ -34,7 +34,7 @@ import {
   NullCountsData,
 } from "./cohortCountsQuery";
 
-const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
+export const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
 
 export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
@@ -666,14 +666,14 @@ const slice = createSlice({
       state,
       action?: PayloadAction<{
         shouldShowMessage?: boolean;
-        currentID?: string;
+        id?: string;
       }>,
     ) => {
       const removedCohort =
-        state.entities[action?.payload?.currentID || getCurrentCohort(state)];
+        state.entities[action?.payload?.id || getCurrentCohort(state)];
       cohortsAdapter.removeOne(
         state,
-        action?.payload?.currentID || getCurrentCohort(state),
+        action?.payload?.id || getCurrentCohort(state),
       );
       // TODO: this will be removed after cohort id issue is fixed in the BE
       // This is just a hack to remove cohort without triggering notification
@@ -697,7 +697,7 @@ const slice = createSlice({
           `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
           `newCohort|${createdCohort.name}|${createdCohort.id}`,
         ];
-      } else {
+      } else if (action?.payload.id === undefined) {
         state.currentCohort = selector.selectAll(state)[0].id;
       }
     },
@@ -842,10 +842,11 @@ const slice = createSlice({
       action: PayloadAction<{
         filters: FilterSet | undefined;
         showMessage: boolean;
+        id?: string;
       }>,
     ) => {
       cohortsAdapter.updateOne(state, {
-        id: getCurrentCohort(state),
+        id: action.payload.id ?? getCurrentCohort(state),
         changes: {
           filters: action.payload.filters || { mode: "and", root: {} },
           modified: false,
@@ -1001,7 +1002,7 @@ const slice = createSlice({
           cohortsAdapter.updateOne(state, {
             id: action.meta.arg ?? getCurrentCohort(state),
             changes: {
-              counts: { ...NullCountsData, status: "pending" },
+              counts: { ...NullCountsData, status: "rejected" },
             },
           });
         } else {
@@ -1015,6 +1016,8 @@ const slice = createSlice({
                 mutationCount: response.data.viewer.explore.ssms.hits.total,
                 fileCount: response.data.viewer.repository.files.hits.total,
                 ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+                cnvOrSsmCaseCount:
+                  response.data.viewer.explore.cnvsOrSsmsCases.hits.total,
                 sequenceReadCaseCount:
                   response.data.viewer.repository.sequenceReads.hits.total,
                 repositoryCaseCount:
@@ -1035,6 +1038,7 @@ const slice = createSlice({
               genesCount: -1,
               mutationCount: -1,
               ssmCaseCount: -1,
+              cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               status: "pending",
@@ -1052,6 +1056,7 @@ const slice = createSlice({
               genesCount: -1,
               mutationCount: -1,
               ssmCaseCount: -1,
+              cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               status: "rejected",
