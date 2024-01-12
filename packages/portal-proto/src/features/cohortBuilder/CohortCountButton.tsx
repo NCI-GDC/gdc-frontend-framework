@@ -19,6 +19,7 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
     cohortCounts.data !== undefined && cohortCounts.data[countName] !== 1
       ? label
       : label.slice(0, -1);
+
   return (
     <div className={className}>
       <div className="flex flex-row flex-nowrap items-center font-heading">
