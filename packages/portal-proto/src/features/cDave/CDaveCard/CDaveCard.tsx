@@ -86,7 +86,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role="button"
             aria-label={`Select ${fieldName} histogram plot`}
           >
-            <BarChartIcon size={20} />
+            <BarChartIcon size={20} aria-hidden="true" />
           </div>
         </Tooltip>
       ),
@@ -100,7 +100,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role={"button"}
             aria-label={`Select ${fieldName} survival plot`}
           >
-            <SurvivalChartIcon size={20} />
+            <SurvivalChartIcon size={20} aria-hidden="true" />
           </div>
         </Tooltip>
       ),
@@ -117,7 +117,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             role="button"
             aria-label={`Select ${fieldName} Box/QQ Plot`}
           >
-            <BoxPlotIcon size={20} className={"rotate-90"} />
+            <BoxPlotIcon size={20} className={"rotate-90"} aria-hidden="true" />
           </div>
         </Tooltip>
       ),
@@ -163,7 +163,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               className="border-primary text-primary-content"
               aria-label={`Remove ${fieldName} card`}
             >
-              <CloseIcon className="text-primary" />
+              <CloseIcon className="text-primary" aria-hidden="true" />
             </ActionIcon>
           </Tooltip>
         </div>

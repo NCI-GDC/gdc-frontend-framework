@@ -63,12 +63,19 @@ interface DropdownWithIconProps {
     tooltip
    */
   tooltip?: string;
+
+  /**
+   * aria-label for the button
+   */
+  buttonAriaLabel?: string;
 }
 
 export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
-  RightIcon = <Dropdown size="1.25em" aria-label="dropdown icon" />,
+  RightIcon = (
+    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown icon" />
+  ),
   TargetButtonChildren,
   targetButtonDisabled,
   dropdownElements,
@@ -79,6 +86,7 @@ export const DropdownWithIcon = ({
   zIndex = undefined,
   customDataTestId = undefined,
   tooltip = undefined,
+  buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
@@ -99,6 +107,7 @@ export const DropdownWithIcon = ({
             rightIcon: "border-l pl-1 -mr-2",
             root: fullHeight ? "h-full" : undefined,
           }}
+          aria-label={buttonAriaLabel}
         >
           <div>
             {tooltip?.length && !targetButtonDisabled ? (

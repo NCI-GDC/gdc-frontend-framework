@@ -48,7 +48,7 @@ const RemoveButton = ({ value }: { value: string }) => (
     variant="transparent"
     aria-label={`remove ${value}`}
   >
-    <ClearIcon size={10} />
+    <ClearIcon size={10} aria-hidden="true" />
   </ActionIcon>
 );
 const QueryRepresentationText = tw.div`
@@ -171,7 +171,11 @@ const IncludeExcludeQueryElement: React.FC<
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
         aria-expanded={expanded}
       >
-        {expanded ? <LeftArrow /> : <RightArrow />}
+        {expanded ? (
+          <LeftArrow aria-hidden="true" />
+        ) : (
+          <RightArrow aria-hidden="true" />
+        )}
       </ActionIcon>
       <Divider
         orientation="vertical"
@@ -385,7 +389,7 @@ export const QueryElement = ({
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >
-        <ClearIcon size="1.5em" className="px-1" />
+        <ClearIcon size="1.5em" className="px-1" aria-hidden="true" />
       </button>
     </QueryItemContainer>
   );

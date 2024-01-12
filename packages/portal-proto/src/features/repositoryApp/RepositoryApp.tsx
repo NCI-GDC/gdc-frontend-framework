@@ -182,7 +182,7 @@ export const RepositoryApp = (): JSX.Element => {
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
-                  leftIcon={<CartIcon />}
+                  leftIcon={<CartIcon aria-hidden="true" />}
                   loading={allFilesLoading}
                   onClick={() => {
                     // check number of files selected before making call
@@ -204,7 +204,7 @@ export const RepositoryApp = (): JSX.Element => {
                 </FunctionButton>
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
-                  leftIcon={<VscTrash />}
+                  leftIcon={<VscTrash aria-hidden="true" />}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

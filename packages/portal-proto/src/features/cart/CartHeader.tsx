@@ -141,9 +141,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
-                downloadActive ? <Loader size={15} /> : <DownloadIcon />
+                downloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
               }
-              rightIcon={<DropdownIcon size={20} />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
             >
               Download Cart
             </Button>
@@ -182,9 +186,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
-                downloadActive ? <Loader size={15} /> : <DownloadIcon />
+                downloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
               }
-              rightIcon={<DropdownIcon size={20} />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
             >
               Download Associated Data
             </Button>
@@ -443,8 +451,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu>
           <Menu.Target>
             <Button
-              leftIcon={<TrashIcon />}
-              rightIcon={<DropdownIcon size={20} />}
+              leftIcon={<TrashIcon aria-hidden="true" />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
               classNames={{
                 root: "bg-nci-red-darker font-medium text-base-max", //TODO: find good color theme for this
                 rightIcon: "border-l pl-1 -mr-2",
@@ -468,15 +476,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         </Menu>
 
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
-          Total of <FileIcon size={25} className="ml-2 mr-1" />{" "}
+          Total of{" "}
+          <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
           {summaryData.total_doc_count === 1 ? "File" : "Files"}
-          <PersonIcon size={25} className="ml-2 mr-1" />{" "}
+          <PersonIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">
             {summaryData.total_case_count.toLocaleString()}
           </b>{" "}
           {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
-          <SaveIcon size={25} className="ml-2 mr-1" />{" "}
+          <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           {fileSize(summaryData.total_file_size)}
         </h1>
       </div>
