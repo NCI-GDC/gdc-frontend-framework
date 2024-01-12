@@ -7,6 +7,10 @@ include:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
 
+pre-commit:
+  except:
+    - tags
+
 .default_rules: &default_rules
   rules:
     - if: '($CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true") && $CI_COMMIT_TAG =~ "/^$/"'
