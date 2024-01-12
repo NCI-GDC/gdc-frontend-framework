@@ -46,7 +46,7 @@ startCoreListening({
   ),
   effect: async (_, listenerApi) => {
     const currentCohortId = selectCurrentCohortId(listenerApi.getState());
-    // need to pass the current cohort id to the case count fetcher because it possible that
+    // need to pass the current cohort id to the case count fetcher because it is possible that
     // the current cohort will be different when the fetch is fulfilled
     listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
   },
