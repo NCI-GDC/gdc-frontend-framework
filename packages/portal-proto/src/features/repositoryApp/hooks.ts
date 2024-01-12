@@ -72,6 +72,13 @@ export const useClearRepositoryFilters = (): ClearFacetFunction => {
   };
 };
 
+export const useClearAllRepositoryFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearRepositoryFilters());
+  }, [dispatch]);
+};
+
 type updateEnumFiltersFunc = (
   enumerationFilters: EnumOperandValue,
   field: string,
