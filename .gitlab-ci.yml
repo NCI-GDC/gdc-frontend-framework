@@ -9,7 +9,7 @@ include:
 
 .default_rules: &default_rules
   rules:
-    - if: ('$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true") && $CI_COMMIT_TAG =~ "/^$/"'
+    - if: '($CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true") && $CI_COMMIT_TAG =~ "/^$/"'
 
 .services:
   allow_failure: true
