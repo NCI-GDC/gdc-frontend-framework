@@ -22,12 +22,18 @@ const ExpandRowComponent = ({
     ) : (
       <div className="flex items-center text-primary cursor-pointer gap-2">
         {isRowExpanded && isColumnExpanded ? (
-          <UpIcon size="1.25em" className="text-accent" data-testid="up-icon" />
+          <UpIcon
+            size="1.25em"
+            className="text-accent"
+            data-testid="up-icon"
+            aria-hidden="true"
+          />
         ) : (
           <DownIcon
             size="1.25em"
             className="text-accent"
             data-testid="down-icon"
+            aria-hidden="true"
           />
         )}
         <span
