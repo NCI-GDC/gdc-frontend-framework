@@ -216,13 +216,13 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {allQueryExpressionsCollapsed ? (
                       <>
-                        <LeftArrowIcon size={16} />
-                        <RightArrowIcon size={16} />
+                        <LeftArrowIcon size={16} aria-hidden="true" />
+                        <RightArrowIcon size={16} aria-hidden="true" />
                       </>
                     ) : (
                       <>
-                        <RightArrowIcon size={16} />
-                        <LeftArrowIcon size={16} />
+                        <RightArrowIcon size={16} aria-hidden="true" />
+                        <LeftArrowIcon size={16} aria-hidden="true" />
                       </>
                     )}
                   </button>
@@ -254,11 +254,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {filtersSectionCollapsed ? (
                       <>
-                        <DownArrowIcon size={30} />
+                        <DownArrowIcon size={30} aria-hidden="true" />
                       </>
                     ) : (
                       <>
-                        <UpArrowIcon size={30} />
+                        <UpArrowIcon size={30} aria-hidden="true" />
                       </>
                     )}
                   </button>

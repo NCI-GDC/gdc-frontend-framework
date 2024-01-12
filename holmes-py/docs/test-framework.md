@@ -25,6 +25,7 @@ The following environment are supported:
 | QA Pink           | APP_ENVIRONMENT       | QA_PINK  | https://172.23.4.239/v2            |
 | QA UAT            | APP_ENVIRONMENT       | QA_UAT   | https://172.23.7.48/v2             |
 | PROD UAT          | APP_ENVIRONMENT       | PROD_UAT | https://uat-portal.gdc.cancer.gov/v2|
+| PROD SOFT LAUNCH  | APP_ENVIRONMENT       | PROD_SOFT_LAUNCH  | https://portal.gdc.cancer.gov     |
 
 These are set in [Default Properties](../env/default/default.properties).
 

@@ -73,7 +73,9 @@ const Banner: React.FC<BannerProps> = ({
         <div className="flex items-center pl-1">
           <Button
             onClick={() => dispatch(dismissNotification(id))}
-            rightIcon={<MdClose className={`${textColor[level]}`} />}
+            rightIcon={
+              <MdClose className={`${textColor[level]}`} aria-hidden="true" />
+            }
             styles={{
               root: {
                 background: "transparent",

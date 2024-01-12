@@ -3,6 +3,7 @@ import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
 import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { focusStyles } from "src/utils";
 
 interface DropdownWithIconProps {
   /**
@@ -63,12 +64,19 @@ interface DropdownWithIconProps {
     tooltip
    */
   tooltip?: string;
+
+  /**
+   * aria-label for the button
+   */
+  buttonAriaLabel?: string;
 }
 
 export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
-  RightIcon = <Dropdown size="1.25em" data-testid="dropdown-icon" />,
+  RightIcon = (
+    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown-icon" />
+  ),
   TargetButtonChildren,
   targetButtonDisabled,
   dropdownElements,
@@ -79,6 +87,7 @@ export const DropdownWithIcon = ({
   zIndex = undefined,
   customDataTestId = undefined,
   tooltip = undefined,
+  buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
@@ -91,7 +100,7 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
-          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
@@ -99,6 +108,7 @@ export const DropdownWithIcon = ({
             rightIcon: "border-l pl-1 -mr-2",
             root: fullHeight ? "h-full" : undefined,
           }}
+          aria-label={buttonAriaLabel}
         >
           <div>
             {tooltip?.length && !targetButtonDisabled ? (

@@ -37,7 +37,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
       <p>Download preparation in progress. Please wait...</p>
       <Button
         variant="white"
-        leftIcon={<CloseIcon />}
+        leftIcon={<CloseIcon aria-hidden="true" />}
         style={{ color: "#155276", cursor: "pointer" }}
         onClick={onClick}
       >
