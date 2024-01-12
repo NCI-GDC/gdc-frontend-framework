@@ -114,9 +114,9 @@ Push latest image:
   before_script:
     - apk add bash
   script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_SHA
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker pull $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+    - docker tag $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker push $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:latest
   except:
     - schedules
 
@@ -134,9 +134,9 @@ Push tagged image:
   before_script:
     - apk add bash
   script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_SHA
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
+    - docker pull $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+    - docker tag $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
+    - docker push $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
 Build UI tests Docker image:
   stage: build_ui_tests_image
