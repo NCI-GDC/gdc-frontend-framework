@@ -4,14 +4,14 @@ import userEvent from "@testing-library/user-event";
 
 describe("<DropdownWithIcon />", () => {
   it("if right icon is NOT provided, dropdown icon should be a default", () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <DropdownWithIcon
         TargetButtonChildren="test"
         dropdownElements={[{ title: "test" }, { title: "test2" }]}
       />,
     );
 
-    expect(getByLabelText("dropdown icon")).toBeDefined();
+    expect(getByTestId("dropdown icon")).toBeDefined();
   });
 
   it("if right icon is provided, provided icon should render", () => {

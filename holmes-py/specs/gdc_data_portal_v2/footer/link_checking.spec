@@ -34,7 +34,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |U.S. Department of Health and Human Services|Receive the latest updates from the Secretary, Blogs,         |
   |National Institutes of Health              |National Institutes of Health, 9000 Rockville Pike, Bethesda,  |
   |National Cancer Institute                  |National Cancer Institute                                      |
-  |USA.gov                                    |Ask USA.gov a question at                                      |
+  |USA.gov                                    |USA.gov helps you locate a                                     |
 
 ## Validate Navigation Links - same tab
 * These links should take the user to correct page in the same tab

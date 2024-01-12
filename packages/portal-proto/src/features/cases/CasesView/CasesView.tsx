@@ -417,7 +417,7 @@ export const ContextualCasesView: React.FC = () => {
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="Biospecimen dropdown" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />
@@ -446,7 +446,7 @@ export const ContextualCasesView: React.FC = () => {
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="Clinical dropdown" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />
