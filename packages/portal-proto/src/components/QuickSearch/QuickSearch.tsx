@@ -136,7 +136,13 @@ export const QuickSearch = (): JSX.Element => {
 
   return (
     <Select
-      icon={loading ? <Loader size={24} /> : <SearchIcon size={24} />}
+      icon={
+        loading ? (
+          <Loader size={24} />
+        ) : (
+          <SearchIcon size={24} aria-hidden="true" />
+        )
+      }
       placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
       data-testid="textbox-quick-search-bar"
       aria-label="Quick Search Input"

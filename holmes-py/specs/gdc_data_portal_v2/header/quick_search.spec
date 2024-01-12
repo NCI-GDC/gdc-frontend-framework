@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test results from quick search bar
 Test-Case       : PEAR-937
 
-tags: gdc-data-portal-v2, regression, search-bar
+tags: gdc-data-portal-v2, regression, search-bar, smoke-test
 
 ## Search - File
 * On GDC Data Portal V2 app
@@ -23,11 +23,11 @@ tags: gdc-data-portal-v2, regression, search-bar
 * Is text "300223b2-7479-4849-8de5-14b30c586c3a" present on the page
 
 ## Search - Project
-* Quick search for "GENIE-UHN"
+* Quick search for "BEATAML1.0-COHORT"
 * Validate the quick search bar result in position "1" of the result list has the abbreviation "PR"
 * Select the quick search bar result in position "1"
-* Is text "AACR Project GENIE - Contributed by Princess Margaret Cancer Centre" present on the page
-* Is text "phs001337" present on the page
+* Is text "Functional Genomic Landscape of Acute Myeloid Leukemia" present on the page
+* Is text "phs001657" present on the page
 
 ## Search - Gene
 * Quick search for "ENSG00000168702"

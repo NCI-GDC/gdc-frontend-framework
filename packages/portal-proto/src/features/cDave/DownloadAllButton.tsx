@@ -25,7 +25,7 @@ const DownloadAllButton: React.FC = () => {
         { title: "PNG", onClick: downloadAllPng },
       ]}
       TargetButtonChildren={"Download All Images"}
-      LeftIcon={<DownloadIcon />}
+      LeftIcon={<DownloadIcon aria-hidden="true" />}
     />
   );
 };

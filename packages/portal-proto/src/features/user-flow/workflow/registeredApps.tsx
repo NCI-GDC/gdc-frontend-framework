@@ -32,7 +32,7 @@ export const COHORTS = [
 export const REGISTERED_APPS = [
   {
     name: "Clinical Data Analysis",
-    icon: <ClinicalDataIcon />,
+    icon: <ClinicalDataIcon aria-hidden="true" />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     countsField: "repositoryCaseCount",
@@ -45,7 +45,14 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    icon: <CohortBuilderIcon width={64} height={64} viewBox="0 0 60 60" />,
+    icon: (
+      <CohortBuilderIcon
+        width={64}
+        height={64}
+        viewBox="0 0 60 60"
+        aria-hidden="true"
+      />
+    ),
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
@@ -60,7 +67,7 @@ export const REGISTERED_APPS = [
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     id: "MutationFrequencyApp",
-    countsField: "ssmCaseCount",
+    countsField: "cnvOrSsmCaseCount",
     description:
       "Visualize most frequently mutated genes and somatic mutations.",
     noDataTooltip:
@@ -69,7 +76,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Repository",
-    icon: <RepositoryIcon />,
+    icon: <RepositoryIcon aria-hidden="true" />,
     tags: ["files"],
     hasDemo: false,
     countsField: "repositoryCaseCount",
@@ -79,7 +86,14 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Projects",
-    icon: <ProjectsIcon width={64} height={64} viewBox="0 -20 128 128" />,
+    icon: (
+      <ProjectsIcon
+        width={64}
+        height={64}
+        viewBox="0 -20 128 128"
+        aria-hidden="true"
+      />
+    ),
     tags: [],
     hasDemo: false,
     id: "Projects",
@@ -89,7 +103,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    icon: <CohortComparisonIcon />,
+    icon: <CohortComparisonIcon aria-hidden="true" />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
@@ -117,7 +131,7 @@ export const REGISTERED_APPS = [
   */
   {
     name: "Set Operations",
-    icon: <SetOperationsIcon />,
+    icon: <SetOperationsIcon aria-hidden="true" />,
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
@@ -129,7 +143,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Sequence Reads",
-    icon: <SequenceReadsIcon />,
+    icon: <SequenceReadsIcon aria-hidden="true" />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -142,7 +156,7 @@ export const REGISTERED_APPS = [
   },
   {
     name: "BAM Slicing Download",
-    icon: <BAMSlicingDownloadIcon />,
+    icon: <BAMSlicingDownloadIcon aria-hidden="true" />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",
@@ -153,7 +167,14 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    icon: <ProteinPaintIcon height={48} width={80} viewBox="-12 0 80 48" />,
+    icon: (
+      <ProteinPaintIcon
+        height={48}
+        width={80}
+        viewBox="-12 0 80 48"
+        aria-hidden="true"
+      />
+    ),
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
     description:
@@ -167,13 +188,20 @@ export const REGISTERED_APPS = [
   },
   {
     name: "OncoMatrix",
-    icon: <OncoMatrixIcon className="m-auto" height={48} width={80} />,
+    icon: (
+      <OncoMatrixIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        aria-hidden="true"
+      />
+    ),
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
-    countsField: "ssmCaseCount",
+    countsField: "cnvOrSsmCaseCount",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
@@ -181,7 +209,14 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Gene Expression Clustering",
-    icon: <GeneExpressionIcon className="m-auto" height={48} width={80} />,
+    icon: (
+      <GeneExpressionIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        aria-hidden="true"
+      />
+    ),
     tags: ["variantAnalysis", "cnv", "ssm"],
     hasDemo: true,
     description:

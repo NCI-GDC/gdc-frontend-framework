@@ -59,9 +59,9 @@ export const CollapsibleContainer = (
                   <div className="flex gap-1 items-center">
                     <>
                       {isCollapsed ? (
-                        <ExpandMoreIcon size="1.75em" />
+                        <ExpandMoreIcon size="1.75em" aria-hidden="true" />
                       ) : (
-                        <ExpandLessIcon size="1.75em" />
+                        <ExpandLessIcon size="1.75em" aria-hidden="true" />
                       )}
                     </>
 
@@ -74,9 +74,9 @@ export const CollapsibleContainer = (
                     </>
                   </div>
                 ) : isCollapsed ? (
-                  <ExpandMoreIcon size="1.75em" />
+                  <ExpandMoreIcon size="1.75em" aria-hidden="true" />
                 ) : (
-                  <ExpandLessIcon size="1.75em" />
+                  <ExpandLessIcon size="1.75em" aria-hidden="true" />
                 )}
               </button>
             </span>

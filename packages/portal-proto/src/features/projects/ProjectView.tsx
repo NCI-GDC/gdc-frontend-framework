@@ -268,12 +268,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               dropdownElements={[
                 {
                   title: "TSV",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                  icon: <DownloadIcon size={16} aria-hidden="true" />,
                   onClick: handleBiospeciemenTSVDownload,
                 },
                 {
                   title: "JSON",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                  icon: <DownloadIcon size={16} aria-hidden="true" />,
                   onClick: handleBiospeciemenJSONDownload,
                 },
               ]}
@@ -286,7 +286,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 biospecimenDownloadActive ? (
                   <Loader size={20} />
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="download icon" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />
@@ -294,12 +294,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               dropdownElements={[
                 {
                   title: "TSV",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                  icon: <DownloadIcon size={16} aria-hidden="true" />,
                   onClick: handleClinicalTSVDownload,
                 },
                 {
                   title: "JSON",
-                  icon: <DownloadIcon size={16} aria-label="download icon" />,
+                  icon: <DownloadIcon size={16} aria-hidden="true" />,
                   onClick: handleClinicalJSONDownload,
                 },
               ]}
@@ -312,7 +312,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 clinicalDownloadActive ? (
                   <Loader size={20} />
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="download icon" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />

@@ -47,7 +47,7 @@ import {
   addNewSavedCohort,
   hideModal,
 } from "@gff/core";
-import { useCohortFacetFilters } from "./utils";
+import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
@@ -376,7 +376,11 @@ const CohortManager: React.FC = () => {
 
       {showSaveCohort && (
         <SaveCohortModal
-          initialName={cohortName}
+          initialName={
+            !INVALID_COHORT_NAMES.includes(cohortName.toLowerCase())
+              ? cohortName
+              : undefined
+          }
           onClose={() => setShowSaveCohort(false)}
           cohortId={cohortId}
           filters={filters}
@@ -448,8 +452,9 @@ const CohortManager: React.FC = () => {
                   }}
                   disabled={!cohortModified}
                   $isDiscard={true}
+                  aria-label="Discard cohort changes"
                 >
-                  <DiscardIcon aria-label="discard cohort changes" />
+                  <DiscardIcon aria-hidden="true" />
                 </CohortGroupButton>
               </span>
             </Tooltip>
@@ -519,13 +524,14 @@ const CohortManager: React.FC = () => {
                   LeftIcon={
                     <SaveIcon
                       size="1.5em"
-                      aria-label="Save cohort"
                       className="-mr-2.5"
+                      aria-hidden="true"
                     />
                   }
                   TargetButtonChildren=""
                   fullHeight
                   disableTargetWidth
+                  buttonAriaLabel="Save cohort"
                 />
               </span>
             </Tooltip>
@@ -542,8 +548,9 @@ const CohortManager: React.FC = () => {
                 onClick={() => coreDispatch(addNewDefaultUnsavedCohort())}
                 data-testid="addButton"
                 disabled={hasUnsavedCohorts}
+                aria-label="Add cohort"
               >
-                <AddIcon size="1.5em" aria-label="Add cohort" />
+                <AddIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
             <Tooltip label="Delete Cohort" position="bottom" withArrow>
@@ -552,8 +559,9 @@ const CohortManager: React.FC = () => {
                 onClick={() => {
                   setShowDelete(true);
                 }}
+                aria-label="Delete cohort"
               >
-                <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+                <DeleteIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
             <Tooltip label="Import New Cohort" position="bottom" withArrow>
@@ -562,8 +570,9 @@ const CohortManager: React.FC = () => {
                 onClick={() =>
                   coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
                 }
+                aria-label="Upload cohort"
               >
-                <UploadIcon size="1.5em" aria-label="Upload cohort" />
+                <UploadIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
 
@@ -579,11 +588,12 @@ const CohortManager: React.FC = () => {
                       exportCohort(caseIds, cohortName);
                     }
                   }}
+                  aria-label="Download cohort"
                 >
                   {exportCohortPending ? (
                     <Loader />
                   ) : (
-                    <DownloadIcon size="1.5em" aria-label="Download cohort" />
+                    <DownloadIcon size="1.5em" aria-hidden="true" />
                   )}
                 </CohortGroupButton>
               </span>

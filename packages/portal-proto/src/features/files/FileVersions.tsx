@@ -118,23 +118,17 @@ const FileVersions = ({
                   dropdownElements={[
                     {
                       title: "TSV",
-                      icon: (
-                        <DownloadIcon size={16} aria-label="download icon" />
-                      ),
+                      icon: <DownloadIcon size={16} aria-hidden="true" />,
                       onClick: handleDownloadTSV,
                     },
                     {
                       title: "JSON",
-                      icon: (
-                        <DownloadIcon size={16} aria-label="download icon" />
-                      ),
+                      icon: <DownloadIcon size={16} aria-hidden="true" />,
                       onClick: downloadVersionJSON,
                     },
                   ]}
                   TargetButtonChildren="Download"
-                  LeftIcon={
-                    <DownloadIcon size="1rem" aria-label="download icon" />
-                  }
+                  LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
                 />
               </div>
             }
