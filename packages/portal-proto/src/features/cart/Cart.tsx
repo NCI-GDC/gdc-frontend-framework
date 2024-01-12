@@ -80,11 +80,12 @@ const Cart: React.FC = () => {
               className="hover:bg-[#FFFFFF50] pl-0 relative"
               data-testid="expand-collapse-button"
             >
-              How to download files in my cart?
               <FaExclamationCircle
                 color="white"
                 className="h-6 w-6 absolute left-[-2.2rem] top-4"
+                aria-label="Warning"
               />
+              How to download files in my cart?
             </Accordion.Control>
             <Accordion.Panel>
               <div data-testid="download-info">

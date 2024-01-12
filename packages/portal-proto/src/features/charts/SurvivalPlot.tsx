@@ -505,12 +505,12 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
               <Tooltip label="Download Survival Plot data or image">
                 <DownloadButton
                   data-testid="button-download-survival-plot"
-                  aria-label="Download button with an icon"
+                  aria-label="Download Survival Plot data or image"
                 >
                   {downloadInProgress ? (
                     <Loader size={16} />
                   ) : (
-                    <DownloadIcon size="1.25em" />
+                    <DownloadIcon size="1.25em" aria-hidden="true" />
                   )}
                 </DownloadButton>
               </Tooltip>
@@ -548,9 +548,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <DownloadButton
               onClick={() => setXDomain(undefined)}
               data-testid="button-reset-survival-plot"
-              aria-label="reset button with an icon"
+              aria-label="Reset Survival Plot Zoom"
             >
-              <ResetIcon size="1.15rem"></ResetIcon>
+              <ResetIcon size="1.15rem" aria-hidden="true"></ResetIcon>
             </DownloadButton>
           </Tooltip>
         </div>

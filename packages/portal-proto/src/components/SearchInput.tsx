@@ -234,7 +234,7 @@ export const SearchInput: React.FC = () => {
             ? null
             : `${comboboxItemId}${activedescendant}`
         }
-        icon={<SearchIcon size={24} />}
+        icon={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
         data-testid="textbox-search-bar"
         aria-label="App Search Input"

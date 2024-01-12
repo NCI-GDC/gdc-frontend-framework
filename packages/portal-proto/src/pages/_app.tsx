@@ -178,6 +178,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                       "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
                   },
+                  events: {
+                    focused: true,
+                  },
                   withinPortal: true,
                   position: "bottom",
                 },

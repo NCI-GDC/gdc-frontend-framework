@@ -26,8 +26,9 @@ import {
   selectProjectFiltersByName,
   selectFilters,
   updateProjectFilter,
+  clearProjectFilters,
 } from "@/features/projectsCenter/projectCenterFiltersSlice";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
 
@@ -125,6 +126,13 @@ export const useClearProjectsFilters = (): ClearFacetFunction => {
   return (field: string) => {
     dispatch(removeProjectFilter(field));
   };
+};
+
+export const useClearAllProjectFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearProjectFilters());
+  }, [dispatch]);
 };
 
 /**

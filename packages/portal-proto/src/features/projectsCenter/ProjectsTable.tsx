@@ -163,6 +163,7 @@ const ProjectsTable: React.FC = () => {
   const [expandedColumnId, setExpandedColumnId] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);
   const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
+
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
       projectsTableColumnHelper.display({
@@ -173,11 +174,11 @@ const ProjectsTable: React.FC = () => {
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -186,7 +187,7 @@ const ProjectsTable: React.FC = () => {
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-label={`Select the ${row.id} project row`}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -269,7 +270,13 @@ const ProjectsTable: React.FC = () => {
         enableSorting: true,
       }),
     ],
-    [projectsTableColumnHelper, setEntityMetadata, expandedColumnId],
+    [
+      projectsTableColumnHelper,
+      setEntityMetadata,
+      expandedColumnId,
+      activePage,
+      data?.pagination?.total,
+    ],
   );
 
   const getRowId = (originalRow: ProjectDataType) => {

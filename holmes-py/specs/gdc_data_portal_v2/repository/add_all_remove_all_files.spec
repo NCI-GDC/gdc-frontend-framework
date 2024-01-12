@@ -28,20 +28,20 @@ tags: gdc-data-portal-v2, repository, regression
 * The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
-* Make the following selections on a filter card
-  |facet_name       |selection                            |
-  |-----------------|-------------------------------------|
-  |Data Type        |Allele-specific Copy Number Segment  |
 
 ## Add All Files and Remove All Files buttons
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Data Type        |clear selection      |
 * Expand or contract a filter
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Workflow Type  |plus-icon            |
+  |Workflow Type          |plus-icon            |
 * Make the following selections on a filter card
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Workflow Type          |GATK4 MuTect2        |
+  |Workflow Type          |VCF LiftOver         |
 * Select "Add All" on the Repository page
 * Is modal with text "files to the cart" present on the page and "Keep Modal"
 * Select "Add All" on the Repository page
@@ -54,9 +54,13 @@ tags: gdc-data-portal-v2, repository, regression
 * Make the following selections on a filter card
   |facet_name             |label                |
   |-----------------------|---------------------|
-  |Workflow Type          |GATK4 MuTect2        |
+  |Workflow Type          |VCF LiftOver         |
 
 A separate specification ensures the cart has 0 files
 ## Remove All Files from Cart
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Workflow Type    |clear selection      |
 * Select "Remove All" on the Repository page
 * The cart should have "0" files

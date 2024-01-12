@@ -1,8 +1,9 @@
+// This table can be found at /analysis_page?app=MutationFrequencyApp Mutations tab
 import { humanify } from "@/utils/index";
 import { SSMSData, FilterSet } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useId } from "react";
 import { Checkbox } from "@mantine/core";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import {
@@ -45,6 +46,8 @@ export const useGenerateSMTableColumns = ({
   setEntityMetadata,
   projectId,
   generateFilters,
+  currentPage,
+  totalPages,
 }: {
   toggledSsms: string[];
   isDemoMode: boolean;
@@ -59,7 +62,10 @@ export const useGenerateSMTableColumns = ({
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   projectId: string;
   generateFilters: (ssmId: string) => Promise<FilterSet>;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<SomaticMutation>[] => {
+  const componentId = useId();
   const SMTableColumnHelper = useMemo(
     () => createColumnHelper<SomaticMutation>(),
     [],
@@ -75,11 +81,11 @@ export const useGenerateSMTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -88,7 +94,7 @@ export const useGenerateSMTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-labelledby={`${componentId}-mutation-table-${row.original.mutation_id}`}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -179,6 +185,7 @@ export const useGenerateSMTableColumns = ({
             shouldOpenModal={isModal && geneSymbol === undefined}
             shouldLink={projectId !== undefined}
             setEntityMetadata={setEntityMetadata}
+            ariaId={`${componentId}-mutation-table-${row.original.mutation_id}`}
           />
         ),
       }),
@@ -291,6 +298,9 @@ export const useGenerateSMTableColumns = ({
       setEntityMetadata,
       generateFilters,
       toggledSsms,
+      componentId,
+      currentPage,
+      totalPages,
     ],
   );
 
