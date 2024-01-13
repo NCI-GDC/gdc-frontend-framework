@@ -165,11 +165,17 @@ trigger_ui_tests_yellow:
   variables:
     APP_ENVIRONMENT: QA_YELLOW
   needs:
-    - job: deploy_qa/uat
+    - job: deploy_qa/yellow
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/yellow"'
       allow_failure: true
+
+trigger_ui_tests_pink:
+  extends: .trigger_ui_tests
+  stage: .trigger_ui_tests
+  variables:
+    APP_ENVIRONMENT: QA_PINK
 
 trigger_ui_tests_uat:
   extends: .trigger_ui_tests
@@ -180,7 +186,7 @@ trigger_ui_tests_uat:
     - job: deploy_qa/uat
       artifacts: true
   rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
+    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat"'
       allow_failure: true
 
 trigger_ui_tests_scheduled:
@@ -190,4 +196,4 @@ trigger_ui_tests_scheduled:
       when: always
   parallel:
     matrix:
-      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
+      - APP_ENVIRONMENT: ["QA_PINK", "QA_UAT"]
