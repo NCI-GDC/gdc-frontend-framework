@@ -40,6 +40,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
+  const ppPromise = useRef<Promise>();
+  const newPpInstanceTimeout = useRef<number>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -93,41 +95,52 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userDetails };
       if (isEqual(prevData.current, data)) return;
-
       prevData.current = data;
-
-      const toolContainer = rootElem.parentNode.parentNode
-        .parentNode as HTMLElement;
-      toolContainer.style.backgroundColor = "#fff";
       setIsLoading(true);
 
       if (ppRef.current) {
         ppRef.current.update({ filter0: prevData.current.filter0 });
+      } else if (ppPromise.current) {
+        // in case another state update comes in when there is already
+        // an instance that is being created
+        ppPromise.current.then(() => {
+          if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
+          else console.error("missing ppRef.current");
+        });
       } else {
-        const pp_holder = rootElem.querySelector(".sja_root_holder");
-        if (pp_holder) pp_holder.remove();
+        const toolContainer = rootElem.parentNode.parentNode
+          .parentNode as HTMLElement;
+        toolContainer.style.backgroundColor = "#fff";
 
-        const data = getGeneExpressionTrack(
-          props,
-          prevData.current.filter0,
-          callback,
-          geneExpCallbacks,
-          appCallbacks,
-        );
-        if (!data) return;
+        if (newPpInstanceTimeout.current)
+          clearTimeout(newPpInstanceTimeout.current);
+        // debounce
+        newPpInstanceTimeout.current = setTimeout(() => {
+          const pp_holder = rootElem.querySelector(".sja_root_holder");
+          if (pp_holder) pp_holder.remove();
 
-        const arg = Object.assign(
-          {
-            holder: rootElem,
-            noheader: true,
-            nobox: true,
-            hide_dsHandles: true,
-          },
-          data,
-        ) as GeneExpressionArg;
+          const data = getGeneExpressionTrack(
+            props,
+            prevData.current.filter0,
+            callback,
+            geneExpCallbacks,
+            appCallbacks,
+          );
+          if (!data) return;
 
-        runproteinpaint(arg).then((pp) => {
-          ppRef.current = pp;
+          const arg = Object.assign(
+            {
+              holder: rootElem,
+              noheader: true,
+              nobox: true,
+              hide_dsHandles: true,
+            },
+            data,
+          ) as GeneExpressionArg;
+
+          ppPromise.current = runproteinpaint(arg).then((pp) => {
+            ppRef.current = pp;
+          });
         });
       }
     },
