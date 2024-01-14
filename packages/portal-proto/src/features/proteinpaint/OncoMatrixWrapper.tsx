@@ -40,6 +40,8 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
+  const ppPromise = useRef<Promise>();
+  const newPpInstanceTimeout = useRef<number>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -93,42 +95,55 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userDetails };
       if (isEqual(prevData.current, data)) return;
-
       prevData.current = data;
-
-      const toolContainer = rootElem.parentNode.parentNode
-        .parentNode as HTMLElement;
-      toolContainer.style.backgroundColor = "#fff";
       setIsLoading(true);
 
       if (ppRef.current) {
-        ppRef.current.update({ filter0: prevData.current.filter0 });
-      } else {
-        const pp_holder = rootElem.querySelector(".sja_root_holder");
-        if (pp_holder) pp_holder.remove();
-
-        const data = getMatrixTrack(
-          props,
-          prevData.current.filter0,
-          callback,
-          matrixCallbacks,
-          appCallbacks,
-        );
-        if (!data) return;
-
-        const arg = Object.assign(
-          {
-            holder: rootElem,
-            noheader: true,
-            nobox: true,
-            hide_dsHandles: true,
-          },
-          data,
-        ) as MatrixArg;
-
-        runproteinpaint(arg).then((pp) => {
-          ppRef.current = pp;
+        ppRef.current.update({ filter0: data.filter0 });
+      } else if (ppPromise.current) {
+        // in case another state update comes in when there is already
+        // an instance that is being created
+        ppPromise.current.then(() => {
+          if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
+          else console.error("missing ppRef.current");
         });
+      } else {
+        const toolContainer = rootElem.parentNode.parentNode
+          .parentNode as HTMLElement;
+        toolContainer.style.backgroundColor = "#fff";
+
+        if (newPpInstanceTimeout.current)
+          clearTimeout(newPpInstanceTimeout.current);
+        // debounce
+        newPpInstanceTimeout.current = setTimeout(() => {
+          const pp_holder = rootElem.querySelector(".sja_root_holder");
+          if (pp_holder) pp_holder.remove();
+
+          newPpInstanceTimeout.current = 0;
+          const matrixArgs = getMatrixTrack(
+            props,
+            prevData.current.filter0,
+            callback,
+            matrixCallbacks,
+            appCallbacks,
+          );
+          if (!data) return;
+
+          const arg = Object.assign(
+            {
+              holder: rootElem,
+              noheader: true,
+              nobox: true,
+              hide_dsHandles: true,
+            },
+            matrixArgs,
+          ) as MatrixArg;
+
+          ppPromise.current = runproteinpaint(arg).then((pp) => {
+            ppRef.current = pp;
+            return pp;
+          });
+        }, 1000);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
