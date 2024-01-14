@@ -40,8 +40,8 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
-  const ppPromise = useRef<Promise>();
-  const newPpInstanceTimeout = useRef<number>();
+  const ppPromise = useRef<Promise<PpApi>>();
+  const debouncedInitialUpdatesTimeout = useRef<number>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -99,51 +99,56 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       setIsLoading(true);
 
       if (ppRef.current) {
+        console.log(101);
         ppRef.current.update({ filter0: data.filter0 });
-      } else if (ppPromise.current) {
+      } else if (ppPromise.current && !isDemoMode) {
         // in case another state update comes in when there is already
-        // an instance that is being created
-        ppPromise.current.then(() => {
-          if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
-          else console.error("missing ppRef.current");
-        });
+        // an instance that is being created, debounce to the last update
+        // Except: during startup in demo mode, the filter0 is not expecect to change,
+        // so don't trigger a non-user reactive update right after the initial rendering
+        if (debouncedInitialUpdatesTimeout.current)
+          clearTimeout(debouncedInitialUpdatesTimeout.current);
+
+        debouncedInitialUpdatesTimeout.current = setTimeout(() => {
+          ppPromise.current.then(() => {
+            // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
+            // will not update unnecessarily
+            if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
+            else console.error("missing ppRef.current");
+          });
+        }, 1000);
       } else {
         const toolContainer = rootElem.parentNode.parentNode
           .parentNode as HTMLElement;
         toolContainer.style.backgroundColor = "#fff";
 
-        if (newPpInstanceTimeout.current)
-          clearTimeout(newPpInstanceTimeout.current);
-        // debounce
-        newPpInstanceTimeout.current = setTimeout(() => {
-          const pp_holder = rootElem.querySelector(".sja_root_holder");
-          if (pp_holder) pp_holder.remove();
+        const pp_holder = rootElem.querySelector(".sja_root_holder");
+        if (pp_holder) pp_holder.remove();
 
-          newPpInstanceTimeout.current = 0;
-          const matrixArgs = getMatrixTrack(
-            props,
-            prevData.current.filter0,
-            callback,
-            matrixCallbacks,
-            appCallbacks,
-          );
-          if (!data) return;
+        const matrixArgs = getMatrixTrack(
+          props,
+          prevData.current.filter0,
+          callback,
+          matrixCallbacks,
+          appCallbacks,
+        );
+        if (!data) return;
 
-          const arg = Object.assign(
-            {
-              holder: rootElem,
-              noheader: true,
-              nobox: true,
-              hide_dsHandles: true,
-            },
-            matrixArgs,
-          ) as MatrixArg;
+        const arg = Object.assign(
+          {
+            holder: rootElem,
+            noheader: true,
+            nobox: true,
+            hide_dsHandles: true,
+          },
+          matrixArgs,
+        ) as MatrixArg;
 
-          ppPromise.current = runproteinpaint(arg).then((pp) => {
-            ppRef.current = pp;
-            return pp;
-          });
-        }, 1000);
+        ppPromise.current = runproteinpaint(arg).then((pp) => {
+          // the ppRef.current is set after the tool fully renders
+          ppRef.current = pp;
+          return pp;
+        });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
