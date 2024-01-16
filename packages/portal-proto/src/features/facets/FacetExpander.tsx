@@ -39,7 +39,12 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
           data-testid="plus-icon"
         >
           <div className="flex flex-row flex-nowrap items-center ">
-            <MoreIcon className="text-accent" key="show-more" size="1.5em" />
+            <MoreIcon
+              className="text-accent"
+              key="show-more"
+              size="1.5em"
+              aria-hidden="true"
+            />
             <ExpanderLabel>{remainingValues} more</ExpanderLabel>
           </div>
         </button>
@@ -54,6 +59,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
               key="show-less"
               size="1.5em"
               onClick={() => onShowChanged(!isGroupExpanded)}
+              aria-hidden="true"
             />
             <ExpanderLabel>show less</ExpanderLabel>
           </div>

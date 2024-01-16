@@ -62,6 +62,7 @@ import {
   selectAllCohorts,
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
+  UNSAVED_COHORT_NAME,
 } from "./availableCohortsSlice";
 
 import {
@@ -158,4 +159,5 @@ export {
   extractFiltersWithPrefixFromFilterSet,
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
+  UNSAVED_COHORT_NAME,
 };
