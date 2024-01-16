@@ -74,7 +74,7 @@ const Cart: React.FC = () => {
         >
           <Accordion.Item
             value="howTo"
-            className="border border-cartDarkerOrange text-secondary-contrast-lighter bg-cartLighterOrange"
+            className="border border-cartDarkerOrange rounded-none text-secondary-contrast-lighter bg-cartLighterOrange"
           >
             <Accordion.Control
               className="hover:bg-[#FFFFFF50] pl-0 relative"
