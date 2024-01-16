@@ -99,7 +99,6 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       setIsLoading(true);
 
       if (ppRef.current) {
-        console.log(101);
         ppRef.current.update({ filter0: data.filter0 });
       } else if (ppPromise.current && !isDemoMode) {
         // in case another state update comes in when there is already
