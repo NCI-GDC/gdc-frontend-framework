@@ -41,7 +41,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
-  const debouncedInitialUpdatesTimeout = useRef<number>();
+  const debouncedInitialUpdatesTimeout =
+    useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
