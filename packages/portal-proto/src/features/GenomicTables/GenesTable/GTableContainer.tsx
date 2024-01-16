@@ -425,6 +425,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 },
               ]}
               TargetButtonChildren="Save/Edit Gene Set"
+              targetButtonDisabled={isFetching && !isSuccess}
               disableTargetWidth={true}
               LeftIcon={
                 selectedGenes.length ? (
