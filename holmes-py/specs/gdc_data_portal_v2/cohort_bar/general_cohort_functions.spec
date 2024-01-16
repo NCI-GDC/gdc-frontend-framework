@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Bar - saving, switching, and deleting a cohort
 Test-case       : PEAR-492,PEAR-493,PEAR-498
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
