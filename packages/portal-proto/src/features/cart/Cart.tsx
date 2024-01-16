@@ -69,7 +69,7 @@ const Cart: React.FC = () => {
           classNames={{
             item: "border-cartDarkerOrange border-l-[3rem]",
             chevron: "text-cartDarkerOrange",
-            label: "text-sm font-bold uppercase font-heading ml-4",
+            label: "text-sm font-bold uppercase font-heading py-2 ml-4",
           }}
         >
           <Accordion.Item
@@ -82,7 +82,7 @@ const Cart: React.FC = () => {
             >
               <FaExclamationCircle
                 color="white"
-                className="h-6 w-6 absolute left-[-2.2rem] top-4"
+                className="h-6 w-6 absolute left-[-2.2rem] top-[0.4rem]"
                 aria-label="Warning"
               />
               How to download files in my cart?
