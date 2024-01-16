@@ -13,7 +13,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
@@ -28,7 +28,10 @@ import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
-import { useClearLocalFilterWhenCohortChanges } from "@/features/repositoryApp/hooks";
+import {
+  useClearLocalFilterWhenCohortChanges,
+  useClearAllRepositoryFilters,
+} from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
@@ -111,6 +114,11 @@ export const RepositoryApp = (): JSX.Element => {
   };
   const [active, setActive] = useState(false);
 
+  const clearAllFilters = useClearAllRepositoryFilters();
+  useEffect(() => {
+    return () => clearAllFilters();
+  }, [clearAllFilters]);
+
   useClearLocalFilterWhenCohortChanges();
 
   const viewImageDisabled =
@@ -182,7 +190,7 @@ export const RepositoryApp = (): JSX.Element => {
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
-                  leftIcon={<CartIcon />}
+                  leftIcon={<CartIcon aria-hidden="true" />}
                   loading={allFilesLoading}
                   onClick={() => {
                     // check number of files selected before making call
@@ -204,7 +212,7 @@ export const RepositoryApp = (): JSX.Element => {
                 </FunctionButton>
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
-                  leftIcon={<VscTrash />}
+                  leftIcon={<VscTrash aria-hidden="true" />}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

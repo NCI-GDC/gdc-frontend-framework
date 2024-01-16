@@ -72,7 +72,6 @@ export const BaseModal: React.FC<Props> = ({
           color: theme.extend.colors["gdc-grey"].darkest,
         },
       })}
-      withinPortal={false}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}
       closeOnEscape={closeOnEscape ?? true}

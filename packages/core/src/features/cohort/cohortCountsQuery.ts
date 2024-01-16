@@ -17,6 +17,7 @@ import {
  *  @property genesCount - number of genes in cohort
  *  @property mutationCount - number of mutations in cohort
  *  @property ssmCaseCount - number of cases with somatic mutations in cohort
+ *  @property cnvOrSsmCaseCount - number of cases with somatic mutations or copy number variations in cohort
  *  @property sequenceReadCaseCount - number of cases with sequence reads in cohort
  *  @property repositoryCaseCount - number of cases using the repository index in cohort
  *  @category Cohort
@@ -27,6 +28,7 @@ export interface CountsData {
   readonly genesCount: number;
   readonly mutationCount: number;
   readonly ssmCaseCount: number;
+  readonly cnvOrSsmCaseCount: number;
   readonly sequenceReadCaseCount: number;
   readonly repositoryCaseCount: number;
 }
@@ -45,6 +47,7 @@ export const NullCountsData: CountsDataAndStatus = {
   genesCount: -1,
   mutationCount: -1,
   ssmCaseCount: -1,
+  cnvOrSsmCaseCount: -1,
   sequenceReadCaseCount: -1,
   repositoryCaseCount: -1,
   status: "uninitialized",
@@ -53,6 +56,7 @@ export const NullCountsData: CountsDataAndStatus = {
 const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument,
   $ssmCaseFilter: FiltersArgument,
+  $cnvOrSsmCaseFilter: FiltersArgument,
   $sequenceReadsCaseFilter: FiltersArgument) {
   viewer {
     repository {
@@ -88,8 +92,13 @@ const CountsGraphQLQuery = `
           total
         }
       }
-     ssmsCases : cases {
+      ssmsCases : cases {
         hits(case_filters: $ssmCaseFilter, first: 0) {
+          total
+        }
+      }
+      cnvsOrSsmsCases : cases {
+        hits(case_filters: $cnvOrSsmCaseFilter, first: 0) {
           total
         }
       }
@@ -115,6 +124,18 @@ export const fetchCohortCaseCounts = createAsyncThunk<
             operator: "includes",
             field: "cases.available_variation_data",
             operands: ["ssm"],
+          },
+        },
+      }),
+    );
+    const caseCNVOrSSMFilter = buildCohortGqlOperator(
+      joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
+        mode: "and",
+        root: {
+          "cases.available_variation_data": {
+            operator: "includes",
+            field: "cases.available_variation_data",
+            operands: ["ssm", "cnv"],
           },
         },
       }),
@@ -146,6 +167,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
     const graphQlFilters = {
       filters: cohortFiltersGQL ?? {},
       ssmCaseFilter: caseSSMFilter,
+      cnvOrSsmCaseFilter: caseCNVOrSSMFilter,
       sequenceReadsCaseFilter: sequenceReadsFilters,
     };
     return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);

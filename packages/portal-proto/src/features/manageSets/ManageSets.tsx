@@ -113,7 +113,11 @@ const ManageSets: React.FC = () => {
         <Grid justify="center" className="flex-grow">
           <Grid.Col span={4} className="my-20 flex flex-col items-center">
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
-              <FileAddIcon size={80} className="text-primary-darkest" />
+              <FileAddIcon
+                size={80}
+                className="text-primary-darkest"
+                aria-hidden="true"
+              />
             </div>
             <p
               data-testid="text-no-saved-sets-available"

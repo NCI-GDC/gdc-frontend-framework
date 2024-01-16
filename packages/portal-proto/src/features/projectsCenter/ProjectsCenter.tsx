@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useClearAllProjectFilters } from "./hooks";
 import ProjectFacetPanel from "./ProjectFacetPanel";
 import ProjectsTable from "./ProjectsTable";
 import { PersistGate } from "redux-persist/integration/react";
@@ -8,6 +9,11 @@ import { AppStore } from "./appApi";
 const persistor = persistStore(AppStore);
 
 export const ProjectsCenter = (): JSX.Element => {
+  const clearAllFilters = useClearAllProjectFilters();
+  useEffect(() => {
+    return () => clearAllFilters();
+  }, [clearAllFilters]);
+
   return (
     <>
       <PersistGate persistor={persistor}>

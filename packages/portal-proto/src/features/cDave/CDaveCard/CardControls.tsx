@@ -119,7 +119,7 @@ const CardControls: React.FC<CardControlsProps> = ({
         <div className="flex items-end">
           <DropdownWithIcon
             customDataTestId="button-customize-bins"
-            RightIcon={<DownIcon size={20} />}
+            RightIcon={<DownIcon size={20} aria-hidden="true" />}
             TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
