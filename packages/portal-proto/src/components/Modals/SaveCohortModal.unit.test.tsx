@@ -143,6 +143,7 @@ describe("SaveCohortModal", () => {
         mode: "and",
       },
       showMessage: false,
+      id: "1",
     });
     expect(mockMutation).toBeCalledWith({
       cohort: {

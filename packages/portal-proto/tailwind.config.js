@@ -768,6 +768,7 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
+        focusColor: "rgb(34, 121, 145)",
         hoverColor: "#E8F0E2",
         activeColor: "#204461",
         "percentage-bar": {

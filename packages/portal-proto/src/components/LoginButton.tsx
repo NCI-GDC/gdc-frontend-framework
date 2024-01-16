@@ -35,6 +35,7 @@ export const LoginButton = ({
             className="m-0"
             size="24px"
             color={theme.extend.colors["nci-blue"].darkest}
+            aria-hidden="true"
           />
         ) : undefined
       }

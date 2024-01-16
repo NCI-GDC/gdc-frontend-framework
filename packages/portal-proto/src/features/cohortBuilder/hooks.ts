@@ -53,7 +53,7 @@ export const useSetupInitialCohorts = (): boolean => {
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // A saved cohort that's not present in the API response has been deleted in another session
       for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ currentID: id }));
+        coreDispatch(removeCohort({ id }));
       }
 
       setFetched(true);
