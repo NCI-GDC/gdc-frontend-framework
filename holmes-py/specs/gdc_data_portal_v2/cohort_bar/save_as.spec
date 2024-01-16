@@ -60,7 +60,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Save             |Cohort has been saved                      |Remove Modal        |
+  |Save             |This is now your current cohort.           |Remove Modal        |
 * "Save As Cohort - step 2" should be the active cohort
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter area has these filters
