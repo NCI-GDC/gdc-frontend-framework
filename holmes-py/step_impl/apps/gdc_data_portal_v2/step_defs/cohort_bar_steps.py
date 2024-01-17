@@ -79,7 +79,7 @@ def validate_cohort_is_present_in_dropdown(cohort_name: str):
     assert is_cohort_visible, f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"
 
 @step("Remove these filters from the cohort query area <table>")
-def validate_cohort_query_filters(table):
+def remove_filters_from_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
