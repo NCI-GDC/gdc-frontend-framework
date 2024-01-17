@@ -85,10 +85,13 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   };
 
   const appCallbacks: RxComponentCallbacks = {
-    "preDispatch.gdcPlotApp": () => {
-      setIsLoading(true);
-    },
+    "preDispatch.gdcPlotApp": () => setIsLoading(true),
     "error.gdcPlotApp": () => setIsLoading(false),
+    // There may be an initial geneset edit UI that is not part of the matrix app,
+    // and that also does not emit a postRender event, in which case, this app.callbacks.postRender is
+    // a backup to close the loading overlay when there are no state changes to the matrix
+    // app and so would not have been updated via the rx component.update() chain to rerender
+    "postRender.gdcGeneExpression": () => setIsLoading(false),
   };
 
   useEffect(
