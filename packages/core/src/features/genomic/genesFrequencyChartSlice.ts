@@ -85,15 +85,13 @@ export const fetchGeneFrequencies = createAsyncThunk<
       geneFrequencyChart_offset: offset,
       geneCaseFilter: {
         content: [
-          ...[
-            {
-              content: {
-                field: "cases.available_variation_data",
-                value: ["ssm"],
-              },
-              op: "in",
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
             },
-          ],
+            op: "in",
+          },
           ...cohortFiltersContent,
         ],
         op: "and",
