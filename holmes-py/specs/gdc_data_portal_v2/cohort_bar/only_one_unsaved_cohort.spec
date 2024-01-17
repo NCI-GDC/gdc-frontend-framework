@@ -1,9 +1,9 @@
 # Cohort Bar - Enforce Only One Unsaved Cohort
-Date Created    : 01/8/2024∂
-Version			    : 1.0
-Owner		        : GDC QA
-Description		  : Cohort Bar - Enforce there can only be one unsaved cohort at a time
-Test-case       :
+Date Created      : 01/8/2024∂
+Version			      : 1.0
+Owner		          : GDC QA
+Description		    : Cohort Bar - Enforce there can only be one unsaved cohort at a time
+Test-case         : PEAR-1748
 
 tags: gdc-data-portal-v2, regression, cohort-bar
 
