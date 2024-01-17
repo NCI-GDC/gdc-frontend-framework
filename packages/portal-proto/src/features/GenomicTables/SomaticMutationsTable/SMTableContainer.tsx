@@ -515,6 +515,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       onClick: () => setShowRemoveModal(true),
                     },
                   ]}
+                  targetButtonDisabled={isFetching && !isSuccess}
                   TargetButtonChildren="Save/Edit Mutation Set"
                   disableTargetWidth={true}
                   LeftIcon={
