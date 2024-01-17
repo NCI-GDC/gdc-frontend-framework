@@ -40,6 +40,9 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
+  const ppPromise = useRef<Promise<PpApi>>();
+  const debouncedInitialUpdatesTimeout =
+    useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -93,17 +96,32 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userDetails };
       if (isEqual(prevData.current, data)) return;
-
       prevData.current = data;
-
-      const toolContainer = rootElem.parentNode.parentNode
-        .parentNode as HTMLElement;
-      toolContainer.style.backgroundColor = "#fff";
       setIsLoading(true);
 
       if (ppRef.current) {
         ppRef.current.update({ filter0: prevData.current.filter0 });
+      } else if (ppPromise.current && !isDemoMode) {
+        // in case another state update comes in when there is already
+        // an instance that is being created, debounce to the last update
+        // Except: during startup in demo mode, the filter0 is not expecect to change,
+        // so don't trigger a non-user reactive update right after the initial rendering
+        if (debouncedInitialUpdatesTimeout.current)
+          clearTimeout(debouncedInitialUpdatesTimeout.current);
+
+        debouncedInitialUpdatesTimeout.current = setTimeout(() => {
+          ppPromise.current.then(() => {
+            // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
+            // will not update unnecessarily
+            if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
+            else console.error("missing ppRef.current");
+          });
+        }, 1000);
       } else {
+        const toolContainer = rootElem.parentNode.parentNode
+          .parentNode as HTMLElement;
+        toolContainer.style.backgroundColor = "#fff";
+
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
@@ -126,7 +144,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
           data,
         ) as GeneExpressionArg;
 
-        runproteinpaint(arg).then((pp) => {
+        ppPromise.current = runproteinpaint(arg).then((pp) => {
+          // the ppRef.current is set after the tool fully renders
           ppRef.current = pp;
         });
       }
