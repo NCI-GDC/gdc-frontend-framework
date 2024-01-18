@@ -41,7 +41,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
-  const initialFilter0Ref = useRef<FilterSet>();
+  const initialFilter0Ref = useRef<any>();
   const debouncedInitialUpdatesTimeout =
     useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
@@ -103,7 +103,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       // debounce until one of these is true
       // otherwise, the userDetails.isFetching changing from false > true > false
       // could trigger unnecessary, wastefule PP-app state update
-      if (userDetails.isSuccess === false && userDetails.isError === false)
+      if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
