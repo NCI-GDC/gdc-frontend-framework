@@ -71,7 +71,7 @@ const CountsGraphQLQuery = `
         }
       },
       sequenceReads : cases {
-        hits(case_filters: $sequenceReadsCaseFilter, first: 0) {
+        hits(filters: $sequenceReadsCaseFilter, case_filters: $filters, first: 0) {
           total
         }
       }
@@ -140,28 +140,26 @@ export const fetchCohortCaseCounts = createAsyncThunk<
         },
       }),
     );
-    const sequenceReadsFilters = buildCohortGqlOperator(
-      joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
-        mode: "and",
-        root: {
-          "files.index_files.data_format": {
-            operator: "=",
-            field: "files.index_files.data_format",
-            operand: "bai",
-          },
-          "files.data_type": {
-            operator: "=",
-            field: "files.data_type",
-            operand: "Aligned Reads",
-          },
-          "files.data_format": {
-            operator: "=",
-            field: "files.data_format",
-            operand: "bam",
-          },
+    const sequenceReadsFilters = buildCohortGqlOperator({
+      mode: "and",
+      root: {
+        "files.index_files.data_format": {
+          operator: "=",
+          field: "files.index_files.data_format",
+          operand: "bai",
         },
-      }),
-    );
+        "files.data_type": {
+          operator: "=",
+          field: "files.data_type",
+          operand: "Aligned Reads",
+        },
+        "files.data_format": {
+          operator: "=",
+          field: "files.data_format",
+          operand: "bam",
+        },
+      },
+    });
 
     const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
     const graphQlFilters = {
