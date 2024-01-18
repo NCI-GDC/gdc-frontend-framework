@@ -33,7 +33,6 @@ export const processRangeResults: ProcessBucketsFunction = (
     const normalizedField = normalizeGQLFacetName(field);
     if (isRangeBucketsAggregation(aggregation)) {
       if (state[normalizedField].requestId !== requestId) {
-        console.log("processBuckets: requestId is unexpected:", requestId);
         return;
       }
 
