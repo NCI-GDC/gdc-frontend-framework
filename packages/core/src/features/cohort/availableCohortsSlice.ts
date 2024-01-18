@@ -1015,7 +1015,6 @@ const slice = createSlice({
         if (!isEqual(cohort?.filters, response.cohortFilters)) {
           // count request is not for the current cohort
           // TODO: possibly add logging to track this
-          console.error("fetchCohortCaseCounts: cohort filters do not match");
           if (cohort?.counts.caseCount === -1) {
             // reject if the cohort counts are null
             cohortsAdapter.updateOne(state, {
