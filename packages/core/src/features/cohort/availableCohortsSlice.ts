@@ -1005,6 +1005,7 @@ const slice = createSlice({
               counts: { ...NullCountsData, status: "rejected" },
             },
           });
+          return;
         }
 
         const cohort = cohortsAdapter
@@ -1046,7 +1047,7 @@ const slice = createSlice({
               repositoryCaseCount:
                 response.data.viewer.repository.cases.hits.total,
               geneExpressionCaseCount:
-                  response.data.viewer.repository.geneExpression.hits.total,
+                response.data.viewer.repository.geneExpression.hits.total,
               status: "fulfilled",
             },
           },
