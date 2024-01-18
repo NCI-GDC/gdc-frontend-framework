@@ -1022,6 +1022,8 @@ const slice = createSlice({
                   response.data.viewer.repository.sequenceReads.hits.total,
                 repositoryCaseCount:
                   response.data.viewer.repository.cases.hits.total,
+                geneExpressionCaseCount:
+                  response.data.viewer.repository.geneExpression.hits.total,
                 status: "fulfilled",
               },
             },
@@ -1041,6 +1043,7 @@ const slice = createSlice({
               cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
+              geneExpressionCaseCount: -1,
               status: "pending",
             },
           },
@@ -1059,6 +1062,7 @@ const slice = createSlice({
               cnvOrSsmCaseCount: -1,
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
+              geneExpressionCaseCount: -1,
               status: "rejected",
             },
           },

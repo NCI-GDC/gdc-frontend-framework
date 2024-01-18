@@ -20,6 +20,7 @@ import {
  *  @property cnvOrSsmCaseCount - number of cases with somatic mutations or copy number variations in cohort
  *  @property sequenceReadCaseCount - number of cases with sequence reads in cohort
  *  @property repositoryCaseCount - number of cases using the repository index in cohort
+ *  @property geneExpressionCaseCount - number of cases with gene expression data
  *  @category Cohort
  */
 export interface CountsData {
@@ -31,6 +32,7 @@ export interface CountsData {
   readonly cnvOrSsmCaseCount: number;
   readonly sequenceReadCaseCount: number;
   readonly repositoryCaseCount: number;
+  readonly geneExpressionCaseCount: number;
 }
 
 export interface CountsDataAndStatus extends CountsData {
@@ -50,6 +52,7 @@ export const NullCountsData: CountsDataAndStatus = {
   cnvOrSsmCaseCount: -1,
   sequenceReadCaseCount: -1,
   repositoryCaseCount: -1,
+  geneExpressionCaseCount: -1,
   status: "uninitialized",
 };
 
@@ -57,7 +60,8 @@ const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument,
   $ssmCaseFilter: FiltersArgument,
   $cnvOrSsmCaseFilter: FiltersArgument,
-  $sequenceReadsCaseFilter: FiltersArgument) {
+  $sequenceReadsCaseFilter: FiltersArgument,
+  $geneExpressionCaseFilter: FiltersArgument) {
   viewer {
     repository {
       cases {
@@ -72,6 +76,11 @@ const CountsGraphQLQuery = `
       },
       sequenceReads : cases {
         hits(case_filters: $sequenceReadsCaseFilter, first: 0) {
+          total
+        }
+      }
+      geneExpression: cases {
+        hits(case_filters: $filters, filters: $geneExpressionCaseFilter, first: 0) {
           total
         }
       }
@@ -163,12 +172,29 @@ export const fetchCohortCaseCounts = createAsyncThunk<
       }),
     );
 
+    const geneExpressionFilters = buildCohortGqlOperator({
+      mode: "and",
+      root: {
+        "files.analysis.workflow_type": {
+          operator: "=",
+          field: "files.analysis.workflow_type",
+          operand: "STAR - Counts",
+        },
+        "files.access": {
+          operator: "=",
+          field: "files.access",
+          operand: "open",
+        },
+      },
+    });
+
     const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
     const graphQlFilters = {
       filters: cohortFiltersGQL ?? {},
       ssmCaseFilter: caseSSMFilter,
       cnvOrSsmCaseFilter: caseCNVOrSSMFilter,
       sequenceReadsCaseFilter: sequenceReadsFilters,
+      geneExpressionCaseFilter: geneExpressionFilters,
     };
     return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
   },

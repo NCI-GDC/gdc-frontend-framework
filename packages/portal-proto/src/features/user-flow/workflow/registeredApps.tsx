@@ -222,7 +222,7 @@ export const REGISTERED_APPS = [
     description:
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",
-    countsField: "ssmCaseCount",
+    countsField: "geneExpressionCaseCount",
     caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
