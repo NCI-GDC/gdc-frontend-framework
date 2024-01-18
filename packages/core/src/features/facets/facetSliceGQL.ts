@@ -120,18 +120,12 @@ export const facetsGQLSlice = createSlice({
               }),
           );
         } else {
-          const allEqual = fields.every(
-            (f) => state[docType][f].requestId === action.meta.requestId,
-          );
-          if (!allEqual) {
-            console.error("requestId mismatch");
-            return;
-          }
           const aggregations =
             docType === "projects"
               ? Object(response).data.viewer[docType].aggregations
               : Object(response).data.viewer[index][docType].aggregations;
-          aggregations && processBuckets(aggregations, state[docType]);
+          aggregations &&
+            processBuckets(action.meta.requestId, aggregations, state[docType]);
         }
       })
       .addCase(fetchFacetByNameGQL.pending, (state, action) => {
@@ -145,7 +139,8 @@ export const facetsGQLSlice = createSlice({
             (state[itemType][f] = state[itemType][f] =
               {
                 status: "pending",
-                requestId: action.meta.requestId,
+                requestId: action.meta.requestId, // add request id to track pending requests
+                // used to determine if the request is still valid
               }),
         );
       })

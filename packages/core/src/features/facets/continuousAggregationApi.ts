@@ -5,6 +5,7 @@
 import { Buckets, Stats } from "../gdcapi/gdcapi";
 import { normalizeGQLFacetName, ProcessBucketsFunction } from "./facetApiGQL";
 import { isObject } from "../../ts-utils";
+import { isEqual } from "lodash";
 
 export interface RangeBuckets extends Stats {
   readonly range: Buckets;
@@ -25,21 +26,32 @@ export const isRangeBucketsAggregation = (
 };
 
 export const processRangeResults: ProcessBucketsFunction = (
+  requestId: string,
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {
   Object.entries(aggregations).forEach(([field, aggregation]) => {
     const normalizedField = normalizeGQLFacetName(field);
     if (isRangeBucketsAggregation(aggregation)) {
-      state[normalizedField].status = "fulfilled";
-      state[normalizedField].stats = aggregation.stats;
-      state[normalizedField].buckets = aggregation.range.buckets.reduce(
+      const newBucketValues = aggregation.range.buckets.reduce(
         (facetBuckets, apiBucket) => {
           facetBuckets[apiBucket.key] = apiBucket.doc_count;
           return facetBuckets;
         },
         {} as Record<string, number>,
       );
+
+      if (
+        state[normalizedField].requestId !== requestId &&
+        !isEqual(state[normalizedField].buckets, newBucketValues)
+      ) {
+        console.log("processBuckets: requestId is unexpected:", requestId);
+        return;
+      }
+
+      state[normalizedField].status = "fulfilled";
+      state[normalizedField].stats = aggregation.stats;
+      state[normalizedField].buckets = newBucketValues;
     } else {
       // Unhandled aggregation
       // TODO: this smells and should at least be logged.
