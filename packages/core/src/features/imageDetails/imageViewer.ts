@@ -78,6 +78,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchImageViewer.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
 
         const hits = response?.data?.viewer?.repository?.cases?.hits;
@@ -98,8 +100,9 @@ const slice = createSlice({
 
         return state;
       })
-      .addCase(fetchImageViewer.pending, (state) => {
+      .addCase(fetchImageViewer.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchImageViewer.rejected, (state) => {

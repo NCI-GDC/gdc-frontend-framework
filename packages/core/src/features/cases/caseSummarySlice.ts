@@ -23,6 +23,7 @@ export const fetchGdcCaseSummary = async (
 export interface CaseSummaryState {
   readonly data?: caseSummaryDefaults;
   readonly status: DataStatus;
+  readonly requestId?: string;
 }
 
 export const caseSummaryinitialState: CaseSummaryState = {
@@ -44,16 +45,18 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCasesSummary.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload.data.hits[0];
         state.data = castDraft(response);
         state.status = "fulfilled";
 
         return state;
       })
-      .addCase(fetchCasesSummary.pending, (state) => {
+      .addCase(fetchCasesSummary.pending, (state, action) => {
         state.data = undefined;
         state.status = "pending";
-
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchCasesSummary.rejected, (state) => {

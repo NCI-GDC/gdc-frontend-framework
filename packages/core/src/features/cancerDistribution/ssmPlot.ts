@@ -182,6 +182,7 @@ export interface SsmPlotState {
   readonly ssm: SsmPlotData;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: SsmPlotState = {
@@ -206,7 +207,10 @@ const slice = createSlice({
           state = castDraft(initialState);
           state.status = "rejected";
           state.error = response.errors.message;
+          return state;
         }
+
+        if (state.requestId != action.meta.requestId) return state;
 
         const ssm =
           response?.data?.viewer?.explore?.cases?.ssmFiltered?.project__project_id?.buckets.map(
@@ -230,8 +234,9 @@ const slice = createSlice({
         };
         return state;
       })
-      .addCase(fetchSsmPlot.pending, (state) => {
+      .addCase(fetchSsmPlot.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchSsmPlot.rejected, (state, action) => {

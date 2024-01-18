@@ -364,6 +364,7 @@ export interface GenesTableState {
   readonly genes: GDCGenesTable;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: GenesTableState = {
@@ -390,6 +391,11 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.filters;
         }
+
+        if (action.meta.requestId !== state.requestId) {
+          return state;
+        }
+
         const data = action.payload.data.genesTableViewer.explore;
         state.genes.cases = data.cases.hits.total;
         state.genes.cnvCases = data.cnvCases.hits.total;
@@ -429,8 +435,9 @@ const slice = createSlice({
         state.error = undefined;
         return state;
       })
-      .addCase(fetchGenesTable.pending, (state) => {
+      .addCase(fetchGenesTable.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchGenesTable.rejected, (state, action) => {

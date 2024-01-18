@@ -46,6 +46,7 @@ interface CDaveField {
 export interface ClinicalFieldsResult {
   data: CDaveField[];
   status: DataStatus;
+  readonly requestId?: string;
 }
 
 const initialState: ClinicalFieldsResult = {
@@ -64,14 +65,18 @@ const slice = createSlice({
 
         if (response.errors) {
           state.status = "rejected";
+          return state;
         } else {
+          if (state.requestId != action.meta.requestId) return state;
+
           state.status = "fulfilled";
           state.data = response.data.introspectiveType.fields[1].type.fields;
         }
         return state;
       })
-      .addCase(fetchClinicalFieldsResult.pending, (state) => {
+      .addCase(fetchClinicalFieldsResult.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchClinicalFieldsResult.rejected, (state) => {

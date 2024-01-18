@@ -187,6 +187,7 @@ export interface TopGeneState {
   readonly top: ReadonlyArray<GeneSSMSEntry>;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: TopGeneState = {
@@ -207,6 +208,11 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.filters;
         }
+
+        if (state.requestId !== action.meta.requestId) {
+          return state;
+        }
+
         const data = response.data.viewer.explore;
         //  Note: change this to the field parameter
         const genes = data.genes.hits.edges.map(
@@ -262,8 +268,9 @@ const slice = createSlice({
         };
         return state;
       })
-      .addCase(fetchTopGene.pending, (state) => {
+      .addCase(fetchTopGene.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchTopGene.rejected, (state, action) => {

@@ -79,6 +79,7 @@ export interface ImageCount {
 export interface ImageCountState extends ImageCount {
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: stirng;
 }
 
 const initialState: ImageCountState = {
@@ -94,6 +95,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchImageCounts.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const dataRoot = action.payload.data?.viewer?.repository;
         state.casesWithImagesCount = dataRoot?.cases?.hits?.total;
         const imageBucket =
@@ -104,9 +107,10 @@ const slice = createSlice({
         state.status = "fulfilled";
         return state;
       })
-      .addCase(fetchImageCounts.pending, (state) => {
+      .addCase(fetchImageCounts.pending, (state, action) => {
         state.casesWithImagesCount = -1;
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchImageCounts.rejected, (state) => {

@@ -43,6 +43,7 @@ export interface GeneSummaryData {
 export interface geneSummaryInitialState {
   status: DataStatus;
   genes?: GeneSummaryData;
+  readonly requestId?: string;
 }
 
 const initialState: geneSummaryInitialState = {
@@ -56,6 +57,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchGeneSummary.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         state.status = "fulfilled";
 
@@ -91,8 +94,9 @@ const slice = createSlice({
         state.genes = { ...summary, civic };
         return state;
       })
-      .addCase(fetchGeneSummary.pending, (state) => {
+      .addCase(fetchGeneSummary.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchGeneSummary.rejected, (state) => {

@@ -59,6 +59,7 @@ export interface TotalCountsState {
   readonly counts: Record<string, number>;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: TotalCountsState = {
@@ -94,6 +95,8 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.counts;
         } else {
+          if (state.requestId != action.meta.requestId) return state;
+
           // copy the counts for explore and repository
           state.counts = {
             caseCounts: response.data.viewer.explore.cases.hits.total,
@@ -112,8 +115,9 @@ const slice = createSlice({
         }
         return state;
       })
-      .addCase(fetchTotalCounts.pending, (state) => {
+      .addCase(fetchTotalCounts.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
       })
       .addCase(fetchTotalCounts.rejected, (state) => {
         state.status = "rejected";

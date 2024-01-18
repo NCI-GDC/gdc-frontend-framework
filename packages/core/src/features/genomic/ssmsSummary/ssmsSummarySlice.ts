@@ -18,6 +18,7 @@ export interface SsmsState {
   readonly summaryData?: summaryData;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 export const fetchSsms = createAsyncThunk<
@@ -62,6 +63,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSsms.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
 
         state.summaryData = response.data.hits.map((hit) => ({
@@ -93,9 +96,10 @@ const slice = createSlice({
 
         return state;
       })
-      .addCase(fetchSsms.pending, (state) => {
+      .addCase(fetchSsms.pending, (state, action) => {
         state.summaryData = undefined;
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         state.error = undefined;
       })
       .addCase(fetchSsms.rejected, (state) => {
