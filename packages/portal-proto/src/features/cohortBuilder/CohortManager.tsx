@@ -42,7 +42,6 @@ import {
   DataStatus,
   setActiveCohort,
   useCurrentCohortCounts,
-  fetchCohortCaseCounts,
   selectHasUnsavedCohorts,
   addNewSavedCohort,
   hideModal,
@@ -156,12 +155,8 @@ const CohortManager: React.FC = () => {
   );
 
   const deleteCohort = () => {
-    const lastCohort = cohorts.length === 1; // check to see if deleting the last cohort
     coreDispatch(removeCohort({ shouldShowMessage: true }));
-    if (lastCohort) {
-      // deleted the last cohort., so a new one is created and requires needs counts
-      coreDispatch(fetchCohortCaseCounts(undefined));
-    }
+    // fetch case counts is now handled in listener
   };
 
   const {

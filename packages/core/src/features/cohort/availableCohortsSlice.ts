@@ -10,6 +10,7 @@ import {
   EntityState,
   Dictionary,
 } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
 
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -997,42 +998,63 @@ const slice = createSlice({
       })
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         const response = action.payload;
-
         if (response.errors && Object.keys(response.errors).length > 0) {
           cohortsAdapter.updateOne(state, {
-            id: action.meta.arg ?? getCurrentCohort(state),
+            id: action.meta.arg,
             changes: {
               counts: { ...NullCountsData, status: "rejected" },
             },
           });
-        } else {
-          // copy the counts for explore and repository
-          cohortsAdapter.updateOne(state, {
-            id: action.meta.arg ?? getCurrentCohort(state),
-            changes: {
-              counts: {
-                caseCount: response.data.viewer.explore.cases.hits.total,
-                genesCount: response.data.viewer.explore.genes.hits.total,
-                mutationCount: response.data.viewer.explore.ssms.hits.total,
-                fileCount: response.data.viewer.repository.files.hits.total,
-                ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
-                cnvOrSsmCaseCount:
-                  response.data.viewer.explore.cnvsOrSsmsCases.hits.total,
-                sequenceReadCaseCount:
-                  response.data.viewer.repository.sequenceReads.hits.total,
-                repositoryCaseCount:
-                  response.data.viewer.repository.cases.hits.total,
-                geneExpressionCaseCount:
-                  response.data.viewer.repository.geneExpression.hits.total,
-                status: "fulfilled",
-              },
-            },
-          });
         }
+
+        const cohort = cohortsAdapter
+          .getSelectors()
+          .selectById(state, action.meta.arg);
+
+        if (!isEqual(cohort?.filters, response.cohortFilters)) {
+          // count request is not for the current cohort
+          // TODO: possibly add logging to track this
+          if (cohort?.counts.caseCount === -1) {
+            // reject if the cohort counts are null
+            cohortsAdapter.updateOne(state, {
+              id: action.meta.arg,
+              changes: {
+                counts: {
+                  ...NullCountsData,
+                  status: "rejected",
+                },
+              },
+            });
+          }
+          return;
+        }
+
+        // copy the counts for explore and repository
+        cohortsAdapter.updateOne(state, {
+          id: action.meta.arg,
+          changes: {
+            counts: {
+              caseCount: response.data.viewer.explore.cases.hits.total,
+              genesCount: response.data.viewer.explore.genes.hits.total,
+              mutationCount: response.data.viewer.explore.ssms.hits.total,
+              fileCount: response.data.viewer.repository.files.hits.total,
+              ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
+              cnvOrSsmCaseCount:
+                response.data.viewer.explore.cnvsOrSsmsCases.hits.total,
+              sequenceReadCaseCount:
+                response.data.viewer.repository.sequenceReads.hits.total,
+              repositoryCaseCount:
+                response.data.viewer.repository.cases.hits.total,
+              geneExpressionCaseCount:
+                  response.data.viewer.repository.geneExpression.hits.total,
+              status: "fulfilled",
+            },
+          },
+        });
       })
       .addCase(fetchCohortCaseCounts.pending, (state, action) => {
         cohortsAdapter.updateOne(state, {
-          id: action.meta.arg ?? getCurrentCohort(state),
+          id: action.meta.arg,
           changes: {
             counts: {
               caseCount: -1,
@@ -1051,7 +1073,7 @@ const slice = createSlice({
       })
       .addCase(fetchCohortCaseCounts.rejected, (state, action) => {
         cohortsAdapter.updateOne(state, {
-          id: action.meta.arg ?? getCurrentCohort(state),
+          id: action.meta.arg,
           changes: {
             counts: {
               caseCount: -1,

@@ -1,14 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAccess";
-import { buildCohortGqlOperator, joinFilters } from "./filters";
+import { buildCohortGqlOperator, joinFilters, FilterSet } from "./filters";
 
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import {
-  selectCohortFilterSetById,
-  selectCurrentCohortFilterSet,
-} from "./availableCohortsSlice";
+import { UnknownJson } from "../gdcapi/gdcapi";
 
 /**
  *  CountsData holds all the case counts for a cohort
@@ -75,7 +72,7 @@ const CountsGraphQLQuery = `
         }
       },
       sequenceReads : cases {
-        hits(case_filters: $sequenceReadsCaseFilter, first: 0) {
+        hits(filters: $sequenceReadsCaseFilter, case_filters: $filters, first: 0) {
           total
         }
       }
@@ -115,16 +112,34 @@ const CountsGraphQLQuery = `
   }
 }`;
 
+/**
+ * Local selector to get cohort filters to prevent circular dependency.
+ * @param state - CoreState to get value from
+ * @param cohortId - id of cohort to get filters from
+ */
+const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet | undefined => {
+  const cohort = state.cohort.availableCohorts.entities[cohortId];
+  return cohort?.filters;
+};
+
+interface CohortCountsResponse extends GraphQLApiResponse {
+  cohortFilters?: FilterSet;
+}
+
 export const fetchCohortCaseCounts = createAsyncThunk<
-  GraphQLApiResponse,
-  string | undefined,
+  CohortCountsResponse,
+  string,
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "cohort/CohortCounts",
-  async (cohortId, thunkAPI): Promise<GraphQLApiResponse> => {
-    const cohortFilters = cohortId
-      ? selectCohortFilterSetById(thunkAPI.getState(), cohortId)
-      : selectCurrentCohortFilterSet(thunkAPI.getState());
+  async (cohortId, thunkAPI): Promise<CohortCountsResponse> => {
+    const cohortFilters = selectCohortFilterSetById(
+      thunkAPI.getState(),
+      cohortId,
+    );
     const caseSSMFilter = buildCohortGqlOperator(
       joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
         mode: "and",
@@ -149,28 +164,26 @@ export const fetchCohortCaseCounts = createAsyncThunk<
         },
       }),
     );
-    const sequenceReadsFilters = buildCohortGqlOperator(
-      joinFilters(cohortFilters ?? { mode: "and", root: {} }, {
-        mode: "and",
-        root: {
-          "files.index_files.data_format": {
-            operator: "=",
-            field: "files.index_files.data_format",
-            operand: "bai",
-          },
-          "files.data_type": {
-            operator: "=",
-            field: "files.data_type",
-            operand: "Aligned Reads",
-          },
-          "files.data_format": {
-            operator: "=",
-            field: "files.data_format",
-            operand: "bam",
-          },
+    const sequenceReadsFilters = buildCohortGqlOperator({
+      mode: "and",
+      root: {
+        "files.index_files.data_format": {
+          operator: "=",
+          field: "files.index_files.data_format",
+          operand: "bai",
         },
-      }),
-    );
+        "files.data_type": {
+          operator: "=",
+          field: "files.data_type",
+          operand: "Aligned Reads",
+        },
+        "files.data_format": {
+          operator: "=",
+          field: "files.data_format",
+          operand: "bam",
+        },
+      },
+    });
 
     const geneExpressionFilters = buildCohortGqlOperator({
       mode: "and",
@@ -190,12 +203,20 @@ export const fetchCohortCaseCounts = createAsyncThunk<
 
     const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
     const graphQlFilters = {
-      filters: cohortFiltersGQL ?? {},
+      filters: cohortFiltersGQL ?? {}, // the cohort filters
       ssmCaseFilter: caseSSMFilter,
       cnvOrSsmCaseFilter: caseCNVOrSSMFilter,
       sequenceReadsCaseFilter: sequenceReadsFilters,
       geneExpressionCaseFilter: geneExpressionFilters,
     };
-    return await graphqlAPI(CountsGraphQLQuery, graphQlFilters);
+    // get the data from the graphql endpoint
+    const data = await graphqlAPI<UnknownJson>(
+      CountsGraphQLQuery,
+      graphQlFilters,
+    );
+    return {
+      ...data,
+      cohortFilters, // add the cohort filters to the response to ensure we did not receive stale data
+    };
   },
 );
