@@ -69,7 +69,8 @@ const repositoryRangeFacetAggregation = createSlice({
           } else {
             const aggregations =
               Object(response).data.viewer["repository"]["files"].aggregations;
-            aggregations && processRangeResults(aggregations, state);
+            aggregations &&
+              processRangeResults(action.meta.requestId, aggregations, state);
           }
         },
       )
@@ -79,6 +80,7 @@ const repositoryRangeFacetAggregation = createSlice({
           const field = action.meta.arg.field;
           state[field] = {
             status: "pending",
+            requestId: action.meta.requestId,
           };
         },
       )
