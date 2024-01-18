@@ -68,7 +68,7 @@ const CountsGraphQLQuery = `
         }
       },
       sequenceReads : cases {
-        hits(case_filters: $sequenceReadsCaseFilter, first: 0) {
+        hits(filters: $sequenceReadsCaseFilter, case_filters: $filters, first: 0) {
           total
         }
       }

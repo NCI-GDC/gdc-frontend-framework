@@ -1,6 +1,5 @@
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
 import { GQLIndexType, GQLDocType } from "./types";
-import { isEqual } from "lodash";
 
 export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
   x.replaceAll(".", "__");
@@ -165,29 +164,18 @@ export const processBuckets: ProcessBucketsFunction = (
         console.log("processBuckets: field is unexpected:", normalizedField); //TODO: remove this once confirm this is no longer a problem
       }
 
-      const newBucketValues = aggregation.buckets.reduce(
+      if (state[normalizedField].requestId !== requestId) {
+        return;
+      }
+
+      state[normalizedField].status = "fulfilled";
+      state[normalizedField].buckets = aggregation.buckets.reduce(
         (facetBuckets, apiBucket) => {
           facetBuckets[apiBucket.key] = apiBucket.doc_count;
           return facetBuckets;
         },
         {} as Record<string, number>,
       );
-
-      if (
-        state[normalizedField].requestId !== requestId &&
-        !isEqual(state[normalizedField].buckets, newBucketValues)
-      ) {
-        console.log("processBuckets: requestId is unexpected:", requestId);
-        console.log(
-          `processBuckets: state[${normalizedField}].buckets:`,
-          state[normalizedField].buckets,
-        );
-        console.log("processBuckets: newBucketValues:", newBucketValues);
-        return;
-      }
-
-      state[normalizedField].status = "fulfilled";
-      state[normalizedField].buckets = newBucketValues;
     } else if (isStatsAggregation(aggregation)) {
       //TODO: This seems dependent on the type of
       //  the facet, which is not known here
