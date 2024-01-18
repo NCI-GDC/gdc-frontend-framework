@@ -79,7 +79,7 @@ export interface ImageCount {
 export interface ImageCountState extends ImageCount {
   readonly status: DataStatus;
   readonly error?: string;
-  readonly requestId?: stirng;
+  readonly requestId?: string;
 }
 
 const initialState: ImageCountState = {
