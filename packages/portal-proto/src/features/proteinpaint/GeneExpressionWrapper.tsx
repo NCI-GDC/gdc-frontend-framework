@@ -41,6 +41,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
+  const initialFilter0Ref = useRef<any>();
   const debouncedInitialUpdatesTimeout =
     useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
@@ -79,29 +80,39 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const showLoadingOverlay = () => setIsLoading(true);
+  const hideLoadingOverlay = () => setIsLoading(false);
   const geneExpCallbacks: RxComponentCallbacks = {
-    "postRender.gdcGeneExpression": () => setIsLoading(false),
-    "error.gdcGeneExpression": () => setIsLoading(false),
+    "postRender.gdcGeneExpression": hideLoadingOverlay,
+    "error.gdcGeneExpression": hideLoadingOverlay,
   };
-
   const appCallbacks: RxComponentCallbacks = {
-    "preDispatch.gdcPlotApp": () => {
-      setIsLoading(true);
-    },
-    "error.gdcPlotApp": () => setIsLoading(false),
+    "preDispatch.gdcPlotApp": showLoadingOverlay,
+    "error.gdcPlotApp": hideLoadingOverlay,
+    // There may be an initial geneset edit UI that is not part of the matrix app,
+    // and that also does not emit a postRender event, in which case, this app.callbacks.postRender is
+    // a backup to close the loading overlay when there are no state changes to the matrix
+    // app and so would not have been updated via the rx component.update() chain to rerender
+    "postRender.gdcGeneExpression": hideLoadingOverlay,
   };
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userDetails };
+      // debounce until one of these is true
+      // otherwise, the userDetails.isFetching changing from false > true > false
+      // could trigger unnecessary, wastefule PP-app state update
+      if (userDetails?.isSuccess === false && userDetails?.isError === false)
+        return;
+      // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
+      // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
-      prevData.current = data;
-      setIsLoading(true);
 
       if (ppRef.current) {
-        ppRef.current.update({ filter0: prevData.current.filter0 });
-      } else if (ppPromise.current && !isDemoMode) {
+        if (!isEqual(data, prevData.current))
+          ppRef.current.update({ filter0: data.filter0 });
+      } else if (ppPromise.current) {
         // in case another state update comes in when there is already
         // an instance that is being created, debounce to the last update
         // Except: during startup in demo mode, the filter0 is not expecect to change,
@@ -109,15 +120,25 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         if (debouncedInitialUpdatesTimeout.current)
           clearTimeout(debouncedInitialUpdatesTimeout.current);
 
-        debouncedInitialUpdatesTimeout.current = setTimeout(() => {
-          ppPromise.current.then(() => {
-            // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
-            // will not update unnecessarily
-            if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
-            else console.error("missing ppRef.current");
-          });
-        }, 1000);
+        if (!isEqual(data, initialFilter0Ref.current)) {
+          // only line up subsequent requests if the filter0 has changed immediately after loading this tool
+          debouncedInitialUpdatesTimeout.current = setTimeout(() => {
+            ppPromise.current.then(() => {
+              // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
+              // will not update unnecessarily
+              if (ppRef.current)
+                ppRef.current.update({ filter0: data.filter0 });
+              else console.error("missing ppRef.current");
+            });
+          }, 1000);
+        }
       } else {
+        // TODO:
+        // showing and hiding the overlay should be triggered by components that may take a while to load/render,
+        // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
+        // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
+        showLoadingOverlay();
+        initialFilter0Ref.current = data.filter0;
         const toolContainer = rootElem.parentNode.parentNode
           .parentNode as HTMLElement;
         toolContainer.style.backgroundColor = "#fff";
@@ -125,14 +146,14 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
-        const data = getGeneExpressionTrack(
+        const geArgs = getGeneExpressionTrack(
           props,
-          prevData.current.filter0,
+          data.filter0,
           callback,
           geneExpCallbacks,
           appCallbacks,
         );
-        if (!data) return;
+        if (!geArgs) return;
 
         const arg = Object.assign(
           {
@@ -141,7 +162,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
             nobox: true,
             hide_dsHandles: true,
           },
-          data,
+          geArgs,
         ) as GeneExpressionArg;
 
         ppPromise.current = runproteinpaint(arg).then((pp) => {
@@ -149,6 +170,8 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
           ppRef.current = pp;
         });
       }
+
+      prevData.current = data;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails],
