@@ -124,7 +124,8 @@ export const facetsGQLSlice = createSlice({
             docType === "projects"
               ? Object(response).data.viewer[docType].aggregations
               : Object(response).data.viewer[index][docType].aggregations;
-          aggregations && processBuckets(aggregations, state[docType]);
+          aggregations &&
+            processBuckets(action.meta.requestId, aggregations, state[docType]);
         }
       })
       .addCase(fetchFacetByNameGQL.pending, (state, action) => {
@@ -138,6 +139,8 @@ export const facetsGQLSlice = createSlice({
             (state[itemType][f] = state[itemType][f] =
               {
                 status: "pending",
+                requestId: action.meta.requestId, // add request id to track pending requests
+                // used to determine if the request is still valid
               }),
         );
       })

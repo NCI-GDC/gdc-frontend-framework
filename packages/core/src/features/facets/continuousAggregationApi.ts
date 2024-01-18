@@ -25,12 +25,17 @@ export const isRangeBucketsAggregation = (
 };
 
 export const processRangeResults: ProcessBucketsFunction = (
+  requestId: string,
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {
   Object.entries(aggregations).forEach(([field, aggregation]) => {
     const normalizedField = normalizeGQLFacetName(field);
     if (isRangeBucketsAggregation(aggregation)) {
+      if (state[normalizedField].requestId !== requestId) {
+        return;
+      }
+
       state[normalizedField].status = "fulfilled";
       state[normalizedField].stats = aggregation.stats;
       state[normalizedField].buckets = aggregation.range.buckets.reduce(
