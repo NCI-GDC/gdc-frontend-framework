@@ -11,7 +11,6 @@ import {
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
-  fetchCohortCaseCounts,
   FilterSet,
   addNewSavedCohort,
   buildGqlOperationToFilterSet,
@@ -149,7 +148,6 @@ const SaveCohortModal = ({
             );
             coreDispatch(setCurrentCohortId(payload.id));
             coreDispatch(updateCohortName(newName));
-            coreDispatch(fetchCohortCaseCounts(payload.id));
           }
         } else {
           coreDispatch(
