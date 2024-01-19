@@ -10,6 +10,7 @@ import {
   removeCohortFilter,
   updateActiveCohortFilter,
   usePrevious,
+  clearCaseSet,
 } from "@gff/core";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -157,7 +158,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               },
             }),
           );
-        else coreDispatch(removeCohortFilter(field));
+        else {
+          coreDispatch(removeCohortFilter(field));
+          coreDispatch(clearCaseSet());
+        }
       } else
         coreDispatch(
           updateActiveCohortFilter({
