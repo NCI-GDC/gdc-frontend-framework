@@ -14,7 +14,6 @@ import {
 } from "../../gdcapi/gdcapi";
 
 export interface SsmsState {
-  readonly ssms?: SSMSDefaults;
   readonly summaryData?: summaryData;
   readonly status: DataStatus;
   readonly error?: string;
