@@ -38,7 +38,6 @@ export const fetchVersionInfo = createAsyncThunk<VersionInfoResponse>(
 export interface versionInfoSliceInitialStateInterface {
   data?: VersionInfoResponse;
   status: DataStatus;
-  readonly requestId?: string;
 }
 
 const versionInfoInitialState: versionInfoSliceInitialStateInterface = {
@@ -54,16 +53,13 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchVersionInfo.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
         const response = action.payload;
         state.data = { ...response };
         state.status = "fulfilled";
         return state;
       })
-      .addCase(fetchVersionInfo.pending, (state, action) => {
+      .addCase(fetchVersionInfo.pending, (state) => {
         state.status = "pending";
-        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchVersionInfo.rejected, (state) => {

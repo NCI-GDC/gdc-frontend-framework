@@ -73,7 +73,6 @@ export interface userSliceInitialStateInterface {
   };
   username: string | null;
   status: DataStatus;
-  readonly requestId?: string;
 }
 const userSliceInitialState: userSliceInitialStateInterface = {
   projects: {
@@ -93,8 +92,6 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
         const response = action.payload;
 
         state.projects = { ...response.projects };
@@ -102,14 +99,13 @@ const slice = createSlice({
         state.status = "fulfilled";
         return state;
       })
-      .addCase(fetchUserDetails.pending, (state, action) => {
+      .addCase(fetchUserDetails.pending, (state) => {
         state.projects = {
           phs_ids: {},
           gdc_ids: {},
         };
         state.username = null;
         state.status = "pending";
-        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchUserDetails.rejected, (state) => {

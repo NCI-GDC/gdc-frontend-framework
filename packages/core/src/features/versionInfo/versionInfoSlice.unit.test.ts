@@ -8,7 +8,6 @@ import {
 const initialState: versionInfoSliceInitialStateInterface = {
   data: undefined,
   status: "uninitialized",
-  requestId: "test",
 };
 
 describe("select version info", () => {
@@ -27,14 +26,9 @@ describe("select version info", () => {
 
     const state = versionInfoReducer(initialState, {
       type: fetchVersionInfo.fulfilled,
-      meta: { requestId: "test" },
       payload: { ...mockData },
     });
-    expect(state).toEqual({
-      data: mockData,
-      status: "fulfilled",
-      requestId: "test",
-    });
+    expect(state).toEqual({ data: mockData, status: "fulfilled" });
   });
 
   test("return state with rejected status", () => {
@@ -52,9 +46,8 @@ describe("select version info", () => {
       { status: "uninitialized" },
       {
         type: fetchVersionInfo.pending,
-        meta: { requestId: "test" },
       },
     );
-    expect(state).toEqual({ status: "pending", requestId: "test" });
+    expect(state).toEqual({ status: "pending" });
   });
 });
