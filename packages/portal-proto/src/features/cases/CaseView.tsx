@@ -305,7 +305,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
           href={getAnnotationsLinkParams(annotationCountData, case_id)}
           passHref
         >
-          <a className="underline" target="_blank">
+          <a
+            className="underline"
+            target="_blank"
+            aria-label={`${annotationsCountTotal.toLocaleString()} ${
+              annotationsCountTotal > 1 ? "Annotations" : "Annotation"
+            }`}
+          >
             {annotationsCountTotal.toLocaleString()}
           </a>
         </Link>
