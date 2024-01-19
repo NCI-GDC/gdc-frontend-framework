@@ -15,7 +15,10 @@ const initialCounts = {
 
 describe("totalCounts reducer", () => {
   test("should return the default state for unknown actions", () => {
-    const state = totalCountsReducer(undefined, { type: "asdf" });
+    const state = totalCountsReducer(undefined, {
+      type: "asdf",
+      meta: { requestId: "test" },
+    });
     expect(state).toEqual(initialCounts);
   });
 
@@ -32,9 +35,11 @@ describe("totalCounts reducer", () => {
           primarySiteCounts: -1,
         },
         status: "uninitialized",
+        requestId: "test",
       },
       {
         type: fetchTotalCounts.fulfilled,
+        meta: { requestId: "test" },
         payload: {
           data: {
             viewer: {
@@ -100,6 +105,7 @@ describe("totalCounts reducer", () => {
         primarySiteCounts: 2,
       },
       status: "fulfilled",
+      requestId: "test",
     });
   });
 });

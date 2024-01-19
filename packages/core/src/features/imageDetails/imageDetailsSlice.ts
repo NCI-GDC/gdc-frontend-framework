@@ -18,6 +18,7 @@ export const fetchImageDetails = createAsyncThunk<
 export interface imageDetailsState {
   readonly details: ImageMetadataResponse;
   readonly status: DataStatus;
+  readonly requestId?: string;
 }
 
 const initialState: imageDetailsState = {
@@ -39,6 +40,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchImageDetails.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
 
         state.details = {
@@ -48,11 +51,13 @@ const slice = createSlice({
 
         return state;
       })
-      .addCase(fetchImageDetails.pending, (state) => {
+      .addCase(fetchImageDetails.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchImageDetails.rejected, (state) => {
+      .addCase(fetchImageDetails.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         return state;
       });

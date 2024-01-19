@@ -114,6 +114,7 @@ export interface SsmsConsequenceTableState {
   readonly ssmsConsequence: GDCSsmsConsequenceTable;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: SsmsConsequenceTableState = {
@@ -134,6 +135,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSsmsConsequenceTable.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
@@ -168,11 +170,13 @@ const slice = createSlice({
         state.error = undefined;
         return state;
       })
-      .addCase(fetchSsmsConsequenceTable.pending, (state) => {
+      .addCase(fetchSsmsConsequenceTable.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchSsmsConsequenceTable.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

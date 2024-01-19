@@ -18,6 +18,7 @@ export interface imageViewerInitialState {
   readonly status: DataStatus;
   readonly total: number;
   readonly edges: any;
+  readonly requestId?: string;
 }
 
 export interface files {

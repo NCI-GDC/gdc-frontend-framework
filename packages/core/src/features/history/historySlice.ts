@@ -17,6 +17,7 @@ export interface HistoryState {
   readonly history: Record<string, HistoryDefaults[]>;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: HistoryState = {
@@ -31,6 +32,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchHistory.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         //history only available through individual project api call
         const response = action.payload;
         const uuid = action?.meta?.arg;
@@ -43,15 +46,19 @@ const slice = createSlice({
           state.history = {};
         }
         state.status = "fulfilled";
+        return state;
       })
-      .addCase(fetchHistory.pending, (state) => {
+      .addCase(fetchHistory.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         state.error = undefined;
       })
-      .addCase(fetchHistory.rejected, (state) => {
+      .addCase(fetchHistory.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         // TODO get error from action
         state.error = undefined;
+        return state;
       });
   },
 });
