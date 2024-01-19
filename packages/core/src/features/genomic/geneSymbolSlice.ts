@@ -58,7 +58,6 @@ export interface GeneSymbolState {
   readonly geneSymbols: Record<string, string>;
   readonly status: DataStatus;
   readonly error?: string;
-  readonly requestId?: string;
 }
 
 const initialState: GeneSymbolState = {
@@ -83,11 +82,7 @@ const slice = createSlice({
           state = castDraft(initialState);
           state.status = "rejected";
           state.error = response.errors.toString();
-          return state;
         }
-
-        if (state.requestId != action.meta.requestId) return state;
-
         const data = response.data.viewer.explore.genes.hits.edges;
         const newSymbols = data
           .map((e: Record<string, never>) => e.node)
@@ -115,7 +110,6 @@ const slice = createSlice({
           {},
         );
         state.status = "pending";
-        state.requestId = action.meta.requestId;
         state.geneSymbols = {
           ...state.geneSymbols,
           ...pendingSymbols,
