@@ -202,6 +202,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSsmPlot.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
@@ -209,8 +210,6 @@ const slice = createSlice({
           state.error = response.errors.message;
           return state;
         }
-
-        if (state.requestId != action.meta.requestId) return state;
 
         const ssm =
           response?.data?.viewer?.explore?.cases?.ssmFiltered?.project__project_id?.buckets.map(
@@ -240,6 +239,7 @@ const slice = createSlice({
         return state;
       })
       .addCase(fetchSsmPlot.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

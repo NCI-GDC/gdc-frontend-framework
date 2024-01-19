@@ -135,6 +135,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSsmsConsequenceTable.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
@@ -146,11 +147,6 @@ const slice = createSlice({
           state.status = "rejected";
           state.error = response.errors.filters;
         }
-
-        if (state.requestId !== action.meta.requestId) {
-          return state;
-        }
-
         const data = action.payload.data.viewer.explore.ssms.hits.edges[0].node;
         state.ssmsConsequence.id = data.id;
         state.ssmsConsequence.consequenceTotal = data.consequence.hits.total;
@@ -180,6 +176,7 @@ const slice = createSlice({
         return state;
       })
       .addCase(fetchSsmsConsequenceTable.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

@@ -56,7 +56,8 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchImageDetails.rejected, (state) => {
+      .addCase(fetchImageDetails.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         return state;
       });

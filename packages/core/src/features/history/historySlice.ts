@@ -53,10 +53,12 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         state.error = undefined;
       })
-      .addCase(fetchHistory.rejected, (state) => {
+      .addCase(fetchHistory.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         // TODO get error from action
         state.error = undefined;
+        return state;
       });
   },
 });

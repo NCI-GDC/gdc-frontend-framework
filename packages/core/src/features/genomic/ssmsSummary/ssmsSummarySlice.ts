@@ -102,10 +102,12 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         state.error = undefined;
       })
-      .addCase(fetchSsms.rejected, (state) => {
+      .addCase(fetchSsms.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.summaryData = undefined;
         state.status = "rejected";
         state.error = undefined;
+        return state;
       });
   },
 });

@@ -61,14 +61,13 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchClinicalFieldsResult.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
 
         if (response.errors) {
           state.status = "rejected";
           return state;
         } else {
-          if (state.requestId != action.meta.requestId) return state;
-
           state.status = "fulfilled";
           state.data = response.data.introspectiveType.fields[1].type.fields;
         }
@@ -79,7 +78,8 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchClinicalFieldsResult.rejected, (state) => {
+      .addCase(fetchClinicalFieldsResult.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         return state;
       });

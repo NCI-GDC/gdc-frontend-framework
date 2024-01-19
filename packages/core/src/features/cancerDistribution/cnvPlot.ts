@@ -226,6 +226,7 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCnvPlot.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
@@ -233,8 +234,6 @@ const slice = createSlice({
           state.error = response.errors.message;
           return state;
         }
-
-        if (state.requestId != action.meta.requestId) return state;
 
         const gain: CNVPlotPoint[] =
           response?.data?.viewer?.explore?.cases?.gain?.project__project_id?.buckets.map(
@@ -272,6 +271,7 @@ const slice = createSlice({
         return state;
       })
       .addCase(fetchCnvPlot.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

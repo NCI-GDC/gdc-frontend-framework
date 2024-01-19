@@ -59,7 +59,8 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchCasesSummary.rejected, (state) => {
+      .addCase(fetchCasesSummary.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.data = undefined;
         state.status = "rejected";
         return state;

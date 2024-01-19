@@ -113,7 +113,8 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchImageCounts.rejected, (state) => {
+      .addCase(fetchImageCounts.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.casesWithImagesCount = -1;
         state.status = "rejected";
         return state;

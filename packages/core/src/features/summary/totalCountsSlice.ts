@@ -90,13 +90,13 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTotalCounts.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         if (response.errors && Object.keys(response.errors).length > 0) {
           state.status = "rejected";
           state.error = response.errors.counts;
         } else {
-          if (state.requestId != action.meta.requestId) return state;
-
           // copy the counts for explore and repository
           state.counts = {
             caseCounts: response.data.viewer.explore.cases.hits.total,
@@ -119,8 +119,10 @@ const slice = createSlice({
         state.status = "pending";
         state.requestId = action.meta.requestId;
       })
-      .addCase(fetchTotalCounts.rejected, (state) => {
+      .addCase(fetchTotalCounts.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
+        return state;
       });
   },
 });

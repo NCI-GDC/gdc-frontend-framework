@@ -58,7 +58,8 @@ const slice = createSlice({
         state.error = undefined;
         return state;
       })
-      .addCase(fetchAnnotations.rejected, (state) => {
+      .addCase(fetchAnnotations.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         // TODO get error from action
         state.error = undefined;

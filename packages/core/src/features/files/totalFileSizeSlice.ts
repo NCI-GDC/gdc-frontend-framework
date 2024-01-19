@@ -77,13 +77,12 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTotalFileSize.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state.status = "rejected";
           return state;
         } else {
-          if (state.requestId != action.meta.requestId) return state;
-
           state.data = {
             total_file_size:
               response?.data?.viewer?.cart_summary?.aggregations.fs?.value,
@@ -98,8 +97,10 @@ const slice = createSlice({
         state.status = "pending";
         state.requestId = action.meta.requestId;
       })
-      .addCase(fetchTotalFileSize.rejected, (state) => {
+      .addCase(fetchTotalFileSize.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
+        return state;
       });
   },
 });

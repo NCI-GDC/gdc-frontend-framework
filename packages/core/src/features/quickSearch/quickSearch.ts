@@ -67,7 +67,8 @@ const slice = createSlice({
         state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchQuickSearch.rejected, (state) => {
+      .addCase(fetchQuickSearch.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.searchList = [];
         state.status = "rejected";
         return state;
