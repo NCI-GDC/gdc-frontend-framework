@@ -34,6 +34,7 @@ export interface CountsData {
 
 export interface CountsDataAndStatus extends CountsData {
   readonly status: DataStatus;
+  readonly requestId?: string;
 }
 
 /**
@@ -51,6 +52,7 @@ export const NullCountsData: CountsDataAndStatus = {
   repositoryCaseCount: -1,
   geneExpressionCaseCount: -1,
   status: "uninitialized",
+  requestId: undefined,
 };
 
 const CountsGraphQLQuery = `

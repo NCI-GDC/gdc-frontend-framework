@@ -12,6 +12,7 @@ import {
   removeCohortFilter,
   addNewUnsavedCohort,
   selectAvailableCohorts,
+  selectCohortById,
   addNewDefaultUnsavedCohort,
   createCaseSetsIfNeeded,
   createCaseSet,
@@ -20,6 +21,7 @@ import {
   addNewSavedCohort,
   selectCurrentCohortId,
   removeCohort,
+  copyToSavedCohort,
   selectCurrentCohort,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
@@ -82,6 +84,23 @@ startCoreListening({
     const currentCohort = selectCurrentCohort(listenerApi.getState());
     if (currentCohort?.counts.status === "uninitialized") {
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohort.id));
+    }
+  },
+});
+
+/**
+ * copying to Saved Cohort can potentially create a cohort without a caseCount so we need to fetch it
+ */
+startCoreListening({
+  matcher: isAnyOf(copyToSavedCohort),
+  effect: async (action, listenerApi) => {
+    const cohort = selectCohortById(
+      listenerApi.getState(),
+      action.payload.destId,
+    );
+    if (cohort && cohort?.counts.status !== "fulfilled") {
+      // only fetch if the cohort doesn't have a fullfilled caseCount
+      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
     }
   },
 });
