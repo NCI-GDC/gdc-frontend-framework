@@ -134,9 +134,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               },
             }),
           );
-        else {
-          coreDispatch(removeCohortFilter(field));
-        }
+        else coreDispatch(removeCohortFilter(field));
       } else
         coreDispatch(
           updateActiveCohortFilter({

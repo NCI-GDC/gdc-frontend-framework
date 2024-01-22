@@ -174,7 +174,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         .map(({ ssm_id }) => ssm_id)
         .includes(selectedSurvivalPlot.symbol)
     ) {
-      console.log("USE EFFECT");
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       const description = consequence_type
         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
