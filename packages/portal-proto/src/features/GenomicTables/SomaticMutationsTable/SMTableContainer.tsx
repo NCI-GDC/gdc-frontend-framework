@@ -150,9 +150,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
-  const previousSearchTerm = usePrevious(searchTerm);
-  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
-
   useEffect(() => {
     if (searchTermsForGene) {
       const { geneId = "", geneSymbol = "" } = searchTermsForGene;
@@ -169,9 +166,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
 
-  // TODO Refactor this to use one useEffect instead of two (see PEAR-1657)
   useDeepCompareEffect(() => {
-    if (topSSM) {
+    if (
+      topSSM &&
+      isSuccess &&
+      !data?.ssms
+        .map(({ ssm_id }) => ssm_id)
+        .includes(selectedSurvivalPlot.symbol)
+    ) {
+      console.log("USE EFFECT");
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       const description = consequence_type
         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
@@ -180,39 +183,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         : "";
       handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM, searchTermsForGene?.geneSymbol]);
-
-  useDeepCompareEffect(
-    () => {
-      const shouldHandleSurvivalPlot =
-        topSSM &&
-        !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
-        isEqual(searchTerm, previousSearchTerm) &&
-        !data?.ssms
-          .map(({ ssm_id }) => ssm_id)
-          .includes(selectedSurvivalPlot.symbol);
-      if (shouldHandleSurvivalPlot) {
-        const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-        const description = consequence_type
-          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-              term: consequence_type.replace("_variant", "").replace("_", " "),
-            })}`
-          : "";
-        handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      selectedSurvivalPlot,
-      previousSelectedSurvivalPlot,
-      data,
-      topSSM,
-      searchTerm,
-      previousSearchTerm,
-      searchTermsForGene?.geneSymbol,
-    ],
-  );
+  }, [
+    topSSM,
+    searchTermsForGene?.geneSymbol,
+    handleSurvivalPlotToggled,
+    selectedSurvivalPlot,
+    data?.ssms,
+    isSuccess,
+    selectedSurvivalPlot.symbol,
+  ]);
 
   /* Create Cohort*/
   const [createSet] = useCreateCaseSetFromFiltersMutation();
