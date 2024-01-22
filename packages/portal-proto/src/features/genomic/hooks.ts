@@ -229,6 +229,8 @@ export const useGeneAndSSMPanelData = (
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
+
+  console.log({ cohortFilters });
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
