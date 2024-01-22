@@ -653,12 +653,8 @@ const slice = createSlice({
           modified: false,
           saved: true,
           counts: {
-            ...sourceCohort.counts, // Its possible that the source cohort doesn't have counts yet so we need to reset it so it can be fetched
-            status:
-              sourceCohort.counts.status !== "fulfilled"
-                ? ("uninitialized" as DataStatus)
-                : sourceCohort.counts.status,
-            requestId: undefined,
+            // will need to re-request counts
+            ...NullCountsData,
           },
         };
         cohortsAdapter.addOne(state, destCohort);
