@@ -114,8 +114,8 @@ export const Footer: React.FC = () => {
       <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-5 border-b border-[#5D7A8D]">
         {/**TODO place color value in global store */}
         <div>
-          <h3 className="font-bold text-lg">National Cancer Institute</h3>
-          <h4 className="font-bold">at the National Institutes of Health</h4>
+          <div className="font-bold text-lg">National Cancer Institute</div>
+          <div className="font-bold">at the National Institutes of Health</div>
           <ul className="py-4 text-sm space-y-1 font-content">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
@@ -140,7 +140,7 @@ export const Footer: React.FC = () => {
         </div>
         {footerLinkColData.map((colData, colI) => (
           <div className="w-[200px] md:w-auto" key={colI}>
-            <h3 className="text-lg uppercase">{colData.header}</h3>
+            <h2 className="text-lg uppercase">{colData.header}</h2>
             <ul className="py-3 font-semibold space-y-2">
               {colData.links.map((linkData, linkI) => (
                 <li key={linkI} className="font-content">
