@@ -10,7 +10,6 @@ import {
   EntityState,
   Dictionary,
 } from "@reduxjs/toolkit";
-import { isEqual } from "lodash";
 
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -653,6 +652,10 @@ const slice = createSlice({
           id: action.payload.destId,
           modified: false,
           saved: true,
+          counts: {
+            // will need to re-request counts
+            ...NullCountsData,
+          },
         };
         cohortsAdapter.addOne(state, destCohort);
       }
@@ -997,6 +1000,14 @@ const slice = createSlice({
         });
       })
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
+        if (
+          action.meta.requestId !==
+          state.entities[action.meta.arg]?.counts.requestId
+        ) {
+          // ignore if the request id is not the same as the current cohort
+          return;
+        }
+
         const response = action.payload;
         if (response.errors && Object.keys(response.errors).length > 0) {
           cohortsAdapter.updateOne(state, {
@@ -1005,28 +1016,6 @@ const slice = createSlice({
               counts: { ...NullCountsData, status: "rejected" },
             },
           });
-          return;
-        }
-
-        const cohort = cohortsAdapter
-          .getSelectors()
-          .selectById(state, action.meta.arg);
-
-        if (!isEqual(cohort?.filters, response.cohortFilters)) {
-          // count request is not for the current cohort
-          // TODO: possibly add logging to track this
-          if (cohort?.counts.caseCount === -1) {
-            // reject if the cohort counts are null
-            cohortsAdapter.updateOne(state, {
-              id: action.meta.arg,
-              changes: {
-                counts: {
-                  ...NullCountsData,
-                  status: "rejected",
-                },
-              },
-            });
-          }
           return;
         }
 
@@ -1068,11 +1057,18 @@ const slice = createSlice({
               repositoryCaseCount: -1,
               geneExpressionCaseCount: -1,
               status: "pending",
+              requestId: action.meta.requestId,
             },
           },
         });
       })
       .addCase(fetchCohortCaseCounts.rejected, (state, action) => {
+        if (
+          action.meta.requestId !==
+          state.entities[action.meta.arg]?.counts.requestId
+        ) {
+          return;
+        }
         cohortsAdapter.updateOne(state, {
           id: action.meta.arg,
           changes: {
