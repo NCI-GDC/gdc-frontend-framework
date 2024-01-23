@@ -41,6 +41,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
+  const initialFilter0Ref = useRef<any>();
   const debouncedInitialUpdatesTimeout =
     useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
@@ -79,29 +80,35 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const showLoadingOverlay = () => setIsLoading(true);
+  const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
-    "postRender.gdcOncoMatrix": () => setIsLoading(false),
-    "error.gdcOncoMatrix": () => setIsLoading(false),
+    "postRender.gdcOncoMatrix": showLoadingOverlay,
+    "error.gdcOncoMatrix": showLoadingOverlay,
   };
-
   const appCallbacks: RxComponentCallbacks = {
-    "preDispatch.gdcPlotApp": () => {
-      setIsLoading(true);
-    },
-    "error.gdcPlotApp": () => setIsLoading(false),
+    "preDispatch.gdcPlotApp": showLoadingOverlay,
+    "error.gdcPlotApp": hideLoadingOverlay,
+    "postRender.gdcGeneExpression": hideLoadingOverlay,
   };
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userDetails };
+      // debounce until one of these is true
+      // otherwise, the userDetails.isFetching changing from false > true > false
+      // could trigger unnecessary, wastefule PP-app state update
+      if (userDetails?.isSuccess === false && userDetails?.isError === false)
+        return;
+      // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
+      // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
-      prevData.current = data;
-      setIsLoading(true);
 
       if (ppRef.current) {
-        ppRef.current.update({ filter0: data.filter0 });
-      } else if (ppPromise.current && !isDemoMode) {
+        if (!isEqual(data, prevData.current))
+          ppRef.current.update({ filter0: data.filter0 });
+      } else if (ppPromise.current) {
         // in case another state update comes in when there is already
         // an instance that is being created, debounce to the last update
         // Except: during startup in demo mode, the filter0 is not expecect to change,
@@ -109,15 +116,25 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         if (debouncedInitialUpdatesTimeout.current)
           clearTimeout(debouncedInitialUpdatesTimeout.current);
 
-        debouncedInitialUpdatesTimeout.current = setTimeout(() => {
-          ppPromise.current.then(() => {
-            // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
-            // will not update unnecessarily
-            if (ppRef.current) ppRef.current.update({ filter0: data.filter0 });
-            else console.error("missing ppRef.current");
-          });
-        }, 1000);
+        if (!isEqual(data, initialFilter0Ref.current)) {
+          debouncedInitialUpdatesTimeout.current = setTimeout(() => {
+            ppPromise.current.then(() => {
+              // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
+              // will not update unnecessarily
+              if (ppRef.current) {
+                if (!isEqual(data, initialFilter0Ref.current))
+                  ppRef.current.update({ filter0: data.filter0 });
+              } else console.error("missing ppRef.current");
+            });
+          }, 1000);
+        }
       } else {
+        // TODO:
+        // showing and hiding the overlay should be triggered by components that may take a while to load/render,
+        // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
+        // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
+        showLoadingOverlay();
+        initialFilter0Ref.current = data;
         const toolContainer = rootElem.parentNode.parentNode
           .parentNode as HTMLElement;
         toolContainer.style.backgroundColor = "#fff";
@@ -127,7 +144,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
 
         const matrixArgs = getMatrixTrack(
           props,
-          prevData.current.filter0,
+          data.filter0,
           callback,
           matrixCallbacks,
           appCallbacks,
@@ -150,6 +167,8 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
           return pp;
         });
       }
+
+      prevData.current = data;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails],

@@ -16,7 +16,7 @@ import {
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
-      $caseFilters: FiltersArgument
+      $geneCaseFilter: FiltersArgument
       $geneFrequencyChart_filters: FiltersArgument
       $geneFrequencyChart_size: Int
       $geneFrequencyChart_offset: Int
@@ -25,12 +25,12 @@ const GeneMutationFrequencyQuery = `
       geneFrequencyChartViewer: viewer {
         explore {
           cases {
-            hits(first: 0, case_filters: $caseFilters, filters: $geneFrequencyChart_filters) {
+            hits(first: 0, case_filters: $geneCaseFilter) {
               total
             }
           }
           genes {
-            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, case_filters: $caseFilters, filters: $geneFrequencyChart_filters, score: $score) {
+            hits(first: $geneFrequencyChart_size, offset: $geneFrequencyChart_offset, case_filters: $geneCaseFilter, filters: $geneFrequencyChart_filters, score: $score) {
               total
               edges {
                 node {
@@ -75,12 +75,27 @@ export const fetchGeneFrequencies = createAsyncThunk<
     cohortFilters,
   }: GenomicTableProps): Promise<GraphQLApiResponse> => {
     const caseFilters = buildCohortGqlOperator(cohortFilters);
+    const cohortFiltersContent = caseFilters?.content
+      ? Object(caseFilters?.content)
+      : [];
 
     const graphQlVariables = {
-      caseFilters: caseFilters,
       geneFrequencyChart_filters: buildCohortGqlOperator(genomicFilters) ?? {},
       geneFrequencyChart_size: pageSize,
       geneFrequencyChart_offset: offset,
+      geneCaseFilter: {
+        content: [
+          {
+            content: {
+              field: "cases.available_variation_data",
+              value: ["ssm"],
+            },
+            op: "in",
+          },
+          ...cohortFiltersContent,
+        ],
+        op: "and",
+      },
       score: "case.project.project_id",
     };
 
@@ -92,6 +107,7 @@ export interface GeneFrequencyChartState {
   readonly frequencies: GenesFrequencyChart;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: GeneFrequencyChartState = {
@@ -106,12 +122,14 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchGeneFrequencies.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
           state.error = response.errors.filters;
         }
+
         const data = response.data.geneFrequencyChartViewer.explore;
         //  Note: change this to the field parameter
         state.frequencies.casesTotal = data.cases.hits.total;
@@ -129,11 +147,13 @@ const slice = createSlice({
         state.error = undefined;
         return state;
       })
-      .addCase(fetchGeneFrequencies.pending, (state) => {
+      .addCase(fetchGeneFrequencies.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchGeneFrequencies.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

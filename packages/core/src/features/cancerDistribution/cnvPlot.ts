@@ -206,6 +206,7 @@ export interface CnvPlotState {
   readonly cnv: CNVData;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: CnvPlotState = {
@@ -225,11 +226,13 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCnvPlot.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state = castDraft(initialState);
           state.status = "rejected";
           state.error = response.errors.message;
+          return state;
         }
 
         const gain: CNVPlotPoint[] =
@@ -262,11 +265,13 @@ const slice = createSlice({
         };
         return state;
       })
-      .addCase(fetchCnvPlot.pending, (state) => {
+      .addCase(fetchCnvPlot.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchCnvPlot.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

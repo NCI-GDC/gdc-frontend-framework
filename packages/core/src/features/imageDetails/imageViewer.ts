@@ -71,7 +71,7 @@ const slice = createSlice({
   name: "imageViewer",
   initialState,
   reducers: {
-    setShouldResetEdgesState(state) {
+    resetEdgesState(state) {
       state.edges = {};
     },
   },
@@ -111,7 +111,7 @@ const slice = createSlice({
 
 export const imageViewerReducer = slice.reducer;
 
-export const { setShouldResetEdgesState } = slice.actions;
+export const { resetEdgesState } = slice.actions;
 
 export const selectImageViewerInfo = (
   state: CoreState,

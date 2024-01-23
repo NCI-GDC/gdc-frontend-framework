@@ -12,6 +12,7 @@ export interface QuickSearchState {
   searchList: Array<Record<string, any>>;
   query: string;
   status: DataStatus;
+  readonly requestId?: string;
 }
 
 const initialState: QuickSearchState = {
@@ -52,18 +53,22 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchQuickSearch.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         state.searchList = response?.data?.query?.hits;
         state.query = action.meta.arg;
         state.status = "fulfilled";
         return state;
       })
-      .addCase(fetchQuickSearch.pending, (state) => {
+      .addCase(fetchQuickSearch.pending, (state, action) => {
         state.searchList = [];
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchQuickSearch.rejected, (state) => {
+      .addCase(fetchQuickSearch.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.searchList = [];
         state.status = "rejected";
         return state;

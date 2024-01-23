@@ -77,7 +77,8 @@ export const repositoryFacetsGQLSlice = createSlice({
         } else {
           const aggregations =
             Object(response).data.viewer["repository"]["files"].aggregations;
-          aggregations && processBuckets(aggregations, state);
+          aggregations &&
+            processBuckets(action.meta.requestId, aggregations, state);
         }
       })
       .addCase(fetchRepositoryFacetsGQL.pending, (state, action) => {
@@ -90,6 +91,7 @@ export const repositoryFacetsGQLSlice = createSlice({
             (state[f] = state[f] =
               {
                 status: "pending",
+                requestId: action.meta.requestId,
               }),
         );
       })
