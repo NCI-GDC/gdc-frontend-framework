@@ -42,11 +42,7 @@ const slice = createSlice({
       .addCase(fetchImageDetails.fulfilled, (state, action) => {
         if (state.requestId != action.meta.requestId) return state;
 
-        const response = action.payload;
-
-        state.details = {
-          ...response,
-        };
+        state.details = action.payload;
         state.status = "fulfilled";
 
         return state;
