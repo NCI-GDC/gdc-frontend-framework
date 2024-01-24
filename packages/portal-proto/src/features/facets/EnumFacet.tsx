@@ -352,17 +352,16 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             placeholder="Search"
             ref={searchInputRef}
             rightSection={
-              searchTerm.length > 0 ? (
+              searchTerm.length > 0 && (
                 <ActionIcon
                   onClick={() => {
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
-                  aria-label={"clear search"}
                 >
-                  <CloseIcon />
+                  <CloseIcon aria-label="clear search" />
                 </ActionIcon>
-              ) : undefined
+              )
             }
           />
         )}
