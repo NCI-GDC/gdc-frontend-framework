@@ -56,9 +56,7 @@ describe("<InputEntityList />", () => {
     await waitFor(() => expect(saveButton).toBeEnabled());
     await userEvent.click(saveButton);
     await userEvent.type(getByPlaceholderText("New Set Name"), "my set");
-    await userEvent.click(
-      getByRole("button", { name: "Save button to add a set" }),
-    );
+    await userEvent.click(getByRole("button", { name: "Save" }));
 
     expect(createSet).toBeCalledWith({ values: ["7890-123"] });
   });
