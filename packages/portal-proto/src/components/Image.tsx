@@ -1,5 +1,5 @@
 import getConfig from "next/config";
-import NextImage, { ImageProps } from "next/image";
+import NextImage, { ImageProps } from "next/legacy/image";
 
 /**
  * This is a wrapper around the next/image Image component. The only
