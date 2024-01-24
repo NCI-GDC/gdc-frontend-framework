@@ -21,13 +21,20 @@
       "@/utils/*": ["src/utils/*"],
       "@/hooks/*": ["src/hooks/*"]
     },
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/components/ItemTypes.js"
+    "src/components/ItemTypes.js",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
