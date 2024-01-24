@@ -99,12 +99,12 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = { filter0, userDetails };
       // debounce until one of these is true
       // otherwise, the userDetails.isFetching changing from false > true > false
       // could trigger unnecessary, wastefule PP-app state update
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
+      const data = { filter0, userDetails: userDetails?.data };
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
@@ -130,7 +130,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
                 ppRef.current.update({ filter0: data.filter0 });
               else console.error("missing ppRef.current");
             });
-          }, 1000);
+          }, 20);
         }
       } else {
         // TODO:
