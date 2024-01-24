@@ -6,6 +6,7 @@ import {
 import { BsArrowRight as ArrowRight } from "react-icons/bs";
 import Highlight from "../Highlight";
 import { BioTreeProps, NodeProps, overrideMessage } from "./types";
+import { UnstyledButton } from "@mantine/core";
 
 const Node = ({
   entity,
@@ -156,14 +157,10 @@ export const BioTree = ({
   return (
     <ul className="my-2">
       <li>
-        <span
+        <UnstyledButton
           onClick={onTreeClick}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onTreeClick();
-          }}
-          tabIndex={0}
-          role="button"
-          className="flex gap-1 ml-2"
+          className="flex gap-1 ml-2 w-full"
+          aria-expanded={isExpanded.current}
         >
           {isExpanded.current ? (
             <ExpandLessIcon
@@ -180,7 +177,7 @@ export const BioTree = ({
           <span className="border border-base-lighter border-l-6 border-l-accent-vivid font-medium py-1 text-xs w-full pl-4 uppercase text-primary cursor-pointer">
             <Highlight search={query} text={type.p} />
           </span>
-        </span>
+        </UnstyledButton>
       </li>
       {isExpanded.current &&
         entities?.hits?.edges?.map((entity) => (
