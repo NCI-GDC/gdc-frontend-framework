@@ -16,6 +16,7 @@ import {
   GDCSsmsTable,
   getSSMTestedCases,
   useGetSsmTableDataMutation,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
@@ -137,6 +138,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   /* Modal end */
 
+  const cohortFiltersNoSet = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   /* SM Table Call */
   const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
     pageSize: pageSize,
@@ -145,8 +150,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     geneSymbol: geneSymbol,
     genomicFilters: genomicFilters,
     cohortFilters: cohortFilters,
+    cohortFiltersNoSet,
     caseFilter: caseFilter,
   });
+
   /* SM Table Call end */
   const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
 
