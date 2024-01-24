@@ -100,7 +100,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       // could trigger unnecessary, wastefule PP-app state update
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
-      const data = { filter0, userData: userDetails.data };
+      const data = { filter0, userData: userDetails?.data };
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
