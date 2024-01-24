@@ -30,7 +30,7 @@ const HPCardImg = ({
           {head}
         </h2>
         <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
-        <Link href={href} passHref>
+        <Link href={href} passHref legacyBehavior>
           <HomepageButton>{linkText}</HomepageButton>
         </Link>
       </div>

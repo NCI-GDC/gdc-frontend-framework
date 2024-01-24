@@ -294,10 +294,10 @@ export const useGenerateCasesTableColumns = ({
                 row.original.case_uuid,
               )}
               passHref
+              className="text-utility-link underline"
+              target="_blank"
             >
-              <a className="text-utility-link underline" target={"_blank"}>
-                {row.original.annotations.length}
-              </a>
+              {row.original.annotations.length}
             </Link>
           ) : (
             0

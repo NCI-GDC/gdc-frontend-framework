@@ -155,10 +155,11 @@ export const ConsequenceTable = ({
         id: "gene",
         header: "Gene",
         cell: ({ row }) => (
-          <Link href={`/genes/${row.original.gene_id}`}>
-            <a className="text-utility-link font-content underline">
-              {row.original.gene}
-            </a>
+          <Link
+            href={`/genes/${row.original.gene_id}`}
+            className="text-utility-link font-content underline"
+          >
+            {row.original.gene}
           </Link>
         ),
       }),

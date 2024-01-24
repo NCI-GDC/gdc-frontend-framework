@@ -24,13 +24,13 @@ import DeleteSetsNotification from "./DeleteSetsNotification";
 const CreateSetInstructions = () => (
   <p data-testid="text-manage-sets-description" className="py-2 text-sm">
     Create gene and mutation sets using the <b>Create Set</b> button or from the{" "}
-    <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-      <a
-        data-testid="link-mutation-frequency"
-        className="text-utility-link underline font-heading"
-      >
-        Mutation Frequency app
-      </a>
+    <Link
+      href="/analysis_page?app=MutationFrequencyApp"
+      passHref
+      data-testid="link-mutation-frequency"
+      className="text-utility-link underline font-heading"
+    >
+      Mutation Frequency app
     </Link>
     .
   </p>

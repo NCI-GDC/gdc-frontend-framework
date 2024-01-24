@@ -37,6 +37,7 @@ export const headerElements = [
         }}
         className="cursor-pointer"
         passHref
+        legacyBehavior
       >
         <NavLink data-testid="button-header-analysis">
           <AnalysisCenterIcon width={24} height={24} viewBox="0 0 500 500" />
@@ -61,6 +62,7 @@ export const headerElements = [
         }}
         className="cursor-pointer"
         passHref
+        legacyBehavior
       >
         <NavLink data-testid="button-header-projects">
           <ProjectsIcon width={24} height={24} viewBox="0 -15 100 100" />
@@ -85,6 +87,7 @@ export const headerElements = [
         }}
         className="cursor-pointer"
         passHref
+        legacyBehavior
       >
         <NavLink data-testid="button-header-cohort">
           <CohortBuilderIcon width={24} height={24} viewBox="0 0 50 50" />
@@ -109,6 +112,7 @@ export const headerElements = [
         }}
         className="cursor-pointer"
         passHref
+        legacyBehavior
       >
         <NavLink data-testid="button-header-downloads">
           <DownloadIcon width={24} height={24} viewBox="0 0 50 50" />

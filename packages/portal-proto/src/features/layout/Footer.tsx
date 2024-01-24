@@ -145,7 +145,10 @@ export const Footer: React.FC = () => {
               {colData.links.map((linkData, linkI) => (
                 <li key={linkI} className="font-content">
                   {linkData.normalLink ? (
-                    <Link href={linkData.url}>{linkData.title}</Link>
+                    // check here
+                    <Link href={linkData.url} legacyBehavior>
+                      {linkData.title}
+                    </Link>
                   ) : (
                     <ExternalLink href={linkData.url}>
                       {linkData.title}
