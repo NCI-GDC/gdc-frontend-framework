@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useId } from "react";
 import { EnumFacetHooks, FacetCardProps } from "./types";
 import { updateFacetEnum } from "./utils";
 
 import {
   controlsIconStyle,
   FacetIconButton,
-  FacetText,
+  FacetLabelText,
   FacetHeader,
 } from "@/features/facets/components";
 
@@ -57,6 +57,8 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     else clearFilters(field);
   };
 
+  const labelId = useId();
+
   return (
     <div
       className={`flex flex-col ${
@@ -72,7 +74,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
-          <FacetText>{facetTitle}</FacetText>
+          <FacetLabelText for={labelId}>{facetTitle}</FacetLabelText>
         </Tooltip>
         <div className="flex flex-row">
           {dismissCallback && (
@@ -100,7 +102,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             color="accent"
             checked={toggleValue}
             onChange={(event) => setValue(event.currentTarget.checked)}
-            aria-label="toggle facet value"
+            id={labelId}
           />
           <p className="font-content">
             {data === undefined || Object.keys(data).length == 0
