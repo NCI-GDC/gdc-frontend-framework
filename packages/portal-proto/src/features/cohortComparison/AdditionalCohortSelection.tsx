@@ -56,17 +56,17 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             label="Cohort is empty"
             disabled={row.original?.counts.caseCount !== 0}
           >
-            <span>
-              <input
-                type="radio"
-                name="additional-cohort-selection"
-                id={row.original.id}
-                onChange={() => setSelectedCohort(row.original)}
-                checked={selectedCohort?.id === row.original.id}
-                aria-label={`Select ${row.original.name}`}
-                disabled={!row.original?.counts.caseCount}
-              />
-            </span>
+            <input
+              type="radio"
+              name="additional-cohort-selection"
+              id={row.original.id}
+              onChange={() => setSelectedCohort(row.original)}
+              checked={selectedCohort?.id === row.original.id}
+              // autoFocus fixes keyboard nav loosing focus when setSelectedCohort is used
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={selectedCohort?.id === row.original.id}
+              disabled={!row.original?.counts.caseCount}
+            />
           </Tooltip>
         ),
       }),
