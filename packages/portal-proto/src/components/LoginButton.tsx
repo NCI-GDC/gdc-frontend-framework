@@ -1,9 +1,12 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import {
+  fetchCohortCaseCounts,
   fetchNotifications,
   fetchUserDetails,
   hideModal,
   useCoreDispatch,
+  useCoreSelector,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
@@ -16,6 +19,9 @@ export const LoginButton = ({
   fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
   return (
     <Button
       className={`${
@@ -28,6 +34,8 @@ export const LoginButton = ({
         await openAuthWindow();
         await dispatch(fetchUserDetails());
         await dispatch(fetchNotifications());
+        await dispatch(fetchCohortCaseCounts(currentCohortId));
+        // refresh the cohort here
       }}
       leftIcon={
         fromHeader ? (

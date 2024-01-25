@@ -10,6 +10,8 @@ import {
   selectUserDetailsInfo,
   fetchToken,
   selectCurrentModal,
+  fetchCohortCaseCounts,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
 import { ReactNode, useContext, useEffect, useState } from "react";
@@ -82,7 +84,9 @@ export const Header: React.FC<HeaderProps> = ({
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -286,10 +290,12 @@ export const Header: React.FC<HeaderProps> = ({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   icon={<LogoutIcon size="1.25em" />}
-                  onClick={() => {
+                  onClick={async () => {
                     window.location.assign(
                       urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
+                    await dispatch(fetchCohortCaseCounts(currentCohortId));
+                    // refresh the cohort here
                   }}
                   data-testid="logoutMenuItem"
                 >
