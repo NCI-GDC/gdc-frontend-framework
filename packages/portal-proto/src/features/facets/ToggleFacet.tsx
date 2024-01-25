@@ -14,7 +14,7 @@ import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
 import { MdClose as CloseIcon } from "react-icons/md";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
-  values && values.length > 0 && values.includes("true");
+  values !== undefined && values.length > 0 && values.includes("true");
 
 /**
  * Facet card for a boolean field
