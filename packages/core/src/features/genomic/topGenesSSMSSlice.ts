@@ -92,6 +92,7 @@ interface GeneSSMSEntry {
 export interface FetchTopGeneProps {
   cohortFilters: FilterSet;
   genomicFilters: FilterSet;
+  _cohortFiltersNoSet: FilterSet; // the cohort filters without the internal case set, only passed in for request caching
 }
 
 const topGeneSlice = graphqlAPISlice.injectEndpoints({

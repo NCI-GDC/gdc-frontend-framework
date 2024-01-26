@@ -234,6 +234,9 @@ export const useGeneAndSSMPanelData = (
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
+  const _cohortFiltersNoSet = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
@@ -276,6 +279,7 @@ export const useGeneAndSSMPanelData = (
         : filters
         ? [filters]
         : [],
+    _cohortFiltersNoSet,
   });
 
   return {
@@ -315,6 +319,10 @@ export const useTopGeneSsms = ({
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 
+  const _cohortFiltersNoSet = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
@@ -329,6 +337,7 @@ export const useTopGeneSsms = ({
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGeneQuery({
     cohortFilters: isDemoMode ? overwritingDemoFilter : cohortFilters,
     genomicFilters: genomicFilters,
+    _cohortFiltersNoSet,
   }); // get the default top gene/ssms to show by default
 
   // Plot top if no current survival plot
@@ -376,6 +385,7 @@ export const useTopGeneSsms = ({
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
+        caseFilter: undefined,
       });
     }
   }, [
@@ -412,5 +422,5 @@ export const useTopGeneSsms = ({
     topSSMSuccess,
   ]);
 
-  return ssmSearch ? topGeneSSMS : topGeneSSMSSuccess;
+  return ssmSearch ? topSSMSuccess : topGeneSSMSSuccess;
 };
