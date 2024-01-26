@@ -144,6 +144,7 @@ export const useEnumFacets = (
   docType: GQLDocType,
   indexType: GQLIndexType,
   fields: ReadonlyArray<string>,
+  isLoggedIn: boolean,
 ): void => {
   const facet: ReadonlyArray<FacetBuckets> = useCoreSelector((state) =>
     selectMultipleFacetsByDocTypeAndField(state, docType, fields),
@@ -185,6 +186,7 @@ export const useEnumFacets = (
     enumValues,
     currentCohortFilters,
     prevFilterLength,
+    isLoggedIn,
   ]);
 };
 

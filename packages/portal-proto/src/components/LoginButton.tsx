@@ -1,14 +1,13 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
+import { LoggedInContext } from "@/utils/contexts";
 import {
-  fetchCohortCaseCounts,
   fetchNotifications,
   fetchUserDetails,
   hideModal,
   useCoreDispatch,
-  useCoreSelector,
-  selectCurrentCohortId,
 } from "@gff/core";
 import { Button } from "@mantine/core";
+import { useContext } from "react";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
 import { theme } from "tailwind.config";
 export const LoginButton = ({
@@ -19,9 +18,8 @@ export const LoginButton = ({
   fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
-  const currentCohortId = useCoreSelector((state) =>
-    selectCurrentCohortId(state),
-  );
+
+  const { setIsLoggedIn } = useContext(LoggedInContext);
   return (
     <Button
       className={`${
@@ -34,8 +32,7 @@ export const LoginButton = ({
         await openAuthWindow();
         await dispatch(fetchUserDetails());
         await dispatch(fetchNotifications());
-        await dispatch(fetchCohortCaseCounts(currentCohortId));
-        // refresh the cohort here
+        setIsLoggedIn(true);
       }}
       leftIcon={
         fromHeader ? (

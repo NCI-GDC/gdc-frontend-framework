@@ -10,6 +10,12 @@ export interface entityMetadataType {
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }
+
+export const LoggedInContext = createContext<{
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+}>(null);
+
 export const SummaryModalContext = createContext<{
   entityMetadata: entityMetadataType;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;

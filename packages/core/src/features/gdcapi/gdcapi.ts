@@ -675,6 +675,7 @@ export const endpointSlice = coreCreateApi({
     return { data: results };
   },
   refetchOnReconnect: true,
+  refetchOnFocus: true,
   endpoints: (builder) => ({
     getGenes: builder.query({
       query: ({

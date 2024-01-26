@@ -47,7 +47,7 @@ import { NoAccessModal } from "@/components/Modals/NoAccessModal";
 import { FirstTimeModal } from "@/components/Modals/FirstTimeModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
-import { SummaryModalContext } from "src/utils/contexts";
+import { LoggedInContext, SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
 
@@ -87,6 +87,12 @@ export const Header: React.FC<HeaderProps> = ({
   const currentCohortId = useCoreSelector((state) =>
     selectCurrentCohortId(state),
   );
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoggedInContext);
+
+  useEffect(() => {
+    dispatch(fetchCohortCaseCounts(currentCohortId));
+  }, [isLoggedIn, dispatch, currentCohortId]);
+
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -97,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
-
+  const nextURl = window.location.href + "&fromLogout=true";
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
@@ -291,11 +297,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <DropdownMenuItem
                   icon={<LogoutIcon size="1.25em" />}
                   onClick={async () => {
+                    setIsLoggedIn(false);
                     window.location.assign(
-                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
+                      urlJoin(GDC_AUTH, `logout?next=${nextURl}`),
                     );
-                    await dispatch(fetchCohortCaseCounts(currentCohortId));
-                    // refresh the cohort here
                   }}
                   data-testid="logoutMenuItem"
                 >
