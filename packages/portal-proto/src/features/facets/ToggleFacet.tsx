@@ -103,6 +103,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             checked={toggleValue}
             onChange={(event) => setValue(event.currentTarget.checked)}
             id={labelId}
+            data-testId="toggle-facet-value"
           />
           <p className="font-content">
             {data === undefined || Object.keys(data).length == 0

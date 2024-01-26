@@ -7,7 +7,7 @@ describe("<ToggleFacet />", () => {
     jest.clearAllMocks();
   });
   it("test if ToggleFacet control has expected components", async () => {
-    const { getByRole, getByText } = render(
+    const { getByText, getByTestId } = render(
       <ToggleFacet
         valueLabel="Cases"
         field="gene.is_cancer_gene_census"
@@ -30,9 +30,7 @@ describe("<ToggleFacet />", () => {
       />,
     );
 
-    const ctrl = getByRole("checkbox", {
-      name: "toggle facet value",
-    });
+    const ctrl = getByTestId("toggle-facet-value");
 
     expect(ctrl).toBeInTheDocument();
     expect(ctrl).not.toBeChecked();
@@ -41,7 +39,7 @@ describe("<ToggleFacet />", () => {
   });
 
   it("test when ToggleFacet control has data", async () => {
-    const { getByRole, getByText } = render(
+    const { getByTestId, getByText } = render(
       <ToggleFacet
         valueLabel="Cases"
         field="gene.is_cancer_gene_census"
@@ -64,9 +62,7 @@ describe("<ToggleFacet />", () => {
       />,
     );
 
-    const ctrl = getByRole("checkbox", {
-      name: "toggle facet value",
-    });
+    const ctrl = getByTestId("toggle-facet-value");
 
     expect(ctrl).toBeInTheDocument();
     expect(ctrl).toBeChecked();
