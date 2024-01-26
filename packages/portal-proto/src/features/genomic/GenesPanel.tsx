@@ -3,7 +3,10 @@ import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
 import React, { useCallback } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { emptySurvivalPlot } from "@/features/genomic/types";
+import {
+  ComparativeSurvival,
+  emptySurvivalPlot,
+} from "@/features/genomic/types";
 import {
   useSelectFilterContent,
   useGeneAndSSMPanelData,
@@ -17,7 +20,7 @@ const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
 
 interface GenesPanelProps {
   topGeneSSMSSuccess: boolean;
-  comparativeSurvival: Record<string, string>;
+  comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
