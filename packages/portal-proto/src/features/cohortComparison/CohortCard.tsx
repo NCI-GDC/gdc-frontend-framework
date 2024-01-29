@@ -36,19 +36,37 @@ const CohortCard: React.FC<CohortCardProps> = ({
           <h2 className="basis-3/4">Cohort</h2>
           <h2 className="basis-1/4 text-right"># Cases</h2>
         </div>
-        <div className="flex justify-between font-content py-1">
-          <p className="text-[#1F77B4] basis-3/4">
+        <div
+          data-testid="text-first-cohort-cohort-comparison"
+          className="flex justify-between font-content py-1"
+        >
+          <p
+            data-testid="text-cohort-name-cohort-comparison"
+            className="text-[#1F77B4] basis-3/4"
+          >
             S<sub>1</sub> : {cohorts?.primary_cohort.name}
           </p>
-          <p className="basis-1/4 text-right">
+          <p
+            data-testid="text-cohort-case-count-cohort-comparison"
+            className="basis-1/4 text-right"
+          >
             {casesFetching ? "..." : counts[0] ? counts[0].toLocaleString() : 0}
           </p>
         </div>
-        <div className="flex justify-between font-content py-1">
-          <p className="text-[#BD5800] basis-3/4">
+        <div
+          data-testid="text-second-cohort-cohort-comparison"
+          className="flex justify-between font-content py-1"
+        >
+          <p
+            data-testid="text-cohort-name-cohort-comparison"
+            className="text-[#BD5800] basis-3/4"
+          >
             S<sub>2</sub> : {cohorts?.comparison_cohort.name}
           </p>
-          <p className="basis-1/4 text-right">
+          <p
+            data-testid="text-cohort-case-count-cohort-comparison"
+            className="basis-1/4 text-right"
+          >
             {casesFetching ? "..." : counts[1] ? counts[1].toLocaleString() : 0}
           </p>
         </div>
@@ -67,7 +85,12 @@ const CohortCard: React.FC<CohortCardProps> = ({
           }}
           passHref
         >
-          <a className="underline text-primary font-bold">Open Venn diagram</a>
+          <a
+            data-testid="link-open-venn-diagram"
+            className="underline text-primary font-bold"
+          >
+            Open Venn diagram
+          </a>
         </Link>
       </div>
 
@@ -88,6 +111,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
       {Object.entries(options).map(([value, field]) => (
         <div key={value}>
           <input
+            data-testid={`button-enable-${value}-cohort-comparison`}
             id={`cohort-comparison-${value}`}
             className="disabled:bg-base hover:disabled:bg-base"
             type="checkbox"
