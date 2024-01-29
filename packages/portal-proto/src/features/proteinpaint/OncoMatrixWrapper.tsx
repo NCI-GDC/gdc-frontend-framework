@@ -84,7 +84,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
     "postRender.gdcOncoMatrix": showLoadingOverlay,
-    "error.gdcOncoMatrix": showLoadingOverlay,
+    "error.gdcOncoMatrix": hideLoadingOverlay,
   };
   const appCallbacks: RxComponentCallbacks = {
     "preDispatch.gdcPlotApp": showLoadingOverlay,
