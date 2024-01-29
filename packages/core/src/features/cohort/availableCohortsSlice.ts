@@ -841,6 +841,30 @@ const slice = createSlice({
         },
       });
     },
+
+    /**
+     * Sets the login state of the cohorts filters to the passed in value
+     */
+    setCohortLoginStatus: (state, action: PayloadAction<boolean>) => {
+      const filters = state.entities[getCurrentCohort(state)]?.filters ?? {
+        mode: "and",
+        root: {},
+      };
+      const modified = state.entities[getCurrentCohort(state)]?.modified;
+      const modified_datetime =
+        state.entities[getCurrentCohort(state)]?.modified_datetime;
+      const caseSet = state.entities[getCurrentCohort(state)]?.caseSet;
+      cohortsAdapter.updateOne(state, {
+        id: getCurrentCohort(state),
+        changes: {
+          filters: { ...filters, loggedIn: action.payload },
+          modified: modified,
+          modified_datetime: modified_datetime,
+          caseSet: caseSet,
+        },
+      });
+    },
+
     discardCohortChanges: (
       state,
       action: PayloadAction<{
@@ -1102,6 +1126,7 @@ export const {
   updateCohortFilter,
   removeCohortFilter,
   clearCohortFilters,
+  setCohortLoginStatus,
   clearCaseSet,
   clearCohortMessage,
   setCohortList,

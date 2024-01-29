@@ -10,7 +10,7 @@ import {
   selectUserDetailsInfo,
   fetchToken,
   selectCurrentModal,
-  fetchCohortCaseCounts,
+  setCohortLoginStatus,
   selectCurrentCohortId,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
@@ -90,7 +90,8 @@ export const Header: React.FC<HeaderProps> = ({
   const { isLoggedIn, setIsLoggedIn } = useContext(LoggedInContext);
 
   useEffect(() => {
-    dispatch(fetchCohortCaseCounts(currentCohortId));
+    // changes the isLoggedIn state which should trigger a cohort update for all panels and apps
+    dispatch(setCohortLoginStatus(isLoggedIn));
   }, [isLoggedIn, dispatch, currentCohortId]);
 
   const [cookie] = useCookies(["NCI-Warning"]);

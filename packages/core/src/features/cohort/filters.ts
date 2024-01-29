@@ -31,11 +31,13 @@ import { isEqual } from "lodash";
  *
  * @property root - root Objects of all the filters
  * @property mode - Root level set operation for the filters
+ * @property loggedIn - Optional flag to indicate if the user is logged in
  * @category Filters
  */
 export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: string;
+  readonly loggedIn?: boolean;
 }
 
 /**
