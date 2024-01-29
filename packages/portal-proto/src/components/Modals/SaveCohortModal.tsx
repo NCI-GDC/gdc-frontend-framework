@@ -11,7 +11,6 @@ import {
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
-  fetchCohortCaseCounts,
   FilterSet,
   addNewSavedCohort,
   buildGqlOperationToFilterSet,
@@ -23,6 +22,7 @@ import {
   discardCohortChanges,
   showModal,
   Modals,
+  fetchCohortCaseCounts,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -137,6 +137,11 @@ const SaveCohortModal = ({
             // which does not exist will cause this
             // Therefore, copy the unsaved cohort to the new cohort id received from
             // the BE.
+
+            // possible that the caseCount are undefined or pending so
+            // re-request counts.
+            coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
+
             coreDispatch(
               setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
             );
@@ -149,7 +154,6 @@ const SaveCohortModal = ({
             );
             coreDispatch(setCurrentCohortId(payload.id));
             coreDispatch(updateCohortName(newName));
-            coreDispatch(fetchCohortCaseCounts(payload.id));
           }
         } else {
           coreDispatch(

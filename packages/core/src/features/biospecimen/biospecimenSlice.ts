@@ -125,6 +125,7 @@ export interface biospecimenSliceInitialState {
   readonly status: DataStatus;
   readonly files: { hits: { edges: Array<{ node: any }> } };
   readonly samples: nodeType;
+  readonly requestId?: string;
 }
 
 export const initialState: biospecimenSliceInitialState = {
@@ -140,6 +141,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchBiospecimenData.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         state.status = "fulfilled";
         state.files =
@@ -148,11 +151,13 @@ const slice = createSlice({
           response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.samples;
         return state;
       })
-      .addCase(fetchBiospecimenData.pending, (state) => {
+      .addCase(fetchBiospecimenData.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchBiospecimenData.rejected, (state) => {
+      .addCase(fetchBiospecimenData.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         return state;
       });

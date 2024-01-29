@@ -20,7 +20,6 @@ export const buildContinuousAggregationRangeOnlyQuery = (
       ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(field)}`
       : convertFacetNameToGQL(field);
 
-  // TODO update filters to case_filters
   return `
   query ContinuousAggregationQuery($caseFilters: FiltersArgument, $filters: FiltersArgument, $filters2: FiltersArgument) {
   viewer {
@@ -107,18 +106,22 @@ const rangeFacetAggregation = createSlice({
         const index = action.meta.arg.indexType ?? "explore";
         const itemType = action.meta.arg.docType ?? "cases";
         if (response.errors && Object.keys(response.errors).length > 0) {
-          state[action.meta.arg.field].status = "rejected";
-          state[action.meta.arg.field].error = response.errors.facets;
+          state[action.meta.arg.field] = {
+            status: "rejected",
+            error: JSON.stringify(response.errors),
+          };
         } else {
           const aggregations =
             Object(response).data.viewer[index][itemType].aggregations;
-          aggregations && processRangeResults(aggregations, state);
+          aggregations &&
+            processRangeResults(action.meta.requestId, aggregations, state);
         }
       })
       .addCase(fetchFacetContinuousAggregation.pending, (state, action) => {
         const field = action.meta.arg.field;
         state[field] = {
           status: "pending",
+          requestId: action.meta.requestId,
         };
       })
       .addCase(fetchFacetContinuousAggregation.rejected, (state, action) => {

@@ -25,6 +25,7 @@ export interface AnnotationsState {
 
   status: DataStatus;
   error?: string;
+  readonly requestId?: string;
 }
 
 export const annotationInitialState: AnnotationsState = {
@@ -42,6 +43,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAnnotations.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         state.annotations.list = response.data.hits.map((hit) => hit);
         state.annotations.count = response.data.pagination.total ?? 0;
@@ -49,13 +52,14 @@ const slice = createSlice({
 
         return state;
       })
-      .addCase(fetchAnnotations.pending, (state) => {
+      .addCase(fetchAnnotations.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         state.error = undefined;
-
         return state;
       })
-      .addCase(fetchAnnotations.rejected, (state) => {
+      .addCase(fetchAnnotations.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         // TODO get error from action
         state.error = undefined;
