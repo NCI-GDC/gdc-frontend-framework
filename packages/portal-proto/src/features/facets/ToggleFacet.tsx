@@ -74,7 +74,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
-          <FacetLabelText for={labelId}>{facetTitle}</FacetLabelText>
+          <FacetLabelText htmlFor={labelId}>{facetTitle}</FacetLabelText>
         </Tooltip>
         <div className="flex flex-row">
           {dismissCallback && (
