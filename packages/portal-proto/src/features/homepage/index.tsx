@@ -120,9 +120,8 @@ const Homepage = (): JSX.Element => {
           imgProps={{
             src: "/homepage/data-explorer.png",
             alt: "Skewed representation of data explorer",
-            width: 696,
-            height: 469,
-            objectPosition: "top -54px right 94px",
+            width: 600,
+            height: 300,
           }}
         />
         <div className="mb-10 flex justify-center">
