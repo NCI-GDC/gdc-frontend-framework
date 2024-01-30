@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import {
@@ -48,7 +48,6 @@ import {
   useEnumFacets,
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
-import { LoggedInContext } from "@/utils/contexts";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64
@@ -114,12 +113,10 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
-  const { isLoggedIn } = useContext(LoggedInContext);
   useEnumFacets(
     docType,
     indexType,
     enumFacets.map((entry) => entry.full),
-    isLoggedIn,
   );
 
   return (
@@ -133,7 +130,6 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 };
 
 const CustomFacetGroup = (): JSX.Element => {
-  const { isLoggedIn } = useContext(LoggedInContext);
   const customConfig = useCoreSelector((state) =>
     selectCohortBuilderConfigCategory(state, "custom"),
   );
@@ -181,7 +177,6 @@ const CustomFacetGroup = (): JSX.Element => {
     "cases",
     customConfig.index as GQLIndexType,
     customEnumFacets.map((entry) => entry.full),
-    isLoggedIn,
   );
 
   // handle the case where there are no custom filters

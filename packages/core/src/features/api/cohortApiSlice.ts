@@ -13,7 +13,6 @@ export const cohortApiSlice = coreCreateApi({
     credentials: "include",
   }),
   tagTypes: ["Cohort"],
-  refetchOnFocus: true,
   endpoints: (builder) => ({
     getCohortsByContextId: builder.query<CohortModel[], void>({
       query: () => "/cohorts?include_case_ids=true",

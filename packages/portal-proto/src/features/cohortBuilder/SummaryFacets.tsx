@@ -11,8 +11,6 @@ import {
 } from "@/features/facets/hooks";
 import partial from "lodash/partial";
 import tw from "tailwind-styled-components";
-import { useContext } from "react";
-import { LoggedInContext } from "@/utils/contexts";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -46,12 +44,10 @@ hover:text-primary-darker
 export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   fields,
 }: SummaryFacetProps) => {
-  const { isLoggedIn } = useContext(LoggedInContext);
   useEnumFacets(
     fields[0].docType,
     fields[0].indexType,
     fields.map((entry) => entry.field),
-    isLoggedIn,
   );
 
   return (

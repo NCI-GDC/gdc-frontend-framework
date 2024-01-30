@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
@@ -13,9 +13,11 @@ import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, DEMO_COHORT_FILTERS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
 import { DemoText } from "@/components/tailwindComponents";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 const ClinicalDataAnalysis: React.FC = () => {
   const isDemoMode = useIsDemoApp();
+  const isLoggedIn = useIsLoggedIn();
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
 
@@ -34,15 +36,21 @@ const ClinicalDataAnalysis: React.FC = () => {
       isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
     ),
   );
+
   const {
     data: cDaveResult,
     isFetching,
     isSuccess,
+    refetch,
   } = useGetClinicalAnalysisQuery({
     case_filters: cohortFilters,
     facets: cDaveFields.map((f) => f.full),
     size: 0,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [isLoggedIn, refetch]);
 
   const updateFields = (field: string) => {
     if (activeFields.includes(field)) {

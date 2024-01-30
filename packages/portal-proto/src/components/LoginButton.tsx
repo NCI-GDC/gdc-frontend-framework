@@ -18,7 +18,6 @@ export const LoginButton = ({
   fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
-
   const { setIsLoggedIn } = useContext(LoggedInContext);
   return (
     <Button

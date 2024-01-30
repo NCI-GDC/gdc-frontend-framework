@@ -88,6 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
     selectCurrentCohortId(state),
   );
   const { isLoggedIn, setIsLoggedIn } = useContext(LoggedInContext);
+  console.log({ isLoggedIn });
 
   useEffect(() => {
     // changes the isLoggedIn state which should trigger a cohort update for all panels and apps
@@ -104,7 +105,6 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
-  const nextURl = window.location.href + "&fromLogout=true";
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
       <a
@@ -201,6 +201,9 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </a>
           </Link>
+          <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
+            {isLoggedIn ? "Log Out" : "Log In"}
+          </button>
           {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
@@ -300,7 +303,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={async () => {
                     setIsLoggedIn(false);
                     window.location.assign(
-                      urlJoin(GDC_AUTH, `logout?next=${nextURl}`),
+                      urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
                     );
                   }}
                   data-testid="logoutMenuItem"
