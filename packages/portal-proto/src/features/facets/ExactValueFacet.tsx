@@ -106,7 +106,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         variant="transparent"
         onClick={() => setValues(textValues.filter((i) => i !== x))}
       >
-        <CloseIcon size={10} arial-label="remove value from filter" />
+        <CloseIcon size={10} aria-label="remove value from filter" />
       </ActionIcon>
     );
   };
