@@ -121,7 +121,8 @@ const Homepage = (): JSX.Element => {
             src: "/homepage/data-explorer.png",
             alt: "Skewed representation of data explorer",
             width: 600,
-            height: 300,
+            height: 270,
+            objectPosition: "top 30px right 20px",
           }}
         />
         <div className="mb-10 flex justify-center">
