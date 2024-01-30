@@ -57,6 +57,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             disabled={row.original?.counts.caseCount !== 0}
           >
             <input
+              data-testid={`button-${row.original.name}-cohort-comparison`}
               type="radio"
               name="additional-cohort-selection"
               id={row.original.id}
@@ -75,6 +76,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         header: "Name",
         cell: ({ row }) => (
           <label
+            data-testid="text-cohort-name-cohort-comparison"
             htmlFor={row.original.id}
             className={
               !row.original.counts.caseCount ? "text-base-lighter" : undefined
@@ -89,6 +91,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         header: "# Cases",
         cell: ({ row }) => (
           <span
+            data-testid={`text-${row.original.name}-case-count-cohort-comparison`}
             className={
               !row.original.counts.caseCount ? "text-base-lighter" : undefined
             }
@@ -153,6 +156,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton
+          data-testid="button-demo-cohort-comparison"
           className="mr-auto"
           onClick={() => {
             setActiveApp(app, true);
@@ -162,6 +166,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           Demo
         </FunctionButton>
         <FunctionButton
+          data-testid="button-cancel-cohort-comparison"
           className="mr-4"
           onClick={() => {
             setActiveApp(null);
@@ -171,6 +176,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           Cancel
         </FunctionButton>
         <DarkFunctionButton
+          data-testid="button-run-cohort-comparison"
           disabled={selectedCohort === null}
           onClick={() => {
             setOpen(false);

@@ -24,6 +24,7 @@ class Utility:
     def get_screen_size():
         # Try/except around pyautogui as a workaround to this not working within Docker runs
         if not getenv('IS_DOCKER'):
+            import AppKit
             import pyautogui
             width, height = pyautogui.size()
             return {"width": width, "height": height}

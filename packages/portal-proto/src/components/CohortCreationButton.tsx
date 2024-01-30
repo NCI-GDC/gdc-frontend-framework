@@ -99,6 +99,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         withArrow
       >
         <CohortCreationStyledButton
+          data-testid="button-save-filtered-cohort"
           onClick={async () => {
             if (filtersCallback) {
               setLoading(true);
