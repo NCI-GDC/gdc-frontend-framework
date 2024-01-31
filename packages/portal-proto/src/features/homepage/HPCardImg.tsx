@@ -6,6 +6,8 @@ interface HPCardImgProps {
   head: string;
   imgProps: {
     src: string;
+    width: number;
+    height: number;
     alt: string;
     objectPosition?: string;
   };
@@ -32,11 +34,13 @@ const HPCardImg = ({
           <HomepageButton>{linkText}</HomepageButton>
         </Link>
       </div>
-      <div className="w-1/2 relative h-[290px] m-auto">
+      <div className="w-1/2 m-auto">
         <Image
           alt={imgProps.alt}
           src={imgProps.src}
-          layout="fill"
+          width={imgProps.width}
+          height={imgProps.height}
+          layout="fixed"
           objectPosition={imgProps.objectPosition}
         />
       </div>
