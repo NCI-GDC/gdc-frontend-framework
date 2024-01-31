@@ -10,9 +10,9 @@ import {
   useAppendToGeneSetMutation,
   useRemoveFromGeneSetMutation,
   joinFilters,
-  mergeFilterSets,
   buildCohortGqlOperator,
   useCoreDispatch,
+  useCreateCaseSetFromFiltersMutation,
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
@@ -100,109 +100,107 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   );
 
   /* Create Cohort*/
-  // const [createSet] = useCreateCaseSetFromFiltersMutation();
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
   const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
-      let caseSetCreationFilters = joinFilters(cohortFilters, genomicFilters);
+      let caseSetCreationFilters = buildCohortGqlOperator(
+        joinFilters(cohortFilters, genomicFilters),
+      );
 
       // for CNV gain/loss only "genes." filters should be applied
       // as the counts in the table are based on genes only
       // ssms filters will not affect the counts
       if (type === "cnvgain" || type === "cnvloss") {
-        caseSetCreationFilters = joinFilters(cohortFilters, genesOnlyFilters);
+        caseSetCreationFilters = buildCohortGqlOperator(
+          joinFilters(cohortFilters, genesOnlyFilters),
+        );
       }
 
-      // return await createSet({ filters: caseSetCreationFilters })
-      //   .unwrap()
-      //   .then((setId) => {
-      //     const commonFilters: FilterSet = {
-      //       mode: "and",
-      //       root: {
-      //         "cases.case_id": {
-      //           field: "cases.case_id",
-      //           operands: [`set_id:${setId}`],
-      //           operator: "includes",
-      //         },
-      //         ...genomicFilters?.root,
-      //       },
-      //     };
-
-      const buildFilters = () => {
-        // for CNV gain/loss only "genes." filters should be added to the
-        // new cohort
-
-        //const commonFiltersWithGenesOnly = genesOnlyFilters;
-
-        // const commonFiltersWithGenesOnly: FilterSet = {
-        //   mode: "and",
-        //   root: {
-        //     "cases.case_id": {
-        //       field: "cases.case_id",
-        //       operands: [`set_id:${setId}`],
-        //       operator: "includes",
-        //     },
-        //     ...genesOnlyFilters?.root,
-        //   },
-        // };
-
-        if (type === "cnvgain") {
-          // only genes filters
-          return mergeFilterSets(caseSetCreationFilters, {
+      return await createSet({ filters: caseSetCreationFilters })
+        .unwrap()
+        .then((setId) => {
+          const commonFilters: FilterSet = {
             mode: "and",
             root: {
-              "genes.cnv.cnv_change": {
-                field: "genes.cnv.cnv_change",
-                operator: "=",
-                operand: "gain",
-              },
-              "genes.gene_id": {
-                field: "genes.gene_id",
-                operator: "=",
-                operand: geneId,
-              },
-            },
-          });
-        } else if (type === "cnvloss") {
-          // only genes filters
-          return mergeFilterSets(caseSetCreationFilters, {
-            mode: "and",
-            root: {
-              "genes.cnv.cnv_change": {
-                field: "genes.cnv.cnv_change",
-                operator: "=",
-                operand: "loss",
-              },
-              "genes.gene_id": {
-                field: "genes.gene_id",
-                operator: "=",
-                operand: geneId,
-              },
-            },
-          });
-        } else {
-          // any other type will use all filters
-          return mergeFilterSets(caseSetCreationFilters, {
-            mode: "and",
-            root: {
-              "ssms.ssm_id": {
-                field: "ssms.ssm_id",
-                operator: "exists",
-              },
-              "genes.gene_id": {
-                field: "genes.gene_id",
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
                 operator: "includes",
-                operands: [geneId],
               },
+              ...genomicFilters?.root,
             },
-          });
-        }
-      };
-      const filters = buildFilters();
-      return filters;
+          };
+
+          // for CNV gain/loss only "genes." filters should be added to the
+          // new cohort
+          const commonFiltersWithGenesOnly: FilterSet = {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+              ...genesOnlyFilters?.root,
+            },
+          };
+
+          if (type === "cnvgain") {
+            // only genes filters
+            return joinFilters(commonFiltersWithGenesOnly, {
+              mode: "and",
+              root: {
+                "genes.cnv.cnv_change": {
+                  field: "genes.cnv.cnv_change",
+                  operator: "=",
+                  operand: "gain",
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "=",
+                  operand: geneId,
+                },
+              },
+            });
+          } else if (type === "cnvloss") {
+            // only genes filters
+            return joinFilters(commonFiltersWithGenesOnly, {
+              mode: "and",
+              root: {
+                "genes.cnv.cnv_change": {
+                  field: "genes.cnv.cnv_change",
+                  operator: "=",
+                  operand: "loss",
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "=",
+                  operand: geneId,
+                },
+              },
+            });
+          } else {
+            // any other type will use all filters
+            return joinFilters(commonFilters, {
+              mode: "and",
+              root: {
+                "ssms.ssm_id": {
+                  field: "ssms.ssm_id",
+                  operator: "exists",
+                },
+                "genes.gene_id": {
+                  field: "genes.gene_id",
+                  operator: "includes",
+                  operands: [geneId],
+                },
+              },
+            });
+          }
+        });
     },
-    [cohortFilters, genomicFilters, genesOnlyFilters],
+    [cohortFilters, genomicFilters, createSet, genesOnlyFilters],
   );
   /* End Create Cohort */
 
