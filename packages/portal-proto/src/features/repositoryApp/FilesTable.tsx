@@ -360,7 +360,8 @@ const FilesTables: React.FC = () => {
       endpoint: "files",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(allFilters) ?? {},
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+        filters: buildCohortGqlOperator(repositoryFilters) ?? {},
         size: 10000,
         attachment: true,
         format: "JSON",
