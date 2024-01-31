@@ -82,7 +82,7 @@ $sort: [Sort]
                 }
               }
               occurrence {
-                hits(first: 0, case_filters: $caseFilters, filters: $ssmTested) {
+                hits(first: 0,filters: $ssmTested) {
                   total
                 }
               }
