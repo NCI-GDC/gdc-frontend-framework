@@ -213,7 +213,7 @@ export const Biospecimen = ({
             <div className="basis-4/12">
               <div className="flex mb-4 gap-4">
                 <Input
-                  icon={<MdOutlineSearch size={24} />}
+                  icon={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
                   className="basis-5/6"
                   classNames={{
