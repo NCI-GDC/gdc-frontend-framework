@@ -32,7 +32,7 @@ const HPCardImg = ({
           <HomepageButton>{linkText}</HomepageButton>
         </Link>
       </div>
-      <div className="w-1/2 relative h-[334px]">
+      <div className="w-1/2 relative h-[290px] m-auto">
         <Image
           alt={imgProps.alt}
           src={imgProps.src}
