@@ -6,9 +6,9 @@ interface HPCardImgProps {
   head: string;
   imgProps: {
     src: string;
+    alt: string;
     width: number;
     height: number;
-    alt: string;
     objectPosition?: string;
   };
   body: JSX.Element;
@@ -38,8 +38,8 @@ const HPCardImg = ({
         <Image
           alt={imgProps.alt}
           src={imgProps.src}
-          width={imgProps.width}
           height={imgProps.height}
+          width={imgProps.width}
           layout="fixed"
           objectPosition={imgProps.objectPosition}
         />
