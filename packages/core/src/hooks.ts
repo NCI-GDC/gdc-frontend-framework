@@ -25,16 +25,32 @@ export const CoreContext = React.createContext(
   undefined as unknown as ReactReduxContextValue<CoreState>,
 );
 
-/*
- * custom react-redux hooks that use the core store
+/**
+ * Custom react-redux hooks that use the core store
+ * @category Hooks
+ * @example
+ * ```typescript
+ * import {useCoreSelector,  selectCurrentFilters } from '@gff/core';
+ *
+ * const currentFilters = useSelector(selectCurrentCohortFilters);
+ * ```
  */
 export const useCoreSelector: TypedUseSelectorHook<CoreState> =
   createSelectorHook(CoreContext);
+
+/**
+ * Custom react-redux hooks for dispatching Core actions
+ * @category Hooks
+ */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const useCoreDispatch: () => CoreDispatch =
   createDispatchHook(CoreContext);
 
+/**
+ * Custom hooks for accessing the Core store
+ * @category Hooks
+ */
 export const useCoreStore: () => Store = createStoreHook(CoreContext);
 
 // This is untested. Need to verify that it work in single- and multi-store/provider contexts.

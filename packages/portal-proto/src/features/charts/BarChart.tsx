@@ -11,6 +11,21 @@ export interface BarChartData {
   filename?: string;
 }
 
+/**
+ * Bar chart component properties
+ * @property data - data to be plotted
+ * @property height - height of the chart
+ * @property width - width of the chart
+ * @property marginBottom - margin bottom of the chart
+ * @property marginTop - margin top of the chart
+ * @property padding - padding of the chart
+ * @property orientation - orientation of the chart
+ * @property onClickHandler - callback function for click event
+ * @property stacked - whether the chart is stacked
+ * @property divId - id of the div
+ * @category Charts
+ */
+
 interface BarChartProps {
   readonly data: BarChartData;
   // if defined, this determines the height of the chart. Otherwise, autosizing is used.
@@ -25,6 +40,18 @@ interface BarChartProps {
   readonly divId: string;
 }
 
+/**
+ * Bar chart component
+ * @param data - data to be plotted
+ * @param marginBottom - margin bottom of the chart
+ * @param marginTop - margin top of the chart
+ * @param padding - padding of the chart
+ * @param orientation   - orientation of the chart
+ * @param onClickHandler  - callback function for click event
+ * @param divId - id of the div
+ * @param stacked - whether the chart is stacked
+ * @category Charts
+ */
 const BarChart: React.FC<BarChartProps> = ({
   data,
   marginBottom,

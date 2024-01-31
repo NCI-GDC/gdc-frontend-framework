@@ -1,6 +1,7 @@
+// This table can be found at /analysis_page?app=MutationFrequencyApp
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useId } from "react";
 import { Checkbox, Tooltip } from "@mantine/core";
 import {
   IoIosArrowDropdownCircle as DownIcon,
@@ -26,6 +27,8 @@ export const useGenerateGenesTableColumns = ({
   genomicFilters,
   generateFilters,
   handleMutationCountClick,
+  currentPage,
+  totalPages,
 }: {
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -42,7 +45,10 @@ export const useGenerateGenesTableColumns = ({
     geneId: string,
   ) => Promise<FilterSet>;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<Gene>[] => {
+  const componentId = useId();
   const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
   const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
@@ -55,11 +61,11 @@ export const useGenerateGenesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -68,7 +74,7 @@ export const useGenerateGenesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-label={row.original.symbol}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -133,6 +139,7 @@ export const useGenerateGenesTableColumns = ({
               })
             }
             label={row.original.symbol}
+            ariaId={`${componentId}-genes-table-${row.original.gene_id}`}
           />
         ),
       }),
@@ -339,6 +346,9 @@ export const useGenerateGenesTableColumns = ({
       toggledGenes,
       generateFilters,
       handleSurvivalPlotToggled,
+      componentId,
+      currentPage,
+      totalPages,
     ],
   );
 

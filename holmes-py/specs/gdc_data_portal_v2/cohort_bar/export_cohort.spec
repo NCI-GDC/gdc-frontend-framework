@@ -19,9 +19,11 @@ tags: gdc-data-portal-v2, regression, cohort-bar, download
 * Verify that "Download from Cohort Bar" has expected information
   |required_info                          |
   |---------------------------------------|
-  |3479c5b5-51ce-57e8-b6e9-bbd99e5b10eb   |
-  |2ab50407-5d22-4172-9d6c-c05aa42fc54c   |
-  |14db56ef-ec5e-4775-a229-5d83e58e027c   |
+  |a8b1f6e7-2bcf-460d-b1c6-1792a9801119   |
+  |be90cdd9-b06b-4121-b02c-8ce0bfcc9f9a   |
+  |46253e25-a961-4e86-b07c-425a3d03e318   |
+  |f61d599a-43bd-4743-9568-678317e75955   |
+  |f4b69043-4a67-48e3-a4d1-72a21ae2d175   |
 
 
 ## Export a Custom Cohort

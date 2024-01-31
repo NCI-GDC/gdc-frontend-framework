@@ -10,12 +10,13 @@ tags: gdc-data-portal-v2, regression, navigation, header
 ## Open the data portal
 * On GDC Data Portal V2 app
 * Wait for cohort bar case count loading spinner
+* Pause "4" seconds
 
 ## Validate header featured tools navigation
-* Navigate to "Analysis" from "Header" "section"
-* Pause "2" seconds
-* Navigate to "Projects" from "Header" "section"
+* Navigate to "Downloads" from "Header" "section"
 * Pause "2" seconds
 * Navigate to "Cohort" from "Header" "section"
 * Pause "2" seconds
-* Navigate to "Downloads" from "Header" "section"
+* Navigate to "Projects" from "Header" "section"
+* Pause "2" seconds
+* Navigate to "Analysis" from "Header" "section"

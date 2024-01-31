@@ -1,3 +1,4 @@
+// This table can be found at /manage_sets
 import React, { useMemo, useState } from "react";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
@@ -91,7 +92,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         }}
         variant="transparent"
       >
-        <TrashIcon />
+        <TrashIcon aria-hidden="true" />
       </ActionIcon>
       {count > 0 && (
         <ActionIcon
@@ -121,7 +122,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
             });
           }}
         >
-          <DownloadIcon />
+          <DownloadIcon aria-hidden="true" />
         </ActionIcon>
       )}
     </div>
@@ -206,6 +207,28 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   const manageSetsTableColumnHelper =
     createColumnHelper<ManageSetsTableDataType>();
 
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(tableData);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
+
   const manageSetsColumn = useMemo(
     () => [
       manageSetsTableColumnHelper.display({
@@ -221,7 +244,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
             data-testid="checkbox-select-all-sets"
-            aria-label="Select all the rows of the table"
+            aria-label={`Select all sets of page ${page} of ${total}`}
           />
         ),
         cell: ({ row }) => (
@@ -231,7 +254,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
               input: "checked:bg-accent checked:border-accent",
             }}
             data-testid="checkbox-select-set"
-            aria-label={`Select/deselect ${row.original.setName}`}
+            aria-label={row.original.setName}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -284,30 +307,8 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         ),
       }),
     ],
-    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper],
+    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper, page, total],
   );
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(tableData);
-
-  const handleChange = (obj: HandleChangeInput) => {
-    switch (Object.keys(obj)?.[0]) {
-      case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
-        break;
-      case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
-        break;
-    }
-  };
 
   return (
     <div data-testid="table-manage-sets" className="w-3/4 pb-6">

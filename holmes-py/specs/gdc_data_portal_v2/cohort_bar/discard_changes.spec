@@ -42,7 +42,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
-* "Discard" should be disabled in the Cohort Bar
+* "Discard" should be "disabled" in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
@@ -59,8 +59,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
-* "Discard" should be disabled in the Cohort Bar
-* "Save" should be disabled in the Cohort Bar
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
+* "Discard" should be "disabled" in the Cohort Bar
+* "Save" should be "disabled" in the Cohort Bar
 * Make the following selections from "Disease Status and History" tab on the Cohort Builder page
   |facet_name         |selection            |
   |-------------------|---------------------|
@@ -78,7 +80,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * "Discard Changes Cohort" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
-* "Discard" should be disabled in the Cohort Bar
+* "Discard" should be "disabled" in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
@@ -99,7 +101,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
-* "Save" should be disabled in the Cohort Bar
+* "Save" should be "disabled" in the Cohort Bar
 * Make the following selections from "General" tab on the Cohort Builder page
   |facet_name         |selection            |
   |-------------------|---------------------|
@@ -119,7 +121,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
-* "Discard" should be disabled in the Cohort Bar
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* "Discard" should be "disabled" in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
@@ -149,9 +153,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Discard          |Cohort changes have been discarded         |Remove Modal        |
 * "Discard Changes Cohort" should be the active cohort
-* "Discard" should be disabled in the Cohort Bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* "Discard" should be "disabled" in the Cohort Bar
 * Is text "Changes not saved" not present on the page
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |

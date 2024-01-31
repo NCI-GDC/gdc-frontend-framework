@@ -4,16 +4,15 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
 import {
   removeCohort,
-  copyCohort,
+  copyToSavedCohort,
   setCohortMessage,
   buildCohortGqlOperator,
   setCurrentCohortId,
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
-  fetchCohortCaseCounts,
   FilterSet,
-  setCohort,
+  addNewSavedCohort,
   buildGqlOperationToFilterSet,
   NullCountsData,
   useCoreSelector,
@@ -21,9 +20,13 @@ import {
   useGetCohortsByContextIdQuery,
   useLazyGetCohortByIdQuery,
   discardCohortChanges,
+  showModal,
+  Modals,
+  fetchCohortCaseCounts,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 /**
  * SaveCohortModal handles saving a user's cohort
@@ -33,6 +36,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
  * @param filters - the filters associated with the cohort
  * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
  * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
+ * @category Modals
  */
 const SaveCohortModal = ({
   initialName = "",
@@ -55,6 +59,7 @@ const SaveCohortModal = ({
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+
   const {
     data: cohortsListData,
     isSuccess: cohortListSuccess,
@@ -71,7 +76,7 @@ const SaveCohortModal = ({
         .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
         .map((c) => c.id);
       for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ currentID: id }));
+        coreDispatch(removeCohort({ id }));
       }
 
       onClose();
@@ -89,23 +94,9 @@ const SaveCohortModal = ({
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
 
-    if (saveAs) {
-      // Should discard local changes from current cohort when saving as
-      await fetchSavedFilters(cohortId)
-        .unwrap()
-        .then((payload) => {
-          coreDispatch(
-            discardCohortChanges({
-              filters: buildGqlOperationToFilterSet(payload.filters),
-              showMessage: false,
-            }),
-          );
-        });
-    }
-
     const addBody = {
       name: newName,
-      type: "static",
+      type: "dynamic",
       filters:
         Object.keys(filters.root).length > 0
           ? buildCohortGqlOperator(filters)
@@ -114,34 +105,59 @@ const SaveCohortModal = ({
 
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
-      .then((payload) => {
-        if (prevCohort && !saveAs) {
-          coreDispatch(
-            copyCohort({
-              sourceId: prevCohort,
-              destId: payload.id,
-              saved: true,
-            }),
-          );
-          // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-          // which does not exist will cause this
-          // Therefore, copy the unsaved cohort to the new cohort id received from
-          // the BE.
-          coreDispatch(
-            setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
-          );
-          coreDispatch(
-            removeCohort({
-              shouldShowMessage: false,
-              currentID: prevCohort,
-            }),
-          );
-          coreDispatch(setCurrentCohortId(payload.id));
-          coreDispatch(updateCohortName(newName));
-          coreDispatch(fetchCohortCaseCounts(payload.id));
+      .then(async (payload) => {
+        if (prevCohort) {
+          if (saveAs) {
+            coreDispatch(
+              addNewSavedCohort({
+                id: payload.id,
+                name: payload.name,
+                filters: buildGqlOperationToFilterSet(payload.filters),
+                caseSet: { status: "uninitialized" },
+                counts: {
+                  ...NullCountsData,
+                },
+                modified_datetime: payload.modified_datetime,
+                saved: true,
+                modified: false,
+              }),
+            );
+            coreDispatch(setCurrentCohortId(payload.id));
+            coreDispatch(
+              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
+            );
+          } else {
+            coreDispatch(
+              copyToSavedCohort({
+                sourceId: prevCohort,
+                destId: payload.id,
+              }),
+            );
+            // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+            // which does not exist will cause this
+            // Therefore, copy the unsaved cohort to the new cohort id received from
+            // the BE.
+
+            // possible that the caseCount are undefined or pending so
+            // re-request counts.
+            coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
+
+            coreDispatch(
+              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
+            );
+
+            coreDispatch(
+              removeCohort({
+                shouldShowMessage: false,
+                id: prevCohort,
+              }),
+            );
+            coreDispatch(setCurrentCohortId(payload.id));
+            coreDispatch(updateCohortName(newName));
+          }
         } else {
           coreDispatch(
-            setCohort({
+            addNewSavedCohort({
               id: payload.id,
               name: payload.name,
               filters: buildGqlOperationToFilterSet(payload.filters),
@@ -154,26 +170,34 @@ const SaveCohortModal = ({
               modified: false,
             }),
           );
-          if (saveAs) {
+
+          if (setAsCurrent) {
             coreDispatch(setCurrentCohortId(payload.id));
             coreDispatch(
-              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
+              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
             );
           } else {
-            if (setAsCurrent) {
-              coreDispatch(setCurrentCohortId(payload.id));
-              coreDispatch(
-                setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-              );
-            } else {
-              coreDispatch(
-                setCohortMessage([
-                  `savedCohortSetCurrent|${payload.name}|${payload.id}`,
-                ]),
-              );
-            }
+            coreDispatch(
+              setCohortMessage([
+                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+              ]),
+            );
           }
-          coreDispatch(fetchCohortCaseCounts(payload.id));
+        }
+
+        if (saveAs) {
+          // Should discard local changes from current cohort when saving as
+          await fetchSavedFilters(prevCohort)
+            .unwrap()
+            .then((payload) => {
+              coreDispatch(
+                discardCohortChanges({
+                  filters: buildGqlOperationToFilterSet(payload.filters),
+                  showMessage: false,
+                  id: prevCohort,
+                }),
+              );
+            });
         }
 
         // Need to wait for request removing outdated cohorts to finish when replacing cohort
@@ -190,7 +214,7 @@ const SaveCohortModal = ({
         ) {
           setShowReplaceCohort(true);
         } else {
-          coreDispatch(setCohortMessage(["error|saving|allId"]));
+          coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
         }
       });
   };
@@ -266,7 +290,7 @@ const SaveCohortModal = ({
           }
           closeOnAction={false}
           loading={isLoading}
-          disallowedNames={["unsaved_cohort"]}
+          disallowedNames={INVALID_COHORT_NAMES}
         />
       )}
     </Modal>

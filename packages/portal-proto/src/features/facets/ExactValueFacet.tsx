@@ -26,7 +26,7 @@ const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ["includes", "excludes"].includes(op.operator);
 
 /**
- * Extracts the operands if the operation is Includes or Excludes. Returns an empty Array
+ * Extracts the operands if the operation isIncludes or Excludes. Returns an empty Array
  * if filter is not the correct type.
  * @param operation - filters to extract values from
  */
@@ -39,6 +39,16 @@ const extractValues = (
   return [] as ReadonlyArray<string>;
 };
 
+/**
+ * Exact value facet component
+ * @param field - field to facet on
+ * @param description - description of the facet
+ * @param facetName - name of the facet
+ * @param dismissCallback - callback function to dismiss the facet
+ * @param width - width of the facet
+ * @param hooks - hooks to use for the facet
+ * @category Facets
+ */
 const ExactValueFacet: React.FC<ExactValueProps> = ({
   field,
   description,

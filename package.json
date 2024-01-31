@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.11.0",
+  "version": "2.12.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {
@@ -79,7 +79,8 @@
     "lerna": "^5.0.0",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2",
-    "typedoc": "^0.25.3"
+    "typedoc": "^0.25.4",
+    "typedoc-plugin-missing-exports": "^2.1.0"
   },
   "engines": {
     "npm": ">=8.0.0"

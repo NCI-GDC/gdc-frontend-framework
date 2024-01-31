@@ -85,7 +85,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
           setSort(sortObj);
           setSortingStatus(sortTypeToAriaDescription(sortObj, "Name", field));
         }}
-        rightIcon={<NameSortIcon size={nameIconSize} />}
+        rightIcon={<NameSortIcon size={nameIconSize} aria-hidden="true" />}
         aria-label="Sort name alphabetically"
       >
         Name
@@ -110,7 +110,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
             sortTypeToAriaDescription(sortObj, valueLabel, field),
           );
         }}
-        rightIcon={<ValueSortIcon size={valueIconSize} />}
+        rightIcon={<ValueSortIcon size={valueIconSize} aria-hidden="true" />}
         aria-label={`Sort ${valueLabel} numerically`}
       >
         {valueLabel}

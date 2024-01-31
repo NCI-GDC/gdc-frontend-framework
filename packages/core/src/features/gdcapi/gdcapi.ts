@@ -76,6 +76,19 @@ export type gdcEndpoint =
   | "ssm_occurrences"
   | "ssms";
 
+/**
+ * The request for requesting data from the GDC API
+ * @property filters - A FilterSet object
+ * @property fields - An array of fields to return
+ * @property size - The number of cases to return
+ * @property from - The offset from which to return cases
+ * @property sortBy - An array of fields to sort by
+ * @property facets - An array of fields to facet by
+ * @property expand - An array of fields to expand
+ * @property format - The format of the response
+ * @property pretty - Whether to pretty print the response
+ * @category GDC API
+ */
 export interface GdcApiRequest {
   readonly filters?: GqlOperation;
   readonly case_filters?: GqlOperation;
@@ -461,24 +474,48 @@ export interface GenesDefaults {
   readonly name: string;
 }
 
+/**
+ * Fetches GDC projects from the GDC REST API
+ * @param request - GDC API request
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const fetchGdcProjects = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<ProjectDefaults>> => {
   return fetchGdcEntities("projects", request);
 };
 
+/**
+ * Fetches Annotations from the GDC REST API
+ * @param request - GDC API request
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const fetchGdcAnnotations = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<AnnotationDefaults>> => {
   return fetchGdcEntities("annotations", request);
 };
 
+/**
+ * Fetches SSM data from the GDC REST API
+ * @param request - GDC API request
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const fetchGdcSsms = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<SSMSDefaults>> => {
   return fetchGdcEntities("ssms", request);
 };
 
+/**
+ * Fetches Files data from the GDC REST API
+ * @param request - GDC API request
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const fetchGdcFiles = async (
   request?: GdcApiRequest,
 ): Promise<GdcApiResponse<FileDefaults>> => {
@@ -487,6 +524,14 @@ export const fetchGdcFiles = async (
 
 const DEFAULT_CHUNK_SIZE = 10;
 
+/**
+ * Fetches GDC entities from the GDC REST API
+ * @param endpoint - GDC API endpoint
+ * @param request - GDC API request
+ * @param fetchAll - fetch all results in batches of DEFAULT_CHUNK_SIZE
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const fetchGdcEntities = async <T extends Record<string, any>>(
   endpoint: string,
   request?: GdcApiRequest,
@@ -569,6 +614,12 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
   throw await buildFetchError(res, request);
 };
 
+/**
+ * Fetches the history of a GDC entity from the GDC REST API
+ * @param uuid - GDC API request
+ * @returns GDC API response
+ * @category GDC API
+ */
 export const getGdcHistory = async (
   uuid: string,
 ): Promise<ReadonlyArray<HistoryDefaults>> => {

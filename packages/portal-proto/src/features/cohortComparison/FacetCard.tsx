@@ -190,7 +190,11 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   };
 
   return (
-    <Paper p="md" shadow="xs">
+    <Paper
+      data-testid={`card-${fieldLabel}-cohort-comparison`}
+      p="md"
+      shadow="xs"
+    >
       <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
       <div className="h-[400px]">
         <BarChart
@@ -203,13 +207,17 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       </div>
       <div className="mb-3 float-right">
         <FunctionButton
+          data-testid="button-tsv-cohort-comparison"
           onClick={downloadTSVFile}
           aria-label="Download TSV File"
         >
           TSV
         </FunctionButton>
       </div>
-      <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
+      <table
+        data-testid="table-analysis-cohort-comparison"
+        className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1"
+      >
         <thead>
           <tr className="bg-base-max border-b-base-light border-b-2 font-heading text-bold">
             <th className="pl-2">{fieldLabel}</th>
@@ -236,7 +244,9 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                 className={idx % 2 ? null : "bg-base-lightest"}
                 key={`${field}_${value}`}
               >
-                <td className="pl-2">{value}</td>
+                <td data-testid={`text-analysis-${value}`} className="pl-2">
+                  {value}
+                </td>
                 <td>
                   <CohortCreationButton
                     numCases={cohort1Value}

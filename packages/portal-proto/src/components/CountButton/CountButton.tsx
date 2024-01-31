@@ -1,6 +1,17 @@
 import { Badge, Loader, Tooltip } from "@mantine/core";
 import React from "react";
 
+/**
+ * A Button component that displays a count in a badge,
+ * has a tooltip, and can be disabled.
+ * If loading is true, the badge will be replaced with a loader.
+ * @param tooltipLabel - The label for the tooltip.
+ * @param disabled - Whether the button is disabled.
+ * @param handleOnClick  - The function to call when the button is clicked.
+ * @param count - The count to display in the badge.
+ * @param loading - Whether to show the loading icon.
+ * @category Buttons
+ */
 export const CountButton = ({
   tooltipLabel,
   disabled,

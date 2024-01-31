@@ -24,7 +24,7 @@ const DeleteSetsNotification: React.FC<DeleteSetsNotificationProps> = ({
       <Button
         variant={"white"}
         onClick={() => sets.map((set) => dispatch(addSet(set)))}
-        leftIcon={<UndoIcon />}
+        leftIcon={<UndoIcon aria-hidden="true" />}
       >
         <span className="underline">Undo</span>
       </Button>

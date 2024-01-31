@@ -10,6 +10,7 @@ export interface FacetBuckets {
   readonly status: DataStatus;
   readonly error?: string;
   readonly buckets?: Record<string, number>;
+  readonly requestId?: string;
 }
 
 export type GQLDocType = "cases" | "files" | "genes" | "ssms" | "projects";

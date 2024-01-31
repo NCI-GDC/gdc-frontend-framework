@@ -44,6 +44,7 @@ import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width - set the width of the facet
  * @param header - object containing the components to use for the header
+ * @category Facets
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
@@ -286,7 +287,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             {showSearch ? (
               <Tooltip label="Search values">
                 <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                  <SearchIcon size="1.45em" className={header.iconStyle} />
+                  <SearchIcon
+                    size="1.45em"
+                    className={header.iconStyle}
+                    aria-hidden="true"
+                  />
                 </FacetIconButton>
               </Tooltip>
             ) : null}
@@ -295,9 +300,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
-                  <FlipIcon size="1.45em" className={header.iconStyle} />
+                  <FlipIcon
+                    size="1.45em"
+                    className={header.iconStyle}
+                    aria-hidden="true"
+                  />
                 </FacetIconButton>
               </Tooltip>
             ) : null}
@@ -306,7 +315,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 onClick={() => clearFilters(field)}
                 aria-label="clear selection"
               >
-                <UndoIcon size="1.25em" className={header.iconStyle} />
+                <UndoIcon
+                  size="1.25em"
+                  className={header.iconStyle}
+                  aria-hidden="true"
+                />
               </FacetIconButton>
             </Tooltip>
             {dismissCallback ? (
@@ -318,7 +331,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   }}
                   aria-label="Remove the facet"
                 >
-                  <CloseIcon size="1.25em" className={header.iconStyle} />
+                  <CloseIcon
+                    size="1.25em"
+                    className={header.iconStyle}
+                    aria-hidden="true"
+                  />
                 </FacetIconButton>
               </Tooltip>
             ) : null}
@@ -366,7 +383,11 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 field={facetName ? facetName : fieldNameToTitle(field)}
               />
 
-              <div className={facetChartData.cardStyle}>
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
                 <LoadingOverlay
                   data-testid="loading-spinner"
                   visible={!isSuccess}
@@ -388,6 +409,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           <div className="flex-none">
                             <Checkbox
                               data-testid={`checkbox-${value}`}
+                              aria-label={`${value}`}
                               value={value}
                               size="xs"
                               color="accent"
@@ -397,7 +419,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                                   e.currentTarget.checked,
                                 )
                               }
-                              aria-label={`checkbox for ${field}`}
                               classNames={{
                                 input: "hover:bg-accent-darker",
                               }}

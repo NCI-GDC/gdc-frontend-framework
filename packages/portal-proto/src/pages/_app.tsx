@@ -178,6 +178,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                       "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
                     arrow: "bg-base-min bg-opacity-90",
                   },
+                  events: {
+                    focused: true,
+                  },
                   withinPortal: true,
                   position: "bottom",
                 },
@@ -199,7 +202,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 defaultProps: {
                   zIndex: 400,
                   radius: "md",
-                  closeButtonProps: { "aria-label": "button-close-modal" },
+                  closeButtonProps: { "aria-label": "Close Modal" },
                   styles: {
                     header: {
                       borderColor: defaultTailwindColorTheme.base.lighter,

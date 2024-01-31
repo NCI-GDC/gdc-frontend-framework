@@ -1,3 +1,12 @@
+/*
+ * @packageDocumentation
+ * This file contains the types and functions for working with filters.
+ */
+
+/**
+ * GDC API Filter as a union of all possible filters
+ * @category Filters
+ */
 export type Operation =
   | Equals
   | NotEquals
@@ -490,6 +499,7 @@ export const convertGqlFilterToFilter = (
 /**
  * Type guard for Union or Intersection
  * @param o - operator to check
+ * @category Filters
  */
 export const isIntersectionOrUnion = (
   o: Operation,
@@ -499,19 +509,41 @@ export const isIntersectionOrUnion = (
 /**
  * Type guard for Includes
  * @param o - operator to check
+ * @category Filters
  */
 export const isIncludes = (o: Operation): o is Includes =>
   (o as Includes).operator === "includes";
 
+/**
+ * Type guard for Union
+ * @param o - operator to check
+ * @category Filters
+ */
 export const isUnion = (o: Operation): o is Union =>
   (o as Union).operator === "or";
 
+/**
+ * Type guard for Intersection
+ * @param o - operator to check
+ * @category Filters
+ */
 export const isIntersection = (o: Operation): o is Intersection =>
   (o as Intersection).operator === "and";
 
+/**
+ * Type guard for ExcludeIfAny
+ * @param o - operator to check
+ * @category Filters
+ */
 export const isExcludeIfAny = (o: Operation): o is Includes =>
   (o as ExcludeIfAny).operator === "excludeifany";
 
+/**
+ * Given a string of JSON, parse it into an object.
+ * @param str - the string to parse
+ * @param defaults - the default value to return if the string is not valid JSON
+ * @category Utility
+ */
 export const parseJSONParam: any = (str?: string, defaults = {}) => {
   if (str) {
     try {
@@ -523,6 +555,13 @@ export const parseJSONParam: any = (str?: string, defaults = {}) => {
     return defaults;
   }
 };
+
+/**
+ * Given a object of JSON, stringify it into a string.
+ * @param obj - the object to stringify
+ * @param defaults - the default value to return if the object is undefined
+ * @category Utility
+ */
 
 export const stringifyJSONParam = (
   obj?: Record<string, any>,

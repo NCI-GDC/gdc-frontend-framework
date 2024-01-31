@@ -59,6 +59,7 @@ export interface TotalCountsState {
   readonly counts: Record<string, number>;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: TotalCountsState = {
@@ -89,6 +90,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTotalCounts.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         if (response.errors && Object.keys(response.errors).length > 0) {
           state.status = "rejected";
@@ -112,11 +115,14 @@ const slice = createSlice({
         }
         return state;
       })
-      .addCase(fetchTotalCounts.pending, (state) => {
+      .addCase(fetchTotalCounts.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
       })
-      .addCase(fetchTotalCounts.rejected, (state) => {
+      .addCase(fetchTotalCounts.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
+        return state;
       });
   },
 });

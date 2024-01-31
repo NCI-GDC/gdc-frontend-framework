@@ -74,7 +74,11 @@ const Cart: React.FC = () => {
           } flex border border-cartDarkerOrange text-secondary-contrast-lighter`}
         >
           <div className="flex w-12 bg-cartDarkerOrange justify-center p-2">
-            <FaExclamationCircle color="white" className="h-6 w-6" />
+            <FaExclamationCircle
+              color="white"
+              className="h-6 w-6"
+              aria-label="Warning"
+            />
           </div>
           <div
             className={`bg-cartLighterOrange w-full h-full pl-4 ${

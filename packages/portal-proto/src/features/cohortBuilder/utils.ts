@@ -126,3 +126,5 @@ export const INITIAL_SUMMARY_FIELDS = [
     indexType: "explore",
   },
 ] as ReadonlyArray<SummaryFacetInfo>;
+
+export const INVALID_COHORT_NAMES = ["unsaved_cohort"];

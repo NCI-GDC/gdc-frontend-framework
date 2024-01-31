@@ -305,6 +305,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setEntityMetadata,
     projectId,
     generateFilters,
+    currentPage: page,
+    totalPages: Math.ceil(data?.ssmsTotal / pageSize),
   });
 
   const getRowId = (originalRow: SomaticMutation) => {
@@ -513,6 +515,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       onClick: () => setShowRemoveModal(true),
                     },
                   ]}
+                  targetButtonDisabled={isFetching && !isSuccess}
                   TargetButtonChildren="Save/Edit Mutation Set"
                   disableTargetWidth={true}
                   LeftIcon={

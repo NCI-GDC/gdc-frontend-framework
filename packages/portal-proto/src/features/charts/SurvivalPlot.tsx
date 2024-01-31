@@ -505,12 +505,12 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
               <Tooltip label="Download Survival Plot data or image">
                 <DownloadButton
                   data-testid="button-download-survival-plot"
-                  aria-label="Download button with an icon"
+                  aria-label="Download Survival Plot data or image"
                 >
                   {downloadInProgress ? (
                     <Loader size={16} />
                   ) : (
-                    <DownloadIcon size="1.25em" />
+                    <DownloadIcon size="1.25em" aria-hidden="true" />
                   )}
                 </DownloadButton>
               </Tooltip>
@@ -548,9 +548,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <DownloadButton
               onClick={() => setXDomain(undefined)}
               data-testid="button-reset-survival-plot"
-              aria-label="reset button with an icon"
+              aria-label="Reset Survival Plot Zoom"
             >
-              <ResetIcon size="1.15rem"></ResetIcon>
+              <ResetIcon size="1.15rem" aria-hidden="true"></ResetIcon>
             </DownloadButton>
           </Tooltip>
         </div>
@@ -658,6 +658,20 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     </div>
   );
 };
+
+/**
+ * Survival plot component
+ * @param data - data to be plotted
+ * @param names - names of the data to be plotted
+ * @param plotType - type of the plot
+ * @param title - title of the plot
+ * @param hideLegend - whether to hide the legend
+ * @param height - height of the plot
+ * @param field - field of the plot
+ * @param downloadFileName - name of the file to download
+ * @param tableTooltip - whether to show the table tooltip
+ * @category Charts
+ */
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
   const [downloadInProgress, setDownloadInProgress] = useState(false);

@@ -1,7 +1,9 @@
 import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
 import { ReactNode } from "react";
+import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { focusStyles } from "src/utils";
 
 interface DropdownWithIconProps {
   /**
@@ -57,12 +59,24 @@ interface DropdownWithIconProps {
    * custom test id
    */
   customDataTestId?: string;
+
+  /**
+    tooltip
+   */
+  tooltip?: string;
+
+  /**
+   * aria-label for the button
+   */
+  buttonAriaLabel?: string;
 }
 
 export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
-  RightIcon = <Dropdown size="1.25em" aria-label="dropdown icon" />,
+  RightIcon = (
+    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown icon" />
+  ),
   TargetButtonChildren,
   targetButtonDisabled,
   dropdownElements,
@@ -72,6 +86,8 @@ export const DropdownWithIcon = ({
   fullHeight,
   zIndex = undefined,
   customDataTestId = undefined,
+  tooltip = undefined,
+  buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   return (
     <Menu
@@ -84,7 +100,7 @@ export const DropdownWithIcon = ({
         <Button
           variant="outline"
           color="primary"
-          className="bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary"
+          className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
           {...(LeftIcon && { leftIcon: LeftIcon })}
           rightIcon={RightIcon}
           disabled={targetButtonDisabled}
@@ -92,8 +108,19 @@ export const DropdownWithIcon = ({
             rightIcon: "border-l pl-1 -mr-2",
             root: fullHeight ? "h-full" : undefined,
           }}
+          aria-label={buttonAriaLabel}
         >
-          {TargetButtonChildren}
+          <div>
+            {tooltip?.length && !targetButtonDisabled ? (
+              <div>
+                <Tooltip label={tooltip}>
+                  <div>{TargetButtonChildren}</div>
+                </Tooltip>
+              </div>
+            ) : (
+              <div>{TargetButtonChildren}</div>
+            )}
+          </div>
         </Button>
       </Menu.Target>
       <Menu.Dropdown

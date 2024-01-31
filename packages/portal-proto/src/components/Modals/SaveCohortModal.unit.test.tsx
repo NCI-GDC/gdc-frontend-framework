@@ -32,7 +32,7 @@ describe("SaveCohortModal", () => {
     );
 
     const nameInput = getByRole("textbox", {
-      name: "Input field for new cohort name",
+      name: "Name",
     }) as HTMLInputElement;
     expect(nameInput.value).toBe("cohort name");
   });
@@ -49,7 +49,7 @@ describe("SaveCohortModal", () => {
     jest
       .spyOn(core, "useAddCohortMutation")
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
-    const copyCohortMock = jest.spyOn(core, "copyCohort");
+    const copyCohortMock = jest.spyOn(core, "copyToSavedCohort");
     const setCurrentCohortMock = jest.spyOn(core, "setCurrentCohortId");
 
     const { getByText } = render(
@@ -74,7 +74,6 @@ describe("SaveCohortModal", () => {
     expect(copyCohortMock).toBeCalledWith({
       sourceId: "1",
       destId: "2",
-      saved: true,
     });
     expect(setCurrentCohortMock).toBeCalledWith("2");
   });
@@ -144,11 +143,12 @@ describe("SaveCohortModal", () => {
         mode: "and",
       },
       showMessage: false,
+      id: "1",
     });
     expect(mockMutation).toBeCalledWith({
       cohort: {
         name: "my new cohort",
-        type: "static",
+        type: "dynamic",
         filters: {
           op: "and",
           content: [
@@ -221,7 +221,7 @@ describe("SaveCohortModal", () => {
       .spyOn(core, "useAddCohortMutation")
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
     const setCurrentCohortMock = jest.spyOn(core, "setCurrentCohortId");
-    const addCohortToStoreMock = jest.spyOn(core, "setCohort");
+    const addCohortToStoreMock = jest.spyOn(core, "addNewSavedCohort");
 
     const { getByText } = render(
       <SaveCohortModal
