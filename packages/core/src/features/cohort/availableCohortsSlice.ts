@@ -756,7 +756,6 @@ const slice = createSlice({
         });
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
-      // todo clear case set if not needed
       const root = state.entities[getCurrentCohort(state)]?.filters.root;
       if (!root) {
         return;
@@ -775,10 +774,9 @@ const slice = createSlice({
         (set) => set.field !== action.payload,
       );
 
-      if (Object.keys(updatedCaseIds).length) {
+      if (willRequireCaseSet({ mode: "and", root: updated })) {
         // still require a case set
         // update caseSet
-
         const caseSetIntersection = buildCaseSetFilters(updatedCaseIds);
         const additionalFilters = divideFilterSetByPrefix(
           {
