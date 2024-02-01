@@ -58,6 +58,7 @@ import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -132,7 +133,7 @@ const removeQueryParamsFromRouter = (
 const CohortManager: React.FC = () => {
   const [exportCohortPending, setExportCohortPending] = useState(false);
   const coreDispatch = useCoreDispatch();
-
+  const isLoggedIn = useIsLoggedIn();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   // Info about current Cohort
   const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
@@ -231,7 +232,7 @@ const CohortManager: React.FC = () => {
       ) as FilterSet;
       coreDispatch(
         addNewUnsavedCohort({
-          filters: cohortFilters,
+          filters: { ...cohortFilters, loggedIn: isLoggedIn },
           name: (createCohortName as string).replace(/-/g, " "),
           replace: true,
           message: "newCohort",
@@ -465,7 +466,7 @@ const CohortManager: React.FC = () => {
                 value={cohortId}
                 zIndex={290}
                 onChange={(x) => {
-                  coreDispatch(setActiveCohort(x));
+                  coreDispatch(setActiveCohort(x, isLoggedIn));
                 }}
                 itemComponent={CustomCohortSelectItem}
                 classNames={{

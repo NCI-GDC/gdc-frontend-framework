@@ -23,10 +23,12 @@ import {
   showModal,
   Modals,
   fetchCohortCaseCounts,
+  setCohortLoginStatus,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 /**
  * SaveCohortModal handles saving a user's cohort
@@ -53,13 +55,14 @@ const SaveCohortModal = ({
   setAsCurrent?: boolean;
   saveAs?: boolean;
 }): JSX.Element => {
+  console.log({ cohortId });
   const coreDispatch = useCoreDispatch();
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
   const [cohortReplaced, setCohortReplaced] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
-
+  const isLoggedIn = useIsLoggedIn();
   const {
     data: cohortsListData,
     isSuccess: cohortListSuccess,
@@ -112,7 +115,10 @@ const SaveCohortModal = ({
               addNewSavedCohort({
                 id: payload.id,
                 name: payload.name,
-                filters: buildGqlOperationToFilterSet(payload.filters),
+                filters: {
+                  ...buildGqlOperationToFilterSet(payload.filters),
+                  loggedIn: isLoggedIn,
+                },
                 caseSet: { status: "uninitialized" },
                 counts: {
                   ...NullCountsData,
@@ -127,6 +133,7 @@ const SaveCohortModal = ({
               setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
             );
           } else {
+            console.log("reached here! in else not save as");
             coreDispatch(
               copyToSavedCohort({
                 sourceId: prevCohort,
@@ -141,7 +148,6 @@ const SaveCohortModal = ({
             // possible that the caseCount are undefined or pending so
             // re-request counts.
             coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
-
             coreDispatch(
               setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
             );
@@ -153,6 +159,11 @@ const SaveCohortModal = ({
               }),
             );
             coreDispatch(setCurrentCohortId(payload.id));
+            // can you check the cohort's loggedIn and then only call?
+            coreDispatch(
+              setCohortLoginStatus({ isLoggedIn, cohortId: payload.id }),
+            );
+
             coreDispatch(updateCohortName(newName));
           }
         } else {
@@ -160,7 +171,10 @@ const SaveCohortModal = ({
             addNewSavedCohort({
               id: payload.id,
               name: payload.name,
-              filters: buildGqlOperationToFilterSet(payload.filters),
+              filters: {
+                ...buildGqlOperationToFilterSet(payload.filters),
+                loggedIn: isLoggedIn,
+              },
               caseSet: { status: "uninitialized" },
               counts: {
                 ...NullCountsData,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
@@ -40,6 +40,8 @@ import {
 } from "./utils";
 import StickyControl from "./StickyControl";
 import { useViewportSize } from "@mantine/hooks";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const ContextBar = ({
   handleIsSticky,
@@ -54,7 +56,7 @@ const ContextBar = ({
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
   const { width } = useViewportSize();
-
+  const isLoggedIn = useIsLoggedIn();
   /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
   const [downloadMetadataActive, setDownloadMetadataActive] = useState(false);
@@ -69,11 +71,11 @@ const ContextBar = ({
     selectCurrentCohortId(state),
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (currentCohortId === undefined && cohorts.length > 0) {
-      coreDispatch(setActiveCohort(cohorts[0].id));
+      coreDispatch(setActiveCohort(cohorts[0].id, isLoggedIn));
     }
-  }, [currentCohortId, cohorts, coreDispatch]);
+  }, [currentCohortId, cohorts, coreDispatch, isLoggedIn]);
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),

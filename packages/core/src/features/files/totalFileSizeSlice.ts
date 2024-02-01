@@ -70,6 +70,7 @@ const initialState: CartSummary = {
   status: "uninitialized",
 };
 
+// need sth here for repository cases count to be updated
 const slice = createSlice({
   name: "fetchFilesSize",
   initialState,

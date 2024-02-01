@@ -10,8 +10,8 @@ import {
   selectUserDetailsInfo,
   fetchToken,
   selectCurrentModal,
-  setCohortLoginStatus,
   selectCurrentCohortId,
+  setActiveCohort,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
 import { ReactNode, useContext, useEffect, useState } from "react";
@@ -50,6 +50,7 @@ import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { LoggedInContext, SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
@@ -90,9 +91,18 @@ export const Header: React.FC<HeaderProps> = ({
   const { isLoggedIn, setIsLoggedIn } = useContext(LoggedInContext);
   console.log({ isLoggedIn });
 
+  // if we are using userInfo can we just use it everywhere instead of this new isLoggedIn?
+  useDeepCompareEffect(() => {
+    if (!userInfo?.data?.username) {
+      setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
+    }
+  }, [setIsLoggedIn, userInfo?.data?.username]);
+
   useEffect(() => {
     // changes the isLoggedIn state which should trigger a cohort update for all panels and apps
-    dispatch(setCohortLoginStatus(isLoggedIn));
+    dispatch(setActiveCohort(currentCohortId, isLoggedIn));
   }, [isLoggedIn, dispatch, currentCohortId]);
 
   const [cookie] = useCookies(["NCI-Warning"]);
@@ -201,9 +211,6 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </a>
           </Link>
-          <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
-            {isLoggedIn ? "Log Out" : "Log In"}
-          </button>
           {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>

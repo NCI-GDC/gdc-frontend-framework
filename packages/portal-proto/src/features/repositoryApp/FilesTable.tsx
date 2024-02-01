@@ -46,6 +46,8 @@ import {
   getAnnotationsLinkParamsFromFiles,
   statusBooleansToDataStatus,
 } from "src/utils";
+import { useDeepCompareEffect } from "use-deep-compare";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -70,7 +72,7 @@ const FilesTables: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const isLoggedIn = useIsLoggedIn();
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
@@ -117,7 +119,7 @@ const FilesTables: React.FC = () => {
     }
   }, [prevAllFilters, allFilters]);
 
-  const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
+  const { data, isFetching, isError, isSuccess, refetch } = useGetFilesQuery({
     case_filters: buildCohortGqlOperator(cohortFilters),
     filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
@@ -129,6 +131,10 @@ const FilesTables: React.FC = () => {
     from: offset * pageSize,
     sortBy: sortBy,
   });
+
+  useDeepCompareEffect(() => {
+    refetch();
+  }, [isLoggedIn, refetch]);
 
   const sortByActions = (sortByObj: SortingState) => {
     const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {

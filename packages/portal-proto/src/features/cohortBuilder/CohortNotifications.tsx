@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@mantine/core";
 import { setActiveCohort, useCoreDispatch } from "@gff/core";
 import { cleanNotifications } from "@mantine/notifications";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 export interface CohortNotificationProps {
   readonly cohortName: string;
@@ -40,7 +41,7 @@ export const NewCohortNotificationWithSetAsCurrent: React.FC<
   CohortWithSetOptionNotificationProps
 > = ({ cohortName, cohortId }: CohortWithSetOptionNotificationProps) => {
   const coreDispatch = useCoreDispatch();
-
+  const isLoggedIn = useIsLoggedIn();
   return (
     <>
       <p>
@@ -48,7 +49,7 @@ export const NewCohortNotificationWithSetAsCurrent: React.FC<
         <Button
           variant="white"
           onClick={() => {
-            coreDispatch(setActiveCohort(cohortId));
+            coreDispatch(setActiveCohort(cohortId, isLoggedIn));
             cleanNotifications();
           }}
         >
@@ -63,7 +64,7 @@ export const SavedCohortNotificationWithSetAsCurrent: React.FC<
   CohortWithSetOptionNotificationProps
 > = ({ cohortName, cohortId }: CohortWithSetOptionNotificationProps) => {
   const coreDispatch = useCoreDispatch();
-
+  const isLoggedIn = useIsLoggedIn();
   return (
     <>
       <p>
@@ -71,7 +72,7 @@ export const SavedCohortNotificationWithSetAsCurrent: React.FC<
         <Button
           variant="white"
           onClick={() => {
-            coreDispatch(setActiveCohort(cohortId));
+            coreDispatch(setActiveCohort(cohortId, isLoggedIn));
             cleanNotifications();
           }}
         >

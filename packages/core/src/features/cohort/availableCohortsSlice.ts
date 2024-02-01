@@ -845,24 +845,29 @@ const slice = createSlice({
     /**
      * Sets the login state of the cohorts filters to the passed in value
      */
-    setCohortLoginStatus: (state, action: PayloadAction<boolean>) => {
-      const filters = state.entities[getCurrentCohort(state)]?.filters ?? {
+    setCohortLoginStatus: (
+      state,
+      action: PayloadAction<{ isLoggedIn: boolean; cohortId: string }>,
+    ) => {
+      const filters = state.entities[action.payload.cohortId]?.filters ?? {
         mode: "and",
         root: {},
       };
-      const modified = state.entities[getCurrentCohort(state)]?.modified;
+      const modified = state.entities[action.payload.cohortId]?.modified;
       const modified_datetime =
-        state.entities[getCurrentCohort(state)]?.modified_datetime;
-      const caseSet = state.entities[getCurrentCohort(state)]?.caseSet;
-      cohortsAdapter.updateOne(state, {
-        id: getCurrentCohort(state),
-        changes: {
-          filters: { ...filters, loggedIn: action.payload },
-          modified: modified,
-          modified_datetime: modified_datetime,
-          caseSet: caseSet,
-        },
-      });
+        state.entities[action.payload.cohortId]?.modified_datetime;
+      const caseSet = state.entities[action.payload.cohortId]?.caseSet;
+      if (filters?.loggedIn !== action.payload.isLoggedIn) {
+        cohortsAdapter.updateOne(state, {
+          id: action.payload.cohortId,
+          changes: {
+            filters: { ...filters, loggedIn: action.payload.isLoggedIn },
+            modified: modified,
+            modified_datetime: modified_datetime,
+            caseSet: caseSet,
+          },
+        });
+      }
     },
 
     discardCohortChanges: (
@@ -1613,20 +1618,39 @@ export const updateActiveCohortFilter =
  * Note the assumption if the caseset member has ids then the caseset has previously been created.
  */
 export const setActiveCohort =
-  (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  (
+    cohortId: string,
+    isLoggedIn: boolean,
+  ): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch, getState) => {
     const cohort = getState().cohort.availableCohorts.entities[cohortId];
-    if (cohort) {
-      if (
-        willRequireCaseSet(cohort.filters) &&
-        cohort.caseSet.caseSetIds === undefined
-      ) {
-        // switched to a cohort without a case set
+    if (cohort && cohort.filters) {
+      const filters = cohort.filters;
+      const loggedInChanged = filters.loggedIn !== isLoggedIn;
+      const requiresCaseSet = willRequireCaseSet(filters);
+
+      if (loggedInChanged) {
+        dispatch(setCohortLoginStatus({ isLoggedIn, cohortId }));
+      }
+
+      if (loggedInChanged && requiresCaseSet) {
         await dispatch(
           createCaseSet({
-            pendingFilters: cohort.filters,
+            pendingFilters: filters,
             modified: cohort.modified,
-            cohortId: cohortId,
+            cohortId,
+          }),
+        );
+      } else if (
+        !loggedInChanged &&
+        requiresCaseSet &&
+        cohort.caseSet.caseSetIds === undefined
+      ) {
+        await dispatch(
+          createCaseSet({
+            pendingFilters: filters,
+            modified: cohort.modified,
+            cohortId,
           }),
         );
       }

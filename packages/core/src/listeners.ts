@@ -109,6 +109,19 @@ startCoreListening({
   },
 });
 
+// startCoreListening({
+//   matcher: isAnyOf(setCohortLoginStatus),
+//   effect: async (_action, listenerApi) => {
+//     const currentCohort = selectCurrentCohort(listenerApi.getState());
+//     // This optionally creates a case set if needed for the new cohort
+//     console.log("heree in listenerrrrrrr");
+//     // can we do this only when the program is fm OR project is fm-ad?
+//    (FM OR FM-AD) OR (gene/mutation that doesn't exclude FM)
+//     currentCohort &&
+//       listenerApi.dispatch(createCaseSetsIfNeeded(currentCohort));
+//   },
+// });
+
 /**
  * If we have a new cohort that requires a case set, we need to create it, even if it's
  * not the current cohort.
