@@ -544,6 +544,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     onClick={
                       caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
                     }
+                    aria-label="Download TSV"
                   >
                     {downloadMutationsFrequencyTSVActive ? (
                       <Loader size="sm" />
@@ -555,6 +556,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   <FunctionButton
                     onClick={handleTSVDownload}
                     data-testid="button-tsv-mutation-frequency"
+                    aria-label="Download TSV"
                   >
                     {downloadMutationsFrequencyTSVActive ? (
                       <Loader size="sm" />
