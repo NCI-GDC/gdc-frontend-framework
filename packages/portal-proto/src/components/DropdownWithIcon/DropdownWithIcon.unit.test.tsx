@@ -11,7 +11,7 @@ describe("<DropdownWithIcon />", () => {
       />,
     );
 
-    expect(getByTestId("dropdown icon")).toBeDefined();
+    expect(getByTestId("dropdown-icon")).toBeDefined();
   });
 
   it("if right icon is provided, provided icon should render", () => {
