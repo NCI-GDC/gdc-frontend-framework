@@ -344,7 +344,9 @@ const CohortManager: React.FC = () => {
               .unwrap()
               .then((response) => {
                 coreDispatch(
-                  setCohortMessage([`savedCohort|${cohortName}|${cohortId}`]),
+                  setCohortMessage([
+                    `savedCurrentCohort|${cohortName}|${cohortId}`,
+                  ]),
                 );
                 const cohort = {
                   id: response.id,
