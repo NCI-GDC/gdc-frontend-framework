@@ -1,18 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { castDraft } from "immer";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import {
-  CoreDataSelectorResponse,
-  createUseFiltersCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  selectCurrentCohortFilterSet,
-} from "../cohort";
+import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { buildCohortGqlOperator } from "../cohort";
+import { FilterSet } from "../cohort";
 
 const TopGeneFrequencyQuery = `
 query TopGeneQuery (
@@ -88,7 +76,7 @@ query TopGeneQuery (
 }
 `;
 
-export interface GeneSSMSEntry {
+interface GeneSSMSEntry {
   genes: {
     readonly name: string;
     readonly symbol: string;
@@ -104,111 +92,82 @@ export interface GeneSSMSEntry {
 export interface FetchTopGeneProps {
   cohortFilters: FilterSet;
   genomicFilters: FilterSet;
+  _cohortFiltersNoSet: FilterSet; // the cohort filters without the internal case set, only passed in for request caching
 }
 
-export const fetchTopGene = createAsyncThunk<
-  GraphQLApiResponse,
-  FetchTopGeneProps, // additional local filters
-  { dispatch: CoreDispatch; state: CoreState }
->(
-  "genes/topGene",
-  async ({
-    cohortFilters,
-    genomicFilters,
-  }: FetchTopGeneProps): Promise<GraphQLApiResponse> => {
-    const localFilters = buildCohortGqlOperator(genomicFilters);
-    const filterContents = localFilters?.content
-      ? Object(localFilters?.content)
-      : [];
+const topGeneSlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    topGene: builder.query<GeneSSMSEntry, FetchTopGeneProps>({
+      query: ({ cohortFilters, genomicFilters }) => {
+        const localFilters = buildCohortGqlOperator(genomicFilters);
+        const filterContents = localFilters?.content
+          ? Object(localFilters?.content)
+          : [];
 
-    const graphQlVariables = {
-      ssmTested: {
-        content: [
-          {
-            content: {
-              field: "cases.available_variation_data",
-              value: ["ssm"],
-            },
-            op: "in",
-          },
-        ],
-        op: "and",
-      },
-      ssmCaseFilter: {
-        content: [
-          ...[
-            {
-              content: {
-                field: "available_variation_data",
-                value: ["ssm"],
+        const graphQlVariables = {
+          ssmTested: {
+            content: [
+              {
+                content: {
+                  field: "cases.available_variation_data",
+                  value: ["ssm"],
+                },
+                op: "in",
               },
-              op: "in",
+            ],
+            op: "and",
+          },
+          ssmCaseFilter: {
+            content: [
+              ...[
+                {
+                  content: {
+                    field: "available_variation_data",
+                    value: ["ssm"],
+                  },
+                  op: "in",
+                },
+              ],
+              ...filterContents,
+            ],
+            op: "and",
+          },
+          topTable_size: 1,
+          consequenceFilters: {
+            content: [
+              {
+                content: {
+                  field: "consequence.transcript.is_canonical",
+                  value: ["true"],
+                },
+                op: "in",
+              },
+            ],
+            op: "and",
+          },
+          topTable_offset: 0,
+          topTable_filters: localFilters ?? {},
+          caseFilters: buildCohortGqlOperator(cohortFilters) ?? {},
+          ssmsScore: "occurrence.case.project.project_id",
+          geneScore: "case.project.project_id",
+          ssmsSort: [
+            {
+              field: "_score",
+              order: "desc",
+            },
+            {
+              field: "_uid",
+              order: "asc",
             },
           ],
-          ...filterContents,
-        ],
-        op: "and",
+        };
+
+        return {
+          graphQLQuery: TopGeneFrequencyQuery,
+          graphQLFilters: graphQlVariables,
+        };
       },
-      topTable_size: 1,
-      consequenceFilters: {
-        content: [
-          {
-            content: {
-              field: "consequence.transcript.is_canonical",
-              value: ["true"],
-            },
-            op: "in",
-          },
-        ],
-        op: "and",
-      },
-      topTable_offset: 0,
-      topTable_filters: localFilters ?? {},
-      caseFilters: buildCohortGqlOperator(cohortFilters) ?? {},
-      ssmsScore: "occurrence.case.project.project_id",
-      geneScore: "case.project.project_id",
-      ssmsSort: [
-        {
-          field: "_score",
-          order: "desc",
-        },
-        {
-          field: "_uid",
-          order: "asc",
-        },
-      ],
-    };
-
-    return graphqlAPI(TopGeneFrequencyQuery, graphQlVariables);
-  },
-);
-
-export interface TopGeneState {
-  readonly top: ReadonlyArray<GeneSSMSEntry>;
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly requestId?: string;
-}
-
-const initialState: TopGeneState = {
-  top: [],
-  status: "uninitialized",
-};
-
-const slice = createSlice({
-  name: "genomicApp/fetchTopGene",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchTopGene.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        const response = action.payload;
-        if (response.errors) {
-          state = castDraft(initialState);
-          state.status = "rejected";
-          state.error = response.errors.filters;
-        }
+      transformResponse: (response) => {
         const data = response.data.viewer.explore;
         //  Note: change this to the field parameter
         const genes = data.genes.hits.edges.map(
@@ -244,59 +203,21 @@ const slice = createSlice({
           };
         });
 
-        state = {
-          top: [
-            {
-              genes: {
-                name: genes[0]?.name,
-                symbol: genes[0]?.symbol,
-              },
-              ssms: {
-                symbol: ssms[0]?.ssm_id,
-                name: ssms[0]?.consequence[0]?.gene?.symbol,
-                aa_change: ssms[0]?.consequence[0]?.aa_change,
-                consequence_type: ssms[0]?.consequence[0]?.consequence_type,
-              },
-            },
-          ],
-          status: "fulfilled",
-          error: undefined,
-        };
-        return state;
-      })
-      .addCase(fetchTopGene.pending, (state, action) => {
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchTopGene.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.status = "rejected";
-        if (action.error) {
-          state.error = action.error.message;
-        }
-        return state;
-      });
-  },
+        return {
+          genes: {
+            name: genes[0]?.name,
+            symbol: genes[0]?.symbol,
+          },
+          ssms: {
+            symbol: ssms[0]?.ssm_id,
+            name: ssms[0]?.consequence[0]?.gene?.symbol,
+            aa_change: ssms[0]?.consequence[0]?.aa_change,
+            consequence_type: ssms[0]?.consequence[0]?.consequence_type,
+          },
+        } as GeneSSMSEntry;
+      },
+    }),
+  }),
 });
 
-export const topGeneReducer = slice.reducer;
-
-export const selectTopGeneState = (state: CoreState): TopGeneState =>
-  state.genomic.topGeneSSMS;
-
-export const selectTopGeneData = (
-  state: CoreState,
-): CoreDataSelectorResponse<GeneSSMSEntry[]> => {
-  return {
-    data: [...state.genomic.topGeneSSMS.top],
-    status: state.genomic.topGeneSSMS.status,
-    error: state.genomic.topGeneSSMS.error,
-  };
-};
-
-export const useTopGene = createUseFiltersCoreDataHook(
-  fetchTopGene,
-  selectTopGeneData,
-  selectCurrentCohortFilterSet, // used only to trigger a fetch
-);
+export const { useTopGeneQuery } = topGeneSlice;

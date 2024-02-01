@@ -17,6 +17,7 @@ import { GenesTableCohort, GenesTableSurvival } from "./TableComponents";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
 import RatioWithSpring from "@/components/RatioWithSpring";
+import { ComparativeSurvival } from "@/features/genomic/types";
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -357,7 +358,7 @@ export const useGenerateGenesTableColumns = ({
 
 export const getGene = (
   g: GeneRowInfo,
-  selectedSurvivalPlot: Record<string, string>,
+  selectedSurvivalPlot: ComparativeSurvival,
   mutationCounts: Record<string, string>,
   filteredCases: number,
   cases: number,
