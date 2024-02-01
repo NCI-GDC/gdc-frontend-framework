@@ -323,11 +323,8 @@ const Controls: React.FC<ControlPanelProps> = ({
           }
           rightSection={
             searchTerm && (
-              <ActionIcon
-                onClick={() => setSearchTerm("")}
-                aria-label="Clear search"
-              >
-                <CloseIcon aria-hidden="true" />
+              <ActionIcon onClick={() => setSearchTerm("")}>
+                <CloseIcon aria-label="clear search" />
               </ActionIcon>
             )
           }

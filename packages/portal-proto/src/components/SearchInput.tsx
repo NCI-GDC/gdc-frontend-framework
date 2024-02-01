@@ -15,6 +15,7 @@ import {
   Pagination,
   TextInput,
   Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { useFocusWithin } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
@@ -249,14 +250,15 @@ export const SearchInput: React.FC = () => {
         size="sm"
         rightSection={
           searchTerm.length > 0 && (
-            <CloseIcon
+            <ActionIcon
               onClick={() => {
                 clearSearch();
                 ref.current.focus();
               }}
-              className="cursor-pointer"
               data-testid="search-input-clear-search"
-            />
+            >
+              <CloseIcon aria-label="clear search" />
+            </ActionIcon>
           )
         }
         ref={textInputRef}
