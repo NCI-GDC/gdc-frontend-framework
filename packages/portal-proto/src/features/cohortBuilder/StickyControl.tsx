@@ -1,5 +1,4 @@
-import { focusStyles } from "src/utils";
-import { Tooltip } from "@mantine/core";
+import { Tooltip, Checkbox, CheckboxProps } from "@mantine/core";
 import {
   BsPin as StickyOffIcon,
   BsPinFill as StickyOnIcon,
@@ -11,37 +10,45 @@ const StickyControl = ({
 }: {
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
-}): JSX.Element => (
-  <Tooltip
-    label={
-      isSticky ? "Unpin Cohort Bar" : "Pin Cohort Bar to top of Analysis Center"
-    }
-    withArrow
-    position="bottom"
-  >
-    <button
-      data-testid="button-cohort-bar-pin-unpin"
-      className={`bg-primary-darker hover:bg-primary-darkest h-12 w-12 grid place-items-center text-white rounded-md ${focusStyles}`}
-      onClick={() => handleIsSticky(!isSticky)}
-      aria-label={`Toggle to ${
-        isSticky ? "unpin" : "pin"
-      } cohort bar to top of Analysis Center`}
+}): JSX.Element => {
+  const CheckboxIcon: CheckboxProps["icon"] = ({
+    indeterminate,
+    className,
+  }: {
+    indeterminate: boolean;
+    className: string;
+  }) =>
+    indeterminate ? (
+      <StickyOffIcon size="24px" className={className} />
+    ) : (
+      <StickyOnIcon size="24px" className={className} />
+    );
+
+  return (
+    <Tooltip
+      label={
+        isSticky
+          ? "Unpin Cohort Bar"
+          : "Pin Cohort Bar to top of Analysis Center"
+      }
+      withArrow
+      position="bottom"
     >
-      <>
-        {/* Using CSS to hide/unhide is making the tooltip behave correctly */}
-        <StickyOnIcon
-          size="24px"
-          className={isSticky ? "visible" : "hidden"}
-          aria-hidden="true"
-        />
-        <StickyOffIcon
-          size="24px"
-          className={!isSticky ? "visible" : "hidden"}
-          aria-hidden="true"
-        />
-      </>
-    </button>
-  </Tooltip>
-);
+      <Checkbox
+        data-testid="button-cohort-bar-pin-unpin"
+        classNames={{
+          input:
+            "bg-primary-darker rounded-md hover:bg-primary-darkest h-12 w-12 border-2 border-transparent hover:border-white focus:border-white cursor-pointer",
+          inner: "h-12 w-12 text-white",
+        }}
+        icon={CheckboxIcon}
+        aria-label="Pin Cohort Bar"
+        checked={isSticky}
+        indeterminate={!isSticky}
+        onClick={() => handleIsSticky(!isSticky)}
+      />
+    </Tooltip>
+  );
+};
 
 export default StickyControl;

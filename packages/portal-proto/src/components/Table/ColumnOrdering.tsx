@@ -141,7 +141,7 @@ function ColumnOrdering<TData>({
           onChange={(event) => setSearchValue(event.currentTarget.value.trim())}
           placeholder="Filter Columns"
           aria-label="Search input for columns"
-          icon={<SearchIcon />}
+          icon={<SearchIcon aria-hidden="true" />}
           className="mb-2 mt-4"
           data-testid="textbox-column-selector"
         />

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
 import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
-import { Button, Input, Loader, LoadingOverlay } from "@mantine/core";
+import {
+  Button,
+  Input,
+  Loader,
+  LoadingOverlay,
+  ActionIcon,
+} from "@mantine/core";
 import {
   entityType,
   useBiospecimenData,
@@ -207,7 +213,7 @@ export const Biospecimen = ({
             <div className="basis-4/12">
               <div className="flex mb-4 gap-4">
                 <Input
-                  icon={<MdOutlineSearch size={24} />}
+                  icon={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
                   className="basis-5/6"
                   classNames={{
@@ -226,20 +232,21 @@ export const Biospecimen = ({
                   }}
                   value={searchText}
                   rightSection={
-                    <MdOutlineClear
-                      className={`hover:cursor-pointer ${
-                        searchText.length === 0 ? "hidden" : "visible"
-                      }`}
-                      onClick={() => {
-                        setExpandedCount(0);
-                        setTreeStatusOverride(overrideMessage.Expanded);
-                        setSearchText("");
-                        setEntityClicked && setEntityClicked(false);
-                        router.replace(`/cases/${caseId}`, undefined, {
-                          shallow: true,
-                        });
-                      }}
-                    />
+                    searchText.length > 0 && (
+                      <ActionIcon
+                        onClick={() => {
+                          setExpandedCount(0);
+                          setTreeStatusOverride(overrideMessage.Expanded);
+                          setSearchText("");
+                          setEntityClicked && setEntityClicked(false);
+                          router.replace(`/cases/${caseId}`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
+                        <MdOutlineClear aria-label="clear search" />
+                      </ActionIcon>
+                    )
                   }
                 />
                 <Button

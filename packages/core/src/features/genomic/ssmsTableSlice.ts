@@ -173,6 +173,7 @@ export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly geneSymbol?: string;
   readonly genomicFilters: FilterSet;
   readonly cohortFilters: FilterSet;
+  readonly _cohortFiltersNoSet?: FilterSet;
   readonly caseFilter: FilterSet | undefined;
 }
 
@@ -243,6 +244,9 @@ const generateFilter = ({
   geneSymbol,
   genomicFilters, // local genomic filters
   cohortFilters, // the cohort filters which used to filter the cases
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  _cohortFiltersNoSet, // the cohort filters without the internal case set, only passed in for request caching
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);

@@ -4,7 +4,7 @@ import {
   createColumnHelper,
   SortingState,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useId } from "react";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
 import { Checkbox } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
@@ -65,6 +65,7 @@ export const SetOperationTable = ({
   const [rowSelection, setRowSelection] = useState({});
   const [operationTableSorting, setOperationTableSorting] =
     useState<SortingState>([]);
+  const componentId = useId();
 
   const setOperationTableData: SetOperationTableDataType[] = useMemo(
     () =>
@@ -92,7 +93,7 @@ export const SetOperationTable = ({
               input: "checked:bg-accent checked:border-accent",
             }}
             value={row.original.operationKey}
-            aria-label={`Select the ${row.original.operationKey} set operation row`}
+            id={`${componentId}-setOperation-${row.original.operationKey}`}
             checked={selectedSets[row.original.operationKey]}
             onChange={(e) => {
               setSelectedSets({
@@ -106,6 +107,13 @@ export const SetOperationTable = ({
       setOperationTableColumnsHelper.accessor("setOperation", {
         header: "Set Operation",
         enableSorting: false,
+        cell: ({ getValue, row }) => (
+          <label
+            htmlFor={`${componentId}-setOperation-${row.original.operationKey}`}
+          >
+            {getValue()}
+          </label>
+        ),
       }),
       setOperationTableColumnsHelper.accessor("count", {
         header: "# Items",
@@ -147,6 +155,7 @@ export const SetOperationTable = ({
       entityType,
       sets,
       setSelectedSets,
+      componentId,
     ],
   );
 

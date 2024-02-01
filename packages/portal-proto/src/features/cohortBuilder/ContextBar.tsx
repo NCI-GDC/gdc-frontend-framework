@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
@@ -69,7 +70,7 @@ const ContextBar = ({
     selectCurrentCohortId(state),
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (currentCohortId === undefined && cohorts.length > 0) {
       coreDispatch(setActiveCohort(cohorts[0].id));
     }

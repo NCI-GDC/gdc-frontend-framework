@@ -58,6 +58,10 @@ const CountBadge: React.FC<CountBadgeProps> = ({
           disabled ? undefined : createKeyboardAccessibleFunction(openSetDetail)
         }
         aria-disabled={disabled}
+        aria-label={`${count?.toLocaleString()} item${
+          count > 1 ? "s" : ""
+        } detailed list`}
+        role="button"
       >
         {count?.toLocaleString() ?? "--"}
       </Badge>
