@@ -23,6 +23,7 @@ import { entityMetadataType } from "@/utils/contexts";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import ImpactHeaderWithTooltip from "../SharedComponent/ImpactHeaderWithTooltip";
 import RatioWithSpring from "@/components/RatioWithSpring";
+import { ComparativeSurvival } from "@/features/genomic/types";
 
 export const filterMutationType = (mutationSubType: string): string => {
   if (
@@ -309,7 +310,7 @@ export const useGenerateSMTableColumns = ({
 
 export const getMutation = (
   sm: SSMSData,
-  selectedSurvivalPlot: Record<string, string>,
+  selectedSurvivalPlot: ComparativeSurvival,
   filteredCases: number,
   cases: number,
   ssmsTotal: number,

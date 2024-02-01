@@ -3,7 +3,6 @@ import { genesTableReducer } from "./genesTableSlice";
 import { geneFrequencyChartReducer } from "./genesFrequencyChartSlice";
 import { ssmsTableReducer } from "./ssmsTableSlice";
 import { genomicFilterReducer } from "./genomicFilters";
-import { topGeneReducer } from "./topGenesSSMSSlice";
 import { geneSymbolReducer } from "./geneSymbolSlice";
 import { ssmsConsequenceTableReducer } from "./ssmsConsequenceTableSlice";
 
@@ -13,6 +12,5 @@ export const genomicReducers = combineReducers({
   ssmsTable: ssmsTableReducer,
   ssmsConsequenceTable: ssmsConsequenceTableReducer,
   filters: genomicFilterReducer,
-  topGeneSSMS: topGeneReducer,
   geneSymbols: geneSymbolReducer,
 });

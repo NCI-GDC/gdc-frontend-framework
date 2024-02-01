@@ -15,17 +15,16 @@ import {
   useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
   getSSMTestedCases,
-  useGetSsmTableDataMutation,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareCallback } from "use-deep-compare";
 import { Loader, Text } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, humanify, statusBooleansToDataStatus } from "src/utils";
+import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -43,9 +42,10 @@ import { getMutation, useGenerateSMTableColumns } from "./utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import SMTableSubcomponent from "./SMTableSubcomponent";
+import { ComparativeSurvival } from "@/features/genomic/types";
 
 export interface SMTableContainerProps {
-  readonly selectedSurvivalPlot?: Record<string, string>;
+  readonly selectedSurvivalPlot?: ComparativeSurvival;
   handleSurvivalPlotToggled?: (
     symbol: string,
     name: string,
@@ -81,6 +81,7 @@ export interface SMTableContainerProps {
   /**
    *  This is required for TSV download SMTable in Gene summary page
    */
+  clearSearchTermsForGene?: () => void;
   gene_id?: string;
   /**
    *  This is required for TSV download SMTable in Case summary page
@@ -89,7 +90,7 @@ export interface SMTableContainerProps {
 }
 
 export const SMTableContainer: React.FC<SMTableContainerProps> = ({
-  selectedSurvivalPlot = {},
+  selectedSurvivalPlot,
   handleSurvivalPlotToggled = undefined,
   geneSymbol = undefined,
   projectId = undefined,
@@ -103,6 +104,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   inModal = false,
   tableTitle = undefined,
   searchTermsForGene,
+  clearSearchTermsForGene,
   gene_id,
   case_id,
 }: SMTableContainerProps) => {
@@ -155,71 +157,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   });
 
   /* SM Table Call end */
-  const [getTopSSM, { data: topSSM }] = useGetSsmTableDataMutation();
-
-  const previousSearchTerm = usePrevious(searchTerm);
-  const previousSelectedSurvivalPlot = usePrevious(selectedSurvivalPlot);
 
   useEffect(() => {
-    if (searchTermsForGene) {
-      const { geneId = "", geneSymbol = "" } = searchTermsForGene;
-      getTopSSM({
-        pageSize: 1,
-        offset: 0,
-        searchTerm: geneId,
-        geneSymbol: geneSymbol,
-        genomicFilters: genomicFilters,
-        cohortFilters: cohortFilters,
-        caseFilter: caseFilter,
-      });
+    if (searchTerm === "" && clearSearchTermsForGene) {
+      clearSearchTermsForGene();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTermsForGene, genomicFilters, cohortFilters, caseFilter]);
-
-  // TODO Refactor this to use one useEffect instead of two (see PEAR-1657)
-  useDeepCompareEffect(() => {
-    if (topSSM) {
-      const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-      const description = consequence_type
-        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-            term: consequence_type.replace("_variant", "").replace("_", " "),
-          })}`
-        : "";
-      handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topSSM, searchTermsForGene?.geneSymbol]);
-
-  useDeepCompareEffect(
-    () => {
-      const shouldHandleSurvivalPlot =
-        topSSM &&
-        !isEqual(selectedSurvivalPlot, previousSelectedSurvivalPlot) &&
-        isEqual(searchTerm, previousSearchTerm) &&
-        !data?.ssms
-          .map(({ ssm_id }) => ssm_id)
-          .includes(selectedSurvivalPlot.symbol);
-      if (shouldHandleSurvivalPlot) {
-        const { ssm_id, consequence_type, aa_change = "" } = topSSM;
-        const description = consequence_type
-          ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-              term: consequence_type.replace("_variant", "").replace("_", " "),
-            })}`
-          : "";
-        handleSurvivalPlotToggled(ssm_id, description, "gene.ssm.ssm_id");
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      selectedSurvivalPlot,
-      previousSelectedSurvivalPlot,
-      data,
-      topSSM,
-      searchTerm,
-      previousSearchTerm,
-      searchTermsForGene?.geneSymbol,
-    ],
-  );
+  }, [searchTerm, clearSearchTermsForGene]);
 
   /* Create Cohort*/
   const [createSet] = useCreateCaseSetFromFiltersMutation();

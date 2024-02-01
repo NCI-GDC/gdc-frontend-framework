@@ -28,11 +28,8 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     <Menu width="auto">
       <Menu.Target>
         <Tooltip label="Download image or data">
-          <DownloadButton
-            data-testid="button-download-image-or-data"
-            aria-label="Download button with an icon"
-          >
-            <DownloadIcon size="1.25em" />
+          <DownloadButton data-testid="button-download-image-or-data">
+            <DownloadIcon size="1.25em" aria-label="Download" />
           </DownloadButton>
         </Tooltip>
       </Menu.Target>
