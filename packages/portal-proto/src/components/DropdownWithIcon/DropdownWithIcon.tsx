@@ -75,7 +75,7 @@ export const DropdownWithIcon = ({
   disableTargetWidth,
   LeftIcon,
   RightIcon = (
-    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown icon" />
+    <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown-icon" />
   ),
   TargetButtonChildren,
   targetButtonDisabled,

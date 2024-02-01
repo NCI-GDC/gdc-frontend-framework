@@ -170,7 +170,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   ? "bg-primary text-base-max"
                   : "text-primary bg-base-max"
               }`}
-              aria-label="cart icon button"
               onClick={() => {
                 isAllImagesFilesInCart
                   ? removeFromCart(
@@ -185,7 +184,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     );
               }}
             >
-              <FaShoppingCart size={12} aria-label="cart icon" />
+              <FaShoppingCart size={12} aria-label="Cart" />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -305,7 +304,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
           href={getAnnotationsLinkParams(annotationCountData, case_id)}
           passHref
         >
-          <a className="underline" target="_blank">
+          <a
+            className="underline"
+            target="_blank"
+            aria-label={`${annotationsCountTotal.toLocaleString()} Annotation${
+              annotationsCountTotal > 1 ? "s" : ""
+            }`}
+          >
             {annotationsCountTotal.toLocaleString()}
           </a>
         </Link>

@@ -169,7 +169,7 @@ const CohortManager: React.FC = () => {
       fields: ["case_id"],
       size: 50000,
     },
-    { skip: currentCohort === undefined },
+    { skip: !exportCohortPending },
   );
 
   useEffect(() => {
@@ -344,7 +344,9 @@ const CohortManager: React.FC = () => {
               .unwrap()
               .then((response) => {
                 coreDispatch(
-                  setCohortMessage([`savedCohort|${cohortName}|${cohortId}`]),
+                  setCohortMessage([
+                    `savedCurrentCohort|${cohortName}|${cohortId}`,
+                  ]),
                 );
                 const cohort = {
                   id: response.id,
@@ -576,13 +578,7 @@ const CohortManager: React.FC = () => {
                 <CohortGroupButton
                   data-testid="downloadButton"
                   disabled={isErrorCaseIds}
-                  onClick={() => {
-                    if (isFetchingCaseIds) {
-                      setExportCohortPending(true);
-                    } else {
-                      exportCohort(caseIds, cohortName);
-                    }
-                  }}
+                  onClick={() => setExportCohortPending(true)}
                   aria-label="Download cohort"
                 >
                   {exportCohortPending ? (

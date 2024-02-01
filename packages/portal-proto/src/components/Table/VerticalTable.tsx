@@ -24,6 +24,7 @@ import {
   Select,
   TextInput,
   Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
@@ -267,7 +268,7 @@ function VerticalTable<TData>({
             <div className="flex mb-2 gap-2">
               {search?.enabled && (
                 <TextInput
-                  icon={<MdSearch size={24} />}
+                  icon={<MdSearch size={24} aria-hidden="true" />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
@@ -280,10 +281,9 @@ function VerticalTable<TData>({
                   size="sm"
                   rightSection={
                     searchTerm.length > 0 && (
-                      <MdClose
-                        onClick={handleClearClick}
-                        className="cursor-pointer"
-                      />
+                      <ActionIcon onClick={handleClearClick}>
+                        <MdClose aria-label="clear search" />
+                      </ActionIcon>
                     )
                   }
                   value={searchTerm}

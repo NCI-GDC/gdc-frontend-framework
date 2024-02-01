@@ -183,18 +183,10 @@ export const ClinicalSummary = ({
         })}
       >
         <Tabs.List>
-          <Tabs.Tab
-            value="demographic"
-            aria-label="Demographic"
-            data-testid="demographicTab"
-          >
+          <Tabs.Tab value="demographic" data-testid="demographicTab">
             Demographic
           </Tabs.Tab>
-          <Tabs.Tab
-            value="diagnoses"
-            aria-label="Diagnoses and Treatments`"
-            data-testid="diagnosisTab"
-          >
+          <Tabs.Tab value="diagnoses" data-testid="diagnosisTab">
             <span className="flex gap-2">
               <span>
                 Diagnoses
@@ -207,31 +199,19 @@ export const ClinicalSummary = ({
               </span>
             </span>
           </Tabs.Tab>
-          <Tabs.Tab
-            value="family"
-            aria-label="Family Histories"
-            data-testid="familyTab"
-          >
+          <Tabs.Tab value="family" data-testid="familyTab">
             <span>
               Family Histories
               <CountComponent count={family_histories.length} />
             </span>
           </Tabs.Tab>
-          <Tabs.Tab
-            value="exposures"
-            aria-label="Exposures"
-            data-testid="exposuresTab"
-          >
+          <Tabs.Tab value="exposures" data-testid="exposuresTab">
             <span>
               Exposures
               <CountComponent count={exposures.length} />
             </span>
           </Tabs.Tab>
-          <Tabs.Tab
-            value="followups"
-            aria-label="Follow Ups"
-            data-testid="followUpsTab"
-          >
+          <Tabs.Tab value="followups" data-testid="followUpsTab">
             <span className="flex gap-2">
               <span>
                 Follow-Ups
