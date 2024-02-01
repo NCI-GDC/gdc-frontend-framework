@@ -190,7 +190,11 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
           filters={newCohortFilters}
         />
       )}
-      <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={isLoading}
+        zIndex={0}
+      />
     </div>
   );
 };
