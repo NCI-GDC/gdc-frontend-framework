@@ -11,7 +11,7 @@ import {
   GQLDocType,
   GQLIndexType,
   isIncludes,
-  joinFilters,
+  //joinFilters,
   OperandValue,
   Operation,
   selectCurrentCohortFiltersByName,
@@ -245,41 +245,60 @@ export const useGeneAndSSMPanelData = (
     [],
   );
 
-  const filters = useMemo(
-    () =>
-      buildCohortGqlOperator(
-        joinFilters(
-          isDemoMode ? overwritingDemoFilter : cohortFilters,
-          genomicFilters,
-        ),
-      ),
-
-    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
-  );
+  // const filters = useMemo(
+  //   () =>
+  //     buildCohortGqlOperator(
+  //       joinFilters(
+  //         isDemoMode ? overwritingDemoFilter : cohortFilters,
+  //         genomicFilters,
+  //       ),
+  //     ),
+  //
+  //   [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
+  // );
 
   const memoizedFilters = useMemo(
     () =>
       buildGeneHaveAndHaveNotFilters(
-        filters,
+        buildCohortGqlOperator(_cohortFiltersNoSet),
         comparativeSurvival?.symbol,
         comparativeSurvival?.field,
         isGene,
       ),
-    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters, isGene],
+    [
+      comparativeSurvival?.field,
+      comparativeSurvival?.symbol,
+      _cohortFiltersNoSet,
+      isGene,
+    ],
   );
+
+  const f = {
+    case_filter: memoizedFilters,
+    filters: [genomicFilters],
+    // comparativeSurvival !== undefined
+    //    ? memoizedFilters
+    //    : genomicFilters
+    //      ? [genomicFilters]
+    //       : [],
+    //  _cohortFiltersNoSet,
+  };
+
+  console.log("comparativeSurvival", comparativeSurvival);
+  console.log(f);
 
   const {
     data: survivalPlotData,
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
   } = useGetSurvivalPlotQuery({
-    filters:
-      comparativeSurvival !== undefined
-        ? memoizedFilters
-        : filters
-        ? [filters]
-        : [],
-    _cohortFiltersNoSet,
+    case_filter: memoizedFilters,
+    filters: [genomicFilters, genomicFilters],
+    ///   comparativeSurvival !== undefined
+    //     ? memoizedFilters
+    //    : genomicFilters
+    //    ? [genomicFilters]
+    //    : []
   });
 
   return {
