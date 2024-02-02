@@ -1,5 +1,6 @@
 import { useQuickSearch } from "@gff/core";
 import { Badge, Loader, Highlight, Select } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState, forwardRef } from "react";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
@@ -7,42 +8,43 @@ import { TypeIcon } from "../TypeIcon";
 import { entityShortNameMapping } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
 
+interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
+  value: string;
+  label: string;
+  symbol?: string;
+  "data-hovered": boolean;
+  obj: Record<string, any>;
+}
+
 export const QuickSearch = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [searchTextForApi, setSearchTextForApi] = useState("");
+  const [debounced] = useDebouncedValue(searchText, 250, { leading: true });
   const [matchedSearchList, setMatchedSearchList] = useState([]);
 
   const router = useRouter();
 
   const {
     data: { searchList, query },
-  } = useQuickSearch(searchTextForApi);
+  } = useQuickSearch(debounced);
 
   // Checks search results returned against current search to make sure it matches
   useEffect(() => {
-    if (searchTextForApi === "") {
+    if (debounced === "") {
       setLoading(false);
-    } else if (query === searchTextForApi) {
+      setMatchedSearchList([]);
+    } else if (query === debounced) {
       setMatchedSearchList(
         searchList.map((obj) => ({
-          value: obj.id, // requiered by plugin
-          label: obj.id, // requiered by plugin
+          value: obj.id, // required by plugin
+          label: obj.id, // required by plugin
           symbol: obj.symbol,
           obj: obj,
         })),
       );
       setLoading(false);
     }
-  }, [searchTextForApi, searchList, query]);
-
-  interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-    value: string;
-    label: string;
-    symbol?: string;
-    "data-hovered": boolean;
-    obj: Record<string, any>;
-  }
+  }, [debounced, searchList, query]);
 
   const renderItem = forwardRef<HTMLDivElement, ItemProps>(
     ({ value, label, symbol, obj, ...others }: ItemProps, ref) => {
@@ -121,19 +123,6 @@ export const QuickSearch = (): JSX.Element => {
     setSearchText("");
   };
 
-  useEffect(() => {
-    setMatchedSearchList([]);
-    const trimedSearchText = searchText.trim();
-    if (trimedSearchText.length > 0) {
-      setLoading(true);
-      //prevents unneeded api calls if user is typing something
-      const delayDebounceFn = setTimeout(() => {
-        setSearchTextForApi(trimedSearchText);
-      }, 250);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [searchText]);
-
   return (
     <Select
       icon={
@@ -162,12 +151,15 @@ export const QuickSearch = (): JSX.Element => {
       data={matchedSearchList}
       searchable
       nothingFound={
-        searchText.length > 0 && searchTextForApi.length > 0 && !loading
+        searchText.length > 0 && debounced.length > 0 && !loading
           ? "No results found"
           : undefined
       } //This is so it does not show no results when loading or when user has not entered anything
       filter={() => true} //dont have plugin filter results
-      onSearchChange={setSearchText}
+      onSearchChange={(query) => {
+        setLoading(true);
+        setSearchText(query);
+      }}
       searchValue={searchText}
       onChange={onSelectItem}
       value="" // set to blank so that a value does not flash when making a selection before the next page loads
