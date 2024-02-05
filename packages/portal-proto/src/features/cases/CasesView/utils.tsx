@@ -53,7 +53,7 @@ export const useGenerateCasesTableColumns = ({
 }: {
   casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
-  setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>;
   currentPage: number;
   totalPages: number;
 }): ColumnDef<casesTableDataType>[] => {
@@ -194,6 +194,7 @@ export const useGenerateCasesTableColumns = ({
           <OverflowTooltippedLabel label={row.original.case_id}>
             <PopupIconButton
               handleClick={() =>
+                setEntityMetadata &&
                 setEntityMetadata({
                   entity_type: "case",
                   entity_id: row.original.case_uuid,
@@ -215,6 +216,7 @@ export const useGenerateCasesTableColumns = ({
           <OverflowTooltippedLabel label={row.original.project}>
             <PopupIconButton
               handleClick={() =>
+                setEntityMetadata &&
                 setEntityMetadata({
                   entity_type: "project",
                   entity_id: row.original.project,

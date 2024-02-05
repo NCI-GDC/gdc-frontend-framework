@@ -68,7 +68,9 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   filtersCallback,
 }: CohortCreationButtonProps) => {
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
+  const [cohortFilters, setCohortFilters] = useState<FilterSet | undefined>(
+    filters,
+  );
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
   const tooltipText = disabled

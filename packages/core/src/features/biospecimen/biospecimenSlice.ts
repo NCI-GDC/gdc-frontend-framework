@@ -118,8 +118,8 @@ export type entityType =
   | portionNode
   | analytesNode
   | slidesNode
-  | aliquotsNode
-  | null;
+  | aliquotsNode;
+// removed null is it safe?
 
 export interface biospecimenSliceInitialState {
   readonly status: DataStatus;

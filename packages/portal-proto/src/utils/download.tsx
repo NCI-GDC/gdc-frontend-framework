@@ -123,7 +123,7 @@ const download = async ({
   const downloadToken = uniqueId(`${+new Date()}-`);
   const cookieKey = navigator.cookieEnabled
     ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
-    : null;
+    : "";
 
   if (cookieKey) {
     cookies.set(cookieKey, downloadToken);
@@ -147,7 +147,7 @@ const download = async ({
         styles: () => ({
           root: {
             textAlign: "center",
-            display: hideNotification && "none",
+            display: hideNotification ? "none" : undefined,
           },
           closeButton: {
             color: "black",
@@ -206,14 +206,14 @@ const download = async ({
         resolve();
       } else {
         const requestError =
-          iFrame.contentWindow.document.getElementsByTagName("form").length ===
-            0 && content !== "";
+          iFrame?.contentWindow?.document.getElementsByTagName("form")
+            .length === 0 && content !== "";
         if (requestError) {
           clearTimeout(showNotificationTimeout);
           cleanNotifications();
 
           const errorMessage = /{"(?:message|error)":"([^"]*)"/g.exec(
-            content,
+            content ?? "",
           )?.[1];
           if (
             errorMessage === "internal server error" ||
@@ -251,6 +251,7 @@ const download = async ({
     //do all of this together for FireFox support
     const form = document.createElement("form");
     form.method = method.toUpperCase();
+    // what to do in this case?
     form.action = urlJoin(GDC_APP_API_AUTH, endpoint);
     form.innerHTML = fields;
 

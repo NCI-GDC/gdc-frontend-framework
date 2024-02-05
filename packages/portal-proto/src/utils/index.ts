@@ -10,6 +10,7 @@ import {
 } from "@gff/core";
 import { replace, sortBy, zip } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
+import type { UrlObject } from "url";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -181,11 +182,15 @@ export const ageDisplay = (
   const leapThenPair = (years: number, days: number): number[] =>
     days === 365 ? [years + 1, 0] : [years, days];
 
-  const timeString = (
-    num: number,
-    singular: string,
-    plural?: string,
-  ): string => {
+  const timeString = ({
+    num,
+    singular,
+    plural,
+  }: {
+    num: number;
+    singular: string;
+    plural?: string;
+  }): string => {
     const pluralChecked = plural || `${singular}s`;
     return `${num} ${num === 1 ? singular : pluralChecked}`;
   };
@@ -201,8 +206,15 @@ export const ageDisplay = (
     ),
     ["year", "day"],
   )
-    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
-    .map((p) => (yearsOnly ? p[0] : timeString(...p)))
+    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] ? p[0] > 0 : false))
+    .map((p: [number, string]) =>
+      yearsOnly
+        ? p[0]
+        : timeString({
+            num: p[0],
+            singular: p[1],
+          }),
+    )
     .join(" ")
     .trim();
 };
@@ -231,7 +243,7 @@ const MAX_VALUE_COUNT = 6;
  * @returns a name with up to 6 filters, grouped by field
  */
 export const filtersToName = (filters: FilterSet): string => {
-  const filterValues = [];
+  const filterValues: Array<string> = [];
   let valueCount = 0;
   for (const filter of Object.values(filters?.root || {})) {
     const filtersForField = isIncludes(filter) ? filter?.operands : [];
@@ -272,9 +284,11 @@ export const statusBooleansToDataStatus = (
     : "uninitialized";
 };
 
+type Url = string | UrlObject;
+
 export const getAnnotationsLinkParamsFromFiles = (
   file: GdcFile,
-): string | null => {
+): Url | null => {
   // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
   // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
   // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758

@@ -51,7 +51,7 @@ const getSlideCountFromCaseSummary = (
 
 export const ContextualCasesView: React.FC = () => {
   const dispatch = useCoreDispatch();
-  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const { setEntityMetadata } = useContext(SummaryModalContext) ?? {};
   const [pageSize, setPageSize] = useState(10);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");

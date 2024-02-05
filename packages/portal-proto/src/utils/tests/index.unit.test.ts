@@ -55,7 +55,7 @@ describe("ageDisplay", () => {
 
 describe("filtersToName", () => {
   it("should return an empty string when passed empty filters", () => {
-    expect(filtersToName(undefined)).toEqual("");
+    expect(filtersToName({ mode: "and", root: {} })).toEqual("");
     expect(
       filtersToName({
         mode: "and",

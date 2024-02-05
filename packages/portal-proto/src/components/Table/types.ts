@@ -254,11 +254,11 @@ export interface HandleChangeInput {
   /**
    * page on
    */
-  newPageNumber?: number;
+  newPageNumber: number;
   /**
    * size of data set shown
    */
-  newPageSize?: string;
+  newPageSize: string;
   /**
    * column sort
    */
@@ -266,7 +266,7 @@ export interface HandleChangeInput {
   /**
    * search term change
    */
-  newSearch?: string;
+  newSearch: string;
   /**
    * headings change
    */

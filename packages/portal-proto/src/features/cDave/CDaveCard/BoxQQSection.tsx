@@ -38,7 +38,7 @@ interface BoxQQPlotProps {
   readonly field: string;
   readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
-  readonly dataDimension?: DataDimension;
+  readonly dataDimension: DataDimension;
 }
 
 const BoxQQSection: React.FC<BoxQQPlotProps> = ({

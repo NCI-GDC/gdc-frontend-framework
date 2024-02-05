@@ -33,9 +33,11 @@ export interface BioTreeProps {
   };
   entityTypes: Array<types>;
   type: types;
-  parentNode: string;
-  treeStatusOverride: overrideMessage | null;
-  setTreeStatusOverride: React.Dispatch<React.SetStateAction<overrideMessage>>;
+  parentNode: string | null;
+  treeStatusOverride: overrideMessage;
+  setTreeStatusOverride: React.Dispatch<
+    React.SetStateAction<overrideMessage | null>
+  >;
   selectedEntity: entityType;
   selectEntity: (entity: entityType, type: types) => void;
   setExpandedCount: React.Dispatch<React.SetStateAction<number>>;
@@ -56,4 +58,5 @@ export enum overrideMessage {
   Expanded = "Expanded",
   Collapsed = "Collapsed",
   QueryMatches = "QueryMatches",
+  // do I need a null type here?
 }

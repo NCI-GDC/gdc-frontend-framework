@@ -11,7 +11,7 @@ const FileVersions = ({
   fileHistory,
   file_id,
 }: {
-  fileHistory: HistoryDefaults[];
+  fileHistory?: HistoryDefaults[];
   file_id: string;
 }): JSX.Element => {
   const sortedFileHistory = useMemo(
@@ -45,7 +45,7 @@ const FileVersions = ({
   };
 
   const downloadVersionJSON = () => {
-    const jsonData = JSON.stringify([...fileHistory], null, 2);
+    const jsonData = JSON.stringify([...(fileHistory ?? [])], null, 2);
     const currentDate = new Date().toJSON().slice(0, 10);
 
     saveAs(

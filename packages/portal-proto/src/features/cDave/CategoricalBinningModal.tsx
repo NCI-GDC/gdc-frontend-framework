@@ -47,7 +47,7 @@ const getHiddenValues = (
   results: CategoricalBins,
   customBins: CategoricalBins,
 ) => {
-  const flattenedKeys = [];
+  const flattenedKeys: Array<string> = [];
   Object.entries(customBins).forEach(([key, value]) => {
     if (Number.isInteger(value)) {
       flattenedKeys.push(key);
@@ -77,7 +77,7 @@ interface CategoricalBinningModalProps {
   readonly field: string;
   readonly results: Record<string, number>;
   readonly customBins: CategoricalBins;
-  readonly updateBins: (bin: CategoricalBins) => void;
+  readonly updateBins: (bin: CategoricalBins | null) => void;
 }
 
 const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
@@ -99,7 +99,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   const [selectedHiddenValues, setSelectedHiddenValues] = useState<
     Record<string, number>
   >({});
-  const [editField, setEditField] = useState(undefined);
+  const [editField, setEditField] = useState<string | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState("");
 
   const group = () => {
@@ -421,7 +421,7 @@ interface GroupInputProps {
   readonly setSelectedValues: (selectedValues: Record<string, number>) => void;
   readonly clearOtherValues: () => void;
   readonly editing: boolean;
-  readonly setEditField: (field: string) => void;
+  readonly setEditField: (field: string | undefined) => void;
 }
 
 const GroupInput: React.FC<GroupInputProps> = ({

@@ -38,7 +38,7 @@ interface FilesTableProps {
 }
 
 const FilesTable: React.FC<FilesTableProps> = () => {
-  const { setEntityMetadata } = useContext(SummaryModalContext);
+  const { setEntityMetadata } = useContext(SummaryModalContext) ?? {};
   const cart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const [tableData, setTableData] = useState<FilesTableDataType[]>([]);
@@ -140,6 +140,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         cell: ({ getValue }) => (
           <PopupIconButton
             handleClick={() =>
+              setEntityMetadata &&
               setEntityMetadata({
                 entity_type: "file",
                 entity_id: getValue(),
@@ -163,6 +164,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         cell: ({ getValue, row }) => (
           <PopupIconButton
             handleClick={() =>
+              setEntityMetadata &&
               setEntityMetadata({
                 entity_type: "file",
                 entity_id: row.original.file_uuid,
@@ -181,13 +183,15 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           <PopupIconButton
             handleClick={() => {
               if (row.original.cases?.length === 0) return;
-              setEntityMetadata({
-                entity_type: row.original.cases?.length === 1 ? "case" : "file",
-                entity_id:
-                  row.original.cases?.length === 1
-                    ? row.original.cases?.[0].case_id
-                    : row.original.file_uuid,
-              });
+              setEntityMetadata &&
+                setEntityMetadata({
+                  entity_type:
+                    row.original.cases?.length === 1 ? "case" : "file",
+                  entity_id:
+                    row.original.cases?.length === 1
+                      ? row.original.cases?.[0].case_id
+                      : row.original.file_uuid,
+                });
             }}
             label={row.original.cases?.length.toLocaleString() || 0}
             customAriaLabel={`Open ${
@@ -207,6 +211,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         cell: ({ getValue }) => (
           <PopupIconButton
             handleClick={() =>
+              setEntityMetadata &&
               setEntityMetadata({
                 entity_type: "project",
                 entity_id: getValue(),
@@ -251,22 +256,25 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       cartFilesTableColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) => (
-          <span className="font-content">
-            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
-              <Link
-                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
-                className="text-utility-link underline font-content"
-                target="_blank"
-              >
-                {row.original.annotations.length}
-              </Link>
-            ) : (
-              row.original?.annotations?.length ?? 0
-            )}
-          </span>
-        ),
+        cell: ({ row }) => {
+          const url = getAnnotationsLinkParamsFromFiles(row.original.file);
+          return (
+            <span className="font-content">
+              {url !== null ? (
+                <Link
+                  href={url}
+                  passHref
+                  className="text-utility-link underline font-content"
+                  target="_blank"
+                >
+                  {row.original.annotations.length}
+                </Link>
+              ) : (
+                row.original?.annotations?.length ?? 0
+              )}
+            </span>
+          );
+        },
       }),
     ],
     [cartFilesTableColumnHelper, setEntityMetadata],

@@ -32,7 +32,7 @@ class ClearStoreErrorBoundary extends Component<
         this.props.router.push("/");
       } else {
         return (
-          <Modal opened onClose={undefined} title="Unexpected Error">
+          <Modal opened onClose={() => {}} title="Unexpected Error">
             <p className="py-2 px-4">
               An unexpected error has occurred. Your saved cohorts are being
               recovered, but your cart and sets may be lost.

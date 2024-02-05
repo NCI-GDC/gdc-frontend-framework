@@ -84,7 +84,7 @@ export const BioTree = ({
   useEffect(() => {
     if (query.length > 0) {
       if (
-        entities.hits.edges.some((e) => search(query, e).length) ||
+        entities?.hits.edges.some((e) => search(query, e).length) ||
         ["samples", "portions", "analytes", "aliquots", "slides"].find((t) =>
           t.includes(query),
         ) ||
@@ -106,7 +106,7 @@ export const BioTree = ({
     query,
     setExpandedCount,
     setTotalNodeCount,
-    entities.hits.edges,
+    entities?.hits.edges,
     search,
     setTreeStatusOverride,
     type.p,
@@ -129,28 +129,6 @@ export const BioTree = ({
       ? setExpandedCount((c) => c + 1)
       : setExpandedCount((c) => Math.max(c - 1, 0));
     setTreeStatusOverride(null);
-  };
-
-  const generateKey = (node) => {
-    let key: string;
-    switch (type.s) {
-      case "sample":
-        key = node.sample_id;
-        break;
-      case "portion":
-        key = node.portion_id;
-        break;
-      case "aliquot":
-        key = node.aliquot_id;
-        break;
-      case "slide":
-        key = node.slide_id;
-        break;
-      case "analyte":
-        key = node.analyte_id;
-        break;
-    }
-    return key;
   };
 
   return (
@@ -187,7 +165,8 @@ export const BioTree = ({
           <Node
             entity={entity.node}
             entityTypes={entityTypes}
-            key={generateKey(entity.node)}
+            // is this unique all the time?
+            key={entity.node.submitter_id}
             type={type}
             selectedEntity={selectedEntity}
             selectEntity={selectEntity}

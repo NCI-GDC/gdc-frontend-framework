@@ -14,7 +14,7 @@ export const isUserProject = ({
   const projectIds = Array.from(
     new Set([
       file.project_id,
-      ...((file as GdcFile)?.cases || []).map((e) => e.project.project_id),
+      ...((file as GdcFile)?.cases || []).map((e) => e?.project?.project_id),
     ]),
   );
 

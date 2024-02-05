@@ -42,7 +42,7 @@ const ImageViewer = dynamic(
 );
 
 export interface FileViewProps {
-  readonly file?: GdcFile;
+  readonly file: GdcFile;
   readonly fileHistory?: HistoryDefaults[];
   readonly isModal?: boolean;
 }
@@ -137,6 +137,7 @@ export const FileView: React.FC<FileViewProps> = ({
       )}
       {file.data_format === "BAM" &&
         file.data_type === "Aligned Reads" &&
+        file?.index_files &&
         file?.index_files?.length > 0 && (
           <BAMSlicingButton isActive={bamActive} file={file} />
         )}
@@ -188,7 +189,8 @@ export const FileView: React.FC<FileViewProps> = ({
           </DivWithMargin>
         )}
         <DivWithMargin>
-          {file?.associated_entities?.length > 0 ? (
+          {file?.associated_entities &&
+          file?.associated_entities?.length > 0 ? (
             <AssociatedCB
               cases={file?.cases}
               associated_entities={file?.associated_entities}
@@ -224,15 +226,16 @@ export const FileView: React.FC<FileViewProps> = ({
                 />
               </div>
             </div>
-            {file?.analysis?.input_files?.length > 0 && (
-              <DivWithMargin>
-                <AnalysisInputFiles
-                  inputFiles={file.analysis.input_files}
-                  currentCart={currentCart}
-                  setFileToDownload={setFileToDownload}
-                />
-              </DivWithMargin>
-            )}
+            {file?.analysis?.input_files &&
+              file?.analysis?.input_files?.length > 0 && (
+                <DivWithMargin>
+                  <AnalysisInputFiles
+                    inputFiles={file.analysis.input_files}
+                    currentCart={currentCart}
+                    setFileToDownload={setFileToDownload}
+                  />
+                </DivWithMargin>
+              )}
 
             {file?.analysis?.metadata && (
               <DivWithMargin>
@@ -244,7 +247,9 @@ export const FileView: React.FC<FileViewProps> = ({
           </>
         )}
         {file?.downstream_analyses?.some(
-          (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
+          (byWorkflowType) =>
+            byWorkflowType?.output_files &&
+            byWorkflowType?.output_files?.length > 0,
         ) && (
           <DivWithMargin>
             <HeaderTitle>Downstream Analyses Files</HeaderTitle>

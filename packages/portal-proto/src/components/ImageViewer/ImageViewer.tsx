@@ -52,7 +52,7 @@ const InitOpenseadragon = (
 };
 
 const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
-  const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
+  const [viewer, setViewer] = useState<OpenSeadragon.Viewer | null>(null);
   const osdContainerRef = useRef<HTMLDivElement>(null);
   const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);

@@ -37,9 +37,10 @@ export const Biospecimen = ({
   const router = useRouter();
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
-  const [treeStatusOverride, setTreeStatusOverride] =
-    useState<overrideMessage | null>(null);
-  const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
+  const [treeStatusOverride, setTreeStatusOverride] = useState<overrideMessage>(
+    overrideMessage.Collapsed,
+  );
+  const [selectedEntity, setSelectedEntity] = useState<entityType | null>(null);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);
@@ -259,7 +260,8 @@ export const Biospecimen = ({
                 </Button>
               </div>
               {!isBiospecimentDataFetching &&
-                bioSpecimenData.samples?.hits?.edges.length > 0 && (
+                bioSpecimenData &&
+                bioSpecimenData?.samples?.hits?.edges?.length > 0 && (
                   <BioTree
                     entities={bioSpecimenData.samples}
                     entityTypes={entityTypes}

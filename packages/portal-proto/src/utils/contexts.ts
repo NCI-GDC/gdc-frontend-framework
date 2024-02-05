@@ -5,15 +5,15 @@ export const URLContext = createContext({ prevPath: "", currentPath: "" });
 
 export type entityType = null | "project" | "case" | "file" | "ssms" | "genes";
 export interface entityMetadataType {
-  entity_type: entityType;
-  entity_id: string;
+  entity_type: entityType | null;
+  entity_id: string | null;
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }
 export const SummaryModalContext = createContext<{
   entityMetadata: entityMetadataType;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
-}>(null);
+} | null>(null);
 
 interface ChartDownloadInfo {
   readonly chartRef: React.MutableRefObject<HTMLElement>;
@@ -37,10 +37,16 @@ export const chartDownloadReducer = (
   }
 };
 
-export const DashboardDownloadContext = createContext<{
-  state: ChartDownloadInfo[];
-  dispatch: Dispatch<{ type: "add" | "remove"; payload: ChartDownloadInfo[] }>;
-}>(undefined);
+export const DashboardDownloadContext = createContext<
+  | {
+      state: ChartDownloadInfo[];
+      dispatch: Dispatch<{
+        type: "add" | "remove";
+        payload: ChartDownloadInfo[];
+      }>;
+    }
+  | undefined
+>(undefined);
 
 export const DownloadProgressContext = createContext({
   downloadInProgress: false,

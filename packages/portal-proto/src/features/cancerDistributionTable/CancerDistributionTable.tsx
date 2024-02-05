@@ -48,9 +48,13 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
   const contextFilters = useDeepCompareMemo(
-    () => processFilters(genomicFilters, cohortFilters),
+    () =>
+      processFilters(
+        genomicFilters ?? { mode: "and", root: {} },
+        cohortFilters ?? { mode: "and", root: {} },
+      ),
     [cohortFilters, genomicFilters],
-  );
+  ) ?? { mode: "and", root: {} };
 
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -82,7 +86,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
 
   const formattedData = useMemo(
     () =>
-      isSuccess && !projectsFetching
+      isSuccess && !projectsFetching && data !== undefined
         ? data?.projects.map((d) => {
             const row = {
               project: d.key,
@@ -104,20 +108,20 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ...(isGene
                 ? {
                     cnv_gains: {
-                      numerator: data.cnvGain[d.key] || 0,
-                      denominator: data.cnvTotal[d.key] || 0,
+                      numerator: data?.cnvGain?.[d.key] || 0,
+                      denominator: data?.cnvTotal?.[d.key] || 0,
                     },
                     cnv_gains_percent: calculatePercentageAsNumber(
-                      data.cnvGain[d.key] || 0,
-                      data.cnvTotal[d.key] || 0,
+                      data?.cnvGain?.[d.key] || 0,
+                      data?.cnvTotal?.[d.key] || 0,
                     ),
                     cnv_losses: {
-                      numerator: data.cnvLoss[d.key] || 0,
-                      denominator: data.cnvTotal[d.key] || 0,
+                      numerator: data?.cnvLoss?.[d.key] || 0,
+                      denominator: data?.cnvTotal?.[d.key] || 0,
                     },
                     cnv_losses_percent: calculatePercentageAsNumber(
-                      data.cnvLoss[d.key] || 0,
-                      data.cnvTotal[d.key] || 0,
+                      data?.cnvLoss?.[d.key] || 0,
+                      data?.cnvTotal?.[d.key] || 0,
                     ),
                     num_mutations:
                       (data.ssmFiltered[d.key] || 0) === 0 ? 0 : d.doc_count,
@@ -133,8 +137,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     return originalRow.project;
   };
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [expandedColumnId, setExpandedColumnId] = useState(null);
-  const [expandedRowId, setExpandedRowId] = useState(null);
+  const [expandedColumnId, setExpandedColumnId] = useState<string | null>(null);
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "#_ssm_affected_cases",
@@ -152,7 +156,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       project: string,
       id: string,
       contextFilters: FilterSet,
-      genomicFilters: FilterSet = undefined,
+      genomicFilters: FilterSet = { mode: "and", root: {} },
     ): Promise<FilterSet> => {
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
@@ -217,7 +221,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       project: string,
       filter: "Loss" | "Gain",
       contextFilters: FilterSet,
-      genomicFilters: FilterSet = undefined,
+      genomicFilters: FilterSet = { mode: "and", root: {} },
     ): Promise<FilterSet> => {
       return await createSet({
         filters: buildCohortGqlOperator(contextFilters),
@@ -350,7 +354,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               cell: ({ row }) => (
                 <CohortCreationButton
-                  numCases={row.original.cnv_gains.numerator || 0}
+                  numCases={row?.original?.cnv_gains?.numerator || 0}
                   filtersCallback={async () =>
                     createCNVGainLossFilters(
                       row.original.project,
@@ -361,8 +365,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   }
                   label={
                     <NumeratorDenominator
-                      numerator={row.original.cnv_gains.numerator || 0}
-                      denominator={row.original.cnv_gains.denominator || 0}
+                      numerator={row?.original?.cnv_gains?.numerator || 0}
+                      denominator={row?.original?.cnv_gains?.denominator || 0}
                       boldNumerator
                     />
                   }
@@ -370,11 +374,13 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               meta: {
                 sortingFn: (rowA, rowB) => {
-                  if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
-                    return 1;
-                  }
-                  if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
-                    return -1;
+                  if (rowA?.cnv_gains_percent && rowB?.cnv_gains_percent) {
+                    if (rowA?.cnv_gains_percent > rowB?.cnv_gains_percent) {
+                      return 1;
+                    }
+                    if (rowA?.cnv_gains_percent < rowB?.cnv_gains_percent) {
+                      return -1;
+                    }
                   }
                   return 0;
                 },
@@ -393,7 +399,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               cell: ({ row }) => (
                 <CohortCreationButton
-                  numCases={row.original.cnv_losses.numerator || 0}
+                  numCases={row?.original?.cnv_losses?.numerator || 0}
                   filtersCallback={async () =>
                     createCNVGainLossFilters(
                       row.original.project,
@@ -404,8 +410,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   }
                   label={
                     <NumeratorDenominator
-                      numerator={row.original.cnv_losses.numerator || 0}
-                      denominator={row.original.cnv_losses.denominator || 0}
+                      numerator={row?.original?.cnv_losses?.numerator || 0}
+                      denominator={row?.original?.cnv_losses?.denominator || 0}
                       boldNumerator
                     />
                   }
@@ -413,12 +419,15 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               ),
               meta: {
                 sortingFn: (rowA, rowB) => {
-                  if (rowA.cnv_losses_percent > rowB.cnv_losses_percent) {
-                    return 1;
+                  if (rowA?.cnv_losses_percent && rowB?.cnv_losses_percent) {
+                    if (rowA?.cnv_losses_percent > rowB?.cnv_losses_percent) {
+                      return 1;
+                    }
+                    if (rowA?.cnv_losses_percent < rowB?.cnv_losses_percent) {
+                      return -1;
+                    }
                   }
-                  if (rowA.cnv_losses_percent < rowB.cnv_losses_percent) {
-                    return -1;
-                  }
+
                   return 0;
                 },
               },
@@ -433,14 +442,16 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 />
               ),
               enableSorting: true,
-              cell: ({ row }) => row.original.num_mutations.toLocaleString(),
+              cell: ({ row }) => row?.original?.num_mutations?.toLocaleString(),
               meta: {
                 sortingFn: (rowA, rowB) => {
-                  if (rowA.num_mutations > rowB.num_mutations) {
-                    return 1;
-                  }
-                  if (rowA.num_mutations < rowB.num_mutations) {
-                    return -1;
+                  if (rowA?.num_mutations && rowB?.num_mutations) {
+                    if (rowA?.num_mutations > rowB?.num_mutations) {
+                      return 1;
+                    }
+                    if (rowA?.num_mutations < rowB?.num_mutations) {
+                      return -1;
+                    }
                   }
                   return 0;
                 },
@@ -521,7 +532,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
             <FunctionButton
               onClick={() =>
                 handleTSVDownload(
-                  updatedFullData,
+                  updatedFullData ?? [],
                   cancerDistributionTableColumns,
                   isGene,
                 )

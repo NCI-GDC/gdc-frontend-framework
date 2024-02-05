@@ -33,11 +33,12 @@ const AssociatedCB = ({
     entity_id: JSX.Element;
     entity_type: string;
     sample_type: string;
-    case_id: string;
+    case_id: JSX.Element;
     annotations: JSX.Element | 0;
   };
+
   const data: AssociatedCBType[] = useMemo(() => {
-    const tableRows = [];
+    const tableRows: AssociatedCBType[] = [];
 
     associated_entities?.forEach((entity) => {
       // find matching id from cases
@@ -70,7 +71,10 @@ const AssociatedCB = ({
 
       const url =
         caseData !== undefined
-          ? getAnnotationsLinkParams(caseData?.annotations, caseData.case_id)
+          ? getAnnotationsLinkParams(
+              caseData?.annotations ?? [],
+              caseData.case_id,
+            )
           : undefined;
 
       const annotationsLink = url ? (
@@ -80,7 +84,7 @@ const AssociatedCB = ({
           className="text-utility-link underline"
           target="_blank"
         >
-          {caseData.annotations.length}
+          {caseData?.annotations?.length}
         </Link>
       ) : (
         0
