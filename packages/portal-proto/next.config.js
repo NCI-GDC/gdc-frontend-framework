@@ -1,10 +1,3 @@
-// eslint-disable-next-line  @typescript-eslint/no-var-requires
-const withTM = require("next-transpile-modules")([
-  "@oncojs/survivalplot",
-  "@oncojs/react-survivalplot",
-  "@sjcrh/proteinpaint-client",
-]);
-
 /**
  * This basePath defines root of the application. This must match
  * the intended deployment path. For example, the basePath of "/v2"
@@ -25,7 +18,8 @@ const buildHash = () => {
   }
 };
 
-module.exports = withTM({
+/** @type {import('next').NextConfig} */
+module.exports = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>
@@ -62,9 +56,11 @@ module.exports = withTM({
   publicRuntimeConfig: {
     basePath,
   },
+  transpilePackages: ["@oncojs/survivalplot", "@sjcrh/proteinpaint-client"],
   env: {
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
-    PROTEINPAINT_API: process.env.PROTEINPAINT_API,
+    PROTEINPAINT_API:
+      process.env.PROTEINPAINT_API || process.env.NEXT_PUBLIC_PROTEINPAINT_API,
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
     // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git
     NEXT_PUBLIC_APP_HASH:
@@ -83,4 +79,4 @@ module.exports = withTM({
       },
     ];
   },
-});
+};

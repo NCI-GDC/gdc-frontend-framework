@@ -21,7 +21,8 @@
       "@/utils/*": ["src/utils/*"],
       "@/hooks/*": ["src/hooks/*"]
     },
-    "incremental": true
+    "incremental": true,
+    "strictNullChecks": false
   },
   "include": [
     "next-env.d.ts",
