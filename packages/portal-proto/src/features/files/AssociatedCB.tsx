@@ -74,10 +74,13 @@ const AssociatedCB = ({
           : undefined;
 
       const annotationsLink = url ? (
-        <Link href={url} passHref>
-          <a className="text-utility-link underline" target="_blank">
-            {caseData.annotations.length}
-          </a>
+        <Link
+          href={url}
+          passHref
+          className="text-utility-link underline"
+          target="_blank"
+        >
+          {caseData.annotations.length}
         </Link>
       ) : (
         0

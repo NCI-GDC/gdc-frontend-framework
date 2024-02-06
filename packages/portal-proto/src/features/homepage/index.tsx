@@ -42,6 +42,7 @@ const Homepage = (): JSX.Element => {
             }}
             data-testid="button-homepage-explore-datasets"
             passHref
+            legacyBehavior
           >
             <HomepageButton>Explore Our Cancer Datasets</HomepageButton>
           </Link>
@@ -171,6 +172,7 @@ const Homepage = (): JSX.Element => {
                   pathname: "/analysis_page",
                   query: { app: undefined },
                 }}
+                legacyBehavior
               >
                 <HomepageButton>Explore More Tools</HomepageButton>
               </Link>

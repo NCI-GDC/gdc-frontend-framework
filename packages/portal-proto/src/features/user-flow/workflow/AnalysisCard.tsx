@@ -55,29 +55,26 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               query: { app: entry.id },
             }}
             passHref
+            data-testid={`button-${entry.name}`}
+            className={`
+              flex
+              justify-center
+              items-center
+              bg-secondary
+              hover:bg-secondary-dark
+              hover:border-secondary-dark
+              focus:bg-secondary-dark
+              focus:border-secondary-dark
+              mb-1
+              w-[50px]
+              ${inactive ? "opacity-50 pointer-events-none" : ""}
+              rounded
+              h-5
+            `}
+            aria-disabled={inactive}
+            aria-label={entry.name}
           >
-            <a
-              data-testid={`button-${entry.name}`}
-              className={`
-                flex
-                justify-center
-                items-center
-                bg-secondary
-                hover:bg-secondary-dark
-                hover:border-secondary-dark
-                focus:bg-secondary-dark
-                focus:border-secondary-dark
-                mb-1
-                w-[50px]
-                ${inactive ? "opacity-50 pointer-events-none" : ""}
-                rounded
-                h-5
-              `}
-              aria-disabled={inactive}
-              aria-label={entry.name}
-            >
-              <MdPlayArrow size={16} color="white" />
-            </a>
+            <MdPlayArrow size={16} color="white" />
           </Link>
 
           {entry.hasDemo ? (
@@ -90,33 +87,30 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 },
               }}
               passHref
+              data-testid={`button-${entry.name} Demo`}
+              className={`
+                flex
+                justify-center
+                items-center
+                hover:bg-secondary-dark
+                hover:border-secondary-dark
+                hover:text-primary-content-max
+                focus:bg-secondary-dark
+                focus:border-secondary-dark
+                focus:text-primary-content-max
+                mb-1
+                w-[50px]
+                rounded
+                h-5
+                text-xs
+                text-secondary
+                p-0
+                border
+                border-secondary
+                font-semibold
+              `}
             >
-              <a
-                data-testid={`button-${entry.name} Demo`}
-                className={`
-                  flex
-                  justify-center
-                  items-center
-                  hover:bg-secondary-dark
-                  hover:border-secondary-dark
-                  hover:text-primary-content-max
-                  focus:bg-secondary-dark
-                  focus:border-secondary-dark
-                  focus:text-primary-content-max
-                  mb-1
-                  w-[50px]
-                  rounded
-                  h-5
-                  text-xs
-                  text-secondary
-                  p-0
-                  border
-                  border-secondary
-                  font-semibold
-                `}
-              >
-                Demo
-              </a>
+              Demo
             </Link>
           ) : null}
         </div>

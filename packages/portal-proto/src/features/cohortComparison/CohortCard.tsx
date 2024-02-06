@@ -84,13 +84,10 @@ const CohortCard: React.FC<CohortCardProps> = ({
             },
           }}
           passHref
+          data-testid="link-open-venn-diagram"
+          className="underline text-primary font-bold"
         >
-          <a
-            data-testid="link-open-venn-diagram"
-            className="underline text-primary font-bold"
-          >
-            Open Venn diagram
-          </a>
+          Open Venn diagram
         </Link>
       </div>
 

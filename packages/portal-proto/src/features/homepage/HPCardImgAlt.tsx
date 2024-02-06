@@ -76,7 +76,7 @@ const HPCardImgAlt = ({
               {linkText}
             </a>
           ) : (
-            <Link href={href} passHref>
+            <Link href={href} passHref legacyBehavior>
               <HomepageButtonAlt>{linkText}</HomepageButtonAlt>
             </Link>
           )}

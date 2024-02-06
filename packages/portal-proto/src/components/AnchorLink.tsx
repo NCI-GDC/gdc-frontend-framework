@@ -18,7 +18,7 @@ export const AnchorLink = ({
 }): JSX.Element => {
   return (
     <span className="flex gap-2 items-center">
-      <Link href={href} passHref>
+      <Link href={href} passHref legacyBehavior>
         <Anchor
           data-testid={customDataTestID}
           className="flex gap-1 underline font-content"
