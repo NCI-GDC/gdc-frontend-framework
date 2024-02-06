@@ -27,6 +27,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
 import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -66,7 +67,11 @@ export const UserFlowVariedPages = ({
         if (cmdAndParam.length == 3) {
           if (cmdAndParam[0] === "newCohort") {
             showNotification({
-              message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
+              message: (
+                <AccessibleNotificationWrapper>
+                  <NewCohortNotification cohortName={cmdAndParam[1]} />
+                </AccessibleNotificationWrapper>
+              ),
               classNames: {
                 description: "flex flex-col content-center text-center",
               },
@@ -76,7 +81,11 @@ export const UserFlowVariedPages = ({
           }
           if (cmdAndParam[0] === "deleteCohort") {
             showNotification({
-              message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
+              message: (
+                <AccessibleNotificationWrapper>
+                  <DeleteCohortNotification cohortName={cmdAndParam[1]} />
+                </AccessibleNotificationWrapper>
+              ),
               classNames: {
                 description: "flex flex-col content-center text-center",
               },
@@ -86,7 +95,11 @@ export const UserFlowVariedPages = ({
           }
           if (cmdAndParam[0] === "savedCohort") {
             showNotification({
-              message: <SavedCohortNotification cohortName={cmdAndParam[1]} />,
+              message: (
+                <AccessibleNotificationWrapper>
+                  <SavedCohortNotification cohortName={cmdAndParam[1]} />
+                </AccessibleNotificationWrapper>
+              ),
               classNames: {
                 description: "flex flex-col content-center text-center",
               },
@@ -97,10 +110,12 @@ export const UserFlowVariedPages = ({
           if (cmdAndParam[0] === "savedCohortSetCurrent") {
             showNotification({
               message: (
-                <SavedCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
+                <AccessibleNotificationWrapper>
+                  <SavedCohortNotificationWithSetAsCurrent
+                    cohortName={cmdAndParam[1]}
+                    cohortId={cmdAndParam[2]}
+                  />
+                </AccessibleNotificationWrapper>
               ),
               classNames: {
                 description: "flex flex-col content-center text-center",

@@ -16,6 +16,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import { SET_COUNT_LIMIT } from "./constants";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface SaveSelectionAsSetModalProps {
   readonly filters: Record<string, any>;
@@ -71,13 +72,21 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         }),
       );
       showNotification({
-        message: "Set has been saved.",
+        message: (
+          <AccessibleNotificationWrapper>
+            Set has been saved.
+          </AccessibleNotificationWrapper>
+        ),
         closeButtonProps: { "aria-label": "Close notification" },
       });
       closeModal();
     } else if (response.isError) {
       showNotification({
-        message: "Problem saving set.",
+        message: (
+          <AccessibleNotificationWrapper>
+            Problem saving set.
+          </AccessibleNotificationWrapper>
+        ),
         color: "red",
         closeButtonProps: { "aria-label": "Close notification" },
       });

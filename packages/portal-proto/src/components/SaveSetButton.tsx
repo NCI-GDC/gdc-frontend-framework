@@ -12,6 +12,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import AccessibleNotificationWrapper from "./AccessibleNotificationWrapper";
 
 interface SaveSetButttonProps {
   readonly disabled: boolean;
@@ -42,7 +43,11 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
     if (response.isSuccess && setName) {
       dispatch(addSet({ setType, setName, setId: response.data }));
       showNotification({
-        message: "Set has been saved.",
+        message: (
+          <AccessibleNotificationWrapper>
+            Set has been saved.
+          </AccessibleNotificationWrapper>
+        ),
         closeButtonProps: { "aria-label": "Close notification" },
       });
       if (dismissModal) {
@@ -51,7 +56,11 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       setSetName(null);
     } else if (response.isError) {
       showNotification({
-        message: "Problem saving set.",
+        message: (
+          <AccessibleNotificationWrapper>
+            Problem saving set.
+          </AccessibleNotificationWrapper>
+        ),
         color: "red",
         closeButtonProps: { "aria-label": "Close notification" },
       });

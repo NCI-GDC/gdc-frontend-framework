@@ -18,6 +18,7 @@ import DeleteSetsNotification from "./DeleteSetsNotification";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface CountBadgeProps {
   readonly count: number;
@@ -91,7 +92,11 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         onClick={() => {
           dispatch(removeSets([{ setId, setType }]));
           showNotification({
-            message: <DeleteSetsNotification sets={[set]} />,
+            message: (
+              <AccessibleNotificationWrapper>
+                <DeleteSetsNotification sets={[set]} />
+              </AccessibleNotificationWrapper>
+            ),
           });
         }}
         variant="transparent"

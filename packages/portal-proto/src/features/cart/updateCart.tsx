@@ -14,6 +14,7 @@ import {
   CartFile,
 } from "@gff/core";
 import { useEffect } from "react";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -174,11 +175,13 @@ export const removeFromCart = (
   cleanNotifications();
   showNotification({
     message: (
-      <RemoveNotification
-        files={files}
-        currentCart={currentCart}
-        dispatch={dispatch}
-      />
+      <AccessibleNotificationWrapper>
+        <RemoveNotification
+          files={files}
+          currentCart={currentCart}
+          dispatch={dispatch}
+        />
+      </AccessibleNotificationWrapper>
     ),
     classNames: {
       description: "flex flex-col content-center text-center",
@@ -191,7 +194,11 @@ export const removeFromCart = (
 
 export const showCartOverLimitNotification = (numFilesInCart: number): void => {
   showNotification({
-    message: <OverLimitNotification numFilesInCart={numFilesInCart} />,
+    message: (
+      <AccessibleNotificationWrapper>
+        <OverLimitNotification numFilesInCart={numFilesInCart} />
+      </AccessibleNotificationWrapper>
+    ),
     classNames: {
       description: "flex flex-col content-center text-center",
     },
@@ -212,11 +219,13 @@ export const addToCart = (
   } else {
     showNotification({
       message: (
-        <AddNotification
-          files={files}
-          currentCart={currentCart}
-          dispatch={dispatch}
-        />
+        <AccessibleNotificationWrapper>
+          <AddNotification
+            files={files}
+            currentCart={currentCart}
+            dispatch={dispatch}
+          />
+        </AccessibleNotificationWrapper>
       ),
       classNames: {
         description: "flex flex-col content-center text-center",
@@ -290,26 +299,29 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
 
 interface SingleItemCartButtonProps {
   readonly file: CartFile;
-  readonly iconOnly?: boolean;
 }
 
 export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
   file,
-  iconOnly = false,
 }: SingleItemCartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
+  const inCart = fileInCart(currentCart, file.file_id);
 
-  return fileInCart(currentCart, file.file_id) ? (
+  return (
     <ActionIcon
-      title="Remove From Cart"
-      aria-label="Remove from cart"
-      onClick={() => removeFromCart([file], currentCart, dispatch)}
-      className="mx-auto text-primary-content-darkest border-primary-darkest bg-primary-light"
+      title={inCart ? "Remove From Cart" : "Add to Cart"}
+      aria-label={inCart ? "Remove from cart" : "Add to Cart"}
+      onClick={() => {
+        inCart
+          ? removeFromCart([file], currentCart, dispatch)
+          : addToCart([file], currentCart, dispatch);
+      }}
+      className={`mx-auto text-primary-content-darkest border-primary-darkest ${
+        inCart ? "bg-primary-light" : ""
+      }`}
     >
       <CartIcon />
     </ActionIcon>
-  ) : (
-    <AddToCartButton files={[file]} iconOnly={iconOnly} />
   );
 };

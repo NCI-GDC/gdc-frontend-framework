@@ -20,6 +20,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import SetTable from "./SetTable";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
@@ -53,7 +54,11 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
       const newSetId = response?.data;
       if (newSetId === undefined) {
         showNotification({
-          message: "Problem modifiying set.",
+          message: (
+            <AccessibleNotificationWrapper>
+              Problem modifiying set.
+            </AccessibleNotificationWrapper>
+          ),
           color: "red",
           closeButtonProps: { "aria-label": "Close notification" },
         });
@@ -62,14 +67,22 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
         );
         showNotification({
-          message: "Set has been modified.",
+          message: (
+            <AccessibleNotificationWrapper>
+              Set has been modified.
+            </AccessibleNotificationWrapper>
+          ),
           closeButtonProps: { "aria-label": "Close notification" },
         });
         closeModal();
       }
     } else if (response.isError) {
       showNotification({
-        message: "Problem modifiying set.",
+        message: (
+          <AccessibleNotificationWrapper>
+            Problem modifiying set.
+          </AccessibleNotificationWrapper>
+        ),
         color: "red",
         closeButtonProps: { "aria-label": "Close notification" },
       });
