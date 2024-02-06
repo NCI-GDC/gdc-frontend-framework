@@ -56,7 +56,6 @@
   "devDependencies": {
     "@iconify/icons-mdi": "^1.1.42",
     "@iconify/react": "^3.1.2",
-    "@oncojs/react-survivalplot": "^0.6.0",
     "@oncojs/survivalplot": "^0.8.3",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.2",

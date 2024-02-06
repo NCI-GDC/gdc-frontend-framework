@@ -1,7 +1,3 @@
-// eslint-disable-next-line  @typescript-eslint/no-var-requires
-// how to make use of it?
-/** @type {import('next').NextConfig} */
-
 /**
  * This basePath defines root of the application. This must match
  * the intended deployment path. For example, the basePath of "/v2"
@@ -22,6 +18,7 @@ const buildHash = () => {
   }
 };
 
+/** @type {import('next').NextConfig} */
 module.exports = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
@@ -59,11 +56,7 @@ module.exports = {
   publicRuntimeConfig: {
     basePath,
   },
-  transpilePackages: [
-    "@oncojs/survivalplot",
-    "@oncojs/react-survivalplot",
-    "@sjcrh/proteinpaint-client",
-  ],
+  transpilePackages: ["@oncojs/survivalplot", "@sjcrh/proteinpaint-client"],
   env: {
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API:

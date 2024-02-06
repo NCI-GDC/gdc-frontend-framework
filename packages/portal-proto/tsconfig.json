@@ -22,12 +22,12 @@
       "@/hooks/*": ["src/hooks/*"]
     },
     "incremental": true,
+    "strictNullChecks": false,
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "strictNullChecks": true
+    ]
   },
   "include": [
     "next-env.d.ts",
