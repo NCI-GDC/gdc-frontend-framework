@@ -273,27 +273,13 @@ export const useGeneAndSSMPanelData = (
     ],
   );
 
-  const f = {
-    case_filter: memoizedFilters,
-    filters: [genomicFilters],
-    // comparativeSurvival !== undefined
-    //    ? memoizedFilters
-    //    : genomicFilters
-    //      ? [genomicFilters]
-    //       : [],
-    //  _cohortFiltersNoSet,
-  };
-
-  console.log("comparativeSurvival", comparativeSurvival);
-  console.log(f);
-
   const {
     data: survivalPlotData,
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
   } = useGetSurvivalPlotQuery({
     case_filter: memoizedFilters,
-    filters: [genomicFilters, genomicFilters],
+    filters: [buildCohortGqlOperator(genomicFilters)],
     ///   comparativeSurvival !== undefined
     //     ? memoizedFilters
     //    : genomicFilters
