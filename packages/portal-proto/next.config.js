@@ -18,7 +18,10 @@ const buildHash = () => {
   }
 };
 
-/** @type {import('next').NextConfig} */
+// @ts-check
+/**
+ * @type {import('next').NextConfig}
+ */
 module.exports = {
   webpack(config) {
     // Grab the existing rule that handles SVG imports
@@ -56,7 +59,9 @@ module.exports = {
   publicRuntimeConfig: {
     basePath,
   },
-  transpilePackages: ["@oncojs/survivalplot", "@sjcrh/proteinpaint-client"],
+  experimental: {
+    esmExternals: true,
+  },
   env: {
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API:
