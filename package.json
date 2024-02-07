@@ -83,6 +83,6 @@
     "typedoc-plugin-missing-exports": "^2.1.0"
   },
   "engines": {
-    "npm": ">=10.4.0"
+    "npm": ">=10.2.4"
   }
 }
