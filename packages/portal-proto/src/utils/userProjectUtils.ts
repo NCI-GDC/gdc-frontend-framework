@@ -22,9 +22,6 @@ export const isUserProject = ({
   return intersection(projectIds, gdcIds).length !== 0;
 };
 
-export const fileInCorrectState = (file: GdcFile | CartFile): boolean =>
-  file.state === "submitted";
-
 export const intersectsWithFileAcl = ({
   file,
   user,
@@ -60,11 +57,10 @@ export const userCanDownloadFiles = ({
         file,
         user,
       }) ||
-      (intersectsWithFileAcl({
+      intersectsWithFileAcl({
         file,
         user,
-      }) &&
-        fileInCorrectState(file))
+      })
     ) {
       return true;
     }
