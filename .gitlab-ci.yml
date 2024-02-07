@@ -21,7 +21,7 @@ stages:
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/node:16-alpine3.15
+image: docker.osdc.io/node:20.11.0-alpine3.18
 
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
@@ -37,7 +37,7 @@ variables:
 Linting:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@10.4.0
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -46,7 +46,7 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@10.4.0
     - npm ci --cache .npm
   script:
     - npm run format:check
@@ -55,7 +55,7 @@ Prettier Checks:
 Build and test core and portal:
   stage: test
   before_script:
-    - npm install npm@7
+    - npm install npm@10.4.0
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
