@@ -6,10 +6,12 @@ import VerticalTable from "@/components/Table/VerticalTable";
 
 interface AuthorizationTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
+  readonly loading: boolean;
 }
 
 const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
   filesByCanAccess,
+  loading,
 }: AuthorizationTableProps) => {
   const authorizationTableData = [
     {
@@ -58,6 +60,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
     <VerticalTable
       data={authorizationTableData}
       columns={authorizationTableColumns}
+      status={loading ? "pending" : "fulfilled"}
     />
   );
 };
