@@ -2,7 +2,6 @@ import {
   isUserProject,
   userCanDownloadFile,
   userCanDownloadFiles,
-  fileInCorrectState,
   intersectsWithFileAcl,
 } from "../userProjectUtils";
 
@@ -266,14 +265,6 @@ describe("isUserProject", () => {
         file: MultipleProjectFile,
       }),
     ).toBe(true);
-  });
-});
-
-describe("fileInCorrectState", () => {
-  it("should be correct for active files when file.state is submitted", () => {
-    expect(fileInCorrectState(LUADFile)).toBe(true);
-    expect(fileInCorrectState(TESTFile)).toBe(false);
-    expect(fileInCorrectState(MultipleProjectFile)).toBe(false);
   });
 });
 
