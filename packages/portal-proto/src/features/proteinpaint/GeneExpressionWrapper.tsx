@@ -93,7 +93,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     // and that also does not emit a postRender event, in which case, this app.callbacks.postRender is
     // a backup to close the loading overlay when there are no state changes to the matrix
     // app and so would not have been updated via the rx component.update() chain to rerender
-    "postRender.gdcGeneExpression": hideLoadingOverlay,
+    "postRender.gdcPlotApp": hideLoadingOverlay,
   };
 
   useEffect(
