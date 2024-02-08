@@ -194,7 +194,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
         <div className="px-4">
           <p className="mb-2 text-sm font-content">{inputInstructions}</p>
           <div className="flex items-center justify-between w-full">
-            <label className="font-bold text-sm" htmlFor="indentifier-input">
+            <label className="font-bold text-sm" htmlFor="identifier-input">
               Type or copy-and-paste a list of {entityLabel} identifiers
             </label>
             <Tooltip

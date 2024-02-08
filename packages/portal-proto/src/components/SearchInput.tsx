@@ -15,6 +15,7 @@ import {
   Pagination,
   TextInput,
   Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { useFocusWithin } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
@@ -234,7 +235,7 @@ export const SearchInput: React.FC = () => {
             ? null
             : `${comboboxItemId}${activedescendant}`
         }
-        icon={<SearchIcon size={24} />}
+        icon={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
         data-testid="textbox-search-bar"
         aria-label="App Search Input"
@@ -249,14 +250,15 @@ export const SearchInput: React.FC = () => {
         size="sm"
         rightSection={
           searchTerm.length > 0 && (
-            <CloseIcon
+            <ActionIcon
               onClick={() => {
                 clearSearch();
                 ref.current.focus();
               }}
-              className="cursor-pointer"
               data-testid="search-input-clear-search"
-            />
+            >
+              <CloseIcon aria-label="clear search" />
+            </ActionIcon>
           )
         }
         ref={textInputRef}

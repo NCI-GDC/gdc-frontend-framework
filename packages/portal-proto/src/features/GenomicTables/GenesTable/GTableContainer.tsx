@@ -41,9 +41,10 @@ import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
 import { convertDateToString } from "@/utils/date";
+import { ComparativeSurvival } from "@/features/genomic/types";
 
 export interface GTableContainerProps {
-  readonly selectedSurvivalPlot: Record<string, string>;
+  readonly selectedSurvivalPlot: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
@@ -440,6 +441,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 },
               ]}
               TargetButtonChildren="Save/Edit Gene Set"
+              targetButtonDisabled={isFetching && !isSuccess}
               disableTargetWidth={true}
               LeftIcon={
                 selectedGenes.length ? (

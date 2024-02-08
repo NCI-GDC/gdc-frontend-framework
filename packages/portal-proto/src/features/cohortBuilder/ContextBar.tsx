@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
@@ -69,7 +70,7 @@ const ContextBar = ({
     selectCurrentCohortId(state),
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (currentCohortId === undefined && cohorts.length > 0) {
       coreDispatch(setActiveCohort(cohorts[0].id));
     }
@@ -289,9 +290,7 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={
-                <DownloadIcon size="1rem" aria-label="Files dropdown" />
-              }
+              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
             />
 
             <DropdownWithIcon
@@ -319,12 +318,7 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={
-                <CohortFilterIcon
-                  size="1rem"
-                  aria-label="Custom cohort filters"
-                />
-              }
+              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -351,10 +345,7 @@ const ContextBar = ({
                     biospecimenDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Biospecimen dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -379,10 +370,7 @@ const ContextBar = ({
                     clinicalDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Clinical dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -405,7 +393,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon />}
+                icon={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -413,7 +401,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon />}
+                icon={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>

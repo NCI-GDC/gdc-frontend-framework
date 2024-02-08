@@ -16,7 +16,7 @@ import {
   UseAppDataResponse,
   buildCohortGqlOperator,
 } from "@gff/core";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
 import {
@@ -70,6 +70,13 @@ export const useClearRepositoryFilters = (): ClearFacetFunction => {
   return (field: string) => {
     dispatch(removeRepositoryFilter(field));
   };
+};
+
+export const useClearAllRepositoryFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearRepositoryFilters());
+  }, [dispatch]);
 };
 
 type updateEnumFiltersFunc = (
@@ -242,17 +249,23 @@ export const useRepositoryRangeFacet = (
 export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
-  return (field: string, operation: Operation) => {
-    dispatch(updateRepositoryFilter({ field: field, operation: operation }));
-  };
+  return useCallback(
+    (field: string, operation: Operation) => {
+      dispatch(updateRepositoryFilter({ field: field, operation: operation }));
+    },
+    [dispatch],
+  );
 };
 
 export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
-  return (field: string) => {
-    dispatch(removeRepositoryFilter(field));
-  };
+  return useCallback(
+    (field: string) => {
+      dispatch(removeRepositoryFilter(field));
+    },
+    [dispatch],
+  );
 };
 
 //  Selector Hooks for getting repository filters by name

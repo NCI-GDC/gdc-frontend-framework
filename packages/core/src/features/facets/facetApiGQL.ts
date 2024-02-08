@@ -143,6 +143,7 @@ export const buildGraphGLBucketsQuery = (
  * into FacetBuckets
  */
 export type ProcessBucketsFunction = (
+  requestId: string,
   aggregations: Record<string, unknown>,
   state: {
     [index: string]: Record<string, unknown>;
@@ -152,6 +153,7 @@ export type ProcessBucketsFunction = (
 };
 
 export const processBuckets: ProcessBucketsFunction = (
+  requestId: string,
   aggregations: Record<string, unknown>,
   state: { [index: string]: Record<string, unknown> },
 ) => {
@@ -161,6 +163,11 @@ export const processBuckets: ProcessBucketsFunction = (
       if (!(normalizedField in state)) {
         console.log("processBuckets: field is unexpected:", normalizedField); //TODO: remove this once confirm this is no longer a problem
       }
+
+      if (state[normalizedField].requestId !== requestId) {
+        return;
+      }
+
       state[normalizedField].status = "fulfilled";
       state[normalizedField].buckets = aggregation.buckets.reduce(
         (facetBuckets, apiBucket) => {

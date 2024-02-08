@@ -17,6 +17,10 @@ import {
   createCaseSet,
   clearCohortFilters,
   discardCohortChanges,
+  addNewSavedCohort,
+  selectCurrentCohortId,
+  removeCohort,
+  selectCurrentCohort,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
@@ -43,14 +47,18 @@ startCoreListening({
     discardCohortChanges,
   ),
   effect: async (_, listenerApi) => {
-    listenerApi.dispatch(fetchCohortCaseCounts());
+    const currentCohortId = selectCurrentCohortId(listenerApi.getState());
+    // need to pass the current cohort id to the case count fetcher because it is possible that
+    // the current cohort will be different when the fetch is fulfilled
+    currentCohortId &&
+      listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
   },
 });
 
 /**
- * Once the request for the case count is fulfilled, we need to add it to the cohort
- * Optionally if a cohortID is passed in, we can add the case count to that cohort
- * This is used when creating a new cohort from a link, as it is not the current cohort
+ * When a new cohort is added, we need to fetch the case counts for it
+ * both actions are handled here because a new uninitialized cohort is added and
+ * will be the most recent cohort
  */
 startCoreListening({
   matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
@@ -59,9 +67,43 @@ startCoreListening({
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
     );
-
     const latestCohortId = cohorts[0]?.id;
     listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
+  },
+});
+
+/**
+ *  Remove cohort can potentially remove the last cohort, which will create a new default cohort
+ *  so in this case we need to fetch the case counts for the new default cohort
+ */
+startCoreListening({
+  matcher: isAnyOf(removeCohort),
+  effect: async (_, listenerApi) => {
+    const currentCohort = selectCurrentCohort(listenerApi.getState());
+    if (currentCohort?.counts.status === "uninitialized") {
+      listenerApi.dispatch(fetchCohortCaseCounts(currentCohort.id));
+    }
+  },
+});
+
+/**
+ * Handle cohort creation/deletion for updating the counts. In this
+ * case the id of the cohort is in the action payload
+ */
+startCoreListening({
+  matcher: isAnyOf(
+    addNewUnsavedCohort,
+    addNewSavedCohort,
+    discardCohortChanges,
+  ),
+  effect: async (action, listenerApi) => {
+    // the last cohort added is the one we want to get the case count for
+
+    const cohortId = action?.payload?.id;
+    if (cohortId === undefined) {
+      console.error("Listener: cohortId is undefined");
+    }
+    listenerApi.dispatch(fetchCohortCaseCounts(cohortId));
   },
 });
 

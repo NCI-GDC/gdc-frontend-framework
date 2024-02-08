@@ -17,12 +17,14 @@ import CohortCreationButton, {
 
 export const CreateFromCountButton = ({
   tooltipLabel,
+  ariaLabel,
   disabled,
   handleOnClick,
   count,
   loading = false,
 }: {
   tooltipLabel: string;
+  ariaLabel?: string;
   disabled: boolean;
   handleOnClick: () => void;
   count: number;
@@ -35,10 +37,10 @@ export const CreateFromCountButton = ({
           <CohortCreationStyledButton
             disabled={disabled}
             onClick={handleOnClick}
-            aria-label={tooltipLabel}
+            aria-label={ariaLabel}
           >
             <IconWrapper $disabled={disabled}>
-              <PlusIcon color="white" size={12} />
+              <PlusIcon color="white" size={12} aria-disabled />
             </IconWrapper>
             <span className="w-fit">
               {loading ? (
@@ -101,6 +103,15 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
         tooltipLabel={
           entityType !== "cohort"
             ? "Save as new set"
+            : disabled
+            ? "No cases available"
+            : `Create a new unsaved cohort`
+        }
+        ariaLabel={
+          entityType !== "cohort"
+            ? `Save new set with ${count && count.toLocaleString()} item${
+                count > 1 ? "s" : ""
+              }`
             : disabled
             ? "No cases available"
             : `Create a new unsaved cohort of ${

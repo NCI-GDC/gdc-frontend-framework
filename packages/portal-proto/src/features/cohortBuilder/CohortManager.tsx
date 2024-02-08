@@ -42,12 +42,11 @@ import {
   DataStatus,
   setActiveCohort,
   useCurrentCohortCounts,
-  fetchCohortCaseCounts,
   selectHasUnsavedCohorts,
   addNewSavedCohort,
   hideModal,
 } from "@gff/core";
-import { useCohortFacetFilters } from "./utils";
+import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { GenericCohortModal } from "./Modals/GenericCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
@@ -92,6 +91,11 @@ flex
 justify-center
 items-center
 transition-colors
+focus-visible:outline-none
+focus-visible:ring-offset-2
+focus-visible:ring-inset
+focus-visible:ring-2
+focus-visible:ring-focusColor
 `;
 
 /**
@@ -151,12 +155,8 @@ const CohortManager: React.FC = () => {
   );
 
   const deleteCohort = () => {
-    const lastCohort = cohorts.length === 1; // check to see if deleting the last cohort
     coreDispatch(removeCohort({ shouldShowMessage: true }));
-    if (lastCohort) {
-      // deleted the last cohort., so a new one is created and requires needs counts
-      coreDispatch(fetchCohortCaseCounts(undefined));
-    }
+    // fetch case counts is now handled in listener
   };
 
   const {
@@ -169,7 +169,7 @@ const CohortManager: React.FC = () => {
       fields: ["case_id"],
       size: 50000,
     },
-    { skip: currentCohort === undefined },
+    { skip: !exportCohortPending },
   );
 
   useEffect(() => {
@@ -247,7 +247,7 @@ const CohortManager: React.FC = () => {
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 pb-2 shadow-lg bg-primary"
+      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 shadow-lg bg-primary"
     >
       {(isCohortIdFetching ||
         isDeleteCohortLoading ||
@@ -336,7 +336,9 @@ const CohortManager: React.FC = () => {
             .unwrap()
             .then((response) => {
               coreDispatch(
-                setCohortMessage([`savedCohort|${cohortName}|${cohortId}`]),
+                setCohortMessage([
+                  `savedCurrentCohort|${cohortName}|${cohortId}`,
+                ]),
               );
               const cohort = {
                 id: response.id,
@@ -359,57 +361,67 @@ const CohortManager: React.FC = () => {
             );
         }}
       />
+
       <SaveCohortModal
-        initialName={cohortName}
+        initialName={
+          !INVALID_COHORT_NAMES.includes(cohortName.toLowerCase())
+            ? cohortName
+            : undefined
+        }
         opened={showSaveCohort}
         onClose={() => setShowSaveCohort(false)}
         cohortId={cohortId}
         filters={filters}
       />
+
       <SaveCohortModal
-        initialName={cohortName}
         opened={showSaveAsCohort}
+        initialName={cohortName}
         onClose={() => setShowSaveAsCohort(false)}
         cohortId={cohortId}
         filters={filters}
         saveAs
       />
-      <Modal
-        opened={modal === Modals.SaveCohortErrorModal}
-        onClose={() => coreDispatch(hideModal())}
-        title="Save Cohort Error"
-      >
-        <p className="py-2 px-4">There was a problem saving the cohort.</p>
-        <ModalButtonContainer data-testid="modal-button-container">
-          <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
-            OK
-          </DarkFunctionButton>
-        </ModalButtonContainer>
-      </Modal>
-      <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
-      <CaseSetModal
-        updateFilters={updateCohortFilters}
-        existingFiltersHook={useCohortFacetFilters}
-        opened={modal === Modals.GlobalCaseSetModal}
-      />
 
-      <GeneSetModal
-        opened={modal === Modals.GlobalGeneSetModal}
-        modalTitle="Filter Current Cohort by Genes"
-        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
-        selectSetInstructions="Select one or more sets below to filter your cohort."
-        updateFilters={updateCohortFilters}
-        existingFiltersHook={useCohortFacetFilters}
-      />
-
-      <MutationSetModal
-        opened={modal === Modals.GlobalMutationSetModal}
-        modalTitle="Filter Current Cohort by Mutations"
-        inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
-        selectSetInstructions="Select one or more sets below to filter your cohort."
-        updateFilters={updateCohortFilters}
-        existingFiltersHook={useCohortFacetFilters}
-      />
+      {modal === Modals.SaveCohortErrorModal && (
+        <Modal
+          opened
+          onClose={() => coreDispatch(hideModal())}
+          title="Save Cohort Error"
+        >
+          <p className="py-2 px-4">There was a problem saving the cohort.</p>
+          <ModalButtonContainer data-testid="modal-button-container">
+            <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
+              OK
+            </DarkFunctionButton>
+          </ModalButtonContainer>
+        </Modal>
+      )}
+      {modal === Modals.ImportCohortModal && <ImportCohortModal />}
+      {modal === Modals.GlobalCaseSetModal && (
+        <CaseSetModal
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+        />
+      )}
+      {modal === Modals.GlobalGeneSetModal && (
+        <GeneSetModal
+          modalTitle="Filter Current Cohort by Genes"
+          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+        />
+      )}
+      {modal === Modals.GlobalMutationSetModal && (
+        <MutationSetModal
+          modalTitle="Filter Current Cohort by Mutations"
+          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
+          selectSetInstructions="Select one or more sets below to filter your cohort."
+          updateFilters={updateCohortFilters}
+          existingFiltersHook={useCohortFacetFilters}
+        />
+      )}
       {/*  Modals End   */}
       <div className="border-opacity-0">
         <div className="flex gap-4">
@@ -427,8 +439,9 @@ const CohortManager: React.FC = () => {
                   }}
                   disabled={!cohortModified}
                   $isDiscard={true}
+                  aria-label="Discard cohort changes"
                 >
-                  <DiscardIcon aria-label="discard cohort changes" />
+                  <DiscardIcon aria-hidden="true" />
                 </CohortGroupButton>
               </span>
             </Tooltip>
@@ -498,13 +511,14 @@ const CohortManager: React.FC = () => {
                   LeftIcon={
                     <SaveIcon
                       size="1.5em"
-                      aria-label="Save cohort"
                       className="-mr-2.5"
+                      aria-hidden="true"
                     />
                   }
                   TargetButtonChildren=""
                   fullHeight
                   disableTargetWidth
+                  buttonAriaLabel="Save cohort"
                 />
               </span>
             </Tooltip>
@@ -521,8 +535,9 @@ const CohortManager: React.FC = () => {
                 onClick={() => coreDispatch(addNewDefaultUnsavedCohort())}
                 data-testid="addButton"
                 disabled={hasUnsavedCohorts}
+                aria-label="Add cohort"
               >
-                <AddIcon size="1.5em" aria-label="Add cohort" />
+                <AddIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
             <Tooltip label="Delete Cohort" position="bottom" withArrow>
@@ -531,8 +546,9 @@ const CohortManager: React.FC = () => {
                 onClick={() => {
                   setShowDelete(true);
                 }}
+                aria-label="Delete cohort"
               >
-                <DeleteIcon size="1.5em" aria-label="Delete cohort" />
+                <DeleteIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
             <Tooltip label="Import New Cohort" position="bottom" withArrow>
@@ -541,8 +557,9 @@ const CohortManager: React.FC = () => {
                 onClick={() =>
                   coreDispatch(showModal({ modal: Modals.ImportCohortModal }))
                 }
+                aria-label="Upload cohort"
               >
-                <UploadIcon size="1.5em" aria-label="Upload cohort" />
+                <UploadIcon size="1.5em" aria-hidden="true" />
               </CohortGroupButton>
             </Tooltip>
 
@@ -551,18 +568,13 @@ const CohortManager: React.FC = () => {
                 <CohortGroupButton
                   data-testid="downloadButton"
                   disabled={isErrorCaseIds}
-                  onClick={() => {
-                    if (isFetchingCaseIds) {
-                      setExportCohortPending(true);
-                    } else {
-                      exportCohort(caseIds, cohortName);
-                    }
-                  }}
+                  onClick={() => setExportCohortPending(true)}
+                  aria-label="Download cohort"
                 >
                   {exportCohortPending ? (
                     <Loader />
                   ) : (
-                    <DownloadIcon size="1.5em" aria-label="Download cohort" />
+                    <DownloadIcon size="1.5em" aria-hidden="true" />
                   )}
                 </CohortGroupButton>
               </span>

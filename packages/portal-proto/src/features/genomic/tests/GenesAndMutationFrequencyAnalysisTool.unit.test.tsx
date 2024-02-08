@@ -18,6 +18,7 @@ beforeEach(() => {
     },
     refetch: jest.fn(),
   });
+  jest.spyOn(core, "useTopGeneQuery").mockReturnValue({} as any);
   jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
   jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
   jest.spyOn(genomicReducer, "useAppSelector").mockImplementation(jest.fn());

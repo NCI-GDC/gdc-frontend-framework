@@ -473,7 +473,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     {idx === rangeForm.values.ranges.length - 1 ? (
                       <FunctionButton
                         data-testid="button-range-add"
-                        leftIcon={<PlusIcon />}
+                        leftIcon={<PlusIcon aria-hidden="true" />}
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {

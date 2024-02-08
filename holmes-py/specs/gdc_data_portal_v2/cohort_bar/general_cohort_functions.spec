@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Bar - saving, switching, and deleting a cohort
 Test-case       : PEAR-492,PEAR-493,PEAR-498
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
@@ -67,10 +67,14 @@ Message when saving second cohort will be fixed in PEAR-1651
 * "Unsaved_Cohort" should be the active cohort
 
 ## Delete an unsaved cohort
+* Expand or contract a facet from "Exposure" tab on the Cohort Builder page
+  |facet_name               |selection                    |
+  |-------------------------|-----------------------------|
+  |Tobacco Smoking Status   |plus-icon                    |
 * Make the following selections from "Exposure" tab on the Cohort Builder page
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|
-  |Tobacco Smoking Status   |1                            |
+  |Tobacco Smoking Status   |lifelong non-smoker          |
 * Is text "Changes not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text

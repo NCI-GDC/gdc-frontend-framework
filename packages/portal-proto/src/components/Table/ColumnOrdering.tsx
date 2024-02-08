@@ -104,7 +104,11 @@ function ColumnOrdering<TData>({
               showColumnMenu && "border-2 border-primary"
             } hover:bg-primary hover:text-base-max`}
           >
-            {!showColumnMenu ? <BsList size="1.5rem" /> : <BsX size="2rem" />}
+            {!showColumnMenu ? (
+              <BsList size="1.5rem" aria-hidden="true" />
+            ) : (
+              <BsX size="2rem" aria-hidden="true" />
+            )}
           </ActionIcon>
         </Menu.Target>
       </Tooltip>
@@ -137,7 +141,7 @@ function ColumnOrdering<TData>({
           onChange={(event) => setSearchValue(event.currentTarget.value.trim())}
           placeholder="Filter Columns"
           aria-label="Search input for columns"
-          icon={<SearchIcon />}
+          icon={<SearchIcon aria-hidden="true" />}
           className="mb-2 mt-4"
           data-testid="textbox-column-selector"
         />

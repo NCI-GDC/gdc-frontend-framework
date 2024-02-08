@@ -87,7 +87,12 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
-        {groupOpen ? <DownIcon /> : <RightIcon />} {name}
+        {groupOpen ? (
+          <DownIcon aria-hidden="true" />
+        ) : (
+          <RightIcon aria-hidden="true" />
+        )}{" "}
+        {name}
       </span>
       <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
         <div className="flex flex-col">
@@ -296,7 +301,11 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-expanded={controlsExpanded}
           className="text-base"
         >
-          {controlsExpanded ? <DoubleLeftIcon /> : <DoubleRightIcon />}
+          {controlsExpanded ? (
+            <DoubleLeftIcon aria-hidden="true" />
+          ) : (
+            <DoubleRightIcon aria-hidden="true" />
+          )}
         </ActionIcon>
       </Tooltip>
       <div
@@ -314,7 +323,9 @@ const Controls: React.FC<ControlPanelProps> = ({
           }
           rightSection={
             searchTerm && (
-              <CloseIcon onClick={() => setSearchTerm("")}></CloseIcon>
+              <ActionIcon onClick={() => setSearchTerm("")}>
+                <CloseIcon aria-label="clear search" />
+              </ActionIcon>
             )
           }
           aria-label="Search fields"

@@ -71,6 +71,11 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
+  const tooltipText = disabled
+    ? "No cases available"
+    : `Save a new cohort of ${
+        numCases > 1 ? `these ${numCases.toLocaleString()} cases` : "this case"
+      }`;
 
   return (
     <div className="p-1">
@@ -94,6 +99,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         withArrow
       >
         <CohortCreationStyledButton
+          data-testid="button-save-filtered-cohort"
           onClick={async () => {
             if (filtersCallback) {
               setLoading(true);
@@ -105,7 +111,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           }}
           disabled={disabled || loading}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
-          aria-label={"Save a new cohort"}
+          aria-label={tooltipText}
         >
           <IconWrapper $disabled={disabled} aria-hidden="true">
             {loading ? (

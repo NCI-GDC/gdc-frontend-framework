@@ -318,7 +318,8 @@ export const ContextualCasesView: React.FC = () => {
         filename: `clinical.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
-        filters: downloadFilter,
+        case_filters: downloadFilter, // NOTE: as downloadFilter is either a list of case_ids or the cohort's filters
+        // there are no local filters to be passed
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
@@ -337,7 +338,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `clinical.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.json`,
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
@@ -354,7 +355,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `biospecimen.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         size: caseCounts,
       },
       done: () => setBiospecimenDownloadActive(false),
@@ -373,7 +374,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `biospecimen.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.json`,
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         size: caseCounts,
       },
       done: () => setBiospecimenDownloadActive(false),
@@ -417,7 +418,7 @@ export const ContextualCasesView: React.FC = () => {
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="Biospecimen dropdown" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />
@@ -446,7 +447,7 @@ export const ContextualCasesView: React.FC = () => {
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-label="Clinical dropdown" />
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 )
               }
             />

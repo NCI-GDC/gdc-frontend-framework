@@ -69,6 +69,7 @@ export interface CartSummary {
   data: CartSummaryData;
   status: DataStatus;
   error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: CartSummary = {
@@ -88,9 +89,11 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCartSummary.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state.status = "rejected";
+          return state;
         } else {
           const byProject: CartAggregation[] =
             response.data.viewer.cart_summary?.aggregations.project__project_id
@@ -109,13 +112,17 @@ const slice = createSlice({
             byProject,
           };
           state.status = "fulfilled";
+          return state;
         }
       })
-      .addCase(fetchCartSummary.pending, (state) => {
+      .addCase(fetchCartSummary.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
       })
-      .addCase(fetchCartSummary.rejected, (state) => {
+      .addCase(fetchCartSummary.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
+        return state;
       });
   },
 });

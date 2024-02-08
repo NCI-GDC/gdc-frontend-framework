@@ -40,6 +40,10 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useUserDetails();
   const ppRef = useRef<PpApi>();
+  const ppPromise = useRef<Promise<PpApi>>();
+  const initialFilter0Ref = useRef<any>();
+  const debouncedInitialUpdatesTimeout =
+    useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -76,40 +80,70 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const showLoadingOverlay = () => setIsLoading(true);
+  const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
-    "postRender.gdcOncoMatrix": () => setIsLoading(false),
-    "error.gdcOncoMatrix": () => setIsLoading(false),
+    "postRender.gdcOncoMatrix": hideLoadingOverlay,
+    "error.gdcOncoMatrix": hideLoadingOverlay,
   };
-
   const appCallbacks: RxComponentCallbacks = {
-    "preDispatch.gdcPlotApp": () => {
-      setIsLoading(true);
-    },
-    "error.gdcPlotApp": () => setIsLoading(false),
+    "preDispatch.gdcPlotApp": showLoadingOverlay,
+    "error.gdcPlotApp": hideLoadingOverlay,
+    "postRender.gdcPlotApp": hideLoadingOverlay,
   };
 
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const data = { filter0, userDetails };
+      // debounce until one of these is true
+      // otherwise, the userDetails.isFetching changing from false > true > false
+      // could trigger unnecessary, wastefule PP-app state update
+      if (userDetails?.isSuccess === false && userDetails?.isError === false)
+        return;
+      const data = { filter0, userData: userDetails?.data };
+      // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
+      // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
 
-      prevData.current = data;
-
-      const toolContainer = rootElem.parentNode.parentNode
-        .parentNode as HTMLElement;
-      toolContainer.style.backgroundColor = "#fff";
-      setIsLoading(true);
-
       if (ppRef.current) {
-        ppRef.current.update({ filter0: prevData.current.filter0 });
+        if (!isEqual(data, prevData.current))
+          ppRef.current.update({ filter0: data.filter0 });
+      } else if (ppPromise.current) {
+        // in case another state update comes in when there is already
+        // an instance that is being created, debounce to the last update
+        // Except: during startup in demo mode, the filter0 is not expecect to change,
+        // so don't trigger a non-user reactive update right after the initial rendering
+        if (debouncedInitialUpdatesTimeout.current)
+          clearTimeout(debouncedInitialUpdatesTimeout.current);
+
+        if (!isEqual(data, initialFilter0Ref.current)) {
+          debouncedInitialUpdatesTimeout.current = setTimeout(() => {
+            ppPromise.current.then(() => {
+              // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
+              // will not update unnecessarily
+              if (ppRef.current) {
+                if (!isEqual(data, initialFilter0Ref.current))
+                  ppRef.current.update({ filter0: data.filter0 });
+              } else console.error("missing ppRef.current");
+            });
+          }, 20);
+        }
       } else {
+        // TODO:
+        // showing and hiding the overlay should be triggered by components that may take a while to load/render,
+        // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
+        // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
+        initialFilter0Ref.current = data;
+        const toolContainer = rootElem.parentNode.parentNode
+          .parentNode as HTMLElement;
+        toolContainer.style.backgroundColor = "#fff";
+
         const pp_holder = rootElem.querySelector(".sja_root_holder");
         if (pp_holder) pp_holder.remove();
 
-        const data = getMatrixTrack(
+        const matrixArgs = getMatrixTrack(
           props,
-          prevData.current.filter0,
+          data.filter0,
           callback,
           matrixCallbacks,
           appCallbacks,
@@ -123,13 +157,17 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
             nobox: true,
             hide_dsHandles: true,
           },
-          data,
+          matrixArgs,
         ) as MatrixArg;
 
-        runproteinpaint(arg).then((pp) => {
+        ppPromise.current = runproteinpaint(arg).then((pp) => {
+          // the ppRef.current is set after the tool fully renders
           ppRef.current = pp;
+          return pp;
         });
       }
+
+      prevData.current = data;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails],
@@ -153,7 +191,11 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         filters={newCohortFilters}
       />
 
-      <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={isLoading}
+        zIndex={0}
+      />
     </div>
   );
 };

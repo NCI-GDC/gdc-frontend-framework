@@ -29,14 +29,8 @@ const FACET_TO_MODAL = {
 
 const removeButton = (x: string | number) => {
   return (
-    <ActionIcon
-      size="xs"
-      color="white"
-      radius="xl"
-      variant="transparent"
-      arial-label={`remove ${x} from filter`}
-    >
-      <CloseIcon size={10} />
+    <ActionIcon size="xs" color="white" radius="xl" variant="transparent">
+      <CloseIcon size={10} aria-label={`remove ${x} from filter`} />
     </ActionIcon>
   );
 };

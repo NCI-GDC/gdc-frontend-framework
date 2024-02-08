@@ -58,6 +58,10 @@ const CountBadge: React.FC<CountBadgeProps> = ({
           disabled ? undefined : createKeyboardAccessibleFunction(openSetDetail)
         }
         aria-disabled={disabled}
+        aria-label={`${count?.toLocaleString()} item${
+          count > 1 ? "s" : ""
+        } detailed list`}
+        role="button"
       >
         {count?.toLocaleString() ?? "--"}
       </Badge>
@@ -92,7 +96,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
         }}
         variant="transparent"
       >
-        <TrashIcon />
+        <TrashIcon aria-hidden="true" />
       </ActionIcon>
       {count > 0 && (
         <ActionIcon
@@ -122,7 +126,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
             });
           }}
         >
-          <DownloadIcon />
+          <DownloadIcon aria-hidden="true" />
         </ActionIcon>
       )}
     </div>

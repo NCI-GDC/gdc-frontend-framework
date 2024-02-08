@@ -11,7 +11,7 @@ class HeaderSectionLocators:
     COHORT_BUILDER_WAIT_FOR_ELEMENT = "[data-testid='button-cohort-builder-general']"
     REPOSITORY_WAIT_FOR_ELEMENT = "[data-testid='button-json-files-table']"
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
-    HOME_WAIT_FOR_ELEMENT = "[data-testid='homepage-live-statistics']"
+    HOME_WAIT_FOR_ELEMENT = "[data-testid='text-cases-gdc-count']"
     MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"
 
 class HeaderSection(BasePage):
