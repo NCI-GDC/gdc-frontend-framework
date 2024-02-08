@@ -446,18 +446,16 @@ export const Header: React.FC<HeaderProps> = ({
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
       {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
       {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
-      {entityMetadata.entity_type !== null && (
-        <SummaryModal
-          opened
-          onClose={() =>
-            setEntityMetadata({
-              entity_type: null,
-              entity_id: null,
-            })
-          }
-          entityMetadata={entityMetadata}
-        />
-      )}
+      <SummaryModal
+        opened={entityMetadata.entity_type !== null}
+        onClose={() =>
+          setEntityMetadata({
+            entity_type: null,
+            entity_id: null,
+          })
+        }
+        entityMetadata={entityMetadata}
+      />
     </div>
   );
 };

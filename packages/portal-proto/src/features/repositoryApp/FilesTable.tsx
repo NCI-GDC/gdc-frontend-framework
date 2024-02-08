@@ -38,7 +38,6 @@ import {
   SortingState,
   VisibilityState,
   createColumnHelper,
-  Row,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -64,9 +63,7 @@ export type FilesTableDataType = {
   annotations: FileAnnontationsType;
 };
 
-const renderCartIcon = ({ row }: { row: Row<FilesTableDataType> }) => (
-  <SingleItemAddToCartButton file={row.original.file} />
-);
+const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
 
 const FilesTables: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -187,13 +184,14 @@ const FilesTables: React.FC = () => {
       ];
   }, [isFetching, isSuccess, data?.files, data?.pagination]);
 
-  const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
   const filesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
       filesTableColumnHelper.display({
         id: "cart",
         header: "Cart",
-        cell: renderCartIcon,
+        cell: ({ row }) => (
+          <SingleItemAddToCartButton file={row.original.file} />
+        ),
       }),
       filesTableColumnHelper.accessor("file_uuid", {
         id: "file_uuid",
@@ -333,7 +331,7 @@ const FilesTables: React.FC = () => {
         ),
       }),
     ],
-    [filesTableColumnHelper, setEntityMetadata],
+    [setEntityMetadata],
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
