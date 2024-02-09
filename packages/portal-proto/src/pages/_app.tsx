@@ -258,7 +258,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   setEntityMetadata,
                 }}
               >
-                <Notifications position="top-center" />
+                <Notifications position="top-center" autoClose={6000} />
                 <Component {...pageProps} />
               </SummaryModalContext.Provider>
             </URLContext.Provider>
