@@ -19,7 +19,7 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
 export const QuickSearch = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [debounced] = useDebouncedValue(searchText, 250, { leading: true });
+  const [debounced] = useDebouncedValue(searchText, 250);
   const [matchedSearchList, setMatchedSearchList] = useState([]);
 
   const router = useRouter();
