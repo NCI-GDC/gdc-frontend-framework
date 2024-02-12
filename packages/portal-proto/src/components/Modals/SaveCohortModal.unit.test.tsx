@@ -32,7 +32,7 @@ describe("SaveCohortModal", () => {
     );
 
     const nameInput = getByRole("textbox", {
-      name: "Input field for new cohort name",
+      name: "Name",
     }) as HTMLInputElement;
     expect(nameInput.value).toBe("cohort name");
   });
@@ -143,6 +143,7 @@ describe("SaveCohortModal", () => {
         mode: "and",
       },
       showMessage: false,
+      id: "1",
     });
     expect(mockMutation).toBeCalledWith({
       cohort: {

@@ -83,7 +83,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label={`Select/deselect ${row.original.setId}`}
+            aria-label={`${row.original.setId}`}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),

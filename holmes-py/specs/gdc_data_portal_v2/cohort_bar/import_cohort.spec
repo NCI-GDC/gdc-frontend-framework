@@ -7,11 +7,16 @@ Test-case       : PEAR-499
 
 tags: gdc-data-portal-v2, regression, cohort-bar
 
-## Navigate to Cohort Builder
+## Collect Data Portal Statistics
 * On GDC Data Portal V2 app
-* Navigate to "Cohort" from "Header" "section"
+* Navigate to "Home" from "Header" "section"
+* Collect these data portal statistics for comparison
+  |category       |name_to_store_statistic  |
+  |---------------|-------------------------|
+  |Cases          |Home Page Cases Count    |
 
 ## Import Cohort from Data Portal V2 file and Set as Current Cohort
+* Navigate to "Cohort" from "Header" "section"
 * Select "Upload" from the Cohort Bar
 * Upload "organoid" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
 * Select "Submit"
@@ -22,7 +27,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Save             |organoid has been saved. This is now your current cohort. |Remove Modal        |
 * The cohort bar case count should be "70"
 * Clear active cohort filters
-* The cohort bar case count should be "86,513"
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 
 ## Import Cohort from Data Portal V1 file
 * Select "Upload" from the Cohort Bar

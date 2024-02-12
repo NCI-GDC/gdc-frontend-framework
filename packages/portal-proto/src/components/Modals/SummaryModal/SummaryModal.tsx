@@ -3,6 +3,7 @@ import { ContextualFileView } from "@/features/files/FileSummary";
 import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
+import { focusStyles } from "@/utils/index";
 import { Modal } from "@mantine/core";
 import React, { useContext, useEffect, useState } from "react";
 import { entityMetadataType, URLContext } from "src/utils/contexts";
@@ -79,8 +80,7 @@ export const SummaryModal = ({
       classNames={{
         header: "m-0 p-0 border-0",
         title: "sr-only",
-        close:
-          "absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30",
+        close: `absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30 ${focusStyles}`,
       }}
       padding={0}
       overlayProps={{ opacity: 0.5 }}

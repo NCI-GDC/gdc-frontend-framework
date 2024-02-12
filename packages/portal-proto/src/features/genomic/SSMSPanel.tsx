@@ -3,7 +3,10 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import { LoadingOverlay } from "@mantine/core";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
-import { emptySurvivalPlot } from "@/features/genomic/types";
+import {
+  emptySurvivalPlot,
+  ComparativeSurvival,
+} from "@/features/genomic/types";
 import {
   useGeneAndSSMPanelData,
   useSelectFilterContent,
@@ -16,7 +19,7 @@ const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
 
 interface SSMSPanelProps {
   topGeneSSMSSuccess: boolean;
-  comparativeSurvival: Record<string, string>;
+  comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
     name: string,
@@ -29,6 +32,7 @@ interface SSMSPanelProps {
     payload: Record<string, any>,
   ) => void;
   searchTermsForGene: { geneId?: string; geneSymbol?: string };
+  clearSearchTermsForGene: () => void;
 }
 
 export const SSMSPanel = ({
@@ -37,6 +41,7 @@ export const SSMSPanel = ({
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   searchTermsForGene,
+  clearSearchTermsForGene,
 }: SSMSPanelProps): JSX.Element => {
   const {
     isDemoMode,
@@ -119,6 +124,7 @@ export const SSMSPanel = ({
           isDemoMode={isDemoMode}
           isModal={true}
           searchTermsForGene={searchTermsForGene}
+          clearSearchTermsForGene={clearSearchTermsForGene}
         />
       </div>
     </div>

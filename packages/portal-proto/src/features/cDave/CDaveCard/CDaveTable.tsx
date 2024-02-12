@@ -185,7 +185,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                                 ])
                           }
                         >
-                          <SurvivalChartIcon />
+                          <SurvivalChartIcon aria-hidden="true" />
                         </ActionIcon>
                       </div>
                     </Tooltip>

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
 
@@ -70,7 +70,9 @@ describe("ColumnOrdering", () => {
     ).toBeInTheDocument();
 
     await userEvent.click(button);
-    expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull();
+    await waitFor(() =>
+      expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull(),
+    );
   });
 
   it("should close column menu on outside click", async () => {
@@ -90,7 +92,9 @@ describe("ColumnOrdering", () => {
     ).toBeInTheDocument();
     await userEvent.click(document.body);
 
-    expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull();
+    await waitFor(() =>
+      expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull(),
+    );
   });
 
   it("should filter columns by search input", async () => {

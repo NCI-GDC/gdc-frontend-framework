@@ -59,7 +59,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             <a
               data-testid={`button-${entry.name}`}
               className={`
-                block
                 flex
                 justify-center
                 items-center
@@ -95,7 +94,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               <a
                 data-testid={`button-${entry.name} Demo`}
                 className={`
-                  block
                   flex
                   justify-center
                   items-center
@@ -123,7 +121,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           ) : null}
         </div>
       </div>
-      <Divider variant="dotted" />
+      <Divider variant="dotted" aria-hidden="true" />
       <div className="flex flex-col items-center text-xs">
         <Button
           data-testid="select-description-tool"
@@ -132,15 +130,16 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           size="xs"
           rightIcon={
             descriptionVisible ? (
-              <MdArrowDropUp size={16} />
+              <MdArrowDropUp size={16} aria-hidden="true" />
             ) : (
-              <MdArrowDropDown size={16} />
+              <MdArrowDropDown size={16} aria-hidden="true" />
             )
           }
           classNames={{
             root: "text-secondary-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
+          aria-expanded={descriptionVisible}
         >
           {entry.name}
         </Button>
@@ -148,6 +147,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
           className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
+          aria-hidden={!descriptionVisible}
         >
           <div
             className={`${

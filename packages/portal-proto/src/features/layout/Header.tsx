@@ -121,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end md:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
             className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
@@ -135,13 +135,13 @@ export const Header: React.FC<HeaderProps> = ({
             variant="subtle"
             data-testid="button-header-send-feeback"
             className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-1"
-            leftIcon={<FeebackIcon size="24px" />}
+            leftIcon={<FeebackIcon size="24px" aria-hidden="true" />}
             onClick={() => setOpenFeedbackModal(true)}
           >
             Send Feedback
           </Button>
           <a
-            href="https://portal.gdc.cancer.gov/annotations"
+            href="https://portal.gdc.cancer.gov/v1/annotations"
             className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
@@ -151,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
           <Link href="/manage_sets" passHref>
             <a
-              data-testid="link-header-manage-sets"
+              data-testid="button-header-manage-sets"
               className={`p-1 rounded-md ${
                 router.pathname === "/manage_sets"
                   ? "bg-secondary text-white"
@@ -194,7 +194,9 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
                 <Button
-                  rightIcon={<ArrowDropDownIcon size="2em" />}
+                  rightIcon={
+                    <ArrowDropDownIcon size="2em" aria-hidden="true" />
+                  }
                   variant="subtle"
                   className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}
@@ -309,7 +311,11 @@ export const Header: React.FC<HeaderProps> = ({
                 data-testid="extraButton"
                 className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
               >
-                <AppsIcon size="24px" className="text-primary-darkest" />
+                <AppsIcon
+                  size="24px"
+                  className="text-primary-darkest"
+                  aria-hidden="true"
+                />
                 <p className="font-heading">GDC Apps</p>
               </button>
             </Menu.Target>

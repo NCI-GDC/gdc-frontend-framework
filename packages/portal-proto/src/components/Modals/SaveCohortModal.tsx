@@ -11,7 +11,6 @@ import {
   updateCohortName,
   useCoreDispatch,
   useAddCohortMutation,
-  fetchCohortCaseCounts,
   FilterSet,
   addNewSavedCohort,
   buildGqlOperationToFilterSet,
@@ -23,9 +22,11 @@ import {
   discardCohortChanges,
   showModal,
   Modals,
+  fetchCohortCaseCounts,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 /**
  * SaveCohortModal handles saving a user's cohort
@@ -57,6 +58,7 @@ const SaveCohortModal = ({
   const [cohortReplaced, setCohortReplaced] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const [cohortSavedMessage, setCohortSavedMessage] = useState<string[]>();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const {
@@ -75,9 +77,10 @@ const SaveCohortModal = ({
         .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
         .map((c) => c.id);
       for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ currentID: id }));
+        coreDispatch(removeCohort({ id }));
       }
 
+      coreDispatch(setCohortMessage(cohortSavedMessage));
       onClose();
     }
   }, [
@@ -87,25 +90,12 @@ const SaveCohortModal = ({
     cohorts,
     coreDispatch,
     onClose,
+    cohortSavedMessage,
   ]);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
-
-    if (saveAs) {
-      // Should discard local changes from current cohort when saving as
-      await fetchSavedFilters(cohortId)
-        .unwrap()
-        .then((payload) => {
-          coreDispatch(
-            discardCohortChanges({
-              filters: buildGqlOperationToFilterSet(payload.filters),
-              showMessage: false,
-            }),
-          );
-        });
-    }
 
     const addBody = {
       name: newName,
@@ -118,30 +108,53 @@ const SaveCohortModal = ({
 
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
-      .then((payload) => {
-        if (prevCohort && !saveAs) {
-          coreDispatch(
-            copyToSavedCohort({
-              sourceId: prevCohort,
-              destId: payload.id,
-            }),
-          );
-          // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-          // which does not exist will cause this
-          // Therefore, copy the unsaved cohort to the new cohort id received from
-          // the BE.
-          coreDispatch(
-            setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
-          );
-          coreDispatch(
-            removeCohort({
-              shouldShowMessage: false,
-              currentID: prevCohort,
-            }),
-          );
-          coreDispatch(setCurrentCohortId(payload.id));
-          coreDispatch(updateCohortName(newName));
-          coreDispatch(fetchCohortCaseCounts(payload.id));
+      .then(async (payload) => {
+        let tempCohortMsg: string[];
+        if (prevCohort) {
+          if (saveAs) {
+            coreDispatch(
+              addNewSavedCohort({
+                id: payload.id,
+                name: payload.name,
+                filters: buildGqlOperationToFilterSet(payload.filters),
+                caseSet: { status: "uninitialized" },
+                counts: {
+                  ...NullCountsData,
+                },
+                modified_datetime: payload.modified_datetime,
+                saved: true,
+                modified: false,
+              }),
+            );
+            coreDispatch(setCurrentCohortId(payload.id));
+            tempCohortMsg = [`savedCohort|${newName}|${payload.id}`];
+          } else {
+            coreDispatch(
+              copyToSavedCohort({
+                sourceId: prevCohort,
+                destId: payload.id,
+              }),
+            );
+            // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+            // which does not exist will cause this
+            // Therefore, copy the unsaved cohort to the new cohort id received from
+            // the BE.
+
+            // possible that the caseCount are undefined or pending so
+            // re-request counts.
+            coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
+
+            tempCohortMsg = [`savedCurrentCohort|${newName}|${payload.id}`];
+
+            coreDispatch(
+              removeCohort({
+                shouldShowMessage: false,
+                id: prevCohort,
+              }),
+            );
+            coreDispatch(setCurrentCohortId(payload.id));
+            coreDispatch(updateCohortName(newName));
+          }
         } else {
           coreDispatch(
             addNewSavedCohort({
@@ -157,32 +170,38 @@ const SaveCohortModal = ({
               modified: false,
             }),
           );
-          if (saveAs) {
+
+          if (setAsCurrent) {
             coreDispatch(setCurrentCohortId(payload.id));
-            coreDispatch(
-              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
-            );
+            tempCohortMsg = [`savedCohort|${newName}|${payload.id}`];
           } else {
-            if (setAsCurrent) {
-              coreDispatch(setCurrentCohortId(payload.id));
-              coreDispatch(
-                setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-              );
-            } else {
-              coreDispatch(
-                setCohortMessage([
-                  `savedCohortSetCurrent|${payload.name}|${payload.id}`,
-                ]),
-              );
-            }
+            tempCohortMsg = [
+              `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+            ];
           }
-          coreDispatch(fetchCohortCaseCounts(payload.id));
+        }
+
+        if (saveAs && initialName !== newName) {
+          // Should discard local changes from current cohort when saving as
+          await fetchSavedFilters(prevCohort)
+            .unwrap()
+            .then((payload) => {
+              coreDispatch(
+                discardCohortChanges({
+                  filters: buildGqlOperationToFilterSet(payload.filters),
+                  showMessage: false,
+                  id: prevCohort,
+                }),
+              );
+            });
         }
 
         // Need to wait for request removing outdated cohorts to finish when replacing cohort
         if (replace) {
+          setCohortSavedMessage(tempCohortMsg);
           setCohortReplaced(true);
         } else {
+          coreDispatch(setCohortMessage(tempCohortMsg));
           onClose();
         }
       })
@@ -269,7 +288,7 @@ const SaveCohortModal = ({
           }
           closeOnAction={false}
           loading={isLoading}
-          disallowedNames={["unsaved_cohort"]}
+          disallowedNames={INVALID_COHORT_NAMES}
         />
       )}
     </Modal>

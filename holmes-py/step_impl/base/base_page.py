@@ -17,7 +17,7 @@ class GenericLocators:
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
     # This locator allows you to send in a specific case count and check if it is there
-    COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'[data-testid="expandcollapseButton"] >> text="{case_count}"'
     # This locator allows you to grab the case count text for further testing
     TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     CART_IDENT = '[data-testid="cartLink"]'
@@ -46,6 +46,7 @@ class GenericLocators:
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
+    BUTTON_IN_FOOTER_BY_TEXT_IDENT = lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
@@ -373,6 +374,11 @@ class BasePage:
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
+    def click_footer_button_ident_with_displayed_text_name(self, button_text_name):
+        """Clicks a button in the footer based on its displayed text"""
+        locator = GenericLocators.BUTTON_IN_FOOTER_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
     def click_link_data_testid(self, link_data_testid):
         """Clicks a link with a data-testid"""
         link_data_testid = self.normalize_button_identifier(link_data_testid)
@@ -510,7 +516,7 @@ class BasePage:
         """
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
-            "Footer": self.click_button_ident_a_with_displayed_text_name
+            "Footer": self.click_footer_button_ident_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

@@ -273,18 +273,21 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       <div className="bg-base-lightest p-4 flex flex-col">
         <div className="flex">
           <div className="flex-grow">
-            <span className="font-content">
+            <span className="font-content" id="continuous-bin-modal-form-label">
               Define bins{" "}
               {displayDataDimension
                 ? `in ${dataDimension.toLocaleLowerCase()}`
                 : "by"}
               :
             </span>
+
             {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
-            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
             <div
-              className="flex mt-4 items-start text-sm"
               onClick={() => setBinMethod("interval")}
+              className="flex mt-4 items-start text-sm"
+              role="group"
+              aria-labelledby="continuous-bin-modal-form-label"
             >
               <Radio
                 data-testid="button-select-set-interval"
@@ -468,7 +471,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     {idx === rangeForm.values.ranges.length - 1 ? (
                       <FunctionButton
                         data-testid="button-range-add"
-                        leftIcon={<PlusIcon />}
+                        leftIcon={<PlusIcon aria-hidden="true" />}
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {

@@ -53,6 +53,7 @@ export interface CohortVennDiagramState {
   readonly data: CohortVennDiagramData;
   readonly status: DataStatus;
   readonly error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: CohortVennDiagramState = {
@@ -91,6 +92,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchVennCounts.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
 
         if (response.errors) {
@@ -101,11 +104,13 @@ const slice = createSlice({
         }
         return state;
       })
-      .addCase(fetchVennCounts.pending, (state) => {
+      .addCase(fetchVennCounts.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
         return state;
       })
-      .addCase(fetchVennCounts.rejected, (state) => {
+      .addCase(fetchVennCounts.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
         return state;
       });

@@ -24,11 +24,11 @@ import {
   Select,
   TextInput,
   Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
-import { createKeyboardAccessibleFunction } from "@/utils/index";
 import { v4 as uuidv4 } from "uuid";
 import { useDeepCompareEffect } from "use-deep-compare";
 
@@ -268,7 +268,7 @@ function VerticalTable<TData>({
             <div className="flex mb-2 gap-2">
               {search?.enabled && (
                 <TextInput
-                  icon={<MdSearch size={24} />}
+                  icon={<MdSearch size={24} aria-hidden="true" />}
                   data-testid="textbox-table-search-bar"
                   placeholder={search.placeholder ?? "Search"}
                   aria-label="Table Search Input"
@@ -281,10 +281,9 @@ function VerticalTable<TData>({
                   size="sm"
                   rightSection={
                     searchTerm.length > 0 && (
-                      <MdClose
-                        onClick={handleClearClick}
-                        className="cursor-pointer"
-                      />
+                      <ActionIcon onClick={handleClearClick}>
+                        <MdClose aria-label="clear search" />
+                      </ActionIcon>
                     )
                   }
                   value={searchTerm}
@@ -354,6 +353,7 @@ function VerticalTable<TData>({
                         className={commonHeaderClass}
                         key={header.id}
                         colSpan={header.colSpan}
+                        scope={header.column.columnDef.meta?.scope || "col"}
                       >
                         {headerName}
                       </th>
@@ -362,7 +362,7 @@ function VerticalTable<TData>({
                     return (
                       <th
                         key={header.id}
-                        scope="col"
+                        scope={header.column.columnDef.meta?.scope || "col"}
                         className={`
                         ${commonHeaderClass} whitespace-nowrap
                         ${
@@ -426,21 +426,26 @@ function VerticalTable<TData>({
                   {row.getVisibleCells().map((cell) => {
                     const columnDefCell = cell.column.columnDef.cell; // Access the required data
                     const columnId = cell.column.columnDef.id;
+                    const cellValue = cell.getValue();
 
                     return (
                       <td key={cell.id} className="px-2.5 py-2 cursor-default">
                         {row.getCanExpand() &&
-                        expandableColumnIds.includes(columnId) ? (
+                        expandableColumnIds.includes(columnId) &&
+                        // check to make sure item is expandable
+                        Array.isArray(cellValue) &&
+                        cellValue.length > 1 ? (
                           <button
                             onClick={() => {
                               setClickedColumnId(columnId);
                               setExpanded(row, columnId);
                             }}
-                            onKeyDown={createKeyboardAccessibleFunction(() => {
-                              setClickedColumnId(columnId);
-                              setExpanded(row, columnId);
-                            })}
                             className="cursor-auto align-bottom"
+                            aria-expanded={row.getIsExpanded()}
+                            aria-controls={`${row.id}_${columnId}_expanded`.replace(
+                              /\W/g,
+                              "_",
+                            )}
                           >
                             {flexRender(columnDefCell, cell.getContext())}
                           </button>
@@ -452,7 +457,12 @@ function VerticalTable<TData>({
                   })}
                 </tr>
                 {row.getIsExpanded() && (
-                  <tr>
+                  <tr
+                    id={`${row.id}_${clickedColumnId}_expanded`.replace(
+                      /\W/g,
+                      "_",
+                    )}
+                  >
                     {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
                       {/* Need to pass in the SubRow component to render here */}

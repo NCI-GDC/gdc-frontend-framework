@@ -6,7 +6,7 @@ const plugin = require("tailwindcss/plugin");
 // define NCI colors so all at 10 color pallets
 // note addition of vivid, white, black to "pad" the
 // nci color to 10 colors
-
+const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 const nciGray = {
   max: "#FFFFFF",
   lightest: "#f1f1f1",
@@ -768,6 +768,7 @@ module.exports = {
           8: "#7A7A15",
           9: "#10828E",
         },
+        focusColor: "rgb(34, 121, 145)",
         hoverColor: "#E8F0E2",
         activeColor: "#204461",
         "percentage-bar": {
@@ -827,8 +828,8 @@ module.exports = {
         "content-noto": ["Noto Sans", "sans-serif"],
       },
       backgroundImage: {
-        "hero-pattern": "url(/v2/homepage/hero-background.svg)",
-        "mid-pattern": "url(/v2/homepage/hp-bg-mid.svg)",
+        "hero-pattern": `url(${basePath}/homepage/hero-background.svg)`,
+        "mid-pattern": `url(${basePath}/homepage/hp-bg-mid.svg)`,
       },
       borderWidth: {
         DEFAULT: "1px",

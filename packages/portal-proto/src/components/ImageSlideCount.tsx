@@ -27,29 +27,32 @@ export const ImageSlideCount = forwardRef<
 >(
   ({ slideCount, onClick }, ref): JSX.Element => (
     <Tooltip label="No slide images to view" disabled={slideCount !== 0}>
-      <span>
-        <Button
-          compact
-          leftIcon={
-            slideCount === 0 ? <DisabledMicroscopeIcon /> : <MicroscopeIcon />
-          }
-          size="xs"
-          disabled={slideCount === 0}
-          variant="outline"
-          className="bg-base-max border-base-lighter"
-          classNames={{
-            rightIcon: "ml-0",
-            leftIcon: "mr-2",
-          }}
-          rightIcon={
-            <SlideCountsIcon $count={slideCount}>
-              {slideCount === 0 ? "--" : slideCount}
-            </SlideCountsIcon>
-          }
-          ref={ref}
-          onClick={onClick}
-        />
-      </span>
+      <Button
+        compact
+        leftIcon={
+          slideCount === 0 ? <DisabledMicroscopeIcon /> : <MicroscopeIcon />
+        }
+        size="xs"
+        disabled={slideCount === 0}
+        variant="outline"
+        className="bg-base-max border-base-lighter"
+        classNames={{
+          rightIcon: "ml-0",
+          leftIcon: "mr-2",
+        }}
+        rightIcon={
+          <SlideCountsIcon $count={slideCount}>
+            {slideCount === 0 ? "--" : slideCount}
+          </SlideCountsIcon>
+        }
+        ref={ref}
+        onClick={onClick}
+        aria-label={
+          slideCount === 0
+            ? "No slide images to view"
+            : `View ${slideCount} Slide Image${slideCount > 1 ? "s" : ""}`
+        }
+      />
     </Tooltip>
   ),
 );

@@ -154,7 +154,11 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     : 0;
 
   return (
-    <Paper p="md" className="min-w-[600px]">
+    <Paper
+      data-testid="card-analysis-survival-cohort-comparison"
+      p="md"
+      className="min-w-[600px]"
+    >
       <h2 className="font-heading text-lg font-semibold">Survival Analysis</h2>
       {data?.survivalData.length === 0 ? (
         <div className="p-1">
@@ -198,7 +202,10 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   </th>
                 </tr>
               </thead>
-              <tbody className="font-content text-md">
+              <tbody
+                data-testid="text-analysis-overall survival analysis"
+                className="font-content text-md"
+              >
                 <tr>
                   <td className="pl-2">Overall Survival Analysis</td>
                   <td>

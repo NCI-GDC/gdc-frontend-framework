@@ -48,14 +48,15 @@ describe("<InputEntityList />", () => {
       renderInputEntityList();
 
     await userEvent.type(getByPlaceholderText("ex. TCGA"), "7890-123");
-    await waitFor(() => expect(getByText("Summary Table")).toBeInTheDocument());
+    await waitFor(
+      () => expect(getByText("Summary Table")).toBeInTheDocument(),
+      { timeout: 2000 },
+    );
     const saveButton = getByRole("button", { name: "Save Set" });
     await waitFor(() => expect(saveButton).toBeEnabled());
     await userEvent.click(saveButton);
     await userEvent.type(getByPlaceholderText("New Set Name"), "my set");
-    await userEvent.click(
-      getByRole("button", { name: "Save button to add a set" }),
-    );
+    await userEvent.click(getByRole("button", { name: "Save" }));
 
     expect(createSet).toBeCalledWith({ values: ["7890-123"] });
   });

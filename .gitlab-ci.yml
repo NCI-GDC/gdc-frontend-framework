@@ -2,23 +2,14 @@
 ---
 include:
   - project: nci-gdc/gitlab-templates
-    ref: 0.2.0
+    ref: 0.6.2
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
 
-.default_rules: &default_rules
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true"'
-
-.services:
-  allow_failure: true
-  stage: deploy
-  when: manual
-  parallel:
-    matrix:
-      - DEPLOY_SERVICE_LIST: [ portal2 ]
-  <<: *default_rules
+pre-commit:
+  except:
+    - tags
 
 stages:
   - .pre
@@ -39,12 +30,9 @@ variables:
   npm_config_https_proxy: http://cloud-proxy:3128
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
 
-workflow:
+.default_rules: &default_rules
   rules:
-    - if: $CI_COMMIT_TAG
-      variables:
-        DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
-    - when: always
+    - if: '($CI_PIPELINE_SOURCE != "schedule" || $RUN_UI_TESTS_ONLY != "true") && $CI_COMMIT_TAG == null'
 
 Linting:
   stage: test
@@ -90,8 +78,14 @@ Build and push image:
   before_script:
     - apk add bash
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} .
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - |
+      docker build \
+      --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" \
+      --build-arg "BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA" \
+      -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} \
+      -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_SHA \
+      --progress=plain .
+    - docker push -a $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME
   <<: *default_rules
 
 Push latest image:
@@ -108,8 +102,8 @@ Push latest image:
   before_script:
     - apk add bash
   script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
+    - docker pull $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+    - docker tag $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
   except:
     - schedules
@@ -128,8 +122,8 @@ Push tagged image:
   before_script:
     - apk add bash
   script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
+    - docker pull $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+    - docker tag $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
 Build UI tests Docker image:
@@ -185,3 +179,15 @@ trigger_ui_tests_scheduled:
   parallel:
     matrix:
       - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
+
+.deploy-service-with-salt:
+  before_script:
+    - export DEPLOY_SERVICE_TAG=${CI_COMMIT_TAG:-$DEPLOY_SERVICE_TAG}
+
+.services:
+  allow_failure: true
+  stage: deploy
+  when: manual
+  parallel:
+    matrix:
+      - DEPLOY_SERVICE_LIST: [ portal2 ]
