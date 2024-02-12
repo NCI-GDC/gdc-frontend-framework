@@ -83,13 +83,13 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
-    "postRender.gdcOncoMatrix": showLoadingOverlay,
+    "postRender.gdcOncoMatrix": hideLoadingOverlay,
     "error.gdcOncoMatrix": hideLoadingOverlay,
   };
   const appCallbacks: RxComponentCallbacks = {
     "preDispatch.gdcPlotApp": showLoadingOverlay,
     "error.gdcPlotApp": hideLoadingOverlay,
-    "postRender.gdcGeneExpression": hideLoadingOverlay,
+    "postRender.gdcPlotApp": hideLoadingOverlay,
   };
 
   useEffect(
@@ -133,7 +133,6 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         // showing and hiding the overlay should be triggered by components that may take a while to load/render,
         // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
         // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
-        showLoadingOverlay();
         initialFilter0Ref.current = data;
         const toolContainer = rootElem.parentNode.parentNode
           .parentNode as HTMLElement;

@@ -215,6 +215,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -245,6 +246,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -275,6 +277,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -304,6 +307,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
