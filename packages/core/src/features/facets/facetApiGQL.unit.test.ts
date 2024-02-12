@@ -3,7 +3,7 @@ import {
   buildGraphGLBucketsQuery,
 } from "./facetApiGQL";
 
-describe("gql facet api", () => {
+describe("gql facet api tests", () => {
   describe("gql bucket query", () => {
     describe("single bucket queries", () => {
       test("should return projects facets query", () => {
@@ -152,7 +152,7 @@ describe("gql facet api", () => {
           false,
         );
         const projects2AliasQueryString =
-          /query\s+QueryBucketCounts\(\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*explore\s*{\s*projects\s*{\s*aggregations\(\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*projectSummary1 : project__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*projectProgram1 : project__program\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
+          /query\s+QueryBucketCounts\(\s*\$caseFilters:\s*FiltersArgument,\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*projects\s*{\s*aggregations\(\s*case_filters:\s*\$caseFilters,\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*projectSummary1\s*:\s*project__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*projectProgram1\s*:\s*project__program\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
         expect(projects2Buckets).toMatch(projects2AliasQueryString);
       });
       test("should return genes query with 2 facets w/o aliases", () => {
@@ -171,16 +171,16 @@ describe("gql facet api", () => {
           [{ facetName: "genes.my_genes" }, { facetName: "genes.summary" }],
           "genes",
           "explore",
-          false,
+          true,
         );
         const genes2CaseFilterQueryString =
-          /query\s+QueryBucketCounts\(\s*\$caseFilters:\s*FiltersArgument,\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*genes\s*{\s*aggregations\(\s*case_filters:\s*\$caseFilters,\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*genes__my_genes\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*genes__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
+          /query\s+QueryBucketCounts\(\s*\$case_filters:\s*FiltersArgument,\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*explore\s*{\s*genes\s*{\s*aggregations\(\s*case_filters:\s*\$case_filters,\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*genes__my_genes\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*genes__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
         expect(genes2Buckets).toMatch(genes2CaseFilterQueryString);
       });
       test("should return genes query with 2 facets w/o case filters w/ aliases", () => {
         const genes2Buckets = buildGraphGLBucketsQuery(
           [
-            { facetName: "genes.Summary", alias: "genesSummary1" },
+            { facetName: "genes.summary", alias: "genesSummary1" },
             { facetName: "genes.my_genes", alias: "genesMyGenes1" },
           ],
           "genes",
@@ -188,7 +188,7 @@ describe("gql facet api", () => {
           false,
         );
         const genes2AliasQueryString =
-          /query\s+QueryBucketCounts\(\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*explore\s*{\s*genes\s*{\s*aggregations\(\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*genesMyGenes1 : genes__my_genes\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*genesSummary1 : genes__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
+          /query\s+QueryBucketCounts\(\s*\$filters:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*explore\s*{\s*genes\s*{\s*aggregations\(\s*filters:\$filters,\s*aggregations_filter_themselves:\s*false\s*\)\s*{\s*genesSummary1\s* : \s*genes__summary\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*},\s*genesMyGenes1\s* : \s*genes__my_genes\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}/s;
         expect(genes2Buckets).toMatch(genes2AliasQueryString);
       });
     });
