@@ -16,7 +16,6 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
         pathname: "/analysis_page",
         query: { app: entry.id },
       }}
-      passHref
       className="group"
     >
       <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">

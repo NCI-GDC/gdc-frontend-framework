@@ -150,6 +150,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             offset={-2}
           >
             <div className="pt-0.5">
+              {/* This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component */}
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
                 passHref
@@ -306,7 +307,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
       {getAnnotationsLinkParams(annotationCountData, case_id) ? (
         <Link
           href={getAnnotationsLinkParams(annotationCountData, case_id)}
-          passHref
           className="underline"
           target="_blank"
           aria-label={`${annotationsCountTotal.toLocaleString()} Annotation${

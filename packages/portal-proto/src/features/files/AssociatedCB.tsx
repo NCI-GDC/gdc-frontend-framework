@@ -76,7 +76,6 @@ const AssociatedCB = ({
       const annotationsLink = url ? (
         <Link
           href={url}
-          passHref
           className="text-utility-link underline"
           target="_blank"
         >

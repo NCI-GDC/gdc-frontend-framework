@@ -314,7 +314,6 @@ const FilesTables: React.FC = () => {
             {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
               <Link
                 href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
                 className="text-utility-link underline font-content"
                 target="_blank"
               >

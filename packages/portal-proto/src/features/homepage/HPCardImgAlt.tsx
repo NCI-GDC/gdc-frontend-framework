@@ -1,10 +1,6 @@
 import Link, { LinkProps } from "next/link";
-import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 
-export const HomepageButtonAlt = tw.a`bg-primary-max text-sm text-summarybar-text border-base-light border-1
-hover:bg-primary-lightest hover:text-primary-min
-font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block`;
 // TODO eliminate duplicate styles
 const homepageButtonAltStyles = `bg-primary-max text-sm text-summarybar-text border-base-light border-1
 hover:bg-primary-lightest hover:text-primary-min
@@ -76,8 +72,8 @@ const HPCardImgAlt = ({
               {linkText}
             </a>
           ) : (
-            <Link href={href} passHref legacyBehavior>
-              <HomepageButtonAlt>{linkText}</HomepageButtonAlt>
+            <Link href={href} className={homepageButtonAltStyles}>
+              {linkText}
             </Link>
           )}
         </div>

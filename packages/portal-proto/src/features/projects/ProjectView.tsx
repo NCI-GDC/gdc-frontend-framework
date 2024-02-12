@@ -49,7 +49,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       {getAnnotationsLinkParams(projectData) ? (
         <Link
           href={getAnnotationsLinkParams(projectData)}
-          passHref
           className="underline"
           target="_blank"
         >

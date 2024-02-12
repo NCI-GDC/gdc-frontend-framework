@@ -111,7 +111,6 @@ export const Header: React.FC<HeaderProps> = ({
           <Link
             href={indexPath}
             data-testid="NIHLogoButton"
-            passHref
             className="block w-full h-full mt-2"
           >
             <NIHLogo
@@ -154,7 +153,6 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
           <Link
             href="/manage_sets"
-            passHref
             data-testid="button-header-manage-sets"
             className={`p-1 rounded-md ${
               router.pathname === "/manage_sets"
@@ -169,7 +167,6 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
           <Link
             href="/cart"
-            passHref
             data-testid="cartLink"
             className={`p-1 rounded-md ${
               router.pathname === "/cart"
@@ -325,8 +322,8 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu.Dropdown>
               <div className="grid grid-cols-2 py-4 gap-2">
                 <AppMenuItem>
-                  <Link href={indexPath} passHref legacyBehavior>
-                    <AppLink>
+                  <Link href={indexPath} className="flex flex-col items-center">
+                    <>
                       <Image
                         src="/user-flow/icons/gdc-app-data-portal-blue.svg"
                         width={30}
@@ -334,7 +331,7 @@ export const Header: React.FC<HeaderProps> = ({
                         alt=""
                       />
                       Data Portal
-                    </AppLink>
+                    </>
                   </Link>
                 </AppMenuItem>
                 <AppMenuItem>

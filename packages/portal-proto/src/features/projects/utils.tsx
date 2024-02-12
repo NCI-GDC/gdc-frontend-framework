@@ -44,7 +44,6 @@ export const formatDataForSummary = (
     dbGaP_study_accession: (
       <Link
         href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${dbGaP_study_accession}`}
-        passHref
         className="underline text-utility-link"
         target="_blank"
       >

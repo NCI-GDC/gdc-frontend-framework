@@ -26,7 +26,6 @@ const CreateSetInstructions = () => (
     Create gene and mutation sets using the <b>Create Set</b> button or from the{" "}
     <Link
       href="/analysis_page?app=MutationFrequencyApp"
-      passHref
       data-testid="link-mutation-frequency"
       className="text-utility-link underline font-heading"
     >

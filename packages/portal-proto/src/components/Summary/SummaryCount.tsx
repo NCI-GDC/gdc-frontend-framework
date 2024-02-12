@@ -24,7 +24,6 @@ const SummaryCount = ({
       {href ? (
         <Link
           href={href}
-          passHref
           className="text-utility-link underline"
           target={shouldOpenInNewTab && "_blank"}
         >

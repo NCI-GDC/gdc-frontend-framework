@@ -18,6 +18,7 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
   return (
     <Link
       href={href}
+      // Keeping passHref since ExternalLink is a custom component so children can be anything (maybe <a> tag)
       passHref
       data-testid={dataTestId ? dataTestId : ""}
       title={title ? title : href}

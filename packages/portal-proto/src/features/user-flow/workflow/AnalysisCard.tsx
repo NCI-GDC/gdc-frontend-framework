@@ -54,7 +54,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               pathname: "/analysis_page",
               query: { app: entry.id },
             }}
-            passHref
             data-testid={`button-${entry.name}`}
             className={`
               flex
@@ -86,7 +85,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                   demoMode: true,
                 },
               }}
-              passHref
               data-testid={`button-${entry.name} Demo`}
               className={`
                 flex

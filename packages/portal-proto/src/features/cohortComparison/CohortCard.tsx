@@ -83,7 +83,6 @@ const CohortCard: React.FC<CohortCardProps> = ({
               cohort2Id: cohorts.comparison_cohort.id,
             },
           }}
-          passHref
           data-testid="link-open-venn-diagram"
           className="underline text-primary font-bold"
         >
