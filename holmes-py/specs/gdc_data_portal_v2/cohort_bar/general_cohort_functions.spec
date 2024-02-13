@@ -11,6 +11,21 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
+## Shortened cohort saving
+* Create and save a cohort named "quick_cohort_step_1" with these filters
+  |tab_name               |facet_name           |selection            |
+  |-----------------------|---------------------|---------------------|
+  |Demographic            |Gender               |female               |
+  |Stage Classification   |Ajcc Clinical Stage  |stage ivc            |
+  |General                |Program              |TCGA                 |
+
+* Create and save a cohort named "quick_cohort_step_2" with these filters
+  |tab_name               |facet_name           |selection            |
+  |-----------------------|---------------------|---------------------|
+  |Available Data         |Data Format          |bam                  |
+  |Available Data         |Data Format          |pdf                  |
+  |General Diagnosis      |Laterality           |right                |
+
 ## Save a cohort for the first time
 * Select "Add" from the Cohort Bar
 * Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"

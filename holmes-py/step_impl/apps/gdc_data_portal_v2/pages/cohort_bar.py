@@ -103,9 +103,6 @@ class CohortBar(BasePage):
         else:
             return is_full_query_filter_locator_visible
 
-
-        return is_full_query_filter_locator_visible
-
     def is_cohort_bar_button_disabled(self, button_name:str):
         """Returns if the cohort bar button has the attribute 'disabled'"""
         locator = CohortBarLocators.COHORT_BAR_BUTTON(self.normalize_button_identifier(button_name))

@@ -100,6 +100,11 @@ class CohortBuilderPage(BasePage):
         self.wait_for_loading_spinner_to_be_visible()
         self.wait_for_loading_spinner_to_detatch()
 
+    # Returns if the show more or show less button is visible on a facet card
+    def is_show_more_or_show_less_button_visible_within_filter_card(self, facet_group_name, label):
+        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
+        return self.is_visible(locator)
+
     # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):
         locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
