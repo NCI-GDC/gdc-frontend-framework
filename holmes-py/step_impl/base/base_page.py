@@ -92,6 +92,9 @@ class BasePage:
     def get_attribute(self, locator, name: str):
         return self.driver.locator(locator).get_attribute(name)
 
+    def get_count(self, locator):
+        return self.driver.locator(locator).count()
+
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
 

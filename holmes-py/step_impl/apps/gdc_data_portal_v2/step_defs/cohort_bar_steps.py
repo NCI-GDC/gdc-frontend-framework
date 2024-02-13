@@ -65,6 +65,52 @@ def create_save_cohort_with_specified_filters(cohort_name, table):
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     time.sleep(2)
 
+@step("Create and save cohorts with randomly assigned filters <table>")
+def create_save_cohort_with_random_filters(table):
+    """
+    create_save_cohort_with_random_filters A condensed test step to create
+    and save a cohort with randomized filters.
+
+    :param cohort_name: The name given to the new cohort
+    :param v[0]: The name given to the new cohort
+    :param v[1]: Number of random filters to apply
+    """
+    time.sleep(2)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+
+    for x in range(100):
+        APP.cohort_builder_page.click_random_tab_in_cohort_builder()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+
+    APP.cohort_bar.click_cohort_bar_button("add")
+    time.sleep(1)
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+
+    for k, v in enumerate(table):
+        # Clicks tab in cohort builder
+        APP.cohort_builder_page.click_button(v[0])
+        time.sleep(1)
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        # Expands list of filters to select if possible
+        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(v[1], "plus-icon"):
+            APP.cohort_builder_page.click_show_more_less_within_filter_card(v[1], "plus-icon")
+        # Selects desired filter
+        APP.cohort_builder_page.make_selection_within_facet_group(v[1], v[2])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        time.sleep(0.1)
+
+    # After filters have been added, save the cohort
+    APP.cohort_bar.click_cohort_bar_button("Save")
+    APP.shared.click_text_option_from_dropdown_menu("Save")
+    APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
+    APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+    APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    time.sleep(2)
+
 @step("<button_name> should be <enabled_or_disabled> in the Cohort Bar")
 def button_should_be_disabled_or_enabled_on_cohort_bar(button_name: str, enabled_or_disabled:str):
     enabled_or_disabled = enabled_or_disabled.lower()

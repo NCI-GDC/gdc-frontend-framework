@@ -11,6 +11,13 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
+## Random filters cohort creation
+* Create and save cohorts with randomly assigned filters
+  |cohort_name              |number_of_filters|
+  |-------------------------|-----------------|
+  |random_filters_cohort_1  |2                |
+  |random_filters_cohort_2  |3                |
+
 ## Shortened cohort saving
 * Create and save a cohort named "quick_cohort_step_1" with these filters
   |tab_name               |facet_name           |selection            |
