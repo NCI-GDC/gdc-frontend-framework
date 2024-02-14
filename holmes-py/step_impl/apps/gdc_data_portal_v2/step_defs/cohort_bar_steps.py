@@ -87,11 +87,6 @@ def create_save_cohort_with_random_filters(table):
         number_of_filters_to_add_in_total = int(v[1])
         number_of_successful_filters_added = 0
         while (len(tabs_to_exclude) < number_of_tabs-1) and (number_of_successful_filters_added < number_of_filters_to_add_in_total):
-            print("Figures:")
-            print(len(tabs_to_exclude))
-            print(number_of_tabs-1)
-            print(number_of_successful_filters_added)
-            print(number_of_filters_to_add_in_total)
             found_acceptable_tab_to_try_next = False
             random_tab_to_select = None
             # Find a tab to try that is not in the excluded list

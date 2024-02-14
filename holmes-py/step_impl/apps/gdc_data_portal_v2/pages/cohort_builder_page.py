@@ -136,20 +136,36 @@ class CohortBuilderPage(BasePage):
         self.click(locator)
 
     def get_number_of_tabs_in_cohort_builder(self):
+        """Returns the number of tabs in Cohort Builder"""
         tab_list_locator = CohortBuilderPageLocators.FILTER_TAB_LIST
         number_of_tabs = self.get_count(tab_list_locator)
         return number_of_tabs
 
     def click_tab_by_position_in_cohort_builder(self, tab_position_to_select):
+        """
+        click_tab_by_position_in_cohort_builder Clicks a tab in the cohort builder
+        by its position in the list.
+
+        :param tab_position_to_select: The position in the tab list to click.
+        """
         tab_locator = CohortBuilderPageLocators.FILTER_TAB_LIST_BUTTON_BY_POSITION(tab_position_to_select)
         self.click(tab_locator)
 
     def get_number_of_facet_cards_on_current_tab_in_cohort_builder(self):
+        """Returns the number of facets in the current tab in Cohort Builder"""
         facet_card_list_locator = CohortBuilderPageLocators.FACET_CARD_LIST
         number_of_facet_card = self.get_count(facet_card_list_locator)
         return number_of_facet_card
 
     def is_facet_card_able_to_select_by_position(self, facet_to_select_by_position):
+        """
+        is_facet_card_able_to_select_by_position Determine if the facet card specified is
+        able to select by position. Conditions: the facet card uses checkboxes, and there
+        is available data present to select.
+
+        :param facet_to_select_by_position: The position of the facet to analyze.
+        :return: True or False is the facet card able to select by position.
+        """
         filter_list_have_checkbox_locator = CohortBuilderPageLocators.FILTER_LIST_CHECKBOX(facet_to_select_by_position)
         if self.is_visible(filter_list_have_checkbox_locator):
             no_data_available_locator = CohortBuilderPageLocators.FILTER_LIST_NO_DATA_AVAILABLE(facet_to_select_by_position)
@@ -161,6 +177,14 @@ class CohortBuilderPage(BasePage):
             return False
 
     def get_number_of_filters_on_facet_card_by_position(self, facet_to_select_by_position):
+        """
+        get_number_of_filters_on_facet_card_by_position Returns number of filters on the
+        specified facet card.
+
+        :param facet_to_select_by_position: The position of the facet to analyze.
+        :return: Number of filters on facet card.
+        """
+        # If the "Show More" button is visible on the facet card, click to expand it.
         show_more_button_locator = CohortBuilderPageLocators.FACET_GROUP_POSITION_SHOW_MORE_IDENT(facet_to_select_by_position)
         if self.is_visible(show_more_button_locator):
             self.click(show_more_button_locator)
@@ -171,5 +195,12 @@ class CohortBuilderPage(BasePage):
         return number_of_filters
 
     def click_filter_by_position_on_facet_card_by_position(self, facet_card_to_select, filter_to_select_by_position):
+        """
+        click_filter_by_position_on_facet_card_by_position On a specified facet card by position, Clicks a filter
+        by position.
+
+        :param facet_card_to_select: The position of the facet to analyze.
+        :param filter_to_select_by_position: The position of the filter to click.
+        """
         filter_locator = CohortBuilderPageLocators.FILTER_LIST_CHECKBOX_BY_POSITION(facet_card_to_select, filter_to_select_by_position)
         self.click(filter_locator)
