@@ -1,4 +1,4 @@
-FROM node:20.11.0-alpine3.18 as depz
+FROM node:20.11.0-alpine3.18 as dep
 WORKDIR /app
 
 #==================================================================
