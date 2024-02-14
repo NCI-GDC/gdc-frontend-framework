@@ -17,6 +17,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-------------------------|-----------------|
   |random_filters_cohort_1  |2                |
   |random_filters_cohort_2  |3                |
+  |random_filters_cohort_3  |0                |
+  |random_filters_cohort_4  |10                |
+
 
 ## Shortened cohort saving
 * Create and save a cohort named "quick_cohort_step_1" with these filters

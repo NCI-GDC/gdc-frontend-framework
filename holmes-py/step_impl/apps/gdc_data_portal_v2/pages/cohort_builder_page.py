@@ -1,5 +1,3 @@
-import random
-
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
@@ -19,10 +17,13 @@ class CohortBuilderPageLocators:
     FACET_GROUP_NAMED_OBJECT_IDENT = lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
 
     FILTER_TAB_LIST = 'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
-    FILTER_TAB_LIST_BUTTON = lambda tab_position: f'main[data-tour="full_page_content"] >> div[role="tablist"] > button:nth-child({tab_position})'
+    FILTER_TAB_LIST_BUTTON_BY_POSITION = lambda tab_position: f'main[data-tour="full_page_content"] >> div[role="tablist"] > button:nth-child({tab_position})'
     FACET_CARD_LIST = '[data-testid="title-cohort-builder-facet-groups"] > div'
+    FACET_GROUP_POSITION_SHOW_MORE_IDENT = lambda facet_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_position}) >> button[data-testid="plus-icon"]'
     FILTER_LIST = lambda facet_card_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div'
-    FILTER_LIST_CHECKBOX = lambda facet_card_position, filter_checkbox_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > > div:nth-child({filter_checkbox_position}) >> input'
+    FILTER_LIST_CHECKBOX = lambda facet_card_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div >> nth=0'
+    FILTER_LIST_NO_DATA_AVAILABLE = lambda facet_card_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div >> text="No data for this field"'
+    FILTER_LIST_CHECKBOX_BY_POSITION = lambda facet_card_position, filter_checkbox_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div:nth-child({filter_checkbox_position}) >> input'
 
     CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
@@ -134,11 +135,41 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(facet_group_name, object_name)
         self.click(locator)
 
-    def click_random_tab_in_cohort_builder(self):
+    def get_number_of_tabs_in_cohort_builder(self):
         tab_list_locator = CohortBuilderPageLocators.FILTER_TAB_LIST
         number_of_tabs = self.get_count(tab_list_locator)
-        # random.range is inclusive at start and exclusive at stop.
-        # That is fine, we do not want to select the last tab (Custom Filters)
-        random_tab_to_select = random.randrange(1,number_of_tabs,1)
-        tab_locator = CohortBuilderPageLocators.FILTER_TAB_LIST_BUTTON(random_tab_to_select)
+        return number_of_tabs
+
+    def click_tab_by_position_in_cohort_builder(self, tab_position_to_select):
+        tab_locator = CohortBuilderPageLocators.FILTER_TAB_LIST_BUTTON_BY_POSITION(tab_position_to_select)
         self.click(tab_locator)
+
+    def get_number_of_facet_cards_on_current_tab_in_cohort_builder(self):
+        facet_card_list_locator = CohortBuilderPageLocators.FACET_CARD_LIST
+        number_of_facet_card = self.get_count(facet_card_list_locator)
+        return number_of_facet_card
+
+    def is_facet_card_able_to_select_by_position(self, facet_to_select_by_position):
+        filter_list_have_checkbox_locator = CohortBuilderPageLocators.FILTER_LIST_CHECKBOX(facet_to_select_by_position)
+        if self.is_visible(filter_list_have_checkbox_locator):
+            no_data_available_locator = CohortBuilderPageLocators.FILTER_LIST_NO_DATA_AVAILABLE(facet_to_select_by_position)
+            if self.is_visible(no_data_available_locator):
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    def get_number_of_filters_on_facet_card_by_position(self, facet_to_select_by_position):
+        show_more_button_locator = CohortBuilderPageLocators.FACET_GROUP_POSITION_SHOW_MORE_IDENT(facet_to_select_by_position)
+        if self.is_visible(show_more_button_locator):
+            self.click(show_more_button_locator)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        filter_list_locator = CohortBuilderPageLocators.FILTER_LIST(facet_to_select_by_position)
+        number_of_filters = self.get_count(filter_list_locator)
+        return number_of_filters
+
+    def click_filter_by_position_on_facet_card_by_position(self, facet_card_to_select, filter_to_select_by_position):
+        filter_locator = CohortBuilderPageLocators.FILTER_LIST_CHECKBOX_BY_POSITION(facet_card_to_select, filter_to_select_by_position)
+        self.click(filter_locator)

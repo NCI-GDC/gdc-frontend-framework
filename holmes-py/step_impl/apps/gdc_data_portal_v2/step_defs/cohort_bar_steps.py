@@ -1,4 +1,5 @@
 import time
+import random
 
 from getgauge.python import step, before_spec
 
@@ -71,45 +72,72 @@ def create_save_cohort_with_random_filters(table):
     create_save_cohort_with_random_filters A condensed test step to create
     and save a cohort with randomized filters.
 
-    :param cohort_name: The name given to the new cohort
-    :param v[0]: The name given to the new cohort
+    :param v[0]: Name given to the new cohort
     :param v[1]: Number of random filters to apply
     """
-    time.sleep(2)
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
-
-    for x in range(100):
-        APP.cohort_builder_page.click_random_tab_in_cohort_builder()
-        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        APP.shared.wait_for_loading_spinner_to_detatch()
-
-    APP.cohort_bar.click_cohort_bar_button("add")
-    time.sleep(1)
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
-
+    number_of_tabs = APP.cohort_builder_page.get_number_of_tabs_in_cohort_builder()
+    # Loop through the number of cohorts to create, edit, and save
     for k, v in enumerate(table):
-        # Clicks tab in cohort builder
-        APP.cohort_builder_page.click_button(v[0])
+        APP.cohort_bar.click_cohort_bar_button("add")
         time.sleep(1)
-        APP.shared.wait_for_loading_spinner_to_detatch()
-        # Expands list of filters to select if possible
-        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(v[1], "plus-icon"):
-            APP.cohort_builder_page.click_show_more_less_within_filter_card(v[1], "plus-icon")
-        # Selects desired filter
-        APP.cohort_builder_page.make_selection_within_facet_group(v[1], v[2])
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        time.sleep(0.1)
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
-    # After filters have been added, save the cohort
-    APP.cohort_bar.click_cohort_bar_button("Save")
-    APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
-    APP.shared.click_button_in_modal_with_displayed_text_name("Save")
-    APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    time.sleep(2)
+        tabs_to_exclude = []
+        number_of_filters_to_add_in_total = int(v[1])
+        number_of_successful_filters_added = 0
+        while (len(tabs_to_exclude) < number_of_tabs-1) and (number_of_successful_filters_added < number_of_filters_to_add_in_total):
+            print("Figures:")
+            print(len(tabs_to_exclude))
+            print(number_of_tabs-1)
+            print(number_of_successful_filters_added)
+            print(number_of_filters_to_add_in_total)
+            found_acceptable_tab_to_try_next = False
+            random_tab_to_select = None
+            # Find a tab to try that is not in the excluded list
+            while not found_acceptable_tab_to_try_next:
+                # random.range is inclusive at start and exclusive at stop.
+                # That is fine, we do not want to select the last tab (Custom Filters)
+                random_tab_to_select = random.randrange(1,number_of_tabs,1)
+                if random_tab_to_select not in tabs_to_exclude:
+                    found_acceptable_tab_to_try_next = True
+
+            # Clicks tab in cohort builder
+            APP.cohort_builder_page.click_tab_by_position_in_cohort_builder(random_tab_to_select)
+            time.sleep(1)
+            APP.shared.wait_for_loading_spinner_to_detatch()
+
+            # Gets number of facet cards on the current tab
+            number_of_facet_cards_on_current_tab = APP.cohort_builder_page.get_number_of_facet_cards_on_current_tab_in_cohort_builder()
+
+            # random.range is inclusive at start and exclusive at stop.
+            random_facet_to_select = random.randrange(1,number_of_facet_cards_on_current_tab+1,1)
+
+            # Determine if facet card is able to be selected.
+            # Criteria: Has checkboxes, has available data to be selected
+            is_facet_able_to_be_selected = APP.cohort_builder_page.is_facet_card_able_to_select_by_position(random_facet_to_select)
+            if is_facet_able_to_be_selected:
+                number_of_filters_on_selected_facet_card = APP.cohort_builder_page.get_number_of_filters_on_facet_card_by_position(random_facet_to_select)
+                # random.range is inclusive at start and exclusive at stop.
+                random_filter_to_select = random.randrange(1,number_of_filters_on_selected_facet_card+1,1)
+                APP.cohort_builder_page.click_filter_by_position_on_facet_card_by_position(random_facet_to_select,random_filter_to_select)
+                APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+                time.sleep(0.1)
+                # Successfully added a filter, counter goes up
+                number_of_successful_filters_added = number_of_successful_filters_added + 1
+            # If the facet has not filters to be selected, we try another tab
+            else:
+                # Exclude current tab from future consideration
+                tabs_to_exclude.append(random_tab_to_select)
+
+        # After filters have been added, save the cohort
+        APP.cohort_bar.click_cohort_bar_button("Save")
+        APP.shared.click_text_option_from_dropdown_menu("Save")
+        APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
+        APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+        APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        time.sleep(2)
 
 @step("<button_name> should be <enabled_or_disabled> in the Cohort Bar")
 def button_should_be_disabled_or_enabled_on_cohort_bar(button_name: str, enabled_or_disabled:str):
