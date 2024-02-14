@@ -15,6 +15,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@/gdcapp/*": ["src/gdcapp/*"],
       "@/components/*": ["src/components/*"],
       "@/features/*": ["src/features/*"],
       "@/utils/*": ["src/utils/*"],
