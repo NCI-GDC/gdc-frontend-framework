@@ -1,5 +1,4 @@
 import tailwindConfig from "../../tailwind.config";
-// import store from "../app/store";
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";
@@ -24,7 +23,6 @@ import React, { useEffect } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-// import { Provider } from "react-redux";
 // import the React tab styles once
 import "react-tabs/style/react-tabs.css";
 import {
@@ -103,7 +101,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   return (
     <CoreProvider>
-      {/* <Provider store={store}> */}
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
@@ -268,7 +265,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           <script>{`_satellite.pageBottom()`}</script>
         </div>
       </MantineProvider>
-      {/* </Provider> */}
     </CoreProvider>
   );
 };
