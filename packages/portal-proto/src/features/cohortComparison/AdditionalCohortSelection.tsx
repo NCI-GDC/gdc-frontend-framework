@@ -22,7 +22,6 @@ interface AdditionalCohortSelectionProps {
 }
 
 const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
-  app,
   setActiveApp,
   setOpen,
   setComparisonCohort,
@@ -38,11 +37,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   );
 
   const [selectedCohort, setSelectedCohort] = useState<Cohort>(null);
-
-  const closeCohortSelection = () => {
-    setOpen(false);
-    setSelectedCohort(null);
-  };
 
   const cohortListTableColumnHelper = createColumnHelper<typeof cohorts[0]>();
 
@@ -155,16 +149,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
-        <FunctionButton
-          data-testid="button-demo-cohort-comparison"
-          className="mr-auto"
-          onClick={() => {
-            setActiveApp(app, true);
-            closeCohortSelection();
-          }}
-        >
-          Demo
-        </FunctionButton>
         <FunctionButton
           data-testid="button-cancel-cohort-comparison"
           className="mr-4"

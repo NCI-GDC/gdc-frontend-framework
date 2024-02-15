@@ -161,7 +161,6 @@ interface SelectionPanelProps {
 }
 
 const SelectionPanel: React.FC<SelectionPanelProps> = ({
-  app,
   setActiveApp,
   setOpen,
   selectedEntities,
@@ -435,17 +434,6 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
-        <FunctionButton
-          className="mr-auto"
-          onClick={() => {
-            setSelectedEntityType(undefined);
-            setSelectedEntities([]);
-            setActiveApp(app, true);
-            setOpen(false);
-          }}
-        >
-          Demo
-        </FunctionButton>
         <FunctionButton
           className="mr-4"
           onClick={() => {
