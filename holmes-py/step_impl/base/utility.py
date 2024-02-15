@@ -9,9 +9,10 @@ class Utility:
             git_dir = path / ".git"
             holmes_dir = path / "holmes-py"
             if holmes_dir.is_dir():
-                return path
+                return holmes_dir
             elif git_dir.is_dir():
                 return path
+
 
     def is_file_found(file_path: str):
         CURRENT_TIME = 0
