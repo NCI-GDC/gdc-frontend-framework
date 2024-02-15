@@ -169,10 +169,7 @@ class CohortBuilderPage(BasePage):
         filter_list_have_checkbox_locator = CohortBuilderPageLocators.FILTER_LIST_CHECKBOX(facet_to_select_by_position)
         if self.is_visible(filter_list_have_checkbox_locator):
             no_data_available_locator = CohortBuilderPageLocators.FILTER_LIST_NO_DATA_AVAILABLE(facet_to_select_by_position)
-            if self.is_visible(no_data_available_locator):
-                return False
-            else:
-                return True
+            return False if self.is_visible(no_data_available_locator) else True
         else:
             return False
 

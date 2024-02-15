@@ -86,6 +86,9 @@ def create_save_cohort_with_random_filters(table):
         tabs_to_exclude = []
         number_of_filters_to_add_in_total = int(v[1])
         number_of_successful_filters_added = 0
+        # Stop attempting to add filters if either condition is met:
+        # 1. We have added the number of filters requested by the spec input file
+        # 2. We have excluded all available tabs from selection
         while (len(tabs_to_exclude) < number_of_tabs-1) and (number_of_successful_filters_added < number_of_filters_to_add_in_total):
             found_acceptable_tab_to_try_next = False
             random_tab_to_select = None
