@@ -1,8 +1,5 @@
 import React, { ReactNode } from "react";
-import { useSpring, animated } from "@react-spring/web";
-import { Tooltip } from "@mantine/core";
-import classNames from "classnames";
-import { createKeyboardAccessibleFunction } from "src/utils/";
+import { Tooltip, Switch } from "@mantine/core";
 
 interface SwitchSpringProps {
   isActive: boolean;
@@ -27,22 +24,9 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
   margin,
   survivalProps,
 }: SwitchSpringProps) => {
-  const ballSpring = useSpring({
-    width: 20,
-    y: 0,
-    x: isActive ? 12 : -4,
-  });
-
-  const sliderSpring = useSpring({
-    width: 35,
-  });
-
   const { plot } = survivalProps ?? { plot: "" };
 
   const toggleSwitch = () => {
-    if (disabled) {
-      return;
-    }
     // todo: if used for > 2 icons refactor to use switch(icon) statement
     icon
       ? handleSwitch(selected[`symbol`], selected[`name`], plot)
@@ -55,36 +39,27 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       disabled={!tooltip}
       data-testid="tooltipSwitchSpring"
     >
-      <animated.div
-        data-testid="button-middle-switchSpring"
-        style={sliderSpring}
-        className={classNames(
-          "border border-lightgray",
-          disabled ? "cursor-not-allowed" : "cursor-pointer",
-          {
-            "rounded-xl": icon,
-          },
-          isActive ? "bg-activeColor" : "bg-gray-300",
-        )}
-        onClick={toggleSwitch}
-        onKeyDown={createKeyboardAccessibleFunction(toggleSwitch)}
-        aria-disabled={disabled}
-        tabIndex={0}
-        aria-label={tooltip}
-      >
-        <animated.div
-          data-testid="button-bottom-switchSpring"
-          style={ballSpring}
-          className={`ml-1 border-2 rounded-sm ${
-            disabled ? "border-gray-300" : "border-activeColor"
-          }
-             bg-white ${icon && `rounded-xl`} ${
-            isActive && `bg-lightgray`
-          } h-5`}
-        >
-          <div className={margin}>{icon}</div>
-        </animated.div>
-      </animated.div>
+      {/* div added otherwise tooltip does not work in mantine 6 */}
+      <div>
+        <Switch
+          data-testid="button-middle-switchSpring"
+          classNames={{
+            thumb: `border-2 rounded-sm w-5 h-5 ${
+              disabled ? "border-gray-300" : "border-activeColor"
+            } ${margin}`,
+            input: "",
+            track: `overflow-visible border border-base-lightest ${
+              disabled ? "cursor-not-allowed" : "cursor-pointer"
+            } ${isActive ? "bg-activeColor" : "bg-gray-300"}`,
+            root: disabled ? "cursor-not-allowed" : "cursor-pointer",
+          }}
+          aria-label={tooltip}
+          checked={isActive}
+          onChange={toggleSwitch}
+          disabled={disabled}
+          thumbIcon={icon}
+        />
+      </div>
     </Tooltip>
   );
 };
