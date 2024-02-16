@@ -18,10 +18,8 @@ const Custom404Page: NextPage = () => {
       <div className="flex flex-col justify-center items-center h-full p-8 gap-2">
         <h1 className="text-2xl">Page Not Found</h1>
         <span>Sorry, we couldn&apos;t find the page you were looking for.</span>
-        <Link href="/" passHref>
-          <a className="text-primary underline">
-            Click here to go to the GDC Data Portal home page.
-          </a>
+        <Link href="/" className="text-primary underline">
+          Click here to go to the GDC Data Portal home page.
         </Link>
       </div>
     </UserFlowVariedPages>

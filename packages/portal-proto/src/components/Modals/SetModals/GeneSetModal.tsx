@@ -67,14 +67,12 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
               Gene sets can be created from the <b>Enter Genes tab</b>, or from
               the{" "}
               <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-                <a>
-                  <button
-                    className="text-utility-link underline font-heading"
-                    onClick={() => dispatch(hideModal())}
-                  >
-                    Mutation Frequency app.
-                  </button>
-                </a>
+                <button
+                  className="text-utility-link underline font-heading"
+                  onClick={() => dispatch(hideModal())}
+                >
+                  Mutation Frequency app.
+                </button>
               </Link>
             </p>
           }

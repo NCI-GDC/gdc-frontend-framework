@@ -108,16 +108,18 @@ export const Header: React.FC<HeaderProps> = ({
           visible={!(totalSuccess || dictSuccess)}
         />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
-          <Link href={indexPath} data-testid="NIHLogoButton" passHref>
-            <a className="block w-full h-full mt-2">
-              <NIHLogo
-                layout="fill"
-                style={{ objectFit: "contain" }}
-                data-testid="button-header-home"
-                aria-label="NIH GDC Data Portal Home"
-                role="img"
-              />
-            </a>
+          <Link
+            href={indexPath}
+            data-testid="NIHLogoButton"
+            className="block w-full h-full mt-2"
+          >
+            <NIHLogo
+              layout="fill"
+              style={{ objectFit: "contain" }}
+              data-testid="button-header-home"
+              aria-label="NIH GDC Data Portal Home"
+              role="img"
+            />
           </Link>
         </div>
 
@@ -149,46 +151,44 @@ export const Header: React.FC<HeaderProps> = ({
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="/manage_sets" passHref>
-            <a
-              data-testid="button-header-manage-sets"
-              className={`p-1 rounded-md ${
-                router.pathname === "/manage_sets"
-                  ? "bg-secondary text-white"
-                  : "hover:bg-primary-lightest"
-              }`}
-            >
-              <div className="flex items-center gap-1 font-heading">
-                <OptionsIcon size="22px" className="rotate-90" />
-                Manage Sets
-              </div>
-            </a>
+          <Link
+            href="/manage_sets"
+            data-testid="button-header-manage-sets"
+            className={`p-1 rounded-md ${
+              router.pathname === "/manage_sets"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <div className="flex items-center gap-1 font-heading">
+              <OptionsIcon size="22px" className="rotate-90" />
+              Manage Sets
+            </div>
           </Link>
-          <Link href="/cart" passHref>
-            <a
-              data-testid="cartLink"
-              className={`p-1 rounded-md ${
-                router.pathname === "/cart"
-                  ? "bg-secondary text-white"
-                  : "hover:bg-primary-lightest"
-              }`}
-            >
-              <div className="flex items-center gap-1 font-heading">
-                <CartIcon size="22px" />
-                Cart
-                <Badge
-                  variant="filled"
-                  className={`px-1 ml-1 ${
-                    router.pathname === "/cart"
-                      ? "bg-white text-secondary"
-                      : "bg-accent-vivid"
-                  }`}
-                  radius="xs"
-                >
-                  {currentCart?.length || 0}
-                </Badge>
-              </div>
-            </a>
+          <Link
+            href="/cart"
+            data-testid="cartLink"
+            className={`p-1 rounded-md ${
+              router.pathname === "/cart"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <div className="flex items-center gap-1 font-heading">
+              <CartIcon size="22px" />
+              Cart
+              <Badge
+                variant="filled"
+                className={`px-1 ml-1 ${
+                  router.pathname === "/cart"
+                    ? "bg-white text-secondary"
+                    : "bg-accent-vivid"
+                }`}
+                radius="xs"
+              >
+                {currentCart?.length || 0}
+              </Badge>
+            </div>
           </Link>
           {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
@@ -322,8 +322,8 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu.Dropdown>
               <div className="grid grid-cols-2 py-4 gap-2">
                 <AppMenuItem>
-                  <Link href={indexPath} passHref>
-                    <AppLink>
+                  <Link href={indexPath} className="flex flex-col items-center">
+                    <>
                       <Image
                         src="/user-flow/icons/gdc-app-data-portal-blue.svg"
                         width={30}
@@ -331,7 +331,7 @@ export const Header: React.FC<HeaderProps> = ({
                         alt=""
                       />
                       Data Portal
-                    </AppLink>
+                    </>
                   </Link>
                 </AppMenuItem>
                 <AppMenuItem>
