@@ -25,7 +25,7 @@ def click_button_on_cohort_bar(button_name: str):
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
 
 @step("<button_name> should be <enabled_or_disabled> in the Cohort Bar")
 def button_should_be_disabled_or_enabled_on_cohort_bar(button_name: str, enabled_or_disabled:str):

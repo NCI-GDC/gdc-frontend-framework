@@ -10,7 +10,7 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
-    BUTTON_CLOSE_MODAL = 'button[aria-label="button-close-modal"]'
+    BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
     LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'

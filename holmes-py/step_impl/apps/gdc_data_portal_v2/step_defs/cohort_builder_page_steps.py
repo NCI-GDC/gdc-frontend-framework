@@ -27,10 +27,6 @@ def perform_filter_card_action(tab_name: str, table):
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(0.1)
 
-@step("Enter text <text_to_send> in the search bar on the Cohort Builder page")
-def enter_text_into_search_bar(text_to_send: str):
-    APP.cohort_builder_page.send_text_into_search_bar(text_to_send)
-
 @step("Expected result <expected_text> in the search bar on the Cohort Builder page")
 def validate_search_bar_result_text(expected_text: str):
     is_expected_text_present = APP.cohort_builder_page.validate_search_bar_result(expected_text)

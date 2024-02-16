@@ -16,7 +16,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Upload "Most Frequent Mutations" "tsv" from "Manage Sets" in "Manage Sets Import" through "Browse"
 * Is text "20 submitted mutation identifiers mapped to 20 unique GDC mutations" present on the page
 * Select "Submit"
-* Enter text "Most Frequent Mutations" in the "Input field for new set name" search bar
+* Enter "Most Frequent Mutations" in the text box "Name Input Field"
 * Select "Save"
 * Is text "Set has been saved." present on the page
 * Pause "3" seconds

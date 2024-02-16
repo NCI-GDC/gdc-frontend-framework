@@ -42,7 +42,7 @@ def setup_test_run():
     time.sleep(2)
     APP.cohort_bar.click_cohort_bar_button("Save")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar("never_use_this_cohort_name", "Input field for new cohort name")
+    APP.shared.send_text_into_text_box("never_use_this_cohort_name", "Name Input Field")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -634,7 +634,7 @@ def quick_search(result_in_list: str):
 
 @step("Name the cohort <cohort_name>")
 def name_cohort(cohort_name: str):
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
 
 @step("These links on the <page_name> should take the user to correct page in a new tab <table>")
 def click_nav_item_check_text_in_new_tab(page_name: str, table):

@@ -11,7 +11,7 @@ class RepositoryPageLocators:
     REPO_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}-files-table']"
     MODAL_ADD_CUSTOM_FILTER_IDENT = "[data-testid='modal-repository-add-custom-filter']"
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
-    FILE_FILTER_SEARCH_BOX = '[data-testid="section-file-filter-search"]>div>div>input'
+    FILE_FILTER_SEARCH_BOX = '[data-testid="textbox-search-for-a-property"]'
 
     IMAGE_VIEWER_IDENT = lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
