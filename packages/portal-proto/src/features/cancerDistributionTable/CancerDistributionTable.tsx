@@ -261,8 +261,11 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         id: "project",
         header: "Project",
         cell: ({ getValue }) => (
-          <Link href={`/projects/${getValue()}`}>
-            <a className="text-utility-link underline">{getValue()}</a>
+          <Link
+            href={`/projects/${getValue()}`}
+            className="text-utility-link underline"
+          >
+            {getValue()}
           </Link>
         ),
         enableSorting: false,

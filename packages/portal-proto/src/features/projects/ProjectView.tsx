@@ -47,10 +47,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const addLinkValue = () => (
     <span className="text-base-lightest">
       {getAnnotationsLinkParams(projectData) ? (
-        <Link href={getAnnotationsLinkParams(projectData)} passHref>
-          <a className="underline" target="_blank">
-            {projectData.annotation.count.toLocaleString()}
-          </a>
+        <Link
+          href={getAnnotationsLinkParams(projectData)}
+          className="underline"
+          target="_blank"
+        >
+          {projectData.annotation.count.toLocaleString()}
         </Link>
       ) : (
         projectData.annotation.count.toLocaleString()

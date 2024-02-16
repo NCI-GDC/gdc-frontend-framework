@@ -858,7 +858,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
                   <FlipIcon size="1.45em" className={controlsIconStyle} />
                 </FacetIconButton>

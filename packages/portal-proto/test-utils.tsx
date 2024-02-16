@@ -1,14 +1,12 @@
 import React, { ComponentType, ReactElement } from "react";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
-import { Provider } from "react-redux";
 import { MantineProvider } from "@mantine/core";
 import {
   SummaryModalContext,
   URLContext,
   DashboardDownloadContext,
 } from "src/utils/contexts";
-import store from "@/app/store";
 import tailwindConfig from "tailwind.config";
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -22,27 +20,25 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <CoreProvider>
-      <Provider store={store}>
-        <MantineProvider theme={{ colors: themeColors }}>
-          <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
-            <SummaryModalContext.Provider
-              value={{
-                entityMetadata: {
-                  entity_type: null,
-                  entity_id: null,
-                },
-                setEntityMetadata: jest.fn(),
-              }}
+      <MantineProvider theme={{ colors: themeColors }}>
+        <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
+          <SummaryModalContext.Provider
+            value={{
+              entityMetadata: {
+                entity_type: null,
+                entity_id: null,
+              },
+              setEntityMetadata: jest.fn(),
+            }}
+          >
+            <DashboardDownloadContext.Provider
+              value={{ state: [], dispatch: jest.fn() }}
             >
-              <DashboardDownloadContext.Provider
-                value={{ state: [], dispatch: jest.fn() }}
-              >
-                {children}
-              </DashboardDownloadContext.Provider>
-            </SummaryModalContext.Provider>
-          </URLContext.Provider>
-        </MantineProvider>
-      </Provider>
+              {children}
+            </DashboardDownloadContext.Provider>
+          </SummaryModalContext.Provider>
+        </URLContext.Provider>
+      </MantineProvider>
     </CoreProvider>
   );
 };

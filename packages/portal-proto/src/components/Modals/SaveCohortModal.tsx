@@ -58,6 +58,7 @@ const SaveCohortModal = ({
   const [cohortReplaced, setCohortReplaced] = useState(false);
   const [enteredName, setEnteredName] = useState<string>();
   const [addCohort, { isLoading }] = useAddCohortMutation();
+  const [cohortSavedMessage, setCohortSavedMessage] = useState<string[]>();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
 
   const {
@@ -79,6 +80,7 @@ const SaveCohortModal = ({
         coreDispatch(removeCohort({ id }));
       }
 
+      coreDispatch(setCohortMessage(cohortSavedMessage));
       onClose();
     }
   }, [
@@ -88,6 +90,7 @@ const SaveCohortModal = ({
     cohorts,
     coreDispatch,
     onClose,
+    cohortSavedMessage,
   ]);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
@@ -106,6 +109,7 @@ const SaveCohortModal = ({
     await addCohort({ cohort: addBody, delete_existing: replace })
       .unwrap()
       .then(async (payload) => {
+        let tempCohortMsg: string[];
         if (prevCohort) {
           if (saveAs) {
             coreDispatch(
@@ -123,9 +127,7 @@ const SaveCohortModal = ({
               }),
             );
             coreDispatch(setCurrentCohortId(payload.id));
-            coreDispatch(
-              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-            );
+            tempCohortMsg = [`savedCohort|${newName}|${payload.id}`];
           } else {
             coreDispatch(
               copyToSavedCohort({
@@ -142,9 +144,7 @@ const SaveCohortModal = ({
             // re-request counts.
             coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
 
-            coreDispatch(
-              setCohortMessage([`savedCurrentCohort|${newName}|${payload.id}`]),
-            );
+            tempCohortMsg = [`savedCurrentCohort|${newName}|${payload.id}`];
 
             coreDispatch(
               removeCohort({
@@ -173,19 +173,15 @@ const SaveCohortModal = ({
 
           if (setAsCurrent) {
             coreDispatch(setCurrentCohortId(payload.id));
-            coreDispatch(
-              setCohortMessage([`savedCohort|${newName}|${payload.id}`]),
-            );
+            tempCohortMsg = [`savedCohort|${newName}|${payload.id}`];
           } else {
-            coreDispatch(
-              setCohortMessage([
-                `savedCohortSetCurrent|${payload.name}|${payload.id}`,
-              ]),
-            );
+            tempCohortMsg = [
+              `savedCohortSetCurrent|${payload.name}|${payload.id}`,
+            ];
           }
         }
 
-        if (saveAs) {
+        if (saveAs && initialName !== newName) {
           // Should discard local changes from current cohort when saving as
           await fetchSavedFilters(prevCohort)
             .unwrap()
@@ -202,8 +198,10 @@ const SaveCohortModal = ({
 
         // Need to wait for request removing outdated cohorts to finish when replacing cohort
         if (replace) {
+          setCohortSavedMessage(tempCohortMsg);
           setCohortReplaced(true);
         } else {
+          coreDispatch(setCohortMessage(tempCohortMsg));
           onClose();
         }
       })

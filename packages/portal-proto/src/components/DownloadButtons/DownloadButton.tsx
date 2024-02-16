@@ -36,7 +36,7 @@ interface DownloadButtonProps {
   inactiveText: string;
   activeText: string;
   filename?: string;
-  size?: number;
+  downloadSize?: number;
   format?: string;
   fields?: Array<string>;
   caseFilters?: Record<string, any>;
@@ -64,7 +64,7 @@ interface DownloadButtonProps {
  * @param inactiveText - The text to display when the button is inactive.
  * @param activeText - The text to display when the button is active.
  * @param filename - The name of the file to download.
- * @param size - The size of the download.
+ * @param downloadSize - The size of the download.
  * @param format - The format of the download.
  * @param fields - The fields to download.
  * @param caseFilters - The case filters to download.
@@ -92,7 +92,7 @@ export const DownloadButton = forwardRef<
       endpoint,
       disabled = false,
       filename,
-      size = 10000,
+      downloadSize = 10000,
       format = "JSON",
       fields = [],
       caseFilters = {},
@@ -143,7 +143,7 @@ export const DownloadButton = forwardRef<
             }
             dispatch(hideModal());
             const params = {
-              size,
+              size: downloadSize,
               attachment: true,
               format,
               fields: fields.join(),

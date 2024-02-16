@@ -10,7 +10,7 @@ class GenericLocators:
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
 
-    BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
+    BUTTON_CLOSE_MODAL = 'button[aria-label="button-close-modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
     LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
@@ -46,6 +46,7 @@ class GenericLocators:
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
+    BUTTON_IN_FOOTER_BY_TEXT_IDENT = lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
@@ -90,6 +91,9 @@ class BasePage:
 
     def get_attribute(self, locator, name: str):
         return self.driver.locator(locator).get_attribute(name)
+
+    def get_count(self, locator):
+        return self.driver.locator(locator).count()
 
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
@@ -373,6 +377,11 @@ class BasePage:
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
+    def click_footer_button_ident_with_displayed_text_name(self, button_text_name):
+        """Clicks a button in the footer based on its displayed text"""
+        locator = GenericLocators.BUTTON_IN_FOOTER_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
     def click_link_data_testid(self, link_data_testid):
         """Clicks a link with a data-testid"""
         link_data_testid = self.normalize_button_identifier(link_data_testid)
@@ -510,7 +519,7 @@ class BasePage:
         """
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
-            "Footer": self.click_button_ident_a_with_displayed_text_name
+            "Footer": self.click_footer_button_ident_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
