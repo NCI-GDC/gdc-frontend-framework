@@ -27,7 +27,14 @@ RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
-FROM node:16.20.2-alpine3.17 AS runner
+FROM node:20.11.0-alpine3.18 AS runner
+ARG NAME=gdc-frontend-framework
+
+LABEL org.opencontainers.image.title=${NAME} \
+      org.opencontainers.image.description="${NAME} container image" \
+      org.opencontainers.image.source="https://github.com/NCI-GDC/${NAME}" \
+      org.opencontainers.image.vendor="NCI GDC"
+
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
