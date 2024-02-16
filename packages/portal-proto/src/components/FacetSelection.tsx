@@ -125,6 +125,7 @@ const FacetSelectionPanel = ({
     <div className="flex flex-col" data-testid="section-file-filter-search">
       <TextInput
         label="Search for a property"
+        data-testid="texbox-search-for-a-property"
         placeholder="search"
         value={searchString}
         rightSection={

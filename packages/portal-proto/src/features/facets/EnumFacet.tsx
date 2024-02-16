@@ -345,6 +345,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       <div className="h-full">
         {isSearching && (
           <TextInput
+            data-testid="textbox-filter-values"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label={`${

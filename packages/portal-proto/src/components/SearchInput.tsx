@@ -237,7 +237,7 @@ export const SearchInput: React.FC = () => {
         }
         icon={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
-        data-testid="textbox-search-bar"
+        data-testid="textbox-cohort-builder-search-bar"
         aria-label="App Search Input"
         value={searchTerm}
         onChange={onSearchChanged}
