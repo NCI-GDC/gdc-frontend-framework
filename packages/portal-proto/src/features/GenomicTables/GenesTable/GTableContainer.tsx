@@ -85,13 +85,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   /* Modal end */
 
   /* GeneTable call */
-  const { data, isSuccess, isFetching, isError } = useGenesTable({
-    pageSize: pageSize,
-    offset: (page - 1) * pageSize,
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-  });
+  const { data, isSuccess, isFetching, isError, isUninitialized } =
+    useGenesTable({
+      pageSize: pageSize,
+      offset: (page - 1) * pageSize,
+      searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+      genomicFilters: genomicFilters,
+      cohortFilters: cohortFilters,
+    });
   /* GeneTable call end */
 
   /* Extract only the "genes." filters */
@@ -365,59 +366,62 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
 
   return (
     <>
-      <SaveSelectionAsSetModal
-        opened={showSaveModal}
-        filters={buildCohortGqlOperator(setFilters)}
-        initialSetName={
-          selectedGenes.length === 0
-            ? filtersToName(setFilters)
-            : "Custom Gene Selection"
-        }
-        sort="case.project.project_id"
-        saveCount={
-          selectedGenes.length === 0
-            ? data?.genes?.genes_total
-            : selectedGenes.length
-        }
-        setType="genes"
-        setTypeLabel="gene"
-        createSetHook={useCreateGeneSetFromFiltersMutation}
-        closeModal={handleSaveSelectionAsSetModalClose}
-      />
+      {isUninitialized || isFetching ? null : (
+        <>
+          <SaveSelectionAsSetModal
+            opened={showSaveModal}
+            closeModal={handleSaveSelectionAsSetModalClose}
+            filters={buildCohortGqlOperator(setFilters)}
+            initialSetName={
+              selectedGenes.length === 0
+                ? filtersToName(setFilters)
+                : "Custom Gene Selection"
+            }
+            sort="case.project.project_id"
+            saveCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            createSetHook={useCreateGeneSetFromFiltersMutation}
+          />
 
-      <AddToSetModal
-        opened={showAddModal}
-        filters={setFilters}
-        addToCount={
-          selectedGenes.length === 0
-            ? data?.genes?.genes_total
-            : selectedGenes.length
-        }
-        setType="genes"
-        setTypeLabel="gene"
-        singleCountHook={useGeneSetCountQuery}
-        countHook={useGeneSetCountsQuery}
-        appendSetHook={useAppendToGeneSetMutation}
-        closeModal={handleAddToSetModalClose}
-        field={"genes.gene_id"}
-        sort="case.project.project_id"
-      />
+          <AddToSetModal
+            opened={showAddModal}
+            closeModal={handleAddToSetModalClose}
+            filters={setFilters}
+            addToCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            singleCountHook={useGeneSetCountQuery}
+            countHook={useGeneSetCountsQuery}
+            appendSetHook={useAppendToGeneSetMutation}
+            field={"genes.gene_id"}
+            sort="case.project.project_id"
+          />
 
-      <RemoveFromSetModal
-        opened={showRemoveModal}
-        filters={setFilters}
-        removeFromCount={
-          selectedGenes.length === 0
-            ? data?.genes?.genes_total
-            : selectedGenes.length
-        }
-        setType="genes"
-        setTypeLabel="gene"
-        countHook={useGeneSetCountsQuery}
-        closeModal={handleRemoveFromSetModalClose}
-        removeFromSetHook={useRemoveFromGeneSetMutation}
-      />
-
+          <RemoveFromSetModal
+            opened={showRemoveModal}
+            closeModal={handleRemoveFromSetModalClose}
+            filters={setFilters}
+            removeFromCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            countHook={useGeneSetCountsQuery}
+            removeFromSetHook={useRemoveFromGeneSetMutation}
+          />
+        </>
+      )}
       <VerticalTable
         data={formattedTableData}
         columns={genesTableDefaultColumns}

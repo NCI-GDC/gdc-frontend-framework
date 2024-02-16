@@ -145,16 +145,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   );
 
   /* SM Table Call */
-  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
-    pageSize: pageSize,
-    offset: pageSize * (page - 1),
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
-    geneSymbol: geneSymbol,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-    _cohortFiltersNoSet: cohortFiltersNoSet,
-    caseFilter: caseFilter,
-  });
+  const { data, isSuccess, isFetching, isError, isUninitialized } =
+    useGetSssmTableDataQuery({
+      pageSize: pageSize,
+      offset: pageSize * (page - 1),
+      searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+      geneSymbol: geneSymbol,
+      genomicFilters: genomicFilters,
+      cohortFilters: cohortFilters,
+      _cohortFiltersNoSet: cohortFiltersNoSet,
+      caseFilter: caseFilter,
+    });
 
   /* SM Table Call end */
 
@@ -403,59 +404,62 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             </div>
           )}
 
-          <SaveSelectionAsSetModal
-            opened={showSaveModal}
-            filters={buildCohortGqlOperator(setFilters)}
-            sort="occurrence.case.project.project_id"
-            initialSetName={
-              selectedMutations.length === 0
-                ? filtersToName(setFilters)
-                : "Custom Mutation Selection"
-            }
-            saveCount={
-              selectedMutations.length === 0
-                ? data?.ssmsTotal
-                : selectedMutations.length
-            }
-            setType="ssms"
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={handleSaveSelectionAsSetModalClose}
-          />
+          {isUninitialized || isFetching ? null : (
+            <>
+              <SaveSelectionAsSetModal
+                opened={showSaveModal}
+                filters={buildCohortGqlOperator(setFilters)}
+                sort="occurrence.case.project.project_id"
+                initialSetName={
+                  selectedMutations.length === 0
+                    ? filtersToName(setFilters)
+                    : "Custom Mutation Selection"
+                }
+                saveCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                createSetHook={useCreateSsmsSetFromFiltersMutation}
+                closeModal={handleSaveSelectionAsSetModalClose}
+              />
 
-          <AddToSetModal
-            opened={showAddModal}
-            filters={setFilters}
-            addToCount={
-              selectedMutations.length === 0
-                ? data?.ssmsTotal
-                : selectedMutations.length
-            }
-            setType="ssms"
-            setTypeLabel="mutation"
-            singleCountHook={useSsmSetCountQuery}
-            countHook={useSsmSetCountsQuery}
-            appendSetHook={useAppendToSsmSetMutation}
-            closeModal={handleAddToSetModalClose}
-            field={"ssms.ssm_id"}
-            sort="occurrence.case.project.project_id"
-          />
+              <AddToSetModal
+                opened={showAddModal}
+                filters={setFilters}
+                addToCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                singleCountHook={useSsmSetCountQuery}
+                countHook={useSsmSetCountsQuery}
+                appendSetHook={useAppendToSsmSetMutation}
+                closeModal={handleAddToSetModalClose}
+                field={"ssms.ssm_id"}
+                sort="occurrence.case.project.project_id"
+              />
 
-          <RemoveFromSetModal
-            opened={showRemoveModal}
-            filters={setFilters}
-            removeFromCount={
-              selectedMutations.length === 0
-                ? data?.ssmsTotal
-                : selectedMutations.length
-            }
-            setType="ssms"
-            setTypeLabel="mutation"
-            countHook={useSsmSetCountsQuery}
-            closeModal={handleRemoveFromSetModalClose}
-            removeFromSetHook={useRemoveFromSsmSetMutation}
-          />
-
+              <RemoveFromSetModal
+                opened={showRemoveModal}
+                filters={setFilters}
+                removeFromCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                countHook={useSsmSetCountsQuery}
+                closeModal={handleRemoveFromSetModalClose}
+                removeFromSetHook={useRemoveFromSsmSetMutation}
+              />
+            </>
+          )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable

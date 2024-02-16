@@ -364,7 +364,7 @@ const CohortManager: React.FC = () => {
 
       <SaveCohortModal
         initialName={
-          !INVALID_COHORT_NAMES.includes(cohortName.toLowerCase())
+          !INVALID_COHORT_NAMES.includes(cohortName?.toLowerCase())
             ? cohortName
             : undefined
         }
@@ -383,45 +383,42 @@ const CohortManager: React.FC = () => {
         saveAs
       />
 
-      {modal === Modals.SaveCohortErrorModal && (
-        <Modal
-          opened
-          onClose={() => coreDispatch(hideModal())}
-          title="Save Cohort Error"
-        >
-          <p className="py-2 px-4">There was a problem saving the cohort.</p>
-          <ModalButtonContainer data-testid="modal-button-container">
-            <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
-              OK
-            </DarkFunctionButton>
-          </ModalButtonContainer>
-        </Modal>
-      )}
-      {modal === Modals.ImportCohortModal && <ImportCohortModal />}
-      {modal === Modals.GlobalCaseSetModal && (
-        <CaseSetModal
-          updateFilters={updateCohortFilters}
-          existingFiltersHook={useCohortFacetFilters}
-        />
-      )}
-      {modal === Modals.GlobalGeneSetModal && (
-        <GeneSetModal
-          modalTitle="Filter Current Cohort by Genes"
-          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
-          selectSetInstructions="Select one or more sets below to filter your cohort."
-          updateFilters={updateCohortFilters}
-          existingFiltersHook={useCohortFacetFilters}
-        />
-      )}
-      {modal === Modals.GlobalMutationSetModal && (
-        <MutationSetModal
-          modalTitle="Filter Current Cohort by Mutations"
-          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
-          selectSetInstructions="Select one or more sets below to filter your cohort."
-          updateFilters={updateCohortFilters}
-          existingFiltersHook={useCohortFacetFilters}
-        />
-      )}
+      <Modal
+        opened={modal === Modals.SaveCohortErrorModal}
+        onClose={() => coreDispatch(hideModal())}
+        title="Save Cohort Error"
+      >
+        <p className="py-2 px-4">There was a problem saving the cohort.</p>
+        <ModalButtonContainer data-testid="modal-button-container">
+          <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
+            OK
+          </DarkFunctionButton>
+        </ModalButtonContainer>
+      </Modal>
+      <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
+      <CaseSetModal
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+        opened={modal === Modals.GlobalCaseSetModal}
+      />
+
+      <GeneSetModal
+        opened={modal === Modals.GlobalGeneSetModal}
+        modalTitle="Filter Current Cohort by Genes"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
+        selectSetInstructions="Select one or more sets below to filter your cohort."
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+      />
+
+      <MutationSetModal
+        opened={modal === Modals.GlobalMutationSetModal}
+        modalTitle="Filter Current Cohort by Mutations"
+        inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
+        selectSetInstructions="Select one or more sets below to filter your cohort."
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+      />
       {/*  Modals End   */}
       <div className="border-opacity-0">
         <div className="flex gap-4">
