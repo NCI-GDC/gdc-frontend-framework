@@ -341,6 +341,7 @@ const FromTo: React.FC<FromToProps> = ({
               aria-label="select greater and equal or greater than"
             />
             <NumberInput
+              data-testid="textbox-input-from-value"
               className="basis-2/5 text-sm"
               placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
               min={lowerUnitRange}
@@ -378,6 +379,7 @@ const FromTo: React.FC<FromToProps> = ({
               aria-label="select less or less than and equal"
             />
             <NumberInput
+              data-testid="textbox-input-to-value"
               className="basis-2/5"
               placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
               min={lowerUnitRange}
