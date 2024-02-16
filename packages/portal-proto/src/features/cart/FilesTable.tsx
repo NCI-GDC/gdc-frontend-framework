@@ -258,14 +258,10 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
               <Link
                 href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
+                className="text-utility-link underline font-content"
+                target="_blank"
               >
-                <a
-                  className="text-utility-link underline font-content"
-                  target="_blank"
-                >
-                  {row.original.annotations.length}
-                </a>
+                {row.original.annotations.length}
               </Link>
             ) : (
               row.original?.annotations?.length ?? 0

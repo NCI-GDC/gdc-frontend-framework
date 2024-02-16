@@ -33,7 +33,8 @@ const P = tw.p`
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails, isFetching: userDetailsFetching } =
+    useUserDetails();
   const filesByCanAccess = groupByAccess(cart, userDetails);
   const dbGapList = Array.from(
     new Set(
@@ -137,7 +138,10 @@ const Cart: React.FC = () => {
         <div className="flex gap-8 mt-4">
           <div className="flex-1">
             <HeaderTitle>File counts by authorization level</HeaderTitle>
-            <AuthorizationTable filesByCanAccess={filesByCanAccess} />
+            <AuthorizationTable
+              filesByCanAccess={filesByCanAccess}
+              loading={userDetailsFetching}
+            />
           </div>
           <div className="flex-1">
             <HeaderTitle>File counts by project</HeaderTitle>

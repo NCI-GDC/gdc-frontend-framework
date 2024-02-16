@@ -332,7 +332,11 @@ export const useGenerateGenesTableColumns = ({
         header: "Annotations",
         cell: ({ row }) => (
           <Tooltip label="Cancer Gene Census">
-            <span>{row.original.annotations && <AnnotationsIcon />}</span>
+            <span>
+              {row.original.annotations && (
+                <AnnotationsIcon label={"Cancer Gene Census"} />
+              )}
+            </span>
           </Tooltip>
         ),
       }),

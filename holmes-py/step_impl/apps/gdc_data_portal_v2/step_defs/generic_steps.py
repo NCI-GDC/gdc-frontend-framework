@@ -1,9 +1,10 @@
 import json
+import re
 import tarfile
 import time
-import re
 
 from datetime import datetime as dt
+from uuid import UUID, uuid4
 
 from getgauge.python import step, before_spec, after_spec, before_suite, data_store
 
@@ -647,3 +648,17 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab,v[1])
         assert is_text_visible, f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
         new_tab.close()
+
+@step("Check that <var_to_check> cookie is accessible using Javascript and that it's generated using uuid version <ver>")
+def check_if_cookie_accessible(var_to_check:str, ver:int):
+    cookie = APP.driver.evaluate('()=>document.cookie')
+    var_to_check += "="
+
+    # check to see if gdc_context_id exists in cookie
+    assert var_to_check in cookie
+
+    start_value = cookie[cookie.index(var_to_check)+len(var_to_check):]
+    gdc_context_id = start_value[:start_value.find(";")]
+
+    # check if the gdc_context_id is version 4
+    assert UUID(gdc_context_id).version == int(ver)

@@ -81,3 +81,17 @@ Message when saving second cohort will be fixed in PEAR-1651
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Delete           |has been deleted                           |Remove Modal        |
+
+## Random filters cohort creation
+* Create and save cohorts with randomly assigned filters
+  |cohort_name              |number_of_filters|
+  |-------------------------|-----------------|
+  |random_filters_cohort_1  |2                |
+
+## Shortened cohort saving
+* Create and save a cohort named "quick_cohort_step_1" with these filters
+  |tab_name               |facet_name           |selection            |
+  |-----------------------|---------------------|---------------------|
+  |Demographic            |Gender               |female               |
+  |Stage Classification   |Ajcc Clinical Stage  |stage ivc            |
+  |General                |Program              |TCGA                 |

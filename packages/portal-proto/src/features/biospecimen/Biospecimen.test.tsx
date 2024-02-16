@@ -2,6 +2,10 @@ import { render } from "@testing-library/react";
 import { Biospecimen } from "./Biospecimen";
 import * as func from "@gff/core";
 
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
 const mockResponse = {
   composition: null,
   current_weight: null,

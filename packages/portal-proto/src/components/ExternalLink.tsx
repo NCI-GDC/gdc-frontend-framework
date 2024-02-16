@@ -16,16 +16,17 @@ export const ExternalLink: React.FC<ExternalLinkProps> = ({
   className,
 }: ExternalLinkProps) => {
   return (
-    <Link href={href} passHref>
-      <a
-        data-testid={dataTestId ? dataTestId : ""}
-        title={title ? title : href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-      >
-        {children}
-      </a>
+    <Link
+      href={href}
+      // Keeping passHref since ExternalLink is a custom component so children can be anything (maybe <a> tag)
+      passHref
+      data-testid={dataTestId ? dataTestId : ""}
+      title={title ? title : href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {children}
     </Link>
   );
 };
