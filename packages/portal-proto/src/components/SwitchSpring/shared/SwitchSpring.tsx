@@ -42,7 +42,7 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       {/* div added otherwise tooltip does not work in mantine 6 */}
       <div>
         <Switch
-          data-testid="button-middle-switchSpring"
+          data-testid="switchSpring-checkbox"
           classNames={{
             thumb: `border-2 rounded-sm w-5 h-5 ${
               disabled ? "border-gray-300" : "border-activeColor"
