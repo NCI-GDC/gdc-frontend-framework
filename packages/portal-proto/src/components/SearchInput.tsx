@@ -265,6 +265,7 @@ export const SearchInput: React.FC = () => {
       />
       {dropdownOpen && (
         <div
+          data-testid="search-result-list"
           className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md"
           id={comboboxId}
           onKeyDown={menuKeybordNav}
