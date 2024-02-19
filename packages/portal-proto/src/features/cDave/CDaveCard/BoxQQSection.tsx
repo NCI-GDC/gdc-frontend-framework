@@ -273,7 +273,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             height={boundingRectBox.height}
           />
         </div>
-        <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
+        <div className="w-full h-72 basis-2/3 overflow-hidden" ref={qqPlotRef}>
           <QQPlot
             chartValues={formattedQQValues}
             field={fieldName}

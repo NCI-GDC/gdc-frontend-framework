@@ -1,14 +1,8 @@
 import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
-import {
-  VictoryAxis,
-  VictoryChart,
-  VictoryLine,
-  VictoryScatter,
-  VictoryLabel,
-  VictoryContainer,
-} from "victory";
+import EChartWrapper from "./EChartWrapper";
+import { EChartsOption } from "echarts";
 
 const getQuantile = (count: number, quantile: number) =>
   Math.ceil(count * (quantile / 4)) - 1;
@@ -57,12 +51,6 @@ interface QQPlotProps {
   readonly color: string;
   readonly height: number;
   readonly width: number;
-  readonly chartPadding?: {
-    left?: number;
-    right?: number;
-    top?: number;
-    bottom?: number;
-  };
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
   readonly label?: string;
 }
@@ -73,77 +61,131 @@ const QQPlot: React.FC<QQPlotProps> = ({
   isLoading,
   height,
   width,
-  chartPadding = { left: 80, right: 20, bottom: 60, top: 50 },
   color,
   chartRef,
   label = "QQ Plot",
 }: QQPlotProps) => {
-  const emptyChart = chartValues.every((val) => val.x === 0);
-
-  const xMin = Math.floor(Math.min(...chartValues.map((v) => v.x)));
-  const yMin = Math.floor(Math.min(...chartValues.map((v) => v.y)));
-  const xMax = Math.ceil(Math.max(...chartValues.map((v) => v.x)));
-  const yMax = Math.ceil(Math.max(...chartValues.map((v) => v.y)));
-
   const lineValues = useDeepCompareMemo(
     () => (chartValues.length > 0 ? getQ1Q3Line(chartValues) : []),
     [chartValues],
   );
 
+  const chartData = useDeepCompareMemo(
+    () => chartValues.map((v) => [v.x, v.y]),
+    [chartValues],
+  );
+
+  const lineData = useDeepCompareMemo(
+    () => lineValues.map((v) => [v.x, v.y]),
+    [lineValues],
+  );
+
+  const option: EChartsOption = useDeepCompareMemo(
+    () => ({
+      animation: false,
+      grid: {
+        show: false,
+        left: 60,
+        right: 50,
+        top: 40,
+      },
+      title: {
+        text: label,
+        left: "center",
+        textStyle: {
+          fontWeight: "normal",
+          fontSize: 16,
+          fontFamily: "Noto Sans",
+          color: "black",
+        },
+      },
+      xAxis: {
+        name: "Theoretical Normal Quantiles",
+        type: "value",
+        splitLine: {
+          show: false,
+        },
+        nameLocation: "middle",
+        nameTextStyle: {
+          padding: 8,
+          fontSize: 14,
+          color: "black",
+          fontFamily: "Noto Sans",
+        },
+        axisLabel: {
+          fontSize: 12,
+          color: "black",
+          fontFamily: "Noto Sans",
+        },
+        axisTick: {
+          length: 6,
+          lineStyle: {
+            color: "black",
+          },
+        },
+      },
+      yAxis: {
+        name: "Sample Quantiles",
+        type: "value",
+        axisLine: {
+          onZero: false,
+        },
+        position: "left",
+        splitLine: {
+          show: false,
+        },
+        nameLocation: "middle",
+        nameTextStyle: {
+          padding: 26,
+          fontSize: 14,
+          color: "black",
+          fontFamily: "Noto Sans",
+        },
+        axisLabel: {
+          fontSize: 12,
+          color: "black",
+          fontFamily: "Noto Sans",
+        },
+        axisTick: {
+          length: 6,
+          lineStyle: {
+            color: "black",
+          },
+        },
+      },
+      color: [color, "black"],
+      series: [
+        {
+          type: "scatter" as const,
+          data: chartData,
+          large: true,
+          itemStyle: {
+            opacity: 0.7,
+            borderColor: color,
+          },
+        },
+        {
+          type: "line" as const,
+          data: lineData,
+          showSymbol: false,
+        },
+      ],
+    }),
+    [chartData, color, lineData, label],
+  );
+
   return isLoading ? (
     <Loader />
   ) : chartValues.length < 10 ? (
-    <>Not enough data</>
+    <div className="flex justify-center">Not enough data</div>
   ) : (
-    <VictoryChart
+    <EChartWrapper
+      option={option}
       height={height}
+      chartRef={chartRef}
       width={width}
-      padding={chartPadding}
-      minDomain={{ x: xMin, y: yMin < 0 ? yMin : 0 }}
-      maxDomain={{ x: xMax, y: yMax }}
-      containerComponent={
-        <VictoryContainer
-          containerRef={
-            chartRef ? (ref) => (chartRef.current = ref) : undefined
-          }
-          aria-labelledby={`${field}-qq-plot-label`}
-        />
-      }
-    >
-      <VictoryLabel
-        dy={20}
-        dx={(width + chartPadding.left - chartPadding.right) / 2}
-        text={label}
-        style={{ fontSize: 16, fontFamily: "Noto Sans" }}
-        textAnchor="middle"
-        id={`${field}-qq-plot-label`}
-      />
-      <VictoryAxis
-        label="Theoretical Normal Quantiles"
-        axisLabelComponent={<VictoryLabel dy={5} />}
-        tickLabelComponent={<VictoryLabel dy={-5} />}
-        tickFormat={(t) => Number(t.toFixed())}
-        tickCount={8}
-        style={{ ticks: { stroke: "black", size: 8 } }}
-        crossAxis={false}
-        orientation="bottom"
-      />
-      <VictoryAxis
-        dependentAxis
-        axisValue={xMin}
-        label="Sample Quantiles"
-        axisLabelComponent={<VictoryLabel dy={-40} />}
-        tickLabelComponent={emptyChart ? <></> : <VictoryLabel dx={5} />}
-        style={{ ticks: { stroke: "black", size: 8 } }}
-        crossAxis={false}
-      />
-      <VictoryScatter
-        data={chartValues}
-        style={{ data: { stroke: color, strokeWidth: 2, fill: "none" } }}
-        groupComponent={<g />}
-      />
-      <VictoryLine data={lineValues} />
-    </VictoryChart>
+      ariaLabeledBy={`${field}-qq-plot-label`}
+    />
   );
 };
 
