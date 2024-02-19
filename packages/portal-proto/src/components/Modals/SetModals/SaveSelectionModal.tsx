@@ -64,35 +64,20 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   });
 
   useEffect(() => {
-    if (response.isSuccess) {
-      dispatch(
-        addSet({
-          setType,
-          setName: form.values.name.trim(),
-          setId: response.data as string,
-        }),
-      );
-      showNotification({
-        message: "Set has been saved.",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
-      closeModal();
-    } else if (response.isError) {
-      showNotification({
-        message: "Problem saving set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+    if (opened) {
+      form.setValues((prev) => ({ ...prev, name: initialSetName, top: max }));
     }
-  }, [
-    response.isSuccess,
-    response.isError,
-    response.data,
-    dispatch,
-    setType,
-    closeModal,
-    form.values.name,
-  ]);
+    // form keeps on changing
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opened, initialSetName, max]);
+
+  console.log({
+    response,
+    values: form.values,
+    max,
+    saveCount,
+    initialSetName,
+  });
 
   return (
     <Modal
@@ -100,7 +85,10 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         max > 1 ? "s" : ""
       } as a new set`}
       opened={opened}
-      onClose={closeModal}
+      onClose={() => {
+        closeModal();
+        form.reset();
+      }}
       size="lg"
       classNames={{
         close: "p-0 drop-shadow-lg",
@@ -140,6 +128,29 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
               size: form.values.top,
               score: sort,
             })
+              .unwrap()
+              .then((response: string) => {
+                dispatch(
+                  addSet({
+                    setType,
+                    setName: form.values.name.trim(),
+                    setId: response,
+                  }),
+                );
+                showNotification({
+                  message: "Set has been saved.",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+                closeModal();
+                form.reset();
+              })
+              .catch(() => {
+                showNotification({
+                  message: "Problem saving set.",
+                  color: "red",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+              })
           }
           disabled={!form.isValid() || response.isLoading}
         >
