@@ -1,5 +1,5 @@
 ARG BASE_VERSION=3.0.1-rc2
-ARG REGISTRY=docker.osdc.io
+ARG REGISTRY=docker.osdc.io/ncigdc
 
 FROM ${REGISTRY}/nodejs20:${BASE_VERSION} as dep
 WORKDIR /app
