@@ -12,7 +12,6 @@ ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 ARG BUILD_SHORT_SHA
 ENV NEXT_PUBLIC_BUILD_SHORT_SHA=$BUILD_SHORT_SHA
-ENV NODE_ENV=development
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
@@ -21,7 +20,7 @@ COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
-RUN npm ci
+RUN npm ci --include=dev
 COPY ./packages ./packages
 
 RUN lerna run --scope @gff/core compile
