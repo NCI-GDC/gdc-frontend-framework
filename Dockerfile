@@ -1,10 +1,13 @@
-FROM node:16.20.2-alpine3.17 as dep
+ARG BASE_VERSION=3.0.1-rc2
+ARG REGISTRY=docker.osdc.io
+
+FROM ${REGISTRY}/nodejs20:${BASE_VERSION} as dep
 WORKDIR /app
 
 #==================================================================
 
 # ==================================================================
-FROM node:16.20.2-alpine3.17 AS builder
+FROM ${REGISTRY}/nodejs20:${BASE_VERSION} AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 ARG BUILD_SHORT_SHA
@@ -27,7 +30,7 @@ RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
-FROM node:20.11.0-alpine3.18 AS runner
+FROM ${REGISTRY}/nodejs20:${BASE_VERSION} AS runner
 ARG NAME=gdc-frontend-framework
 
 LABEL org.opencontainers.image.title=${NAME} \
