@@ -47,7 +47,7 @@ describe("<SwitchSpring />", () => {
       />,
     );
 
-    await userEvent.click(getByTestId("switchSpring-checkbox"));
+    await userEvent.click(getByTestId("button-switchspring"));
 
     expect(mockHandleSwitch).not.toBeCalled();
   });
@@ -66,7 +66,7 @@ describe("<SwitchSpring />", () => {
       />,
     );
 
-    await userEvent.click(getByTestId("switchSpring-checkbox"));
+    await userEvent.click(getByTestId("button-switchspring"));
 
     expect(mockHandleSwitch).toBeCalled();
   });
