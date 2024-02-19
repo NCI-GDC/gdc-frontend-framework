@@ -54,7 +54,7 @@ COPY --from=builder --chown=app:app /app/packages/portal-proto/next.config.js ./
 RUN mkdir -p ./packages/portal-proto/.next \
   && chown app:app ./packages/portal-proto/.next
 VOLUME  ./packages/portal-proto/.next
-USER app
+USER app:app
 
 EXPOSE 3000
 
