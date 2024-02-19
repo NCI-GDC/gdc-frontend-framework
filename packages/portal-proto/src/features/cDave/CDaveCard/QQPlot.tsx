@@ -81,13 +81,6 @@ const QQPlot: React.FC<QQPlotProps> = ({
   const option: EChartsOption = useDeepCompareMemo(
     () => ({
       animation: false,
-      aria: {
-        enabled: true,
-        label: {
-          enabled: true,
-          description: label,
-        },
-      },
       grid: {
         show: false,
         left: 60,
@@ -189,6 +182,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
       height={height}
       chartRef={chartRef}
       width={width}
+      label={label}
     />
   );
 };
