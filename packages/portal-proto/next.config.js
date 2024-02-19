@@ -14,10 +14,6 @@ const basePath = "/v2";
 
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
-  // do not try to run if NEXT_PUBLIC_BUILD_SHORT_SHA exists
-  if (process.env.NEXT_PUBLIC_BUILD_SHORT_SHA) {
-    return "";
-  }
   try {
     return require("child_process") // eslint-disable-line  @typescript-eslint/no-var-requires
       .execSync("git rev-parse --short HEAD")
@@ -72,7 +68,9 @@ module.exports = withTM({
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
     // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git
     NEXT_PUBLIC_APP_HASH:
-      process.env.NEXT_PUBLIC_BUILD_SHORT_SHA || buildHash(),
+      process.env.npm_lifecycle_event === "dev"
+        ? buildHash()
+        : process.env.NEXT_PUBLIC_BUILD_SHORT_SHA,
   },
   async headers() {
     return [
