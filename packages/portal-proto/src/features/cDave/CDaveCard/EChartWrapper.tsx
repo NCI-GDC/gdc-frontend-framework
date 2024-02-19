@@ -4,7 +4,6 @@ import { init, EChartsOption, ECharts } from "echarts";
 export interface EChartWrapperProps {
   readonly option: EChartsOption;
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
-  readonly ariaLabeledBy: string;
   readonly height: number;
   readonly width: number;
 }
@@ -12,7 +11,6 @@ export interface EChartWrapperProps {
 const EChartWrapper: React.FC<EChartWrapperProps> = ({
   option,
   chartRef,
-  ariaLabeledBy,
   height,
   width,
 }: EChartWrapperProps) => {
@@ -45,7 +43,6 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
     <div
       ref={wrapperRef ? (r) => (wrapperRef.current = r) : undefined}
       style={{ height, width }}
-      aria-labelledby={ariaLabeledBy}
     />
   );
 };
